@@ -17,8 +17,7 @@ commit hash.
 
 ## View blame for a file
 
-> - Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flags](../../../../administration/feature_flags.md) named `graphql_git_blame` and `highlight_js_worker`. Enabled by default.
-> - Feature flags [`highlight_js_worker`](https://gitlab.com/gitlab-org/gitlab/-/issues/432706) and [`graphql_git_blame`](https://gitlab.com/gitlab-org/gitlab/-/issues/439847) removed in GitLab 16.9.
+> - Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flag](../../../../administration/feature_flags.md) named `inline_blame`. Disabled by default.
 
 Prerequisites:
 

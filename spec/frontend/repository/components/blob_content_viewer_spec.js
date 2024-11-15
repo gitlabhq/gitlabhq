@@ -22,6 +22,7 @@ import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import projectInfoQuery from '~/repository/queries/project_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import getRefMixin from '~/repository/mixins/get_ref';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
@@ -128,7 +129,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       store: createMockStore(),
       apolloProvider: fakeApollo,
       propsData: propsMock,
-      mixins: [getRefMixin, highlightMixin],
+      mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin()],
       mocks: {
         $route: mockRoute,
         $router: mockRouter,
@@ -136,6 +137,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       provide: {
         targetBranch: 'test',
         originalBranch: 'default-ref',
+        glFeatures: { inlineBlame: true },
         ...inject,
       },
     }),

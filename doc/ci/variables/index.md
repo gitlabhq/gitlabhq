@@ -59,33 +59,42 @@ the repository, and should store only non-sensitive project configuration. For e
 the URL of a database saved in a `DATABASE_URL` variable. Sensitive variables containing values
 like secrets or keys should be [added in the UI](#define-a-cicd-variable-in-the-ui).
 
-You can use `variables` in a job or at the top level of the `.gitlab-ci.yml` file.
+You can define `variables` in a job or at the top level of the `.gitlab-ci.yml` file.
 If the variable is defined:
 
-- At the top level, it's globally available and all jobs can use it.
-- In a job, only that job can use it.
+- In a job, only that job can use it. You can use the variable in the job's `script`, `before_script`, or `after_script` sections,
+  and also with some [job keywords](../yaml/index.md#job-keywords), but not [global keywords](../yaml/index.md#global-keywords).
+- In a global (top-level) `variables` section, it acts as a default variable for all jobs.
+  Each global variable is made available to every job in the pipeline, except when the job already has a variable
+  defined with the same name. The variable defined in the job [takes precedence](../variables/index.md#cicd-variable-precedence),
+  so you cannot use the value of the global variable with the same name in the job.
+
+  Like job variables, you cannot use global variables as values for other global keywords.
 
 For example:
 
 ```yaml
 variables:
-  GLOBAL_VAR: "A global variable"
+  ALL_JOBS_VAR: "A global variable"
 
 job1:
   variables:
-    JOB_VAR: "A job variable"
+    JOB1_VAR: "Job 1 variable"
   script:
-    - echo "Variables are '$GLOBAL_VAR' and '$JOB_VAR'"
+    - echo "Variables are '$ALL_JOBS_VAR' and '$JOB1_VAR'"
 
 job2:
+  variables:
+    ALL_JOBS_VAR: "Different value than global"
+    JOB2_VAR: "Job 2 variable"
   script:
-    - echo "Variables are '$GLOBAL_VAR' and '$JOB_VAR'"
+    - echo "Variables are '$ALL_JOBS_VAR', '$JOB2_VAR', and '$JOB1_VAR'"
 ```
 
 In this example:
 
-- `job1` outputs `Variables are 'A global variable' and 'A job variable'`
-- `job2` outputs `Variables are 'A global variable' and ''`
+- `job1` outputs: `Variables are 'A global variable' and 'Job 1 variable'`
+- `job2` outputs: `Variables are 'Different value than global', 'Job 2 variable', and ''`
 
 Use the [`value` and `description`](../yaml/index.md#variablesdescription) keywords
 to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
@@ -1101,3 +1110,50 @@ As a workaround you can either:
 - Use [File-type](#use-file-type-cicd-variables) CI/CD variables for large environment variables where possible.
 - If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/index.md), or
   bring the file to the job through some other mechanism.
+
+### Global variable doesn't expand in job variable of the same name
+
+You cannot use a global variable's value in a job variable of the same name. A global variable
+is only made available to a job when the job does not have a variable defined with the same name.
+If the job has a variable with the same name, the job's variable takes precedence
+and the global variable is not available in the job.
+
+For example, these two samples are equivalent:
+
+- In this sample, `$MY_VAR` has no value because it's not defined anywhere:
+
+  ```yaml
+  Job-with-variable:
+    variables:
+      MY_VAR: $MY_VAR
+    script: echo "Value is '$MY_VAR'"
+  ```
+
+- In this sample, `$MY_VAR` has no value because the global variable with the same name
+  is not available in the job:
+
+  ```yaml
+  variables:
+    MY_VAR: "Global value"
+
+  Job-with-same-name-variable:
+    variables:
+      MY_VAR: $MY_VAR
+    script: echo "Value is '$MY_VAR'"
+  ```
+
+In both cases, the echo command outputs `Value is '$MY_VAR'`.
+
+In general, you should use the global variable directly in a job rather than reassigning its value to a new variable.
+If you need to do this, use variables with different names instead. For example:
+
+```yaml
+variables:
+  MY_VAR1: "Global value1"
+  MY_VAR2: "Global value2"
+
+overwrite-same-name:
+  variables:
+    MY_VAR2_FROM_GLOBALS: $MY_VAR2
+  script: echo "Values are '$MY_VAR1' and '$MY_VAR2_FROM_GLOBALS'"
+```

@@ -4,10 +4,6 @@
   box-shadow: inset 0 0 0 $gl-border-size-1 $red-500 if-important($important);
 }
 
-.modal-footer {
-  background-color: $gray-10;
-}
-
 .invalid-dropdown {
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-button.gl-dropdown-toggle {

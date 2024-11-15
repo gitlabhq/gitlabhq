@@ -5497,14 +5497,17 @@ Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-
 **Keyword type**: Global and job keyword. You can use it at the global level,
 and also at the job level.
 
-If you define `variables` as a [global keyword](#keywords), it behaves like default variables
-for all jobs. Each variable is copied to every job configuration when the pipeline is created.
-If the job already has that variable defined, the [job-level variable takes precedence](../variables/index.md#cicd-variable-precedence).
+You can use variables defined in a job in the job's `script`, `before_script`, or `after_script` sections,
+and also with some [job keywords](#job-keywords), but not [global keywords](#global-keywords).
+Check the **Possible inputs** section of each job keyword to see if it supports variables.
 
-Variables defined at the global-level cannot be used as inputs for other global keywords
-like [`include`](includes.md#use-variables-with-include). These variables can only
-be used at the job-level, in `script`, `before_script`, or `after_script` sections,
-and in some job keywords like [`rules`](../jobs/job_rules.md#cicd-variable-expressions).
+Variables defined in a global (top-level) `variables` section act as default variables
+for all jobs. Each global variable is made available to every job in the pipeline, except when the job already has a variable
+defined with the same name. The variable defined in the job [takes precedence](../variables/index.md#cicd-variable-precedence),
+so the value of the global variable with the same name cannot be used in the job.
+
+Like job variables, you cannot use global variables as values for other global keywords,
+like [`include`](includes.md#use-variables-with-include).
 
 **Possible inputs**: Variable name and value pairs:
 
@@ -5529,11 +5532,20 @@ deploy_job:
 deploy_review_job:
   stage: deploy
   variables:
+    DEPLOY_SITE: "https://dev.example.com/"
     REVIEW_PATH: "/review"
   script:
     - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
   environment: production
 ```
+
+In this example:
+
+- `deploy_job` has no variables defined. The global `DEPLOY_SITE` variable is copied to the job
+  and can be used in the `script` section.
+- `deploy_review_job` already has a `DEPLOY_SITE` variable defined, so the global `DEPLOY_SITE`
+  is not copied to the job. The job also has a `REVIEW_PATH` job-level variable defined.
+  Both job-level variables can be used in the `script` section.
 
 **Additional details**:
 

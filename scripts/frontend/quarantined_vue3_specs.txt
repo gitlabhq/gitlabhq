@@ -122,9 +122,6 @@ ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/conta
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js
-ee/spec/frontend/security_orchestration/components/policies/list_header_spec.js
-ee/spec/frontend/security_orchestration/components/policies/project_modal_spec.js
-ee/spec/frontend/security_orchestration/components/policy_drawer/drawer_layout_spec.js
 ee/spec/frontend/security_orchestration/components/policy_drawer/scan_execution/details_drawer_spec.js
 ee/spec/frontend/security_orchestration/components/policy_drawer/toggle_list_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/action/action_section_spec.js

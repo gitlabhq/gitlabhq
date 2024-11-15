@@ -1,0 +1,9 @@
+---
+name: inline_blame
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430950
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171249
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501539
+milestone: '17.6'
+group: group::source code
+type: beta
+default_enabled: false

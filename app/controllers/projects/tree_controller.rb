@@ -18,6 +18,7 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action do
+    push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:upgrade_pdfjs, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)

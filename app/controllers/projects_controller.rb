@@ -36,6 +36,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
+    push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:upgrade_pdfjs, current_user)

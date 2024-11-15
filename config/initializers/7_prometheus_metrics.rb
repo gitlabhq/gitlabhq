@@ -100,6 +100,7 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
 
   if Gitlab::Runtime.sidekiq?
     Gitlab::Metrics::Samplers::ConcurrencyLimitSampler.instance(logger: logger).start
+    Gitlab::Metrics::Samplers::StatActivitySampler.instance(logger: logger).start
     Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start if Gitlab.ee?
   end
 

@@ -1,0 +1,9 @@
+---
+name: sample_pg_stat_activity
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3929
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168335
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503486
+milestone: '17.6'
+group: group::scalability
+type: ops
+default_enabled: false
