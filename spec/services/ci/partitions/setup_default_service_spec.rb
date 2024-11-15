@@ -38,8 +38,8 @@ RSpec.describe Ci::Partitions::SetupDefaultService, feature_category: :ci_scalin
 
       it 'returns success and update statuses for ci_partitions', :aggregate_failures do
         expect { execute }.not_to change { Ci::Partition.count }
-        expect(Ci::Partition.take(2).pluck(:status)).to contain_exactly(status_active, status_active)
-        expect(Ci::Partition.last.status).to eq(status_current)
+        expect(Ci::Partition.first.status).to eq(status_current)
+        expect(Ci::Partition.last(2).pluck(:status)).to contain_exactly(status_active, status_active)
       end
     end
   end

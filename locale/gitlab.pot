@@ -309,6 +309,11 @@ msgid_plural "%d groups found"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d group has access"
+msgid_plural "%d groups have access"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
@@ -426,6 +431,11 @@ msgstr[1] ""
 
 msgid "%d project"
 msgid_plural "%d projects"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d project has access"
+msgid_plural "%d projects have access"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -707,11 +717,6 @@ msgstr ""
 
 msgid "%{count} group"
 msgid_plural "%{count} groups"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{count} group has access"
-msgid_plural "%{count} groups have access"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -10605,6 +10610,9 @@ msgstr ""
 msgid "CICD|Grant additional access permissions to this project's CI/CD job tokens."
 msgstr ""
 
+msgid "CICD|Group or project"
+msgstr ""
+
 msgid "CICD|Jobs"
 msgstr ""
 
@@ -10621,6 +10629,9 @@ msgid "CICD|No authentication events in the last 30 days."
 msgstr ""
 
 msgid "CICD|Only this project and any groups and projects in the allowlist"
+msgstr ""
+
+msgid "CICD|Paste a group or project path to authorize access into this project."
 msgstr ""
 
 msgid "CICD|Pipelines and jobs cannot be cancelled"
@@ -39846,9 +39857,6 @@ msgid "Paste a public key here."
 msgstr ""
 
 msgid "Paste a public key here. %{link_start}How do I generate it?%{link_end}"
-msgstr ""
-
-msgid "Paste group or project path. Example: %{codeStart}gitlab-org/gitlab%{codeEnd}."
 msgstr ""
 
 msgid "Paste project path (i.e. gitlab-org/gitlab)"

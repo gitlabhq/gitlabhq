@@ -1,8 +1,0 @@
----
-name: ci_current_partition_value_102
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148376
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454503
-milestone: '16.11'
-type: development
-group: group::pipeline execution
-default_enabled: false

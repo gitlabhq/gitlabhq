@@ -45,6 +45,9 @@ export default {
   apollo: {
     containerTagsExpirationPolicy: {
       query: expirationPolicyQuery,
+      context: {
+        batchKey: 'ContainerRegistryProjectSettings',
+      },
       variables() {
         return {
           projectPath: this.projectPath,

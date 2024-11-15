@@ -28,7 +28,7 @@ module Ci
       end
 
       def sync_available_partitions_statuses!
-        Ci::Partition.id_after(partition.id).each do |partition|
+        Ci::Partition.id_after(partition.id).with_status(:preparing).each do |partition|
           partition.ready! if partition.all_partitions_exist?
         end
       end

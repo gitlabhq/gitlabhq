@@ -13,7 +13,6 @@ Gitlab/Rails/SafeFormat:
     - 'app/helpers/profiles_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/search_helper.rb'
-    - 'app/helpers/sourcegraph_helper.rb'
     - 'app/helpers/whats_new_helper.rb'
     - 'app/models/integrations/beyond_identity.rb'
     - 'app/services/jira/requests/base.rb'

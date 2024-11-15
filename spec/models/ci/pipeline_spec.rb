@@ -5835,52 +5835,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.current_partition_value' do
     subject { described_class.current_partition_value }
 
-    context 'when not using ci partitioning automation' do
+    context 'when current ci_partition exists' do
       before do
-        stub_feature_flags(ci_partitioning_automation: false)
+        create(:ci_partition, :current, id: 1000)
       end
 
-      it { is_expected.to eq(102) }
-
-      it 'accepts an optional argument' do
-        expect(described_class.current_partition_value(build_stubbed(:project))).to eq(102)
-      end
-
-      it 'returns 100 when the flags are disabled' do
-        stub_feature_flags(ci_current_partition_value_101: false)
-        stub_feature_flags(ci_current_partition_value_102: false)
-
-        is_expected.to eq(100)
-      end
-
-      it 'returns 101 when the 102 flag is disabled' do
-        stub_feature_flags(ci_current_partition_value_102: false)
-
-        is_expected.to eq(101)
-      end
-
-      it 'returns 102 when the 101 flag is disabled' do
-        stub_feature_flags(ci_current_partition_value_101: false)
-
-        is_expected.to eq(102)
+      it 'return the current partition value' do
+        expect(subject).to eq(1000)
       end
     end
 
-    context 'when using ci partitioning automation' do
-      context 'when current ci_partition exists' do
-        before do
-          create(:ci_partition, :current)
-        end
-
-        it 'return the current partition value' do
-          expect(subject).to eq(Ci::Partition.current.id)
-        end
-      end
-
-      context 'when current ci_partition does not exist' do
-        it 'return the default initial value' do
-          expect(subject).to eq(102)
-        end
+    context 'when current ci_partition does not exist' do
+      it 'return the default initial value' do
+        expect(subject).to eq(100)
       end
     end
   end

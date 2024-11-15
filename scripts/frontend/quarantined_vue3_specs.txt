@@ -323,7 +323,6 @@ spec/frontend/packages_and_registries/settings/project/settings/components/conta
 spec/frontend/packages_and_registries/settings/project/settings/components/container_protection_rules_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/packages_protection_rule_form_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/packages_protection_rules_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/registry_settings_app_spec.js
 spec/frontend/pages/import/bulk_imports/failures/index_spec.js
 spec/frontend/pages/projects/forks/new/components/fork_form_spec.js
 spec/frontend/pages/projects/forks/new/components/project_namespace_spec.js

@@ -21,7 +21,7 @@ $dark-line-num-color-new: #627165;
 $dark-line-num-color-old: #806565;
 $dark-diff-not-empty-bg: #557;
 $dark-highlight-bg: #ffe792;
-$dark-highlight-color: $black;
+$dark-highlight-color: $gl-color-neutral-1000;
 $dark-pre-hll-bg: #373b41;
 $dark-hll-bg: #373b41;
 $dark-expanded-bg: #3e3e3e;
@@ -138,7 +138,7 @@ $dark-il: #de935f;
 
   // Line numbers
   .file-line-blame {
-    @include line-link($white, 'git');
+    @include line-link($gl-color-neutral-0, 'git');
   }
 
   .line-links {
@@ -170,12 +170,12 @@ $dark-il: #de935f;
   }
 
   .diff-line-expand-button {
-    @include diff-expansion($gray-600, $gray-200, $gray-300, $white);
+    @include diff-expansion($gl-color-neutral-600, $gl-color-neutral-200, $gl-color-neutral-300, $gl-color-neutral-0);
   }
 
   .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
-    --highlight-border-color: #{$blue-600};
-    background-color: $blue-900;
+    --highlight-border-color: #{$gl-color-blue-600};
+    background-color: $gl-color-blue-900;
   }
 
   // Diff line
@@ -187,7 +187,7 @@ $dark-il: #de935f;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gray-600};
+      --diff-expansion-background-color: #{$gl-color-neutral-600};
 
       @include dark-diff-expansion-line;
     }
@@ -199,8 +199,8 @@ $dark-il: #de935f;
     td.diff-line-num.hll,
     td.line-coverage.hll,
     td.line_content.hll {
-      --highlight-border-color: #{$orange-500};
-      background-color: $orange-800;
+      --highlight-border-color: #{$gl-color-orange-500};
+      background-color: $gl-color-orange-800;
     }
 
     .line-coverage {
@@ -263,7 +263,7 @@ $dark-il: #de935f;
       > .diff-line-num,
       > .line-coverage,
       > .line_content {
-        border-top: 1px solid $black;
+        border-top: 1px solid $gl-color-neutral-1000;
       }
     }
 
@@ -297,11 +297,11 @@ $dark-il: #de935f;
 
   .file-holder div.code.dark {
     .selected-inline-number-mark {
-      color: $gray-200;
+      color: $gl-color-neutral-200;
     }
 
     .unselected-inline-number-mark {
-      color: $gray-600;
+      color: $gl-color-neutral-600;
     }
   }
 

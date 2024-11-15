@@ -33,16 +33,13 @@ module Ci
 
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
-    INITIAL_PARTITION_VALUE = 100
-    SECOND_PARTITION_VALUE = 101
-    NEXT_PARTITION_VALUE = 102
 
     paginates_per 15
 
     sha_attribute :source_sha
     sha_attribute :target_sha
     query_constraints :id, :partition_id
-    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) }, partitioned: true
+    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }, partitioned: true
 
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
@@ -586,17 +583,9 @@ module Ci
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
-    def self.current_partition_value(project = nil)
+    def self.current_partition_value
       Gitlab::SafeRequestStore.fetch(:ci_current_partition_value) do
-        if Feature.enabled?(:ci_partitioning_automation, project)
-          Ci::Partition.current&.id || NEXT_PARTITION_VALUE
-        elsif Feature.enabled?(:ci_current_partition_value_102, project)
-          NEXT_PARTITION_VALUE
-        elsif Feature.enabled?(:ci_current_partition_value_101, project)
-          SECOND_PARTITION_VALUE
-        else
-          INITIAL_PARTITION_VALUE
-        end
+        Ci::Partition.current&.id || Ci::Partition::INITIAL_PARTITION_VALUE
       end
     end
 

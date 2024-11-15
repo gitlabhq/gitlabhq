@@ -113,6 +113,9 @@ export default {
   apollo: {
     packageProtectionRulesQueryPayload: {
       query: packagesProtectionRuleQuery,
+      context: {
+        batchKey: 'PackageRegistryProjectSettings',
+      },
       variables() {
         return {
           projectPath: this.projectPath,

@@ -45,20 +45,20 @@
 }
 
 @mixin line-number-hover {
-  background-color: $purple-100;
-  border-color: $purple-200;
+  background-color: $gl-color-purple-100;
+  border-color: $gl-color-purple-200;
 
   a {
-    color: $gray-600;
+    color: $gl-color-neutral-600;
   }
 }
 
 @mixin line-number-hover-dark {
-  background-color: $purple-800;
-  border-color: $purple-300;
+  background-color: $gl-color-purple-800;
+  border-color: $gl-color-purple-300;
 
   a {
-    color: $purple-50;
+    color: $gl-color-purple-50;
   }
 }
 
@@ -128,7 +128,7 @@
   }
 }
 
-@mixin line-hover-bg($color: $gray-50) {
+@mixin line-hover-bg($color: $gl-color-neutral-50) {
   &:hover,
   &:focus-within {
     background-color: darken($color, 10);

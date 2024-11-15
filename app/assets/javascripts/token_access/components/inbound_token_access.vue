@@ -2,7 +2,6 @@
 import {
   GlAlert,
   GlButton,
-  GlForm,
   GlFormGroup,
   GlFormInput,
   GlLink,
@@ -40,11 +39,12 @@ export default {
       'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project.',
     ),
     addGroupOrProject: __('Add group or project'),
+    groupOrProject: s__('CICD|Group or project'),
+    groupOrProjectDescription: s__(
+      'CICD|Paste a group or project path to authorize access into this project.',
+    ),
     add: __('Add'),
     cancel: __('Cancel'),
-    addProjectPlaceholder: __(
-      'Paste group or project path. Example: %{codeStart}gitlab-org/gitlab%{codeEnd}.',
-    ),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     saveButtonTitle: __('Save Changes'),
@@ -62,7 +62,6 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlForm,
     GlFormGroup,
     GlFormInput,
     GlLink,
@@ -133,23 +132,15 @@ export default {
       return this.groupOrProjectPath === '';
     },
     ciJobTokenHelpPage() {
-      return helpPagePath('ci/jobs/ci_job_token#control-job-token-access-to-your-project');
+      return helpPagePath('ci/jobs/ci_job_token', {
+        anchor: 'control-job-token-access-to-your-project',
+      });
     },
     groupCountTooltip() {
-      return sprintf(
-        n__('%{count} group has access', '%{count} groups have access', this.groupCount),
-        {
-          count: this.groupCount,
-        },
-      );
+      return n__('%d group has access', '%d groups have access', this.groupCount);
     },
     projectCountTooltip() {
-      return sprintf(
-        n__('%{count} project has access', '%{count} projects have access', this.projectCount),
-        {
-          count: this.projectCount,
-        },
-      );
+      return n__('%d project has access', '%d projects have access', this.projectCount);
     },
   },
   methods: {
@@ -253,18 +244,16 @@ export default {
       this.errorMessage = null;
     },
     clearGroupOrProjectPath() {
+      this.clearErrorMessage();
       this.groupOrProjectPath = '';
-      this.$refs.jobTokenCrud.hideForm();
     },
     getGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
-    showAddForm() {
-      this.$refs.jobTokenCrud.showForm();
-    },
   },
 };
 </script>
+
 <template>
   <div class="gl-mt-5">
     <gl-loading-icon v-if="$apollo.loading" size="md" />
@@ -308,84 +297,70 @@ export default {
         {{ $options.i18n.saveButtonTitle }}
       </gl-button>
 
-      <div>
-        <crud-component
-          ref="jobTokenCrud"
-          :title="$options.i18n.cardHeaderTitle"
-          :description="$options.i18n.cardHeaderDescription"
-          class="gl-mt-5"
-        >
-          <template #count>
-            <span class="gl-inline-flex gl-gap-3">
-              <span
-                v-gl-tooltip
-                :title="groupCountTooltip"
-                class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
-                data-testid="group-count"
-              >
-                <gl-icon name="group" />
-                {{ groupCount }}
-              </span>
-              <span
-                v-gl-tooltip
-                :title="projectCountTooltip"
-                class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
-                data-testid="project-count"
-              >
-                <gl-icon name="project" />
-                {{ projectCount }}
-              </span>
+      <crud-component
+        :title="$options.i18n.cardHeaderTitle"
+        :description="$options.i18n.cardHeaderDescription"
+        :toggle-text="$options.i18n.addGroupOrProject"
+        class="gl-mt-5"
+        @hideForm="clearGroupOrProjectPath"
+      >
+        <template #count>
+          <span class="gl-inline-flex gl-gap-3">
+            <span
+              v-gl-tooltip
+              :title="groupCountTooltip"
+              class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+              data-testid="group-count"
+            >
+              <gl-icon name="group" />
+              {{ groupCount }}
             </span>
-          </template>
+            <span
+              v-gl-tooltip
+              :title="projectCountTooltip"
+              class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+              data-testid="project-count"
+            >
+              <gl-icon name="project" />
+              {{ projectCount }}
+            </span>
+          </span>
+        </template>
 
-          <template #actions>
-            <gl-button size="small" data-testid="toggle-form-btn" @click="showAddForm">{{
-              $options.i18n.addGroupOrProject
-            }}</gl-button>
-          </template>
+        <template #form="{ hideForm }">
+          <gl-form-group
+            :label-for="$options.CI_JOB_TOKEN_ALLOWLIST"
+            :label="$options.i18n.groupOrProject"
+            :label-description="$options.i18n.groupOrProjectDescription"
+            :invalid-feedback="errorMessage"
+            data-testid="group-or-project-form-group"
+          >
+            <gl-form-input
+              :id="$options.CI_JOB_TOKEN_ALLOWLIST"
+              v-model="groupOrProjectPath"
+              autofocus
+              :state="!errorMessage"
+              :placeholder="fullPath"
+              type="text"
+              data-testid="target-path-field"
+              @input="clearErrorMessage"
+            />
+          </gl-form-group>
+          <div class="gl-mt-5 gl-flex gl-gap-3">
+            <gl-button
+              variant="confirm"
+              :disabled="isGroupOrProjectPathEmpty"
+              data-testid="add-group-or-project-btn"
+              @click="addGroupOrProject"
+            >
+              {{ $options.i18n.add }}
+            </gl-button>
+            <gl-button @click="hideForm">{{ $options.i18n.cancel }}</gl-button>
+          </div>
+        </template>
 
-          <template #form>
-            <gl-form @submit.prevent="addGroupOrProject">
-              <gl-form-group
-                :label-for="$options.CI_JOB_TOKEN_ALLOWLIST"
-                :label="$options.i18n.addGroupOrProject"
-                :invalid-feedback="errorMessage"
-                data-testid="group-or-project-form-group"
-              >
-                <gl-form-input
-                  :id="$options.CI_JOB_TOKEN_ALLOWLIST"
-                  v-model="groupOrProjectPath"
-                  autofocus
-                  :state="!errorMessage"
-                  type="text"
-                  data-testid="target-path-field"
-                  @input="clearErrorMessage"
-                />
-                <template #description>
-                  <gl-sprintf :message="$options.i18n.addProjectPlaceholder">
-                    <template #code="{ content }">
-                      <code>{{ content }}</code>
-                    </template>
-                  </gl-sprintf>
-                </template>
-              </gl-form-group>
-              <div class="gl-mt-5 gl-flex gl-gap-3">
-                <gl-button
-                  variant="confirm"
-                  :disabled="isGroupOrProjectPathEmpty"
-                  data-testid="add-group-or-project-btn"
-                  @click="addGroupOrProject"
-                >
-                  {{ $options.i18n.add }}
-                </gl-button>
-                <gl-button @click="clearGroupOrProjectPath">{{ $options.i18n.cancel }}</gl-button>
-              </div>
-            </gl-form>
-          </template>
-
-          <token-access-table :items="groupsAndProjectsWithAccess" @removeItem="removeItem" />
-        </crud-component>
-      </div>
+        <token-access-table :items="groupsAndProjectsWithAccess" @removeItem="removeItem" />
+      </crud-component>
     </template>
   </div>
 </template>

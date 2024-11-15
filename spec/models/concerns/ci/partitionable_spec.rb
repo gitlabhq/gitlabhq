@@ -91,7 +91,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
           end
 
           ci_model.table_name = :_test_table_name
-          stub_const('Ci::Pipeline::NEXT_PARTITION_VALUE', 101)
+          stub_const('Ci::Partition::LATEST_PARTITION_VALUE', 101)
         end
 
         subject(:value) { partitioning_strategy.next_partition_if.call(active_partition) }

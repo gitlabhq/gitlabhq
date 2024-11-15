@@ -61,6 +61,9 @@ export default {
   apollo: {
     protectionRulesQueryPayload: {
       query: protectionRulesQuery,
+      context: {
+        batchKey: 'ContainerRegistryProjectSettings',
+      },
       variables() {
         return {
           projectPath: this.projectPath,

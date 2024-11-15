@@ -91,7 +91,7 @@ module Ci
         if Feature.enabled?(:ci_partitioning_automation, :instance)
           Ci::Partition.provisioning(database_partition.values.max).present?
         else
-          database_partition.before?(Ci::Pipeline::NEXT_PARTITION_VALUE)
+          database_partition.before?(Ci::Partition::LATEST_PARTITION_VALUE)
         end
       end
     end
