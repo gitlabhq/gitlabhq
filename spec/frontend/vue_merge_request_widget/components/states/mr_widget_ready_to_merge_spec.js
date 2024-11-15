@@ -157,7 +157,7 @@ const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
 const triggerEditCommitInput = () =>
   wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 const triggerEditSquashInput = (text) =>
-  wrapper.find('[data-testid="squash-commit-message"]').vm.$emit('input', text);
+  findCommitEditWithInputId('squash-message-edit').vm.$emit('input', text);
 const triggerEditMergeInput = (text) =>
   wrapper.find('[data-testid="merge-commit-message"]').vm.$emit('input', text);
 const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
@@ -417,54 +417,35 @@ describe('ReadyToMerge', () => {
       describe('with squashing', () => {
         const NEW_SQUASH_MESSAGE = 'updated squash message';
 
-        it('sends the user-updated squash message', async () => {
+        beforeEach(async () => {
           createComponent({
             mr: { shouldRemoveSourceBranch: false, enableSquashBeforeMerge: true },
           });
 
-          jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
           jest.spyOn(service, 'merge').mockResolvedValue(response('merge_when_pipeline_succeeds'));
 
           await triggerEditCommitInput();
           await findCheckboxElement().vm.$emit('input', true);
+        });
+
+        it('sends the user-updated squash message', async () => {
           await triggerEditSquashInput(NEW_SQUASH_MESSAGE);
+          await findMergeButton().vm.$emit('click');
 
-          findMergeButton().vm.$emit('click');
-
-          await waitForPromises();
-
-          const params = service.merge.mock.calls[0][0];
-
-          expect(params).toEqual(
+          expect(service.merge).toHaveBeenCalledWith(
             expect.objectContaining({
-              sha: '12345678',
-              should_remove_source_branch: false,
-              auto_merge_strategy: 'merge_when_pipeline_succeeds',
               squash_commit_message: NEW_SQUASH_MESSAGE,
             }),
           );
         });
 
         it('does not send the squash message if the user has not updated it', async () => {
-          createComponent({
-            mr: { shouldRemoveSourceBranch: false, enableSquashBeforeMerge: true },
-          });
+          await findMergeButton().vm.$emit('click');
 
-          jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-          jest.spyOn(service, 'merge').mockResolvedValue(response('merge_when_pipeline_succeeds'));
-
-          await triggerEditCommitInput();
-          await findCheckboxElement().vm.$emit('input', true);
-
-          findMergeButton().vm.$emit('click');
-
-          await waitForPromises();
-
-          const params = service.merge.mock.calls[0][0];
-
-          expect(params).toEqual(
+          expect(service.merge).toHaveBeenCalledTimes(1);
+          expect(service.merge).toHaveBeenCalledWith(
             expect.not.objectContaining({
-              squash_commit_message: expect.any(String),
+              squash_commit_message: expect.anything(),
             }),
           );
         });
@@ -473,49 +454,31 @@ describe('ReadyToMerge', () => {
       describe('without squashing', () => {
         const NEW_COMMIT_MESSAGE = 'updated commit message';
 
-        it('sends the user-updated commit message', async () => {
+        beforeEach(async () => {
           createComponent({ mr: { shouldRemoveSourceBranch: false } });
 
-          jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
           jest.spyOn(service, 'merge').mockResolvedValue(response('merge_when_pipeline_succeeds'));
+          await triggerEditCommitInput(); // Note this is intentional: `commit_message` shouldn't send until they actually edit it, even if they check the box
+        });
 
-          await triggerEditCommitInput();
+        it('sends the user-updated commit message', async () => {
           await triggerEditMergeInput(NEW_COMMIT_MESSAGE);
+          await findMergeButton().vm.$emit('click');
 
-          findMergeButton().vm.$emit('click');
-
-          await waitForPromises();
-
-          const params = service.merge.mock.calls[0][0];
-
-          expect(params).toEqual(
+          expect(service.merge).toHaveBeenCalledWith(
             expect.objectContaining({
-              sha: '12345678',
-              should_remove_source_branch: false,
-              auto_merge_strategy: 'merge_when_pipeline_succeeds',
               commit_message: NEW_COMMIT_MESSAGE,
-              squash: false,
-              skip_merge_train: false,
             }),
           );
         });
 
         it('does not send the commit message if the user has not updated it', async () => {
-          createComponent({ mr: { shouldRemoveSourceBranch: false } });
+          await findMergeButton().vm.$emit('click');
 
-          jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-          jest.spyOn(service, 'merge').mockResolvedValue(response('merge_when_pipeline_succeeds'));
-
-          await triggerEditCommitInput(); // Note this is intentional: `commit_message` shouldn't send until they actually edit it, even if they check the box
-          findMergeButton().vm.$emit('click');
-
-          await waitForPromises();
-
-          const params = service.merge.mock.calls[0][0];
-
-          expect(params).toEqual(
+          expect(service.merge).toHaveBeenCalledTimes(1);
+          expect(service.merge).toHaveBeenCalledWith(
             expect.not.objectContaining({
-              commit_message: expect.any(String),
+              commit_message: expect.anything(),
             }),
           );
         });

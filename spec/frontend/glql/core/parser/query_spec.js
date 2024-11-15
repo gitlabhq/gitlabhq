@@ -20,7 +20,7 @@ describe('GLQL Query Parser', () => {
       const result = await parseQuery(query, config);
 
       expect(prettify(result)).toMatchInlineSnapshot(`
-"{
+"query GLQL {
   issues(assigneeUsernames: "foobar", first: 50) {
     nodes {
       id
@@ -57,7 +57,7 @@ describe('GLQL Query Parser', () => {
       const result = await parseQuery(query, config);
 
       expect(prettify(result)).toMatchInlineSnapshot(`
-"{
+"query GLQL {
   issues(
     assigneeUsernames: "foobar"
     or: {labelNames: ["bug", "feature"]}

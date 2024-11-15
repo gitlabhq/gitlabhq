@@ -40,7 +40,7 @@ describe('RunnerAwsInstructions', () => {
       .findAllComponents(GlButton)
       .filter((w) => w.props('variant') === 'confirm')
       .at(0);
-  const findCloseButton = () => wrapper.findByText('Close');
+  const findCloseButton = () => wrapper.findByTestId('close-btn');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(RunnerAwsInstructions, {

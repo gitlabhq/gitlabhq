@@ -594,6 +594,7 @@ export default {
         v-model="findAndReplace.find"
         :placeholder="__('Find')"
         autofocus
+        data-testid="find-btn"
         @keydown="handleKeyDown"
       />
     </div>

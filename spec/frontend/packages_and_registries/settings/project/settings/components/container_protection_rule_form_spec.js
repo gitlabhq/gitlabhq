@@ -27,7 +27,7 @@ describe('container Protection Rule Form', () => {
     wrapper.findByRole('textbox', { name: /repository path pattern/i });
   const findMinimumAccessLevelForPushSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for push/i });
-  const findSubmitButton = () => wrapper.findByRole('button', { name: /add rule/i });
+  const findSubmitButton = () => wrapper.findByTestId('add-rule-btn');
 
   const mountComponent = ({ config, provide = defaultProvidedValues } = {}) => {
     wrapper = mountExtended(ContainerProtectionRuleForm, {

@@ -10,7 +10,6 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { escapeRegExp } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -18,7 +17,7 @@ import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/w
 import RichTimestampTooltip from '../rich_timestamp_tooltip.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
-import { findLinkedItemsWidget, getDisplayReference } from '../../utils';
+import { canRouterNav, findLinkedItemsWidget, getDisplayReference } from '../../utils';
 import {
   STATE_OPEN,
   WIDGET_TYPE_ASSIGNEES,
@@ -165,12 +164,16 @@ export default {
       if (e.metaKey || e.ctrlKey) {
         return;
       }
-      const escapedFullPath = escapeRegExp(this.workItemFullPath);
-      // eslint-disable-next-line no-useless-escape
-      const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
-      const isWorkItemPath = regex.test(workItem.webUrl);
+      const shouldDefaultNavigate =
+        this.preventRouterNav ||
+        !canRouterNav({
+          fullPath: this.workItemFullPath,
+          webUrl: workItem.webUrl,
+          isGroup: this.isGroup,
+          issueAsWorkItem: this.issueAsWorkItem,
+        });
 
-      if (!(isWorkItemPath || this.issueAsWorkItem) || this.preventRouterNav) {
+      if (shouldDefaultNavigate) {
         this.$emit('click', e);
       } else {
         e.preventDefault();

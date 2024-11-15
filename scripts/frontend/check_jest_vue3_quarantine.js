@@ -76,6 +76,9 @@ function section(header, callback, { showCollapsed = true } = {}) {
 }
 
 function reportPassingSpecsShouldBeUnquarantined(passed) {
+  const docsLink =
+    // eslint-disable-next-line no-restricted-syntax
+    'https://docs.gitlab.com/ee/development/testing_guide/testing_vue3.html#quarantine-list';
   console.warn(' ');
   console.warn(
     `The following ${passed.length} spec file(s) now pass(es) under Vue 3, and so must be removed from quarantine:`,
@@ -88,6 +91,7 @@ function reportPassingSpecsShouldBeUnquarantined(passed) {
       `To fix this job, remove the file(s) listed above from the file ${chalk.underline('scripts/frontend/quarantined_vue3_specs.txt')}.`,
     ),
   );
+  console.warn(`For more information, please see ${docsLink}.`);
 }
 
 async function changedFiles() {

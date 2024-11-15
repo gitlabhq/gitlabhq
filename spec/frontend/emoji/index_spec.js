@@ -527,6 +527,10 @@ describe('emoji', () => {
   });
 
   describe('isEmojiUnicodeSupported', () => {
+    beforeEach(() => {
+      gon.emoji_backend_version = EMOJI_VERSION;
+    });
+
     it('should gracefully handle empty string with unicode support', () => {
       const isSupported = isEmojiUnicodeSupported({ '1.0': true }, '', '1.0');
 
@@ -536,7 +540,7 @@ describe('emoji', () => {
     it('should gracefully handle empty string without unicode support', () => {
       const isSupported = isEmojiUnicodeSupported({}, '', '1.0');
 
-      expect(isSupported).toBeUndefined();
+      expect(isSupported).toBe(false);
     });
 
     it('bomb(6.0) with 6.0 support', () => {
@@ -566,6 +570,32 @@ describe('emoji', () => {
     it('bomb(6.0) without 6.0 but with 9.0 support', () => {
       const emojiKey = 'bomb';
       const unicodeSupportMap = { ...emptySupportMap, '9.0': true };
+      const isSupported = isEmojiUnicodeSupported(
+        unicodeSupportMap,
+        emojiFixtureMap[emojiKey].moji,
+        emojiFixtureMap[emojiKey].unicodeVersion,
+      );
+
+      expect(isSupported).toBe(false);
+    });
+
+    it('bomb(6.0) without 6.0 but with backend support', () => {
+      gon.emoji_backend_version = EMOJI_VERSION + 1;
+      const emojiKey = 'bomb';
+      const unicodeSupportMap = emptySupportMap;
+      const isSupported = isEmojiUnicodeSupported(
+        unicodeSupportMap,
+        emojiFixtureMap[emojiKey].moji,
+        emojiFixtureMap[emojiKey].unicodeVersion,
+      );
+
+      expect(isSupported).toBe(true);
+    });
+
+    it('bomb(6.0) without 6.0 with empty backend version', () => {
+      gon.emoji_backend_version = null;
+      const emojiKey = 'bomb';
+      const unicodeSupportMap = emptySupportMap;
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,

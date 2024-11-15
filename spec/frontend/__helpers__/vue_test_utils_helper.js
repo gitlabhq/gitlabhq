@@ -10,20 +10,6 @@ import {
 import { compose } from 'lodash/fp';
 
 /**
- * Create a VTU wrapper from an element.
- *
- * If a Vue instance manages the element, the wrapper is created
- * with that Vue instance.
- *
- * @param {HTMLElement} element
- * @param {Object} options
- * @returns {Wrapper} VTU wrapper
- */
-const createWrapperFromElement = (element, options) =>
-  // eslint-disable-next-line no-underscore-dangle
-  createWrapper(element.__vue__ || element, options || {});
-
-/**
  * Query function type
  * @callback FindFunction
  * @param text
@@ -154,7 +140,7 @@ export const extendedWrapper = (wrapper) => {
             if (!elements.length) {
               return new ErrorWrapper(query);
             }
-            return createWrapperFromElement(elements[0], this.options);
+            return createWrapper(elements[0], this.options);
           },
         },
       };
@@ -169,7 +155,7 @@ export const extendedWrapper = (wrapper) => {
             const elements = testingLibrary[`queryAll${query}`](this.element, text, options);
 
             const wrappers = elements.map((element) => {
-              const elementWrapper = createWrapperFromElement(element, this.options);
+              const elementWrapper = createWrapper(element, this.options);
               elementWrapper.selector = text;
 
               return elementWrapper;

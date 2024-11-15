@@ -1,3 +1,5 @@
+import { EMOJI_VERSION } from '~/emoji';
+
 // On Windows, flags render as two-letter country codes, see http://emojipedia.org/flags/
 const flagACodePoint = 127462; // parseInt('1F1E6', 16)
 const flagZCodePoint = 127487; // parseInt('1F1FF', 16)
@@ -72,6 +74,14 @@ function isPersonZwjEmoji(emojiUnicode) {
   return hasPersonEmoji && hasZwj;
 }
 
+// If the backend emoji support is newer, then there may already be emojis in use
+// that were not "supported" before but were displayable. In that scenario, we want to
+// allow those emojis to be recognized and displayed, until the frontend (usually in the
+// following release) is updated.
+function isBackendEmojiNewer() {
+  return EMOJI_VERSION < gon.emoji_backend_version;
+}
+
 // Helper so we don't have to run `isFlagEmoji` twice
 // in `isEmojiUnicodeSupported` logic
 function checkFlagEmojiSupport(unicodeSupportMap, emojiUnicode) {
@@ -119,7 +129,7 @@ function isEmojiUnicodeSupported(unicodeSupportMap = {}, emojiUnicode, unicodeVe
 
   // For comments about each scenario, see the comments above each individual respective function
   return (
-    unicodeSupportMap[unicodeVersion] &&
+    (unicodeSupportMap[unicodeVersion] || isBackendEmojiNewer()) &&
     !(isOlderThanChrome57 && isKeycapEmoji(emojiUnicode)) &&
     checkFlagEmojiSupport(unicodeSupportMap, emojiUnicode) &&
     checkSkinToneModifierSupport(unicodeSupportMap, emojiUnicode) &&

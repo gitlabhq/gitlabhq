@@ -80,12 +80,13 @@ module ResolvesMergeRequests
       detailed_merge_status: [:merge_schedule],
       milestone: [:milestone],
       security_auto_fix: [:author],
-      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }],
+      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],
       timelogs: [:timelogs],
       pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
       committers: [merge_request_diff: [:merge_request_diff_commits]],
       suggested_reviewers: [:predictions],
-      diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]]
+      diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]],
+      source_branch_exists: [:source_project, { source_project: [:route] }]
     }
   end
 

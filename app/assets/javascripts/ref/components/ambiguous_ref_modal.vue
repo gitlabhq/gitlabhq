@@ -66,12 +66,14 @@ export default {
       <gl-button
         category="secondary"
         variant="confirm"
+        data-testid="view-tag-btn"
         @click="() => navigate($options.tagRefType)"
         >{{ $options.i18n.viewTagButton }}</gl-button
       >
       <gl-button
         category="secondary"
         variant="confirm"
+        data-testid="view-branch-btn"
         @click="() => navigate($options.branchRefType)"
         >{{ $options.i18n.viewBranchButton }}</gl-button
       >

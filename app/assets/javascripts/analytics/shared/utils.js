@@ -3,7 +3,7 @@ import dateFormat from '~/lib/dateformat';
 import { slugify } from '~/lib/utils/text_utility';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
-import { dateFormats, METRICS_POPOVER_CONTENT } from './constants';
+import { dateFormats, VALUE_STREAM_METRIC_METADATA } from './constants';
 
 export const filterBySearchTerm = (data = [], searchTerm = '', filterByKey = 'name') => {
   if (!searchTerm?.length) return data;
@@ -117,7 +117,7 @@ const requestData = ({ request, endpoint, requestPath, params, name }) => {
 export const fetchMetricsData = (requests = [], requestPath, params) => {
   const promises = requests.map((r) => requestData({ ...r, requestPath, params }));
   return Promise.all(promises).then((responses) =>
-    prepareTimeMetricsData(flatten(responses), METRICS_POPOVER_CONTENT),
+    prepareTimeMetricsData(flatten(responses), VALUE_STREAM_METRIC_METADATA),
   );
 };
 

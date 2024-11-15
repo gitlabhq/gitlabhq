@@ -14114,7 +14114,7 @@ CREATE TABLE member_roles (
     namespace_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    base_access_level integer NOT NULL,
+    base_access_level integer,
     name text DEFAULT 'Custom'::text NOT NULL,
     description text,
     occupies_seat boolean DEFAULT false NOT NULL,
@@ -20662,6 +20662,23 @@ CREATE TABLE user_highest_roles (
     highest_access_level integer
 );
 
+CREATE TABLE user_member_roles (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    member_role_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE user_member_roles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_member_roles_id_seq OWNED BY user_member_roles.id;
+
 CREATE TABLE user_namespace_callouts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -23865,6 +23882,8 @@ ALTER TABLE ONLY user_details ALTER COLUMN user_id SET DEFAULT nextval('user_det
 
 ALTER TABLE ONLY user_group_callouts ALTER COLUMN id SET DEFAULT nextval('user_group_callouts_id_seq'::regclass);
 
+ALTER TABLE ONLY user_member_roles ALTER COLUMN id SET DEFAULT nextval('user_member_roles_id_seq'::regclass);
+
 ALTER TABLE ONLY user_namespace_callouts ALTER COLUMN id SET DEFAULT nextval('user_namespace_callouts_id_seq'::regclass);
 
 ALTER TABLE ONLY user_permission_export_uploads ALTER COLUMN id SET DEFAULT nextval('user_permission_export_uploads_id_seq'::regclass);
@@ -26672,6 +26691,9 @@ ALTER TABLE ONLY user_group_callouts
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT user_highest_roles_pkey PRIMARY KEY (user_id);
 
+ALTER TABLE ONLY user_member_roles
+    ADD CONSTRAINT user_member_roles_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT user_namespace_callouts_pkey PRIMARY KEY (id);
 
@@ -28579,6 +28601,10 @@ CREATE INDEX idx_user_credit_card_validations_on_holder_name_hash ON user_credit
 CREATE INDEX idx_user_credit_card_validations_on_similar_to_meta_data ON user_credit_card_validations USING btree (expiration_date_hash, last_digits_hash, network_hash, credit_card_validated_at);
 
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
+
+CREATE INDEX idx_user_member_roles_on_member_role_id ON user_member_roles USING btree (member_role_id);
+
+CREATE INDEX idx_user_member_roles_on_user_id ON user_member_roles USING btree (user_id);
 
 CREATE INDEX idx_vreg_pkgs_maven_cached_responses_on_group_id_status ON virtual_registries_packages_maven_cached_responses USING btree (group_id, status);
 
@@ -35993,6 +36019,9 @@ ALTER TABLE ONLY environments
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_765e132668 FOREIGN KEY (work_item_parent_link_id) REFERENCES work_item_parent_links(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY user_member_roles
+    ADD CONSTRAINT fk_76b9a6bfac FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_76db6d50c6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36577,6 +36606,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_cb28eb3e34 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_member_roles
+    ADD CONSTRAINT fk_cb5a805cd4 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_labels
     ADD CONSTRAINT fk_cb8ded70e2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

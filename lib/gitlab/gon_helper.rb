@@ -43,6 +43,7 @@ module Gitlab
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.emoji_sprites_css_path = universal_path_to_stylesheet('emoji_sprites')
+      gon.emoji_backend_version  = Gitlab::Emoji::EMOJI_VERSION
       gon.gridstack_css_path     = universal_path_to_stylesheet('lazy_bundles/gridstack')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']

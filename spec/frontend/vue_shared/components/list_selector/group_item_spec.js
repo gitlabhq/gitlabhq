@@ -18,7 +18,7 @@ describe('GroupItem spec', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findDeleteButton = () => wrapper.findByRole('button', { fullName: 'Delete Group 1' });
+  const findDeleteButton = () => wrapper.findByTestId('delete-group-btn');
 
   beforeEach(() => createComponent());
 

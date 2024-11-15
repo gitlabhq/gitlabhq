@@ -142,7 +142,7 @@ export default {
       </div>
     </template>
     <footer class="gl-flex gl-justify-end gl-gap-3 gl-pt-3">
-      <gl-button @click="onClose()">{{ $options.i18n.close }}</gl-button>
+      <gl-button data-testid="close-btn" @click="onClose()">{{ $options.i18n.close }}</gl-button>
       <gl-button variant="confirm" @click="onOk()">
         {{ $options.i18n.deployRunnerInAws }}
         <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />

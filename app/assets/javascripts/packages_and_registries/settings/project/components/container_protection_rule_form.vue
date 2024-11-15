@@ -170,6 +170,7 @@ export default {
       <gl-button
         variant="confirm"
         type="submit"
+        data-testid="add-rule-btn"
         :disabled="isSubmitButtonDisabled"
         :loading="showLoadingIcon"
         >{{ s__('ContainerRegistry|Add rule') }}</gl-button

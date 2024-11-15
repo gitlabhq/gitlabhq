@@ -2,34 +2,31 @@
 - page_title _('Password')
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+  - c.with_description do
     - if @user.password_automatically_set
       = _('Change your password.')
     - else
       = _('Change your password or recover your current one.')
-  = gitlab_ui_form_for @user, url: user_settings_password_path, method: :put, html: {class: "update-password"} do |f|
-    = form_errors(@user)
+  - c.with_body do
+    = gitlab_ui_form_for @user, url: user_settings_password_path, method: :put, html: {class: "update-password"} do |f|
+      = form_errors(@user)
 
-    - unless @user.password_automatically_set?
-      .form-group
-        = f.label :password, _('Current password'), class: 'label-bold'
-        = f.password_field :password, required: true, autocomplete: 'current-password', class: 'form-control gl-form-input gl-max-w-80', data: { testid: 'current-password-field' }
-        %p.form-text.gl-text-subtle
-          = _('You must provide your current password in order to change it.')
-    .form-group
-      = f.label :new_password, _('New password'), class: 'label-bold'
-      = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation gl-max-w-80', data: { testid: 'new-password-field' }
-      = render_if_exists 'shared/password_requirements_list'
-    .form-group
-      = f.label :password_confirmation, _('Password confirmation'), class: 'label-bold'
-      = f.password_field :password_confirmation, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input gl-max-w-80', data: { testid: 'confirm-password-field' }
-    .gl-mt-3.gl-mb-3
-      = f.submit _('Save password'), class: "gl-mr-3", data: { testid: 'save-password-button' }, pajamas_button: true
       - unless @user.password_automatically_set?
-        = render Pajamas::ButtonComponent.new(href: reset_user_settings_password_path, variant: :link, method: :put) do
-          = _('I forgot my password')
+        .form-group
+          = f.label :password, _('Current password'), class: 'label-bold'
+          = f.password_field :password, required: true, autocomplete: 'current-password', class: 'form-control gl-form-input gl-max-w-80', data: { testid: 'current-password-field' }
+          %p.form-text.gl-text-subtle
+            = _('You must provide your current password in order to change it.')
+      .form-group
+        = f.label :new_password, _('New password'), class: 'label-bold'
+        = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation gl-max-w-80', data: { testid: 'new-password-field' }
+        = render_if_exists 'shared/password_requirements_list'
+      .form-group
+        = f.label :password_confirmation, _('Password confirmation'), class: 'label-bold'
+        = f.password_field :password_confirmation, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input gl-max-w-80', data: { testid: 'confirm-password-field' }
+      .gl-my-3
+        = f.submit _('Save password'), class: "gl-mr-3", data: { testid: 'save-password-button' }, pajamas_button: true
+        - unless @user.password_automatically_set?
+          = render Pajamas::ButtonComponent.new(href: reset_user_settings_password_path, variant: :link, method: :put) do
+            = _('I forgot my password')

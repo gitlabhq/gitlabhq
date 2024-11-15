@@ -142,7 +142,7 @@ describe('RegistrationInstructions', () => {
 
       expect(findPlatformsDrawer().props('open')).toBe(false);
 
-      await findByText('How do I install GitLab Runner?').vm.$emit('click');
+      await wrapper.findByTestId('how-to-install-btn').vm.$emit('click');
       expect(findPlatformsDrawer().props('open')).toBe(true);
 
       await findPlatformsDrawer().vm.$emit('close');

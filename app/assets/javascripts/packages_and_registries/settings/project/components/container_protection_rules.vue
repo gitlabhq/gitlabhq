@@ -310,6 +310,7 @@ export default {
               :aria-label="$options.i18n.minimumAccessLevelForPush"
               :options="minimumAccessLevelOptions"
               :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
+              data-testid="push-access-select"
               @change="updateProtectionRuleMinimumAccessLevelForPush(item)"
             />
           </template>
@@ -323,6 +324,7 @@ export default {
               :title="__('Delete')"
               :aria-label="__('Delete')"
               :disabled="isProtectionRuleDeleteButtonDisabled(item)"
+              data-testid="delete-btn"
               @click="showProtectionRuleDeletionConfirmModal(item)"
             />
           </template>

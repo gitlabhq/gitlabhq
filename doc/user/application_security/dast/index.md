@@ -59,29 +59,6 @@ target branches.
 Detected vulnerabilities appear in [merge requests](../index.md#merge-request), the [pipeline security tab](../index.md#pipeline-security-tab),
 and the [vulnerability report](../index.md#vulnerability-report).
 
-1. To see all vulnerabilities detected, either:
-   - From your project, select **Security & Compliance**, then **Vulnerability report**.
-   - From your pipeline, select the **Security** tab.
-   - From the merge request, go to the **Security scanning** widget and select **Full report** tab.
-
-1. Select a DAST vulnerability's description. The following fields are examples of what a DAST analyzer may produce to aid investigation and rectification of the underlying cause. Each analyzer may output different fields.
-
-   | Field            | Description                                                                                                                                                                   |
-   |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------ |
-   | Description      | Description of the vulnerability.                                                                                                                                             |
-   | Evidence         | Evidence of the data found that verified the vulnerability. Often a snippet of the request or response, this can be used to help verify that the finding is a vulnerability.  |
-   | Identifiers      | Identifiers of the vulnerability.                                                                                                                                             |
-   | Links            | Links to further details of the detected vulnerability.                                                                                                                       |
-   | Method           | HTTP method used to detect the vulnerability.                                                                                                                                 |
-   | Project          | Namespace and project in which the vulnerability was detected.                                                                                                                |
-   | Request Headers  | Headers of the request.                                                                                                                                                       |
-   | Response Headers | Headers of the response received from the application.                                                                                                                        |
-   | Response Status  | Response status received from the application.                                                                                                                                |
-   | Scanner Type     | Type of vulnerability report.                                                                                                                                                 |
-   | Severity         | Severity of the vulnerability.                                                                                                                                                |
-   | Solution         | Details of a recommended solution to the vulnerability.                                                                                                                       |
-   | URL              | URL at which the vulnerability was detected.                                                                                                                                  |
-
 NOTE:
 A pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job
 fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For

@@ -280,15 +280,13 @@ describe('Container protection rules project settings', () => {
     });
 
     describe.each`
-      comboboxName                       | minimumAccessLevelAttribute
-      ${'Minimum access level for push'} | ${'minimumAccessLevelForPush'}
+      comboboxName            | minimumAccessLevelAttribute
+      ${'push-access-select'} | ${'minimumAccessLevelForPush'}
     `(
       'column "$comboboxName" with selectbox (combobox)',
       ({ comboboxName, minimumAccessLevelAttribute }) => {
         const findComboboxInTableRow = (i) =>
-          extendedWrapper(findTableRow(i).findByRole('combobox', { name: comboboxName }));
-        const findAllComboboxesInTableRow = (i) =>
-          extendedWrapper(findTableRow(i).findAllByRole('combobox'));
+          extendedWrapper(wrapper.findAllByTestId(comboboxName).at(i));
 
         it('contains correct access level as options', async () => {
           createComponent();
@@ -358,25 +356,19 @@ describe('Container protection rules project settings', () => {
 
             await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
 
-            findAllComboboxesInTableRow(0).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(true),
-            );
-            expect(findTableRowButtonDelete(0).props('disabled')).toBe(true);
-            findAllComboboxesInTableRow(1).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(false),
-            );
-            expect(findTableRowButtonDelete(1).props('disabled')).toBe(false);
+            expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
+            expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
+
+            expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+            expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
 
             await waitForPromises();
 
-            findAllComboboxesInTableRow(0).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(false),
-            );
-            expect(findTableRowButtonDelete(0).props('disabled')).toBe(false);
-            findAllComboboxesInTableRow(1).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(false),
-            );
-            expect(findTableRowButtonDelete(1).props('disabled')).toBe(false);
+            expect(findComboboxInTableRow(0).props('disabled')).toBe(false);
+            expect(findTableRowButtonDelete(0).attributes('disabled')).toBeUndefined();
+
+            expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+            expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
           });
 
           it('handles erroneous graphql mutation', async () => {
@@ -485,9 +477,9 @@ describe('Container protection rules project settings', () => {
 
         await clickOnModalPrimaryBtn();
 
-        expect(findTableRowButtonDelete(0).props().disabled).toBe(true);
+        expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
 
-        expect(findTableRowButtonDelete(1).props().disabled).toBe(false);
+        expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
       });
 
       it('sends graphql mutation', async () => {

@@ -23,6 +23,12 @@ Some permissions require having other permissions enabled first. For example, ad
 
 These requirements are documented in the `Required permission` column in the following table.
 
+## Admin
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`read_admin_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171581) |  | Read-only access to admin dashboard | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/501549) |  |  |
+
 ## Code review workflow
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

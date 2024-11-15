@@ -9,7 +9,5 @@ description: A site profile describes the attributes of a web site to scan on de
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36659
 milestone: '13.2'
 gitlab_schema: gitlab_sec
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects

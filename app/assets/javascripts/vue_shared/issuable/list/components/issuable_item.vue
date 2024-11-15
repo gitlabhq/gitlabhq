@@ -8,7 +8,6 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { escapeRegExp } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_OPEN, STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -21,7 +20,12 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
 import { STATE_OPEN, STATE_CLOSED, LINKED_CATEGORIES_MAP } from '~/work_items/constants';
-import { isAssigneesWidget, isLabelsWidget, findLinkedItemsWidget } from '~/work_items/utils';
+import {
+  isAssigneesWidget,
+  isLabelsWidget,
+  findLinkedItemsWidget,
+  canRouterNav,
+} from '~/work_items/utils';
 
 export default {
   components: {
@@ -296,12 +300,14 @@ export default {
       if (!this.fullPath) {
         visitUrl(this.issuableLinkHref);
       }
-      const escapedFullPath = escapeRegExp(this.fullPath);
-      // eslint-disable-next-line no-useless-escape
-      const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
-      const isWorkItemPath = regex.test(this.issuableLinkHref);
+      const shouldRouterNav = canRouterNav({
+        fullPath: this.fullPath,
+        webUrl: this.issuableLinkHref,
+        isGroup: this.isGroup,
+        issueAsWorkItem: this.issueAsWorkItem,
+      });
 
-      if (isWorkItemPath || this.issueAsWorkItem) {
+      if (shouldRouterNav) {
         this.$router.push({
           name: 'workItem',
           params: {

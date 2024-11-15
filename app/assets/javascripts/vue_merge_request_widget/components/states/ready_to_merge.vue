@@ -617,11 +617,10 @@ export default {
                 <ul class="border-top commits-list flex-list gl-list-none gl-p-0 gl-pt-4">
                   <commit-edit
                     v-if="shouldShowSquashEdit"
-                    v-model="squashCommitMessage"
                     :label="__('Squash commit message')"
+                    :value="squashCommitMessage"
                     input-id="squash-message-edit"
                     class="!gl-m-0 !gl-p-0"
-                    data-testid="squash-commit-message"
                     @input="setSquashCommitMessage"
                   >
                     <template #header>

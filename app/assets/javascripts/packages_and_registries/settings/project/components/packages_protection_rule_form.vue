@@ -203,6 +203,7 @@ export default {
         type="submit"
         :disabled="isSubmitButtonDisabled"
         :loading="showLoadingIcon"
+        data-testid="add-rule-btn"
         >{{ s__('PackageRegistry|Add rule') }}</gl-button
       >
       <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>

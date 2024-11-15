@@ -1,3 +1,4 @@
+import { escapeRegExp } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -310,4 +311,15 @@ export const getItems = (showClosed) => {
   return (children) => {
     return children.filter((item) => isItemDisplayable(item, showClosed));
   };
+};
+
+export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => {
+  const escapedFullPath = escapeRegExp(fullPath);
+  // eslint-disable-next-line no-useless-escape
+  const groupRegex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
+  // eslint-disable-next-line no-useless-escape
+  const projectRegex = new RegExp(`${escapedFullPath}\/-\/(work_items|issues)\/\\d+`);
+  const canGroupNavigate = groupRegex.test(webUrl) && isGroup;
+  const canProjectNavigate = projectRegex.test(webUrl) && issueAsWorkItem;
+  return canGroupNavigate || canProjectNavigate;
 };

@@ -174,4 +174,77 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       end
     end
   end
+
+  shared_examples_for 'avoids N+1 queries' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:second_user) { create(:user) }
+
+    specify do
+      # Warm up table schema and other data
+      GitlabSchema.execute(query, context: { current_user: user })
+
+      control = ActiveRecord::QueryRecorder.new { GitlabSchema.execute(query, context: { current_user: user }) }
+
+      create_additional_resources
+
+      # Warm up table schema and other data
+      GitlabSchema.execute(query, context: { current_user: second_user })
+
+      expect { GitlabSchema.execute(query, context: { current_user: second_user }) }.not_to exceed_query_limit(control)
+    end
+  end
+
+  describe '#head_pipeline' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, :with_head_pipeline, source_project: project) }
+
+    it_behaves_like 'avoids N+1 queries' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              mergeRequests {
+                nodes {
+                  headPipeline {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      def create_additional_resources
+        create(:merge_request, :with_head_pipeline, source_project: project, source_branch: 'improve/awesome')
+        create(:merge_request, :with_head_pipeline, source_project: project, source_branch: 'spooky-stuff')
+      end
+    end
+  end
+
+  describe '#source_branch_exists' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+    it_behaves_like 'avoids N+1 queries' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              mergeRequests {
+                nodes {
+                  sourceBranchExists
+                }
+              }
+            }
+          }
+        )
+      end
+
+      def create_additional_resources
+        create(:merge_request, source_project: project, source_branch: 'improve/awesome')
+        create(:merge_request, source_project: project, source_branch: 'spooky-stuff')
+      end
+    end
+  end
 end

@@ -17,7 +17,7 @@ describe('UserItem spec', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findDeleteButton = () => wrapper.findByRole('button', { name: 'Delete Admin' });
+  const findDeleteButton = () => wrapper.findByTestId('delete-user-btn');
 
   beforeEach(() => createComponent());
 

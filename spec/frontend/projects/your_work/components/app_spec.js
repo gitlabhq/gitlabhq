@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlBadge, GlTabs, GlFilteredSearchToken } from '@gitlab/ui';
 import projectCountsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/project_counts.query.graphql.json';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
 import TabView from '~/projects/your_work/components/tab_view.vue';
 import { createRouter } from '~/projects/your_work';
@@ -85,7 +85,8 @@ describe('YourWorkProjectsApp', () => {
   const findActiveTab = () => wrapper.findByRole('tab', { selected: true });
   const findTabByName = (name) =>
     wrapper.findAllByRole('tab').wrappers.find((tab) => tab.text().includes(name));
-  const getTabCount = (tabName) => findTabByName(tabName).findComponent(GlBadge).text();
+  const getTabCount = (tabName) =>
+    extendedWrapper(findTabByName(tabName)).findByTestId('tab-counter-badge').text();
   const findFilteredSearchAndSort = () => wrapper.findComponent(FilteredSearchAndSort);
   const findTabView = () => wrapper.findComponent(TabView);
 

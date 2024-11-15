@@ -17,6 +17,7 @@ import {
   makeDrawerUrlParam,
   makeDrawerItemFullPath,
   getItems,
+  canRouterNav,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -302,4 +303,34 @@ describe('`getItems`', () => {
     const result = getItems(false)(children);
     expect(result).toEqual(openChildren);
   });
+});
+
+describe('canRouterNav', () => {
+  const projectFullPath = 'gitlab-org/gitlab';
+  const groupFullPath = 'gitlab-org';
+  const projectWebUrl = (fullPath = projectFullPath) => `/${fullPath}/-/issues/1`;
+  const groupWebUrl = (fullPath = groupFullPath) => `/groups/${fullPath}/-/epics/1`;
+  it.each`
+    contextFullPath    | targetWebUrl                                | contextIsGroup | issueAsWorkItem | shouldRouterNav
+    ${projectFullPath} | ${projectWebUrl()}                          | ${false}       | ${false}        | ${false}
+    ${projectFullPath} | ${projectWebUrl()}                          | ${false}       | ${true}         | ${true}
+    ${projectFullPath} | ${projectWebUrl('gitlab-org/gitlab-other')} | ${false}       | ${false}        | ${false}
+    ${projectFullPath} | ${projectWebUrl('gitlab-org/gitlab-other')} | ${false}       | ${true}         | ${false}
+    ${groupFullPath}   | ${groupWebUrl()}                            | ${true}        | ${false}        | ${true}
+    ${groupFullPath}   | ${groupWebUrl()}                            | ${true}        | ${true}         | ${true}
+    ${groupFullPath}   | ${groupWebUrl('gitlab-other')}              | ${true}        | ${false}        | ${false}
+    ${groupFullPath}   | ${groupWebUrl('gitlab-other')}              | ${true}        | ${true}         | ${false}
+  `(
+    `returns $shouldRouterNav when fullPath is $contextFullPath, webUrl is $targetWebUrl, isGroup is $contextIsGroup, and issueAsWorkItem is $issueAsWorkItem`,
+    ({ contextFullPath, targetWebUrl, contextIsGroup, issueAsWorkItem, shouldRouterNav }) => {
+      expect(
+        canRouterNav({
+          fullPath: contextFullPath,
+          webUrl: targetWebUrl,
+          isGroup: contextIsGroup,
+          issueAsWorkItem,
+        }),
+      ).toBe(shouldRouterNav);
+    },
+  );
 });

@@ -8,12 +8,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillShardingKeyIdOnCiRunners, sc
 
   let(:connection) { Ci::ApplicationRecord.connection }
 
-  before do
-    if table_oid('ci_runners_e59bb2812d').present?
-      connection.execute("ALTER TABLE ci_runners_e59bb2812d DROP CONSTRAINT IF EXISTS check_sharding_key_id_nullness")
-    end
-  end
-
   describe '#perform' do
     let(:runners) { table(:ci_runners) }
     let(:runner_projects) { table(:ci_runner_projects) }

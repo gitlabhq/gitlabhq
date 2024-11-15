@@ -68,10 +68,9 @@ describe('ProjectsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findMergeRequestsLink = () =>
-    wrapper.findByRole('link', { name: ProjectsListItem.i18n.mergeRequests });
-  const findIssuesLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.issues });
-  const findForksLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.forks });
+  const findMergeRequestsLink = () => wrapper.findByTestId('mrs-btn');
+  const findIssuesLink = () => wrapper.findByTestId('issues-btn');
+  const findForksLink = () => wrapper.findByTestId('forks-btn');
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findProjectDescription = () => wrapper.findByTestId('project-description');
@@ -175,7 +174,7 @@ describe('ProjectsListItem', () => {
   it('renders stars count', () => {
     createComponent();
 
-    const starsLink = wrapper.findByRole('link', { name: ProjectsListItem.i18n.stars });
+    const starsLink = wrapper.findByTestId('stars-btn');
     const tooltip = getBinding(starsLink.element, 'gl-tooltip');
 
     expect(tooltip.value).toBe(ProjectsListItem.i18n.stars);
