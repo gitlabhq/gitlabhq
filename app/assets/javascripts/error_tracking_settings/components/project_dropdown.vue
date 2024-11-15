@@ -77,7 +77,7 @@ export default {
     <p v-if="isProjectInvalid" class="js-project-dropdown-error gl-field-error">
       {{ invalidProjectLabel }}
     </p>
-    <p v-else-if="!hasProjects" class="js-project-dropdown-label form-text text-muted">
+    <p v-else-if="!hasProjects" class="js-project-dropdown-label form-text gl-text-subtle">
       {{ projectSelectionLabel }}
     </p>
   </div>

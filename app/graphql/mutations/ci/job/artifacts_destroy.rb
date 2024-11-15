@@ -18,10 +18,6 @@ module Mutations
           null: false,
           description: 'Number of artifacts deleted.'
 
-        def find_object(id:)
-          GlobalID::Locator.locate(id)
-        end
-
         def resolve(id:)
           job = authorized_find!(id: id)
 

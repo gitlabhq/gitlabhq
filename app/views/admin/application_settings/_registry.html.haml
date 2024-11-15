@@ -16,17 +16,17 @@
       .form-group
         = f.label :container_registry_delete_tags_service_timeout, _('Cleanup policy maximum processing time (seconds)'), class: 'label-bold'
         = f.number_field :container_registry_delete_tags_service_timeout, min: 0, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = _("Tags are deleted until the timeout is reached. Any remaining tags are included the next time the policy runs. To remove the time limit, set it to 0.")
       .form-group
         = f.label :container_registry_expiration_policies_worker_capacity, _('Cleanup policy maximum workers running concurrently'), class: 'label-bold'
         = f.number_field :container_registry_expiration_policies_worker_capacity, min: 0, class: 'form-control'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = _("Cleanup policies are executed by background workers. This setting defines the maximum number of workers that can run concurrently. Set it to 0 to remove all workers and not execute the cleanup policies.")
       .form-group
         = f.label :container_registry_cleanup_tags_service_max_list_size, _('Cleanup policy maximum number of tags to be deleted'), class: 'label-bold'
         = f.number_field :container_registry_cleanup_tags_service_max_list_size, min: 0, class: 'form-control'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = _("The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0.")
       .form-group
         - help_text = _("When enabled, cleanup policies execute faster but put more load on Redis.")

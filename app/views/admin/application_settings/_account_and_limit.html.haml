@@ -21,7 +21,7 @@
     .form-group
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted#session_expire_delay_help_block= _('Restart GitLab to apply changes.')
+      %span.form-text.gl-text-subtle#session_expire_delay_help_block= _('Restart GitLab to apply changes.')
     .form-group
       = f.label :remember_me_enabled, _('Remember me'), class: 'label-light'
       - remember_me_help_link = help_page_path('user/profile/index.md', anchor: 'stay-signed-in-for-two-weeks')
@@ -44,7 +44,7 @@
       .gl-mt-3
         = _('Internal users')
       = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-form-input gl-mt-2'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Specify an email address regex pattern to identify default internal users.')
         #{link_to _('Learn more'), help_page_path('administration/external_users.md', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'}.
     - unless Gitlab.com?
@@ -58,7 +58,7 @@
           = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: 90, required: true
           #application_setting_deactivate_dormant_users_period_error.form-text.gl-text-red-500.gl-hidden
             = _('Please enter a value of 90 days or more')
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('Must be 90 days or more.')
 
     .form-group

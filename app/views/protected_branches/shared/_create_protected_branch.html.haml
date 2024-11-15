@@ -12,7 +12,7 @@
         = f.text_field :name, placeholder: 'prod*', class: 'form-control !gl-w-full gl-form-input-lg'
       - else
         = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: '!gl-w-full gl-form-input-lg' }
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         - wildcards_url = help_page_url('user/project/repository/branches/protected.md', anchor: 'protect-multiple-branches-with-wildcard-rules')
         - wildcards_link_tag_pair = tag_pair(link_to('', wildcards_url, target: '_blank', rel: 'noopener noreferrer'), :wildcards_link_start, :wildcards_link_end)
 

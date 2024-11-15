@@ -16,7 +16,7 @@
   .form-group.gl-max-w-80
     = label_tag :ref, _('Create from')
     .js-new-branch-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = _('Existing branch name, tag, or commit SHA')
   = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
     = _('Create branch')

@@ -111,7 +111,7 @@
       = f.label :project_view, class: 'label-bold' do
         = s_('Preferences|Project overview content')
       = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_('Preferences|Choose what content you want to see on a project’s overview page.')
     .form-group
       = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
@@ -140,7 +140,7 @@
                       min: Gitlab::TabWidth::MIN,
                       max: Gitlab::TabWidth::MAX,
                       required: true
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }
 
   .settings-section.js-preferences-form.js-search-settings-section#localization

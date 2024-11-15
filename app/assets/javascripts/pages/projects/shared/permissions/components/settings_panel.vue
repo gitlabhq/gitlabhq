@@ -853,7 +853,7 @@ export default {
           s__('ProjectSettings|Every project can have its own space to store its Docker images')
         "
       >
-        <div v-if="showContainerRegistryPublicNote" class="text-muted">
+        <div v-if="showContainerRegistryPublicNote" class="gl-text-subtle">
           <gl-sprintf
             :message="
               s__(

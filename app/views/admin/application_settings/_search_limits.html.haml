@@ -15,7 +15,7 @@
     .form-group
       = f.label :search_rate_limit_allowlist, _('Users to exclude from the rate limit'), class: 'label-bold'
       = f.text_area :search_rate_limit_allowlist_raw, class: 'form-control gl-form-input', rows: 5, aria: { describedBy: 'search-rate-limit-allowlist-field-description' }
-      .form-text.text-muted{ id: 'search-rate-limit-allowlist-field-description' }
+      .form-text.gl-text-subtle{ id: 'search-rate-limit-allowlist-field-description' }
         = _('List of users who are allowed to exceed the rate limit. Example: username1, username2')
 
 

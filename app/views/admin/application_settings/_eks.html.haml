@@ -19,13 +19,13 @@
         .form-group
           = f.label :eks_access_key_id, _('AWS access key ID (Optional)'), class: 'label-bold'
           = f.text_field :eks_access_key_id, class: 'form-control gl-form-input'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('Only required if not using role instance credentials.')
 
         .form-group
           = f.label :eks_secret_access_key, _('AWS secret access key (Optional)'), class: 'label-bold'
           = f.password_field :eks_secret_access_key, autocomplete: 'off', class: 'form-control gl-form-input'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('Only required if not using role instance credentials.')
 
       = f.submit _('Save changes'), pajamas_button: true

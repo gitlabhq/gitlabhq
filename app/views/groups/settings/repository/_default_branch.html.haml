@@ -12,7 +12,7 @@
         .form-group
           = f.label :default_branch_name, _('Initial default branch name'), class: 'label-light'
           = f.text_field :default_branch_name, value: group.namespace_settings&.default_branch_name, placeholder: Gitlab::DefaultBranch.value(object: @group), class: 'form-control'
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = (s_("GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories.") % { default_initial_branch_name: fallback_branch_name }).html_safe
 
           = render 'groups/settings/default_branch_protection_defaults', f: f, group: @group

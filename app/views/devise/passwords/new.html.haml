@@ -4,7 +4,7 @@
   .form-group
     = f.label :email, _('Email')
     = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = _('Requires your primary or verified secondary GitLab email address.')
 
   .form-group

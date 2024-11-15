@@ -5,17 +5,17 @@
     .form-group
       = f.label :gitaly_timeout_default, _('Default timeout'), class: 'label-bold'
       = f.number_field :gitaly_timeout_default, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Timeout for most Gitaly operations (in seconds).')
     .form-group
       = f.label :gitaly_timeout_fast, _('Fast timeout'), class: 'label-bold'
       = f.number_field :gitaly_timeout_fast, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Timeout for the fastest Gitaly operations (in seconds).')
     .form-group
       = f.label :gitaly_timeout_medium, _('Medium timeout'), class: 'label-bold'
       = f.number_field :gitaly_timeout_medium, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Timeout for moderately fast Gitaly operations (in seconds). Provide a value between Default timeout and Fast timeout.')
 
   = f.submit _('Save changes'), pajamas_button: true

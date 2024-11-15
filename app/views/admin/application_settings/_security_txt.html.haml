@@ -12,6 +12,6 @@
         = f.label :security_txt_content do
           = s_("SecurityTxt|Content for security.txt")
         = f.text_area :security_txt_content, class: 'form-control gl-form-input', rows: 8
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = s_('SecurityTxt|When present, this will be publicly available at %{codeOpen}https://gitlab.example.com/.well-known/security.txt%{codeClose}. Maximum 2048 characters.').html_safe % {codeOpen: '<code>'.html_safe, codeClose: '</code>'.html_safe}
       = f.submit _('Save changes'), pajamas_button: true

@@ -139,8 +139,8 @@
   }
 
   .form-check:first-child,
-  .form-check .form-text.text-muted,
-  .form-check + .form-text.text-muted {
+  .form-check .form-text,
+  .form-check + .form-text {
     margin-top: 0;
   }
 
@@ -153,7 +153,7 @@
     }
   }
 
-  .form-check .form-text.text-muted {
+  .form-check .form-text {
     margin-bottom: $grid-size;
   }
 }

@@ -36,17 +36,17 @@
         .form-group
           = f.label :slack_app_secret, s_('SlackIntegration|Client secret'), class: 'label-bold'
           = f.text_field :slack_app_secret, class: 'form-control gl-form-input'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = s_('SlackIntegration|Used for authenticating OAuth requests from the GitLab for Slack app.')
         .form-group
           = f.label :slack_app_signing_secret, s_('SlackIntegration|Signing secret'), class: 'label-bold'
           = f.text_field :slack_app_signing_secret, class: 'form-control gl-form-input'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = s_('SlackIntegration|Used for authenticating API requests from the GitLab for Slack app.')
         .form-group
           = f.label :slack_app_verification_token, s_('SlackIntegration|Verification token'), class: 'label-bold'
           = f.text_field :slack_app_verification_token, class: 'form-control gl-form-input'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = s_('SlackIntegration|Used only for authenticating slash commands from the GitLab for Slack app. This method of authentication is deprecated by Slack.')
       = f.submit _('Save changes'), pajamas_button: true
 

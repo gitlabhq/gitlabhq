@@ -646,7 +646,7 @@ export default {
                     </template>
                   </commit-edit>
                   <li class="!gl-m-0 !gl-p-0">
-                    <p class="form-text text-muted">
+                    <p class="form-text gl-text-subtle">
                       <gl-sprintf :message="commitTemplateHintText">
                         <template #link="{ content }">
                           <gl-link

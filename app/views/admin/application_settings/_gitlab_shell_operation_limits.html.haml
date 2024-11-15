@@ -13,5 +13,5 @@
         .form-group
           = f.label :gitlab_shell_operation_limit, s_('ShellOperations|Maximum number of Git operations per minute'), class: 'gl-font-bold'
           = f.number_field :gitlab_shell_operation_limit, class: 'form-control gl-form-input'
-          %span.form-text.text-muted= _('Set to 0 to disable the limit.')
+          %span.form-text.gl-text-subtle= _('Set to 0 to disable the limit.')
       = f.submit _('Save changes'), pajamas_button: true

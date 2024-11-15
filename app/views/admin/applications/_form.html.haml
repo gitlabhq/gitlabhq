@@ -12,7 +12,7 @@
       = f.label :redirect_uri
       = f.text_area :redirect_uri, class: 'form-control gl-form-input', data: { testid: 'redirect-uri-field' }
       = doorkeeper_errors_for application, :redirect_uri
-      %span.form-text.text-muted
+      %span.form-text.gl-text-subtle
         Use one line per URI
 
   = content_tag :div, class: 'form-group row' do

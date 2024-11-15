@@ -20,7 +20,7 @@
       = f.label :protected_paths_for_get_request, class: 'label-bold' do
         = _('Paths with rate limiting for GET requests')
       = f.text_area :protected_paths_for_get_request_raw, class: 'form-control gl-form-input', rows: 10
-      %span.form-text.text-muted
+      %span.form-text.gl-text-subtle
         - link = link_to('', 'https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab', target: '_blank', rel: 'noopener noreferrer')
         = safe_format(_('All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URLs%{relative_url_link_end}.'), tag_pair(link, :relative_url_link_start, :relative_url_link_end))
 

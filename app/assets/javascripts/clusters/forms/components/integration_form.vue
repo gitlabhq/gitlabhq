@@ -114,7 +114,7 @@ export default {
         class="col-md-6"
         type="text"
       />
-      <div class="form-text text-muted gl-inline-block">
+      <div class="form-text gl-inline-block gl-text-subtle">
         <gl-sprintf
           :message="
             s__(

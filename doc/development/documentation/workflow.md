@@ -13,7 +13,7 @@ Documentation at GitLab follows a workflow.
 Ensure your documentation includes:
 
 - [Product availability details](styleguide/availability_details.md).
-- The GitLab [version](versions.md) that introduced the feature.
+- The GitLab [version](styleguide/availability_details.md) that introduced the feature.
 - Accurate [links](styleguide/index.md#links).
 - Accurate [user permissions](../../user/permissions.md).
 

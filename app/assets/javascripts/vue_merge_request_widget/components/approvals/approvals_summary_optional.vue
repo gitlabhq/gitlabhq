@@ -25,7 +25,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-items-center">
-    <span class="text-muted">{{ s__('mrWidget|Approval is optional') }}</span>
+    <span class="gl-text-subtle">{{ s__('mrWidget|Approval is optional') }}</span>
     <gl-link
       v-if="canApprove && helpPath"
       v-gl-tooltip

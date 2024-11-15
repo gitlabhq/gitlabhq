@@ -10,7 +10,7 @@
       .form-group
         = f.label :auto_devops_domain, s_('AdminSettings|Auto DevOps domain'), class: 'label-bold'
         = f.text_field :auto_devops_domain, class: 'form-control gl-form-input', placeholder: 'example.com'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = s_("AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects.")
           = link_to _('Learn more.'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-review-apps'), target: '_blank', rel: 'noopener noreferrer'
 
@@ -22,22 +22,22 @@
       .form-group
         = f.label :shared_runners_text, s_('AdminSettings|Instance runners details'), class: 'label-bold'
         = f.text_area :shared_runners_text, class: 'form-control gl-form-input', rows: 4
-        .form-text.text-muted= s_('AdminSettings|Add a custom message with details about instance runners. The message is visible when you view runners for projects and groups. Markdown is supported.')
+        .form-text.gl-text-subtle= s_('AdminSettings|Add a custom message with details about instance runners. The message is visible when you view runners for projects and groups. Markdown is supported.')
       .form-group
         = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
         = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = _("The maximum file size for job artifacts.")
           = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size')
       .form-group
         = f.label :max_artifacts_content_include_size, _('Maximum artifacts archive size (bytes)'), class: 'label-bold'
         = f.number_field :max_artifacts_content_include_size, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = _("The maximum file size for job artifacts archive.")
       .form-group
         = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
         = f.text_field :default_artifacts_expire_in, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = html_escape(_("Set the default expiration time for job artifacts in all projects. Set to %{code_open}0%{code_close} to never expire artifacts by default. If no unit is written, it defaults to seconds. For example, these are all equivalent: %{code_open}3600%{code_close}, %{code_open}60 minutes%{code_close}, or %{code_open}one hour%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
           = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'default-artifacts-expiration')
       .form-group
@@ -45,7 +45,7 @@
       .form-group
         = f.label :archive_builds_in_human_readable, _('Archive jobs'), class: 'label-bold'
         = f.text_field :archive_builds_in_human_readable, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = html_escape(_("Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
           = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'archive-jobs')
       .form-group
@@ -53,17 +53,17 @@
       .form-group
         = f.label :ci_max_includes, s_('AdminSettings|Maximum includes'), class: 'label-bold'
         = f.number_field :ci_max_includes, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = s_('AdminSettings|The maximum number of included files per pipeline.')
       .form-group
         = f.label :downstream_pipeline_trigger_limit_per_project_user_sha, s_('AdminSettings|Maximum downstream pipeline trigger rate'), class: 'label-bold'
         = f.number_field :downstream_pipeline_trigger_limit_per_project_user_sha, min: 0, class: 'form-control gl-form-input'
-        .form-text.text-muted
+        .form-text.gl-text-subtle
           = s_('AdminSettings|The maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).')
       .form-group
         = f.label :ci_config_path, _('Default CI/CD configuration file'), class: 'label-bold'
         = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
-        %p.form-text.text-muted
+        %p.form-text.gl-text-subtle
           = _("The default CI/CD configuration file and path for new projects.").html_safe
           = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
       .form-group
@@ -119,7 +119,7 @@
                 .form-group
                   = f.label :ci_needs_size_limit, plan_limit_setting_description(:ci_needs_size_limit)
                   = f.number_field :ci_needs_size_limit, class: 'form-control gl-form-input'
-                  .form-text.text-muted= s_('AdminSettings|This limit cannot be disabled. Set to 0 to block all job (needs) dependencies.')
+                  .form-text.gl-text-subtle= s_('AdminSettings|This limit cannot be disabled. Set to 0 to block all job (needs) dependencies.')
                 .form-group
                   = f.label :ci_registered_group_runners, plan_limit_setting_description(:ci_registered_group_runners)
                   = f.number_field :ci_registered_group_runners, class: 'form-control gl-form-input'

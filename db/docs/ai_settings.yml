@@ -1,0 +1,10 @@
+---
+table_name: ai_settings
+classes:
+  - Ai::Setting
+feature_categories:
+  - ai_abstraction_layer
+description: Stores instance-wide AI-related settings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172007
+milestone: "17.6"
+gitlab_schema: gitlab_main_clusterwide

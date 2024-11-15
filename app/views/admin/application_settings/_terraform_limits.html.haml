@@ -5,7 +5,7 @@
     .form-group
       = f.label :max_terraform_state_size_bytes, s_('TerraformLimits|Terraform state size limit (bytes)'), class: 'label-bold'
       = f.number_field :max_terraform_state_size_bytes, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_("TerraformLimits|Maximum file size (in bytes) of Terraform state files. Set to 0 for no limit.")
 
   = f.submit _('Save changes'), pajamas_button: true

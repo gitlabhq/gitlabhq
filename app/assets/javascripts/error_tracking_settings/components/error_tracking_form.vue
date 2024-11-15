@@ -31,7 +31,7 @@ export default {
             placeholder="https://mysentryserver.com"
             @input="updateApiHost"
           />
-          <p class="form-text text-muted">
+          <p class="form-text gl-text-subtle">
             {{
               s__(
                 "ErrorTracking|If you self-host Sentry, enter your Sentry instance's full URL. If you use Sentry's hosted solution, enter https://sentry.io",
@@ -78,7 +78,7 @@ export default {
       <p v-if="connectError" class="gl-field-error">
         {{ s__('ErrorTracking|Connection failed. Check Auth Token and try again.') }}
       </p>
-      <p v-else class="form-text text-muted">
+      <p v-else class="form-text gl-text-subtle">
         {{
           s__(
             'ErrorTracking|After adding your Auth Token, select the Connect button to load projects.',

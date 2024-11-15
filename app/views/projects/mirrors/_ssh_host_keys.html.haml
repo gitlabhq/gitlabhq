@@ -13,7 +13,7 @@
       - mirror.ssh_known_hosts_fingerprints.each do |fp|
         %code= fp.fingerprint_sha256 || fp.fingerprint
     - if verified_at
-      .form-text.text-muted.js-fingerprint-verification
+      .form-text.gl-text-subtle.js-fingerprint-verification
         = sprite_icon('check', css_class: 'gl-text-green-500')
         Verified by
         - if verified_by

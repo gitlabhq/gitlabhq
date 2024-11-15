@@ -211,24 +211,47 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   describe '#revoke!' do
     let(:active_personal_access_token) { create(:personal_access_token) }
 
-    it 'revokes the token' do
-      active_personal_access_token.revoke!
-
-      expect(active_personal_access_token).to be_revoked
-    end
-
-    it 'updates updated_at timestamp', :aggregate_failures do
-      previous_updated_at = active_personal_access_token.updated_at
-
-      timestamp_of_token_revocation = 3.days.from_now.change(usec: 0)
-
-      travel_to(timestamp_of_token_revocation) do
+    context 'when the token is persisted' do
+      it 'revokes the token' do
         active_personal_access_token.revoke!
+        expect(active_personal_access_token.revoked).to be_truthy
+        expect(active_personal_access_token).to be_persisted
       end
 
-      expect(active_personal_access_token.updated_at).not_to eq(previous_updated_at)
+      it 'updates updated_at timestamp', :aggregate_failures do
+        previous_updated_at = active_personal_access_token.updated_at
 
-      expect(active_personal_access_token.updated_at).to eq(timestamp_of_token_revocation)
+        timestamp_of_token_revocation = 3.days.from_now.change(usec: 0)
+
+        travel_to(timestamp_of_token_revocation) do
+          active_personal_access_token.revoke!
+        end
+
+        expect(active_personal_access_token.updated_at).not_to eq(previous_updated_at)
+
+        expect(active_personal_access_token.updated_at).to eq(timestamp_of_token_revocation)
+      end
+    end
+
+    context 'when the token is not persisted (before scheduled revocation after DEFAULT_LEASE_TIMEOUT)' do
+      let(:unpersisted_personal_access_token) { build(:personal_access_token) }
+
+      it 'revokes the token in memory' do
+        unpersisted_personal_access_token.revoke!
+        expect(unpersisted_personal_access_token.revoked).to be_truthy
+        expect(unpersisted_personal_access_token).not_to be_persisted
+      end
+
+      it 'does not update updated_at timestamp', :aggregate_failures do
+        current_updated_at = unpersisted_personal_access_token.updated_at
+        timestamp_of_token_revocation = 3.days.from_now.change(usec: 0)
+
+        travel_to(timestamp_of_token_revocation) do
+          unpersisted_personal_access_token.revoke!
+        end
+
+        expect(current_updated_at).to eql(unpersisted_personal_access_token.updated_at)
+      end
     end
   end
 

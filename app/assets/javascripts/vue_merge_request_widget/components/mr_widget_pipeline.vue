@@ -243,7 +243,7 @@ export default {
     </template>
     <template v-else-if="retargeted">
       <gl-icon name="status_canceled" class="gl-mr-3 gl-self-center" />
-      <p class="text-muted gl-mb-0 gl-ml-3 gl-flex gl-grow" data-testid="retargeted-message">
+      <p class="gl-mb-0 gl-ml-3 gl-flex gl-grow gl-text-subtle" data-testid="retargeted-message">
         {{
           __(
             'You should run a new pipeline, because the target branch has changed for this merge request.',

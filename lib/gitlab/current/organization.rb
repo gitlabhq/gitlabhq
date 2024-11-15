@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def organization
-        from_params || from_user || ::Organizations::Organization.default_organization
+        from_params || from_user || fallback_organization
       end
 
       def from_params
@@ -40,6 +40,12 @@ module Gitlab
         return if path.blank?
 
         ::Organizations::Organization.find_by_path(path)
+      end
+
+      def fallback_organization
+        Gitlab::SafeRequestStore.write(:fallback_organization_used, true)
+
+        ::Organizations::Organization.default_organization
       end
     end
   end

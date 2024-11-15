@@ -5,6 +5,6 @@
     .form-group
       = f.label :terminal_max_session_time, _('Max session time'), class: 'label-bold'
       = f.number_field :terminal_max_session_time, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Maximum time, in seconds, for a web terminal websocket connection. 0 for unlimited.')
   = f.submit _('Save changes'), pajamas_button: true

@@ -5881,6 +5881,25 @@ CREATE SEQUENCE ai_self_hosted_models_id_seq
 
 ALTER SEQUENCE ai_self_hosted_models_id_seq OWNED BY ai_self_hosted_models.id;
 
+CREATE TABLE ai_settings (
+    id bigint NOT NULL,
+    ai_gateway_url text,
+    singleton boolean DEFAULT true NOT NULL,
+    CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
+    CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
+);
+
+COMMENT ON COLUMN ai_settings.singleton IS 'Always true, used for singleton enforcement';
+
+CREATE SEQUENCE ai_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_settings_id_seq OWNED BY ai_settings.id;
+
 CREATE TABLE ai_testing_terms_acceptances (
     created_at timestamp with time zone NOT NULL,
     user_id bigint NOT NULL,
@@ -22648,6 +22667,8 @@ ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_fea
 
 ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_settings ALTER COLUMN id SET DEFAULT nextval('ai_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_vectorizable_files ALTER COLUMN id SET DEFAULT nextval('ai_vectorizable_files_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
@@ -24469,6 +24490,9 @@ ALTER TABLE ONLY ai_feature_settings
 
 ALTER TABLE ONLY ai_self_hosted_models
     ADD CONSTRAINT ai_self_hosted_models_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_settings
+    ADD CONSTRAINT ai_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_testing_terms_acceptances
     ADD CONSTRAINT ai_testing_terms_acceptances_pkey PRIMARY KEY (user_id);
@@ -28604,6 +28628,8 @@ CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_
 CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings USING btree (feature);
 
 CREATE UNIQUE INDEX index_ai_self_hosted_models_on_name ON ai_self_hosted_models USING btree (name);
+
+CREATE UNIQUE INDEX index_ai_settings_on_singleton ON ai_settings USING btree (singleton);
 
 CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
 

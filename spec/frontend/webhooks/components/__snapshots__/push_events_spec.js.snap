@@ -96,7 +96,7 @@ exports[`Webhook push events form editor component Different push events rules w
     />
   </div>
   <p
-    class="custom-control form-text text-muted"
+    class="custom-control form-text gl-text-subtle"
   >
     <gl-sprintf-stub
       message="Regular expressions such as %{REGEX_CODE} are supported."
@@ -143,7 +143,7 @@ exports[`Webhook push events form editor component Different push events rules w
     />
   </div>
   <p
-    class="custom-control form-text text-muted"
+    class="custom-control form-text gl-text-subtle"
   >
     <gl-sprintf-stub
       message="Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRODUCTION} are supported."
@@ -260,7 +260,7 @@ exports[`Webhook push events form editor component Different push events rules w
     />
   </div>
   <p
-    class="custom-control form-text text-muted"
+    class="custom-control form-text gl-text-subtle"
   >
     <gl-sprintf-stub
       message="Regular expressions such as %{REGEX_CODE} are supported."
@@ -307,7 +307,7 @@ exports[`Webhook push events form editor component Different push events rules w
     />
   </div>
   <p
-    class="custom-control form-text text-muted"
+    class="custom-control form-text gl-text-subtle"
   >
     <gl-sprintf-stub
       message="Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRODUCTION} are supported."

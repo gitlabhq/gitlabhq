@@ -13,7 +13,7 @@
 .form-group
   = f.label :two_factor_grace_period, _('Delay 2FA enforcement (hours)')
   = f.text_field :two_factor_grace_period, class: 'form-control form-control-sm w-auto gl-form-input gl-mb-3'
-  .form-text.text-muted= _("The maximum amount of time users have to set up two-factor authentication before it's enforced.")
+  .form-text.gl-text-subtle= _("The maximum amount of time users have to set up two-factor authentication before it's enforced.")
 - unless group.has_parent?
   .form-group
     = f.gitlab_ui_checkbox_component :allow_mfa_for_subgroups,

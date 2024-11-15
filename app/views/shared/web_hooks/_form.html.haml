@@ -10,7 +10,7 @@
 .form-group
   = form.label :token, s_('Webhooks|Secret token'), class: 'label-bold'
   = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input gl-form-input-xl'
-  %p.form-text.text-muted
+  %p.form-text.gl-text-subtle
     - code_start = '<code>'.html_safe
     - code_end = '</code>'.html_safe
     = s_('Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token%{code_end} HTTP header.').html_safe % { code_start: code_start, code_end: code_end }
@@ -86,7 +86,7 @@
 .form-group
   = form.label :custom_webhook_template, s_('Webhooks|Custom webhook template (optional)'), class: 'label-bold'
   = form.text_area :custom_webhook_template, value: hook.custom_webhook_template, class: 'form-control gl-form-input gl-form-input-xl', rows: 8, maxlength: 4096
-  %p.form-text.text-muted
+  %p.form-text.gl-text-subtle
     = link_to s_('Webhooks|How to create a custom webhook template?'), help_page_path('user/project/integrations/webhooks.md', anchor: 'custom-webhook-template')
 
 .form-group

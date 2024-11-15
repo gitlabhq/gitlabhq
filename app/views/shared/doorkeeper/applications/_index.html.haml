@@ -80,7 +80,7 @@
                           = token.application.name
                         - else
                           = _('Anonymous')
-                          .form-text.text-muted
+                          .form-text.gl-text-subtle
                             %em= _("Authorization was granted by entering your username and password in the application.")
                       %td{ data: { label: _('Authorized At') } }
                         = token.created_at

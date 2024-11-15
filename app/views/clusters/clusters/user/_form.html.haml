@@ -19,7 +19,7 @@
   .form-group
     = field.label :environment_scope, s_('ClusterIntegration|Environment scope'), class: 'label-bold required'
     = field.text_field :environment_scope, required: true, title: s_('ClusterIntegration|Environment scope is required.'), class: 'form-control'
-    %small.form-text.text-muted
+    %small.form-text.gl-text-subtle
       = s_('ClusterIntegration|Choose which of your environments will use this cluster.')
 
   = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
@@ -27,7 +27,7 @@
       = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL'), class: 'label-bold required'
       = platform_kubernetes_field.url_field :api_url, required: true,
         title: s_('ClusterIntegration|API URL should be a valid http/https url.'), class: 'form-control'
-      %small.form-text.text-muted
+      %small.form-text.gl-text-subtle
         = '%{help_text} %{help_link}'.html_safe % { help_text: api_url_help_text, help_link: more_info_link }
 
     .form-group
@@ -36,27 +36,27 @@
         rows: '10',
         placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'),
         class: 'form-control'
-      %small.form-text.text-muted
+      %small.form-text.gl-text-subtle
         = '%{help_text} %{help_link}'.html_safe % { help_text: ca_cert_help_text, help_link: more_info_link }
 
     .form-group
       = platform_kubernetes_field.label :token, s_('ClusterIntegration|Service Token'), class: 'label-bold required'
       = platform_kubernetes_field.text_field :token, required: true, title: s_('ClusterIntegration|Service token is required.'), autocomplete: 'off', class: 'form-control'
-      %small.form-text.text-muted
+      %small.form-text.gl-text-subtle
         = '%{help_text} %{help_link}'.html_safe % { help_text: token_help_text, help_link: more_info_link }
 
     .form-group
       .form-check
         = platform_kubernetes_field.check_box :authorization_type, { inline: true, class: 'form-check-input' }, 'rbac', 'abac'
         = platform_kubernetes_field.label :authorization_type, s_('ClusterIntegration|RBAC-enabled cluster'), class: 'form-check-label label-bold'
-      %small.form-text.text-muted
+      %small.form-text.gl-text-subtle
         = '%{help_text} %{help_link}'.html_safe % { help_text: rbac_help_text, help_link: rbac_help_link }
 
   .form-group
     .form-check
       = field.check_box :managed, { class: 'js-gl-managed form-check-input' }
       = field.label :managed, s_('ClusterIntegration|GitLab-managed cluster'), class: 'form-check-label label-bold'
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = s_('ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster.')
       = link_to _('Learn more.'), help_page_path('user/project/clusters/gitlab_managed_clusters.md'), target: '_blank', rel: 'noopener noreferrer'
 
@@ -64,7 +64,7 @@
     .form-check
       = field.check_box :namespace_per_environment, { class: 'form-check-input' }
       = field.label :namespace_per_environment, s_('ClusterIntegration|Namespace per environment'), class: 'form-check-label label-bold'
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = s_('ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared.')
       = link_to _('Learn more.'), help_page_path('user/project/clusters/deploy_to_cluster.md', anchor: 'custom-namespace'), target: '_blank', rel: 'noopener noreferrer'
 

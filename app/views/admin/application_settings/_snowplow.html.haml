@@ -18,17 +18,17 @@
         .form-group
           = f.label :snowplow_collector_hostname, _('Collector hostname'), class: 'label-light'
           = f.text_field :snowplow_collector_hostname, class: 'form-control gl-form-input', placeholder: 'snowplow.example.com'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('The hostname of your Snowplow collector.')
         .form-group
           = f.label :snowplow_app_id, _('App ID'), class: 'label-light'
           = f.text_field :snowplow_app_id, class: 'form-control gl-form-input', placeholder: 'gitlab'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('The ID of the application.')
         .form-group
           = f.label :snowplow_cookie_domain, _('Cookie domain'), class: 'label-light'
           = f.text_field :snowplow_cookie_domain, class: 'form-control gl-form-input', placeholder: '.your-gitlab-instance.com'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('The Snowplow cookie domain.')
 
       = f.submit _('Save changes'), data: { testid: 'save-changes-button' }, pajamas_button: true

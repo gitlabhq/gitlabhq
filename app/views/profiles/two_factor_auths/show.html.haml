@@ -55,7 +55,7 @@
           .form-group
             = label_tag :current_password, _('Current password'), class: 'label-bold'
             = password_field_tag :current_password, nil, autocomplete: 'current-password', required: true, class: 'form-control gl-form-input', data: { testid: 'current-password-field' }
-            %p.form-text.text-muted
+            %p.form-text.gl-text-subtle
               = _('Your current password is required to register a two-factor authenticator app.')
         .form-group
           = label_tag :pin_code, _('Enter verification code'), class: "label-bold"

@@ -17,7 +17,7 @@
         .form-group
           = f.label :diagramsnet_url, _('Diagrams.net URL'), class: 'label-bold'
           = f.text_field :diagramsnet_url, class: 'form-control gl-form-input', placeholder: 'https://embed.diagrams.net'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             = _('The hostname of your diagrams.net server.')
 
       = f.submit _('Save changes'), pajamas_button: true

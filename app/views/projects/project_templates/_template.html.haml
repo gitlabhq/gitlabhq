@@ -5,7 +5,7 @@
     %strong
       = template.title
     %br
-    .text-muted
+    .gl-text-subtle
       = template.description
   .controls.gl-items-center{ class: '!gl-flex' }
     = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mr-3', data: { track_label: "template_preview", track_property: template.name, track_action: "click_button", track_value: "" } }, href: template.preview, target: '_blank') do

@@ -7,7 +7,6 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
   let_it_be(:organization) { create(:organization, name: 'Current Organization') }
   let_it_be(:default_organization) { create(:organization, :default) }
   let_it_be(:group) { create(:group, organization: organization) }
-  let_it_be(:user) { create(:user) }
 
   let(:group_path) { group.full_path }
   let(:controller) { 'some_controller' }
@@ -19,35 +18,50 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
     }
   end
 
-  before do
-    default_organization.users.delete_all
-    default_organization.reload
+  shared_examples 'operation that derives organization from user' do
+    let_it_be(:user) do
+      create(:user, organization_users: [create(:organization_user, organization: organization)])
+    end
 
-    organization.users << user
+    subject(:current_organization) { described_class.new(params: params, user: user).organization }
+
+    it 'returns that organization' do
+      expect(current_organization).to eq(organization)
+    end
   end
 
   describe '.organization' do
-    subject(:current_organization) { described_class.new(params: params, user: user).organization }
-
-    context 'when params result in an organization' do
+    context 'when params result in an organization', :request_store do
       let(:params) { super().merge(namespace_id: group_path) }
+
+      subject(:current_organization) { described_class.new(params: params).organization }
 
       it 'returns that organization' do
         expect(current_organization).to eq(organization)
+      end
+
+      it 'does not set "fallback_organization_used" request store', :request_store do
+        current_organization
+
+        expect(Gitlab::SafeRequestStore.read(:fallback_organization_used)).to be_nil
       end
     end
 
     context 'when only current user result in an organization' do
-      it 'returns that organization' do
-        expect(current_organization).to eq(organization)
-      end
+      it_behaves_like 'operation that derives organization from user'
     end
 
     context 'when no organization can be derived' do
-      subject(:current_organization) { described_class.new(params: params, user: nil).organization }
+      subject(:current_organization) { described_class.new(params: params).organization }
 
       it 'falls back to default organization' do
         expect(current_organization).to eq(default_organization)
+      end
+
+      it 'sets "fallback_organization_used" request store to true', :request_store do
+        current_organization
+
+        expect(Gitlab::SafeRequestStore.read(:fallback_organization_used)).to be(true)
       end
     end
   end
@@ -131,12 +145,6 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
   end
 
   describe '.from_user' do
-    let_it_be(:user) { create(:user) }
-
-    subject(:current_organization) { described_class.new(user: user).from_user }
-
-    it 'returns the organization the user is member of' do
-      expect(current_organization).to eq(organization)
-    end
+    it_behaves_like 'operation that derives organization from user'
   end
 end

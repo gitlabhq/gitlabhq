@@ -18,7 +18,7 @@
     .form-group
       = f.label :recaptcha_site_key, _('reCAPTCHA site key'), class: 'label-bold'
       = f.text_field :recaptcha_site_key, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("Generate site and private keys at")
         %a{ href: 'http://www.google.com/recaptcha', target: 'blank', rel: 'noopener noreferrer' } http://www.google.com/recaptcha
 
@@ -53,7 +53,7 @@
     .form-group
       = f.label :akismet_api_key, _('Akismet API Key'), class: 'label-bold'
       = f.text_field :akismet_api_key, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("Generate API key at %{site}").html_safe % { site: link_to('http://www.akismet.com', 'http://www.akismet.com', target: 'blank', ref: 'noopener noreferrer') }
 
     %h5
@@ -66,13 +66,13 @@
     .form-group
       = f.label :unique_ips_limit_per_user, _('IP addresses per user'), class: 'label-bold'
       = f.number_field :unique_ips_limit_per_user, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("Maximum number of unique IP addresses per user.")
 
     .form-group
       = f.label :unique_ips_limit_time_window, _('IP address expiration time'), class: 'label-bold'
       = f.number_field :unique_ips_limit_time_window, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("How many seconds an IP counts toward the IP address limit.")
 
     %h5
@@ -87,6 +87,6 @@
     .form-group
       = f.label :spam_check_api_key, _('Spam Check API key'), class: 'gl-font-bold'
       = f.text_field :spam_check_api_key, class: 'form-control gl-form-input'
-      .form-text.text-muted= _('The API key used by GitLab for accessing the Spam Check service endpoint.')
+      .form-text.gl-text-subtle= _('The API key used by GitLab for accessing the Spam Check service endpoint.')
 
   = f.submit _('Save changes'), pajamas_button: true

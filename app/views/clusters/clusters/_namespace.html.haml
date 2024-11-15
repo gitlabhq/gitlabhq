@@ -6,9 +6,9 @@
   .form-group
     = platform_field.label :namespace, s_('ClusterIntegration|Project namespace prefix (optional, unique)'), class: 'label-bold'
     = platform_field.text_field :namespace, class: 'form-control'
-    %small.form-text.text-muted= '%{help_text} %{help_link}'.html_safe % { help_text: managed_namespace_help_text, help_link: managed_namespace_help_link }
+    %small.form-text.gl-text-subtle= '%{help_text} %{help_link}'.html_safe % { help_text: managed_namespace_help_text, help_link: managed_namespace_help_link }
 .js-namespace.hidden
   .form-group
     = platform_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)'), class: 'label-bold'
     = platform_field.text_field :namespace, class: 'form-control', disabled: true
-    %small.form-text.text-muted= '%{help_text}'.html_safe % { help_text: non_managed_namespace_help_text }
+    %small.form-text.gl-text-subtle= '%{help_text}'.html_safe % { help_text: non_managed_namespace_help_text }

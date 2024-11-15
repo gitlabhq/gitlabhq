@@ -4,5 +4,5 @@
   = form.label :disabled_repository_size_limit, class: 'label-bold' do
     = _('Size limit per repository (MiB)')
   = form.number_field :disabled_repository_size_limit, value: '', class: 'form-control gl-form-input', disabled: true
-  %span.form-text.text-muted
+  %span.form-text.gl-text-subtle
     = render 'shared/registration_features_discovery_message'

@@ -15,7 +15,7 @@
           - matching_branches = protected_branch.matching(repository.branch_names)
           = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
         - elsif !protected_branch.commit
-          %span.text-muted= s_('ProtectedBranch|Branch does not exist.')
+          %span.gl-text-subtle= s_('ProtectedBranch|Branch does not exist.')
 
   = yield
 

@@ -33,13 +33,13 @@
     .form-group
       %label.label-bold= _('Enabled Git access protocols')
       = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
-      %span.form-text.text-muted#clone-protocol-help
+      %span.form-text.gl-text-subtle#clone-protocol-help
         = _('Allow only the selected protocols to be used for Git access.')
 
     .form-group
       = f.label :custom_http_clone_url_root, _('Custom Git clone URL for HTTP(S)'), class: 'label-bold'
       = f.text_field :custom_http_clone_url_root, class: 'form-control gl-form-input', placeholder: 'https://git.example.com', :'aria-describedby' => 'custom_http_clone_url_root_help_block'
-      %span.form-text.text-muted#custom_http_clone_url_root_help_block
+      %span.form-text.gl-text-subtle#custom_http_clone_url_root_help_block
         = _('Replaces the clone URL root.')
 
     - Gitlab::SSHPublicKey.supported_types.each do |type|

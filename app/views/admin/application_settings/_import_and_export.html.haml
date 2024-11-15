@@ -31,26 +31,26 @@
     .form-group
       = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 for no size limit.')
+      %span.form-text.gl-text-subtle= _('Set to 0 for no size limit.')
     .form-group
       = f.label :max_import_size, _('Maximum import size (MiB)'), class: 'label-light'
       = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
+      %span.form-text.gl-text-subtle= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
     .form-group
       = f.label :max_import_remote_file_size, s_('Import|Maximum import remote file size (MiB)'), class: 'label-light'
       = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 for no size limit.')
+      %span.form-text.gl-text-subtle= _('Set to 0 for no size limit.')
     .form-group
       = f.label :bulk_import_max_download_file_size, s_('BulkImport|Direct transfer maximum download file size (MiB)'), class: 'label-light'
       = f.number_field :bulk_import_max_download_file_size, class: 'form-control gl-form-input', title: s_('BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group
       = f.label :max_decompressed_archive_size, s_('Import|Maximum decompressed file size for archives from imports (MiB)'), class: 'label-light'
       = f.number_field :max_decompressed_archive_size, class: 'form-control gl-form-input', title: s_('Import|Maximum size of decompressed archive.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 for no size limit.')
+      %span.form-text.gl-text-subtle= _('Set to 0 for no size limit.')
     .form-group
       = f.label :decompress_archive_file_timeout, s_('Import|Timeout for decompressing archived files (seconds)'), class: 'label-light'
       = f.number_field :decompress_archive_file_timeout, class: 'form-control gl-form-input', title: s_('Import|Timeout for decompressing archived files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 to disable timeout.')
+      %span.form-text.gl-text-subtle= _('Set to 0 to disable timeout.')
     .form-group
       = f.label :concurrent_github_import_jobs_limit, s_('Import|Maximum number of simultaneous import jobs for GitHub importer'), class: 'label-light'
       = f.number_field :concurrent_github_import_jobs_limit, class: 'form-control gl-form-input', title: s_('Import|Maximum number of simultaneous import jobs for GitHub importer'), data: { toggle: 'tooltip', container: 'body' }

@@ -8,7 +8,7 @@
       = f.label :terms do
         = _("Terms of Service Agreement and Privacy Policy")
       = f.text_area :terms, class: 'form-control gl-form-input', rows: 8
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("Markdown supported.")
         = link_to _('What is Markdown?'), help_page_path('user/markdown.md'), target: '_blank', rel: 'noopener noreferrer'
   = f.submit _("Save changes"), pajamas_button: true

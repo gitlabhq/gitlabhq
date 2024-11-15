@@ -81,7 +81,7 @@ export default {
           <li>
             {{ __('Commit Message') }}
             <div id="ide-commit-message-popover-container">
-              <span id="ide-commit-message-question" class="form-text text-muted gl-ml-3">
+              <span id="ide-commit-message-question" class="form-text gl-ml-3 gl-text-subtle">
                 <gl-icon name="question-o" />
               </span>
               <gl-popover
