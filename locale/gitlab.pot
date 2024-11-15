@@ -1071,9 +1071,6 @@ msgstr ""
 msgid "%{milliseconds}ms"
 msgstr ""
 
-msgid "%{minutesUsed} units"
-msgstr ""
-
 msgid "%{model_name} not found"
 msgstr ""
 
@@ -1140,9 +1137,6 @@ msgid "%{owner} %{created_date} ago."
 msgstr ""
 
 msgid "%{path} on %{ref}"
-msgstr ""
-
-msgid "%{percentageUsed}%% used"
 msgstr ""
 
 msgid "%{percentage}%% complete"
@@ -4952,9 +4946,6 @@ msgstr ""
 msgid "Admin|Geo"
 msgstr ""
 
-msgid "Admin|GitLab Duo"
-msgstr ""
-
 msgid "Admin|Kubernetes"
 msgstr ""
 
@@ -8590,6 +8581,9 @@ msgid "Below are the settings for %{link_to_gitlab_pages}."
 msgstr ""
 
 msgid "Below you will find all the groups that are public or internal. Contribute by requesting to join a group."
+msgstr ""
+
+msgid "Best Regards,"
 msgstr ""
 
 msgid "Beta"
@@ -13538,10 +13532,10 @@ msgstr ""
 msgid "CodeSuggestions|Introducing the GitLab Duo Pro add-on"
 msgstr ""
 
-msgid "CodeSuggestions|Manage seat assignments for %{addOnName} or run a health check to identify problems."
+msgid "CodeSuggestions|Manage seat assignments for %{addOnName} within your group."
 msgstr ""
 
-msgid "CodeSuggestions|Manage seat assignments for %{addOnName} within your group."
+msgid "CodeSuggestions|Manage seat assignments for %{addOnName}."
 msgstr ""
 
 msgid "CodeSuggestions|No health problems detected"
@@ -24984,6 +24978,9 @@ msgid "GitLab Shell"
 msgstr ""
 
 msgid "GitLab Support Bot"
+msgstr ""
+
+msgid "GitLab Team"
 msgstr ""
 
 msgid "GitLab User"
@@ -38901,6 +38898,12 @@ msgid "Owner"
 msgstr ""
 
 msgid "Owners and administrators"
+msgstr ""
+
+msgid "PIPL|Important Change to Your GitLab.com Account"
+msgstr ""
+
+msgid "PIPL|Please be advised that GitLab can no longer service GitLab.com accounts for individuals and organizations located in Mainland China, Macao, and Hong Kong. Our system indicates that you are visiting GitLab from one of these locations. We advise you to sign up with JiHu %{jihu_link}. JiHu is an independent company with a localized GitLab offering that has an exclusive right to provide GitLab to individuals and organizations located in this region. You must complete the transition by %{deadline}, after which GitLab will delete your account from our systems. If you believe you are receiving this notification in error, please log in to GitLab.com from a supported service location. For further information or support, please feel free to contact saasmigration@gitlab.cn."
 msgstr ""
 
 msgid "PQL|An error occurred while sending hand raise lead."
@@ -67055,6 +67058,9 @@ msgid "type parameter is missing and is required"
 msgstr ""
 
 msgid "unicode domains should use IDNA encoding"
+msgstr ""
+
+msgid "units"
 msgstr ""
 
 msgid "unsubscribed %{emails}"

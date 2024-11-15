@@ -18,20 +18,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
   describe '#dry_run?' do
     subject { command.dry_run? }
 
-    let(:command) { described_class.new(dry_run: dry_run, execution_policy_dry_run: execution_policy_dry_run) }
+    let(:command) { described_class.new(dry_run: dry_run) }
     let(:dry_run) { false }
-    let(:execution_policy_dry_run) { false }
 
     it { is_expected.to eq(false) }
 
     context 'when dry_run is true' do
       let(:dry_run) { true }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when execution_policy_dry_run is true' do
-      let(:execution_policy_dry_run) { true }
 
       it { is_expected.to eq(true) }
     end

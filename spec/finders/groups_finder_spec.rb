@@ -301,6 +301,18 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with group ids' do
+      let_it_be(:group_one) { create(:group, :public, name: 'group_one') }
+      let_it_be(:group_two) { create(:group, :public, name: 'group_two') }
+      let_it_be(:group_three) { create(:group, :public, name: 'group_three') }
+
+      subject { described_class.new(user, { ids: [group_one.id, group_three.id] }).execute }
+
+      it 'returns only the groups listed in the list of ids' do
+        is_expected.to contain_exactly(group_one, group_three)
+      end
+    end
+
     context 'with organization' do
       let_it_be(:organization_user) { create(:organization_user) }
       let_it_be(:organization) { organization_user.organization }

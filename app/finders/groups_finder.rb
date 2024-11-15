@@ -108,7 +108,14 @@ class GroupsFinder < UnionFinder
     groups = filter_group_ids(groups)
     groups = exclude_group_ids(groups)
     groups = by_visibility(groups)
+    groups = by_ids(groups)
     by_search(groups)
+  end
+
+  def by_ids(items)
+    ids = params[:ids]
+    items = items.id_in(ids) if ids
+    items
   end
 
   def by_organization(groups)

@@ -579,6 +579,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querygroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="querygroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="querygroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
@@ -29650,6 +29651,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organizationgroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="organizationgroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="organizationgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="organizationgroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |

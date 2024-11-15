@@ -299,93 +299,77 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
     end
   end
 
-  shared_examples 'handling all conditions' do
+  context 'authentication' do
     include_context 'dependency proxy helpers context'
 
-    where(:auth, :request_forward, :visibility, :user_role, :expected_result, :expected_status) do
-      nil                    | true  | :public   | nil        | :reject     | :unauthorized
-      nil                    | false | :public   | nil        | :reject     | :unauthorized
-      nil                    | true  | :private  | nil        | :reject     | :unauthorized
-      nil                    | false | :private  | nil        | :reject     | :unauthorized
-      nil                    | true  | :internal | nil        | :reject     | :unauthorized
-      nil                    | false | :internal | nil        | :reject     | :unauthorized
+    context 'when unauthenticated' do
+      let(:auth) { nil }
+      let(:headers) { {} }
 
-      :oauth                 | true  | :public   | :guest     | :redirect   | :temporary_redirect
-      :oauth                 | true  | :public   | :reporter  | :redirect   | :temporary_redirect
-      :oauth                 | false | :public   | :guest     | :accept     | :ok
-      :oauth                 | false | :public   | :reporter  | :accept     | :ok
-      :oauth                 | true  | :private  | :reporter  | :redirect   | :temporary_redirect
-      :oauth                 | false | :private  | :guest     | :reject     | :forbidden
-      :oauth                 | false | :private  | :reporter  | :accept     | :ok
-      :oauth                 | true  | :private  | :guest     | :redirect   | :temporary_redirect
-      :oauth                 | true  | :internal | :guest     | :redirect   | :temporary_redirect
-      :oauth                 | true  | :internal | :reporter  | :redirect   | :temporary_redirect
-      :oauth                 | false | :internal | :guest     | :accept     | :ok
-      :oauth                 | false | :internal | :reporter  | :accept     | :ok
-
-      :personal_access_token | true  | :public   | :guest     | :redirect   | :temporary_redirect
-      :personal_access_token | true  | :public   | :reporter  | :redirect   | :temporary_redirect
-      :personal_access_token | false | :public   | :guest     | :accept     | :ok
-      :personal_access_token | false | :public   | :reporter  | :accept     | :ok
-      :personal_access_token | true  | :private  | :guest     | :redirect   | :temporary_redirect
-      :personal_access_token | true  | :private  | :reporter  | :redirect   | :temporary_redirect
-      :personal_access_token | false | :private  | :guest     | :reject     | :forbidden # instance might fail
-      :personal_access_token | false | :private  | :reporter  | :accept     | :ok
-      :personal_access_token | true  | :internal | :guest     | :redirect   | :temporary_redirect
-      :personal_access_token | true  | :internal | :reporter  | :redirect   | :temporary_redirect
-      :personal_access_token | false | :internal | :guest     | :accept     | :ok
-      :personal_access_token | false | :internal | :reporter  | :accept     | :ok
-
-      :job_token             | true  | :public   | :developer | :redirect   | :temporary_redirect
-      :job_token             | false | :public   | :developer | :accept     | :ok
-      :job_token             | true  | :private  | :developer | :redirect   | :temporary_redirect
-      :job_token             | false | :private  | :developer | :accept     | :ok
-      :job_token             | true  | :internal | :developer | :redirect   | :temporary_redirect
-      :job_token             | false | :internal | :developer | :accept     | :ok
-
-      :deploy_token          | true  | :public   | nil        | :redirect   | :temporary_redirect
-      :deploy_token          | false | :public   | nil        | :accept     | :ok
-      :deploy_token          | true  | :private  | nil        | :redirect   | :temporary_redirect
-      :deploy_token          | false | :private  | nil        | :accept     | :ok
-      :deploy_token          | true  | :internal | nil        | :redirect   | :temporary_redirect
-      :deploy_token          | false | :internal | nil        | :accept     | :ok
+      it_behaves_like 'reject audit request', status: :unauthorized
     end
 
-    with_them do
-      let(:headers) do
-        build_headers_for_auth_type(auth)
+    context 'when authenticated' do
+      let(:headers) { build_headers_for_auth_type(auth) }
+
+      context 'with request_forward enabled' do
+        let(:auth) { :oauth }
+
+        before do
+          set_npm_package_requests_forwarding(true, scope)
+        end
+
+        it_behaves_like 'redirect audit request', status: :temporary_redirect
       end
 
-      before do
-        project.send("add_#{user_role}", user) if user_role
-        project.update!(visibility: visibility.to_s)
+      context 'with request_forward disabled' do
+        before do
+          set_npm_package_requests_forwarding(false, scope)
+        end
 
-        if %i[instance group].include?(scope)
-          allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
-        else
-          allow_fetch_cascade_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
+        context 'with project scope', if: scope == :project do
+          before do
+            project.update!(visibility: 'private')
+          end
+
+          context 'with guest user' do
+            let(:auth) { :oauth }
+
+            before do
+              project.add_guest(user)
+            end
+
+            it_behaves_like 'reject audit request', status: :forbidden
+          end
+
+          %i[oauth personal_access_token job_token deploy_token].each do |auth|
+            context "with #{auth}" do
+              let(:auth) { auth }
+
+              before do
+                project.add_reporter(user)
+              end
+
+              it_behaves_like 'accept audit request', status: :ok
+            end
+          end
+        end
+
+        context 'with group or instance scope', if: %i[group instance].include?(scope) do
+          %i[oauth personal_access_token job_token deploy_token].each do |auth|
+            context "with #{auth}" do
+              let(:auth) { auth }
+
+              before do
+                project.add_reporter(user)
+              end
+
+              it_behaves_like 'reject audit request with error', status: :not_found
+            end
+          end
         end
       end
-
-      example_name = "#{params[:expected_result]} audit request"
-      status = params[:expected_status]
-
-      if %i[instance group].include?(scope) && params[:expected_status] != :unauthorized
-        if params[:request_forward]
-          example_name = 'redirect audit request'
-          status = :temporary_redirect
-        else
-          example_name = 'reject audit request with error'
-          status = :not_found
-        end
-      end
-
-      it_behaves_like example_name, status: status
     end
-  end
-
-  context 'with a group namespace' do
-    it_behaves_like 'handling all conditions'
   end
 
   context 'with a developer' do
@@ -395,7 +379,7 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
       project.add_developer(user)
     end
 
-    context 'with a job token' do
+    context 'with a job token for a completed job' do
       let(:headers) { build_token_auth_header(job.token) }
 
       before do

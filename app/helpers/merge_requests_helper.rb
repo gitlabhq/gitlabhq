@@ -274,7 +274,13 @@ module MergeRequestsHelper
       releases_endpoint: project_releases_path(project, format: :json),
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
-      default_branch: project.default_branch
+      default_branch: project.default_branch,
+      initial_email: can?(current_user, :create_merge_request_in, project) &&
+        project.new_issuable_address(current_user, 'merge_request'),
+      emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
+      quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
+      markdown_help_path: help_page_path('user/markdown.md'),
+      reset_path: new_issuable_address_project_path(project, issuable_type: 'merge_request')
     }
   end
 

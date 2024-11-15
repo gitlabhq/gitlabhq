@@ -6,9 +6,10 @@ module Gitlab
       class PullRequestImporter
         include Gitlab::Import::MergeRequestHelpers
         include Gitlab::Import::UsernameMentionRewriter
+        include Gitlab::GithubImport::PushPlaceholderReferences
 
         attr_reader :pull_request, :project, :client, :user_finder,
-          :milestone_finder, :issuable_finder
+          :milestone_finder, :issuable_finder, :mapper
 
         # pull_request - An instance of
         #                `Gitlab::GithubImport::Representation::PullRequest`.
@@ -22,6 +23,7 @@ module Gitlab
           @milestone_finder = MilestoneFinder.new(project)
           @issuable_finder =
             GithubImport::IssuableFinder.new(project, pull_request)
+          @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
         end
 
         def execute
@@ -31,6 +33,14 @@ module Gitlab
             issuable_finder.cache_database_id(mr.id)
             set_merge_request_assignees(mr)
             insert_git_data(mr, already_exists)
+
+            if mapper.user_mapping_enabled?
+              push_with_record(mr, :author_id, pull_request.author.id, mapper.user_mapper)
+
+              # we only import one PR assignee
+              assignee = mr.merge_request_assignees.first
+              push_with_record(assignee, :user_id, pull_request.assignee[:id], mapper.user_mapper) if assignee
+            end
           end
         end
 

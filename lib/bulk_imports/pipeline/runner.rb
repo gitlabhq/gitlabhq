@@ -22,6 +22,8 @@ module BulkImports
             raw_entry = entry.dup
             next if already_processed?(raw_entry, index)
 
+            delete_partial_imported_records(entry)
+
             increment_fetched_objects_counter
 
             transformers.each do |transformer|
@@ -110,6 +112,21 @@ module BulkImports
       end
 
       def save_processed_entry(*); end
+
+      # Overridden by child pipelines
+      # This method is called once for the first non-processed item returned in the extract step,
+      # meaning that, in the case of a pipeline retrial, it is called again for the latest partially
+      # processed item.
+      def delete_existing_records(*); end
+
+      def delete_partial_imported_records(entry)
+        # Using memoization to execute delete_existing_records method only once
+        @clean_up_upon_retry ||= begin
+          delete_existing_records(entry)
+
+          true
+        end
+      end
 
       def after_run(extracted_data)
         run if extracted_data.has_next_page?

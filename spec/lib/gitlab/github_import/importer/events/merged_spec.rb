@@ -106,15 +106,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
       )
     end
 
-    it 'creates a merged by note' do
-      expect { importer.execute(issue_event) }.to change { Note.count }.by(1)
-
-      last_note = merge_request.notes.last
-      expect(last_note.created_at).to eq(issue_event.created_at)
-      expect(last_note.author).to eq(merge_request.author)
-      expect(last_note.note).to eq("*Merged by: #{user.username} at #{issue_event.created_at}*")
-    end
-
     context 'when commit ID is present' do
       let!(:commit) { create(:commit, project: project) }
       let(:commit_id) { commit.id }

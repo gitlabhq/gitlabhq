@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import ExtensionsMarketplaceWarning from '~/profile/preferences/components/extensions_marketplace_warning.vue';
@@ -57,12 +58,15 @@ describe('ProfilePreferences component', () => {
         },
         propsData: props,
         attachTo,
+        stubs: {
+          SettingsSection,
+        },
       }),
     );
   }
 
   function findIntegrationsHeading() {
-    return wrapper.findByTestId('profile-preferences-integrations-heading');
+    return wrapper.findByTestId('settings-section-heading');
   }
 
   function findSubmitButton() {

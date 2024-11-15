@@ -46,7 +46,8 @@ module Packages
           signature, checksum = extract_signature_and_checksum(file)
           return if signature.blank? || checksum.blank?
 
-          symbol = ::Packages::Nuget::Symbol.new(
+          ::Packages::Nuget::Symbol.create!(
+            package: package,
             file: { tempfile: file, filename: path.downcase, content_type: CONTENT_TYPE },
             file_path: path,
             signature: signature,
@@ -54,14 +55,6 @@ module Packages
             file_sha256: checksum,
             project_id: package.project_id
           )
-
-          if Feature.enabled?(:nuget_extract_nuget_package_model, Feature.current_request)
-            symbol.package = package
-          else
-            symbol.legacy_package = package
-          end
-
-          symbol.save!
         rescue StandardError => e
           Gitlab::ErrorTracking.track_exception(e, class: self.class.name, package_id: package.id)
         end

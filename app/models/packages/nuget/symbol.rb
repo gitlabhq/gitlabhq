@@ -6,31 +6,19 @@ module Packages
       include FileStoreMounter
       include ShaAttribute
       include Packages::Destructible
-      include Gitlab::Utils::StrongMemoize
 
       # Used in destroying stale symbols in worker
       enum :status, default: 0, processing: 1, error: 3
 
       belongs_to :package, class_name: 'Packages::Nuget::Package', inverse_of: :nuget_symbols
-
-      # TODO: Remove with the rollout of the FF nuget_extract_nuget_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
-      belongs_to :legacy_package, -> {
-        where(package_type: :nuget)
-      }, inverse_of: :nuget_symbols, class_name: 'Packages::Package', foreign_key: :package_id
-
       belongs_to :project
 
-      delegate :project_id, :project, to: :package_or_legacy_package
+      delegate :project_id, :project, to: :package
 
       validates :file, :file_path, :signature, :object_storage_key, :size, presence: true
       validates :signature, uniqueness: { scope: :file_path }
       validates :object_storage_key, uniqueness: true
-      validates :package, presence: true, if: -> { nuget_extract_nuget_package_model_enabled? }
-
-      # TODO: Remove with the rollout of the FF nuget_extract_nuget_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
-      validates :legacy_package, presence: true, unless: -> { nuget_extract_nuget_package_model_enabled? }
+      validates :package, presence: true
 
       sha256_attribute :file_sha256
 
@@ -61,22 +49,6 @@ module Packages
           root_hash: project_id
         ).to_s
       end
-
-      # TODO: Use `package` directly in `delegate` with the rollout of
-      # the FF nuget_extract_nuget_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
-      def package_or_legacy_package
-        if nuget_extract_nuget_package_model_enabled?
-          package
-        else
-          legacy_package
-        end
-      end
-
-      def nuget_extract_nuget_package_model_enabled?
-        Feature.enabled?(:nuget_extract_nuget_package_model, Feature.current_request)
-      end
-      strong_memoize_attr :nuget_extract_nuget_package_model_enabled?
     end
   end
 end

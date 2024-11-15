@@ -274,7 +274,6 @@ group-saml:
 oauth:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_GITLAB_HOSTNAME: "gitlab"
@@ -298,7 +297,6 @@ instance-saml:
 jira:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
@@ -354,7 +352,6 @@ mtls:
 mattermost:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
@@ -365,7 +362,6 @@ mattermost:
 registry:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
@@ -377,7 +373,6 @@ registry:
 repository-storage:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
@@ -399,7 +394,6 @@ service-ping-disabled:
 smtp:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
@@ -410,7 +404,6 @@ smtp:
 cloud-activation:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
@@ -422,7 +415,6 @@ cloud-activation:
 large-setup:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag can_use_large_setup
@@ -455,7 +447,6 @@ elasticsearch:
 importers:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
@@ -469,7 +460,6 @@ importers:
 .ai-gateway-base:
   extends:
     - .qa
-    - .failure-videos
 
 ai-gateway:
   extends:
@@ -522,7 +512,6 @@ ai-gateway-no-license:
 continuous-vulnerabiity-scanning:
   extends:
     - .qa
-    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ContinuousVulnerabilityScanning
     QA_MOCK_GITHUB: "true"

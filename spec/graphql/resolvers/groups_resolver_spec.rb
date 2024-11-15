@@ -40,5 +40,15 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
         expect(subject).to contain_exactly(other_group)
       end
     end
+
+    context 'with `ids` argument' do
+      let_it_be(:other_group) { create(:group, name: 'other-group') }
+
+      let(:params) { { ids: [other_group.to_global_id.to_s] } }
+
+      it 'filters groups by gid' do
+        expect(subject).to contain_exactly(other_group)
+      end
+    end
   end
 end

@@ -8,7 +8,7 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :pa
   let_it_be(:project) { create(:project) }
   let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: 'Dummy.Package', project: project) }
 
-  let(:presenter) { described_class.new(project.packages) }
+  let(:presenter) { described_class.new(::Packages::Nuget::Package.for_projects(project)) }
 
   describe '#count' do
     subject { presenter.count }
@@ -30,11 +30,14 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :pa
     end
 
     it 'avoids N+1 database queries' do
-      control = ActiveRecord::QueryRecorder.new { described_class.new(project.packages).items }
+      control = ActiveRecord::QueryRecorder.new do
+        described_class.new(::Packages::Nuget::Package.for_projects(project)).items
+      end
 
       create(:nuget_package, :with_metadatum, name: 'Dummy.Package', project: project)
 
-      expect { described_class.new(project.packages).items }.not_to exceed_query_limit(control)
+      expect { described_class.new(::Packages::Nuget::Package.for_projects(project)).items }
+        .not_to exceed_query_limit(control)
     end
 
     it 'returns an array' do

@@ -186,7 +186,7 @@ sudo /etc/init.d/gitlab start
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142189) in GitLab 16.9.
 

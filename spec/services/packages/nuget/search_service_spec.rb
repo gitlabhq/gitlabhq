@@ -7,6 +7,12 @@ RSpec.describe Packages::Nuget::SearchService, feature_category: :package_regist
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, namespace: subgroup) }
+  let_it_be_with_refind(:package_a) { create(:nuget_package, project: project, name: 'DummyPackageA') }
+  let_it_be(:packages_b) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageB') }
+  let_it_be(:packages_c) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageC') }
+  let_it_be(:package_d) { create(:nuget_package, project: project, name: 'FooBarD') }
+  let_it_be(:other_package_a) { create(:nuget_package, name: 'DummyPackageA') }
+  let_it_be(:other_package_b) { create(:nuget_package, name: 'DummyPackageB') }
 
   let(:search_term) { 'ummy' }
   let(:per_page) { 5 }
@@ -121,122 +127,51 @@ RSpec.describe Packages::Nuget::SearchService, feature_category: :package_regist
       end
     end
 
-    context 'when nuget_extract_nuget_package_model is enabled' do
-      let_it_be_with_refind(:package_a) { create(:nuget_package, project: project, name: 'DummyPackageA') }
-      let_it_be(:packages_b) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageB') }
-      let_it_be(:packages_c) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageC') }
-      let_it_be(:package_d) { create(:nuget_package, project: project, name: 'FooBarD') }
-      let_it_be(:other_package_a) { create(:nuget_package, name: 'DummyPackageA') }
-      let_it_be(:other_package_b) { create(:nuget_package, name: 'DummyPackageB') }
+    context 'with project' do
+      let(:target) { project }
 
-      context 'with project' do
-        let(:target) { project }
+      before_all do
+        project.add_developer(user)
+      end
 
+      it_behaves_like 'handling all the conditions'
+    end
+
+    context 'with subgroup' do
+      let(:target) { subgroup }
+
+      before_all do
+        subgroup.add_developer(user)
+      end
+
+      it_behaves_like 'handling all the conditions'
+    end
+
+    context 'with group' do
+      let(:target) { group }
+
+      context 'when user is a group member' do
         before_all do
-          project.add_developer(user)
+          group.add_developer(user)
         end
 
         it_behaves_like 'handling all the conditions'
       end
 
-      context 'with subgroup' do
-        let(:target) { subgroup }
-
-        before_all do
-          subgroup.add_developer(user)
-        end
-
-        it_behaves_like 'handling all the conditions'
-      end
-
-      context 'with group' do
-        let(:target) { group }
-
-        context 'when user is a group member' do
+      context 'when user is not a group member' do
+        context 'with public registry in private group' do
           before_all do
-            group.add_developer(user)
+            [subgroup, group, project].each do |entity|
+              entity.reload.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+            end
+            project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
+          end
+
+          before do
+            stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
           end
 
           it_behaves_like 'handling all the conditions'
-        end
-
-        context 'when user is not a group member' do
-          context 'with public registry in private group' do
-            before_all do
-              [subgroup, group, project].each do |entity|
-                entity.reload.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
-              end
-              project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
-            end
-
-            before do
-              stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
-            end
-
-            it_behaves_like 'handling all the conditions'
-          end
-        end
-      end
-    end
-
-    context 'when nuget_extract_nuget_package_model is disabled' do
-      let_it_be_with_refind(:package_a) { create(:nuget_package_legacy, project: project, name: 'DummyPackageA') }
-      let_it_be(:packages_b) { create_list(:nuget_package_legacy, 5, project: project, name: 'DummyPackageB') }
-      let_it_be(:packages_c) { create_list(:nuget_package_legacy, 5, project: project, name: 'DummyPackageC') }
-      let_it_be(:package_d) { create(:nuget_package_legacy, project: project, name: 'FooBarD') }
-      let_it_be(:other_package_a) { create(:nuget_package_legacy, name: 'DummyPackageA') }
-      let_it_be(:other_package_b) { create(:nuget_package_legacy, name: 'DummyPackageB') }
-
-      before do
-        stub_feature_flags(nuget_extract_nuget_package_model: false)
-      end
-
-      context 'with project' do
-        let(:target) { project }
-
-        before_all do
-          project.add_developer(user)
-        end
-
-        it_behaves_like 'handling all the conditions', factory: :nuget_package_legacy
-      end
-
-      context 'with subgroup' do
-        let(:target) { subgroup }
-
-        before_all do
-          subgroup.add_developer(user)
-        end
-
-        it_behaves_like 'handling all the conditions', factory: :nuget_package_legacy
-      end
-
-      context 'with group' do
-        let(:target) { group }
-
-        context 'when user is a group member' do
-          before_all do
-            group.add_developer(user)
-          end
-
-          it_behaves_like 'handling all the conditions', factory: :nuget_package_legacy
-        end
-
-        context 'when user is not a group member' do
-          context 'with public registry in private group' do
-            before_all do
-              [subgroup, group, project].each do |entity|
-                entity.reload.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
-              end
-              project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
-            end
-
-            before do
-              stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
-            end
-
-            it_behaves_like 'handling all the conditions', factory: :nuget_package_legacy
-          end
         end
       end
     end

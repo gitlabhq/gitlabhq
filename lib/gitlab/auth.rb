@@ -486,3 +486,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth.prepend_mod_with('Gitlab::Auth')

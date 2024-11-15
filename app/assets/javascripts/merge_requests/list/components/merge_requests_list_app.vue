@@ -71,6 +71,7 @@ import {
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
+import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
 import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/get_merge_requests.query.graphql';
@@ -115,6 +116,7 @@ export default {
     ApprovalCount,
     EmptyState,
     IssuableMilestone,
+    IssuableByEmail,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -133,6 +135,7 @@ export default {
     environmentNamesPath: { default: '' },
     mergeTrainsPath: { default: undefined },
     defaultBranch: { default: '' },
+    initialEmail: { default: '' },
   },
   data() {
     return {
@@ -689,134 +692,142 @@ export default {
 </script>
 
 <template>
-  <issuable-list
-    v-if="hasAnyMergeRequests"
-    :namespace="fullPath"
-    recent-searches-storage-key="merge_requests"
-    :search-tokens="searchTokens"
-    :has-scoped-labels-feature="hasScopedLabelsFeature"
-    :initial-filter-value="filterTokens"
-    :sort-options="sortOptions"
-    :initial-sort-by="sortKey"
-    :issuables="mergeRequests"
-    :error="mergeRequestsError"
-    :tabs="$options.mergeRequestListTabs"
-    :current-tab="state"
-    :tab-counts="tabCounts"
-    :issuables-loading="isLoading"
-    :show-pagination-controls="showPaginationControls"
-    :default-page-size="pageSize"
-    sync-filter-and-sort
-    use-keyset-pagination
-    :has-next-page="pageInfo.hasNextPage"
-    :has-previous-page="pageInfo.hasPreviousPage"
-    issuable-item-class="merge-request"
-    :show-bulk-edit-sidebar="showBulkEditSidebar"
-    @click-tab="handleClickTab"
-    @next-page="handleNextPage"
-    @previous-page="handlePreviousPage"
-    @sort="handleSort"
-    @filter="handleFilter"
-    @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
-  >
-    <template #nav-actions>
-      <div class="gl-flex gl-gap-3">
-        <gl-button v-if="mergeTrainsPath" :href="mergeTrainsPath" data-testid="merge-trains">
-          {{ __('Merge trains') }}
-        </gl-button>
-        <gl-button
-          v-if="canBulkUpdate"
-          class="gl-grow"
-          :disabled="isBulkEditButtonDisabled"
-          data-testid="bulk-edit"
-          @click="handleBulkUpdateClick"
-        >
-          {{ __('Bulk edit') }}
-        </gl-button>
+  <div>
+    <issuable-list
+      v-if="hasAnyMergeRequests"
+      :namespace="fullPath"
+      recent-searches-storage-key="merge_requests"
+      :search-tokens="searchTokens"
+      :has-scoped-labels-feature="hasScopedLabelsFeature"
+      :initial-filter-value="filterTokens"
+      :sort-options="sortOptions"
+      :initial-sort-by="sortKey"
+      :issuables="mergeRequests"
+      :error="mergeRequestsError"
+      :tabs="$options.mergeRequestListTabs"
+      :current-tab="state"
+      :tab-counts="tabCounts"
+      :issuables-loading="isLoading"
+      :show-pagination-controls="showPaginationControls"
+      :default-page-size="pageSize"
+      sync-filter-and-sort
+      use-keyset-pagination
+      :has-next-page="pageInfo.hasNextPage"
+      :has-previous-page="pageInfo.hasPreviousPage"
+      issuable-item-class="merge-request"
+      :show-bulk-edit-sidebar="showBulkEditSidebar"
+      @click-tab="handleClickTab"
+      @next-page="handleNextPage"
+      @previous-page="handlePreviousPage"
+      @sort="handleSort"
+      @filter="handleFilter"
+      @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
+    >
+      <template #nav-actions>
+        <div class="gl-flex gl-gap-3">
+          <gl-button v-if="mergeTrainsPath" :href="mergeTrainsPath" data-testid="merge-trains">
+            {{ __('Merge trains') }}
+          </gl-button>
+          <gl-button
+            v-if="canBulkUpdate"
+            class="gl-grow"
+            :disabled="isBulkEditButtonDisabled"
+            data-testid="bulk-edit"
+            @click="handleBulkUpdateClick"
+          >
+            {{ __('Bulk edit') }}
+          </gl-button>
 
-        <gl-button
-          v-if="newMergeRequestPath"
-          variant="confirm"
-          :href="newMergeRequestPath"
-          data-testid="new-merge-request-button"
-          data-event-tracking="click_new_merge_request_list"
-        >
-          {{ $options.i18n.newMergeRequest }}
-        </gl-button>
+          <gl-button
+            v-if="newMergeRequestPath"
+            variant="confirm"
+            :href="newMergeRequestPath"
+            data-testid="new-merge-request-button"
+            data-event-tracking="click_new_merge_request_list"
+          >
+            {{ $options.i18n.newMergeRequest }}
+          </gl-button>
 
-        <merge-request-more-actions-dropdown />
-      </div>
-    </template>
+          <merge-request-more-actions-dropdown />
+        </div>
+      </template>
 
-    <template #status="{ issuable = {} }">
-      {{ getStatus(issuable) }}
-      <gl-link
-        v-if="issuable.state === $options.STATUS_OPEN && isMergeRequestBroken(issuable)"
-        v-gl-tooltip
-        :href="issuable.webUrl"
-        :title="__('Cannot be merged automatically')"
-        data-testid="merge-request-cannot-merge"
-      >
-        <gl-icon name="warning-solid" variant="strong" />
-      </gl-link>
-    </template>
-
-    <template #timeframe="{ issuable = {} }">
-      <issuable-milestone v-if="issuable.milestone" :milestone="issuable.milestone" />
-    </template>
-
-    <template #target-branch="{ issuable = {} }">
-      <span
-        v-if="issuable.targetBranch !== defaultBranch"
-        class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
-        data-testid="target-branch"
-      >
+      <template #status="{ issuable = {} }">
+        {{ getStatus(issuable) }}
         <gl-link
+          v-if="issuable.state === $options.STATUS_OPEN && isMergeRequestBroken(issuable)"
           v-gl-tooltip
-          :href="issuable.targetBranchPath"
-          :title="targetBranchTooltip(issuable)"
-          class="ref-name !gl-text-gray-500"
+          :href="issuable.webUrl"
+          :title="__('Cannot be merged automatically')"
+          data-testid="merge-request-cannot-merge"
         >
-          <gl-icon name="branch" :size="12" class="gl-mr-2" />{{ issuable.targetBranch }}
+          <gl-icon name="warning-solid" variant="strong" />
         </gl-link>
-      </span>
-    </template>
+      </template>
 
-    <template #statistics="{ issuable = {} }">
-      <li class="!gl-mr-0">
-        <merge-request-statistics :merge-request="issuable" />
-      </li>
-    </template>
+      <template #timeframe="{ issuable = {} }">
+        <issuable-milestone v-if="issuable.milestone" :milestone="issuable.milestone" />
+      </template>
 
-    <template #approval-status="{ issuable = {} }">
-      <li class="!gl-mr-0">
-        <approval-count :merge-request="issuable" full-text />
-      </li>
-    </template>
+      <template #target-branch="{ issuable = {} }">
+        <span
+          v-if="issuable.targetBranch !== defaultBranch"
+          class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
+          data-testid="target-branch"
+        >
+          <gl-link
+            v-gl-tooltip
+            :href="issuable.targetBranchPath"
+            :title="targetBranchTooltip(issuable)"
+            class="ref-name !gl-text-subtle"
+          >
+            <gl-icon name="branch" :size="12" class="gl-mr-2" />{{ issuable.targetBranch }}
+          </gl-link>
+        </span>
+      </template>
 
-    <template #pipeline-status="{ issuable = {} }">
-      <li
-        v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
-        class="issuable-pipeline-status !gl-mr-0 gl-hidden sm:gl-flex"
-      >
-        <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
-      </li>
-    </template>
+      <template #statistics="{ issuable = {} }">
+        <li class="!gl-mr-0">
+          <merge-request-statistics :merge-request="issuable" />
+        </li>
+      </template>
 
-    <template #reviewers="{ issuable = {} }">
-      <li v-if="getReviewers(issuable).length" class="issuable-reviewers !gl-mr-0">
-        <merge-request-reviewers
-          :reviewers="getReviewers(issuable)"
-          :icon-size="16"
-          :max-visible="4"
-          class="gl-flex gl-items-center"
-        />
-      </li>
-    </template>
+      <template #approval-status="{ issuable = {} }">
+        <li class="!gl-mr-0">
+          <approval-count :merge-request="issuable" full-text />
+        </li>
+      </template>
 
-    <template #empty-state>
-      <empty-state :has-search="hasSearch" :is-open-tab="isOpenTab" />
-    </template>
-  </issuable-list>
-  <empty-state v-else :has-merge-requests="false" />
+      <template #pipeline-status="{ issuable = {} }">
+        <li
+          v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
+          class="issuable-pipeline-status !gl-mr-0 gl-hidden sm:gl-flex"
+        >
+          <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
+        </li>
+      </template>
+
+      <template #reviewers="{ issuable = {} }">
+        <li v-if="getReviewers(issuable).length" class="issuable-reviewers !gl-mr-0">
+          <merge-request-reviewers
+            :reviewers="getReviewers(issuable)"
+            :icon-size="16"
+            :max-visible="4"
+            class="gl-flex gl-items-center"
+          />
+        </li>
+      </template>
+
+      <template #empty-state>
+        <empty-state :has-search="hasSearch" :is-open-tab="isOpenTab" />
+      </template>
+    </issuable-list>
+    <empty-state v-else :has-merge-requests="false" />
+    <issuable-by-email
+      v-if="initialEmail"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+      data-track-action="click_email_issue_project_issues_empty_merge_request_page"
+      data-track-label="email_issue_project_merge_request_empty_list"
+    />
+  </div>
 </template>

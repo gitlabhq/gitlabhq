@@ -85,6 +85,7 @@ To use GitLab Duo features in any project or group, you must assign the user to 
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
+1. Select **Assign seats** on the **Seat utilization** card.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 The user is sent a confirmation email.
@@ -102,6 +103,7 @@ Prerequisites:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
+1. Select **Assign seats** on the **Seat utilization** card.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 The user is sent a confirmation email.

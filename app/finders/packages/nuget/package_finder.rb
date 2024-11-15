@@ -22,16 +22,9 @@ module Packages
       end
 
       def find_by_name
-        if Feature.enabled?(:nuget_extract_nuget_package_model, Feature.current_request)
-          base
-            .has_version
-            .with_case_insensitive_name(@params[:package_name])
-        else
-          base
-            .nuget
-            .has_version
-            .with_case_insensitive_name(@params[:package_name])
-        end
+        base
+          .has_version
+          .with_case_insensitive_name(@params[:package_name])
       end
 
       def find_by_version(result)
@@ -57,11 +50,7 @@ module Packages
 
       override :packages_class
       def packages_class
-        if Feature.enabled?(:nuget_extract_nuget_package_model, Feature.current_request)
-          ::Packages::Nuget::Package
-        else
-          super
-        end
+        ::Packages::Nuget::Package
       end
     end
   end

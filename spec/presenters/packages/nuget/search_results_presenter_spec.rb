@@ -12,7 +12,7 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :packa
 
   let(:package_ids) { [package_a, *packages_b, *packages_c].map(&:id) }
   let(:packages) do
-    ::Packages::Package.for_projects(project).order(Arel.sql("POSITION(id::text IN '#{package_ids.join(',')}')"))
+    ::Packages::Nuget::Package.for_projects(project).order(Arel.sql("POSITION(id::text IN '#{package_ids.join(',')}')"))
   end
 
   let(:search_results) do

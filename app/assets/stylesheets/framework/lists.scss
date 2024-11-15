@@ -84,7 +84,7 @@ ul.content-list {
   padding: 0;
 
   li {
-    border-color: $gray-50;
+    @apply gl-border-default;
     font-size: $gl-font-size;
     @apply gl-text-default;
     word-break: break-word;

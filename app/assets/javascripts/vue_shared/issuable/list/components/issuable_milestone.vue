@@ -71,7 +71,7 @@ export default {
       v-gl-tooltip
       :href="milestoneLink"
       :title="milestoneDate"
-      class="gl-text-sm !gl-text-gray-500"
+      class="gl-text-sm !gl-text-subtle"
       @click.stop
     >
       <gl-icon name="milestone" :size="12" class="gl-mr-2" />{{ milestone.title }}

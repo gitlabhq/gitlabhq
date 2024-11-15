@@ -136,9 +136,27 @@ RSpec.describe CommitSignatures::GpgSignature do
       context 'when commit author does not match the gpg_key author' do
         let(:commit_author) { create(:user) }
 
-        it 'returns existing verification status' do
-          expect(signature.reverified_status).to eq('verified')
+        it 'returns unverified_author_email' do
+          expect(signature.reverified_status).to eq('unverified_author_email')
         end
+
+        context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
+          before do
+            stub_feature_flags(check_for_mailmapped_commit_emails: false)
+          end
+
+          it 'verification status is unmodified' do
+            expect(signature.reverified_status).to eq('verified')
+          end
+        end
+      end
+    end
+
+    context 'when verification_status not verified' do
+      let(:verification_status) { :unverified }
+
+      it 'returns the signature verification status' do
+        expect(signature.reverified_status).to eq('unverified')
       end
     end
 

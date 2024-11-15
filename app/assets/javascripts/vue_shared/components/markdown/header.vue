@@ -560,7 +560,7 @@ export default {
             :new-comment-template-paths="newCommentTemplatePaths"
             @select="insertSavedReply"
           />
-          <template v-if="canSummarizeChanges">
+          <template v-if="!previewMarkdown && canSummarizeChanges">
             <header-divider />
             <summarize-code-changes />
           </template>

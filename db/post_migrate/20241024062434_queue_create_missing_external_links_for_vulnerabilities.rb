@@ -10,17 +10,12 @@ class QueueCreateMissingExternalLinksForVulnerabilities < Gitlab::Database::Migr
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :project_settings,
-      :project_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op
+    # will be fixed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172843
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :project_settings, :project_id, [])
+    # no-op
+    # will be fixed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172843
   end
 end

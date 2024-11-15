@@ -3,23 +3,49 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let(:project) { create(:project, :repository) }
-  let(:client) { double(:client) }
-  let(:user) { create(:user) }
-  let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
-  let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
-  let(:merged_at) { Time.new(2017, 1, 1, 12, 17) }
+  include Import::UserMappingHelper
+
+  let_it_be(:imported_from) { ::Import::HasImportSource::IMPORT_SOURCES[:github] }
+  let_it_be(:user_representation_1) { Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice') }
+  let_it_be(:user_representation_2) { Gitlab::GithubImport::Representation::User.new(id: 5, login: 'bob') }
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITHUB)
+  end
+
+  let_it_be(:source_user_1) do
+    create(
+      :import_source_user,
+      source_user_identifier: user_representation_1.id,
+      source_hostname: project.import_url,
+      import_type: ::Import::SOURCE_GITHUB,
+      namespace: project.root_ancestor
+    )
+  end
+
+  let_it_be(:source_user_2) do
+    create(
+      :import_source_user,
+      source_user_identifier: user_representation_2.id,
+      source_hostname: project.import_url,
+      import_type: ::Import::SOURCE_GITHUB,
+      namespace: project.root_ancestor
+    )
+  end
+
+  let_it_be(:client) { double(:client) }
+  let_it_be(:user) { create(:user) }
+
+  let(:created_at) { DateTime.strptime('2024-11-05T20:10:15Z') }
+  let(:updated_at) { DateTime.strptime('2024-11-06T20:10:15Z') }
+  let(:merged_at) { DateTime.strptime('2024-11-07T20:10:15Z') }
 
   let(:source_commit) { project.repository.commit('feature') }
   let(:target_commit) { project.repository.commit('master') }
   let(:milestone) { create(:milestone, project: project) }
   let(:description) { 'This is my pull request' }
   let(:state) { :closed }
-  let_it_be(:imported_from) { ::Import::HasImportSource::IMPORT_SOURCES[:github] }
 
   let(:pull_request) do
-    alice = Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice')
-
     Gitlab::GithubImport::Representation::PullRequest.new(
       iid: 42,
       title: 'My Pull Request',
@@ -30,11 +56,11 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
       target_branch_sha: target_commit.id,
       source_repository_id: 400,
       target_repository_id: 200,
-      source_repository_owner: 'alice',
+      source_repository_owner: user_representation_1.login,
       state: state,
       milestone_number: milestone.iid,
-      author: alice,
-      assignee: alice,
+      author: user_representation_1,
+      assignee: user_representation_2,
       created_at: created_at,
       updated_at: updated_at,
       merged_at: state == :closed && merged_at
@@ -44,29 +70,36 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
   let(:importer) { described_class.new(pull_request, project, client) }
 
   describe '#execute' do
-    let(:mr) { double(:merge_request, id: 10, merged?: false) }
+    it 'imports the pull request and assignees' do
+      expect(importer).to receive(:insert_git_data)
 
-    it 'imports the pull request' do
-      expect(importer)
-        .to receive(:create_merge_request)
-        .and_return([mr, false])
+      expect { importer.execute }.to change { MergeRequest.count }.by(1)
 
-      expect(importer)
-        .to receive(:set_merge_request_assignees)
-        .with(mr)
+      created_merge_request = MergeRequest.last
+      created_mr_assignees = created_merge_request.assignees
 
-      expect(importer)
-        .to receive(:insert_git_data)
-        .with(mr, false)
+      expect(created_merge_request.author_id).to eq(source_user_1.mapped_user_id)
+      expect(created_mr_assignees).to match_array([source_user_2.mapped_user])
 
-      expect_any_instance_of(Gitlab::GithubImport::IssuableFinder)
-        .to receive(:cache_database_id)
-        .with(mr.id)
-
-      importer.execute
+      expect(created_merge_request).to have_attributes(
+        iid: pull_request.iid,
+        title: pull_request.truncated_title,
+        description: description,
+        source_project_id: project.id,
+        target_project_id: project.id,
+        source_branch: pull_request.formatted_source_branch,
+        target_branch: pull_request.target_branch,
+        state_id: MergeRequest.available_states[:merged],
+        milestone_id: milestone.id,
+        author_id: source_user_1.mapped_user_id,
+        created_at: created_at,
+        updated_at: updated_at,
+        imported_from: ::Import::SOURCE_GITHUB.to_s
+      )
     end
 
     it 'caches the created MR ID even if importer later fails' do
+      mr = create(:merge_request, :merged, author: user)
       error = StandardError.new('mocked error')
 
       allow_next_instance_of(described_class) do |importer|
@@ -86,6 +119,34 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
       expect { importer.execute }.to raise_error(error)
     end
+
+    it 'pushes placeholder references to the store' do
+      importer.execute
+
+      user_references = placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)
+      created_merge_request = MergeRequest.last
+      created_mr_assignee = created_merge_request.merge_request_assignees.first # we only import one PR assignee
+
+      expect(user_references).to match_array([
+        ['MergeRequest', created_merge_request.id, 'author_id', source_user_1.id],
+        ['MergeRequestAssignee', created_mr_assignee.id, 'user_id', source_user_2.id]
+      ])
+    end
+
+    context 'when user mapping is disabled' do
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+        allow(importer.user_finder).to receive(:user_id_for).and_return(nil)
+      end
+
+      it 'does not push any placeholder references' do
+        importer.execute
+
+        user_references = placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)
+
+        expect(user_references).to be_empty
+      end
+    end
   end
 
   describe '#create_merge_request' do
@@ -96,69 +157,24 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         .and_return(milestone.id)
     end
 
-    context 'when the author could be found' do
-      before do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(pull_request)
-          .and_return([user.id, true])
-      end
+    it 'creates a merge request with placeholder author' do
+      expect { importer.create_merge_request }.to change { MergeRequest.count }.from(0).to(1)
 
-      it 'imports the pull request with the pull request author as the merge request author' do
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .with(
-            {
-              iid: 42,
-              title: 'My Pull Request',
-              description: 'This is my pull request',
-              source_project_id: project.id,
-              target_project_id: project.id,
-              source_branch: 'github/fork/alice/feature',
-              target_branch: 'master',
-              state_id: 3,
-              milestone_id: milestone.id,
-              author_id: user.id,
-              created_at: created_at,
-              updated_at: updated_at,
-              imported_from: imported_from
-            },
-            project.merge_requests
-          )
-          .and_call_original
+      created_merge_request = MergeRequest.last
 
-        importer.create_merge_request
-      end
+      expect(created_merge_request.author_id).to eq(source_user_1.mapped_user_id)
+    end
 
-      it 'returns the created merge request' do
-        mr, exists = importer.create_merge_request
-
-        expect(mr).to be_instance_of(MergeRequest)
-        expect(exists).to eq(false)
-      end
-
-      context 'when the description has user mentions' do
-        let(:description) { 'You can ask @knejad by emailing xyz@gitlab.com' }
-
-        it 'adds backticks to the username' do
-          expect(importer).to receive(:insert_and_return_id).with(
-            a_hash_including(description: "You can ask `@knejad` by emailing xyz@gitlab.com"),
-            project.merge_requests
-          ).and_call_original
-
-          importer.create_merge_request
-        end
-      end
-
-      context 'when the source and target branch are identical' do
+    context 'when user mapping is disabled' do
+      context 'when the author could be found' do
         before do
-          allow(pull_request).to receive_messages(
-            source_repository_id: pull_request.target_repository_id,
-            source_branch: 'master'
-          )
+          allow(importer.user_finder)
+            .to receive(:author_id_for)
+            .with(pull_request)
+            .and_return([user.id, true])
         end
 
-        it 'uses a generated source branch name for the merge request' do
+        it 'imports the pull request with the pull request author as the merge request author' do
           expect(importer)
             .to receive(:insert_and_return_id)
             .with(
@@ -168,7 +184,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
                 description: 'This is my pull request',
                 source_project_id: project.id,
                 target_project_id: project.id,
-                source_branch: 'master-42',
+                source_branch: 'github/fork/alice/feature',
                 target_branch: 'master',
                 state_id: 3,
                 milestone_id: milestone.id,
@@ -183,62 +199,117 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
           importer.create_merge_request
         end
+
+        it 'returns the created merge request' do
+          mr, exists = importer.create_merge_request
+
+          expect(mr).to be_instance_of(MergeRequest)
+          expect(exists).to eq(false)
+        end
+
+        context 'when the description has user mentions' do
+          let(:description) { 'You can ask @knejad by emailing xyz@gitlab.com' }
+
+          it 'adds backticks to the username' do
+            expect(importer).to receive(:insert_and_return_id).with(
+              a_hash_including(description: "You can ask `@knejad` by emailing xyz@gitlab.com"),
+              project.merge_requests
+            ).and_call_original
+
+            importer.create_merge_request
+          end
+        end
+
+        context 'when the source and target branch are identical' do
+          before do
+            allow(pull_request).to receive_messages(
+              source_repository_id: pull_request.target_repository_id,
+              source_branch: 'master'
+            )
+          end
+
+          it 'uses a generated source branch name for the merge request' do
+            expect(importer)
+              .to receive(:insert_and_return_id)
+              .with(
+                {
+                  iid: 42,
+                  title: 'My Pull Request',
+                  description: 'This is my pull request',
+                  source_project_id: project.id,
+                  target_project_id: project.id,
+                  source_branch: 'master-42',
+                  target_branch: 'master',
+                  state_id: 3,
+                  milestone_id: milestone.id,
+                  author_id: user.id,
+                  created_at: created_at,
+                  updated_at: updated_at,
+                  imported_from: imported_from
+                },
+                project.merge_requests
+              )
+              .and_call_original
+
+            importer.create_merge_request
+          end
+        end
+
+        context 'when the import fails due to a foreign key error' do
+          it 'does not raise any errors' do
+            expect(importer)
+              .to receive(:insert_and_return_id)
+              .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
+
+            expect { importer.create_merge_request }.not_to raise_error
+          end
+        end
+
+        context 'when the merge request already exists' do
+          it 'returns the existing merge request' do
+            mr1, exists1 = importer.create_merge_request
+            mr2, exists2 = importer.create_merge_request
+
+            expect(mr2).to eq(mr1)
+            expect(exists1).to eq(false)
+            expect(exists2).to eq(true)
+          end
+        end
       end
 
-      context 'when the import fails due to a foreign key error' do
-        it 'does not raise any errors' do
+      context 'when the author could not be found' do
+        before do
+          allow(importer.user_finder)
+            .to receive(:author_id_for)
+            .with(pull_request)
+            .and_return([project.creator_id, false])
+        end
+
+        it 'imports the pull request with the project creator as the merge request author' do
           expect(importer)
             .to receive(:insert_and_return_id)
-            .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
+            .with(
+              {
+                iid: 42,
+                title: 'My Pull Request',
+                description: "*Created by: alice*\n\nThis is my pull request",
+                source_project_id: project.id,
+                target_project_id: project.id,
+                source_branch: 'github/fork/alice/feature',
+                target_branch: 'master',
+                state_id: 3,
+                milestone_id: milestone.id,
+                author_id: project.creator_id,
+                created_at: created_at,
+                updated_at: updated_at,
+                imported_from: imported_from
+              },
+              project.merge_requests
+            )
+            .and_call_original
 
-          expect { importer.create_merge_request }.not_to raise_error
+          importer.create_merge_request
         end
-      end
-
-      context 'when the merge request already exists' do
-        it 'returns the existing merge request' do
-          mr1, exists1 = importer.create_merge_request
-          mr2, exists2 = importer.create_merge_request
-
-          expect(mr2).to eq(mr1)
-          expect(exists1).to eq(false)
-          expect(exists2).to eq(true)
-        end
-      end
-    end
-
-    context 'when the author could not be found' do
-      before do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(pull_request)
-          .and_return([project.creator_id, false])
-      end
-
-      it 'imports the pull request with the project creator as the merge request author' do
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .with(
-            {
-              iid: 42,
-              title: 'My Pull Request',
-              description: "*Created by: alice*\n\nThis is my pull request",
-              source_project_id: project.id,
-              target_project_id: project.id,
-              source_branch: 'github/fork/alice/feature',
-              target_branch: 'master',
-              state_id: 3,
-              milestone_id: milestone.id,
-              author_id: project.creator_id,
-              created_at: created_at,
-              updated_at: updated_at,
-              imported_from: imported_from
-            },
-            project.merge_requests
-          )
-          .and_call_original
-
-        importer.create_merge_request
       end
     end
 
@@ -307,6 +378,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
     end
 
     context 'when merge request is open' do
+      let(:project) { create(:project, :repository) }
       let(:state) { :opened }
 
       it 'creates the source branch' do

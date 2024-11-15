@@ -10,6 +10,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Onboarding::Redirectable
   include InternalRedirect
   include SafeFormatHelper
+  include SynchronizeBroadcastMessageDismissals
 
   ACTIVE_SINCE_KEY = 'active_since'
 
@@ -155,6 +156,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       current_auth_user = build_auth_user(auth_module::User)
       set_remember_me(current_user, current_auth_user)
+      # We are also calling this here in the case that devise re-logins and current_user is set
+      synchronize_broadcast_message_dismissals(current_user)
 
       store_idp_two_factor_status(current_auth_user.bypass_two_factor?)
 
@@ -238,6 +241,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         store_idp_two_factor_status(true)
 
         accept_pending_invitations(user: @user) if new_user
+        synchronize_broadcast_message_dismissals(@user) unless new_user
         persist_accepted_terms_if_required(@user) if new_user
 
         perform_registration_tasks(@user, oauth['provider']) if new_user

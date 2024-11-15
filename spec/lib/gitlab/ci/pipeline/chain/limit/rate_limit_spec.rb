@@ -8,7 +8,6 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
   let_it_be(:project, reload: true) { create(:project, namespace: namespace) }
 
   let(:save_incompleted) { false }
-  let(:execution_policy_dry_run) { nil }
   let(:throttle_message) do
     'Too many pipelines created in the last minute. Try again later.'
   end
@@ -17,8 +16,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
-      save_incompleted: save_incompleted,
-      execution_policy_dry_run: execution_policy_dry_run
+      save_incompleted: save_incompleted
     )
   end
 
@@ -90,8 +88,10 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       it_behaves_like 'excluded from rate limits'
     end
 
-    context 'with pipeline execution policy dry run', feature_category: :security_policy_management do
-      let(:execution_policy_dry_run) { true }
+    context 'with creating_policy_pipeline? is true', feature_category: :security_policy_management do
+      before do
+        allow(command).to receive_message_chain(:pipeline_policy_context, :creating_policy_pipeline?).and_return(true)
+      end
 
       it_behaves_like 'excluded from rate limits'
     end
