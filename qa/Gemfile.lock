@@ -85,7 +85,7 @@ GEM
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
-    ffi (1.16.3)
+    ffi (1.17.0)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -117,8 +117,9 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (14.19.2)
+    gitlab-qa (14.21.0)
       activesupport (>= 6.1, < 7.2)
+      ffi (~> 1.17)
       gitlab (~> 4.19)
       http (~> 5.0)
       nokogiri (~> 1.10)
@@ -362,7 +363,7 @@ DEPENDENCIES
   fog-core (= 2.1.0)
   fog-google (~> 1.24, >= 1.24.1)
   gitlab-cng!
-  gitlab-qa (~> 14, >= 14.19.2)
+  gitlab-qa (~> 14, >= 14.21.0)
   gitlab-utils!
   gitlab_quality-test_tooling (~> 2.1.0)
   googleauth (~> 1.9.0)

@@ -20,7 +20,6 @@ export const REPORT_TYPE_SAST = 'sast';
 export const REPORT_TYPE_SAST_IAC = 'sast_iac';
 export const REPORT_TYPE_DAST = 'dast';
 export const REPORT_TYPE_DAST_PROFILES = 'dast_profiles';
-export const REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION = 'breach_and_attack_simulation';
 export const REPORT_TYPE_SECRET_DETECTION = 'secret_detection';
 export const REPORT_TYPE_DEPENDENCY_SCANNING = 'dependency_scanning';
 export const REPORT_TYPE_CONTAINER_SCANNING = 'container_scanning';

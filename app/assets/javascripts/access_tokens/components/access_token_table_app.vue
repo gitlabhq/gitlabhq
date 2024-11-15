@@ -7,11 +7,11 @@ import {
   normalizeHeaders,
   parseIntPagination,
 } from '~/lib/utils/common_utils';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
-import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from './constants';
+import { EVENT_SUCCESS, FIELDS, INITIAL_PAGE, PAGE_SIZE } from './constants';
 
 /**
  * This component supports two different types of pagination:
@@ -21,7 +21,6 @@ import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from '.
 
 export default {
   EVENT_SUCCESS,
-  FORM_SELECTOR,
   PAGE_SIZE,
   name: 'AccessTokenTableApp',
   components: {
@@ -43,10 +42,17 @@ export default {
   i18n: {
     emptyField: __('Never'),
     expired: __('Expired'),
-    modalMessage: __(
-      'Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone.',
-    ),
-    revokeButton: __('Revoke'),
+    modalMessage: {
+      revoke: s__(
+        'AccessTokens|Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
+      ),
+      rotate: s__(
+        'AccessTokens|Are you sure you want to rotate the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
+      ),
+    },
+    revokeButton: s__('AccessTokens|Revoke'),
+    rotateButton: s__('AccessTokens|Rotate'),
+
     tokenValidity: __('Token valid until revoked'),
   },
   inject: [
@@ -148,8 +154,8 @@ export default {
         this.replaceHistory(INITIAL_PAGE);
       }
     },
-    modalMessage(tokenName) {
-      return sprintf(this.$options.i18n.modalMessage, {
+    modalMessage(tokenName, action) {
+      return sprintf(this.$options.i18n.modalMessage[action], {
         accessTokenType: this.accessTokenType,
         tokenName,
       });
@@ -181,7 +187,7 @@ export default {
 </script>
 
 <template>
-  <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
+  <dom-element-listener selector=".js-token-card" @[$options.EVENT_SUCCESS]="onSuccess">
     <div>
       <div>
         <gl-table
@@ -224,18 +230,32 @@ export default {
             }}</span>
           </template>
 
-          <template #cell(action)="{ item: { name, revokePath } }">
+          <template #cell(action)="{ item: { name, revokePath, rotatePath } }">
             <gl-button
               v-if="revokePath"
               category="tertiary"
               :title="$options.i18n.revokeButton"
               :aria-label="$options.i18n.revokeButton"
-              :data-confirm="modalMessage(name)"
+              :data-confirm="modalMessage(name, 'revoke')"
               data-confirm-btn-variant="danger"
               data-testid="revoke-button"
               data-method="put"
               :href="revokePath"
               icon="remove"
+              class="has-tooltip"
+            />
+            <gl-button
+              v-if="rotatePath"
+              category="tertiary"
+              :title="$options.i18n.rotateButton"
+              :aria-label="$options.i18n.rotateButton"
+              :data-confirm="modalMessage(name, 'rotate')"
+              data-confirm-btn-variant="danger"
+              data-testid="rotate-button"
+              data-method="put"
+              data-remote
+              :href="rotatePath"
+              icon="retry"
               class="has-tooltip"
             />
           </template>

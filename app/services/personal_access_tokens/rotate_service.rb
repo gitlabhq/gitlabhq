@@ -13,13 +13,13 @@ module PersonalAccessTokens
     end
 
     def execute
-      return error_response(_('token already revoked')) if token.revoked?
+      return error_response(s_('AccessTokens|Token already revoked')) if token.revoked?
 
       response = ServiceResponse.success
 
       PersonalAccessToken.transaction do
         unless token.revoke!
-          response = error_response(_('failed to revoke token'))
+          response = error_response(s_('AccessTokens|Failed to revoke token'))
           raise ActiveRecord::Rollback
         end
 
@@ -37,7 +37,7 @@ module PersonalAccessTokens
 
     def create_access_token
       unless valid_access_level?
-        return error_response(_('Not eligible to rotate token with access level higher than the user'))
+        return error_response(s_('AccessTokens|Not eligible to rotate token with access level higher than the user'))
       end
 
       new_token = target_user.personal_access_tokens.create(create_token_params)
@@ -74,6 +74,13 @@ module PersonalAccessTokens
     end
 
     def expires_at
+      if params[:keep_token_lifetime]
+        return if token.expires_at.nil?
+
+        token_lifetime = token.expires_at - token.created_at.to_date
+        return Time.zone.today + token_lifetime
+      end
+
       return params[:expires_at] if params[:expires_at].present?
 
       return default_expiration_date if Gitlab::CurrentSettings.require_personal_access_token_expiry?

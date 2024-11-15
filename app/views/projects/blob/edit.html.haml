@@ -3,6 +3,7 @@
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 - add_page_specific_style 'page_bundles/editor'
+
 - if @conflict
   = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },
     variant: :danger,
@@ -18,8 +19,17 @@
         - blob_url = project_blob_path(@project, @id)
         = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start % { url: blob_url }, link_end: link_end , icon: external_link_icon }
 
-%h1.page-title.gl-text-size-h-display.blob-edit-page-title
-  Edit file
+
+.js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref) }
+  .gl-mb-4.gl-mt-5.gl-items-center.gl-justify-between.md:gl-flex.lg:gl-my-5
+    %h1{ class: 'md:!gl-mb-0 gl-heading-1 gl-inline-block' }
+      = _('Edit file')
+    .gl-flex.gl-gap-3
+      = render Pajamas::ButtonComponent.new do
+        = _('Cancel')
+      = render Pajamas::ButtonComponent.new(variant: :confirm) do
+        = _('Commit changes')
+
 .file-editor
   = gl_tabs_nav({ class: 'js-edit-mode nav-links gl-border-0'}) do
     = gl_tab_link_to _('Write'), '#editor', { tab_class: 'active' }
@@ -28,8 +38,3 @@
 
   = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'js-quick-submit js-edit-blob-form', data: blob_editor_paths(@project, 'put')) do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
-    = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
-    = hidden_field_tag 'last_commit_sha', @last_commit_sha
-    = hidden_field_tag 'content', '', id: "file-content"
-    = hidden_field_tag 'from_merge_request_iid', params[:from_merge_request_iid]
-    = render 'projects/commit_button', ref: @ref, cancel_path: project_blob_path(@project, @id)

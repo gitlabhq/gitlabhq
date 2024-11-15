@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_access do
   describe '#execute' do
-    let_it_be(:token, reload: true) { create(:personal_access_token) }
+    let_it_be(:token, reload: true) { create(:personal_access_token, expires_at: Time.zone.today + 30.days) }
+    let(:params) { {} }
 
-    subject(:response) { described_class.new(token.user, token).execute }
+    subject(:response) { described_class.new(token.user, token, nil, params).execute }
 
     shared_examples_for 'rotates token successfully' do
       it "rotates user's own token", :freeze_time do
@@ -15,7 +16,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         new_token = response.payload[:personal_access_token]
 
         expect(new_token.token).not_to eq(token.token)
-        expect(new_token.expires_at).to eq(Date.today + 1.week)
+        expect(new_token.expires_at).to eq(Time.zone.today + 1.week)
         expect(new_token.user).to eq(token.user)
         expect(new_token.organization).to eq(token.organization)
       end
@@ -37,13 +38,53 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
       expect(new_token.previous_personal_access_token).to eql(token)
     end
 
+    context 'when expires_at param is set' do
+      let(:params) { { expires_at: Time.zone.today + 60.days } }
+
+      it 'sets the custom expiration time', :freeze_time do
+        response
+
+        new_token = response.payload[:personal_access_token]
+        expect(new_token.expires_at).to eql(Time.zone.today + 60.days)
+      end
+    end
+
+    context 'when keep_token_lifetime param is set' do
+      let(:params) { { keep_token_lifetime: true } }
+
+      it 'keeps the lifetime of the new token the same with the old token', :freeze_time do
+        travel 1.day
+
+        response
+
+        new_token = response.payload[:personal_access_token]
+        expect(new_token.expires_at).to eql(Time.zone.today + 30.days)
+      end
+
+      context 'when token never expires' do
+        before do
+          allow_next_instance_of(PersonalAccessToken) do |token|
+            allow(token).to receive(:allow_expires_at_to_be_empty?).and_return(true)
+          end
+          token.update!(expires_at: nil)
+        end
+
+        it 'sets the new token to never expire' do
+          response
+
+          new_token = response.payload[:personal_access_token]
+          expect(new_token.expires_at).to be_nil
+        end
+      end
+    end
+
     context 'when user tries to rotate already revoked token' do
       let_it_be(:token, reload: true) { create(:personal_access_token, :revoked) }
 
       it 'returns an error' do
         expect { response }.not_to change { token.reload.revoked? }.from(true)
         expect(response).to be_error
-        expect(response.message).to eq('token already revoked')
+        expect(response.message).to eq(s_('AccessTokens|Token already revoked'))
       end
     end
 

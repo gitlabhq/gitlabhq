@@ -354,7 +354,7 @@ EOT
   end
 
   describe '.filter_diff_options' do
-    let(:options) { { max_files: 100, invalid_opt: true } }
+    let(:options) { { max_files: 100, invalid_opt: true, offset_index: 10 } }
 
     context "without default options" do
       let(:filtered_options) { described_class.filter_diff_options(options) }

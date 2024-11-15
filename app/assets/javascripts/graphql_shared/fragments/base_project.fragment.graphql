@@ -31,4 +31,6 @@ fragment BaseProject on Project {
   maxAccessLevel {
     integerValue
   }
+  isCatalogResource
+  exploreCatalogPath
 }

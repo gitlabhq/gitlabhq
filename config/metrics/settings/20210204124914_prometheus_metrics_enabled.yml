@@ -11,10 +11,6 @@ instrumentation_class: PrometheusMetricsEnabledMetric
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

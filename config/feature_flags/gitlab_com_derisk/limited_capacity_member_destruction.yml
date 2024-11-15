@@ -1,0 +1,9 @@
+---
+name: limited_capacity_member_destruction
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/467281
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170820
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501060
+milestone: '17.6'
+group: group::utilization
+type: gitlab_com_derisk
+default_enabled: false

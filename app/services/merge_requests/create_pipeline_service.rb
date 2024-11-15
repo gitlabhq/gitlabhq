@@ -9,15 +9,11 @@ module MergeRequests
     end
 
     def execute_async(merge_request)
-      pipeline_creation_request = nil
+      pipeline_creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
 
-      if Feature.enabled?(:ci_redis_pipeline_creations, merge_request.project)
-        pipeline_creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
-
-        # We need to update the merge status here because a pipeline has begun creating and MRs that require a
-        # successful pipeline should not be mergable at this point.
-        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
-      end
+      # We need to update the merge status here because a pipeline has begun creating and MRs that require a
+      # successful pipeline should not be mergable at this point.
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
 
       ::MergeRequests::CreatePipelineWorker.perform_async(
         project.id, current_user.id, merge_request.id,

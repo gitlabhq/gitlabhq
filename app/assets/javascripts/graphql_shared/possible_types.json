@@ -23,6 +23,10 @@
     "AbuseReportNote",
     "Note"
   ],
+  "CiJobTokenScopeTarget": [
+    "Group",
+    "Project"
+  ],
   "CiRunnerCloudProvisioning": [
     "CiRunnerGkeProvisioning",
     "CiRunnerGoogleCloudProvisioning"

@@ -624,6 +624,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:members_schedule_prune_deletions
+  :worker_name: Members::SchedulePruneDeletionsWorker
+  :feature_category: :seat_cost_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:merge_requests_process_scheduled_merge
   :worker_name: MergeRequests::ProcessScheduledMergeWorker
   :feature_category: :code_review_workflow
@@ -3507,6 +3516,15 @@
 - :name: members_expiring_email_notification
   :worker_name: Members::ExpiringEmailNotificationWorker
   :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: members_prune_deletions
+  :worker_name: Members::PruneDeletionsWorker
+  :feature_category: :seat_cost_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

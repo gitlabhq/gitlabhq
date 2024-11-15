@@ -5,18 +5,15 @@ require 'spec_helper'
 RSpec.describe 'CiJobTokenScopeRemoveGroup', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) do
-    create(:project,
-      ci_inbound_job_token_scope_enabled: true
-    )
-  end
+  let_it_be(:project) { create(:project, ci_inbound_job_token_scope_enabled: true) }
 
   let_it_be(:target_group) { create(:group, :private) }
 
   let_it_be(:link) do
     create(:ci_job_token_group_scope_link,
       source_project: project,
-      target_group: target_group)
+      target_group: target_group
+    )
   end
 
   let(:variables) do
@@ -37,6 +34,17 @@ RSpec.describe 'CiJobTokenScopeRemoveGroup', feature_category: :continuous_integ
             }
           }
         }
+        ciJobTokenScopeAllowlistEntry {
+          sourceProject {
+            fullPath
+          }
+          target {
+            ... on Group {
+              fullPath
+            }
+          }
+          createdAt
+        }
       QL
     end
   end
@@ -44,13 +52,9 @@ RSpec.describe 'CiJobTokenScopeRemoveGroup', feature_category: :continuous_integ
   let(:mutation_response) { graphql_mutation_response(:ci_job_token_scope_remove_group) }
 
   context 'when unauthorized' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
 
     context 'when not a maintainer' do
-      before_all do
-        project.add_developer(current_user)
-      end
-
       it 'has graphql errors' do
         post_graphql_mutation(mutation, current_user: current_user)
 
@@ -60,17 +64,20 @@ RSpec.describe 'CiJobTokenScopeRemoveGroup', feature_category: :continuous_integ
   end
 
   context 'when authorized' do
-    let_it_be(:current_user) { project.first_owner }
+    let_it_be(:current_user) { create(:user, maintainer_of: project, guest_of: target_group) }
 
-    before_all do
-      target_group.add_guest(current_user)
-    end
-
-    it 'removes the target group from the job token scope' do
+    it 'removes the target group from the job token scope', :aggregate_failures do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         expect(response).to have_gitlab_http_status(:success)
+
         expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlist', 'nodes')).to be_empty
+
+        expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'sourceProject',
+          'fullPath')).to eq(project.full_path)
+        expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'target',
+          'fullPath')).to eq(target_group.full_path)
+        expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'createdAt')).to eq(link.created_at.iso8601)
       end.to change { Ci::JobToken::GroupScopeLink.count }.by(-1)
     end
 

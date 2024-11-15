@@ -173,4 +173,5 @@ export const BLOCKED_SEAT_OVERAGES_BODY = s__(
   'InviteMembersModal|You must purchase more seats for your subscription before this amount of users can be added.',
 );
 export const BLOCKED_SEAT_OVERAGES_CTA = s__('InviteMembersModal|Purchase more seats');
+export const BLOCKED_SEAT_OVERAGES_CTA_DOCS = s__('InviteMembersModal|Learn how to add seats');
 export const BLOCKED_SEAT_OVERAGES_ERROR_REASON = 'seat_limit_exceeded_error';

@@ -10,6 +10,7 @@ RSpec.describe Database::MonitorLockedTablesWorker, feature_category: :cell do
     context 'when running with single database' do
       before do
         skip_if_database_exists(:ci)
+        skip_if_database_exists(:sec)
       end
 
       it 'skips executing the job' do
@@ -48,6 +49,8 @@ RSpec.describe Database::MonitorLockedTablesWorker, feature_category: :cell do
         end
 
         it 'reports the tables that need to be locked on both databases main and ci' do
+          skip_if_database_exists(:sec)
+
           lock_writes_results = [
             { table: 'users', database: 'ci', action: 'needs_lock' },
             { table: 'projects', database: 'ci', action: 'needs_lock' },
@@ -67,6 +70,49 @@ RSpec.describe Database::MonitorLockedTablesWorker, feature_category: :cell do
             'main' => {
               tables_need_lock: ['ci_builds'],
               tables_need_lock_count: 1,
+              tables_need_unlock: ['issues'],
+              tables_need_unlock_count: 1
+            }
+          }
+          expect(tables_locker).to receive(:lock_writes).and_return(lock_writes_results)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:results, expected_log_results)
+
+          worker.perform
+        end
+
+        it 'reports the tables that need to be locked on main, ci, and sec databases' do
+          skip_if_shared_database(:ci)
+          skip_if_shared_database(:sec)
+
+          lock_writes_results = [
+            { table: 'vulnerabilities', database: 'sec', action: 'skipped' },
+            { table: 'vulnerabilities', database: 'ci', action: 'needs_lock' },
+            { table: 'vulnerabilities', database: 'main', action: 'needs_lock' },
+            { table: 'users', database: 'sec', action: 'needs_lock' },
+            { table: 'users', database: 'ci', action: 'needs_lock' },
+            { table: 'projects', database: 'ci', action: 'needs_lock' },
+            { table: 'ci_builds', database: 'ci', action: 'skipped' },
+            { table: 'ci_builds', database: 'main', action: 'needs_lock' },
+            { table: 'users', database: 'main', action: 'skipped' },
+            { table: 'projects', database: 'main', action: 'skipped' },
+            { table: 'issues', database: 'main', action: 'needs_unlock' } # if a table was locked by mistake
+          ]
+          expected_log_results = {
+            'ci' => {
+              tables_need_lock: %w[vulnerabilities users projects],
+              tables_need_lock_count: 3,
+              tables_need_unlock: [],
+              tables_need_unlock_count: 0
+            },
+            'sec' => {
+              tables_need_lock: %w[users],
+              tables_need_lock_count: 1,
+              tables_need_unlock: [],
+              tables_need_unlock_count: 0
+            },
+            'main' => {
+              tables_need_lock: %w[vulnerabilities ci_builds],
+              tables_need_lock_count: 2,
               tables_need_unlock: ['issues'],
               tables_need_unlock_count: 1
             }

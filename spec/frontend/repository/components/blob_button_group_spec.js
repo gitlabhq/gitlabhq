@@ -155,7 +155,7 @@ describe('BlobButtonGroup component', () => {
       targetBranch,
       originalBranch,
       canPushCode,
-      deletePath,
+      actionPath: deletePath,
       emptyRepo,
       isUsingLfs,
     });

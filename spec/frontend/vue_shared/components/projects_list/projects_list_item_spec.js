@@ -78,6 +78,7 @@ describe('ProjectsListItem', () => {
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
@@ -521,6 +522,38 @@ describe('ProjectsListItem', () => {
             expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
           });
         });
+      });
+    });
+  });
+
+  describe('CI Catalog Badge', () => {
+    describe('when project is not in the CI Catalog', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render badge', () => {
+        expect(findCiCatalogBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when project is in the CI Catalog', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            project: {
+              ...project,
+              isCatalogResource: true,
+              exploreCatalogPath: `/catalog/${project.pathWithNamespace}`,
+            },
+          },
+        });
+      });
+
+      it('renders badge with correct link', () => {
+        expect(findCiCatalogBadge().exists()).toBe(true);
+        expect(findCiCatalogBadge().text()).toBe('CI/CD Catalog project');
+        expect(findCiCatalogBadge().props('href')).toBe(`/catalog/${project.pathWithNamespace}`);
       });
     });
   });

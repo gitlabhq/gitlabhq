@@ -199,8 +199,10 @@ Some project items are excluded from migration because they either:
 
 - May contain sensitive information:
   - CI/CD variables
+  - CI/CD job logs
   - Deploy keys
   - Deploy tokens
+  - Job artifacts
   - Pipeline schedule variables
   - Pipeline triggers
   - Webhooks

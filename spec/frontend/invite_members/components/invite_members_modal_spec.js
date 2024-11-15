@@ -875,6 +875,27 @@ describe('InviteMembersModal', () => {
 
         expect(findSeatOveragesAlert().exists()).toBe(false);
       });
+
+      describe('when hasBsoEnabled is true', () => {
+        beforeEach(() => {
+          createInviteMembersToGroupWrapper(
+            {},
+            {},
+            {},
+            { addSeatsHref: 'url_to_add_seats', hasBsoEnabled: true },
+          );
+        });
+
+        it('shows the seat limit reached label for the primary button', async () => {
+          await triggerMembersTokenSelect([user1]);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.ERROR_SEAT_LIMIT_REACHED);
+          clickInviteButton();
+          await waitForPromises();
+
+          expect(findSeatOveragesAlert().exists()).toBe(true);
+          expect(findSeatOveragesAlert().props('primaryButtonText')).toBe('Learn how to add seats');
+        });
+      });
     });
   });
 });

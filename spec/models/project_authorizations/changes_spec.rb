@@ -46,18 +46,15 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
     end
 
     shared_examples_for 'publishes AuthorizationsAddedEvent' do
-      it 'publishes a AuthorizationsAddedEvent event with project id' do
+      it 'publishes a AuthorizationsAddedEvent event with project ids' do
         allow(::Gitlab::EventStore).to receive(:publish_group)
-        project_events = project_ids.map do |project_id|
-          project_data = { project_id: project_id, user_ids: user_ids }
-          project_event = instance_double('::ProjectAuthorizations::AuthorizationsAddedEvent', data: project_data)
+        project_data = { project_ids: project_ids, user_ids: user_ids }
+        project_event = instance_double('::ProjectAuthorizations::AuthorizationsAddedEvent', data: project_data)
 
-          allow(::ProjectAuthorizations::AuthorizationsAddedEvent).to receive(:new)
-                                                                          .with(data: project_data)
-                                                                          .and_return(project_event)
-          project_event
-        end
-        expect(::Gitlab::EventStore).to receive(:publish_group).with(project_events)
+        allow(::ProjectAuthorizations::AuthorizationsAddedEvent).to receive(:new)
+                                                                        .with(data: project_data)
+                                                                        .and_return(project_event)
+        expect(::Gitlab::EventStore).to receive(:publish_group).with([project_event])
 
         apply_project_authorization_changes
       end
@@ -184,6 +181,78 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
 
         it_behaves_like 'publishes AuthorizationsAddedEvent'
         it_behaves_like 'does not publish AuthorizationsRemovedEvent'
+      end
+
+      context 'when a single user is added to multiple projects' do
+        let(:events_batch_size) { 2 }
+
+        before do
+          stub_const("#{described_class}::EVENTS_BATCH_SIZE", events_batch_size)
+        end
+
+        it 'publishes events in batches for projects' do
+          allow(::Gitlab::EventStore).to receive(:publish_group)
+
+          apply_project_authorization_changes
+
+          expect(::Gitlab::EventStore).to have_received(:publish_group) do |events|
+            expect(events.size).to eq(2)
+
+            expect(events.map(&:data)).to match_array([
+              { project_ids: [project_1.id, project_2.id], user_ids: [user.id] },
+              { project_ids: [project_3.id], user_ids: [user.id] }
+            ])
+          end
+        end
+      end
+
+      context 'when multiple users are added to multiple projects' do
+        let_it_be(:user_1) { create(:user) }
+        let_it_be(:user_2) { create(:user) }
+        let_it_be(:user_3) { create(:user) }
+        let_it_be(:project_1) { create(:project) }
+        let_it_be(:project_2) { create(:project) }
+        let_it_be(:project_3) { create(:project) }
+        let(:project_ids) { [project_1.id, project_2.id, project_3.id] }
+        let(:user_ids) { [user_1.id, user_2.id, user_3.id] }
+
+        let(:authorizations_to_add) do
+          [
+            { user_id: user_1.id, project_id: project_1.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_1.id, project_id: project_2.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_1.id, project_id: project_3.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_2.id, project_id: project_1.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_2.id, project_id: project_2.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_2.id, project_id: project_3.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_3.id, project_id: project_1.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_3.id, project_id: project_2.id, access_level: Gitlab::Access::MAINTAINER },
+            { user_id: user_3.id, project_id: project_3.id, access_level: Gitlab::Access::MAINTAINER }
+          ]
+        end
+
+        let(:events_batch_size) { 2 }
+
+        before do
+          stub_const("#{described_class}::EVENTS_BATCH_SIZE", events_batch_size)
+        end
+
+        it 'publishes events in batches for both users and projects' do
+          allow(::Gitlab::EventStore).to receive(:publish_group)
+
+          apply_project_authorization_changes
+
+          expect(::Gitlab::EventStore).to have_received(:publish_group) do |events|
+            expect(events.size).to eq(4)
+
+            expect(events.first).to be_a(ProjectAuthorizations::AuthorizationsAddedEvent)
+            expect(events.map(&:data)).to match_array([
+              { project_ids: [project_1.id, project_2.id], user_ids: [user_1.id, user_2.id] },
+              { project_ids: [project_1.id, project_2.id], user_ids: [user_3.id] },
+              { project_ids: [project_3.id], user_ids: [user_1.id, user_2.id] },
+              { project_ids: [project_3.id], user_ids: [user_3.id] }
+            ])
+          end
+        end
       end
     end
 

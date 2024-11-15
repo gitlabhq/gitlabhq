@@ -3332,6 +3332,7 @@ CREATE TABLE p_ci_stages (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
     pipeline_id bigint,
+    CONSTRAINT check_74835fc631 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
@@ -9763,6 +9764,7 @@ CREATE TABLE ci_stages (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
     pipeline_id bigint,
+    CONSTRAINT check_74835fc631 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 
@@ -24869,9 +24871,6 @@ ALTER TABLE vulnerability_scanners
 
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE p_ci_stages
-    ADD CONSTRAINT check_74835fc631 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

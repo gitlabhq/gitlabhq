@@ -11,10 +11,6 @@ data_source: system
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

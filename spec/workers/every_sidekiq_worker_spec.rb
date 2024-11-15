@@ -349,6 +349,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MailScheduler::IssueDueWorker' => 3,
         'MailScheduler::NotificationServiceWorker' => 3,
         'MembersDestroyer::UnassignIssuablesWorker' => 3,
+        'Members::PruneDeletionsWorker' => 0,
         'MergeRequestCleanupRefsWorker' => 3,
         'MergeRequestMergeabilityCheckWorker' => 3,
         'MergeRequestResetApprovalsWorker' => 3,

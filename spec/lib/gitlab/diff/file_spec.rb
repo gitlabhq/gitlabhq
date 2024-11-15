@@ -1031,7 +1031,7 @@ RSpec.describe Gitlab::Diff::File do
 
       it 'returns raw diff up to given line index' do
         allow(diff_file).to receive(:raw_diff) { raw_diff }
-        diff_line = instance_double(Gitlab::Diff::Line, index: 4)
+        diff_line = instance_double(Gitlab::Diff::Line, index: 5)
 
         diff_hunk = <<~EOS
           @@ -6,12 +6,18 @@ module Popen

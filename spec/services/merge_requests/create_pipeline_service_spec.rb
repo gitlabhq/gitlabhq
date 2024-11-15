@@ -259,22 +259,5 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
         Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
       ).to be_truthy
     end
-
-    context 'when the ci_redis_pipeline_creations ff is disabled' do
-      before do
-        stub_feature_flags(ci_redis_pipeline_creations: false)
-      end
-
-      it 'does nothing' do
-        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async)
-        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(merge_request)
-
-        service.execute_async(merge_request)
-
-        expect(
-          Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
-        ).to be_falsey
-      end
-    end
   end
 end

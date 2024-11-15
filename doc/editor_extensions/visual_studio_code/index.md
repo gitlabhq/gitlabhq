@@ -206,6 +206,27 @@ This search query looks for:
 - Labels: `frontend` and `performance`
 - Milestone: `17.5`
 
+## Show pipeline alerts
+
+To show an alert message in VS Code when a pipeline for your current branch completes:
+
+1. In VS Code, on the top menu, select **Code > Settings > Settings**.
+1. Depending on your configuration, select either **User** or **Workplace** settings.
+1. In the main tab, select **Extensions > GitLab Workflow** to view this extension's settings.
+1. Under **Show Pipeline Update Notifications**, select the **Show notification in VS Code when the pipeline status changes** checkbox.
+
+### For failed pipelines only
+
+If alerts about successful pipelines are too frequent for your needs, configure the alerts to display
+only for failed pipelines:
+
+1. In VS Code, when a pipeline alert is shown, select **Settings** (**{settings}**).
+1. On the top right of the pipeline alert, select **Turn Off Info and Warning Notifications from 'GitLab Workflow'**:
+
+   ![A VS Code pipeline alert, with a settings icon on the top right.](../img/configure_pipeline_alerts_v17_6.png)
+
+This setting is not included in your `settings.json` file, and can be configured only from the alert.
+
 ## Related topics
 
 - [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)

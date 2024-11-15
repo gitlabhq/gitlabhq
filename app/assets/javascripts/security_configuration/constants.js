@@ -30,9 +30,6 @@ export const DAST_SHORT_NAME = s__('ciReport|DAST');
 export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/index');
 
-export const BAS_NAME = s__('SecurityConfiguration|Breach and Attack Simulation (BAS)');
-export const BAS_SHORT_NAME = s__('SecurityConfiguration|BAS');
-
 export const SECRET_DETECTION_NAME = __('Secret Detection');
 
 export const DEPENDENCY_SCANNING_NAME = __('Dependency Scanning');
@@ -63,7 +60,6 @@ export const SCANNER_NAMES_MAP = {
   COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
   SECRET_DETECTION: SECRET_DETECTION_NAME,
   DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
-  BREACH_AND_ATTACK_SIMULATION: BAS_NAME,
   CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
   PRE_RECEIVE_SECRET_DETECTION: PRE_RECEIVE_SECRET_DETECTION_NAME,
   GENERIC: s__('ciReport|Manually added'),

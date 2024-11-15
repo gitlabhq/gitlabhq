@@ -19,8 +19,9 @@ module QA
         Page::File::Form.perform do |file|
           file.remove_content
           file.add_content(updated_file_content)
+          file.click_commit_changes_in_header
           file.add_commit_message(commit_message_for_update)
-          file.commit_changes
+          file.commit_changes_through_modal
         end
 
         Page::File::Show.perform do |file|

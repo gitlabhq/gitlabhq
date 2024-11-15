@@ -7,13 +7,13 @@ import { getNewWorkItemAutoSaveKey, newWorkItemFullPath } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
-  WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_MILESTONE,
 } from '../constants';
@@ -31,25 +31,19 @@ const updateWidget = (draftData, widgetType, newData, nodePath) => {
   }
 };
 
-const updateRolledUpDatesWidget = (draftData, rolledUpDates) => {
-  if (!rolledUpDates) return;
+const updateDatesWidget = (draftData, dates) => {
+  if (!dates) return;
 
-  const dueDateFixed = rolledUpDates.dueDateFixed
-    ? toISODateFormat(newDate(rolledUpDates.dueDateFixed))
-    : null;
-  const startDateFixed = rolledUpDates.startDateFixed
-    ? toISODateFormat(newDate(rolledUpDates.startDateFixed))
-    : null;
+  const dueDate = dates.dueDate ? toISODateFormat(newDate(dates.dueDate)) : null;
+  const startDate = dates.startDate ? toISODateFormat(newDate(dates.startDate)) : null;
 
-  const widget = findWidget(WIDGET_TYPE_ROLLEDUP_DATES, draftData.workspace.workItem);
+  const widget = findWidget(WIDGET_TYPE_START_AND_DUE_DATE, draftData.workspace.workItem);
   Object.assign(widget, {
-    dueDate: dueDateFixed,
-    dueDateFixed,
-    dueDateIsFixed: rolledUpDates.dueDateIsFixed,
-    startDate: startDateFixed,
-    startDateFixed,
-    startDateIsFixed: rolledUpDates.startDateIsFixed,
-    __typename: 'WorkItemWidgetRolledupDates',
+    dueDate,
+    startDate,
+    isFixed: dates.isFixed,
+    rollUp: dates.rollUp,
+    __typename: 'WorkItemWidgetStartAndDueDate',
   });
 };
 
@@ -131,7 +125,7 @@ export const updateNewWorkItemCache = (input, cache) => {
         updateWidget(draftData, widgetType, newData, nodePath);
       });
 
-      updateRolledUpDatesWidget(draftData, rolledUpDates);
+      updateDatesWidget(draftData, rolledUpDates);
 
       if (title) draftData.workspace.workItem.title = title;
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;

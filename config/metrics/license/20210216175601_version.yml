@@ -13,10 +13,6 @@ instrumentation_class: VersionMetric
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

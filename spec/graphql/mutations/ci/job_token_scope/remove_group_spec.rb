@@ -55,7 +55,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::RemoveGroup, feature_category: :con
           expect(::Ci::JobTokenScope::RemoveGroupService)
             .to receive(:new).with(project, current_user).and_return(service)
           expect(service).to receive(:execute).with(target_group)
-            .and_return(instance_double('ServiceResponse', success?: true))
+            .and_return(instance_double('ServiceResponse', success?: true, payload: link))
 
           resolver
         end

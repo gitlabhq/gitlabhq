@@ -782,8 +782,9 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it 'contains an introduction' do
           issuable_url = "project_#{note.noteable_type.underscore}_url"
+          anchor = "note_#{note.id}"
 
-          is_expected.to have_body_text "started a new <a href=\"#{public_send(issuable_url, project, note.noteable, anchor: "note_#{note.id}")}\">discussion</a>"
+          is_expected.to have_body_text "started a new <a href=\"#{public_send(issuable_url, project, note.noteable, anchor: anchor)}\">discussion</a>"
         end
 
         context 'when a comment on an existing discussion' do
@@ -910,7 +911,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           end
 
           it 'does not include diffs with character-level highlighting' do
-            is_expected.not_to have_body_text '<span class="p">}</span></span>'
+            is_expected.not_to have_body_text '<span class="n">path</span>'
           end
         end
 
@@ -921,12 +922,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
           it "does not show diff and displays a separate message" do
             is_expected.to have_body_text 'This project does not include diff previews in email notifications'
-            is_expected.not_to have_body_text '<span class="p">}</span></span>'
+            is_expected.not_to have_body_text '<span class="n">path</span>'
           end
         end
 
         it 'includes diffs with character-level highlighting' do
-          is_expected.to have_body_text '<span class="p">}</span></span>'
+          is_expected.to have_body_text '<span class="n">path</span>'
         end
 
         it 'contains a link to the diff file' do

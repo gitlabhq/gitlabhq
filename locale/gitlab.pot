@@ -2286,6 +2286,9 @@ msgstr ""
 msgid "AI|Create issue description based on a short prompt"
 msgstr ""
 
+msgid "AI|Creating an MR from a public project will publicly expose the vulnerability and offered resolution. To create the MR privately, see %{linkStart} Resolving a vulnerability privately%{linkEnd}."
+msgstr ""
+
 msgid "AI|Description is required"
 msgstr ""
 
@@ -2850,6 +2853,12 @@ msgstr ""
 msgid "AccessTokens|Add a %{type}"
 msgstr ""
 
+msgid "AccessTokens|Are you sure you want to revoke the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
+msgstr ""
+
+msgid "AccessTokens|Are you sure you want to rotate the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
+msgstr ""
+
 msgid "AccessTokens|Are you sure?"
 msgstr ""
 
@@ -2872,6 +2881,9 @@ msgid "AccessTokens|Create %{type}"
 msgstr ""
 
 msgid "AccessTokens|Created"
+msgstr ""
+
+msgid "AccessTokens|Failed to revoke token"
 msgstr ""
 
 msgid "AccessTokens|Feed token"
@@ -2901,10 +2913,19 @@ msgstr ""
 msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
 msgstr ""
 
+msgid "AccessTokens|Not eligible to rotate token with access level higher than the user"
+msgstr ""
+
 msgid "AccessTokens|Personal / project / group access token expiration"
 msgstr ""
 
 msgid "AccessTokens|Personal access tokens"
+msgstr ""
+
+msgid "AccessTokens|Revoke"
+msgstr ""
+
+msgid "AccessTokens|Rotate"
 msgstr ""
 
 msgid "AccessTokens|Scopes set the permission levels granted to the token."
@@ -2923,6 +2944,9 @@ msgid "AccessTokens|The last time a token was used"
 msgstr ""
 
 msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
+msgstr ""
+
+msgid "AccessTokens|Token already revoked"
 msgstr ""
 
 msgid "AccessTokens|Token name"
@@ -7494,9 +7518,6 @@ msgid "Are you sure you want to reset the registration token?"
 msgstr ""
 
 msgid "Are you sure you want to retry this migration?"
-msgstr ""
-
-msgid "Are you sure you want to revoke the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this SSH key?"
@@ -29872,6 +29893,9 @@ msgstr ""
 msgid "InviteMembersModal|Inviting a group %{linkStart}adds its members to your project%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
 msgstr ""
 
+msgid "InviteMembersModal|Learn how to add seats"
+msgstr ""
+
 msgid "InviteMembersModal|Manage members"
 msgstr ""
 
@@ -36762,9 +36786,6 @@ msgid "Not available for protected branches"
 msgstr ""
 
 msgid "Not confidential"
-msgstr ""
-
-msgid "Not eligible to rotate token with access level higher than the user"
 msgstr ""
 
 msgid "Not enabled"
@@ -49404,12 +49425,6 @@ msgstr ""
 msgid "SecurityConfiguration|Available with Ultimate"
 msgstr ""
 
-msgid "SecurityConfiguration|BAS"
-msgstr ""
-
-msgid "SecurityConfiguration|Breach and Attack Simulation (BAS)"
-msgstr ""
-
 msgid "SecurityConfiguration|Configuration guide"
 msgstr ""
 
@@ -57798,6 +57813,9 @@ msgstr ""
 msgid "Todos|The pipeline failed"
 msgstr ""
 
+msgid "Todos|There are no done to-do items yet."
+msgstr ""
+
 msgid "Todos|To Do"
 msgstr ""
 
@@ -57814,6 +57832,9 @@ msgid "Todos|Updated"
 msgstr ""
 
 msgid "Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List."
+msgstr ""
+
+msgid "Todos|When to-do items are done, they will appear here."
 msgstr ""
 
 msgid "Todos|Work item"
@@ -64511,6 +64532,9 @@ msgstr ""
 msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+)."
 msgstr ""
 
+msgid "Your changes can be committed to %{branchName} because a merge request is open."
+msgstr ""
+
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
 msgstr ""
 
@@ -65606,9 +65630,6 @@ msgstr ""
 msgid "event"
 msgstr ""
 
-msgid "example-branch-name"
-msgstr ""
-
 msgid "example.com"
 msgstr ""
 
@@ -65658,9 +65679,6 @@ msgid "failed to dismiss security finding: %{message}"
 msgstr ""
 
 msgid "failed to revert associated finding(id=%{finding_id}) to detected"
-msgstr ""
-
-msgid "failed to revoke token"
 msgstr ""
 
 msgid "features adopted"
@@ -67028,9 +67046,6 @@ msgid "today"
 msgstr ""
 
 msgid "toggle collapse"
-msgstr ""
-
-msgid "token already revoked"
 msgstr ""
 
 msgid "total must be less than or equal to %{size}"

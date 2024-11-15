@@ -90,6 +90,8 @@ class Compare
       diff_refs: diff_refs)
   end
 
+  alias_method :diffs_for_streaming, :diffs
+
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
       base_sha: @straight ? start_commit_sha : base_commit_sha,

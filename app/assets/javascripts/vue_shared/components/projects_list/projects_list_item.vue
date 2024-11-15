@@ -55,6 +55,7 @@ export default {
     deleteErrorMessage: s__(
       'Projects|An error occurred deleting the project. Please refresh the page to try again.',
     ),
+    ciCatalogBadge: s__('CiCatalog|CI/CD Catalog project'),
   },
   truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
@@ -295,6 +296,15 @@ export default {
                     :name="visibilityIcon"
                     variant="subtle"
                   />
+                </div>
+                <div v-if="project.isCatalogResource" class="gl-px-2">
+                  <gl-badge
+                    icon="catalog-checkmark"
+                    variant="info"
+                    data-testid="ci-catalog-badge"
+                    :href="project.exploreCatalogPath"
+                    >{{ $options.i18n.ciCatalogBadge }}</gl-badge
+                  >
                 </div>
                 <div class="gl-px-2">
                   <gl-badge

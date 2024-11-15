@@ -3,12 +3,12 @@ import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/empty-todos-all-done-md.svg';
 import emptyTodosSvg from '@gitlab/svgs/dist/illustrations/empty-todos-md.svg';
 import TodosEmptyState from '~/todos/components/todos_empty_state.vue';
-import { TODO_EMPTY_TITLE_POOL } from '~/todos/constants';
+import { TODO_EMPTY_TITLE_POOL, TAB_PENDING, TAB_DONE } from '~/todos/constants';
 
 describe('TodosEmptyState', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, currentTab = TAB_PENDING) => {
     wrapper = mount(TodosEmptyState, {
       propsData: {
         isFiltered: false,
@@ -17,6 +17,7 @@ describe('TodosEmptyState', () => {
       provide: {
         issuesDashboardPath: '/dashboard/issues',
         mergeRequestsDashboardPath: '/dashboard/merge_requests',
+        currentTab,
       },
     });
   };
@@ -65,6 +66,26 @@ describe('TodosEmptyState', () => {
     it('renders the correct title', () => {
       expect(wrapper.findComponent(GlEmptyState).props('title')).toBe(
         'Sorry, your filter produced no results',
+      );
+    });
+
+    it('does not render a description', () => {
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    });
+
+    it('uses the correct illustration', () => {
+      expect(wrapper.findComponent(GlEmptyState).props('svgPath')).toBe(emptyTodosSvg);
+    });
+  });
+
+  describe('when on "Done" tab', () => {
+    beforeEach(() => {
+      createComponent({ isFiltered: false }, TAB_DONE);
+    });
+
+    it('renders the correct title', () => {
+      expect(wrapper.findComponent(GlEmptyState).props('title')).toBe(
+        'There are no done to-do items yet.',
       );
     });
 

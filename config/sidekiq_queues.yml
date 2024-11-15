@@ -511,6 +511,8 @@
   - 1
 - - members_groups_export_detailed_memberships
   - 1
+- - members_prune_deletions
+  - 1
 - - merge
   - 5
 - - merge_request_cleanup_refs

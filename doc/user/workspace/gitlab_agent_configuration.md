@@ -110,6 +110,7 @@ you can use any configured agent in `top-level-group` and in any of its subgroup
 | [`use_kubernetes_user_namespaces`](#use_kubernetes_user_namespaces)                       | No       | `false`                                 | Indicates whether to use user namespaces in Kubernetes. |
 | [`default_runtime_class`](#default_runtime_class)                                         | No       | `""`                                    | Default Kubernetes `RuntimeClass`. |
 | [`allow_privilege_escalation`](#allow_privilege_escalation)                               | No       | `false`                                 | Allow privilege escalation. |
+| [`image_pull_secrets`](#image_pull_secrets)                                               | No       | `[]`                                    | Existing Kubernetes secrets to pull private images for workspaces. |
 | [`annotations`](#annotations)                                                             | No       | `{}`                                    | Annotations to apply to Kubernetes objects. |
 | [`labels`](#labels)                                                                       | No       | `{}`                                    | Labels to apply to Kubernetes objects. |
 | [`max_active_hours_before_stop`](#max_active_hours_before_stop) | No | `36` | Maximum number of hours a workspace can be active before it is stopped. |
@@ -403,6 +404,34 @@ remote_development:
 
 For more information about `allow_privilege_escalation`, see
 [Configure a Security Context for a Pod or Container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/).
+
+### `image_pull_secrets`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14664) in GitLab 17.6.
+
+Use this setting to specify existing Kubernetes secrets of the type `kubernetes.io/dockercfg`
+or `kubernetes.io/dockerconfigjson` required by workspaces to pull private images.
+
+The default value is `[]`.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  image_pull_secrets:
+    - name: "image-pull-secret-name"
+      namespace: "image-pull-secret-namespace"
+```
+
+In this example, the secret `image-pull-secret-name` from the namespace
+`image-pull-secret-namespace` is synced to the namespace of the workspace.
+
+For `image_pull_secrets`, the `name` and `namespace` attributes are required.
+The name of the secret must be unique.
+
+If the secret you've specified does not exist in the Kubernetes cluster, the secret is ignored.
+When you delete or update the secret, the secret is deleted or updated
+in all the namespaces of the workspaces where the secret is referenced.
 
 ### `annotations`
 

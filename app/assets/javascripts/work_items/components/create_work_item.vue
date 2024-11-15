@@ -30,7 +30,7 @@ import {
   NEW_WORK_ITEM_GID,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_WEIGHT,
-  WIDGET_TYPE_ROLLEDUP_DATES,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ITERATION,
@@ -329,20 +329,8 @@ export default {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description || this.description;
     },
-    workItemRolledupDates() {
-      return findWidget(WIDGET_TYPE_ROLLEDUP_DATES, this.workItem);
-    },
-    workItemDueDateFixed() {
-      return this.workItemRolledupDates?.dueDateFixed;
-    },
-    workItemStartDateFixed() {
-      return this.workItemRolledupDates?.startDateFixed;
-    },
-    workItemDueDateIsFixed() {
-      return this.workItemRolledupDates?.dueDateIsFixed;
-    },
-    workItemStartDateIsFixed() {
-      return this.workItemRolledupDates?.startDateIsFixed;
+    workItemStartAndDueDate() {
+      return findWidget(WIDGET_TYPE_START_AND_DUE_DATE, this.workItem);
     },
     workItemIterationId() {
       return this.workItemIteration?.iteration?.id;
@@ -461,12 +449,11 @@ export default {
         };
       }
 
-      if (this.isWidgetSupported(WIDGET_TYPE_ROLLEDUP_DATES)) {
-        workItemCreateInput.rolledupDatesWidget = {
-          dueDateIsFixed: this.workItemDueDateIsFixed,
-          startDateIsFixed: this.workItemStartDateIsFixed,
-          startDateFixed: this.workItemStartDateFixed,
-          dueDateFixed: this.workItemDueDateFixed,
+      if (this.isWidgetSupported(WIDGET_TYPE_START_AND_DUE_DATE)) {
+        workItemCreateInput.startAndDueDateWidget = {
+          isFixed: this.workItemStartAndDueDate.isFixed,
+          startDate: this.workItemStartAndDueDate.startDate,
+          dueDate: this.workItemStartAndDueDate.dueDate,
         };
       }
 
@@ -682,16 +669,14 @@ export default {
               @error="$emit('error', $event)"
             />
             <work-item-rolledup-dates
-              v-if="workItemRolledupDates"
+              v-if="workItemStartAndDueDate"
               class="work-item-attributes-item"
               :can-update="canUpdate"
               :full-path="fullPath"
-              :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
-              :due-date-fixed="workItemRolledupDates.dueDateFixed"
-              :due-date-inherited="workItemRolledupDates.dueDate"
-              :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
-              :start-date-fixed="workItemRolledupDates.startDateFixed"
-              :start-date-inherited="workItemRolledupDates.startDate"
+              :start-date="workItemStartAndDueDate.startDate"
+              :due-date="workItemStartAndDueDate.dueDate"
+              :is-fixed="workItemStartAndDueDate.isFixed"
+              :should-roll-up="workItemStartAndDueDate.rollUp"
               :work-item-type="selectedWorkItemTypeName"
               :work-item="workItem"
               @error="$emit('error', $event)"

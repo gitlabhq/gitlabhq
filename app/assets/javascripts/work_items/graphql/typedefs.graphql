@@ -71,10 +71,10 @@ input LocalUpdateWorkItemInput {
 }
 
 input LocalRolledUpDatesInput {
-  dueDateIsFixed: Boolean!
-  startDateIsFixed: Boolean!
-  dueDateFixed: String
-  startDateFixed: String
+  isFixed: Boolean!
+  rollUp: Boolean!
+  dueDate: String
+  startDate: String
 }
 
 type LocalWorkItemPayload {

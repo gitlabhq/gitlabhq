@@ -958,6 +958,9 @@ Gitlab.ee do
   Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['cron'] ||= "0 */1 * * *"
   Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['job_class'] = 'PackageMetadata::CveEnrichmentSyncWorker'
+  Settings.cron_jobs['members_schedule_prune_deletions_worker'] ||= {}
+  Settings.cron_jobs['members_schedule_prune_deletions_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['members_schedule_prune_deletions_worker']['job_class'] = 'Members::SchedulePruneDeletionsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

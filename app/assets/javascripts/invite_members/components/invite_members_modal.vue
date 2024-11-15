@@ -15,6 +15,7 @@ import {
   BLOCKED_SEAT_OVERAGES_ERROR_REASON,
   BLOCKED_SEAT_OVERAGES_BODY,
   BLOCKED_SEAT_OVERAGES_CTA,
+  BLOCKED_SEAT_OVERAGES_CTA_DOCS,
   USERS_FILTER_ALL,
   MEMBER_MODAL_LABELS,
   INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
@@ -50,6 +51,9 @@ export default {
   inject: {
     addSeatsHref: {
       default: '',
+    },
+    hasBsoEnabled: {
+      default: false,
     },
   },
   props: {
@@ -205,6 +209,9 @@ export default {
     shouldShowSeatOverageNotification() {
       return this.errorReason === BLOCKED_SEAT_OVERAGES_ERROR_REASON && this.addSeatsHref;
     },
+    primaryButtonText() {
+      return this.hasBsoEnabled ? BLOCKED_SEAT_OVERAGES_CTA_DOCS : BLOCKED_SEAT_OVERAGES_CTA;
+    },
   },
   watch: {
     isEmptyInvites: {
@@ -298,9 +305,7 @@ export default {
         if (error) {
           this.errorReason = response.data.reason;
           this.showErrors(message);
-        }
-
-        if (!this.hasInvalidMembers && !this.hasUsersWithWarning) {
+        } else if (!this.hasInvalidMembers && !this.hasUsersWithWarning) {
           this.onInviteSuccess();
         }
       } catch (error) {
@@ -372,7 +377,6 @@ export default {
   labels: MEMBER_MODAL_LABELS,
   i18n: {
     BLOCKED_SEAT_OVERAGES_BODY,
-    BLOCKED_SEAT_OVERAGES_CTA,
   },
 };
 </script>
@@ -522,7 +526,7 @@ export default {
         dismissable
         data-testid="seat-overages-alert"
         :primary-button-link="addSeatsHref"
-        :primary-button-text="$options.i18n.BLOCKED_SEAT_OVERAGES_CTA"
+        :primary-button-text="primaryButtonText"
         @dismiss="errorReason = false"
       >
         {{ $options.i18n.BLOCKED_SEAT_OVERAGES_BODY }}

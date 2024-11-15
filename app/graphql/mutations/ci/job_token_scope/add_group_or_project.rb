@@ -25,7 +25,13 @@ module Mutations
           description: 'List of policies added to the CI job token scope. Is ignored if ' \
             '`add_policies_to_ci_job_token` feature flag is disabled.'
 
-        field :ci_job_token_scope,
+        field :ci_job_token_scope_allowlist_entry,
+          Types::Ci::JobTokenScope::AllowlistEntryType,
+          null: true,
+          experiment: { milestone: '17.6' },
+          description: "Allowlist entry for the CI job token's access scope."
+
+        field :ci_job_token_scope, # rubocop: disable GraphQL/ExtractType -- no value for now
           Types::Ci::JobTokenScopeType,
           null: true,
           description: "CI job token's access scope."
@@ -44,11 +50,13 @@ module Mutations
           if result.success?
             {
               ci_job_token_scope: ::Ci::JobToken::Scope.new(project),
+              ci_job_token_scope_allowlist_entry: result.payload.values[0],
               errors: []
             }
           else
             {
               ci_job_token_scope: nil,
+              ci_job_token_scope_allowlist_entry: nil,
               errors: [result.message]
             }
           end

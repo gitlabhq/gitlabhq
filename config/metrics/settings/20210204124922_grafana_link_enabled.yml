@@ -12,8 +12,6 @@ options:
   setting_method: grafana_enabled?
 distribution:
 - ce
-tier:
-- free
 tiers:
 - free
 performance_indicator_type: []

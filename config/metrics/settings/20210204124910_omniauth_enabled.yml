@@ -11,10 +11,6 @@ instrumentation_class: OmniauthEnabledMetric
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

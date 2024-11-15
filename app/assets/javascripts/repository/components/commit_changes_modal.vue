@@ -15,6 +15,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import validation, { initFormField } from '~/vue_shared/directives/validation';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   SECONDARY_OPTIONS_TEXT,
   COMMIT_LABEL,
@@ -38,8 +39,14 @@ export default {
   },
   i18n: {
     BRANCH: __('Branch'),
+    BRANCH_IN_FORK_MESSAGE: __(
+      'GitLab will create a branch in your fork and start a merge request.',
+    ),
     CURRENT_BRANCH_LABEL: __('Commit to the current %{branchName} branch'),
     COMMIT_CHANGES: __('Commit changes'),
+    COMMIT_IN_BRANCH_MESSAGE: __(
+      'Your changes can be committed to %{branchName} because a merge request is open.',
+    ),
     COMMIT_LABEL,
     COMMIT_MESSAGE_HINT: __(
       'Try to keep the first line under 52 characters and the others under 72.',
@@ -65,7 +72,7 @@ export default {
       type: String,
       required: true,
     },
-    deletePath: {
+    actionPath: {
       type: String,
       required: true,
     },
@@ -98,6 +105,36 @@ export default {
       required: false,
       default: false,
     },
+    method: {
+      type: String,
+      required: false,
+      default: 'delete',
+    },
+    fileContent: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    filePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    isEdit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    branchAllowsCollaboration: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    lastCommitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     const form = {
@@ -107,9 +144,9 @@ export default {
         // fields key must match case of form name for validation directive to work
         commit_message: initFormField({ value: this.commitMessage }),
         branch_name: initFormField({
-          value: this.canPushToBranch ? this.originalBranch : '',
+          value: this.targetBranch,
           // Branch name is pre-filled with the current branch name in two scenarios and therefore doesn't need validation:
-          // 1. When the user doesn't have permission to push to the repo (e.g., guest user)
+          // 1. When the user doesn't have permission to push to the repo (e.g. guest user)
           // 2. When the user can push directly to the current branch
           skipValidation: !this.canPushCode || this.canPushToBranch,
         }),
@@ -131,6 +168,7 @@ export default {
           variant: 'confirm',
           loading: this.loading,
           disabled: this.loading || !this.form.state,
+          'data-testid': 'commit-change-modal-commit-button',
         },
       };
 
@@ -167,30 +205,18 @@ export default {
       );
     },
     showLfsWarning() {
-      return this.isUsingLfs && !this.lfsWarningDismissed;
+      return this.isUsingLfs && !this.lfsWarningDismissed && !this.isEdit;
     },
     title() {
       return this.showLfsWarning
         ? this.$options.i18n.LFS_WARNING_TITLE
         : this.$options.i18n.COMMIT_CHANGES;
     },
-    showDeleteForm() {
-      return !this.isUsingLfs || (this.isUsingLfs && this.lfsWarningDismissed);
+    showForm() {
+      return !this.isUsingLfs || (this.isUsingLfs && this.lfsWarningDismissed) || this.isEdit;
     },
-  },
-  watch: {
-    createNewBranch: {
-      handler(newValue) {
-        if (newValue) {
-          this.form.fields.branch_name.value = '';
-        } else {
-          this.form.fields.branch_name = {
-            ...this.form.fields.branch_name,
-            value: this.originalBranch,
-            state: true,
-          };
-        }
-      },
+    fromMergeRequestIid() {
+      return getParameterByName('from_merge_request_iid') || '';
     },
   },
   methods: {
@@ -207,6 +233,7 @@ export default {
       this.$refs.message?.$el.focus();
     },
     async handlePrimaryAction(e) {
+      window.onbeforeunload = null;
       e.preventDefault(); // Prevent modal from closing
 
       if (this.showLfsWarning) {
@@ -239,6 +266,7 @@ export default {
     v-bind="$attrs"
     :modal-id="modalId"
     :title="title"
+    data-testid="commit-change-modal"
     :action-primary="primaryOptions"
     :action-cancel="cancelOptions"
     @primary="handlePrimaryAction"
@@ -260,9 +288,15 @@ export default {
         </gl-sprintf>
       </p>
     </div>
-    <div v-if="showDeleteForm">
-      <gl-form ref="form" novalidate :action="deletePath" method="post">
-        <input type="hidden" name="_method" value="delete" />
+    <div v-if="showForm">
+      <gl-form ref="form" novalidate :action="actionPath" method="post">
+        <input type="hidden" name="_method" :value="method" />
+        <template v-if="isEdit">
+          <input type="hidden" name="content" :value="fileContent" />
+          <input type="hidden" name="file_path" :value="filePath" />
+          <input type="hidden" name="last_commit_sha" :value="lastCommitSha" />
+          <input type="hidden" name="from_merge_request_iid" :value="fromMergeRequestIid" />
+        </template>
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
         <template v-if="emptyRepo">
           <input type="hidden" name="branch_name" :value="originalBranch" class="js-branch-name" />
@@ -321,7 +355,6 @@ export default {
                   :disabled="loading"
                   name="branch_name"
                   required
-                  :placeholder="__('example-branch-name')"
                   class="gl-mt-2"
                 />
                 <gl-form-checkbox v-if="createNewBranch" v-model="createNewMr" class="gl-mt-4">
@@ -333,17 +366,17 @@ export default {
             </template>
 
             <template v-else>
-              <span>
+              <label for="branchNameInput" class="gl-font-normal">
                 {{ $options.i18n.NEW_BRANCH_LABEl }}
-              </span>
+              </label>
               <gl-form-input
+                id="branchNameInput"
                 v-model="form.fields['branch_name'].value"
                 v-validation:[form.showValidation]
                 :state="form.fields['branch_name'].state"
                 :disabled="loading"
                 name="branch_name"
                 required
-                :placeholder="__('example-branch-name')"
                 class="gl-mt-2"
               />
               <gl-form-checkbox v-model="createNewMr" class="gl-mt-4">
@@ -353,6 +386,17 @@ export default {
               </gl-form-checkbox>
             </template>
           </gl-form-group>
+          <template v-else>
+            <gl-sprintf
+              v-if="branchAllowsCollaboration"
+              :message="$options.i18n.COMMIT_IN_BRANCH_MESSAGE"
+            >
+              <template #branchName
+                ><strong>{{ originalBranch }}</strong>
+              </template>
+            </gl-sprintf>
+            <p v-else class="gl-my-0">{{ $options.i18n.BRANCH_IN_FORK_MESSAGE }}</p>
+          </template>
         </template>
       </gl-form>
     </div>

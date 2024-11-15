@@ -13,7 +13,5 @@ instrumentation_class: ObservabilityFeaturesFfMetric
 performance_indicator_type: []
 distribution:
 - ee
-tier:
-- ultimate
 tiers:
 - ultimate

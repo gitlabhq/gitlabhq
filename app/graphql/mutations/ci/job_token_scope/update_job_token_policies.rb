@@ -22,10 +22,11 @@ module Mutations
           required: true,
           description: 'List of policies added to the CI job token scope.'
 
-        field :ci_job_token_scope,
-          Types::Ci::JobTokenScopeType,
+        field :ci_job_token_scope_allowlist_entry,
+          Types::Ci::JobTokenScope::AllowlistEntryType,
           null: true,
-          description: 'Updated CI job token access scope.'
+          experiment: { milestone: '17.6' },
+          description: "Allowlist entry for the CI job token's access scope."
 
         def resolve(project_path:, target_path:, job_token_policies:)
           project = authorized_find!(project_path)
@@ -39,10 +40,17 @@ module Mutations
             .new(project, current_user)
             .execute(target, job_token_policies)
 
-          {
-            ci_job_token_scope: ::Ci::JobToken::Scope.new(project),
-            errors: result.errors
-          }
+          if result.success?
+            {
+              ci_job_token_scope_allowlist_entry: result.payload,
+              errors: []
+            }
+          else
+            {
+              ci_job_token_scope_allowlist_entry: nil,
+              errors: [result.message]
+            }
+          end
         end
 
         private

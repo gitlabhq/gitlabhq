@@ -176,7 +176,7 @@ pipeline_execution_policy:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 flawfinder-sast:
   before_script:

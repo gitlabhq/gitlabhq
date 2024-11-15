@@ -37,6 +37,7 @@ To set up infrastructure for workspaces:
       This load balancer must support WebSockets.
    1. [Set up the GitLab workspaces proxy](set_up_workspaces_proxy.md).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
+1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
 
 ## Create a workspace
 
@@ -73,6 +74,15 @@ To create a workspace:
 The workspace might take a few minutes to start.
 To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
+
+## Configure support for private container registries
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14664) in GitLab 17.6.
+
+To use images from private container registries:
+
+1. Create an [image pull secret in Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
+1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md#image_pull_secrets).
 
 ## Configure sudo access for a workspace
 

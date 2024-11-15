@@ -125,7 +125,7 @@ a lot of user accounts to have public email addresses, see
 
 ## Connect the source GitLab instance
 
-Create the group you want to import to and connect the source GitLab instance:
+On the destination GitLab instance, create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
    - A new group. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**. Then select **Import group**.

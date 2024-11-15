@@ -5,13 +5,17 @@ require 'spec_helper'
 RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, ci_inbound_job_token_scope_enabled: true).tap(&:save!) }
+  let_it_be(:project) { create(:project, ci_inbound_job_token_scope_enabled: true) }
+
+  let(:policies) { %w[READ_PROJECT] }
+
   let(:mutation_response) { graphql_mutation_response(:ci_job_token_scope_add_group_or_project) }
 
   let(:variables) do
     {
       project_path: project.full_path,
-      target_path: target_path.full_path
+      target_path: target_path.full_path,
+      job_token_policies: policies
     }
   end
 
@@ -33,18 +37,33 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
           inboundAllowlistCount
           groupsAllowlistCount
         }
+        ciJobTokenScopeAllowlistEntry {
+          sourceProject {
+            fullPath
+          }
+          target {
+            ... on Project {
+              fullPath
+            }
+            ... on Group {
+              fullPath
+            }
+          }
+          direction
+          jobTokenPolicies
+          addedBy {
+            name
+          }
+          createdAt
+        }
       QL
     end
   end
 
   shared_examples 'not authorized' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
 
     context 'when not a maintainer' do
-      before_all do
-        project.add_developer(current_user)
-      end
-
       it 'has graphql errors' do
         post_graphql_mutation(mutation, current_user: current_user)
 
@@ -73,19 +92,28 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
     it_behaves_like 'not authorized'
 
     context 'when authorized' do
-      let_it_be(:current_user) { project.first_owner }
+      let_it_be(:current_user) { create(:user, maintainer_of: project, guest_of: target_group) }
 
-      before_all do
-        target_group.add_developer(current_user)
-      end
-
-      it 'adds the target group to the job token scope' do
+      it 'adds the target group to the job token scope', :aggregate_failures do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
           expect(response).to have_gitlab_http_status(:success)
+
+          created_link = Ci::JobToken::GroupScopeLink.last
+
           expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlist', 'nodes')).not_to be_empty
           expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlistCount')).to eq(1)
           expect(mutation_response.dig('ciJobTokenScope', 'inboundAllowlistCount')).to eq(1)
+
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'sourceProject',
+            'fullPath')).to eq(project.full_path)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'target',
+            'fullPath')).to eq(target_group.full_path)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'direction')).to eq('inbound')
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'jobTokenPolicies')).to eq(policies)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'addedBy', 'name')).to eq(current_user.name)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry',
+            'createdAt')).to eq(created_link.created_at.iso8601)
         end.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
       end
 
@@ -100,19 +128,28 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
     it_behaves_like 'not authorized'
 
     context 'when authorized' do
-      let_it_be(:current_user) { project.first_owner }
+      let_it_be(:current_user) { create(:user, maintainer_of: project, guest_of: target_project) }
 
-      before_all do
-        target_project.add_developer(current_user)
-      end
-
-      it 'adds the target project to the job token scope' do
+      it 'adds the target project to the job token scope', :aggregate_failures do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
           expect(response).to have_gitlab_http_status(:success)
+
+          created_link = Ci::JobToken::ProjectScopeLink.last
+
           expect(mutation_response.dig('ciJobTokenScope', 'inboundAllowlist', 'nodes')).not_to be_empty
           expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlistCount')).to eq(0)
           expect(mutation_response.dig('ciJobTokenScope', 'inboundAllowlistCount')).to eq(2)
+
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'sourceProject',
+            'fullPath')).to eq(project.full_path)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'target',
+            'fullPath')).to eq(target_project.full_path)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'direction')).to eq('inbound')
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'jobTokenPolicies')).to eq(policies)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'addedBy', 'name')).to eq(current_user.name)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry',
+            'createdAt')).to eq(created_link.created_at.iso8601)
         end.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
       end
 

@@ -783,17 +783,21 @@ export default {
     </template>
 
     <template #statistics="{ issuable = {} }">
-      <merge-request-statistics :merge-request="issuable" />
+      <li class="!gl-mr-0">
+        <merge-request-statistics :merge-request="issuable" />
+      </li>
     </template>
 
     <template #approval-status="{ issuable = {} }">
-      <approval-count :merge-request="issuable" full-text />
+      <li class="!gl-mr-0">
+        <approval-count :merge-request="issuable" full-text />
+      </li>
     </template>
 
     <template #pipeline-status="{ issuable = {} }">
       <li
         v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
-        class="issuable-pipeline-status gl-hidden sm:gl-flex"
+        class="issuable-pipeline-status !gl-mr-0 gl-hidden sm:gl-flex"
       >
         <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
       </li>

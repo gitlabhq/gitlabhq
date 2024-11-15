@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Diff::Line do
   let(:line) do
     described_class.new(
       '<input>',
-      'match',
+      type,
       0,
       0,
       1,
@@ -23,6 +23,7 @@ RSpec.describe Gitlab::Diff::Line do
     )
   end
 
+  let(:type) { 'match' }
   let(:rich_text) { nil }
 
   describe '.init_from_hash' do
@@ -114,6 +115,40 @@ RSpec.describe Gitlab::Diff::Line do
         expect(line.text_content).to eq('added')
         expect(line.text_content.html_safe?).to be(false)
       end
+    end
+  end
+
+  describe '#match?' do
+    subject { line.match? }
+
+    context 'when type is "match"' do
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag "diff_line_match" is disabled' do
+        before do
+          stub_feature_flags(diff_line_match: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when type is :match' do
+      let(:type) { :match }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when type is missing' do
+      let(:type) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when type is "old"' do
+      let(:type) { 'old' }
+
+      it { is_expected.to be_falsey }
     end
   end
 

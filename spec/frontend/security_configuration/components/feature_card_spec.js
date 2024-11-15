@@ -4,11 +4,7 @@ import { securityFeatures } from 'jest/security_configuration/mock_data';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
-import {
-  REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
-  REPORT_TYPE_SAST,
-  REPORT_TYPE_SAST_IAC,
-} from '~/vue_shared/security_reports/constants';
+import { REPORT_TYPE_SAST, REPORT_TYPE_SAST_IAC } from '~/vue_shared/security_reports/constants';
 import { manageViaMRErrorMessage } from '../constants';
 import { makeFeature } from './utils';
 
@@ -349,31 +345,6 @@ describe('FeatureCard component', () => {
   });
 
   describe('status and badge', () => {
-    describe.each`
-      context                       | available | configured | expectedStatus
-      ${'configured BAS feature'}   | ${true}   | ${true}    | ${null}
-      ${'unavailable BAS feature'}  | ${false}  | ${false}   | ${'Available with Ultimate'}
-      ${'unconfigured BAS feature'} | ${true}   | ${false}   | ${null}
-    `('given $context', ({ available, configured, expectedStatus }) => {
-      beforeEach(() => {
-        const securityFeature = securityFeatures.find(
-          ({ type }) => REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION === type,
-        );
-        feature = { ...securityFeature, available, configured };
-        createComponent({ feature });
-      });
-
-      it('should show an incubating feature badge', () => {
-        expect(findBadge().exists()).toBe(true);
-      });
-
-      if (expectedStatus) {
-        it(`should show the status "${expectedStatus}"`, () => {
-          expect(findFeatureStatus().text()).toBe(expectedStatus);
-        });
-      }
-    });
-
     describe.each`
       context                            | available | configured
       ${'configured SAST IaC feature'}   | ${true}   | ${true}

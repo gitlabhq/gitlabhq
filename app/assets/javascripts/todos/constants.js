@@ -36,6 +36,8 @@ export const TODO_EMPTY_TITLE_POOL = [
 ];
 
 export const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
+export const TAB_PENDING = 0;
+export const TAB_DONE = 1;
 export const TAB_ALL = 2;
 
 /**

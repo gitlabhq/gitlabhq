@@ -18,6 +18,7 @@ scope format: false do
     collection do
       get :diff_for_path
       get :signatures
+      get :diffs_stream, to: 'compare_diffs_stream#diffs'
     end
   end
 
