@@ -392,7 +392,7 @@ We use [`golang-fips`](https://github.com/golang-fips/go), [a fork of the `dev.b
 [dynamically link OpenSSL via `dlopen`](https://github.com/golang-fips/go/blob/go1.18.1-1-openssl-fips/src/crypto/internal/boring/boring.go#L47-L65). This has several advantages:
 
 - Using a FIPS-validated, system OpenSSL is straightforward.
-- This is the source code used by [Red Hat's go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources).
+- This is the source code used by the [Red Hat go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources).
 - Unlike [go-toolset](https://developers.redhat.com/blog/2019/06/24/go-and-fips-140-2-on-red-hat-enterprise-linux#), this fork appears to keep up with the latest Go releases.
 
 However, [cgo](https://pkg.go.dev/cmd/cgo) must be enabled via `CGO_ENABLED=1` for this to work. There
@@ -466,7 +466,7 @@ After this image has been tagged, add a new [CI job to Omnibus GitLab](https://g
 The Cloud Native GitLab CI pipeline generates images using several base images:
 
 - Debian
-- [Red Hat's Universal Base Image (UBI)](https://developers.redhat.com/products/rhel/ubi)
+- The [Red Hat Universal Base Image (UBI)](https://developers.redhat.com/products/rhel/ubi)
 
 UBI images ship with the same OpenSSL package as those used by
 RHEL. This makes it possible to build FIPS-compliant binaries without

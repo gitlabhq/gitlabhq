@@ -18,6 +18,11 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   urgency :low, [:starred, :index]
 
   def index
+    if Feature.enabled?(:your_work_projects_vue, current_user)
+      return redirect_to personal_dashboard_projects_path if params[:personal] == "true"
+      return redirect_to inactive_dashboard_projects_path if params[:archived] == "only"
+    end
+
     respond_to do |format|
       format.html do
         render_projects

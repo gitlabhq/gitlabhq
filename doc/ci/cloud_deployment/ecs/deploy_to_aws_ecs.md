@@ -164,7 +164,7 @@ is a daemon to create an application container based on the [ECS task definition
 
    ![An active service running.](img/service-running_v13_10.png)
 
-The AWS's console UI changes from time to time. If you can't find a relevant component in the
+The AWS console UI changes from time to time. If you can't find a relevant component in the
 instructions, select the closest one.
 
 ### View the demo application

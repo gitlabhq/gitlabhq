@@ -14,7 +14,7 @@ You can integrate your GitLab instance with [Salesforce](https://www.salesforce.
 
 ## Create a Salesforce Connected App
 
-To enable Salesforce OmniAuth provider, you must use Salesforce's credentials for your GitLab instance.
+To enable Salesforce OmniAuth provider, you must use the Salesforce credentials for your GitLab instance.
 To get the credentials (a pair of Client ID and Client Secret), you must [create a Connected App](https://help.salesforce.com/s/articleView?language=en_US&id=sf.connected_app_create.htm&type=5) on Salesforce.
 
 1. Sign in to [Salesforce](https://login.salesforce.com/).

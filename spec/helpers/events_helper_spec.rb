@@ -437,6 +437,18 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
         expect(subject).to eq("#{project_base_url}/-/issues/#{iid}/designs/#{filename}#note_#{note_id}")
       end
     end
+
+    context 'for wiki page notes' do
+      let(:event) { create(:event, :for_wiki_page_note) }
+      let(:project) { event.target.project }
+
+      it 'returns an appropriate URL' do
+        path = event.note_target.canonical_slug
+        note_id = event.target.id
+
+        expect(subject).to eq("#{project_base_url}/-/wikis/#{path}#note_#{note_id}")
+      end
+    end
   end
 
   describe '#event_filter_visible' do

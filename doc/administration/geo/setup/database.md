@@ -210,9 +210,9 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
    Depending on your network configuration, the suggested addresses may
-   be incorrect. If your **primary** site and **secondary** sites connect over a local
-   area network, or a virtual network connecting availability zones like
-   [Amazon's VPC](https://aws.amazon.com/vpc/) or [Google's VPC](https://cloud.google.com/vpc/),
+   be incorrect. If your **primary** and **secondary** sites connect over a local
+   area network, or a virtual network connecting availability zones like the
+   [Amazon VPC](https://aws.amazon.com/vpc/) or the [Google VPC](https://cloud.google.com/vpc/),
    you should use the **secondary** site's private address for `postgresql['md5_auth_cidr_addresses']`.
 
    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP

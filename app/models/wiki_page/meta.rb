@@ -148,6 +148,10 @@ class WikiPage
       self.canonical_slug = wiki_page.slug
     end
 
+    def to_reference
+      canonical_slug
+    end
+
     private
 
     def project_or_namespace_present?

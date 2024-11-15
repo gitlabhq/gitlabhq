@@ -191,9 +191,7 @@ requests for persistent volumes are not automatically fulfilled. As part
 of Auto DevOps, the deployed PostgreSQL instance requests persistent storage,
 and without a default storage class it cannot start.
 
-If a default Storage Class doesn't already exist and is desired, follow Amazon's
-[guide on storage classes](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html)
-to create one.
+To create a default storage class if one doesn't already exist, see [Storage Classes](https://docs.aws.amazon.com/eks/latest/userguide/storage.html#storage-classes).
 
 Alternatively, disable PostgreSQL by setting the project variable
 [`POSTGRES_ENABLED`](../../../topics/autodevops/cicd_variables.md#cicd-variables) to `false`.

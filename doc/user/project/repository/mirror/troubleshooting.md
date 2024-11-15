@@ -33,7 +33,7 @@ One of these issues might be occurring:
    - Set your GitHub email address to public.
    - Disable the [Block command line pushes that expose my email](https://github.com/settings/emails)
      setting.
-1. Your repository exceeds GitHub's file size limit of 100 MB. To fix this problem,
+1. Your repository exceeds the GitHub file size limit of 100 MB. To fix this problem,
    check the file size limit configured for on GitHub, and consider using
    [Git Large File Storage](https://git-lfs.com/) to manage large files.
 

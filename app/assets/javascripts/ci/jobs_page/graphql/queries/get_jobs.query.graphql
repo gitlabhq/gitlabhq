@@ -1,13 +1,22 @@
 query getJobs(
   $fullPath: ID!
+  $first: Int
+  $last: Int
   $after: String
-  $first: Int = 30
+  $before: String
   $statuses: [CiJobStatus!]
   $name: String
 ) {
   project(fullPath: $fullPath) {
     id
-    jobs(after: $after, first: $first, statuses: $statuses, name: $name) {
+    jobs(
+      first: $first
+      last: $last
+      after: $after
+      before: $before
+      statuses: $statuses
+      name: $name
+    ) {
       pageInfo {
         endCursor
         hasNextPage

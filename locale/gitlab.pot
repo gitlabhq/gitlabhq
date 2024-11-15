@@ -3087,7 +3087,7 @@ msgstr ""
 msgid "Active Sessions"
 msgstr ""
 
-msgid "Active chat names (%{count})"
+msgid "Active chat names"
 msgstr ""
 
 msgid "Active group access tokens"
@@ -49239,9 +49239,6 @@ msgstr ""
 msgid "Secrets|Add secret"
 msgstr ""
 
-msgid "Secrets|An error occurred while fetching the Secret manager status. Please try again."
-msgstr ""
-
 msgid "Secrets|Created"
 msgstr ""
 
@@ -49284,12 +49281,6 @@ msgstr ""
 msgid "Secrets|New secret"
 msgstr ""
 
-msgid "Secrets|Please wait while the Secrets manager is provisioned. It is safe to refresh this page."
-msgstr ""
-
-msgid "Secrets|Provisioning in progress"
-msgstr ""
-
 msgid "Secrets|Revoke"
 msgstr ""
 
@@ -49308,7 +49299,7 @@ msgstr ""
 msgid "Secrets|Secrets Manager has been provisioned for this project."
 msgstr ""
 
-msgid "Secrets|Secrets can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, secrets must be explicitly requested by a job."
+msgid "Secrets|Secrets represent sensitive information your CI job needs to complete work. This sensitive information can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly required by a job."
 msgstr ""
 
 msgid "Secrets|Select a reminder interval"

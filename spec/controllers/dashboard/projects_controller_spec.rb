@@ -121,6 +121,44 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
           expect(projects_result).to include(project2)
         end
       end
+
+      context 'with redirects' do
+        context 'when feature flag your_work_projects_vue is true' do
+          before do
+            stub_feature_flags(your_work_projects_vue: true)
+          end
+
+          it 'redirects ?personal=true to /personal' do
+            get :index, params: { personal: true }
+
+            expect(response).to redirect_to(personal_dashboard_projects_path)
+          end
+
+          it 'redirects ?archived=only to /inactive' do
+            get :index, params: { archived: 'only' }
+
+            expect(response).to redirect_to(inactive_dashboard_projects_path)
+          end
+        end
+
+        context 'when feature flag your_work_projects_vue is false' do
+          before do
+            stub_feature_flags(your_work_projects_vue: false)
+          end
+
+          it 'does not redirect ?personal=true to /personal' do
+            get :index, params: { personal: true }
+
+            expect(response).not_to redirect_to(personal_dashboard_projects_path)
+          end
+
+          it 'does not ?archived=only to /inactive' do
+            get :index, params: { archived: 'only' }
+
+            expect(response).not_to redirect_to(inactive_dashboard_projects_path)
+          end
+        end
+      end
     end
   end
 

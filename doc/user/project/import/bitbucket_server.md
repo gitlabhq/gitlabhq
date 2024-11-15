@@ -163,4 +163,4 @@ To troubleshoot this problem, use the [Projects API](../../../api/projects.md) t
 This value indicates the URL provided by the Bitbucket server to use for the import. If this URL isn't publicly resolvable, you can get unresolvable address errors.
 
 To fix this problem, ensure that the Bitbucket server is aware of any proxy servers because proxy servers can impact how Bitbucket constructs and uses URLs.
-For more information, see [Atlassian's documentation](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
+For more information, see [Proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).

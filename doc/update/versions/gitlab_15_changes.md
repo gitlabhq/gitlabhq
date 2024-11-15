@@ -1002,9 +1002,9 @@ DETAILS:
   15.0.
 
 - Starting with GitLab 15.0, the `AES256-GCM-SHA384` SSL cipher will not be allowed by
-  NGINX by default. If you require this cipher (for example, if you use
-  [AWS's Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)),
-  you can add the cipher back to the allow list by following the steps below:
+  NGINX by default. If you use the
+  [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers) and require the cipher,
+  you can add it back to the allowlist. To add the SSL cipher to the allowlist:
 
   1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 

@@ -337,6 +337,7 @@ RSpec.describe Event, feature_category: :user_profile do
     let(:note_on_project_snippet) { create(:note_on_project_snippet, author: author, noteable: project_snippet, project: project) }
     let(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: author, noteable: personal_snippet, project: nil) }
     let(:note_on_design) { create(:note_on_design, author: author, noteable: design, project: project) }
+    let(:note_on_wiki_page) { create(:note_on_wiki_page, author: author, project: project) }
     let(:milestone_on_project) { create(:milestone, project: project) }
     let(:event) do
       described_class.new(project: project, target: target, author_id: author.id)
@@ -588,6 +589,34 @@ RSpec.describe Event, feature_category: :user_profile do
 
     context 'wiki-page event', :aggregate_failures do
       let(:event) { create(:wiki_page_event, project: project) }
+
+      context 'on private project', :aggregate_failures do
+        let(:project) { create(:project, :wiki_repo) }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member, :admin) }
+          end
+        end
+      end
+
+      context 'wiki-page event on public project', :aggregate_failures do
+        let(:project) { create(:project, :public, :wiki_repo) }
+
+        include_examples 'visibility examples' do
+          let(:visibility) { visible_to_all }
+        end
+      end
+    end
+
+    context 'wiki page note event', :aggregate_failures do
+      let(:event) { create(:event, :for_wiki_page_note, project: project) }
 
       context 'on private project', :aggregate_failures do
         let(:project) { create(:project, :wiki_repo) }

@@ -31,7 +31,7 @@ The main differences between TFVC and Git are:
 
 For more information, see:
 
-- Microsoft's [comparison of Git and TFVC](https://learn.microsoft.com/en-us/azure/devops/repos/tfvc/comparison-git-tfvc?view=azure-devops).
+- The Microsoft [comparison of Git and TFVC](https://learn.microsoft.com/en-us/azure/devops/repos/tfvc/comparison-git-tfvc?view=azure-devops).
 - The Wikipedia [comparison of version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software).
 
 ## Why migrate

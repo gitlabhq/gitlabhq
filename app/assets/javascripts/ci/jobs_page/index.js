@@ -4,18 +4,12 @@ import VueApollo from 'vue-apollo';
 import JobsTableApp from '~/ci/jobs_page/jobs_page_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import cacheConfig from './graphql/cache_config';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      cacheConfig,
-    },
-  ),
+  defaultClient: createDefaultClient(),
 });
 
 export default (containerId = 'js-jobs-table') => {
@@ -25,8 +19,14 @@ export default (containerId = 'js-jobs-table') => {
     return false;
   }
 
-  const { fullPath, jobStatuses, pipelineEditorPath, emptyStateSvgPath, admin } =
-    containerEl.dataset;
+  const {
+    fullPath,
+    jobStatuses,
+    pipelineEditorPath,
+    emptyStateSvgPath,
+    admin,
+    graphqlResourceEtag,
+  } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -37,6 +37,7 @@ export default (containerId = 'js-jobs-table') => {
       pipelineEditorPath,
       jobStatuses: JSON.parse(jobStatuses),
       admin: parseBoolean(admin),
+      graphqlResourceEtag,
     },
     render(createElement) {
       return createElement(JobsTableApp);

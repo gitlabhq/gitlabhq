@@ -18,10 +18,6 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
   end
 
   describe 'triggers page' do
-    before do
-      stub_feature_flags(ci_tanukey_ui: false)
-    end
-
     describe 'create trigger workflow' do
       before do
         sign_in(user)

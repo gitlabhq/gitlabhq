@@ -97,9 +97,6 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
 
   shared_examples 'adds activity event' do
     it 'adds a new wiki page activity event' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/216904
-      pending('group wiki support') if container_type == :group
-
       expect { service.execute(page) }.to change { Event.count }.by 1
 
       expect(Event.recent.first).to have_attributes(

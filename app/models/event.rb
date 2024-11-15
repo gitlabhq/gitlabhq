@@ -248,7 +248,7 @@ class Event < ApplicationRecord
     strong_memoize(:wiki_page) do
       next unless wiki_page?
 
-      ProjectWiki.new(project, author).find_page(target.canonical_slug)
+      Wiki.for_container(project || group, author).find_page(target.canonical_slug)
     end
   end
 
@@ -323,6 +323,10 @@ class Event < ApplicationRecord
 
   def design_note?
     note? && note.for_design?
+  end
+
+  def wiki_page_note?
+    note? && note.for_wiki_page?
   end
 
   def note_target

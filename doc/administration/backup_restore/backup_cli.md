@@ -28,17 +28,17 @@ sudo gitlab-backup-cli backup all
 
 ### Backing up object storage
 
-Only Google cloud is supported. See [epic 11577](https://gitlab.com/groups/gitlab-org/-/epics/11577) for the plan to add more vendors.
+Only Google Cloud is supported. See [epic 11577](https://gitlab.com/groups/gitlab-org/-/epics/11577) for the plan to add more vendors.
 
 #### GCP
 
-`gitlab-backup-cli` creates and runs jobs with [Google Transfer Service](https://cloud.google.com/storage-transfer-service/) to copy GitLab data to a separate backup bucket.
+`gitlab-backup-cli` creates and runs jobs with the Google Cloud [Storage Transfer Service](https://cloud.google.com/storage-transfer-service/) to copy GitLab data to a separate backup bucket.
 
 Prerequisites:
 
-- Follow [Google's documentation](https://cloud.google.com/docs/authentication) for authentication.
+- Review the [service accounts overview](https://cloud.google.com/iam/docs/service-account-overview) to authenticate with a service account.
 - This document assumes you are setting up and using a dedicated Google Cloud service account for managing backups.
-- If no other credentials are provided, and you are running inside Google Cloud, then the tool attempts to use the access of the infrastructure it is running on. It is recommended to run with separate credentials, and restrict access to the created backups from the application.
+- If no other credentials are provided, and you are running inside Google Cloud, then the tool attempts to use the access of the infrastructure it is running on. For [security reasons](#security-considerations), you should run the tool with separate credentials, and restrict access to the created backups from the application.
 
 To create a backup:
 
@@ -75,7 +75,7 @@ To create a backup:
    gcloud projects add-iam-policy-binding <YOUR_PROJECT_ID> --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/<ROLE_NAME>"
    ```
 
-1. Follow [Google's documentation](https://cloud.google.com/docs/authentication) for authentication with the service account. In general, the credentials can be saved to a file, or stored in a predefined environment variable.
+1. To authenticate with a service account, see [service account credentials](https://cloud.google.com/iam/docs/service-account-overview#credentials). The credentials can be saved to a file, or stored in a predefined environment variable.
 1. Create a destination bucket to backup to in [Google Cloud Storage](https://cloud.google.com/storage/). The options here are highly dependent on your requirements.
 1. Run the backup:
 
@@ -226,3 +226,16 @@ We're investigating an alternative to the copy strategy, see [issue 428520](http
    - Logs
    - Elasticsearch
    - Observability Data / Prometheus Metrics
+
+## Security considerations
+
+Instead of using the same credentials, you should create a separate user account specifically with only the necessary permissions to perform backups. Running backups with the same credentials as the application is a poor security practice for several reasons:
+
+- Principle of least privilege - The backup process requires more extensive permissions (like read access to all data) than you need for normal application operations. A user or process should have the minimum access necessary to perform its function.
+- Risk of compromise - If the application credentials are compromised, an attacker can gain access to the application and all its backup data, exposing historical data as well.
+- Separation of duties - Using separate credentials for backups and applications helps maintain a separation of duties. This separation makes it harder for a single compromised account to cause widespread damage.
+- Audit trail - Separate credentials for backups make it easier to track and audit backup activities independently from regular application operations.
+- Granular access control - Different credentials allow for more granular access control. Backup credentials can be given read-only access to the data, while application credentials might need read-write access to specific tables or schemas.
+- Compliance requirements - Many regulatory standards and compliance frameworks (like GDPR, HIPAA, or PCI-DSS) require or strongly recommend separation of duties and access controls, which are easier to achieve with separate credentials.
+- Easier management of lifecycle - Application and backup processes may have different lifecycles. Using separate credentials makes it easier to manage these lifecycles independently. For example, you can rotate or revoke credentials without affecting the other process.
+- Protection against application vulnerabilities - If the application has a vulnerability that allows SQL injection or other forms of unauthorized data access, using separate backup credentials adds an extra layer of protection for the backup process.

@@ -27,8 +27,7 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
 
 1. To set up reCAPTCHA:
    1. Review the [GitLab reCAPTCHA documentation](../../integration/recaptcha.md).
-   1. Get Google's official test reCAPTCHA credentials using the instructions from
-      [Google's reCAPTCHA documentation](https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do).
+   1. Follow the instructions provided by Google to get the official [test reCAPTCHA credentials](https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do).
       1. For **Site key**, use: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
       1. For **Secret key**, use: `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
    1. Go to **Admin -> Settings -> Reporting** settings: `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
@@ -86,7 +85,7 @@ no CAPTCHA popup displays. You are prevented from submitting the form at all.
 ### HTML page to render reCAPTCHA
 
 NOTE:
-If you use **Google's official test reCAPTCHA credentials** listed in
+If you use **the Google official test reCAPTCHA credentials** listed in
 [Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the
 CAPTCHA response string does not matter. It can be any string. If you use a
 real, valid key pair, you must solve the CAPTCHA to obtain a

@@ -8,7 +8,9 @@ description: "Use the GitLab Workflow extension for VS Code to handle common Git
 # GitLab Workflow extension for VS Code
 
 The [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-for Visual Studio Code integrates GitLab Duo and other GitLab features directly into your IDE.
+for Visual Studio Code integrates GitLab Duo and other GitLab features directly into your IDE. It adds a
+GitLab Workflow panel to the VS Code sidebar. You can view your issues, merge requests, and pipelines,
+and extend your view with [custom queries](custom_queries.md).
 
 This extension brings the GitLab features you use every day directly into your VS Code environment:
 
@@ -24,8 +26,6 @@ This extension brings the GitLab features you use every day directly into your V
 - [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)
   without cloning them.
 - [View security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
-
-For detailed information on these features, refer to the [GitLab Workflow extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
@@ -143,6 +143,86 @@ To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-
 1. Select the snippet to apply.
 1. For a multi-file snippet, select the file to apply.
 
+## View issues and merge requests
+
+To view issues and merge requests for a specific project:
+
+1. On the menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the sidebar, expand **Issues and merge requests**.
+1. Select your desired project to expand it.
+1. Choose one of the following result types:
+   - Issues assigned to me
+   - Issues created by me
+   - Merge requests assigned to me
+   - Merge requests I'm reviewing
+   - Merge requests created by me
+   - All project merge requests
+   - Your [custom queries](custom_queries.md)
+
+1. Select an issue or merge request to open it in a new VS Code tab.
+1. Optional. If you select a merge request, its sidebar entry expands to show all files changed
+   in the merge request. Deleted files are marked in red. For example:
+
+   ![An alphabetical list of files changed in this merge request, including the type of changes.](../img/vscode_view_changed_file_v17_6.png)
+
+   1. Select a file to view its diff in a VS Code tab.
+
+## View pipeline information
+
+Use this extension to start, monitor, and debug CI/CD pipelines in GitLab.
+
+Prerequisites:
+
+- Your project uses CI/CD pipelines.
+- A merge request exists for your current Git branch.
+- The most recent commit on your current Git branch has a CI/CD pipeline.
+
+To view pipeline information:
+
+1. In VS Code, on the bottom status bar, select the pipeline status to display actions in the Command Palette:
+
+   - **Pipeline canceled**
+   - **Pipeline failed**
+   - **Pipeline passed**
+   - **Pipeline pending**
+   - **Pipeline running**
+   - **Pipeline skipped**
+
+1. In the Command Palette, select your desired action:
+
+   - **Create New Pipeline From Current Branch**: Start a new pipeline.
+   - **Cancel Last Pipeline**
+   - **Download Artifacts from Latest Pipeline**: Download the pipeline artifact in ZIP or JSON format.
+   - **Retry Last Pipeline**
+   - **View Latest Pipeline on GitLab**: Open the pipeline's page in a browser tab.
+
+## View CI/CD job output
+
+To view the output for a CI/CD job for your current branch:
+
+1. On the left vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the sidebar, expand **For current branch** to show its most recent pipeline.
+1. Select your desired job to open it in a new VS Code tab:
+
+   ![A pipeline containing CI/CD jobs that are passing, allowed to fail, and failing.](../img/view_job_output_v17_6.png)
+
+## View security findings
+
+Prerequisites:
+
+- Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
+  Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST),
+  Container Scanning, or Dependency Scanning.
+- You configured the [Security Risk Management](../../user/application_security/secure_your_application.md) features.
+
+To view security findings:
+
+1. On the left vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the sidebar, expand **Security scanning**.
+1. Select either **New findings** or **Fixed findings**.
+1. Select a desired severity level.
+1. Select a finding to open it in a VS Code tab.
+
 ## Search issues and merge requests
 
 To search your project's issues and merge requests directly from VS Code, use filtered search or
@@ -214,18 +294,6 @@ To show an alert message in VS Code when a pipeline for your current branch comp
 1. Depending on your configuration, select either **User** or **Workplace** settings.
 1. In the main tab, select **Extensions > GitLab Workflow** to view this extension's settings.
 1. Under **Show Pipeline Update Notifications**, select the **Show notification in VS Code when the pipeline status changes** checkbox.
-
-### For failed pipelines only
-
-If alerts about successful pipelines are too frequent for your needs, configure the alerts to display
-only for failed pipelines:
-
-1. In VS Code, when a pipeline alert is shown, select **Settings** (**{settings}**).
-1. On the top right of the pipeline alert, select **Turn Off Info and Warning Notifications from 'GitLab Workflow'**:
-
-   ![A VS Code pipeline alert, with a settings icon on the top right.](../img/configure_pipeline_alerts_v17_6.png)
-
-This setting is not included in your `settings.json` file, and can be configured only from the alert.
 
 ## Related topics
 

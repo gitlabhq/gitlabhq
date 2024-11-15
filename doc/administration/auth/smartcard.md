@@ -123,7 +123,7 @@ Use the following attributes to customize the field GitLab checks and the format
 | `subject`                  | `X509:<S>DC=com,DC=example,OU=UserAccounts,CN=dennis`        |
 | `issuer_and_serial_number` | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<SR>1181914561`   |
 
-For `issuer_and_serial_number` , the `<SR>` portion is in reverse-byte-order, with the least-significant byte first. For more information, see [Microsoft's documentation on `altSecurityIdentities` formats](https://learn.microsoft.com/en-us/archive/blogs/spatdsg/howto-map-a-user-to-a-certificate-via-all-the-methods-available-in-the-altsecurityidentities-attribute).
+For `issuer_and_serial_number`, the `<SR>` portion is in reverse-byte-order, with the least-significant byte first. For more information, see [how to map a user to a certificate using the altSecurityIdentities attribute](https://learn.microsoft.com/en-us/archive/blogs/spatdsg/howto-map-a-user-to-a-certificate-via-all-the-methods-available-in-the-altsecurityidentities-attribute).
 
 NOTE:
 If no `smartcard_ad_cert_format` is specified, but an LDAP server is configured with `active_directory: true` and smart cards enabled, GitLab defaults to the behavior of 16.8 and earlier, and uses `certificateExactMatch` on the `userCertificate` attribute.
