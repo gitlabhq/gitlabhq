@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           def change
-            add_index :ci_pipelines, :locked
+            add_index :epics, :locked
           end
         RUBY
       end
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           def change
-            prepare_async_index :ci_pipelines, :locked
+            prepare_async_index :epics, :locked
           end
         RUBY
       end

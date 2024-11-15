@@ -11,8 +11,8 @@ RSpec.describe 'projects/issues/_related_branches' do
   before do
     assign(:related_branches,
       [
-        { name: 'other', link: 'link-to-other', pipeline_status: nil },
-        { name: 'feature', link: 'link-to-feature', pipeline_status: status }
+        { name: 'other', compare_path: 'link-to-other', pipeline_status: nil },
+        { name: 'feature', compare_path: 'link-to-feature', pipeline_status: status }
 
       ]
     )

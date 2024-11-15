@@ -7,7 +7,9 @@ class AddCiJobArtifactsFileFinalPathIndexSynchronously < Gitlab::Database::Migra
   WHERE_CLAUSE = 'file_final_path IS NOT NULL'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :ci_job_artifacts, :file_final_path, name: INDEX_NAME, where: WHERE_CLAUSE
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

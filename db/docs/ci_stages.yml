@@ -10,3 +10,4 @@ milestone: '9.3'
 gitlab_schema: gitlab_ci
 sharding_key:
   project_id: projects
+table_size: over_limit

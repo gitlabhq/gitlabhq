@@ -10,7 +10,9 @@ class AddPackageIdFileExtensionStatusIndexToPackageFiles < Gitlab::Database::Mig
   INDEX_WHERE = "((status = #{STATUS_INSTALLABLE}) AND (reverse(split_part(reverse(file_name), '.', 1)) = '#{EXT}'))"
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :packages_package_files, :package_id, where: INDEX_WHERE, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

@@ -12,7 +12,9 @@ class AddOrganizationIdToPersonalAccessTokens < Gitlab::Database::Migration[2.2]
       add_column :personal_access_tokens, :organization_id, :bigint, default: DEFAULT_ORGANIZATION_ID, null: false,
         if_not_exists: true
     end
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :personal_access_tokens, :organization_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
     add_concurrent_foreign_key :personal_access_tokens, :organizations, column: :organization_id, on_delete: :cascade
   end
 

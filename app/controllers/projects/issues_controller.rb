@@ -221,7 +221,6 @@ class Projects::IssuesController < Projects::ApplicationController
     @related_branches = ::Issues::RelatedBranchesService
       .new(container: project, current_user: current_user)
       .execute(issue)
-      .map { |branch| branch.merge(link: branch_link(branch)) }
 
     respond_to do |format|
       format.json do
@@ -440,10 +439,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     options
-  end
-
-  def branch_link(branch)
-    project_compare_path(project, from: project.default_branch, to: branch[:name])
   end
 
   def service_desk?

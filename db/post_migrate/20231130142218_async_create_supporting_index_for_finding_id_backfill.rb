@@ -7,7 +7,7 @@ class AsyncCreateSupportingIndexForFindingIdBackfill < Gitlab::Database::Migrati
 
   # TODO: Index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/433253
   def up
-    prepare_async_index(
+    prepare_async_index( # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
       :vulnerabilities,
       :id,
       where: "finding_id IS NULL",

@@ -14,27 +14,13 @@ module RuboCop
       class PreventIndexCreation < RuboCop::Cop::Base
         include MigrationHelpers
 
+        # NOTE: These tables are not large, or over_limit, but are forbidden for other reasons.
         FORBIDDEN_TABLES = %i[
-          ci_builds
           namespaces
-          projects
           users
-          merge_requests
-          merge_request_metrics
-          merge_request_diffs
-          merge_request_diff_commits
-          notes
-          web_hook_logs
-          events
           project_statistics
-          sent_notifications
-          issues
           issue_search_data
           packages_packages
-          vulnerability_occurrences
-          sbom_occurrences
-          security_findings
-          deployments
         ].freeze
 
         MSG = "Adding new index to certain tables is forbidden. See " \
@@ -88,7 +74,7 @@ module RuboCop
         private
 
         def forbidden_tables?(node)
-          FORBIDDEN_TABLES.include?(node.to_sym)
+          FORBIDDEN_TABLES.include?(node.to_sym) || large_tables.include?(node.to_sym)
         end
 
         def offense?(node)

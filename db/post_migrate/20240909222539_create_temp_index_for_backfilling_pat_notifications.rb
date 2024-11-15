@@ -13,7 +13,9 @@ class CreateTempIndexForBackfillingPatNotifications < Gitlab::Database::Migratio
   def up
     # to be removed once BackfillPersonalAccessTokenSevenDaysNotificationSent is finalized
     # https://gitlab.com/gitlab-org/gitlab/-/issues/485856
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :personal_access_tokens, :id, where: INDEX_CONDITION, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

@@ -159,6 +159,12 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         end
       end
 
+      describe '#table_size' do
+        it 'returns the table_size of the table' do
+          expect(database_dictionary.table_size).to eq('unknown')
+        end
+      end
+
       describe '#schema?' do
         it 'checks if the given schema matches the schema of the table' do
           expect(database_dictionary.schema?('gitlab_main')).to eq(false)

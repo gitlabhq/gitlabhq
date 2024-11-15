@@ -17580,6 +17580,29 @@ The edge type for [`WorkItem`](#workitem).
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
 
+#### `WorkItemRelatedBranchConnection`
+
+The connection type for [`WorkItemRelatedBranch`](#workitemrelatedbranch).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemrelatedbranchconnectionedges"></a>`edges` | [`[WorkItemRelatedBranchEdge]`](#workitemrelatedbranchedge) | A list of edges. |
+| <a id="workitemrelatedbranchconnectionnodes"></a>`nodes` | [`[WorkItemRelatedBranch]`](#workitemrelatedbranch) | A list of nodes. |
+| <a id="workitemrelatedbranchconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemRelatedBranchEdge`
+
+The edge type for [`WorkItemRelatedBranch`](#workitemrelatedbranch).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemrelatedbranchedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemrelatedbranchedgenode"></a>`node` | [`WorkItemRelatedBranch`](#workitemrelatedbranch) | The item at the end of the edge. |
+
 #### `WorkItemTimelogConnection`
 
 The connection type for [`WorkItemTimelog`](#workitemtimelog).
@@ -36530,6 +36553,16 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
 
+### `WorkItemRelatedBranch`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemrelatedbranchcomparepath"></a>`comparePath` | [`String`](#string) | Path to comparison of branch to default branch. |
+| <a id="workitemrelatedbranchname"></a>`name` | [`String!`](#string) | Name of the branch. |
+| <a id="workitemrelatedbranchpipelinestatus"></a>`pipelineStatus` | [`DetailedStatus`](#detailedstatus) | Status of pipeline for the branch. |
+
 ### `WorkItemStateCountsType`
 
 Represents total number of work items for the represented states.
@@ -36760,6 +36793,7 @@ Represents a development widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdevelopmentclosingmergerequests"></a>`closingMergeRequests` | [`WorkItemClosingMergeRequestConnection`](#workitemclosingmergerequestconnection) | Merge requests that will close the work item when merged. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmentfeatureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetdevelopmentrelatedbranches"></a>`relatedBranches` | [`WorkItemRelatedBranchConnection`](#workitemrelatedbranchconnection) | Branches that have referred to the work item, but do not have an associated merge request. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmentrelatedmergerequests"></a>`relatedMergeRequests` **{warning-solid}** | [`MergeRequestConnection`](#mergerequestconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Merge requests where the work item has been mentioned. Not implemented, returns empty list. |
 | <a id="workitemwidgetdevelopmenttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetdevelopmentwillautoclosebymergerequest"></a>`willAutoCloseByMergeRequest` | [`Boolean!`](#boolean) | Whether the work item will automatically be closed when a closing merge request is merged. |
