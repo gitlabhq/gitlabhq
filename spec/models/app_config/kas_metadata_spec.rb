@@ -14,7 +14,8 @@ RSpec.describe AppConfig::KasMetadata, feature_category: :api do
       expect(described_class.new).to have_attributes(
         enabled: Gitlab::Kas.enabled?,
         version: Gitlab::Kas.version,
-        external_url: Gitlab::Kas.external_url
+        external_url: Gitlab::Kas.external_url,
+        external_k8s_proxy_url: Gitlab::Kas.tunnel_url
       )
     end
   end
@@ -26,7 +27,8 @@ RSpec.describe AppConfig::KasMetadata, feature_category: :api do
       expect(described_class.new).to have_attributes(
         enabled: Gitlab::Kas.enabled?,
         version: nil,
-        external_url: nil
+        external_url: nil,
+        external_k8s_proxy_url: nil
       )
     end
   end

@@ -8,6 +8,7 @@ module API
       expose :kas do
         expose :enabled, documentation: { type: 'boolean' }
         expose :externalUrl, documentation: { type: 'string', example: 'grpc://gitlab.example.com:8150' }
+        expose :externalK8sProxyUrl, documentation: { type: 'string', example: 'https://gitlab.example.com:8150/k8s-proxy' }
         expose :version, documentation: { type: 'string', example: '15.0.0' }
       end
       expose :enterprise, documentation: { type: 'boolean' }

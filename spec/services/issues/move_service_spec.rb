@@ -468,7 +468,7 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
     end
   end
 
-  describe '#rewrite_related_issues' do
+  describe '#recreate_related_issues' do
     include_context 'user can move issue'
 
     let(:admin) { create(:admin) }
@@ -495,8 +495,18 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
 
     context 'multiple related issues' do
       context 'when admin mode is enabled', :enable_admin_mode do
-        it 'moves all related issues and retains permissions' do
+        it 'recreates all related issues and retains permissions' do
           new_issue = move_service.execute(old_issue, new_project)
+
+          recreated_links = IssueLink.where(source: new_issue).or(IssueLink.where(target: new_issue))
+          old_links_count = IssueLink.where(source: old_issue).or(IssueLink.where(target: old_issue)).count
+
+          expect(recreated_links.count).to eq(4)
+          expect(old_links_count).to eq(0)
+
+          recreated_links.each do |link|
+            expect(link.namespace_id).to eq(link.source.namespace_id)
+          end
 
           expect(new_issue.related_issues(admin))
             .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d, unauthorized_issue])
@@ -507,20 +517,39 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
           expect(authorized_issue_d.related_issues(user))
             .to match_array([new_issue])
         end
+
+        it 'does not recreate related issues when there are no related links' do
+          IssueLink.where(source: old_issue).or(IssueLink.where(target: old_issue)).delete_all
+
+          new_issue = move_service.execute(old_issue, new_project)
+          recreated_links = IssueLink.where(source: new_issue).or(IssueLink.where(target: new_issue))
+
+          expect(recreated_links.count).to eq(0)
+        end
       end
 
       context 'when admin mode is disabled' do
-        it 'moves all related issues and retains permissions' do
+        it 'recreates authorized related issues only and retains permissions' do
           new_issue = move_service.execute(old_issue, new_project)
 
+          recreated_links = IssueLink.where(source: new_issue).or(IssueLink.where(target: new_issue))
+          old_links_count = IssueLink.where(source: old_issue).or(IssueLink.where(target: old_issue)).count
+
+          expect(recreated_links.count).to eq(4)
+          expect(old_links_count).to eq(0)
+
+          recreated_links.each do |link|
+            expect(link.namespace_id).to eq(link.source.namespace_id)
+          end
+
           expect(new_issue.related_issues(admin))
-              .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
+            .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
 
           expect(new_issue.related_issues(user))
-              .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
+            .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
 
           expect(authorized_issue_d.related_issues(user))
-              .to match_array([new_issue])
+            .to match_array([new_issue])
         end
       end
     end

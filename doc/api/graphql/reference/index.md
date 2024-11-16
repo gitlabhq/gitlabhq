@@ -26680,6 +26680,7 @@ Represents the Geo replication and verification state of a job_artifact.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="kasenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the Kubernetes agent server is enabled. |
+| <a id="kasexternalk8sproxyurl"></a>`externalK8sProxyUrl` | [`String`](#string) | URL used by the Kubernetes tooling to communicate with the KAS Kubernetes API proxy. |
 | <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | URL used by the agents to communicate with the server. |
 | <a id="kasversion"></a>`version` | [`String`](#string) | KAS version. |
 

@@ -269,6 +269,208 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
   end
 
+  describe '.resource_usage_throttled?', :request_store do
+    let(:resource_key) { 'throttled_resource_duration' }
+    let(:resource_key_2) { 'another_throttled_resource_duration' }
+
+    let(:threshold) { 100 }
+    let(:interval) { 60 }
+
+    before do
+      Gitlab::SafeRequestStore.begin!
+      Gitlab::SafeRequestStore[resource_key] = threshold
+      Gitlab::SafeRequestStore[resource_key_2] = threshold
+    end
+
+    it 'records the checked key in request storage' do
+      subject.resource_usage_throttled?(:test_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval)
+
+      expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
+        .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action])
+
+      subject.resource_usage_throttled?(:another_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval)
+
+      expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
+        .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action, :another_action])
+    end
+
+    describe 'incrementing resource usage once per unique resource' do
+      let(:scope) { [user, project] }
+
+      let(:start_time) { Time.current.beginning_of_hour }
+      let_it_be(:project2) { create(:project) }
+
+      let(:interval) { 90 }
+
+      it 'returns true when unique actioned resources count exceeds threshold' do
+        travel_to(start_time) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(true)
+        end
+      end
+
+      it 'returns false when unique actioned resource count does not exceed threshold' do
+        travel_to(start_time) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(
+            described_class.resource_usage_throttled?(
+              :test_action, scope: [user, project2], resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+      end
+
+      it 'returns false when interval has elapsed' do
+        travel_to(start_time) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+
+        travel_to(start_time + 2.minutes) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+      end
+    end
+
+    context 'when tracking resource usage throttles' do
+      let(:histogram_double) { instance_double(Prometheus::Client::Histogram) }
+
+      around do |example|
+        # check if defined
+        if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
+          described_class.remove_instance_variable(:@application_rate_limiter_histogram)
+        end
+
+        example.run
+
+        described_class.remove_instance_variable(:@application_rate_limiter_histogram)
+      end
+
+      it 'observe histogram metrics using a memoized histogram instance' do
+        expect(Gitlab::Metrics).to receive(:histogram)
+          .once
+          .with(
+            :gitlab_application_rate_limiter_throttle_utilization_ratio,
+            "The utilization-ratio of a throttle.",
+            { peek: nil, throttle_key: nil, feature_category: nil },
+            described_class::LIMIT_USAGE_BUCKET
+          )
+          .and_return(histogram_double)
+        expect(histogram_double).to receive(:observe).twice
+
+        subject.resource_usage_throttled?(
+          :test_action, scope: [], resource_key: resource_key, threshold: threshold, interval: interval)
+        subject.resource_usage_throttled?(
+          :test_action, scope: [], resource_key: resource_key, threshold: threshold, interval: interval)
+      end
+    end
+
+    shared_examples 'throttles resource usage based on key and scope' do
+      let(:start_time) { Time.current.beginning_of_hour }
+
+      it 'returns true when threshold is exceeded', :aggregate_failures do
+        travel_to(start_time) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+
+        travel_to(start_time + 59.seconds) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(true)
+
+          # Assert that it does not affect other actions or scope
+          expect(subject.resource_usage_throttled?(:another_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval)).to eq(false)
+
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+        end
+      end
+
+      it 'returns false when interval has elapsed', :aggregate_failures do
+        travel_to(start_time) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+
+          # another_action has a threshold of 2 so we simulate 2 requests
+          expect(
+            subject.resource_usage_throttled?(
+              :another_action, scope: scope, resource_key: resource_key_2, threshold: threshold * 2, interval: interval
+            )
+          ).to eq(false)
+          expect(
+            subject.resource_usage_throttled?(
+              :another_action, scope: scope, resource_key: resource_key_2, threshold: threshold * 2, interval: interval
+            )
+          ).to eq(false)
+        end
+
+        travel_to(start_time + 2.minutes) do
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(false)
+
+          # Assert that another_action has its own interval that hasn't elapsed
+          expect(
+            subject.resource_usage_throttled?(
+              :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
+            )
+          ).to eq(true)
+        end
+      end
+    end
+
+    context 'when using ActiveRecord models as scope' do
+      let(:scope) { [user, project] }
+
+      it_behaves_like 'throttles resource usage based on key and scope'
+    end
+
+    context 'when using ActiveRecord models and strings as scope' do
+      let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
+
+      it_behaves_like 'throttles resource usage based on key and scope'
+    end
+  end
+
   describe '.throttled_request?', :freeze_time do
     let(:request) { instance_double('Rack::Request') }
 

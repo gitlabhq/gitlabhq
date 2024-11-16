@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'sidekiq', feature_category: :build do
-  describe 'load_cron_jobs!' do
-    subject { load_cron_jobs! }
+RSpec.describe Gitlab::SidekiqConfig::CronJobInitializer, feature_category: :build do
+  describe '#execute' do
+    subject(:execute) { described_class.execute }
 
     let(:cron_for_service_ping) { '4 7 * * 4' }
 
@@ -42,23 +42,40 @@ RSpec.describe 'sidekiq', feature_category: :build do
       original_settings = Gitlab.config['cron_jobs']
       Gitlab.config['cron_jobs'] = cron_jobs_settings
 
-      example.run
+      Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+        example.run
+      end
 
       Gitlab::SidekiqConfig.clear_memoization(:cron_jobs)
       Gitlab.config['cron_jobs'] = original_settings
     end
 
     it 'loads the cron jobs into sidekiq-cron' do
-      allow(Settings).to receive(:cron_for_service_ping).and_return(cron_for_service_ping)
-
       expect(Sidekiq::Cron::Job).to receive(:load_from_hash!).with(cron_jobs_hash, source: 'schedule')
 
-      if Gitlab.ee?
+      execute
+    end
+
+    context 'when EE files are available', if: Gitlab.ee? do
+      it 'configures mirror and geo cron jobs' do
         expect(Gitlab::Mirror).to receive(:configure_cron_job!)
         expect(Gitlab::Geo).to receive(:configure_cron_jobs!)
+
+        execute
       end
 
-      subject
+      context 'for FOSS' do
+        before do
+          allow(GitlabEdition).to receive(:ee?).and_return(false)
+        end
+
+        it 'does not configure mirror and geo cron jobs' do
+          expect(Gitlab::Mirror).not_to receive(:configure_cron_job!)
+          expect(Gitlab::Geo).not_to receive(:configure_cron_jobs!)
+
+          execute
+        end
+      end
     end
   end
 end

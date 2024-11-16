@@ -21,6 +21,7 @@ module API
           kas {
             enabled
             externalUrl
+            externalK8sProxyUrl
             version
           }
           enterprise

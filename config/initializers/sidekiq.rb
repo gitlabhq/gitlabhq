@@ -5,18 +5,6 @@ module SidekiqLogArguments
   end
 end
 
-def load_cron_jobs!
-  # Set source to schedule to clear any missing jobs
-  # See https://github.com/sidekiq-cron/sidekiq-cron/pull/431
-  Sidekiq::Cron::Job.load_from_hash! Gitlab::SidekiqConfig.cron_jobs, source: 'schedule'
-
-  Gitlab.ee do
-    Gitlab::Mirror.configure_cron_job!
-
-    Gitlab::Geo.configure_cron_jobs!
-  end
-end
-
 # initialise migrated_shards on start-up to catch any malformed SIDEKIQ_MIGRATED_SHARD lists.
 Gitlab::SidekiqSharding::Router.migrated_shards
 
@@ -119,7 +107,8 @@ Sidekiq.configure_server do |config|
 
   config[:cron_poll_interval] = Gitlab.config.cron_jobs.poll_interval
   config[:cron_poll_interval] = 0 if queue_instance != Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME
-  load_cron_jobs!
+
+  Gitlab::SidekiqConfig::CronJobInitializer.execute
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
   # https://github.com/mikel/mail/issues/912#issuecomment-214850355
