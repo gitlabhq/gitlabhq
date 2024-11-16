@@ -37,7 +37,18 @@ In VS Code, trigger these commands from the
 - `GitLab: Toggle Code Suggestions`
 - `GitLab: Toggle Code Suggestions for current language`
 - [`GitLab: Validate GitLab CI/CD Config`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#validate-gitlab-cicd-configuration):
-  Validate the GitLab CI/CD configuration file `.gitlab-ci.yml`.
+  Test the GitLab CI/CD configuration file `.gitlab-ci.yml`.
+
+### Command integrations
+
+This extension also integrates with these commands:
+
+- `Git: Clone`: Search for and clone projects for every GitLab instance you set up. For more information, see:
+  - [Clone GitLab projects](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#clone-gitlab-projects)
+    in the extension documentation.
+  - [Cloning a repository](https://code.visualstudio.com/docs/sourcecontrol/overview#_cloning-a-repository)
+    in the VS Code documentation.
+- `Git: Add Remote...`: Add existing projects as remotes from every GitLab instance you set up.
 
 ## Extension settings
 

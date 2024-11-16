@@ -15,16 +15,13 @@ and extend your view with [custom queries](custom_queries.md).
 This extension brings the GitLab features you use every day directly into your VS Code environment:
 
 - [View issues](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-issues-review-mrs) and merge requests.
-- Run [common commands](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#commands)
-  from the Visual Studio Code [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+- Run [common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
 - Create and [review](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#merge-request-reviews)
   merge requests.
-- [Validate your GitLab CI/CD configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-cicd-configuration).
-- View [pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue) and
-  [job outputs](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#view-the-job-output).
-- [Create](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet) and manage snippets.
-- [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)
-  without cloning them.
+- [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
+- View [pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
+- [Create](#create-a-snippet) and manage snippets.
+- [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
 - [View security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
@@ -34,6 +31,13 @@ The GitLab Workflow extension also streamlines your VS Code workflow with AI-ass
 - [**GitLab Duo Code Suggestions**](../../user/project/repository/code_suggestions/index.md):
   Suggest completions to your current line of code, or write natural-language code comments to get
   more substantive suggestions.
+
+When you view a GitLab project in VS Code, the extension shows you information about your current branch:
+
+- The status of the branch's most recent CI/CD pipeline.
+- A link to the merge request for this branch.
+- If the merge request includes an [issue closing pattern](../../user/project/issues/managing_issues.md#closing-issues-automatically),
+  a link to the issue.
 
 ## Set up the GitLab Workflow extension
 
@@ -167,45 +171,6 @@ To view issues and merge requests for a specific project:
 
    1. Select a file to view its diff in a VS Code tab.
 
-## View pipeline information
-
-Use this extension to start, monitor, and debug CI/CD pipelines in GitLab.
-
-Prerequisites:
-
-- Your project uses CI/CD pipelines.
-- A merge request exists for your current Git branch.
-- The most recent commit on your current Git branch has a CI/CD pipeline.
-
-To view pipeline information:
-
-1. In VS Code, on the bottom status bar, select the pipeline status to display actions in the Command Palette:
-
-   - **Pipeline canceled**
-   - **Pipeline failed**
-   - **Pipeline passed**
-   - **Pipeline pending**
-   - **Pipeline running**
-   - **Pipeline skipped**
-
-1. In the Command Palette, select your desired action:
-
-   - **Create New Pipeline From Current Branch**: Start a new pipeline.
-   - **Cancel Last Pipeline**
-   - **Download Artifacts from Latest Pipeline**: Download the pipeline artifact in ZIP or JSON format.
-   - **Retry Last Pipeline**
-   - **View Latest Pipeline on GitLab**: Open the pipeline's page in a browser tab.
-
-## View CI/CD job output
-
-To view the output for a CI/CD job for your current branch:
-
-1. On the left vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
-1. On the sidebar, expand **For current branch** to show its most recent pipeline.
-1. Select your desired job to open it in a new VS Code tab:
-
-   ![A pipeline containing CI/CD jobs that are passing, allowed to fail, and failing.](../img/view_job_output_v17_6.png)
-
 ## View security findings
 
 Prerequisites:
@@ -285,15 +250,6 @@ This search query looks for:
 - Assignee: `jschatz1`
 - Labels: `frontend` and `performance`
 - Milestone: `17.5`
-
-## Show pipeline alerts
-
-To show an alert message in VS Code when a pipeline for your current branch completes:
-
-1. In VS Code, on the top menu, select **Code > Settings > Settings**.
-1. Depending on your configuration, select either **User** or **Workplace** settings.
-1. In the main tab, select **Extensions > GitLab Workflow** to view this extension's settings.
-1. Under **Show Pipeline Update Notifications**, select the **Show notification in VS Code when the pipeline status changes** checkbox.
 
 ## Related topics
 
