@@ -16,12 +16,16 @@ RSpec.describe UserDetail, feature_category: :system_access do
       let(:step_url) { '_some_string_' }
       let(:email_opt_in) { true }
       let(:registration_type) { 'free' }
+      let(:glm_source) { 'glm_source' }
+      let(:glm_content) { 'glm_content' }
       let(:onboarding_status) do
         {
           step_url: step_url,
           email_opt_in: email_opt_in,
           initial_registration_type: registration_type,
-          registration_type: registration_type
+          registration_type: registration_type,
+          glm_source: glm_source,
+          glm_content: glm_content
         }
       end
 
@@ -86,6 +90,38 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
         context "when 'registration_type' is invalid" do
           let(:registration_type) { [] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for glm_content' do
+        let(:onboarding_status) do
+          {
+            glm_content: glm_content
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'glm_content' is invalid" do
+          let(:glm_content) { [] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for glm_source' do
+        let(:onboarding_status) do
+          {
+            glm_source: glm_source
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'glm_source' is invalid" do
+          let(:glm_source) { [] }
 
           it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
         end
