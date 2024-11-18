@@ -859,15 +859,11 @@ When you change topic title text, the anchor link changes. To avoid broken links
 
 #### Changing links and titles
 
-When you change a topic title, the anchor link changes. To ensure you update
-any related links, search these directories:
+When you change a topic title, the anchor link changes. If other documentation pages
+or code files link to this anchor, [pipeline jobs could fail](../testing/index.md).
 
-- `doc/*`
-- `app/views/*`
-- `ee/app/views/*`
-
-If you do not fix these links, the [`ui-docs-lint` job](../testing/index.md#tests-in-ui-docs-links-lint)
-in your merge request might fail.
+Consider [running the link checks locally](../testing/links.md) before pushing your changes
+to prevent failing pipelines.
 
 ### Text for links
 
