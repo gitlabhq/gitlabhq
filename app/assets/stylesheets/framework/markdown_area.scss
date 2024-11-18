@@ -65,6 +65,14 @@
   min-height: 177px;
   padding: 10px 0;
   overflow-x: auto;
+
+  a.anchor {
+    margin-left: -1rem !important;
+  }
+
+  details a.anchor {
+    margin-left: -1.75rem !important;
+  }
 }
 
 .markdown-area {
