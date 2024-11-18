@@ -69,7 +69,7 @@
             @apply gl-bg-subtle gl-border-l gl-border-l-section gl-border-r gl-border-r-section;
 
             .timeline-content {
-              padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
+              @apply gl-p-3 gl-pl-5;
             }
 
             .timeline-discussion-body-footer {

@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import { INTEGRATION_VIEW_CONFIGS, i18n, INTEGRATION_EXTENSIONS_MARKETPLACE } from '../constants';
 import IntegrationView from './integration_view.vue';
 import ExtensionsMarketplaceWarning from './extensions_marketplace_warning.vue';
@@ -27,7 +26,6 @@ export default {
     IntegrationView,
     GlButton,
     ExtensionsMarketplaceWarning,
-    SettingsSection,
   },
   inject: {
     integrationViews: {
@@ -125,16 +123,25 @@ export default {
 </script>
 
 <template>
-  <div class="settings-section">
-    <settings-section v-if="integrationViews.length" id="integrations" class="js-preferences-form">
-      <template #heading>
-        {{ $options.i18n.integrations }}
-      </template>
-
-      <template #description>
+  <div class="js-preferences-form gl-contents">
+    <div
+      v-if="integrationViews.length"
+      class="settings-section js-search-settings-section gl-border-t !gl-pt-6"
+    >
+      <div class="settings-sticky-header">
+        <div class="settings-sticky-header-inner">
+          <h4
+            id="integrations"
+            class="gl-my-0"
+            data-testid="profile-preferences-integrations-heading"
+          >
+            {{ $options.i18n.integrations }}
+          </h4>
+        </div>
+      </div>
+      <p class="gl-text-secondary">
         {{ $options.i18n.integrationsDescription }}
-      </template>
-
+      </p>
       <div>
         <integration-view
           v-for="view in integrationViews"
@@ -147,8 +154,7 @@ export default {
           :title="view.title"
         />
       </div>
-    </settings-section>
-
+    </div>
     <div class="settings-sticky-footer js-hide-when-nothing-matches-search">
       <gl-button
         category="primary"

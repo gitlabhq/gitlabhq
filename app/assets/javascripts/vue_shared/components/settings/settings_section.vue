@@ -19,7 +19,7 @@ export default {
   <section class="settings-section js-search-settings-section">
     <div class="settings-sticky-header">
       <div class="settings-sticky-header-inner">
-        <h2 class="gl-heading-2 !gl-mb-3" data-testid="settings-section-heading">
+        <h2 class="gl-heading-2 !gl-mb-2" data-testid="settings-section-heading">
           <slot v-if="$scopedSlots.heading" name="heading"></slot>
           <template v-else>{{ heading }}</template>
         </h2>
@@ -33,7 +33,7 @@ export default {
         </p>
       </div>
     </div>
-    <div class="gl-mt-3">
+    <div>
       <slot></slot>
     </div>
   </section>

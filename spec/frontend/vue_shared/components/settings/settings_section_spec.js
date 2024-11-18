@@ -37,7 +37,7 @@ describe('Settings Block', () => {
     mountComponent();
 
     expect(findHeading().text()).toBe('Heading');
-    expect(findHeading().classes()).toEqual(['gl-heading-2', '!gl-mb-3']);
+    expect(findHeading().classes()).toEqual(['gl-heading-2', '!gl-mb-2']);
   });
 
   it('has a description slot', () => {
