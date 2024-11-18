@@ -162,9 +162,14 @@ As an alternative to using hosted runners, you can use your own runners for your
 
 To use self-managed runners, install [GitLab Runner](https://docs.gitlab.com/runner/install/) on infrastructure that you own or manage.
 
-#### OpenID Connect
+#### OpenID Connect and SCIM
 
-You can use [GitLab as an OpenID Connect identity provider](../../integration/openid_connect_provider.md). If you use an IP allowlist to restrict access to your instance, you can [enable OpenID Connect requests](../../administration/dedicated/configure_instance.md#enable-openid-connect-for-your-ip-allowlist) while maintaining your IP restrictions.
+You can use [SCIM for user management](../../api/scim.md) or [GitLab as an OpenID Connect identity provider](../../integration/openid_connect_provider.md) while maintaining IP restrictions to your instance.
+
+To use these features with IP allowlists:
+
+- [Enable SCIM provisioning for your IP allowlist](../../administration/dedicated/configure_instance.md#enable-scim-provisioning-for-your-ip-allowlist)
+- [Enable OpenID Connect for your IP allowlist](../../administration/dedicated/configure_instance.md#enable-openid-connect-for-your-ip-allowlist)
 
 ### Pre-production environments
 

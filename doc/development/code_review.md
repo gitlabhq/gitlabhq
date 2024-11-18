@@ -425,7 +425,6 @@ that it meets all requirements, you should:
 - `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
 - Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
   however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
-- Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
 
@@ -463,7 +462,8 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
-required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
+required approvers.
+If still awaiting further approvals from others, `@` mention the author and explain why in a comment.
 
 Certain merge requests may target a stable branch. For an overview of how to handle these requests,
 see the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md).
@@ -478,8 +478,6 @@ Here is a summary of the changes, also reflected in this section above.
 
 - Merge request authors and DRIs stay as Assignees.
 - Authors request a review by assigning users as Reviewers.
-- Reviewers unassign themselves after they're done reviewing and approving.
-- The last approver (who merges the MR) stays assigned as Reviewer.
 
 ## Best practices
 

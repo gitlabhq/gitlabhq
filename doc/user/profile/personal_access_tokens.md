@@ -81,15 +81,18 @@ WARNING:
 Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/index.md#security-considerations)
 for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
-## Revoke a personal access token
+## Revoke or rotate a personal access token
 
-At any time, you can revoke a personal access token.
+At any time, you can revoke or rotate a personal access token.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
-1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
-1. On the confirmation dialog, select **Revoke**.
+1. In the **Active personal access tokens** area, for the relevant token, select **Revoke** (**{remove}**) or **Rotate** (**{retry}**).
+1. On the confirmation dialog, select **Revoke** or **Rotate**.
+
+   WARNING:
+   These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
 
 ## Disable personal access tokens
 

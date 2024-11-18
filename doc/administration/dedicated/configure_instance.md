@@ -360,7 +360,17 @@ To enable access to the OpenID Connect endpoint while maintaining your IP allowl
 
 The configuration is applied during the next maintenance window.
 
-## SAML
+### Enable SCIM provisioning for your IP allowlist
+
+You can use SCIM with external identity providers to automatically provision and manage users. To use SCIM, your identity provider must be able to access the [instance SCIM API](../../development/internal_api/index.md#instance-scim-api) endpoints. By default, IP allowlisting blocks communication to these endpoints.
+
+To enable SCIM while maintaining your IP allowlist:
+
+- In a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), request to enable SCIM endpoints to the internet.
+
+The configuration is applied during the next maintenance window.
+
+### SAML
 
 You can [configure SAML single sign-on (SSO)](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance. Optionally, you can configure more than one SAML identity provider (IdP).
 
