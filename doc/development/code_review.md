@@ -237,17 +237,15 @@ Using checklists improves quality in software engineering. This checklist is a s
 See the [test engineering process](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/) for further quality guidelines.
 
 1. You have self-reviewed this MR per [code review guidelines](code_review.md).
-1. For the code that this change impacts, you believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
-1. If the existing automated tests do not cover the above functionality, you have added the necessary additional tests or added an issue to describe the automation testing gap and linked it to this MR.
-1. You have considered the technical aspects of this change's impact on GitLab.com hosted customers and self-managed customers.
+1. The code follows the [software design guidelines](software_design.md).
+1. Ensure [automated tests](testing_guide/index.md) exist following the [testing pyramid](testing_guide/testing_levels.md). Add missing tests or create an issue documenting testing gaps.
+1. You have considered the technical impacts on GitLab.com, Dedicated and self-managed.
 1. You have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
 1. You have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
 1. You have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or you have decided that this does not apply.
-1. You have properly separated EE content from FOSS, or this MR is FOSS only.
-   - [Where should EE code go?](ee_features.md)
-1. If this MR can impact EE and FOSS in different ways, you have considered [running the CI pipelines in a FOSS context](ee_features.md#run-ci-pipelines-in-a-foss-context).
-1. You have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
-1. If a test passes with warnings and the failed job includes the text `Flaky test '<path/to/test>' was found in the list of files changed by this MR.`, you have fixed this test, or provided evidence explaining why this flaky test can be ignored.
+1. You have properly separated [EE content](ee_features.md) (if any) from FOSS. Consider [running the CI pipelines in a FOSS context](ee_features.md#run-ci-pipelines-in-a-foss-context).
+1. You have considered that existing data may be surprisingly varied. For example, if adding a new model validation, consider making it optional on existing data.
+1. You have fixed flaky tests related to this MR, or have explained why they can be ignored. Flaky tests have error `Flaky test '<path/to/test>' was found in the list of files changed by this MR.` but can be in jobs that pass with warnings.
 
 ##### Performance, reliability, and availability
 
