@@ -29,9 +29,13 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [`runnerRegistrationToken` parameter for GitLab Runner Helm Chart](https://gitlab.com/gitlab-org/gitlab/-/issues/381111) | Critical | Verify | Instance, group, project |
 | [Registration tokens and server-side runner arguments in `gitlab-runner register` command](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) | Critical | Verify | Instance, group, project |
 | [Support for REST API endpoints that reset runner registration tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) | Critical | Verify | Instance, group, project |
+| [GitLab Runner platforms and setup instructions in GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/387937) | Low | Verify | Instance, group, project |
 | [The `Project.services` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388424) | Low | Foundations | Instance |
 | [Default CI/CD job token (`CI_JOB_TOKEN`) scope changed](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
 | [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Depoy | Project |
+| [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low |  |  |
+| [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low |  |  |
+| [Public use of Secure container registries is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) | Low | Secure | Instance |
 | [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |
 
 ## Window 2
@@ -40,8 +44,11 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
+| [Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions](https://gitlab.com/gitlab-org/gitlab/-/issues/391941) | Low | Verify | Project |
 | [The `heroku/builder:22` image is deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79) | Medium | Deploy | Project |
 | [`ciUsedMinutes` GraphQL field renamed to `ciDuration`](https://gitlab.com/gitlab-org/gitlab/-/issues/497364) | Medium | Verify | Instance |
+| [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |
+| [Pipeline subscriptions](https://gitlab.com/gitlab-org/gitlab/-/issues/501460) | Medium | Verify | Project |
 
 ## Window 3
 
@@ -52,4 +59,8 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [ZenTao integration](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) | Low | Foundations | Instance |
 | [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |
+| [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
+| [Guest users can pull packages from private projects on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/336622) | High | Package | Project |
+| [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |
+| [Remove `previousStageJobsOrNeeds` from GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/424417) |  | Verify |  |
