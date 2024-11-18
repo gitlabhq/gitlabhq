@@ -25,7 +25,7 @@ Experimental features:
 
 - Are not ready for production use.
 - Have [no support available](https://about.gitlab.com/support/statement-of-support/#experiment-beta-features).
-  Issues regarding such features should be opened in the GitLab issue tracker.
+  Issues regarding such features should be opened in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Might be unstable.
 - Could be removed at any time.
 - Might have a risk of data loss.

@@ -64520,9 +64520,6 @@ msgstr ""
 msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+)."
 msgstr ""
 
-msgid "Your changes can be committed to %{branchName} because a merge request is open."
-msgstr ""
-
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
 msgstr ""
 
@@ -65616,6 +65613,9 @@ msgid "estimateCommand|%{slash_command} overwrites the total estimated time."
 msgstr ""
 
 msgid "event"
+msgstr ""
+
+msgid "example-branch-name"
 msgstr ""
 
 msgid "example.com"

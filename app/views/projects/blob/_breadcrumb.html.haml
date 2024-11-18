@@ -26,7 +26,8 @@
       - else
         = link_button_to _('Blame'), project_blame_path(@project, @id, ref_type: @ref_type), data: { event_tracking: 'click_blame_control_on_blob_page' }, class: 'js-blob-blame-link' unless blob.empty?
 
-    = link_button_to _('History'), project_commits_path(@project, @id, ref_type: @ref_type), data: { event_tracking: 'click_history_control_on_blob_page' }
+        .gl-block.sm:gl-hidden.gl-w-full
+          = link_button_to _('History'), project_commits_path(@project, @id, ref_type: @ref_type), data: { event_tracking: 'click_history_control_on_blob_page' }
 
     - permalink_description = _('Go to permalink')
     - permalink_shortcut = 'y'

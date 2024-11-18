@@ -7,7 +7,6 @@ module QA
         include Shared::CommitMessage
         include Layout::Flash
         include Page::Component::BlobContent
-        include Shared::Editor
 
         view 'app/assets/javascripts/repository/components/blob_button_group.vue' do
           element 'lock-button'
@@ -34,6 +33,10 @@ module QA
 
         def explain_code
           click_element('question-icon')
+        end
+
+        def click_commit_changes
+          click_on 'Commit changes'
         end
       end
     end

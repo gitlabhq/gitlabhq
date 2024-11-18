@@ -26,12 +26,14 @@ export const renderMarkdown = (rawMarkdown) => {
 export const createNoteErrorMessages = (data, status) => {
   const errors = data?.errors;
 
-  if (errors && status === HTTP_STATUS_UNPROCESSABLE_ENTITY) {
-    if (errors.commands_only?.length) {
-      return errors.commands_only;
+  if (status === HTTP_STATUS_UNPROCESSABLE_ENTITY) {
+    if (data.quick_actions_status?.error_messages?.length) {
+      return data.quick_actions_status.error_messages;
     }
 
-    return [sprintf(COMMENT_FORM.error, { reason: errors.toLowerCase() }, false)];
+    if (errors) {
+      return [sprintf(COMMENT_FORM.error, { reason: errors.toLowerCase() }, false)];
+    }
   }
 
   return [COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK];

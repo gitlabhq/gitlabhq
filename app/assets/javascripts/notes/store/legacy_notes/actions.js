@@ -509,14 +509,8 @@ export function saveNote(noteData) {
   }
 
   const processQuickActions = (res) => {
-    const {
-      errors: { commands_only: commandsOnly } = {
-        commands_only: null,
-        command_names: [],
-      },
-      command_names: commandNames,
-    } = res;
-    const message = commandsOnly;
+    const { quick_actions_status: { messages = null, command_names: commandNames = [] } = {} } =
+      res;
 
     if (commandNames?.indexOf('submit_review') >= 0) {
       useBatchComments().clearDrafts();
@@ -525,14 +519,14 @@ export function saveNote(noteData) {
     /*
      The following reply means that quick actions have been successfully applied:
 
-     {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
+     {"commands_changes":{},"valid":false,"errors":{},"quick_actions_status":{"messages":["Commands applied"],"command_names":["due"],"commands_only":true}}
      */
-    if (hasQuickActions && message) {
+    if (hasQuickActions && messages) {
       // synchronizing the quick action with the sidebar widget
       // this is a temporary solution until we have confidentiality real-time updates
       if (
         confidentialWidget.setConfidentiality &&
-        message.some((m) => m.includes('Made this issue confidential'))
+        messages.some((m) => m.includes('Made this issue confidential'))
       ) {
         confidentialWidget.setConfidentiality();
       }
@@ -540,7 +534,7 @@ export function saveNote(noteData) {
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
 
       createAlert({
-        message: message || __('Commands applied'),
+        message: messages || __('Commands applied'),
         variant: VARIANT_INFO,
         parent: noteData.flashContainer,
       });

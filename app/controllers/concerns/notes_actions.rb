@@ -43,8 +43,7 @@ module NotesActions
     respond_to do |format|
       format.json do
         json = {
-          commands_changes: @note.commands_changes&.slice(:emoji_award, :time_estimate, :spend_time),
-          command_names: @note.command_names
+          commands_changes: @note.commands_changes&.slice(:emoji_award, :time_estimate, :spend_time)
         }
 
         if @note.persisted? && return_discussion?
@@ -59,8 +58,13 @@ module NotesActions
           json.merge!(note_json(@note))
         end
 
-        if @note.errors.present? && @note.errors.attribute_names != [:commands_only, :command_names]
-          render json: { errors: errors_on_create(@note.errors) }, status: :unprocessable_entity
+        quick_actions = @note.quick_actions_status
+        json[:quick_actions_status] = quick_actions.to_h if quick_actions
+
+        if @note.errors.present?
+          render json: { errors: errors_on_create(@note) }, status: :unprocessable_entity
+        elsif quick_actions&.error?
+          render json: { quick_actions_status: quick_actions.to_h }, status: :unprocessable_entity
         else
           render json: json
         end
@@ -321,10 +325,8 @@ module NotesActions
     noteable.discussions_rendered_on_frontend?
   end
 
-  def errors_on_create(errors)
-    return { commands_only: errors.messages[:commands_only] } if errors.key?(:commands_only)
-
-    errors.full_messages.to_sentence
+  def errors_on_create(note)
+    note.errors.full_messages.to_sentence
   end
 end
 

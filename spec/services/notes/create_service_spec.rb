@@ -513,14 +513,16 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
           note = described_class.new(project, user, opts.merge(note: note_text)).execute
 
-          expect(note.errors[:commands_only]).to be_present
+          expect(note.quick_actions_status.messages).to be_present
+          expect(note.quick_actions_status.error_messages).to be_empty
         end
 
         it 'adds commands failed message to note errors' do
           note_text = %(/reopen)
           note = described_class.new(project, user, opts.merge(note: note_text)).execute
 
-          expect(note.errors[:commands_only]).to contain_exactly('Could not apply reopen command.')
+          expect(note.quick_actions_status.messages).to eq(['Could not apply reopen command.'])
+          expect(note.quick_actions_status.error_messages).to be_empty
         end
 
         it 'generates success and failed error messages' do
@@ -531,7 +533,10 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
           note = described_class.new(project, user, opts.merge(note: note_text)).execute
 
-          expect(note.errors[:commands_only]).to contain_exactly('Closed this issue. Could not apply reopen command.')
+          expect(note.quick_actions_status.error?).to be(false)
+          expect(note.quick_actions_status.command_names).to eq(%w[close reopen])
+          expect(note.quick_actions_status.messages).to eq(['Closed this issue. Could not apply reopen command.'])
+          expect(note.quick_actions_status.error_messages).to be_empty
         end
 
         it 'does not check for spam' do
@@ -553,7 +558,10 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           end
 
           note = described_class.new(project, user, opts.merge(note: note_text)).execute
-          expect(note.errors[:commands_only]).to contain_exactly('Confidential an error occurred')
+
+          expect(note.quick_actions_status.error?).to be(true)
+          expect(note.quick_actions_status.command_names).to eq(['confidential'])
+          expect(note.quick_actions_status.error_messages).to eq(['Confidential an error occurred'])
         end
       end
     end

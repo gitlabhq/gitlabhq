@@ -81,12 +81,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
+      fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
-
-      within_testid('commit-change-modal') do
-        fill_in(:commit_message, with: 'New commit message', visible: true)
-        click_button('Commit changes')
-      end
 
       expect(page).to have_current_path(project_blob_path(project, 'master/.gitignore'), ignore_query: true)
 
@@ -101,12 +97,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
+      fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
-
-      within_testid('commit-change-modal') do
-        fill_in(:commit_message, with: 'New commit message', visible: true)
-        click_button('Commit changes')
-      end
 
       expect(page).to have_current_path(project_blob_path(project, 'master/.gitignore'), ignore_query: true)
 
@@ -125,14 +117,10 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
+      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:branch_name, with: 'new_branch_name', visible: true)
       click_button('Commit changes')
 
-      within_testid('commit-change-modal') do
-        fill_in(:commit_message, with: 'New commit message', visible: true)
-        choose(option: true)
-        fill_in(:branch_name, with: 'new_branch_name', visible: true)
-        click_button('Commit changes')
-      end
       expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
 
       click_link('Changes')
@@ -218,12 +206,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
+      fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
-
-      within_testid('commit-change-modal') do
-        fill_in(:commit_message, with: 'New commit message', visible: true)
-        click_button('Commit changes')
-      end
 
       fork = user.fork_of(project2.reload)
 
@@ -249,12 +233,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
         expect(page).not_to have_link('Fork')
 
         editor_set_value('*.rbca')
+        fill_in(:commit_message, with: 'Another commit', visible: true)
         click_button('Commit changes')
-
-        within_testid('commit-change-modal') do
-          fill_in(:commit_message, with: 'Another commit', visible: true)
-          click_button('Commit changes')
-        end
 
         fork = user.fork_of(project2)
 

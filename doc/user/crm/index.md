@@ -51,7 +51,7 @@ To enable customer relations management in a group or subgroup:
 
 ## Configure the contact source
 
-> - [Available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164945) in GitLab 17.4.
+> - [Available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167475) in GitLab 17.6.
 
 By default, contacts are sourced from an issue's top-level group.
 

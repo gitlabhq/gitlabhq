@@ -196,7 +196,10 @@ describe('issue_comment_form component', () => {
           const store = createStore({
             actions: {
               saveNote: jest.fn().mockRejectedValue({
-                response: { status: httpStatus, data: { errors: { commands_only: errors } } },
+                response: {
+                  status: httpStatus,
+                  data: { quick_actions_status: { error_messages: errors } },
+                },
               }),
             },
           });
@@ -258,7 +261,7 @@ describe('issue_comment_form component', () => {
             saveNote: jest.fn().mockRejectedValue({
               response: {
                 status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
-                data: { errors: { commands_only: [...commandErrors] } },
+                data: { quick_actions_status: { error_messages: [...commandErrors] } },
               },
             }),
           },

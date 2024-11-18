@@ -24,11 +24,15 @@ module Notes
 
         quick_actions_service = QuickActionsService.new(project, current_user)
         if quick_actions_service.supported?(note)
-          content, update_params, message = quick_actions_service.execute(note, {})
+          content, update_params, message, command_names = quick_actions_service.execute(note, {})
 
           only_commands = content.empty?
 
           note.note = content
+          status = ::Notes::QuickActionsStatus.new(
+            command_names: command_names, commands_only: only_commands)
+          status.add_message(message)
+          note.quick_actions_status = status
         end
 
         update_note(note, only_commands)
@@ -71,11 +75,7 @@ module Notes
     end
 
     def delete_note(note, message)
-      # We must add the error after we call #save because errors are reset
-      # when #save is called
-      note.errors.add(:commands_only, message.presence || _('Commands did not apply'))
-      # Allow consumers to detect problems applying commands
-      note.errors.add(:commands, _('Commands did not apply')) unless message.present?
+      note.quick_actions_status.add_error(_('Commands did not apply')) if message.blank?
 
       Notes::DestroyService.new(project, current_user).execute(note)
     end

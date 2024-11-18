@@ -132,14 +132,18 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       let(:head_sha) { noteable.diff_head_sha }
       let(:body) { '/merge' }
 
-      # NOTE: Known issue https://gitlab.com/gitlab-org/gitlab/-/issues/346557
       it 'returns a nil note and info about the command in errors' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response).to include(
-          'errors' => include(/Merged this merge request/),
-          'note' => nil
-        )
+          'errors' => [],
+          'note' => nil,
+          'quickActionsStatus' => {
+            "commandNames" => ["merge"],
+            "commandsOnly" => true,
+            "messages" => ["Merged this merge request."],
+            "errorMessages" => nil
+          })
       end
 
       it 'starts the merge process' do

@@ -47,6 +47,18 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'when the note is an invalid command' do
+      let(:edit_note_text) { { note: '/spend asdf' } }
+
+      it 'deletes the note and reports command errors' do
+        updated_note = described_class.new(project, user, edit_note_text).execute(note)
+
+        expect(updated_note.destroyed?).to eq(true)
+        expect(updated_note.quick_actions_status.error?).to be(true)
+        expect(updated_note.quick_actions_status.error_messages).to eq(['Commands did not apply'])
+      end
+    end
+
     context 'when the note is invalid' do
       let(:edit_note_text) { { note: 'new text' } }
 
@@ -130,9 +142,11 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
 
           expect(updated_note.destroyed?).to eq(true)
           expect(updated_note.errors).to match_array([
-            "Note can't be blank",
-            "Commands only Closed this issue."
+            "Note can't be blank"
           ])
+          expect(updated_note.quick_actions_status.error?).to be(false)
+          expect(updated_note.quick_actions_status.command_names).to eq(['close'])
+          expect(updated_note.quick_actions_status.messages).to eq(['Closed this issue.'])
         end
       end
 

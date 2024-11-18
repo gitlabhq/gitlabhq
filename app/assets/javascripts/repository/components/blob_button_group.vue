@@ -144,7 +144,7 @@ export default {
     <commit-changes-modal
       :ref="deleteModalId"
       :modal-id="deleteModalId"
-      :action-path="deletePath"
+      :delete-path="deletePath"
       :commit-message="deleteModalCommitMessage"
       :target-branch="targetBranch || ref"
       :original-branch="originalBranch || ref"

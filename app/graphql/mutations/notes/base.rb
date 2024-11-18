@@ -13,6 +13,12 @@ module Mutations
         Types::Notes::NoteType,
         null: true,
         description: 'Note after mutation.'
+
+      field :quick_actions_status,
+        Types::Notes::QuickActionsStatusType,
+        null: true,
+        description: 'Status of quick actions after mutation.',
+        skip_type_authorization: [:read_note]
     end
   end
 end

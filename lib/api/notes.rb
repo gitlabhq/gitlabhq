@@ -99,14 +99,16 @@ module API
           }
 
           note = create_note(noteable, opts)
+          quick_action_status = note.quick_actions_status
 
-          if note.errors.attribute_names == [:commands_only, :command_names]
+          if quick_action_status&.commands_only? && quick_action_status.success?
             status 202
             present note, with: Entities::NoteCommands
           elsif note.persisted?
             present note, with: Entities.const_get(note.class.name, false)
-          else
-            note.errors.delete(:commands_only) if note.errors.has_key?(:commands)
+          elsif quick_action_status&.error?
+            bad_request!(quick_action_status.error_messages.join(', '))
+          elsif note.errors.present?
             bad_request!("Note #{note.errors.messages}")
           end
         end

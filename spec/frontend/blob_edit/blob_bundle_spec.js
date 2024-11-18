@@ -2,14 +2,12 @@ import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import blobBundle from '~/blob_edit/blob_bundle';
-import initBlobEditHeader from '~/blob_edit/blob_edit_header';
 
 import SourceEditor from '~/blob_edit/edit_blob';
 import { createAlert } from '~/alert';
 
 jest.mock('~/blob_edit/edit_blob');
 jest.mock('~/alert');
-jest.mock('~/blob_edit/blob_edit_header');
 
 describe('BlobBundle', () => {
   beforeAll(() => {
@@ -29,8 +27,7 @@ describe('BlobBundle', () => {
     blobBundle();
     await waitForPromises();
     expect(SourceEditor).toHaveBeenCalled();
-    expect(initBlobEditHeader).toHaveBeenCalledTimes(1);
-    expect(initBlobEditHeader).toHaveBeenCalledWith(expect.any(SourceEditor));
+
     resetHTMLFixture();
   });
 

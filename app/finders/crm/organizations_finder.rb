@@ -27,9 +27,10 @@ module Crm
     end
 
     def execute
-      return CustomerRelations::Organization.none unless root_group
+      group = params[:group]&.crm_group
+      return CustomerRelations::Organization.none unless group && can?(@current_user, :read_crm_organization, group)
 
-      crm_organizations = root_group.crm_organizations
+      crm_organizations = group.crm_organizations
       crm_organizations = by_ids(crm_organizations)
       crm_organizations = by_search(crm_organizations)
       crm_organizations = by_state(crm_organizations)
@@ -45,16 +46,6 @@ module Crm
       field = @params[:sort][:field]
       direction = @params[:sort][:direction]
       crm_organizations.sort_by_field(field, direction)
-    end
-
-    def root_group
-      strong_memoize(:root_group) do
-        group = params[:group]&.root_ancestor
-
-        next unless can?(@current_user, :read_crm_organization, group)
-
-        group
-      end
     end
 
     def by_search(crm_organizations)

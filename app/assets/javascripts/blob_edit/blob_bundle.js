@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { createAlert } from '~/alert';
-import initBlobEditHeader from '~/blob_edit/blob_edit_header';
+import NewCommitForm from '../new_commit_form';
 
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
@@ -20,7 +20,8 @@ export default () => {
 
     import('./edit_blob')
       .then(({ default: EditBlob } = {}) => {
-        const editor = new EditBlob({
+        // eslint-disable-next-line no-new
+        new EditBlob({
           assetsPath: `${urlRoot}${assetsPath}`,
           filePath,
           currentAction,
@@ -29,8 +30,6 @@ export default () => {
           isMarkdown,
           previewMarkdownPath,
         });
-
-        initBlobEditHeader(editor);
       })
       .catch((e) =>
         createAlert({
@@ -47,6 +46,8 @@ export default () => {
       commitButtonLoading.removeClass('gl-hidden');
       window.onbeforeunload = null;
     });
+
+    new NewCommitForm(editBlobForm); // eslint-disable-line no-new
 
     // returning here blocks page navigation
     window.onbeforeunload = () => '';

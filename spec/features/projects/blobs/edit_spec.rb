@@ -35,11 +35,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
       fill_editor(content: "class NextFeature#{object_id}\\nend\\n")
 
       if commit_changes
-        click_button('Commit changes')
-
-        within_testid('commit-change-modal') do
-          click_button('Commit changes')
-        end
+        click_button 'Commit changes'
       end
     end
 
@@ -210,23 +206,18 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
         it 'shows blob editor with same branch' do
           expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
-
-          click_button('Commit changes')
-
-          expect(page).to have_selector('code', text: branch)
+          expect(find('.js-branch-name').value).to eq(branch)
         end
       end
 
       context 'with protected branch' do
-        it 'shows blob editor with patch branch and option to create MR' do
+        it 'shows blob editor with patch branch' do
           freeze_time do
             visit project_edit_blob_path(project, tree_join(protected_branch, file_path))
 
-            click_button('Commit changes')
-
             epoch = Time.zone.now.strftime('%s%L').last(5)
-            expect(page).to have_checked_field _('Create a merge request for this change')
-            expect(find_field(_('Commit to a new branch')).value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+
+            expect(find('.js-branch-name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
           end
         end
       end
@@ -243,10 +234,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
       it 'shows blob editor with same branch' do
         expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
-
-        click_button('Commit changes')
-
-        expect(page).to have_selector('code', text: branch)
+        expect(find('.js-branch-name').value).to eq(branch)
       end
     end
   end

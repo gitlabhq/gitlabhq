@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_category: :source_code_management do
+RSpec.describe 'Projects > Files > User wants to edit a file', feature_category: :source_code_management do
   include ProjectForksHelper
   let(:project) { create(:project, :repository, :public) }
   let(:user) { project.first_owner }
@@ -28,10 +28,6 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
 
       click_button 'Commit changes'
 
-      within_testid('commit-change-modal') do
-        click_button('Commit changes')
-      end
-
       expect(page).to have_content 'Someone edited the file the same time you did.'
     end
   end
@@ -55,10 +51,6 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
 
         it 'renders an error message' do
           click_button 'Commit changes'
-
-          within_testid('commit-change-modal') do
-            click_button('Commit changes')
-          end
 
           expect(page).to have_content(
             %(Error: Can't edit this file. The fork and upstream project have diverged. Edit the file on the fork)

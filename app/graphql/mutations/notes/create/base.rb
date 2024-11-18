@@ -33,10 +33,14 @@ module Mutations
             create_note_params(noteable, args)
           ).execute
 
-          {
+          data = {
             note: (note if note.persisted?),
             errors: errors_on_object(note)
           }
+
+          data.tap do |payload|
+            payload[:quick_actions_status] = note.quick_actions_status.to_h if note.quick_actions_status
+          end
         end
 
         private

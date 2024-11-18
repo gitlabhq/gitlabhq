@@ -12,7 +12,6 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { sprintf } from '~/locale';
 
@@ -20,7 +19,7 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 const initialProps = {
   modalId: 'Delete-blob',
-  actionPath: 'some/path',
+  deletePath: 'some/path',
   commitMessage: 'Delete File',
   targetBranch: 'some-target-branch',
   originalBranch: 'main',
@@ -85,33 +84,21 @@ describe('CommitChangesModal', () => {
       linkEnd: '',
     });
 
-    describe('when deleting a file', () => {
-      beforeEach(() => createComponent({ isUsingLfs: true }));
+    beforeEach(() => createComponent({ isUsingLfs: true }));
 
-      it('renders a modal containing LFS text', () => {
-        expect(findModal().props('title')).toBe(lfsTitleText);
-        expect(findModal().text()).toContain(primaryLfsText);
-        expect(findModal().text()).toContain(secondaryLfsText);
-      });
-
-      it('hides the LFS content when the continue button is clicked', async () => {
-        findModal().vm.$emit('primary', { preventDefault: jest.fn() });
-        await nextTick();
-
-        expect(findModal().props('title')).not.toBe(lfsTitleText);
-        expect(findModal().text()).not.toContain(primaryLfsText);
-        expect(findModal().text()).not.toContain(secondaryLfsText);
-      });
+    it('renders a modal containing LFS text', () => {
+      expect(findModal().props('title')).toBe(lfsTitleText);
+      expect(findModal().text()).toContain(primaryLfsText);
+      expect(findModal().text()).toContain(secondaryLfsText);
     });
 
-    describe('when editing a file', () => {
-      beforeEach(() => createComponent({ isUsingLfs: true, isEdit: true }));
+    it('hides the LFS content if the continue button is clicked', async () => {
+      findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+      await nextTick();
 
-      it('does not render LFS text', () => {
-        expect(findModal().props('title')).not.toBe(lfsTitleText);
-        expect(findModal().text()).not.toContain(primaryLfsText);
-        expect(findModal().text()).not.toContain(secondaryLfsText);
-      });
+      expect(findModal().props('title')).not.toBe(lfsTitleText);
+      expect(findModal().text()).not.toContain(primaryLfsText);
+      expect(findModal().text()).not.toContain(secondaryLfsText);
     });
   });
 
@@ -132,7 +119,7 @@ describe('CommitChangesModal', () => {
   describe('form', () => {
     it('gets passed the path for action attribute', () => {
       createComponent();
-      expect(findForm().attributes('action')).toBe(initialProps.actionPath);
+      expect(findForm().attributes('action')).toBe(initialProps.deletePath);
     });
 
     it('shows the correct form fields when commit to current branch', () => {
@@ -156,65 +143,53 @@ describe('CommitChangesModal', () => {
 
     it('shows the correct form fields when `canPushToBranch` is `false`', () => {
       createComponent({ canPushToBranch: false, canPushCode: true });
-      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('some-target-branch');
+      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('');
       expect(findCommitTextarea().exists()).toBe(true);
       expect(findRadioGroup().exists()).toBe(false);
       expect(findTargetInput().exists()).toBe(true);
       expect(findCreateMrCheckbox().text()).toBe('Create a merge request for this change');
     });
 
+    it('clear branch name when new branch option is selected', async () => {
+      createComponent();
+      expect(wrapper.vm.$data.form.fields.branch_name).toEqual({
+        feedback: null,
+        required: true,
+        state: true,
+        value: 'main',
+      });
+
+      findFormRadioGroup().vm.$emit('input', true);
+      await nextTick();
+
+      expect(wrapper.vm.$data.form.fields.branch_name).toEqual({
+        feedback: null,
+        required: true,
+        state: true,
+        value: '',
+      });
+    });
+
     it.each`
-      input                       | value                                         | emptyRepo | canPushCode | canPushToBranch | method      | fileContent           | filePath        | lastCommitSha                                 | fromMergeRequestIid | isEdit   | exist
-      ${'authenticity_token'}     | ${'mock-csrf-token'}                          | ${false}  | ${true}     | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'authenticity_token'}     | ${'mock-csrf-token'}                          | ${true}   | ${false}    | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'_method'}                | ${'delete'}                                   | ${false}  | ${true}     | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'_method'}                | ${'delete'}                                   | ${true}   | ${false}    | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'_method'}                | ${'put'}                                      | ${false}  | ${true}     | ${true}         | ${'put'}    | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'_method'}                | ${'put'}                                      | ${true}   | ${false}    | ${true}         | ${'put'}    | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'original_branch'}        | ${initialProps.originalBranch}                | ${false}  | ${true}     | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'original_branch'}        | ${undefined}                                  | ${true}   | ${true}     | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${false}
-      ${'create_merge_request'}   | ${'1'}                                        | ${false}  | ${false}    | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'create_merge_request'}   | ${'1'}                                        | ${false}  | ${true}     | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'create_merge_request'}   | ${'1'}                                        | ${false}  | ${false}    | ${false}        | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'create_merge_request'}   | ${'1'}                                        | ${false}  | ${false}    | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${true}
-      ${'create_merge_request'}   | ${undefined}                                  | ${true}   | ${false}    | ${true}         | ${'delete'} | ${''}                 | ${''}           | ${''}                                         | ${''}               | ${false} | ${false}
-      ${'content'}                | ${'some new content'}                         | ${false}  | ${false}    | ${true}         | ${'put'}    | ${'some new content'} | ${'.gitignore'} | ${''}                                         | ${''}               | ${false} | ${false}
-      ${'file_path'}              | ${'.gitignore'}                               | ${false}  | ${false}    | ${true}         | ${'put'}    | ${'some new content'} | ${'.gitignore'} | ${''}                                         | ${''}               | ${false} | ${false}
-      ${'file_path'}              | ${'.gitignore'}                               | ${false}  | ${false}    | ${true}         | ${'put'}    | ${'some new content'} | ${'.gitignore'} | ${''}                                         | ${''}               | ${true}  | ${true}
-      ${'last_commit_sha'}        | ${'782426692977b2cedb4452ee6501a404410f9b00'} | ${false}  | ${false}    | ${true}         | ${'put'}    | ${''}                 | ${''}           | ${'782426692977b2cedb4452ee6501a404410f9b00'} | ${''}               | ${false} | ${false}
-      ${'last_commit_sha'}        | ${'782426692977b2cedb4452ee6501a404410f9b00'} | ${false}  | ${false}    | ${true}         | ${'put'}    | ${''}                 | ${''}           | ${'782426692977b2cedb4452ee6501a404410f9b00'} | ${''}               | ${true}  | ${true}
-      ${'from_merge_request_iid'} | ${'17'}                                       | ${false}  | ${false}    | ${true}         | ${'put'}    | ${''}                 | ${''}           | ${''}                                         | ${'17'}             | ${false} | ${false}
-      ${'from_merge_request_iid'} | ${'17'}                                       | ${false}  | ${false}    | ${true}         | ${'put'}    | ${''}                 | ${''}           | ${''}                                         | ${'17'}             | ${true}  | ${true}
+      input                     | value                          | emptyRepo | canPushCode | canPushToBranch | exist
+      ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${false}  | ${true}     | ${true}         | ${true}
+      ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${true}   | ${false}    | ${true}         | ${true}
+      ${'_method'}              | ${'delete'}                    | ${false}  | ${true}     | ${true}         | ${true}
+      ${'_method'}              | ${'delete'}                    | ${true}   | ${false}    | ${true}         | ${true}
+      ${'original_branch'}      | ${initialProps.originalBranch} | ${false}  | ${true}     | ${true}         | ${true}
+      ${'original_branch'}      | ${undefined}                   | ${true}   | ${true}     | ${true}         | ${false}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${true}         | ${true}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${true}     | ${true}         | ${true}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${false}        | ${true}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${true}         | ${true}
+      ${'create_merge_request'} | ${undefined}                   | ${true}   | ${false}    | ${true}         | ${false}
     `(
       'passes $input as a hidden input with the correct value',
-      ({
-        input,
-        value,
-        emptyRepo,
-        canPushCode,
-        canPushToBranch,
-        exist,
-        method,
-        fileContent,
-        lastCommitSha,
-        fromMergeRequestIid,
-        isEdit,
-        filePath,
-      }) => {
-        if (fromMergeRequestIid) {
-          setWindowLocation(
-            `https://gitlab.test/foo?from_merge_request_iid=${fromMergeRequestIid}`,
-          );
-        }
+      ({ input, value, emptyRepo, canPushCode, canPushToBranch, exist }) => {
         createComponent({
           emptyRepo,
           canPushCode,
           canPushToBranch,
-          method,
-          fileContent,
-          lastCommitSha,
-          isEdit,
-          filePath,
         });
 
         const inputMethod = findForm().find(`input[name="${input}"]`);

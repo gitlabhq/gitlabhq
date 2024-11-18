@@ -297,25 +297,9 @@ module BlobHelper
       project_path: project.full_path,
       resource_id: project.to_global_id,
       user_id: current_user.present? ? current_user.to_global_id : '',
-      target_branch: selected_branch,
-      original_branch: ref,
+      target_branch: project.empty_repo? ? ref : @ref,
+      original_branch: @ref,
       can_download_code: can?(current_user, :download_code, project).to_s
-    }
-  end
-
-  def edit_blob_app_data(project, id, blob, ref)
-    {
-      update_path: project_update_blob_path(project, id),
-      cancel_path: project_blob_path(project, id),
-      original_branch: ref,
-      target_branch: selected_branch,
-      can_push_code: can?(current_user, :push_code, project).to_s,
-      can_push_to_branch: project.present(current_user: current_user).can_current_user_push_to_branch?(ref).to_s,
-      empty_repo: project.empty_repo?.to_s,
-      is_using_lfs: blob.stored_externally?.to_s,
-      blob_name: blob.name,
-      branch_allows_collaboration: project.branch_allows_collaboration?(current_user, ref).to_s,
-      last_commit_sha: @last_commit_sha
     }
   end
 end
