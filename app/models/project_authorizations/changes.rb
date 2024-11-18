@@ -14,7 +14,7 @@ module ProjectAuthorizations
     attr_reader :projects_to_remove, :users_to_remove_in_project, :authorizations_to_add
 
     BATCH_SIZE = 1000
-    EVENT_USER_BATCH_SIZE = 100
+    EVENTS_BATCH_SIZE = 100
     SLEEP_DELAY = 0.1
 
     def initialize
@@ -156,7 +156,7 @@ module ProjectAuthorizations
           .pluck(:user_id)
         removed_user_ids_for_project = @removed_user_ids - added_user_ids_for_project
 
-        removed_user_ids_for_project.each_slice(EVENT_USER_BATCH_SIZE).map do |user_ids_batch|
+        removed_user_ids_for_project.each_slice(EVENTS_BATCH_SIZE).map do |user_ids_batch|
           ::ProjectAuthorizations::AuthorizationsRemovedEvent.new(data: {
             project_id: project_id,
             user_ids: user_ids_batch
@@ -169,15 +169,20 @@ module ProjectAuthorizations
     def publish_added_event
       return if @added_user_ids.none?
 
-      events = @affected_project_ids.flat_map do |project_id|
-        @added_user_ids.to_a.each_slice(EVENT_USER_BATCH_SIZE).map do |user_ids_batch|
-          ::ProjectAuthorizations::AuthorizationsAddedEvent.new(data: {
-            project_id: project_id,
-            user_ids: user_ids_batch
-          })
+      events = @affected_project_ids.each_slice(EVENTS_BATCH_SIZE).flat_map do |project_ids_batch|
+        @added_user_ids.each_slice(EVENTS_BATCH_SIZE).map do |user_ids_batch|
+          authorization_added_event(project_ids_batch, user_ids_batch)
         end
       end
+
       ::Gitlab::EventStore.publish_group(events)
+    end
+
+    def authorization_added_event(project_ids, user_ids)
+      ::ProjectAuthorizations::AuthorizationsAddedEvent.new(data: {
+        project_ids: project_ids,
+        user_ids: user_ids
+      })
     end
   end
 end
