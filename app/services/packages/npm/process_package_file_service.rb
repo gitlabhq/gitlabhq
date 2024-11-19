@@ -34,6 +34,8 @@ module Packages
 
       attr_reader :package_file
 
+      # TODO: Remove `package&.npm?` with the rollout of the FF npm_extract_npm_package_model
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
       def valid_package_file?
         package_file && !package_file.file.empty_size? && package&.npm? && package&.processing?
       end

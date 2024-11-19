@@ -28583,6 +28583,8 @@ CREATE INDEX idx_subscription_add_on_purchases_on_started_on_and_expires_on ON s
 
 CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
 
+CREATE INDEX idx_unarchived_occurrences_for_aggregation_severity_nulls_first ON sbom_occurrences USING btree (traversal_ids, highest_severity NULLS FIRST, component_id, component_version_id) WHERE (archived = false);
+
 CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
 
 CREATE UNIQUE INDEX idx_usages_on_cmpt_used_by_project_cmpt_and_last_used_date ON catalog_resource_component_last_usages USING btree (component_id, used_by_project_id, last_used_date);
@@ -33024,6 +33026,8 @@ CREATE INDEX security_findings_scanner_id_idx ON ONLY security_findings USING bt
 CREATE INDEX security_findings_severity_idx ON ONLY security_findings USING btree (severity);
 
 CREATE UNIQUE INDEX security_findings_uuid_scan_id_partition_number_idx ON ONLY security_findings USING btree (uuid, scan_id, partition_number);
+
+CREATE INDEX security_policy_approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id) WHERE (report_type = ANY (ARRAY[4, 2, 5]));
 
 CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_and_note_id_index ON snippet_user_mentions USING btree (snippet_id, note_id);
 

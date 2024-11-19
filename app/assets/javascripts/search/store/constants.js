@@ -35,7 +35,7 @@ export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: '
 
 export const ICON_MAP = {
   blobs: 'code',
-  issues: 'issues',
+  issues: window.gon?.features?.workItemScopeFrontend ? 'work' : 'issues',
   epics: 'epic',
   merge_requests: 'merge-request',
   commits: 'commit',
@@ -49,7 +49,9 @@ export const ICON_MAP = {
 
 export const SCOPE_NAVIGATION_MAP = {
   blobs: s__(`GlobalSearch|Code`),
-  issues: s__(`GlobalSearch|Issues`),
+  issues: window.gon?.features?.workItemScopeFrontend
+    ? s__(`GlobalSearch|Work items`)
+    : s__(`GlobalSearch|Issues`),
   epics: s__(`GlobalSearch|'Epics`),
   merge_requests: s__(`GlobalSearch|Merge request`),
   commits: s__(`GlobalSearch|Commits`),

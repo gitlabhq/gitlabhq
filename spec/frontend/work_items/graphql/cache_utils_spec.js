@@ -99,7 +99,7 @@ describe('work items graphql cache utils', () => {
         cache: mockCache,
         id,
         workItem: workItemHierarchyResponse.data.workspace.workItem,
-        newItemsToAddCount: 2,
+        childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
       });
 
       expect(mockCache.writeQuery).toHaveBeenCalledWith({
@@ -114,12 +114,13 @@ describe('work items graphql cache utils', () => {
                 type: WIDGET_TYPE_HIERARCHY,
                 children: {
                   nodes: [
-                    childrenWorkItems[1],
                     childrenWorkItems[0],
                     {
                       id: 'gid://gitlab/WorkItem/20',
                       title: 'Child',
                     },
+                    // closed work item
+                    childrenWorkItems[1],
                   ],
                 },
               },

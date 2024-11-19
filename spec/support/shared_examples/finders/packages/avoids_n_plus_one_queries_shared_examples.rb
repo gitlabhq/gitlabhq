@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'avoids N+1 database queries in the package registry' do
+RSpec.shared_examples 'avoids N+1 database queries in the package registry' do |factory = :npm_package|
   it do
     control = ActiveRecord::QueryRecorder.new { finder.execute }
 
-    create_list(:npm_package, 2, project: project, name: package_name).each do |npm_package|
+    create_list(factory, 2, project: project, name: package_name).each do |npm_package|
       ::Packages::DependencyLink.dependency_types.each_key do |dependency_type|
         create(:packages_dependency_link, package: npm_package, dependency_type: dependency_type)
       end

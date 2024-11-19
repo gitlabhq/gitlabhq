@@ -8,12 +8,13 @@ classes:
 - Packages::Go::Package
 - Packages::Helm::Package
 - Packages::MlModel::Package
+- Packages::Npm::Package
 - Packages::Nuget::Package
 - Packages::Package
 - Packages::Pypi::Package
-- Packages::TerraformModule::Package
 - Packages::Rpm::Package
 - Packages::Rubygems::Package
+- Packages::TerraformModule::Package
 feature_categories:
 - package_registry
 description: Information for individual packages in the package registry

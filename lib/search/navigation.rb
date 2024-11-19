@@ -19,7 +19,7 @@ module Search
     end
 
     def tabs
-      {
+      nav = {
         projects: {
           sort: 1,
           label: _("Projects"),
@@ -74,6 +74,16 @@ module Search
           condition: show_snippets_search_tab?
         }
       }
+
+      return nav unless ::Feature.enabled?(:work_item_scope_frontend, user)
+
+      nav[:issues] = {
+        sort: 4,
+        label: _("Work items"),
+        condition: show_issues_search_tab?
+      }
+
+      nav
     end
 
     private

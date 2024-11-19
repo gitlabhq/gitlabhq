@@ -186,10 +186,10 @@ RSpec.shared_examples 'work items assignees' do
   end
 end
 
-RSpec.shared_examples 'work items labels' do
+RSpec.shared_examples 'work items labels' do |namespace_type|
   it 'shows a label with a link pointing to filtered work items list' do
     within_testid 'work-item-labels' do
-      expect(page).to have_link(label.title, href: "#{project_issues_path(project)}?label_name[]=#{label.title}")
+      expect(page).to have_link(label.title, href: "#{list_path}?label_name[]=#{label.title}")
     end
   end
 
@@ -234,7 +234,7 @@ RSpec.shared_examples 'work items labels' do
   it 'creates, auto-selects, and adds new label' do
     within_testid 'work-item-labels' do
       click_button 'Edit'
-      click_button 'Create project label'
+      click_button "Create #{namespace_type} label"
       send_keys 'Quintessence'
       click_button 'Create'
       click_button 'Apply'
@@ -379,18 +379,18 @@ RSpec.shared_examples 'work items notifications' do
   end
 end
 
-RSpec.shared_examples 'work items lock discussion' do
+RSpec.shared_examples 'work items lock discussion' do |type|
   it 'locks and unlocks discussion', :aggregate_failures do
     click_button _('More actions'), match: :first
     click_button 'Lock discussion'
     click_button _('More actions'), match: :first # click again to close the dropdown
 
-    expect(page).to have_text 'The discussion in this issue is locked. Only project members can comment.'
+    expect(page).to have_text "The discussion in this #{type} is locked. Only project members can comment."
 
     click_button _('More actions'), match: :first
     click_button 'Unlock discussion'
 
-    expect(page).not_to have_text 'The discussion in this issue is locked. Only project members can comment.'
+    expect(page).not_to have_text "The discussion in this #{type} is locked. Only project members can comment."
   end
 end
 
@@ -648,6 +648,105 @@ RSpec.shared_examples 'work items crm contacts' do
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="work-item-crm-contacts"]')
+    end
+  end
+end
+
+RSpec.shared_examples 'work items progress' do
+  let(:progress_wrapper) { '[data-testid="work-item-progress-wrapper"]' }
+  let(:form_selector) { '[data-testid="work-item-progress"]' }
+  let(:input_selector) { '[data-testid="work-item-progress-input"]' }
+
+  it 'successfully sets the progress' do
+    within(progress_wrapper) do
+      click_button 'Edit'
+    end
+
+    find(input_selector).fill_in(with: '30')
+    send_keys(:tab) # Simulate blur
+
+    wait_for_requests
+
+    expect(find(progress_wrapper)).to have_content "30%"
+    expect(work_item.reload.progress.progress).to eq 30
+  end
+
+  it 'prevents typing values outside min and max range', :aggregate_failures do
+    page_body = page.find('body')
+
+    within(progress_wrapper) do
+      click_button 'Edit'
+    end
+
+    page.within(form_selector) do
+      progress_input = find(input_selector)
+      progress_input.native.send_keys('101')
+    end
+
+    page_body.click
+    expect(find(progress_wrapper)).to have_content "0%"
+  end
+
+  it 'prevent typing special characters `+`, `-`, and `e`', :aggregate_failures do
+    page_body = page.find('body')
+
+    within(progress_wrapper) do
+      click_button 'Edit'
+    end
+
+    page.within(form_selector) do
+      find(input_selector).native.send_keys('+')
+    end
+
+    page_body.click
+    expect(find(progress_wrapper)).to have_content "0%"
+
+    within(progress_wrapper) do
+      click_button 'Edit'
+    end
+
+    page.within(form_selector) do
+      find(input_selector).native.send_keys('-')
+    end
+
+    page_body.click
+    expect(find(progress_wrapper)).to have_content "0%"
+
+    within(progress_wrapper) do
+      click_button 'Edit'
+    end
+
+    page.within(form_selector) do
+      find(input_selector).native.send_keys('e')
+    end
+
+    page_body.click
+    expect(find(progress_wrapper)).to have_content "0%"
+  end
+end
+
+RSpec.shared_examples 'work items health status' do
+  it 'updates and clears a health status', :aggregate_failures do
+    within_testid 'work-item-health-status' do
+      click_button 'Edit'
+      select_listbox_item 'On track'
+
+      expect(page).to have_text 'On track'
+
+      click_button 'Edit'
+      select_listbox_item 'Needs attention'
+
+      expect(page).to have_text 'Needs attention'
+
+      click_button 'Edit'
+      select_listbox_item 'At risk'
+
+      expect(page).to have_text 'At risk'
+
+      click_button 'Edit'
+      click_button 'Clear'
+
+      expect(page).to have_text('None')
     end
   end
 end

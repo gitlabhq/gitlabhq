@@ -23,6 +23,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
   let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
+  let(:list_path) { project_issues_path(project) }
   let_it_be(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
 
@@ -38,7 +39,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it 'shows breadcrumb links', :aggregate_failures do
       within_testid('breadcrumb-links') do
         expect(page).to have_link(project.name, href: project_path(project))
-        expect(page).to have_link('Issues', href: project_issues_path(project))
+        expect(page).to have_link('Issues', href: list_path)
         expect(find('nav:last-of-type li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
@@ -85,12 +86,12 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items toggle status button'
 
     it_behaves_like 'work items todos'
-    it_behaves_like 'work items lock discussion'
+    it_behaves_like 'work items lock discussion', 'issue'
     it_behaves_like 'work items confidentiality'
     it_behaves_like 'work items notifications'
 
     it_behaves_like 'work items assignees'
-    it_behaves_like 'work items labels'
+    it_behaves_like 'work items labels', 'project'
     it_behaves_like 'work items milestone'
     it_behaves_like 'work items time tracking'
     it_behaves_like 'work items crm contacts'

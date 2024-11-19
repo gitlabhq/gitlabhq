@@ -11,6 +11,11 @@ module Resolvers
       description: 'Filter groups by IDs.',
       prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::Group).map(&:model_id) }
 
+    argument :top_level_only, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: 'Only include top level groups.'
+
     argument :search, GraphQL::Types::String,
       required: false,
       description: 'Search query for group name or group full path.'

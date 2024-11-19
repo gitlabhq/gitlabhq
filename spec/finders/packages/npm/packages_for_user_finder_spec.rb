@@ -48,12 +48,63 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
 
         context 'when the second project has the package registry disabled' do
           before_all do
-            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-            project2.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+            project.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            project2.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
               package_registry_access_level: 'disabled', packages_enabled: false)
           end
 
           it_behaves_like 'searches for packages'
+        end
+      end
+    end
+
+    context 'when npm_extract_npm_package_model is disabled' do
+      let_it_be(:package_name) { "#{FFaker::Lorem.word}-#{SecureRandom.hex(4)}" }
+      let_it_be(:package) { create(:npm_package_legacy, project: project, name: package_name) }
+
+      let_it_be(:package_with_diff_name) do
+        create(:npm_package_legacy, project: project, name: "#{FFaker::Lorem.word}-#{SecureRandom.hex(4)}")
+      end
+
+      let_it_be(:package_with_diff_project) { create(:npm_package_legacy, name: package_name, project: project2) }
+
+      before do
+        stub_feature_flags(npm_extract_npm_package_model: false)
+      end
+
+      context 'with a project' do
+        let(:project_or_group) { project }
+
+        it_behaves_like 'searches for packages'
+        it_behaves_like 'avoids N+1 database queries in the package registry', :npm_package_legacy
+      end
+
+      context 'with a group' do
+        let(:project_or_group) { group }
+
+        before_all do
+          project.add_reporter(user)
+        end
+
+        it_behaves_like 'searches for packages'
+        it_behaves_like 'avoids N+1 database queries in the package registry', :npm_package_legacy
+
+        context 'when an user is a reporter of both projects' do
+          before_all do
+            project2.add_reporter(user)
+          end
+
+          it { is_expected.to contain_exactly(package, package_with_diff_project) }
+
+          context 'when the second project has the package registry disabled' do
+            before_all do
+              project.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+              project2.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+                package_registry_access_level: 'disabled', packages_enabled: false)
+            end
+
+            it_behaves_like 'searches for packages'
+          end
         end
       end
     end

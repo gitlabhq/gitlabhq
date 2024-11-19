@@ -583,6 +583,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="querygroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="querygroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="querygroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top level groups. |
 
 ### `Query.instanceExternalAuditEventDestinations`
 
@@ -12390,6 +12391,30 @@ The edge type for [`CiJobTokenAuthLog`](#cijobtokenauthlog).
 | <a id="cijobtokenauthlogedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cijobtokenauthlogedgenode"></a>`node` | [`CiJobTokenAuthLog`](#cijobtokenauthlog) | The item at the end of the edge. |
 
+#### `CiJobTokenScopeAllowlistEntryConnection`
+
+The connection type for [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenscopeallowlistentryconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cijobtokenscopeallowlistentryconnectionedges"></a>`edges` | [`[CiJobTokenScopeAllowlistEntryEdge]`](#cijobtokenscopeallowlistentryedge) | A list of edges. |
+| <a id="cijobtokenscopeallowlistentryconnectionnodes"></a>`nodes` | [`[CiJobTokenScopeAllowlistEntry]`](#cijobtokenscopeallowlistentry) | A list of nodes. |
+| <a id="cijobtokenscopeallowlistentryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiJobTokenScopeAllowlistEntryEdge`
+
+The edge type for [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenscopeallowlistentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cijobtokenscopeallowlistentryedgenode"></a>`node` | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | The item at the end of the edge. |
+
 #### `CiManualVariableConnection`
 
 The connection type for [`CiManualVariable`](#cimanualvariable).
@@ -20020,6 +20045,15 @@ CI/CD variables for a GitLab instance.
 | ---- | ---- | ----------- |
 | <a id="cijobtokenauthloglastauthorizedat"></a>`lastAuthorizedAt` **{warning-solid}** | [`Time!`](#time) | **Introduced** in GitLab 17.6. **Status**: Experiment. Last authorization date time. |
 | <a id="cijobtokenauthlogoriginproject"></a>`originProject` **{warning-solid}** | [`Project!`](#project) | **Introduced** in GitLab 17.6. **Status**: Experiment. Origin project. |
+
+### `CiJobTokenScopeAllowlist`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenscopeallowlistgroupsallowlist"></a>`groupsAllowlist` | [`CiJobTokenScopeAllowlistEntryConnection`](#cijobtokenscopeallowlistentryconnection) | Allowlist of groups that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
+| <a id="cijobtokenscopeallowlistprojectsallowlist"></a>`projectsAllowlist` | [`CiJobTokenScopeAllowlistEntryConnection`](#cijobtokenscopeallowlistentryconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 
 ### `CiJobTokenScopeAllowlistEntry`
 
@@ -29667,6 +29701,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationgroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="organizationgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="organizationgroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="organizationgroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top level groups. |
 
 ##### `Organization.projects`
 
@@ -30794,6 +30829,7 @@ Project-level settings for product analytics provider.
 | <a id="projectcidownstreamprojectsubscriptions"></a>`ciDownstreamProjectSubscriptions` **{warning-solid}** | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the upstream project.When this project's pipeline completes, a pipeline is triggered in the downstream project. |
 | <a id="projectcijobtokenauthlogs"></a>`ciJobTokenAuthLogs` **{warning-solid}** | [`CiJobTokenAuthLogConnection`](#cijobtokenauthlogconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. The CI Job Tokens authorization logs. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
+| <a id="projectcijobtokenscopeallowlist"></a>`ciJobTokenScopeAllowlist` **{warning-solid}** | [`CiJobTokenScopeAllowlist`](#cijobtokenscopeallowlist) | **Introduced** in GitLab 17.6. **Status**: Experiment. List of CI job token scopes where the project is the source. |
 | <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` **{warning-solid}** | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | **Deprecated** in GitLab 17.6. Use `ciDownstreamProjectSubscriptions`. |
 | <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` **{warning-solid}** | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | **Deprecated** in GitLab 17.6. Use `ciUpstreamProjectSubscriptions`. |
 | <a id="projectciupstreamprojectsubscriptions"></a>`ciUpstreamProjectSubscriptions` **{warning-solid}** | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the downstream project.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project (this project). |

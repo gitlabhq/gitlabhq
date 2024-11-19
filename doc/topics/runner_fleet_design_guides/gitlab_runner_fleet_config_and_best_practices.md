@@ -51,9 +51,8 @@ The job in this example uses a Python image, downloads the project's requirement
 The `.gitlab-ci.yml` for the job is as follows:
 
 ```yaml
-image: python:3.11.10-bookworm
-
 tests:
+  image: python:3.11.10-bookworm
   parallel: 25
   script:
   - pip install -r requirements.txt
@@ -470,8 +469,6 @@ The `.gitlab-ci.yml` file looks similar to this:
 - For medium jobs:
 
 ```yaml
-image: some-image:latest
-
 variables:
   KUBERNETES_CPU_LIMIT: "200m"
   KUBERNETES_MEMORY_LIMIT: "100Mi"
@@ -479,6 +476,7 @@ variables:
   KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
 
 tests:
+  image: some-image:latest
   script:
   - command_1
   - command_2
@@ -491,8 +489,6 @@ tests:
 - For CPU-intensive jobs:
 
 ```yaml
-image: custom-cpu-intensive-image:latest
-
 variables:
   KUBERNETES_CPU_LIMIT: "0.75"
   KUBERNETES_MEMORY_LIMIT: "900Mi"
@@ -500,6 +496,7 @@ variables:
   KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
 
 tests:
+  image: custom-cpu-intensive-image:latest
   script:
   - cpu_intensive_command_1
   - cpu_intensive_command_2

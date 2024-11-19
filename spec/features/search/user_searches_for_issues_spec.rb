@@ -12,7 +12,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
 
   def search_for_issue(search)
     submit_dashboard_search(search)
-    select_search_scope('Issues')
+    select_search_scope('Work items')
   end
 
   context 'when signed in' do

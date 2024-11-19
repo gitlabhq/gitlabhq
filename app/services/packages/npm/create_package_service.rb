@@ -67,12 +67,20 @@ module Packages
       end
 
       def current_package_exists?
-        project.packages
-               .npm
-               .with_name(name)
-               .with_version(version)
-               .not_pending_destruction
-               .exists?
+        if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
+          ::Packages::Npm::Package.for_projects(project)
+                                  .with_name(name)
+                                  .with_version(version)
+                                  .not_pending_destruction
+                                  .exists?
+        else
+          project.packages
+                 .npm
+                 .with_name(name)
+                 .with_version(version)
+                 .not_pending_destruction
+                 .exists?
+        end
       end
 
       def current_package_protected?

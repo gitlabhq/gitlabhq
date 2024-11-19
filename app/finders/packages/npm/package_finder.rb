@@ -16,7 +16,12 @@ module Packages
       def execute
         return ::Packages::Package.none unless params[:package_name].present?
 
-        packages = base.npm.installable
+        packages = if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
+                     base.installable
+                   else
+                     base.npm.installable
+                   end
+
         packages = filter_by_exact_package_name(packages)
         filter_by_package_version(packages)
       end
@@ -31,16 +36,30 @@ module Packages
         elsif namespace
           packages_for_namespace
         else
-          ::Packages::Package.none
+          packages_class.none
         end
       end
 
       def packages_for_project
-        project.packages
+        if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
+          ::Packages::Npm::Package.for_projects(project)
+        else
+          project.packages
+        end
       end
 
       def packages_for_namespace
-        ::Packages::Package.for_projects(namespace.all_projects)
+        packages_class.for_projects(namespace.all_projects)
+      end
+
+      # TODO: Use the class directly with the rollout of the FF npm_extract_npm_package_model
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
+      def packages_class
+        if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
+          ::Packages::Npm::Package
+        else
+          ::Packages::Package
+        end
       end
     end
   end

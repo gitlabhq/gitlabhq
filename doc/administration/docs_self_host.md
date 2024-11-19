@@ -93,8 +93,8 @@ To host the product documentation site with GitLab Pages:
    `pages` job, while ensuring the version is the same as your GitLab installation:
 
    ```yaml
-   image: registry.gitlab.com/gitlab-org/gitlab-docs/archives:16.0
    pages:
+     image: registry.gitlab.com/gitlab-org/gitlab-docs/archives:16.0
      script:
        - mkdir public
        - cp -a /usr/share/nginx/html/* public/

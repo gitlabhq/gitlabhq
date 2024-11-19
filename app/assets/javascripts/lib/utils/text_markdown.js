@@ -750,3 +750,9 @@ export const resolveSelectedImage = async (textArea, markdownPreviewPath = '') =
 
   return null;
 };
+
+export const repeatCodeBackticks = (content) => {
+  const numBackticks =
+    Math.max(2, content.match(/```+/g)?.sort((a, b) => b.length - a.length)[0]?.length || 0) + 1;
+  return '`'.repeat(numBackticks);
+};

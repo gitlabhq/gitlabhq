@@ -3,6 +3,8 @@ key_path: index_inconsistencies
 name: "index_inconsistencies"
 description: "List the index inconsistencies in the database"
 product_group: database
+product_categories:
+- database
 value_type: object
 status: active
 milestone: "15.10"

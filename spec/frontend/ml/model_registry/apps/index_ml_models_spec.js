@@ -11,6 +11,7 @@ import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
+import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 import { modelsQuery, modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -65,6 +66,7 @@ describeSkipVue3(skipReason, () => {
   const findModelCountMetadataItem = () => wrapper.findByTestId('metadata-item');
   const findModelCreate = () => wrapper.findByTestId('create-model-button');
   const findDropdownItems = () => findModelCreate().findAllComponents(GlDisclosureDropdownItem);
+  const findDeleteModal = () => wrapper.findComponent(DeleteModelDisclosureDropdownItem);
 
   describe('header', () => {
     beforeEach(() => {
@@ -171,6 +173,10 @@ describeSkipVue3(skipReason, () => {
           modelWithOneVersion,
           modelWithoutVersion,
         ]);
+      });
+
+      it('displays delete action in table', () => {
+        expect(findDeleteModal().props('model')).toEqual(modelWithOneVersion);
       });
 
       it('displays model rows', () => {

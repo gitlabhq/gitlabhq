@@ -1,0 +1,9 @@
+---
+name: work_item_scope_frontend
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454116
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171126
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500062
+milestone: '17.6'
+group: group::global search
+type: wip
+default_enabled: false

@@ -375,8 +375,24 @@ RSpec.shared_examples 'wiki controller actions' do
   end
 
   describe 'POST #preview_markdown' do
+    let(:text) { '*Markdown* text' }
+
     it 'renders json in a correct format' do
-      post :preview_markdown, params: routing_params.merge(id: 'page/path', text: '*Markdown* text')
+      wiki_page = wiki.list_pages(load_content: true).first
+
+      expect(Markup::RenderingService).to receive(:new)
+        .with(text,
+          context: hash_including(
+            pipeline: :wiki,
+            wiki: wiki,
+            page_slug: wiki_page.slug,
+            repository: wiki.repository,
+            requested_path: wiki_page.path
+          ),
+          postprocess_context: anything)
+        .and_call_original
+
+      post :preview_markdown, params: routing_params.merge(id: wiki_page.slug, text: text)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.keys).to match_array(%w[body references])

@@ -117,7 +117,7 @@
   }
 
   .system-note-dot {
-    margin-top: $gl-spacing-scale-4;
+    margin-top: .875rem; // Fixed value to correctly align
     margin-left: $gl-spacing-scale-5;
   }
 }

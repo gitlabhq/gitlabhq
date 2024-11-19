@@ -44,7 +44,15 @@ To create a `.gitlab-ci.yml` file:
 1. Name the file `.gitlab-ci.yml`. In the larger window, paste this sample configuration:
 
    ```yaml
-   image: python:3.9
+   default:
+     image: python:3.9
+     cache:
+       paths:
+         - .pip-cache/
+     before_script:
+       - python --version
+       - pip install --upgrade pip
+       - pip install build twine
 
    stages:
      - build
@@ -53,15 +61,6 @@ To create a `.gitlab-ci.yml` file:
 
    variables:
      PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
-
-   cache:
-     paths:
-       - .pip-cache/
-
-   before_script:
-     - python --version
-     - pip install --upgrade pip
-     - pip install build twine
 
    build:
      stage: build

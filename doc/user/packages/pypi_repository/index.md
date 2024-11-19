@@ -46,9 +46,8 @@ The `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables are used to auth
 To authenticate with a personal access token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
 ```yaml
-image: python:latest
-
 run:
+  image: python:latest
   variables:
     TWINE_USERNAME: <your_personal_access_token_name>
     TWINE_PASSWORD: <your_personal_access_token>
@@ -63,9 +62,8 @@ run:
 To authenticate with a deploy token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
 ```yaml
-image: python:latest
-
 run:
+  image: python:latest
   variables:
     TWINE_USERNAME: <deploy token username>
     TWINE_PASSWORD: <deploy token>
@@ -80,9 +78,8 @@ run:
 To authenticate with a CI job token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
 ```yaml
-image: python:latest
-
 run:
+  image: python:latest
   variables:
     TWINE_USERNAME: gitlab-ci-token
     TWINE_PASSWORD: $CI_JOB_TOKEN

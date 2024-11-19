@@ -85,12 +85,11 @@ To publish a Helm package automated through [GitLab CI/CD](../../../ci/index.md)
 For example:
 
 ```yaml
-image: curlimages/curl:latest
-
 stages:
   - upload
 
 upload:
+  image: curlimages/curl:latest
   stage: upload
   script:
     - 'curl --fail-with-body --request POST --user gitlab-ci-token:$CI_JOB_TOKEN --form "chart=@mychart-0.1.0.tgz" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/<channel>/charts"'

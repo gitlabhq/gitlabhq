@@ -44,6 +44,8 @@ class Packages::Package < ApplicationRecord
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
 
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
 
   has_many :build_infos, inverse_of: :package
@@ -63,12 +65,18 @@ class Packages::Package < ApplicationRecord
     },
     unless: -> { pending_destruction? || conan? }
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   validate :npm_package_already_taken, if: :npm?
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
 
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
     if: -> { npm? }
 
@@ -95,8 +103,12 @@ class Packages::Package < ApplicationRecord
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   scope :with_npm_scope, ->(scope) do
     npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
   end
@@ -144,7 +156,7 @@ class Packages::Package < ApplicationRecord
   def self.inheritance_column = 'package_type'
 
   def self.inheritance_column_to_class_map
-    {
+    hash = {
       ml_model: 'Packages::MlModel::Package',
       golang: 'Packages::Go::Package',
       rubygems: 'Packages::Rubygems::Package',
@@ -157,7 +169,13 @@ class Packages::Package < ApplicationRecord
       pypi: 'Packages::Pypi::Package',
       terraform_module: 'Packages::TerraformModule::Package',
       nuget: 'Packages::Nuget::Package'
-    }.freeze
+    }
+
+    if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
+      hash[:npm] = 'Packages::Npm::Package'
+    end
+
+    hash
   end
 
   def self.only_maven_packages_with_path(path, use_cte: false)
@@ -258,6 +276,8 @@ class Packages::Package < ApplicationRecord
     ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project_id, name)
   end
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   def sync_npm_metadata_cache
     return unless npm?
 
@@ -291,6 +311,8 @@ class Packages::Package < ApplicationRecord
 
   private
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   def npm_package_already_taken
     return unless project
     return unless follows_npm_naming_convention?
@@ -300,6 +322,8 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   # https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
   def follows_npm_naming_convention?
     return false unless project&.root_namespace&.path

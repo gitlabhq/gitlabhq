@@ -2451,18 +2451,16 @@ and is a little more flexible and readable.
 
 ```yaml
 .tests:
-  script: rake test
   stage: test
-  only:
-    refs:
-      - branches
+  image: ruby:3.0
 
 rspec:
   extends: .tests
   script: rake rspec
-  only:
-    variables:
-      - $RSPEC
+
+rubocop:
+  extends: .tests
+  script: bundle exec rubocop
 ```
 
 In this example, the `rspec` job uses the configuration from the `.tests` template job.
@@ -2472,17 +2470,18 @@ When creating the pipeline, GitLab:
 - Merges the `.tests` content with the `rspec` job.
 - Doesn't merge the values of the keys.
 
-The result is this `rspec` job:
+The combined configuration is equivalent to these jobs:
 
 ```yaml
 rspec:
-  script: rake rspec
   stage: test
-  only:
-    refs:
-      - branches
-    variables:
-      - $RSPEC
+  image: ruby:3.0
+  script: rake rspec
+
+rubocop:
+  stage: test
+  image: ruby:3.0
+  script: bundle exec rubocop
 ```
 
 **Additional details**:

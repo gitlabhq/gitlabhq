@@ -8,6 +8,8 @@ module Types
         graphql_name 'CiJobTokenScopeAllowlistEntry'
         description 'Represents an allowlist entry for the CI_JOB_TOKEN'
 
+        connection_type_class Types::CountableConnectionType
+
         field :source_project,
           Types::ProjectType,
           null: false,
@@ -59,6 +61,12 @@ module Types
           when ::Ci::JobToken::GroupScopeLink
             'inbound'
           end
+        end
+
+        def job_token_policies
+          return unless Feature.enabled?(:add_policies_to_ci_job_token, object.source_project)
+
+          object.job_token_policies
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

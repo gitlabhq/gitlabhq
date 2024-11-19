@@ -202,9 +202,8 @@ You can provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each Conan
 command in your `.gitlab-ci.yml` file. For example:
 
 ```yaml
-image: conanio/gcc7
-
 create_package:
+  image: conanio/gcc7
   stage: deploy
   script:
     - conan remote add gitlab ${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/conan

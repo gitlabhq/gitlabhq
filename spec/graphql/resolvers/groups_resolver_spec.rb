@@ -50,5 +50,18 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
         expect(subject).to contain_exactly(other_group)
       end
     end
+
+    context 'with `top_level_only` argument' do
+      let_it_be(:top_level_group) { create(:group, name: 'top-level-group') }
+      let_it_be(:sub_group) { create(:group, name: 'sub_group', parent: top_level_group) }
+
+      context 'with `top_level_only` argument provided' do
+        let(:params) { { top_level_only: true } }
+
+        it 'return only top level groups' do
+          expect(subject).to contain_exactly(public_group, top_level_group)
+        end
+      end
+    end
   end
 end

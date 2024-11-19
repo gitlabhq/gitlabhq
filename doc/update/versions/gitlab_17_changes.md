@@ -185,6 +185,8 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## 17.7.0
 
+- Git 2.47.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+
 ### OpenSSL 3 upgrade
 
 NOTE:

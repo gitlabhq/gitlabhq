@@ -59,6 +59,12 @@ export default {
     agentIdNumber() {
       return isGid(this.agentId) ? getIdFromGraphQLId(this.agentId) : this.agentId;
     },
+    isRunningOnGitlabDotCom() {
+      return gon?.dot_com;
+    },
+    currentHost() {
+      return gon?.gitlab_url;
+    },
     command() {
       if (this.isConfigured) {
         return this.glabCommand;
@@ -72,7 +78,12 @@ export default {
       - id: <current project path>`;
     },
     glabCommand() {
-      return `glab cluster agent update-kubeconfig --repo ${this.projectPath} --agent ${this.agentIdNumber} --use-context`;
+      const baseCommand = `glab cluster agent update-kubeconfig --repo ${this.projectPath} --agent ${this.agentIdNumber} --use-context`;
+      const hostVar = 'GITLAB_HOST';
+
+      const hostPrefix = this.isRunningOnGitlabDotCom ? '' : `${hostVar}=${this.currentHost} `;
+
+      return `${hostPrefix}${baseCommand}`;
     },
     commandLanguage() {
       return this.isConfigured ? 'shell' : 'yaml';

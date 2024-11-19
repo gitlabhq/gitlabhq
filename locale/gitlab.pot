@@ -7837,9 +7837,6 @@ msgstr ""
 msgid "AuditLogs|Target"
 msgstr ""
 
-msgid "AuditLogs|This month"
-msgstr ""
-
 msgid "AuditLogs|User Events"
 msgstr ""
 
@@ -25755,6 +25752,9 @@ msgid "GlobalSearch|What are you searching for?"
 msgstr ""
 
 msgid "GlobalSearch|Wiki"
+msgstr ""
+
+msgid "GlobalSearch|Work items"
 msgstr ""
 
 msgid "GlobalSearch|Your work"
@@ -62637,6 +62637,9 @@ msgid "Work in progress limit: %{wipLimit}"
 msgstr ""
 
 msgid "Work item not supported"
+msgstr ""
+
+msgid "Work items"
 msgstr ""
 
 msgid "WorkItems|An error occurred while fetching children"

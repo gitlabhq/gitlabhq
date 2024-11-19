@@ -83,7 +83,9 @@ for guidance on managing personal access tokens (for example, setting a short ex
 
 ## Revoke or rotate a personal access token
 
-At any time, you can revoke or rotate a personal access token.
+> - Ability to use the UI to rotate a personal access token [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.7.
+
+At any time, you can use the UI to revoke or, in GitLab 17.7 and later, rotate a personal access token.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.

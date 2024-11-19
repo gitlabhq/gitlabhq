@@ -46,7 +46,10 @@ module PreviewMarkdown
 
   def markdown_context_params
     case controller_name
-    when 'wikis'           then { pipeline: :wiki, wiki: wiki, page_slug: params[:id] }
+    when 'wikis'
+      wiki_page = wiki.find_page(params[:id])
+
+      { pipeline: :wiki, wiki: wiki, page_slug: params[:id], repository: wiki.repository }
     when 'snippets'        then { skip_project_check: true }
     when 'groups'          then { group: group, issuable_reference_expansion_enabled: true }
     when 'projects'        then projects_filter_params
@@ -54,7 +57,7 @@ module PreviewMarkdown
     when 'organizations'   then { pipeline: :description }
     else {}
     end.merge(
-      requested_path: params[:path],
+      requested_path: params[:path] || wiki_page&.path,
       ref: params[:ref],
       # Disable comments in markdown for IE browsers because comments in IE
       # could allow script execution.
