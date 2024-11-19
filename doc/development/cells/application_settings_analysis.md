@@ -7,12 +7,12 @@ info: Analysis of Application Settings for Cells 1.0.
 
 ## Statistics
 
-- Number of attributes: 503
+- Number of attributes: 504
 - Number of encrypted attributes: 43 (9.0%)
 - Number of attributes documented: 310 (62.0%)
-- Number of attributes on GitLab.com different from the defaults: 220 (44.0%)
-- Number of attributes with `clusterwide` set: 503 (100.0%)
-- Number of attributes with `clusterwide: true` set: 121 (24.0%)
+- Number of attributes on GitLab.com different from the defaults: 221 (44.0%)
+- Number of attributes with `clusterwide` set: 504 (100.0%)
+- Number of attributes with `clusterwide: true` set: 122 (24.0%)
 
 ## Individual columns
 
@@ -248,6 +248,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `inactive_projects_send_warning_email_after_months` | `false` | `integer` | `` | `true` | `1` | `false` | `false`| `false` |
 | `include_optional_metrics_in_service_ping` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `instance_level_ai_beta_features_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `integrations` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `invisible_captcha_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `invitation_flow_enforcement` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `issues_create_limit` | `false` | `integer` | `integer` | `true` | `0` | `true` | `true`| `true` |

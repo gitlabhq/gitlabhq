@@ -18,6 +18,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyJob, migra
   let(:backfill_column) { :project_id }
   let(:backfill_via_column) { :project_id }
   let(:backfill_via_foreign_key) { :build_id }
+  let(:backfill_via_table_primary_key) { :id }
 
   let(:test_table) { table(batch_table) }
   let(:connection) { ::Ci::ApplicationRecord.connection }
@@ -112,7 +113,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyJob, migra
           UPDATE #{batch_table}
           SET project_id = #{backfill_via_table}.#{backfill_via_column}
           FROM #{backfill_via_table}
-          WHERE #{backfill_via_table}.id = #{batch_table}.#{backfill_via_foreign_key}
+          WHERE #{backfill_via_table}.#{backfill_via_table_primary_key} = #{batch_table}.#{backfill_via_foreign_key}
           AND #{batch_table}.#{batch_column} IN (#{sub_batch.select(batch_column).to_sql})
         SQL
       end

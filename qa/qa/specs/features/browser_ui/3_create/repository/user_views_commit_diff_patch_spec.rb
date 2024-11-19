@@ -3,58 +3,39 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Commit data', :blocking, product_group: :source_code do
-      before(:context) do
-        # Get the user's details to confirm they're included in the email patch
-        @user = create(:user, username: Runtime::User.username)
+      let(:user) { Runtime::UserStore.test_user }
+      let(:project) { create(:project, :with_readme) }
+      let(:commit_message) { 'Add second file' }
 
-        project_push = Resource::Repository::ProjectPush.fabricate! do |push|
-          push.file_name = 'README.md'
-          push.file_content = '# This is a test project'
-          push.commit_message = 'Add README.md'
-        end
-        @project = project_push.project
-
-        # first file added has no parent commit, thus no diff data
-        # add second file to repo to enable diff from initial commit
-        @commit_message = 'Add second file'
-
+      before do
         create(:file,
-          project: @project,
+          project: project,
           name: 'second',
           content: 'second file content',
-          commit_message: @commit_message)
-      end
+          commit_message: commit_message)
 
-      def view_commit
         Flow::Login.sign_in
 
-        @project.visit!
-        Page::Project::Show.perform do |show|
-          show.click_commit(@commit_message)
-        end
-      end
+        project.visit!
 
-      def raw_content
-        find('pre').text
+        Page::Project::Show.perform do |show|
+          show.click_commit(commit_message)
+        end
       end
 
       it 'user views raw email patch', :skip_live_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347755' do
-        view_commit
-
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
-        expect(page).to have_content(/From: "?#{Regexp.escape(@user.name)}"? <#{@user.commit_email}>/)
+        expect(page).to have_content(/From: "?#{Regexp.escape(user.name)}"? <#{user.commit_email}>/)
         expect(page).to have_content('Subject: [PATCH] Add second file')
         expect(page).to have_content('diff --git a/second b/second')
       end
 
       it 'user views raw commit diff', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347754' do
-        view_commit
-
         Page::Project::Commit::Show.perform(&:select_plain_diff)
 
-        expect(raw_content).to start_with('diff --git a/second b/second')
+        expect(find('pre').text).to start_with('diff --git a/second b/second')
         expect(page).to have_content('+second file content')
       end
     end

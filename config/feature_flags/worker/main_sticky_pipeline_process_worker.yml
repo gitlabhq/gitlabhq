@@ -1,9 +1,0 @@
----
-name: main_sticky_pipeline_process_worker
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483008#note_2172486565
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166729
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500401
-milestone: '17.6'
-group: group::scalability
-type: worker
-default_enabled: false

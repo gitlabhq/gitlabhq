@@ -60,7 +60,7 @@ module QA
       end
 
       def use_default_identity
-        configure_identity('GitLab QA', 'root@gitlab.com')
+        configure_identity(default_user.name, default_user.email)
       end
 
       def clone(opts = '')
@@ -254,6 +254,10 @@ module QA
 
       alias_method :use_lfs?, :use_lfs
 
+      def default_user
+        @default_user ||= Runtime::UserStore.test_user || Runtime::UserStore.admin_user
+      end
+
       def add_credentials?
         return false if !username || !password
         return true unless ssh_key_set?
@@ -277,10 +281,10 @@ module QA
       end
 
       def default_credentials
-        if ::QA::Runtime::User.ldap_user?
+        if Runtime::User.ldap_user?
           [Runtime::User.ldap_username, Runtime::User.ldap_password]
         else
-          [Runtime::User.username, Runtime::User.password]
+          [default_user.username, default_user.password]
         end
       end
 

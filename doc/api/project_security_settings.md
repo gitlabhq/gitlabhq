@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Every API call to project security settings must be [authenticated](rest/index.md#authentication).
+Every API call to project security settings must be [authenticated](rest/authentication.md).
 
 If a project is private, and a user isn't a member of the project to which the security setting
 belongs, requests to that project returns a `404 Not Found` status code.

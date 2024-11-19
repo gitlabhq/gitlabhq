@@ -145,6 +145,10 @@ module QA
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end
 
+      def running_on_live_env?
+        running_on_dot_com? || running_on_release?
+      end
+
       def running_on_dot_com?
         gitlab_host.include?('.com')
       end

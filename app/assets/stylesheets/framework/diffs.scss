@@ -16,11 +16,6 @@ $diff-file-header: 41px;
 .diff-file {
   margin-bottom: $gl-padding;
 
-  &.diff-file-is-active,
-  &:has(*:not(textarea):focus-visible) {
-    box-shadow: 0 0 0 2px var(--gl-border-color-strong);
-  }
-
   table.code tr:last-of-type td:last-of-type {
     border-bottom-right-radius: $gl-border-radius-base-inner;
   }

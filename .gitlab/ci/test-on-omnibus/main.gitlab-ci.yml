@@ -322,7 +322,8 @@ ldap-no-server:
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
     - !reference [.rules:test:manual, rules]
 
-ldap-tls:
+# TODO: re-enable after gitlab-org/quality/quality-engineering/team-tasks#3153 is resolved
+.ldap-tls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
@@ -331,7 +332,8 @@ ldap-tls:
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
     - !reference [.rules:test:manual, rules]
 
-ldap-no-tls:
+# TODO: re-enable after gitlab-org/quality/quality-engineering/team-tasks#3153 is resolved
+.ldap-no-tls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
@@ -432,7 +434,8 @@ metrics:
     - if: $QA_SUITES =~ /Test::Instance::Metrics/
     - !reference [.rules:test:manual, rules]
 
-elasticsearch:
+# TODO: re-enable after gitlab-org/quality/quality-engineering/team-tasks#3153 is resolved
+.elasticsearch:
   extends: .qa
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"

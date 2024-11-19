@@ -125,6 +125,13 @@
   .vue-recycle-scroller__item-wrapper {
     overflow: visible;
   }
+
+  .diff-file {
+    &.diff-file-is-active,
+    &:has(*:not(textarea):focus-visible) {
+      box-shadow: 0 0 0 2px var(--gl-border-color-strong);
+    }
+  }
 }
 
 .diff-grid {

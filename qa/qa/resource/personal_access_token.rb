@@ -5,6 +5,8 @@ require 'date'
 module QA
   module Resource
     class PersonalAccessToken < Base
+      uses_admin_api_client
+
       attr_accessor :username, :password
 
       attributes :id, :user_id, :name, :active, :revoked, :scopes, :token
@@ -75,13 +77,11 @@ module QA
         # this particular resource does not expose a web_url property
       end
 
-      private
-
-      # PATs can only be created by admin, use global admin api client if not explicitly set
+      # Return token value when implicitly converting this object to string
       #
-      # @return [QA::Runtime::API::Client]
-      def api_client
-        @api_client ||= Runtime::UserStore.admin_api_client
+      # @return [String]
+      def to_s
+        token
       end
     end
   end

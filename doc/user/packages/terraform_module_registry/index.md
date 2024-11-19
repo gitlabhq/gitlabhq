@@ -35,7 +35,7 @@ You can also view the module's Readme file by selecting a module, and then selec
 
 To authenticate to the Terraform Module Registry, you need either:
 
-- A [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
+- A [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - A [deploy token](../../project/deploy_tokens/index.md) with the `read_package_registry` or `write_package_registry` scope, or both.
 
@@ -53,7 +53,7 @@ Prerequisites:
 
 - Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the package name and version [must be unique in the top-level namespace](#how-module-resolution-works).
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
-- You must [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- You must [authenticate with the API](../../../api/rest/authentication.md). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 - Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the name of a module [must be unique in the scope of its group](#how-module-resolution-works), otherwise an
   [error occurs](#troubleshooting).
 
@@ -190,7 +190,7 @@ For example, if you enable `terraform_module_duplicates_allowed` for a group, an
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
+- You need to [authenticate with the API](../../../api/rest/authentication.md). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
 ### From a namespace
 

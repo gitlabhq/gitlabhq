@@ -298,7 +298,7 @@ include:
   - project: $CI_PROJECT_PATH
     ref: $CI_COMMIT_SHA
     file: $CI_CONFIG_PATH
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
 In the project's `.gitlab-ci.yml`, you can define `before_script` for the scanner:

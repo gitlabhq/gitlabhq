@@ -74,9 +74,11 @@ module MergeRequests
     end
 
     def cannot_create_pipeline_error
-      ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request])
+      error_message = 'Cannot create a pipeline for this merge request.'
 
-      ServiceResponse.error(message: 'Cannot create a pipeline for this merge request.', payload: nil)
+      ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], error_message)
+
+      ServiceResponse.error(message: error_message, payload: nil)
     end
   end
 end

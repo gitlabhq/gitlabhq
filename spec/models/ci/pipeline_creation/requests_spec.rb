@@ -10,15 +10,17 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
       it 'sets the pipeline creation to the failed status' do
         request = described_class.start_for_merge_request(merge_request)
 
-        described_class.failed(request)
+        described_class.failed(request, 'Insufficient permissions')
 
-        expect(read(request)).to eq({ 'status' => 'failed' })
+        expect(described_class.hget(request)).to eq(
+          { 'status' => 'failed', 'error' => 'Insufficient permissions' }
+        )
       end
     end
 
-    context 'when given nil' do
+    context 'when not given a request' do
       it 'returns nil' do
-        expect(described_class.failed(nil)).to be_nil
+        expect(described_class.failed(nil, 'Insufficient permissions')).to be_nil
       end
     end
   end
@@ -28,15 +30,17 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
       it 'sets the pipeline creation to the succeeded status' do
         request = described_class.start_for_merge_request(merge_request)
 
-        described_class.succeeded(request)
+        described_class.succeeded(request, 1)
 
-        expect(read(request)).to eq({ 'status' => 'succeeded' })
+        expect(described_class.hget(request)).to eq(
+          { 'status' => 'succeeded', 'pipeline_id' => 1 }
+        )
       end
     end
 
-    context 'when given nil' do
+    context 'when not given a request' do
       it 'returns nil' do
-        expect(described_class.succeeded(nil)).to be_nil
+        expect(described_class.succeeded(nil, 1)).to be_nil
       end
     end
   end
@@ -51,15 +55,15 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
 
       request2 = described_class.start_for_merge_request(merge_request)
 
-      described_class.succeeded(request)
+      described_class.succeeded(request, 1)
 
       expect(request).to eq({
         'key' => described_class.merge_request_key(merge_request),
         'id' => 'test-id'
       })
 
-      expect(read(request)).to eq({ 'status' => 'succeeded' })
-      expect(read(request2)).to eq({ 'status' => 'in_progress' })
+      expect(described_class.hget(request)).to eq({ 'status' => 'succeeded', 'pipeline_id' => 1 })
+      expect(described_class.hget(request2)).to eq({ 'status' => 'in_progress' })
     end
   end
 
@@ -84,7 +88,7 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
       request = { 'key' => 'test_key', 'id' => 'test_id' }
       described_class.hset(request, 'status')
 
-      expect(read(request)).to eq({ 'status' => 'status' })
+      expect(described_class.hget(request)).to eq({ 'status' => 'status' })
     end
 
     it 'expires the cache after 5 minutes' do
@@ -98,6 +102,16 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
         request = { 'key' => 'test_key', 'id' => 'test_id' }
         described_class.hset(request, 'status')
       end
+    end
+  end
+
+  describe '.hget' do
+    it 'returns the data for the request' do
+      request = described_class.start_for_merge_request(merge_request)
+
+      expect(described_class.hget(request)).to eq(
+        { 'status' => described_class::IN_PROGRESS }
+      )
     end
   end
 
@@ -115,9 +129,5 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
 
       described_class.generate_id
     end
-  end
-
-  def read(request)
-    Gitlab::Redis::SharedState.with { |redis| Gitlab::Json.parse(redis.hget(request['key'], request['id'])) }
   end
 end

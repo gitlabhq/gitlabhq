@@ -23,7 +23,7 @@ across GitLab releases. Use the
 [GraphQL API](graphql/reference/index.md#queryvulnerabilities)
 instead.
 
-Every API call to vulnerabilities must be [authenticated](rest/index.md#authentication).
+Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
 Vulnerability permissions inherit permissions from their project. If a project is
 private, and a user isn't a member of the project to which the vulnerability

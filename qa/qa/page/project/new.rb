@@ -44,6 +44,8 @@ module QA
         end
 
         def choose_namespace(namespace)
+          # User not belonging to any groups will have pre-filled personal namespace path
+          return unless has_element?('select-namespace-dropdown')
           # The current group is the default, we use end_with? in case we want to select the top level group
           return if find_element('select-namespace-dropdown').text.end_with?(namespace)
 

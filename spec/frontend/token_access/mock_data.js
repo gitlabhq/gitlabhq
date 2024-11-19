@@ -50,15 +50,6 @@ export const projectsWithScope = {
   },
 };
 
-export const addProjectSuccess = {
-  data: {
-    ciJobTokenScopeAddProject: {
-      errors: [],
-      __typename: 'CiJobTokenScopeAddProjectPayload',
-    },
-  },
-};
-
 export const removeProjectSuccess = {
   data: {
     ciJobTokenScopeRemoveProject: {
@@ -247,31 +238,10 @@ export const inboundGroupsAndProjectsWithScopeResponseWithAddedItem = {
   },
 };
 
-export const getGroupsAndProjectsResponse = {
-  data: {
-    groups: {
-      nodes: [
-        { id: 1, name: 'gitlab-org', avatarUrl: '', fullPath: 'gitlab-org' },
-        { id: 2, name: 'ci-group', avatarUrl: '', fullPath: 'root/ci-group' },
-      ],
-    },
-    projects: {
-      nodes: [
-        { id: 1, name: 'gitlab', avatarUrl: '', fullPath: 'gitlab-org/gitlab' },
-        { id: 2, name: 'ci-project', avatarUrl: '', fullPath: 'root/ci-project' },
-      ],
-    },
-  },
-};
-
-export const inboundAddGroupOrProjectSuccessResponse = {
-  data: {
-    ciJobTokenScopeAddGroupOrProject: {
-      errors: [],
-      __typename: 'CiJobTokenScopeAddGroupOrProjectPayload',
-    },
-  },
-};
+export const getAddNamespaceHandler = (error) =>
+  jest.fn().mockResolvedValue({
+    data: { ciJobTokenScopeAddGroupOrProject: { errors: error ? [error] : [] } },
+  });
 
 export const inboundRemoveGroupSuccess = {
   data: {

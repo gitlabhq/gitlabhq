@@ -29,15 +29,12 @@ module QA
         it_behaves_like 'successful project creation'
       end
 
-      context(
-        'in personal namespace',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347643'
-      ) do
+      context 'in personal namespace', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347643' do
         let(:project_name) { "project-in-personal-namespace-#{SecureRandom.hex(8)}" }
         let(:project) do
           Resource::Project.fabricate_via_browser_ui! do |project|
             project.name = project_name
-            project.personal_namespace = Runtime::User.username
+            project.personal_namespace = Runtime::UserStore.test_user.username
             project.description = nil
           end
         end

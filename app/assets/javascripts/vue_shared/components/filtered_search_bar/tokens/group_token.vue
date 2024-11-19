@@ -69,7 +69,10 @@ export default {
       return group.fullPath;
     },
     displayValue(group) {
-      return `${this.getGroupIdProperty(group)}${this.$options.separator}${group?.fullName}`;
+      const prefix = this.config.skipIdPrefix
+        ? ''
+        : `${this.getGroupIdProperty(group)}${this.$options.separator}`;
+      return `${prefix}${group?.fullName}`;
     },
     getGroupIdProperty(group) {
       return getIdFromGraphQLId(group.id);

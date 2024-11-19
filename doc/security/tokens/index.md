@@ -41,7 +41,7 @@ You can limit the scope and lifetime of your OAuth 2.0 tokens.
 
 ## Impersonation tokens
 
-An [impersonation token](../../api/rest/index.md#impersonation-tokens)
+An [impersonation token](../../api/rest/authentication.md#impersonation-tokens)
 is a special type of personal access token. It can be created only by
 an administrator for a specific user. Impersonation tokens can help
 you build applications or scripts that authenticate with the GitLab
@@ -319,7 +319,7 @@ To keep your tokens secure:
   After the demo is finished, revoke all the secrets created during the demo.
 - Adding access tokens to URLs is a security risk, especially when cloning or adding a remote, because Git writes URLs to its `.git/config` file in plaintext. URLs are
   also often logged by proxies and application servers, which leaks those credentials to system administrators. Instead, pass an access token to an API call with
-  a header like [`Private-Token`](../../api/rest/index.md#personalprojectgroup-access-tokens).
+  a header like [`Private-Token`](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
 - You can store tokens using [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 - Review all active access tokens of all types on a regular basis and revoke any you don't need.
 

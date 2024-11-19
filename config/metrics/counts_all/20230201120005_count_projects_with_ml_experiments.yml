@@ -2,6 +2,8 @@
 key_path: counts.count_projects_with_ml_experiments
 description: Count of unique projects that contain at least one Ml Experiment
 product_group: mlops
+product_categories:
+- mlops
 value_type: number
 status: active
 milestone: "15.9"

@@ -8184,6 +8184,9 @@ msgstr ""
 msgid "Auto-cancel redundant pipelines"
 msgstr ""
 
+msgid "Auto-resolved by vulnerability management policy"
+msgstr ""
+
 msgid "AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}"
 msgstr ""
 
@@ -19817,12 +19820,6 @@ msgid "Did not delete the source branch."
 msgstr ""
 
 msgid "Didn't receive a confirmation email?"
-msgstr ""
-
-msgid "Didn't receive confirmation instructions?"
-msgstr ""
-
-msgid "Didn't receive unlock instructions?"
 msgstr ""
 
 msgid "Diff"

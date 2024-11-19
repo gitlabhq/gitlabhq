@@ -28,7 +28,7 @@ To ensure data integrity, projects are put in a temporary read-only state for th
 duration of the move. During this time, users receive a `The repository is temporarily read-only. Please try again later.`
 message if they try to push new commits.
 
-This API requires you to [authenticate yourself](rest/index.md#authentication) as an administrator.
+This API requires you to [authenticate yourself](rest/authentication.md) as an administrator.
 
 For other repository types see:
 

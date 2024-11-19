@@ -19,7 +19,7 @@ Get a list of your SSH keys.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 This endpoint takes pagination parameters `page` and `per_page` to restrict the list of keys.
 
@@ -151,7 +151,7 @@ Create a new SSH key for your account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 ```plaintext
 POST /user/keys
@@ -257,7 +257,7 @@ Delete an SSH key from your account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 ```plaintext
 DELETE /user/keys/:key_id
@@ -299,7 +299,7 @@ Get a list of your GPG keys.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 ```plaintext
 GET /user/gpg_keys
@@ -367,7 +367,7 @@ Get details of one of your GPG keys.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 ```plaintext
 GET /user/gpg_keys/:key_id
@@ -434,7 +434,7 @@ Create a new GPG key for your account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 ```plaintext
 POST /user/gpg_keys
@@ -511,7 +511,7 @@ Delete a GPG key from your account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/index.md#authentication).
+- You must be [authenticated](rest/authentication.md).
 
 ```plaintext
 DELETE /user/gpg_keys/:key_id

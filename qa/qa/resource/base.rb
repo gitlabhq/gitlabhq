@@ -91,6 +91,16 @@ module QA
 
         private
 
+        # Override api client definition to use admin api client
+        #
+        # @return [void]
+        def uses_admin_api_client
+          define_method(:api_client) do
+            @api_client ||= Runtime::UserStore.admin_api_client
+          end
+          private :api_client
+        end
+
         def instance(api_client)
           init { |resource| resource.api_client = api_client || QA::Runtime::API::Client.as_admin }
         end
@@ -162,9 +172,9 @@ module QA
           attr_writer(name)
 
           define_method(name) do
-            return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
+            return instance_variable_get(:"@#{name}") if instance_variable_defined?(:"@#{name}")
 
-            instance_variable_set("@#{name}", attribute_value(name, block))
+            instance_variable_set(:"@#{name}", attribute_value(name, block))
           end
         end
 
@@ -193,7 +203,9 @@ module QA
         return self unless api_resource
 
         all_attributes.each do |attribute_name|
-          instance_variable_set("@#{attribute_name}", api_resource[attribute_name]) if api_resource.key?(attribute_name)
+          if api_resource.key?(attribute_name)
+            instance_variable_set(:"@#{attribute_name}", api_resource[attribute_name])
+          end
         end
 
         self

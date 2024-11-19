@@ -2041,12 +2041,35 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    describe 'pipeline creation status updating' do
-      context 'when the pipeline creation succeeds' do
-        it 'updates the status with `succeeded`' do
-          expect(::Ci::PipelineCreation::Requests).to receive(:succeeded).with({ 'key' => '123', 'id' => '456' })
+    describe 'pipeline creation status updating', :clean_gitlab_redis_shared_state do
+      let(:merge_request) do
+        create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
+      end
 
-          execute_service(pipeline_creation_request: { 'key' => '123', 'id' => '456' })
+      let(:config) do
+        {
+          test: {
+            script: 'ls',
+            rules: [{ if: "$CI_PIPELINE_SOURCE == 'merge_request_event'" }]
+          }
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config.to_json)
+      end
+
+      context 'when the pipeline creation succeeds' do
+        it 'updates the status with `succeeded` and the pipeline ID' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+          response = execute_service(
+            merge_request: merge_request, pipeline_creation_request: creation_request, source: :merge_request_event
+          )
+
+          successful_request = ::Ci::PipelineCreation::Requests.hget(creation_request)
+          expect(successful_request['pipeline_id']).to eq(response.payload.id)
+          expect(successful_request['status']).to eq(::Ci::PipelineCreation::Requests::SUCCEEDED)
         end
       end
 
@@ -2054,9 +2077,15 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         let_it_be_with_reload(:user) { create(:user) }
 
         it 'updates the status with `failed`' do
-          expect(::Ci::PipelineCreation::Requests).to receive(:failed).with({ 'key' => '123', 'id' => '456' })
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
 
-          execute_service(pipeline_creation_request: { 'key' => '123', 'id' => '456' })
+          execute_service(
+            merge_request: merge_request, pipeline_creation_request: creation_request, source: :merge_request_event
+          )
+
+          failed_request = ::Ci::PipelineCreation::Requests.hget(creation_request)
+          expect(failed_request['error']).to eq('Insufficient permissions to create a new pipeline')
+          expect(failed_request['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
         end
       end
     end

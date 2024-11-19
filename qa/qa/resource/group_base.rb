@@ -152,6 +152,22 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      # Get group audit events
+      #
+      # @return [Array]
+      def audit_events
+        api_get_from("#{api_get_path}/audit_events")
+      end
+
+      # Set IP restriction for group
+      #
+      # @param ip_ranges [String] Comma-separated list of IP addresses or subnet masks to restrict group access
+      # @return [void]
+      def set_ip_restriction_range(ip_ranges)
+        put_body = { ip_restriction_ranges: ip_ranges }
+        api_put_to(api_put_path, put_body)
+      end
+
       # Object comparison
       # Override to make sure we are comparing descendands of GroupBase
       #

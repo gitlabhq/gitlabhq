@@ -15,6 +15,8 @@ module QA
 
           # Initialize global api admin client
           initialize_admin_api_client!
+          # Initialize global test user and it's api client
+          initialize_test_user!
 
           if Runtime::Env.rspec_retried?
             Runtime::Logger.info('Skipping further global hooks due to retry process')
@@ -54,6 +56,16 @@ module QA
           Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
           Runtime::UserStore.initialize_admin_api_client # re-initialize admin client after password reset
+        end
+
+        # Initialize test user and it's api client before test execution for live environments
+        #
+        # @return [void]
+        def initialize_test_user!
+          return unless Runtime::Env.running_on_live_env?
+
+          Runtime::UserStore.initialize_user_api_client
+          Runtime::UserStore.initialize_test_user
         end
       end
     end

@@ -7,6 +7,8 @@
 # {
 #   "REDIS_KEY": {
 #     "CREATION_ID": {
+#       "error" => "ERROR MESSAGE" <- this field is only present for failed creations
+#       "pipeline_id": "PIPELINE_ID" <- this field is only present for successful creations
 #       "status": "STATUS"
 #     }
 #   }
@@ -28,16 +30,16 @@ module Ci
       MERGE_REQUEST_REDIS_KEY = "pipeline_creation:projects:{%{project_id}}:mrs:{%{mr_id}}"
 
       class << self
-        def failed(request)
+        def failed(request, error)
           return unless request.present?
 
-          hset(request, FAILED)
+          hset(request, FAILED, error: error)
         end
 
-        def succeeded(request)
+        def succeeded(request, pipeline_id)
           return unless request.present?
 
-          hset(request, SUCCEEDED)
+          hset(request, SUCCEEDED, pipeline_id: pipeline_id)
         end
 
         def start_for_merge_request(merge_request)
@@ -64,13 +66,21 @@ module Ci
           format(MERGE_REQUEST_REDIS_KEY, project_id: merge_request.project_id, mr_id: merge_request.id)
         end
 
-        def hset(request, status)
+        def hset(request, status, pipeline_id: nil, error: nil)
           Gitlab::Redis::SharedState.with do |redis|
             redis.multi do |transaction|
-              transaction.hset(request['key'], request['id'], { 'status' => status }.to_json)
+              transaction.hset(
+                request['key'], request['id'],
+                { 'status' => status, 'pipeline_id' => pipeline_id, 'error' => error }.compact.to_json
+              )
+
               transaction.expire(request['key'], REDIS_EXPIRATION_TIME)
             end
           end
+        end
+
+        def hget(request)
+          Gitlab::Redis::SharedState.with { |redis| Gitlab::Json.parse(redis.hget(request['key'], request['id'])) }
         end
 
         def generate_id

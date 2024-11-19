@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.in_product_marketing_email_experience_0_sent
 description: Total sent emails of the experience track's first email
 product_group: activation
+product_categories:
+- onboarding
 value_type: number
 status: removed
 milestone: "13.12"

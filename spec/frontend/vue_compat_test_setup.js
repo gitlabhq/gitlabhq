@@ -116,7 +116,9 @@ if (global.document) {
       install: jest.fn(),
     },
     Portal: {},
-    PortalTarget: {},
+    PortalTarget: {
+      template: '<div>PORTAL-TARGET</div>',
+    },
     MountingPortal: {
       template: '<h1>MOUNTING-PORTAL</h1>',
     },

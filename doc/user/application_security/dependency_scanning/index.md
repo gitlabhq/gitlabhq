@@ -1125,7 +1125,7 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
 
    ```yaml
    include:
-     - template: Security/Dependency-Scanning.gitlab-ci.yml
+     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
    variables:
      SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"

@@ -239,81 +239,100 @@ module QA
     describe "#user_api_client" do
       subject(:user_api_client) { described_class.user_api_client }
 
-      let(:username) { "username" }
-      let(:password) { "password" }
-      let(:api_token) { "token" }
+      context "when running on live environment" do
+        let(:username) { "username" }
+        let(:password) { "password" }
+        let(:api_token) { "token" }
 
-      before do
-        allow(Runtime::Env).to receive_messages({
-          user_username: username,
-          user_password: password,
-          personal_access_token: api_token
-        })
-      end
-
-      context "when api token variable is set" do
         before do
-          mock_user_get(token: api_token)
+          allow(Runtime::Env).to receive_messages({
+            user_username: username,
+            user_password: password,
+            personal_access_token: api_token,
+            running_on_live_env?: true
+          })
         end
 
-        it "creates admin api client with configured token" do
-          expect(user_api_client.personal_access_token).to eq(api_token)
-        end
-      end
+        context "when api token variable is set" do
+          before do
+            mock_user_get(token: api_token)
+          end
 
-      context "when api token variable and user variables are not set" do
-        let(:api_token) { nil }
-        let(:username) { nil }
-        let(:password) { nil }
-
-        it "does not return api client" do
-          expect(user_api_client).to be_nil
-        end
-      end
-
-      context "with invalid token set via environment variable" do
-        before do
-          mock_user_get(token: api_token, code: 401, body: "401 Unauthorized")
-        end
-
-        it "does not return api client" do
-          expect(user_api_client).to be_nil
-        end
-      end
-
-      context "with expired admin password" do
-        before do
-          mock_user_get(token: api_token, code: 403, body: "Your password expired")
-        end
-
-        it "does not return api client" do
-          expect(user_api_client).to be_nil
-        end
-      end
-
-      context "with token creation via UI" do
-        let(:api_token) { nil }
-        # dummy objects are created with populated id fields to simulate proper fabrication and reload calls
-        let(:user_spy) { Resource::User.init { |u| u.id = 1 } }
-
-        let(:pat) do
-          Resource::PersonalAccessToken.init do |p|
-            p.token = "token"
-            p.user_id = 1
+          it "creates admin api client with configured token" do
+            expect(user_api_client.personal_access_token).to eq(api_token)
           end
         end
 
-        before do
-          allow(Resource::User).to receive(:init).and_yield(user_spy).and_return(user_spy)
-          allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_yield(pat).and_return(pat)
-          allow(user_spy).to receive(:reload!)
+        context "when api token variable and user variables are not set" do
+          let(:api_token) { nil }
+          let(:username) { nil }
+          let(:password) { nil }
+
+          it "does not return api client" do
+            expect(user_api_client).to be_nil
+          end
         end
 
-        it "creates user api client with token created from UI" do
-          expect(user_api_client.personal_access_token).to eq(pat.token)
-          expect(pat.username).to eq(username)
-          expect(pat.password).to eq(password)
-          expect(user_spy).to have_received(:reload!)
+        context "with invalid token set via environment variable" do
+          before do
+            mock_user_get(token: api_token, code: 401, body: "401 Unauthorized")
+          end
+
+          it "does not return api client" do
+            expect(user_api_client).to be_nil
+          end
+        end
+
+        context "with expired admin password" do
+          before do
+            mock_user_get(token: api_token, code: 403, body: "Your password expired")
+          end
+
+          it "does not return api client" do
+            expect(user_api_client).to be_nil
+          end
+        end
+
+        context "with token creation via UI" do
+          let(:api_token) { nil }
+          # dummy objects are created with populated id fields to simulate proper fabrication and reload calls
+          let(:user_spy) { Resource::User.init { |u| u.id = 1 } }
+
+          let(:pat) do
+            Resource::PersonalAccessToken.init do |p|
+              p.token = "token"
+              p.user_id = 1
+            end
+          end
+
+          before do
+            allow(Resource::User).to receive(:init).and_yield(user_spy).and_return(user_spy)
+            allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_yield(pat).and_return(pat)
+            allow(user_spy).to receive(:reload!)
+          end
+
+          it "creates user api client with token created from UI" do
+            expect(user_api_client.personal_access_token).to eq(pat.token)
+            expect(pat.username).to eq(username)
+            expect(pat.password).to eq(password)
+            expect(user_spy).to have_received(:reload!)
+          end
+        end
+      end
+
+      context "when running on ephemeral environment with working admin client" do
+        let(:admin_api_client) { instance_double(Runtime::API::Client) }
+        let(:user) { Resource::User.init { |usr| usr.api_client = instance_double(Runtime::API::Client) } }
+
+        before do
+          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
+
+          described_class.instance_variable_set(:@admin_api_client, admin_api_client)
+          described_class.instance_variable_set(:@test_user, user)
+        end
+
+        it "returns test user api client" do
+          expect(user_api_client).to eq(user.api_client)
         end
       end
     end
@@ -321,99 +340,120 @@ module QA
     describe "#test_user" do
       subject(:test_user) { described_class.test_user }
 
-      let(:username) { "username" }
-      let(:password) { "password" }
-
-      before do
-        allow(Runtime::Env).to receive_messages({
-          user_username: username,
-          user_password: password,
-          personal_access_token: nil
-        })
-      end
-
-      context "when api client has not been initialized" do
-        context "with user variables set" do
-          it "returns user with configured credentials" do
-            expect(test_user.username).to eq(username)
-            expect(test_user.password).to eq(password)
-          end
-        end
-
-        context "without user variables set" do
-          let(:username) { nil }
-          let(:password) { nil }
-
-          it "does not return test user" do
-            expect(test_user).to be_nil
-          end
-        end
-
-        context "with only username set" do
-          let(:password) { nil }
-
-          it "does not return test user" do
-            expect(test_user).to be_nil
-          end
-        end
-
-        context "with only password set" do
-          let(:username) { nil }
-
-          it "does not return test user" do
-            expect(test_user).to be_nil
-          end
-        end
-      end
-
-      context "when api client has been initialized" do
-        let(:user_spy) { Resource::User.new }
-        let(:api_client) { Runtime::API::Client.new(personal_access_token: "token") }
+      context "when running on live environment" do
+        let(:username) { "username" }
+        let(:password) { "password" }
 
         before do
-          allow(Resource::User).to receive(:init).and_yield(user_spy).and_return(user_spy)
-          allow(user_spy).to receive(:reload!)
-
-          described_class.instance_variable_set(:@user_api_client, api_client)
+          allow(Runtime::Env).to receive_messages({
+            user_username: username,
+            user_password: password,
+            personal_access_token: nil,
+            running_on_live_env?: true
+          })
         end
 
-        context "with valid client belonging to user" do
-          before do
-            mock_user_get(token: api_client.personal_access_token, body: { username: username }.to_json)
+        context "when api client has not been initialized" do
+          context "with user variables set" do
+            it "returns user with configured credentials" do
+              expect(test_user.username).to eq(username)
+              expect(test_user.password).to eq(password)
+            end
           end
 
-          it "sets api client on user and reloads it" do
-            expect(test_user.api_client).to eq(api_client)
-            expect(test_user).to have_received(:reload!)
+          context "without user variables set" do
+            let(:username) { nil }
+            let(:password) { nil }
+
+            it "does not return test user" do
+              expect(test_user).to be_nil
+            end
+          end
+
+          context "with only username set" do
+            let(:password) { nil }
+
+            it "does not return test user" do
+              expect(test_user).to be_nil
+            end
+          end
+
+          context "with only password set" do
+            let(:username) { nil }
+
+            it "does not return test user" do
+              expect(test_user).to be_nil
+            end
           end
         end
 
-        context "with valid client not belonging to user" do
+        context "when api client has been initialized" do
+          let(:user_spy) { Resource::User.new }
+          let(:api_client) { Runtime::API::Client.new(personal_access_token: "token") }
+
           before do
-            mock_user_get(token: api_client.personal_access_token, body: { username: "test" }.to_json)
+            allow(Resource::User).to receive(:init).and_yield(user_spy).and_return(user_spy)
+            allow(user_spy).to receive(:reload!)
+
+            described_class.instance_variable_set(:@user_api_client, api_client)
           end
 
-          it "prints warning message" do
-            described_class.initialize_test_user
+          context "with valid client belonging to user" do
+            before do
+              mock_user_get(token: api_client.personal_access_token, body: { username: username }.to_json)
+            end
 
-            expect(Runtime::Logger).to have_received(:warn).with(<<~WARN)
+            it "sets api client on user and reloads it" do
+              expect(test_user.api_client).to eq(api_client)
+              expect(test_user).to have_received(:reload!)
+            end
+          end
+
+          context "with valid client not belonging to user" do
+            before do
+              mock_user_get(token: api_client.personal_access_token, body: { username: "test" }.to_json)
+            end
+
+            it "prints warning message" do
+              described_class.initialize_test_user
+
+              expect(Runtime::Logger).to have_received(:warn).with(<<~WARN)
               Configured global api client does not belong to configured global user
               Please check values for user authentication related variables
-            WARN
+              WARN
+            end
+          end
+
+          context "with invalid api client" do
+            before do
+              mock_user_get(token: api_client.personal_access_token, code: 403, body: "Unauthorized")
+            end
+
+            it "raises invalid token error" do
+              expect(test_user).to be_nil
+              expect(Runtime::Logger).to have_received(:warn).with(
+                "Failed to create test user: API client validation failed! Code: 403, Err: 'Unauthorized'"
+              )
+            end
           end
         end
+      end
 
-        context "with invalid api client" do
-          before do
-            mock_user_get(token: api_client.personal_access_token, code: 403, body: "Unauthorized")
-          end
+      context "when running on ephemeral environment with working admin client" do
+        let(:admin_api_client) { instance_double(Runtime::API::Client) }
+        let(:user) { Resource::User.new }
 
-          it "raises invalid token error" do
-            expect(test_user).to be_nil
-            expect(Runtime::Logger).to have_received(:warn).with(
-              "Failed to create test user: API client validation failed! Code: 403, Err: 'Unauthorized'"
-            )
-          end
+        before do
+          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
+          allow(Resource::User).to receive(:fabricate_via_api!).and_yield(user).and_return(user)
+
+          described_class.instance_variable_set(:@admin_api_client, admin_api_client)
+        end
+
+        it "returns new user" do
+          expect(test_user).to eq(user)
+          # check admin api client was explicitly used for user creation
+          expect(test_user.api_client).to eq(admin_api_client)
         end
       end
     end

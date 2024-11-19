@@ -28,7 +28,7 @@ The response payload may be subject to change or breakage
 across GitLab releases. Use the
 [GraphQL API](graphql/reference/index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
 
-Every API call to vulnerabilities must be [authenticated](rest/index.md#authentication).
+Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
 If an authenticated user does not have permission to
 [view vulnerability report](../user/permissions.md#application-security),

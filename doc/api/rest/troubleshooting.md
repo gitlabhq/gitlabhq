@@ -40,7 +40,7 @@ The following table shows the possible return codes for API requests.
 | `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers. |
 | `304 Not Modified`        | The resource hasn't been modified since the last request. |
 | `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given. |
-| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](index.md#authentication) is necessary. |
+| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](authentication.md) is necessary. |
 | `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project. |
 | `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource. |
 | `405 Method Not Allowed`  | The request isn't supported. |

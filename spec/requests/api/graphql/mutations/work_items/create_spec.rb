@@ -416,13 +416,17 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           .to change { WorkItem.count }.by(1)
           .and change { WorkItems::RelatedWorkItemLink.count }.by(2)
 
+        # We don't control the order in which links are created and we don't need to.
+        # Because of that, we can't control the order of the returned linked items. But we do want to assert they are
+        # ordered by `"issue_links"."id" DESC` when fetched from the API
+        expected_ordered_linked_items = WorkItems::RelatedWorkItemLink.order(id: :desc).limit(2).map do |linked_item|
+          { 'linkType' => 'relates_to', "workItem" => { "id" => linked_item.target.to_gid.to_s } }
+        end
+
         expect(response).to have_gitlab_http_status(:success)
         expect(widgets_response).to include(
           {
-            'linkedItems' => { 'nodes' => [
-              { 'linkType' => 'relates_to', "workItem" => { "id" => item2_global_id } },
-              { 'linkType' => 'relates_to', "workItem" => { "id" => item1_global_id } }
-            ] },
+            'linkedItems' => { 'nodes' => expected_ordered_linked_items },
             'type' => 'LINKED_ITEMS'
           }
         )

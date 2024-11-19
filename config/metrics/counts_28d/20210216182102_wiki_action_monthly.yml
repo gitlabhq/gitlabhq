@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.source_code.wiki_action_monthly
 description: Count of unique actions done on a wiki (create, edit, delete)
 product_group: knowledge
+product_categories:
+- wiki
 value_type: number
 status: active
 time_frame: 28d

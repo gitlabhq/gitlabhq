@@ -18,7 +18,7 @@ On GitLab.com, this feature is available. On GitLab Dedicated, this feature is n
 
 Use this API to create, read and delete SSH certificates for a group.
 Only top-level groups can store SSH certificates.
-To use this API, you must [authenticate yourself](rest/index.md#authentication) as user assigned the Owner role.
+To use this API, you must [authenticate yourself](rest/authentication.md) as user assigned the Owner role.
 
 ## Get all SSH certificates for a particular group
 

@@ -27,7 +27,7 @@ To automate storage management, your GitLab.com SaaS or self-managed instance mu
 
 ### API authentication scope
 
-Use the following scopes to [authenticate](../api/rest/index.md#authentication) with the API:
+Use the following scopes to [authenticate](../api/rest/authentication.md) with the API:
 
 - Storage analysis:
   - Read API access with the `read_api` scope.

@@ -169,7 +169,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     sql = <<~SQL
       SELECT c.table_name,
         CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
-        CASE WHEN c.is_nullable::boolean THEN 'nullable' ELSE NULL END,
+        CASE WHEN c.is_nullable::boolean THEN 'nullable / not null constraint missing' ELSE NULL END,
         CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE NULL END
       FROM information_schema.columns c
       LEFT JOIN postgres_foreign_keys fk
@@ -183,7 +183,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     # To add a table to this list, create an issue under https://gitlab.com/groups/gitlab-org/-/epics/11670.
     # Use https://gitlab.com/gitlab-org/gitlab/-/issues/476206 as an example.
     work_in_progress = {
-      "dependency_list_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476208',
       "namespaces" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476209',
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "projects" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476211',
@@ -201,19 +200,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     organization_id_columns = ApplicationRecord.connection.select_rows(sql)
-    violations = organization_id_columns.reject { |column| work_in_progress[column[0]] }
-    messages = violations.filter_map do |violation|
-      if violation[2]
-        if has_null_check_constraint?(violation[0], 'organization_id')
-          violation.delete_at(2)
-        else
-          violation[2].concat(' / not null constraint missing')
-        end
+    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] }
+    messages = checks.filter_map do |check|
+      table_name, *violations = check
+
+      violations.delete_if do |v|
+        (v == 'nullable / not null constraint missing' && has_null_check_constraint?(table_name, 'organization_id')) ||
+          (v == 'no foreign key' && has_lfk.call(loose_foreign_keys.fetch(table_name, {})))
       end
 
-      violation.delete_at(3) if violation[3] && has_lfk.call(loose_foreign_keys.fetch(violation[0], {}))
-
-      "  #{violation[0]} - #{violation[1..].compact.join(', ')}" if violation[1..].any?
+      "  #{table_name} - #{violations.compact.join(', ')}" if violations.any?
     end
 
     expect(messages).to be_empty, "Expected all organization_id columns to be not nullable, have no default, " \

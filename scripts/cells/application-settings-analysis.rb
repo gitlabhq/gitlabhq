@@ -148,6 +148,7 @@ class ApplicationSettingsAnalysis
       identity_verification_settings
       import_sources
       importers
+      integrations
       invisible_captcha_enabled
       issues_create_limit
       jira_connect_application_key

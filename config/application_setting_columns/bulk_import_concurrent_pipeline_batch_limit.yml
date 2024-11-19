@@ -5,7 +5,7 @@ clusterwide: false
 column: bulk_import_concurrent_pipeline_batch_limit
 db_type: smallint
 default: '25'
-description: Maximum simultaneous Direct Transfer batches to process.
+description: Maximum simultaneous direct transfer batch exports to process.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

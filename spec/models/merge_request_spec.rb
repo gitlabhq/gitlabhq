@@ -4275,7 +4275,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           let!(:creation) { Ci::PipelineCreation::Requests.start_for_merge_request(subject) }
 
           after do
-            Ci::PipelineCreation::Requests.succeeded(creation)
+            Ci::PipelineCreation::Requests.succeeded(creation, pipeline.id)
           end
 
           it { expect(subject.mergeable_ci_state?).to be_falsey }

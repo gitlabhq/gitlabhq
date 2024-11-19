@@ -34,7 +34,7 @@ DETAILS:
 
 Prerequisites:
 
-- [Authenticate yourself](rest/index.md#authentication) as an administrator.
+- [Authenticate yourself](rest/authentication.md) as an administrator.
 
 You can get, create and delete instance-wide member roles.
 

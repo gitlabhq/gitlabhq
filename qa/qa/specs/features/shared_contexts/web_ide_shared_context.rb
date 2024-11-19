@@ -4,8 +4,10 @@ module QA
   include Support::API
 
   RSpec.shared_context 'Web IDE test prep' do
+    let(:user) { Runtime::UserStore.test_user }
+
     before do
-      Flow::Login.sign_in
+      Flow::Login.sign_in(as: user)
       project.visit!
     end
 

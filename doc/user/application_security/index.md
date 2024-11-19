@@ -165,7 +165,7 @@ To enable Dynamic Application Security Testing (DAST) scanning, add the followin
 
 ```yaml
 include:
-  - template: Security/DAST.gitlab-ci.yml
+  - template: Jobs/DAST.gitlab-ci.yml
 
 variables:
   DAST_WEBSITE: https://staging.example.com

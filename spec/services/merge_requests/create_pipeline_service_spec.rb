@@ -213,16 +213,23 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
     end
 
     context 'when merge request has no commits' do
+      let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+      let(:params) { { pipeline_creation_request: request } }
+
       before do
         allow(merge_request).to receive(:has_no_commits?).and_return(true)
       end
 
-      it 'does not create a pipeline', :aggregate_failures do
+      it 'does not create a pipeline and marks the pipeline creation as failed', :aggregate_failures do
         expect { response }.not_to change { Ci::Pipeline.count }
 
         expect(response).to be_error
         expect(response.message).to eq('Cannot create a pipeline for this merge request.')
         expect(response.payload).to be_nil
+
+        failed_creation = ::Ci::PipelineCreation::Requests.hget(request)
+        expect(failed_creation['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
+        expect(failed_creation['error']).to eq('Cannot create a pipeline for this merge request.')
       end
     end
 
