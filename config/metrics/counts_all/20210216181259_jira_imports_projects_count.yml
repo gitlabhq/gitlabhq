@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.jira_imports_projects_count
 description: Count of Projects that imported Issues from Jira
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

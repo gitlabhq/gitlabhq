@@ -3,6 +3,8 @@ data_category: optional
 key_path: search_unique_visits.i_search_total
 description: Removed as duplicate of redis_hll_counters.search.i_search_total_weekly
 product_group: global_search
+product_categories:
+- global_search
 value_type: number
 status: removed
 time_frame: 7d

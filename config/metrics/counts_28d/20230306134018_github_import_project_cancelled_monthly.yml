@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.importer.github_import_project_cancelled_monthly
 description: The number of github projects that were cancelled monthly
 product_group: import_and_integrate
+product_categories:
+- importers
 value_type: number
 status: active
 milestone: "15.10"

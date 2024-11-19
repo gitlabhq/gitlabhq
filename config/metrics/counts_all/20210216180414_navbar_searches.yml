@@ -4,6 +4,8 @@ key_path: counts.navbar_searches
 description: Total Searches using the navbar for All Basic Search and Advanced Search
   in self-managed and SaaS
 product_group: global_search
+product_categories:
+- global_search
 value_type: number
 status: active
 time_frame: all

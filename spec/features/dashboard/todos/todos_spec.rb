@@ -549,15 +549,67 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/501269
   # it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :vue_dashboard_todos_path, :todos
 
-  context 'when user has no pending todos' do
-    before do
-      sign_in(user)
-      visit vue_dashboard_todos_path
+  before do
+    sign_in user
+  end
+
+  describe 'empty states' do
+    context 'when user has no todos at all (neither pending nor done)' do
+      before do
+        visit vue_dashboard_todos_path
+      end
+
+      it 'shows empty state for new users' do
+        within('.gl-empty-state') do
+          expect(page).to have_content 'Your To-Do List shows what to work on next'
+        end
+      end
     end
 
-    it 'shows empty state' do
-      within('.gl-empty-state') do
-        expect(page).to have_content 'Your To-Do List shows what to work on next'
+    context 'when user has no pending todos (but some done todos)' do
+      before do
+        create_todo(state: :done)
+        visit vue_dashboard_todos_path
+      end
+
+      it 'shows a "well done" message on the "Pending" tab' do
+        expect(page).to have_content 'Not sure where to go next?'
+        expect_tab_nav
+      end
+    end
+
+    context 'when user has pending todos but applied filters with no matches' do
+      before do
+        create_todo(state: :pending)
+        visit vue_dashboard_todos_path(author_id: user.id)
+      end
+
+      it 'shows a "no matches" message' do
+        expect(page).to have_content 'Sorry, your filter produced no results'
+        expect_tab_nav
+      end
+    end
+
+    context 'when user has no done tasks' do
+      before do
+        create_todo(state: :pending)
+        visit vue_dashboard_todos_path(author_id: user.id)
+        click_on 'Done'
+      end
+
+      context 'with filters applied' do
+        it 'shows a "no matches" message' do
+          expect(page).to have_content 'Sorry, your filter produced no results'
+          expect_tab_nav
+        end
+      end
+
+      context 'with no filters applied' do
+        it 'shows a "no done todos" message on the "Done" tab' do
+          click_on 'Clear'
+          expect(page).to have_content 'There are no done to-do items yet'
+          expect_tab_nav
+        end
       end
     end
   end
@@ -586,5 +638,13 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
       click_on 'To Do 1'
       expect(page).not_to have_content 'Michael Scott assigned you.'
     end
+  end
+
+  def create_todo(state:)
+    create(:todo, :assigned, state, user: user, project: project, target: issue, author: user2)
+  end
+
+  def expect_tab_nav
+    expect(page).to have_content(/To Do \d+ Done All/)
   end
 end

@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.create.projects_imported_from_github
 description: Count of projects imported from GitHub
 product_group: import_and_integrate
+product_categories:
+- importers
 value_type: number
 status: active
 time_frame: 28d

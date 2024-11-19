@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.ecosystem.i_ecosystem_slack_service_wiki_page_notification_monthly
 description: Calculated unique users to trigger a Slack message by performing an action on a wiki page by month
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "13.10"

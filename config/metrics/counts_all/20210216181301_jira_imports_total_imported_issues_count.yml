@@ -4,6 +4,8 @@ key_path: counts.jira_imports_total_imported_issues_count
 instrumentation_class: JiraImportsTotalImportedIssuesCountMetric
 description: Count of total issues imported via the Jira Importer
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

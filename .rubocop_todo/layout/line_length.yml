@@ -1362,7 +1362,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/elastic/bulk_indexer_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/group_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/indexer_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/project_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/snippet_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'

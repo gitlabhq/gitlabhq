@@ -2,6 +2,8 @@
 key_path: counts.projects_gitlab_slack_application_active
 description: Count projects with active slack application
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "14.3"

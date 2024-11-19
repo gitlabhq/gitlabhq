@@ -318,3 +318,13 @@ gemnasium-dependency_scanning:
         DS_REMEDIATE: 'false'
     - if: "$CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\\bdependency_scanning\\b/"
 ```
+
+## Dependency Scanning fails with `gradlew: permission denied` 
+
+The `permission denied` error on `gradlew` typically indicates that `gradlew` was checked into the repository without an executable bit set. The error might appear in your job with this message:
+
+```plaintext
+[FATA] [gemnasium-maven] [2024-11-14T21:55:59Z] [/go/src/app/cmd/gemnasium-maven/main.go:65] ▶ fork/exec /builds/path/to/gradlew: permission denied
+```
+
+Make the file executable by running `chmod +ux gradlew` locally and pushing it to your Git repository.

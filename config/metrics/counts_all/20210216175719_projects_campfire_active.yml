@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.projects_campfire_active
 description: Count of projects with active integrations for Campfire
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

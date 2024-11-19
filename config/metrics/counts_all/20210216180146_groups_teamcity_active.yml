@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.groups_teamcity_active
 description: Count of groups with active integrations for Teamcity CI
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

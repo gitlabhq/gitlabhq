@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.manage.issue_imports.csv
 description: Count of (attempted) imports from csv files
 product_group: import_and_integrate
+product_categories:
+- importers
 value_type: number
 status: active
 time_frame: all

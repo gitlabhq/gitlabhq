@@ -119,7 +119,7 @@ export default {
               data-testid="ci-card-emoji"
             />
             <p class="gl-mb-3">
-              <strong class="gl-mb-2 gl-text-gray-800" data-testid="ci-card-title">{{
+              <strong class="gl-mb-2 gl-text-default" data-testid="ci-card-title">{{
                 card.title
               }}</strong>
             </p>

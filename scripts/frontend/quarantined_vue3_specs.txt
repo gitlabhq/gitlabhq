@@ -115,13 +115,11 @@ ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulne
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js
 ee/spec/frontend/security_orchestration/components/policy_drawer/scan_execution/details_drawer_spec.js
-ee/spec/frontend/security_orchestration/components/policy_drawer/toggle_list_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/action/action_section_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/action/code_block_file_path_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/rule/rule_section_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filter_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filters_spec.js
-ee/spec/frontend/security_orchestration/components/policy_editor/section_layout_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/components/modal_create_spec.js
 ee/spec/frontend/status_checks/mount_spec.js

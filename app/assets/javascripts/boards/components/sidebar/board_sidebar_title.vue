@@ -161,7 +161,7 @@ export default {
       </span>
     </template>
     <template #collapsed>
-      <span class="gl-text-gray-800">{{ activeItem.referencePath }}</span>
+      <span class="gl-text-default">{{ activeItem.referencePath }}</span>
     </template>
     <gl-alert v-if="showChangesAlert" variant="warning" class="gl-mb-5" :dismissible="false">
       {{ $options.i18n.reviewYourChanges }}

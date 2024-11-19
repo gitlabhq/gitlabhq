@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.projects_jira_server_active
 description: Count of active integrations with Jira Software (server)
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: removed
 time_frame: all
