@@ -28,7 +28,7 @@ inherit_mode:
 
 AllCops:
   # The oldest supported Ruby version.
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.2
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'

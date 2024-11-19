@@ -171,8 +171,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/merge_requests/mergeability/check_path_locks_service_spec.rb'
     - 'ee/spec/services/resource_access_tokens/create_service_spec.rb'
     - 'ee/spec/services/search/elastic/cluster_reindexing_service_spec.rb'
-    - 'ee/spec/services/search/global_service_spec.rb'
-    - 'ee/spec/services/search/group_service_spec.rb'
     - 'ee/spec/services/search/index_repair_service_spec.rb'
     - 'ee/spec/services/search/project_service_spec.rb'
     - 'ee/spec/services/search/rake_task_executor_service_spec.rb'

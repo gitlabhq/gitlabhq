@@ -58,7 +58,12 @@ module Clusters
               .joins(agent: :project)
               .with_available_ci_access_fields(project)
               .where(projects: { namespace_id: all_namespace_ids })
-              .order(Arel.sql('agent_id, array_position(ARRAY(SELECT id FROM ordered_ancestors)::bigint[], agent_group_authorizations.group_id)'))
+              .order(
+                Arel.sql(
+                  'agent_id, array_position(ARRAY(SELECT id FROM ordered_ancestors)::bigint[], ' \
+                    'agent_group_authorizations.group_id)'
+                )
+              )
               .select('DISTINCT ON (agent_id) agent_group_authorizations.*')
               .preload(agent: :project)
               .to_a

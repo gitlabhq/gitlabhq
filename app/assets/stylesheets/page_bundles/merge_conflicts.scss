@@ -8,29 +8,14 @@
       background-color: map-get($conflict-colors, #{$color}-header-origin-neutral);
       border-color: map-get($conflict-colors, #{$color}-header-origin-neutral);
 
-      button {
-        background-color: map-get($conflict-colors, #{$color}-button-origin-neutral);
-        border-color: darken(map-get($conflict-colors, #{$color}-button-origin-neutral), 15);
-      }
-
       &.selected {
         background-color: map-get($conflict-colors, #{$color}-header-origin-chosen);
         border-color: map-get($conflict-colors, #{$color}-header-origin-chosen);
-
-        button {
-          background-color: map-get($conflict-colors, #{$color}-button-origin-chosen);
-          border-color: darken(map-get($conflict-colors, #{$color}-button-origin-chosen), 15);
-        }
       }
 
       &.unselected {
         background-color: map-get($conflict-colors, #{$color}-header-not-chosen);
         border-color: map-get($conflict-colors, #{$color}-header-not-chosen);
-
-        button {
-          background-color: lighten(map-get($conflict-colors, #{$color}-button-origin-neutral), 15);
-          border-color: map-get($conflict-colors, #{$color}-button-origin-neutral);
-        }
       }
     }
 
@@ -38,29 +23,14 @@
       background-color: map-get($conflict-colors, #{$color}-header-head-neutral);
       border-color: map-get($conflict-colors, #{$color}-header-head-neutral);
 
-      button {
-        background-color: map-get($conflict-colors, #{$color}-button-head-neutral);
-        border-color: darken(map-get($conflict-colors, #{$color}-button-head-neutral), 15);
-      }
-
       &.selected {
         background-color: map-get($conflict-colors, #{$color}-header-head-chosen);
         border-color: map-get($conflict-colors, #{$color}-header-head-chosen);
-
-        button {
-          background-color: map-get($conflict-colors, #{$color}-button-head-chosen);
-          border-color: darken(map-get($conflict-colors, #{$color}-button-head-chosen), 15);
-        }
       }
 
       &.unselected {
         background-color: map-get($conflict-colors, #{$color}-header-not-chosen);
         border-color: map-get($conflict-colors, #{$color}-header-not-chosen);
-
-        button {
-          background-color: lighten(map-get($conflict-colors, #{$color}-button-head-neutral), 15);
-          border-color: map-get($conflict-colors, #{$color}-button-head-neutral);
-        }
       }
     }
   }
@@ -125,16 +95,17 @@
     position: relative;
 
     button {
-      border-radius: 2px;
       font-size: 10px;
       position: absolute;
-      right: 10px;
-      padding: 0;
-      outline: none;
-      color: var(--white, $white);
-      width: 75px; // static width to make 2 buttons have same width
-      height: 19px;
+      right: $gl-spacing-scale-5;
+      top: 1px;
+      height: 18px;
+      opacity: 85%;
     }
+  }
+
+  .line_content:has(button) {
+    padding-right: $gl-spacing-scale-13;
   }
 
   .editor-wrap {

@@ -18,14 +18,16 @@ module Gitlab
       include Gitlab::Usage::TimeFrame
 
       TOTAL_COUNTER_KEY_PREFIX = "event_counters"
+      SUM_KEY_PREFIX = "event_sums"
 
-      attr_reader :filter, :name, :unique_identifier_name
+      attr_reader :filter, :name, :unique_identifier_name, :operator
 
-      def initialize(name:, time_framed:, filter: {}, unique_identifier_name: nil)
+      def initialize(name:, time_framed:, filter: {}, unique_identifier_name: nil, operator: nil)
         @name = name
         @time_framed = time_framed
         @filter = filter || {}
         @unique_identifier_name = unique_identifier_name
+        @operator = operator
       end
 
       def redis_key_for_date(date = Date.today)
@@ -45,7 +47,11 @@ module Gitlab
       end
 
       def total_counter?
-        unique_identifier_name.nil?
+        unique_identifier_name.nil? && !sum?
+      end
+
+      def sum?
+        operator.present?
       end
 
       def matches?(additional_properties)
@@ -62,7 +68,8 @@ module Gitlab
           name == other.name &&
           time_framed? == other.time_framed? &&
           filter == other.filter &&
-          unique_identifier_name == other.unique_identifier_name
+          unique_identifier_name == other.unique_identifier_name &&
+          operator == other.operator
       end
 
       alias_method :eql?, :==
@@ -72,7 +79,7 @@ module Gitlab
       # Ensures 2 objects with the same attributes can't be keys
       # in the same hash twice
       def hash
-        [name, time_framed?, filter, unique_identifier_name].hash
+        [name, time_framed?, filter, unique_identifier_name, operator].hash
       end
 
       private
@@ -88,6 +95,8 @@ module Gitlab
       end
 
       def redis_slot
+        return SUM_KEY_PREFIX if sum?
+
         total_counter? ? TOTAL_COUNTER_KEY_PREFIX : Gitlab::UsageDataCounters::HLLRedisCounter::REDIS_SLOT
       end
 
@@ -104,6 +113,11 @@ module Gitlab
 
       def path_part_of_redis_key
         path = name
+
+        if sum?
+          # operator should be serialized and used in the path here
+          path = "#{path}-operator:#{operator}"
+        end
 
         if filter.present?
           sorted_filter_keys = filter.keys.sort

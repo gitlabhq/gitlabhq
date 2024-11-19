@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
+RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
     let_it_be(:integration) { create(factory, branches_to_be_notified: 'all', project: project) }

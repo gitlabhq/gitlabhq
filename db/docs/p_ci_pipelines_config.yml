@@ -8,4 +8,5 @@ description: Routing table for ci_pipelines_config
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164455
 milestone: '12.7'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458483
+sharding_key:
+  project_id: projects

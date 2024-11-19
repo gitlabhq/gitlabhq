@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Integrations::Slack, feature_category: :integrations do
   it_behaves_like Integrations::SlackMattermostNotifier, 'Slack'
-  it_behaves_like Integrations::BaseSlackNotification, factory: :integrations_slack do
+  it_behaves_like Integrations::Base::SlackNotification, factory: :integrations_slack do
     before do
       stub_request(:post, integration.webhook)
     end

@@ -113,11 +113,11 @@ module Integrations
 
       if param_values.is_a?(ActionController::Parameters)
         if %w[update test].include?(action_name) && integration.chat?
-          param_values.delete('webhook') if param_values['webhook'] == BaseChatNotification::SECRET_MASK
+          param_values.delete('webhook') if param_values['webhook'] == Base::ChatNotification::SECRET_MASK
 
           if integration.try(:mask_configurable_channels?)
             integration.event_channel_names.each do |channel|
-              param_values.delete(channel) if param_values[channel] == BaseChatNotification::SECRET_MASK
+              param_values.delete(channel) if param_values[channel] == Base::ChatNotification::SECRET_MASK
             end
           end
         end

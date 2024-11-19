@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::GoogleCloud::BaseController < Projects::ApplicationController
-  feature_category :five_minute_production_app
+  feature_category :not_owned # rubocop:disable Gitlab/AvoidFeatureCategoryNotOwned -- removing code in https://gitlab.com/gitlab-org/gitlab/-/issues/478491
   urgency :low
 
   before_action :admin_project_google_cloud!

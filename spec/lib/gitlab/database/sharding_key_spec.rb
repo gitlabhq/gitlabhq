@@ -65,6 +65,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_builds_metadata.project_id',
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',

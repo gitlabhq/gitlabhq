@@ -127,7 +127,7 @@ RSpec.describe Ci::CreatePipelineService,
     it 'returns errors for invalid configuration' do
       expect(pipeline).not_to be_created_successfully
       expect(pipeline.errors.full_messages).to include(
-        "jobs:job run object at `/0` is missing required properties: name"
+        "jobs:job run object property at `/0/script` is a disallowed additional property"
       )
     end
   end

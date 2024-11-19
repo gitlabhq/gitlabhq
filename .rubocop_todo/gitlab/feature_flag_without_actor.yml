@@ -98,7 +98,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/helpers/gitlab_subscriptions/code_suggestions_helper.rb'
     - 'ee/app/models/concerns/geo/replicable_model.rb'
     - 'ee/app/models/ee/application_setting.rb'
-    - 'ee/app/models/ee/integration.rb'
     - 'ee/app/models/integrations/git_guardian.rb'
     - 'ee/app/models/namespaces/free_user_cap/root_size.rb'
     - 'ee/app/policies/ee/global_policy.rb'

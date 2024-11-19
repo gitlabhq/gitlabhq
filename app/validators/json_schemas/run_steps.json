@@ -1,52 +1,244 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://gitlab.com/gitlab-org/step-runner/schema/v1/steps",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gitlab.com/gitlab-org/step-runner/schema/v1/step",
   "items": {
-    "oneOf": [
-      {
-        "required": [
-          "step"
-        ],
-        "title": "step"
-      },
-      {
-        "required": [
-          "script"
-        ],
-        "title": "script"
-      }
-    ],
-    "properties": {
-      "name": {
-        "type": "string",
-        "description": "Name is a unique identifier for this step."
-      },
-      "step": {
-        "type": "string",
-        "description": "Step is a reference to the step to invoke."
-      },
-      "env": {
-        "additionalProperties": {
-          "type": "string"
+    "$ref": "#/definitions/step"
+  },
+  "type": "array",
+  "definitions": {
+    "step": {
+      "description": "Any of these step use cases are valid.",
+      "oneOf": [
+        {
+          "description": "Run a referenced step.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "step"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/name"
+            },
+            "env": {
+              "$ref": "#/definitions/namedStrings"
+            },
+            "inputs": {
+              "$ref": "#/definitions/namedValues"
+            },
+            "step": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/definitions/reference"
+                }
+              ]
+            }
+          }
         },
-        "type": "object",
-        "description": "Env is a map of environment variable names to string values."
+        {
+          "description": "Run a sequence of steps.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "steps"
+              ],
+              "properties": {
+                "env": {
+                  "$ref": "#/definitions/namedStrings"
+                },
+                "steps": {
+                  "description": "Deprecated. Use `run` instead.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/step"
+                  }
+                },
+                "outputs": {
+                  "$ref": "#/definitions/namedValues"
+                },
+                "delegate": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "run"
+              ],
+              "properties": {
+                "env": {
+                  "$ref": "#/definitions/namedStrings"
+                },
+                "run": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/step"
+                  }
+                },
+                "outputs": {
+                  "$ref": "#/definitions/namedValues"
+                },
+                "delegate": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "description": "Run an action.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "action"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/name"
+            },
+            "env": {
+              "$ref": "#/definitions/namedStrings"
+            },
+            "inputs": {
+              "$ref": "#/definitions/namedValues"
+            },
+            "action": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "description": "Run a script.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "script"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/name"
+            },
+            "env": {
+              "$ref": "#/definitions/namedStrings"
+            },
+            "script": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "description": "Exec a binary.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "exec"
+          ],
+          "properties": {
+            "env": {
+              "$ref": "#/definitions/namedStrings"
+            },
+            "exec": {
+              "description": "Exec is a command to run.",
+              "$ref": "#/definitions/exec"
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+    },
+    "namedStrings": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "string"
+        }
       },
-      "inputs": {
-        "type": "object",
-        "description": "Inputs is a map of step input names to structured values."
+      "additionalProperties": false
+    },
+    "namedValues": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null",
+            "array",
+            "object"
+          ]
+        }
       },
-      "script": {
-        "type": "string",
-        "description": "Script is a shell script to evaluate."
+      "additionalProperties": false
+    },
+    "reference": {
+      "type": "object",
+      "description": "Git a reference to a step in a Git repository.",
+      "additionalProperties": false,
+      "required": [
+        "git"
+      ],
+      "properties": {
+        "git": {
+          "$ref": "#/definitions/gitReference"
+        }
       }
     },
-    "additionalProperties": false,
-    "type": "object",
-    "required": [
-      "name"
-    ],
-    "description": "Step is a single step invocation."
-  },
-  "type": "array"
+    "gitReference": {
+      "type": "object",
+      "description": "GitReference is a reference to a step in a Git repository containing the full set of configuration options.",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "rev"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "dir": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "string"
+        }
+      }
+    },
+    "exec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "array",
+          "description": "Command are the parameters to the system exec API. It does not invoke a shell.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "work_dir": {
+          "type": "string",
+          "description": "WorkDir is the working directly in which `command` will be exec'ed."
+        }
+      }
+    }
+  }
 }

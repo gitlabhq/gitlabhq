@@ -5,7 +5,6 @@ require 'optparse'
 require 'fileutils'
 require 'uri'
 require 'json'
-require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 class FailedTests
   DEFAULT_OPTIONS = {

@@ -927,44 +927,7 @@
     "steps": {
       "type": "array",
       "items": {
-        "oneOf": [
-          {
-            "required": [
-              "step"
-            ]
-          },
-          {
-            "required": [
-              "script"
-            ]
-          }
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Unique identifier for this step."
-          },
-          "step": {
-            "type": "string",
-            "description": "Reference to the step to invoke."
-          },
-          "env": {
-            "$ref": "#/definitions/globalVariables"
-          },
-          "inputs": {
-            "$ref": "#/definitions/inputs"
-          },
-          "script": {
-            "type": "string",
-            "description": "Shell script to evaluate."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "description": "A single step invocation."
+        "$ref": "#/definitions/step"
       }
     },
     "optional_script": {
@@ -2490,6 +2453,240 @@
         }
       },
       "additionalProperties": false
+    },
+    "step": {
+      "description": "Any of these step use cases are valid.",
+      "oneOf": [
+        {
+          "description": "Run a referenced step.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "step"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/stepName"
+            },
+            "env": {
+              "$ref": "#/definitions/stepNamedStrings"
+            },
+            "inputs": {
+              "$ref": "#/definitions/stepNamedValues"
+            },
+            "step": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/definitions/stepReference"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "description": "Run a sequence of steps.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "steps"
+              ],
+              "properties": {
+                "env": {
+                  "$ref": "#/definitions/stepNamedStrings"
+                },
+                "steps": {
+                  "description": "Deprecated. Use `run` instead.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/step"
+                  }
+                },
+                "outputs": {
+                  "$ref": "#/definitions/stepNamedValues"
+                },
+                "delegate": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "run"
+              ],
+              "properties": {
+                "env": {
+                  "$ref": "#/definitions/stepNamedStrings"
+                },
+                "run": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/step"
+                  }
+                },
+                "outputs": {
+                  "$ref": "#/definitions/stepNamedValues"
+                },
+                "delegate": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "description": "Run an action.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "action"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/stepName"
+            },
+            "env": {
+              "$ref": "#/definitions/stepNamedStrings"
+            },
+            "inputs": {
+              "$ref": "#/definitions/stepNamedValues"
+            },
+            "action": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "description": "Run a script.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "script"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/stepName"
+            },
+            "env": {
+              "$ref": "#/definitions/stepNamedStrings"
+            },
+            "script": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "description": "Exec a binary.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "exec"
+          ],
+          "properties": {
+            "env": {
+              "$ref": "#/definitions/stepNamedStrings"
+            },
+            "exec": {
+              "description": "Exec is a command to run.",
+              "$ref": "#/definitions/stepExec"
+            }
+          }
+        }
+      ]
+    },
+    "stepName": {
+      "type": "string",
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+    },
+    "stepNamedStrings": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stepNamedValues": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null",
+            "array",
+            "object"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "stepReference": {
+      "type": "object",
+      "description": "Git a reference to a step in a Git repository.",
+      "additionalProperties": false,
+      "required": [
+        "git"
+      ],
+      "properties": {
+        "git": {
+          "$ref": "#/definitions/stepGitReference"
+        }
+      }
+    },
+    "stepGitReference": {
+      "type": "object",
+      "description": "GitReference is a reference to a step in a Git repository containing the full set of configuration options.",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "rev"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "dir": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "string"
+        }
+      }
+    },
+    "stepExec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "array",
+          "description": "Command are the parameters to the system exec API. It does not invoke a shell.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "work_dir": {
+          "type": "string",
+          "description": "WorkDir is the working directly in which `command` will be exec'ed."
+        }
+      }
     }
   }
 }

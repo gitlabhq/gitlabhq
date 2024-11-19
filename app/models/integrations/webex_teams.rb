@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class WebexTeams < BaseChatNotification
+  class WebexTeams < Integration
+    include Base::ChatNotification
+
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://api.ciscospark.com/v1/webhooks/incoming/...',

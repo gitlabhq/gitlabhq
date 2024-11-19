@@ -8,12 +8,12 @@ module Gitlab
       attr_reader :merge_request, :resolver
 
       def initialize(merge_request, allow_tree_conflicts: false, skip_content: false)
-        our_commit = merge_request.source_branch_head.raw
-        their_commit = merge_request.target_branch_head.raw
+        @our_commit = merge_request.source_branch_head.raw
+        @their_commit = merge_request.target_branch_head.raw
         @target_repo = merge_request.target_project.repository
         @source_repo = merge_request.source_project.repository.raw
-        @our_commit_id = our_commit.id
-        @their_commit_id = their_commit.id
+        @our_commit_id = @our_commit.id
+        @their_commit_id = @their_commit.id
         @resolver = Gitlab::Git::Conflict::Resolver.new(@target_repo.raw, @our_commit_id, @their_commit_id, allow_tree_conflicts: allow_tree_conflicts, skip_content: skip_content)
         @merge_request = merge_request
       end
@@ -59,6 +59,10 @@ module Gitlab
       def as_json(opts = nil)
         {
           target_branch: merge_request.target_branch,
+          source_commit: {
+            sha: @our_commit.id,
+            message: @our_commit.message
+          },
           source_branch: merge_request.source_branch,
           commit_sha: merge_request.diff_head_sha,
           commit_message: default_commit_message,

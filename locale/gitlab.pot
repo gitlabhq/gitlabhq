@@ -1986,10 +1986,13 @@ msgstr ""
 msgid "500|Page cannot be loaded because of an encoding error."
 msgstr ""
 
-msgid "503|503: Service unavailable"
+msgid "503|503: We're sorry, GitLab is currently unavailable"
 msgstr ""
 
 msgid "503|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "503|Try refreshing the page, or going back and attempting the action again."
 msgstr ""
 
 msgid ":%{startLine} to %{endLine}"
@@ -5133,6 +5136,9 @@ msgid "AiPowered|Assign seats"
 msgstr ""
 
 msgid "AiPowered|By turning on self-hosted AI models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
+msgstr ""
+
+msgid "AiPowered|Configuration"
 msgstr ""
 
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
@@ -21624,9 +21630,6 @@ msgstr ""
 msgid "Environments|Are you sure you want to delete %{podName}? This action cannot be undone."
 msgstr ""
 
-msgid "Environments|Are you sure you want to stop this environment?"
-msgstr ""
-
 msgid "Environments|Auto stop"
 msgstr ""
 
@@ -21730,9 +21733,6 @@ msgid "Environments|No deployments yet"
 msgstr ""
 
 msgid "Environments|No selection shows all authorized resources in the cluster. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
 msgstr ""
 
 msgid "Environments|Open"
@@ -21853,6 +21853,12 @@ msgid "Environments|View logs"
 msgstr ""
 
 msgid "Environments|Write a description or drag your files here…"
+msgstr ""
+
+msgid "Environments|You are about to stop the environment %{environmentName}. Any deployments associated with this environment will no longer be accessible, and the environment will be moved to the Stopped tab."
+msgstr ""
+
+msgid "Environments|You are about to stop the environment %{environmentName}. The environment will be moved to the Stopped tab. There is no %{actionStopLinkStart}action:stop%{actionStopLinkEnd} defined for this environment, so your existing deployments will not be affected."
 msgstr ""
 
 msgid "Environments|by %{avatar}"
@@ -34044,9 +34050,6 @@ msgid_plural "Merge %d cells"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Merge Conflicts"
-msgstr ""
-
 msgid "Merge Request"
 msgstr ""
 
@@ -34221,13 +34224,16 @@ msgstr ""
 msgid "MergeChecks|View policies"
 msgstr ""
 
+msgid "MergeConflict|&gt;&gt;&gt;&gt;&gt;&gt;&gt; %{commit}: %{message} (our changes)"
+msgstr ""
+
+msgid "MergeConflict|&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD: %{target} (their changes)"
+msgstr ""
+
 msgid "MergeConflict|Commit to source branch"
 msgstr ""
 
 msgid "MergeConflict|Committing..."
-msgstr ""
-
-msgid "MergeConflict|HEAD//our changes"
 msgstr ""
 
 msgid "MergeConflict|Use ours"
@@ -34240,9 +34246,6 @@ msgid "MergeConflict|conflict"
 msgstr ""
 
 msgid "MergeConflict|conflicts"
-msgstr ""
-
-msgid "MergeConflict|origin//their changes"
 msgstr ""
 
 msgid "MergeRequestAnalytics|Assignees"
@@ -57521,6 +57524,9 @@ msgstr ""
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
 msgstr ""
 
+msgid "To resolve the conflicts, either use interactive mode to select %{use_ours} or %{use_theirs}, or edit the files inline. Commit these changes into %{branch_name}."
+msgstr ""
+
 msgid "To resolve the problem, refine your search criteria. Select a group or project or use double quotes for multiple keywords (for example, %{code_open}\"your search\"%{code_close})."
 msgstr ""
 
@@ -63817,9 +63823,6 @@ msgid "You can only merge once the items above are resolved."
 msgstr ""
 
 msgid "You can only transfer the project to namespaces you manage."
-msgstr ""
-
-msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}."
 msgstr ""
 
 msgid "You can specify notification level per group or per project."

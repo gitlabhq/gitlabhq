@@ -6,11 +6,9 @@ classes:
 - Integrations::Asana
 - Integrations::Assembla
 - Integrations::Bamboo
-- Integrations::BaseChatNotification
 - Integrations::BaseCi
 - Integrations::BaseIssueTracker
 - Integrations::BaseMonitoring
-- Integrations::BaseSlackNotification
 - Integrations::BaseSlashCommands
 - Integrations::BaseThirdPartyWiki
 - Integrations::BeyondIdentity
@@ -39,9 +37,9 @@ classes:
 - Integrations::Jenkins
 - Integrations::Jira
 - Integrations::JiraCloudApp
+- Integrations::Matrix
 - Integrations::Mattermost
 - Integrations::MattermostSlashCommands
-- Integrations::Matrix
 - Integrations::MicrosoftTeams
 - Integrations::MockCi
 - Integrations::MockMonitoring

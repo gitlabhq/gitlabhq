@@ -39,7 +39,7 @@ run_with_invalid_inputs:
       inputs:
         - not_an_object
 
-run_with_missing_step_and_script:
+run_with_missing_step:
   run:
     - name: missing_required
       env:
@@ -56,3 +56,25 @@ run_with_invalid_script_value:
       script:
         - not_a_string
         - 123
+
+run_with_script_having_inputs:
+  run:
+    - name: script_cannot_have_inputs
+      script: echo foobar
+      inputs:
+        - msg: Hello
+
+run_with_missing_git_revision:
+  run:
+    - name: missing_git_revision
+      step:
+        git:
+          url: gitlab.com/components/script
+
+run_with_missing_git_url:
+  run:
+    - name: missing_git_revision
+      step:
+        git:
+          dir: reverse
+          rev: v1

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class HangoutsChat < BaseChatNotification
+  class HangoutsChat < Integration
+    include Base::ChatNotification
+
     # Enum value of the messageReplyOption query parameter that indicates that messages should be created as replies to
     # the specified threads if possible and start new threads otherwise
     # https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/create#messagereplyoption

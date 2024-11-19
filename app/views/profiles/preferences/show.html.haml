@@ -16,185 +16,180 @@
 
 = gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
   = render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
-  .settings-section.js-preferences-form.js-search-settings-section#appearance
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Appearance')
-    %p.gl-text-secondary
+
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Appearance'),
+    id: 'appearance',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = s_('Preferences|Choose the appearance of the application.')
-    - Gitlab::ColorModes.each do |mode|
-      = f.gitlab_ui_radio_component :color_mode_id, mode.id,
-        mode.name,
-        radio_options: { checked: user_color_mode_id == mode.id }
+    - c.with_body do
+      - Gitlab::ColorModes.each do |mode|
+        = f.gitlab_ui_radio_component :color_mode_id, mode.id,
+          mode.name,
+          radio_options: { checked: user_color_mode_id == mode.id }
 
-  .settings-section.js-preferences-form.js-search-settings-section.application-theme#navigation-theme
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Navigation theme')
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Navigation theme'),
+    id: 'navigation-theme',
+    options: { class: 'js-preferences-form application-theme' }) do |c|
+    - c.with_description do
       = s_('Preferences|Choose the navigation theme.')
-    .application-theme.row
-      - Gitlab::Themes.each do |theme|
-        %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
-          .preview{ class: theme.css_class }
-          = f.gitlab_ui_radio_component :theme_id, theme.id,
-            theme.name,
-            radio_options: { checked: user_theme_id == theme.id }
+    - c.with_body do
+      .application-theme.row
+        - Gitlab::Themes.each do |theme|
+          %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
+            .preview{ class: theme.css_class }
+            = f.gitlab_ui_radio_component :theme_id, theme.id,
+              theme.name,
+              radio_options: { checked: user_theme_id == theme.id }
 
-  .settings-section.js-preferences-form.js-search-settings-section#syntax-highlighting-theme
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Syntax highlighting theme')
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlighting theme'),
+    id: 'syntax-highlighting-theme',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = s_('Preferences|Customize the appearance of the syntax.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
-    .syntax-theme.row
-      - Gitlab::ColorSchemes.each do |scheme|
-        %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5
-          .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
-          = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
-            scheme.name,
-            radio_options: { checked: user_color_schema_id == scheme.id }
+    - c.with_body do
+      .syntax-theme.row
+        - Gitlab::ColorSchemes.each do |scheme|
+          %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5
+            .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
+            = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
+              scheme.name,
+              radio_options: { checked: user_color_schema_id == scheme.id }
 
-  .settings-section.js-preferences-form.js-search-settings-section#diffs-colors
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Diff colors')
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Diff colors'),
+    id: 'diffs-colors',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = s_('Preferences|Customize the colors of removed and added lines in diffs.')
-    .form-group
+      = succeed '.' do
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
+    - c.with_body do
       #js-profile-preferences-diffs-colors-app{ data: user_diffs_colors }
 
-  .settings-section.js-preferences-form.js-search-settings-section#behavior
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Behavior')
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Behavior'),
+    id: 'behavior',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = s_('Preferences|Customize the behavior of the system layout and default views.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
-    .form-group
-      = f.label :keyboard_shortcuts_enabled, class: 'label-bold' do
-        = s_('Preferences|Keyboard shortcuts')
-      - shortcuts_help_link = link_to('', help_page_path('user/shortcuts.md'), target: '_blank', rel: 'noopener noreferrer')
-      = f.gitlab_ui_checkbox_component :keyboard_shortcuts_enabled,
-        s_('Preferences|Enable keyboard shortcuts'),
-        help_text: safe_format(s_('Preferences|%{link_start}List of keyboard shortcuts%{link_end}'), tag_pair(shortcuts_help_link, :link_start, :link_end))
-    .form-group
-      = f.label :layout, class: 'label-bold' do
-        = s_('Preferences|Layout width')
-      = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
-      = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
+    - c.with_body do
+      .form-group
+        = f.label :keyboard_shortcuts_enabled, class: 'label-bold' do
+          = s_('Preferences|Keyboard shortcuts')
+        - shortcuts_help_link = link_to('', help_page_path('user/shortcuts.md'), target: '_blank', rel: 'noopener noreferrer')
+        = f.gitlab_ui_checkbox_component :keyboard_shortcuts_enabled,
+          s_('Preferences|Enable keyboard shortcuts'),
+          help_text: safe_format(s_('Preferences|%{link_start}List of keyboard shortcuts%{link_end}'), tag_pair(shortcuts_help_link, :link_start, :link_end))
+      .form-group
+        = f.label :layout, class: 'label-bold' do
+          = s_('Preferences|Layout width')
+        = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
+        = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
 
-    .form-group
-      = f.label :text_editor, class: 'label-bold' do
-        = s_('Preferences|Default text editor')
-        .gl-text-subtle{ class: '!gl-font-normal' }
-          = s_('Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing.')
-      = f.gitlab_ui_radio_component :text_editor, text_editor_choices[0][1], text_editor_choices[0][0], help_text: rich_text_editor_help_text
-      = f.gitlab_ui_radio_component :text_editor, text_editor_choices[1][1], text_editor_choices[1][0], help_text: plain_text_editor_help_text
+      .form-group
+        = f.label :text_editor, class: 'label-bold' do
+          = s_('Preferences|Default text editor')
+          .gl-text-subtle{ class: '!gl-font-normal' }
+            = s_('Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing.')
+        = f.gitlab_ui_radio_component :text_editor, text_editor_choices[0][1], text_editor_choices[0][0], help_text: rich_text_editor_help_text
+        = f.gitlab_ui_radio_component :text_editor, text_editor_choices[1][1], text_editor_choices[1][0], help_text: plain_text_editor_help_text
 
-    - if Feature.enabled?(:ui_for_organizations, current_user)
-      #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }
+      - if Feature.enabled?(:ui_for_organizations, current_user)
+        #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }
 
-    .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
+      .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
 
-    = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
+      = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
-    .form-group
-      = f.label :project_view, class: 'label-bold' do
-        = s_('Preferences|Project overview content')
-      = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
-      .form-text.gl-text-subtle
-        = s_('Preferences|Choose what content you want to see on a project’s overview page.')
-    .form-group
-      = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
-    .form-group
-      = f.gitlab_ui_checkbox_component :render_whitespace_in_code, s_('Preferences|Render whitespace characters in the Web IDE')
-    .form-group
-      = f.gitlab_ui_checkbox_component :show_whitespace_in_diffs, s_('Preferences|Show whitespace changes in diffs')
-    .form-group
-      = f.gitlab_ui_checkbox_component :view_diffs_file_by_file,
-        s_("Preferences|Show one file at a time on merge request's Changes tab"),
-        help_text: s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
-    .form-group
-      - supported_characters = %w(" ' ` &#40; [ { < * _).map { |char| "<code>#{char}</code>" }.join(', ')
-      = f.gitlab_ui_checkbox_component :markdown_surround_selection,
-        s_('Preferences|Surround text selection when typing quotes or brackets'),
-        help_text: sprintf(s_("Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
-    .form-group
-      = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
-        s_('Preferences|Automatically add new list items'),
-        help_text: html_escape(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below.')) % { kbdOpen: '<kbd>'.html_safe, kbdClose: '</kbd>'.html_safe }
+      .form-group
+        = f.label :project_view, class: 'label-bold' do
+          = s_('Preferences|Project overview content')
+        = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
+        .form-text.gl-text-subtle
+          = s_('Preferences|Choose what content you want to see on a project’s overview page.')
+      .form-group
+        = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
+      .form-group
+        = f.gitlab_ui_checkbox_component :render_whitespace_in_code, s_('Preferences|Render whitespace characters in the Web IDE')
+      .form-group
+        = f.gitlab_ui_checkbox_component :show_whitespace_in_diffs, s_('Preferences|Show whitespace changes in diffs')
+      .form-group
+        = f.gitlab_ui_checkbox_component :view_diffs_file_by_file,
+          s_("Preferences|Show one file at a time on merge request's Changes tab"),
+          help_text: s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
+      .form-group
+        - supported_characters = %w(" ' ` &#40; [ { < * _).map { |char| "<code>#{char}</code>" }.join(', ')
+        = f.gitlab_ui_checkbox_component :markdown_surround_selection,
+          s_('Preferences|Surround text selection when typing quotes or brackets'),
+          help_text: sprintf(s_("Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
+      .form-group
+        = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
+          s_('Preferences|Automatically add new list items'),
+          help_text: html_escape(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below.')) % { kbdOpen: '<kbd>'.html_safe, kbdClose: '</kbd>'.html_safe }
 
-    .form-group
-      = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
-      = f.number_field :tab_width,
-                      class: 'form-control gl-form-input gl-max-w-15',
-                      min: Gitlab::TabWidth::MIN,
-                      max: Gitlab::TabWidth::MAX,
-                      required: true
-      .form-text.gl-text-subtle
-        = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }
+      .form-group
+        = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
+        = f.number_field :tab_width,
+                        class: 'form-control gl-form-input gl-max-w-15',
+                        min: Gitlab::TabWidth::MIN,
+                        max: Gitlab::TabWidth::MAX,
+                        required: true
+        .form-text.gl-text-subtle
+          = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }
 
-  .settings-section.js-preferences-form.js-search-settings-section#localization
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = _('Localization')
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(_('Localization'),
+    id: 'localization',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = _('Customize language and region related settings.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
+    - c.with_body do
+      .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
+      %p.-gl-mt-5
+        = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
+          = _("Help translate GitLab into your language")
+          %span{ aria: { label: _('Open new window') } }
+            = sprite_icon('external-link')
+      .form-group
+        = f.label :first_day_of_week, class: 'label-bold' do
+          = _('First day of the week')
+        = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select gl-block gl-form-input-xl'
 
-    .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
-    %p.-gl-mt-5
-      = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
-        = _("Help translate GitLab into your language")
-        %span{ aria: { label: _('Open new window') } }
-          = sprite_icon('external-link')
-    .form-group
-      = f.label :first_day_of_week, class: 'label-bold' do
-        = _('First day of the week')
-      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select gl-block gl-form-input-xl'
-
-  .settings-section.js-preferences-form.js-search-settings-section#time-preferences
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Time preferences')
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Time preferences'),
+    id: 'time-preferences',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = s_('Preferences|Configure how dates and times display for you.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
-    .form-group
-      = f.gitlab_ui_checkbox_component :time_display_relative,
-        s_('Preferences|Use relative times'),
-        help_text: s_('Preferences|For example: 30 minutes ago.')
-    .form-group
-      = f.label :time_display_format, class: 'label-bold' do
-        = s_('Preferences|Time format')
-      - time_display_format_choices.each_entry do |time_display_format_option|
-        .gl-mb-4
-        = f.gitlab_ui_radio_component :time_display_format, time_display_format_option[1], time_display_format_option[0]
-  .settings-section.js-preferences-form.js-search-settings-section#enabled_following
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0
-          = s_('Preferences|Enable follow users feature')
-    %p.gl-text-secondary
+    - c.with_body do
+      .form-group
+        = f.gitlab_ui_checkbox_component :time_display_relative,
+          s_('Preferences|Use relative times'),
+          help_text: s_('Preferences|For example: 30 minutes ago.')
+      .form-group
+        = f.label :time_display_format, class: 'label-bold' do
+          = s_('Preferences|Time format')
+        - time_display_format_choices.each_entry do |time_display_format_option|
+          .gl-mb-4
+          = f.gitlab_ui_radio_component :time_display_format, time_display_format_option[1], time_display_format_option[0]
+
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Enable follow users feature'),
+    id: 'enabled_following',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
       = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
-    .form-group
-      = f.gitlab_ui_checkbox_component :enabled_following,
-      s_('Preferences|Enable follow users')
+    - c.with_body do
+      .form-group
+        = f.gitlab_ui_checkbox_component :enabled_following,
+        s_('Preferences|Enable follow users')
+
   = render_if_exists 'profiles/preferences/zoekt_settings', form: f
 
   #js-profile-preferences-app{ data: data_attributes }

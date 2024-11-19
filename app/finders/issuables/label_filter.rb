@@ -155,7 +155,8 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def project_labels_for_root_namespace
-      Label.where(group_id: nil).where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendant_ids))
+      Label.where(group_id: nil)
+           .where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendant_ids))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

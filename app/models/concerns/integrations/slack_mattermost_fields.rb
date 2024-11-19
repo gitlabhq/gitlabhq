@@ -53,8 +53,8 @@ module Integrations
             'The default value is `match_any`.')
         },
         choices: [
-          ['Match any of the labels', Integrations::BaseChatNotification::MATCH_ANY_LABEL],
-          ['Match all of the labels', Integrations::BaseChatNotification::MATCH_ALL_LABELS]
+          ['Match any of the labels', Integrations::Base::ChatNotification::MATCH_ANY_LABEL],
+          ['Match all of the labels', Integrations::Base::ChatNotification::MATCH_ALL_LABELS]
         ]
     end
   end

@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-#
-# IMPORTANT: With the new development of the 'gitlab-http' gem (https://gitlab.com/gitlab-org/gitlab/-/issues/415686),
-# no additional change should be implemented in this class. This class will be removed after migrating all
-# the usages to the new gem.
-#
-
 module Gitlab
   class HTTP
     BlockedUrlError = Gitlab::HTTP_V2::BlockedUrlError

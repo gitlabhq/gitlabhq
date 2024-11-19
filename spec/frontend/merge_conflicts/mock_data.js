@@ -1,6 +1,10 @@
 export const conflictsMock = {
   target_branch: 'main',
   source_branch: 'test-conflicts',
+  source_commit: {
+    sha: '4fcf0elettucr3x7im9qid',
+    message: 'File added',
+  },
   commit_sha: '6dbf385a3c7bf01e09b5d2d9e5d72f8fb8c590a3',
   commit_message:
     "Merge branch 'main' into 'test-conflicts'\n\n# Conflicts:\n#   .gitlab-ci.yml\n#   README.md",

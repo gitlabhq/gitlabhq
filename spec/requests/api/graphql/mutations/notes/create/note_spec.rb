@@ -132,7 +132,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       let(:head_sha) { noteable.diff_head_sha }
       let(:body) { '/merge' }
 
-      it 'returns a nil note and info about the command in errors' do
+      it 'returns a nil note and info about the command in quickActionsStatus' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response).to include(

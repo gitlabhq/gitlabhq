@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class UnifyCircuit < BaseChatNotification
+  class UnifyCircuit < Integration
+    include Base::ChatNotification
+
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://yourcircuit.com/rest/v2/webhooks/incoming/…',

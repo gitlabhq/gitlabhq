@@ -21,9 +21,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
   const createComponent = (
     initialState = {},
-    provide = {
-      glFeatures: { searchMrFilterSourceBranch: true, searchMrFilterLabelIds: true },
-    },
+    provide = { glFeatures: { searchMrFilterSourceBranch: true } },
   ) => {
     const store = new Vuex.Store({
       state: {
@@ -101,19 +99,6 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
       it(`${searchMrFilterSourceBranch ? 'will' : 'will not'} render sourceBranchFilter`, () => {
         expect(findSourceBranchFilter().exists()).toBe(searchMrFilterSourceBranch);
-      });
-    },
-  );
-
-  describe.each([true, false])(
-    'When feature flag search_mr_filter_label_ids is',
-    (searchMrFilterLabelIds) => {
-      beforeEach(() => {
-        createComponent(null, { glFeatures: { searchMrFilterLabelIds } });
-      });
-
-      it(`${searchMrFilterLabelIds ? 'will' : 'will not'} render label filter`, () => {
-        expect(findLabelFilter().exists()).toBe(searchMrFilterLabelIds);
       });
     },
   );

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Slack < BaseSlackNotification
+  class Slack < Integration
+    include Base::SlackNotification
     include SlackMattermostNotifier
     include SlackMattermostFields
 

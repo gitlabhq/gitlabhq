@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupImport, feature_category: :importers do
+RSpec.describe API::GroupImport, :with_current_organization, feature_category: :importers do
   include WorkhorseHelpers
 
   include_context 'workhorse headers'
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user, organizations: [current_organization]) }
+  let_it_be(:group) { create(:group, organization: current_organization) }
 
   let(:path) { '/groups/import' }
   let(:file) { File.join('spec', 'fixtures', 'group_export.tar.gz') }
@@ -71,8 +71,8 @@ RSpec.describe API::GroupImport, feature_category: :importers do
           end
 
           context 'when parent group is private or internal' do
-            let(:public_parent_group) { create(:group, :public) }
-            let(:internal_parent_group) { create(:group, :internal) }
+            let(:public_parent_group) { create(:group, :public, organization: current_organization) }
+            let(:internal_parent_group) { create(:group, :internal, organization: current_organization) }
 
             before do
               public_parent_group.add_owner(user)
@@ -110,7 +110,7 @@ RSpec.describe API::GroupImport, feature_category: :importers do
 
             context 'when user is not an owner of parent group' do
               it 'returns 403 Forbidden HTTP status' do
-                params[:parent_id] = create(:group).id
+                params[:parent_id] = create(:group, organization: current_organization).id
 
                 subject
 
@@ -245,11 +245,7 @@ RSpec.describe API::GroupImport, feature_category: :importers do
     end
 
     context 'when organization_id is missing' do
-      context 'and current organization is defined', :with_current_organization do
-        before do
-          current_organization.users << user
-        end
-
+      context 'and current organization is defined' do
         it 'assigns current organization' do
           subject
 
@@ -273,21 +269,11 @@ RSpec.describe API::GroupImport, feature_category: :importers do
           end
         end
       end
-
-      context 'and current organization is not defined' do
-        let_it_be(:default_organization) { create(:organization, :default) }
-
-        it 'assigns default organization' do
-          subject
-
-          expect(Group.last.organization_id).to eq(default_organization.id)
-        end
-      end
     end
 
     context 'when organization_id param is different than parent group organization' do
-      let_it_be(:current_organization) { create(:organization, users: [user]) }
-      let(:params) { base_params.merge(organization_id: current_organization.id) }
+      let!(:other_organization) { create(:organization, name: 'different organization', users: [user]) }
+      let(:params) { base_params.merge(organization_id: other_organization.id) }
 
       before do
         group.add_owner(user)

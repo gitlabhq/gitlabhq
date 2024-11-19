@@ -78,10 +78,7 @@ module Packages
       end
 
       def duplicate_error?(package)
-        return false if Namespace::PackageSetting.duplicates_allowed_for_package?(package)
-        return false if Namespace::PackageSetting.matches_duplicate_exception?(package)
-
-        target_package_is_duplicate?(package)
+        !Namespace::PackageSetting.duplicates_allowed?(package) && target_package_is_duplicate?(package)
       end
 
       def file_name_too_long?

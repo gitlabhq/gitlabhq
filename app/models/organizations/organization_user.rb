@@ -27,6 +27,8 @@ module Organizations
     scope :by_user, ->(user) { where(user: user) }
 
     def self.create_default_organization_record_for(user_id, user_is_admin:)
+      return if Organizations::Organization.default_organization.nil?
+
       upsert(
         {
           organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID,

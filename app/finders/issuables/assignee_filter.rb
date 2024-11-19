@@ -61,7 +61,9 @@ module Issuables
     def has_assignee_param?(specific_params)
       return if specific_params.nil?
 
-      specific_params[:assignee_ids].present? || specific_params[:assignee_id].present? || specific_params[:assignee_username].present?
+      specific_params[:assignee_ids].present? ||
+        specific_params[:assignee_id].present? ||
+        specific_params[:assignee_username].present?
     end
 
     def assignee_ids(specific_params)

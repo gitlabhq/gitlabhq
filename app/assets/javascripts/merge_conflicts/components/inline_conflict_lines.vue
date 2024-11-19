@@ -1,12 +1,16 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
+import { GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import syntaxHighlight from '~/syntax_highlight';
 import { SYNTAX_HIGHLIGHT_CLASS } from '../constants';
 import utilsMixin from '../mixins/line_conflict_utils';
 
 export default {
+  components: {
+    GlButton,
+  },
   directives: {
     SafeHtml,
   },
@@ -36,13 +40,9 @@ export default {
         <td :class="lineCssClass(line)" class="diff-line-num header"></td>
         <td :class="lineCssClass(line)" class="line_content header">
           <strong>{{ line.richText }}</strong>
-          <button
-            type="button"
-            class="gl-border-1 gl-border-solid"
-            @click="handleSelected({ file, line })"
-          >
+          <gl-button size="small" @click="handleSelected({ file, line })">
             {{ line.buttonTitle }}
-          </button>
+          </gl-button>
         </td>
       </template>
       <template v-else>

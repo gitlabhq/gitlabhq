@@ -53,7 +53,7 @@ RSpec.describe Integrations::EventEntity, feature_category: :integrations do
         expect(subject[:title]).to eq('Note')
         expect(subject[:value]).to eq(false)
         expect(subject[:field][:name]).to eq('note_channel')
-        expect(subject[:field][:value]).to eq(Integrations::BaseChatNotification::SECRET_MASK)
+        expect(subject[:field][:value]).to eq(Integrations::Base::ChatNotification::SECRET_MASK)
         expect(subject[:field][:placeholder]).to eq('#general, #development')
       end
     end

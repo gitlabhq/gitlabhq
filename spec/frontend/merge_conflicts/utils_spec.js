@@ -1,4 +1,5 @@
 import * as utils from '~/merge_conflicts/utils';
+import { conflictsMock } from './mock_data';
 
 describe('merge conflicts utils', () => {
   describe('getFilePath', () => {
@@ -29,14 +30,14 @@ describe('merge conflicts utils', () => {
 
   describe('getHeadHeaderLine', () => {
     it('decorates the id', () => {
-      expect(utils.getHeadHeaderLine(1)).toStrictEqual({
+      expect(utils.getHeadHeaderLine(1, conflictsMock)).toStrictEqual({
         buttonTitle: 'Use ours',
         id: 1,
         isHead: true,
         isHeader: true,
         isSelected: false,
         isUnselected: false,
-        richText: 'HEAD//our changes',
+        richText: '>>>>>>> 4fcf0ele: File added (our changes)',
         section: 'head',
         type: 'new',
       });
@@ -75,14 +76,14 @@ describe('merge conflicts utils', () => {
 
   describe('getOriginHeaderLine', () => {
     it('decorates the id', () => {
-      expect(utils.getOriginHeaderLine(1)).toStrictEqual({
+      expect(utils.getOriginHeaderLine(1, conflictsMock)).toStrictEqual({
         buttonTitle: 'Use theirs',
         id: 1,
         isHeader: true,
         isOrigin: true,
         isSelected: false,
         isUnselected: false,
-        richText: 'origin//their changes',
+        richText: '<<<<<<< HEAD: main (their changes)',
         section: 'origin',
         type: 'old',
       });

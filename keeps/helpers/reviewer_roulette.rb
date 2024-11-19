@@ -49,7 +49,7 @@ module Keeps
       end
 
       def fetch_stats
-        response = Gitlab::HTTP_V2.get(STATS_JSON_URL)
+        response = Gitlab::HTTP_V2.get(STATS_JSON_URL) # rubocop:disable Gitlab/HttpV2 -- Not running inside rails application
 
         unless (200..299).cover?(response.code)
           raise Error, "Failed to get roulette stats with response code: #{response.code} and body:\n#{response.body}"

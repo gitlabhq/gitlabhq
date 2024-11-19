@@ -21,8 +21,8 @@ if you need clarification or spot any outdated information.
 
 1. Add a new model in `app/models/integrations` extending from `Integration`.
    - For example, `Integrations::FooBar` in `app/models/integrations/foo_bar.rb`.
-   - For certain types of integrations, you can also build on these base classes:
-     - `Integrations::BaseChatNotification`
+   - For certain types of integrations, you can include these base modules (or inherit from them if they are classes):
+     - `Integrations::Base::ChatNotification`
      - `Integrations::BaseCi`
      - `Integrations::BaseIssueTracker`
      - `Integrations::BaseMonitoring`
@@ -152,7 +152,7 @@ end
 
 #### Masking channel values
 
-Integrations that [inherit from `Integrations::BaseChatNotification`](#define-the-integration) can hide the
+Integrations that [include from `Integrations::Base::ChatNotification`](#define-the-integration) can hide the
 values of their channel input fields. Integrations should hide these values whenever the
 fields contain sensitive information such as auth tokens.
 

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class MicrosoftTeams < BaseChatNotification
+  class MicrosoftTeams < Integration
+    include Base::ChatNotification
+
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://outlook.office.com/webhook/…',

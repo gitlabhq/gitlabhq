@@ -58,6 +58,14 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_
       end
     end
 
+    shared_examples 'reuse existing package when packages_allow_duplicate_exceptions is disabled' do
+      before do
+        stub_feature_flags(packages_allow_duplicate_exceptions: false)
+      end
+
+      it_behaves_like 'reuse existing package'
+    end
+
     context 'with path including version' do
       # Note that "path with version" and "file type maven metadata xml" only exists for snapshot versions
       # In other words, we will never have an metadata xml upload on a path with version for a non snapshot version
@@ -204,6 +212,62 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_
 
           it_behaves_like 'reuse existing package'
         end
+      end
+    end
+
+    context 'when package duplicates are allowed' do
+      let_it_be_with_refind(:package_settings) do
+        create(:namespace_package_setting, :group, maven_duplicates_allowed: true)
+      end
+
+      let_it_be_with_refind(:group) { package_settings.namespace }
+      let_it_be_with_refind(:project) { create(:project, group: group) }
+
+      let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
+
+      let(:existing_file_name) { file_name }
+      let(:jar_file) { existing_package.package_files.with_file_name_like('%.jar').first }
+
+      before do
+        jar_file.update_column(:file_name, existing_file_name)
+      end
+
+      it_behaves_like 'reuse existing package'
+
+      context 'when the package name matches the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: existing_package.name)
+        end
+
+        it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
+
+        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
+      end
+
+      context 'when the package version matches the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: existing_package.version)
+        end
+
+        it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
+
+        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
+      end
+
+      context 'when the exception regex is blank' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: '')
+        end
+
+        it_behaves_like 'reuse existing package'
+      end
+
+      context 'when both the package name and version does not match the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: 'asdf42')
+        end
+
+        it_behaves_like 'reuse existing package'
       end
     end
 

@@ -1,15 +1,11 @@
 - page_title _('Active Sessions')
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+  - c.with_description do
     = _('This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize.')
-
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-0' }, body_options: { class: 'gl-p-0' }) do |c|
-    - c.with_body do
-      %ul.list-group.list-group-flush
-        = render partial: 'user_settings/active_sessions/active_session', collection: @sessions
+  - c.with_body do
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-0' }, body_options: { class: 'gl-p-0' }) do |c|
+      - c.with_body do
+        %ul.list-group.list-group-flush
+          = render partial: 'user_settings/active_sessions/active_session', collection: @sessions

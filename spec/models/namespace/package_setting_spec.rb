@@ -110,15 +110,22 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
       Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
         context "with package_type: #{package_type}" do
           let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
+          let(:package_name) { package.name }
+          let(:package_version) { package.version }
           let_it_be(:package_type) { package.package_type }
           let_it_be(:package_setting) { package.project.namespace.package_settings }
 
           where(:duplicates_allowed, :duplicate_exception_regex, :result) do
-            true  | ''       | true
-            false | ''       | false
-            false | '.*'     | true
-            false | 'fo.*'   | true
-            false | '.*be.*' | true
+            true  | ref(:package_name)    | false
+            true  | ref(:package_version) | false
+            true  | 'asdf'                | true
+            true  | '.*'                  | false
+            true  | '.*be.*'              | false
+            false | ref(:package_name)    | true
+            false | ref(:package_version) | true
+            false | 'asdf'                | false
+            false | '.*'                  | true
+            false | '.*be.*'              | true
           end
 
           with_them do
@@ -135,92 +142,42 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
       end
     end
 
-    it_behaves_like 'package types without package_settings'
-  end
+    context 'with packages_allow_duplicate_exceptions disabled' do
+      before do
+        stub_feature_flags(packages_allow_duplicate_exceptions: false)
+      end
 
-  describe '.duplicates_allowed_for_package?' do
-    using RSpec::Parameterized::TableSyntax
+      context 'package types with package_settings' do
+        Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
+          context "with package_type: #{package_type}" do
+            let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
+            let_it_be(:package_type) { package.package_type }
+            let_it_be(:package_setting) { package.project.namespace.package_settings }
 
-    subject { described_class.duplicates_allowed_for_package?(package) }
-
-    context 'with no package given' do
-      let(:package) { nil }
-
-      it { is_expected.to be true }
-    end
-
-    context 'package types with package_settings' do
-      Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
-        context "with package_type: #{package_type}" do
-          let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
-          let_it_be(:package_settings) { package.package_settings }
-
-          where(:duplicates_allowed, :result) do
-            true  | true
-            false | false
-          end
-
-          with_them do
-            before do
-              package_settings.update!("#{package_type}_duplicates_allowed" => duplicates_allowed)
+            where(:duplicates_allowed, :duplicate_exception_regex, :result) do
+              true  | ''       | true
+              false | ''       | false
+              false | '.*'     | true
+              false | 'fo.*'   | true
+              false | '.*be.*' | true
             end
 
-            it { is_expected.to be result }
+            with_them do
+              before do
+                package_setting.update!(
+                  "#{package_type}_duplicates_allowed" => duplicates_allowed,
+                  "#{package_type}_duplicate_exception_regex" => duplicate_exception_regex
+                )
+              end
+
+              it { is_expected.to be(result) }
+            end
           end
         end
       end
     end
 
     it_behaves_like 'package types without package_settings'
-  end
-
-  describe '.matches_duplicate_exception?' do
-    subject { described_class.matches_duplicate_exception?(package) }
-
-    context 'with no package given' do
-      let(:package) { nil }
-
-      it { is_expected.to be true }
-    end
-
-    context 'package types with package_settings' do
-      Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
-        context "with package_type: #{package_type}" do
-          let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
-          let_it_be(:package_setting) { package.package_settings }
-
-          context 'when regexp matches package name' do
-            before do
-              package_setting.update!(
-                "#{package_type}_duplicate_exception_regex" => package.name
-              )
-            end
-
-            it { is_expected.to be true }
-          end
-
-          context 'when regexp matches package version' do
-            before do
-              package_setting.update!(
-                "#{package_type}_duplicate_exception_regex" => package.version
-              )
-            end
-
-            it { is_expected.to be true }
-          end
-
-          context 'when regexp does not match either package name or version' do
-            before do
-              package_setting.update!(
-                "#{package_type}_duplicate_exception_regex" => 'zz42'
-              )
-            end
-
-            it { is_expected.to be false }
-          end
-        end
-      end
-    end
   end
 
   describe 'package forwarding attributes' do

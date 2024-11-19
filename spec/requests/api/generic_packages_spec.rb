@@ -470,11 +470,37 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       context 'with existing package' do
         let_it_be(:package_name) { 'mypackage' }
         let_it_be(:package_version) { '1.2.3' }
-        let_it_be_with_reload(:existing_package) do
+        let_it_be(:existing_package) do
           create(:generic_package, name: package_name, version: package_version, project: project)
         end
 
+        let_it_be(:duplicate_file) do
+          create(:package_file, package: existing_package, file_name: 'myfile.tar.gz')
+        end
+
+        let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, namespace: project.namespace) }
+
         let(:headers) { workhorse_headers.merge(personal_access_token_header) }
+
+        subject(:upload_api_call) do
+          upload_file(params, headers, package_name: package_name, package_version: package_version)
+        end
+
+        shared_examples 'creates a new package' do
+          it 'creates a new package' do
+            upload_api_call
+
+            expect(response).to have_gitlab_http_status(:created)
+          end
+        end
+
+        shared_examples 'returns a bad request' do
+          it 'returns a bad request' do
+            upload_api_call
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
 
         it 'does not create a new package' do
           expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
@@ -482,6 +508,158 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
+        end
+
+        context 'when package duplicates are not allowed' do
+          before do
+            package_settings.update!(generic_duplicates_allowed: false, generic_duplicate_exception_regex: '')
+          end
+
+          it_behaves_like 'returns a bad request'
+
+          context 'when regex matches package name' do
+            before do
+              package_settings.update_column(
+                :generic_duplicate_exception_regex,
+                ".*#{existing_package.name.last(3)}.*"
+              )
+            end
+
+            it_behaves_like 'creates a new package'
+          end
+
+          context 'when regex matches package version' do
+            before do
+              package_settings.update_column(
+                :generic_duplicate_exception_regex,
+                ".*#{existing_package.version.last(3)}.*"
+              )
+            end
+
+            it_behaves_like 'creates a new package'
+          end
+
+          context 'when regex does not match package name or version' do
+            before do
+              package_settings.update_column(:generic_duplicate_exception_regex, ".*zzz.*")
+            end
+
+            it_behaves_like 'returns a bad request'
+          end
+
+          context 'with packages_allow_duplicate_exceptions disabled' do
+            before do
+              stub_feature_flags(packages_allow_duplicate_exceptions: false)
+            end
+
+            it_behaves_like 'returns a bad request'
+
+            context 'when regex matches package name' do
+              before do
+                package_settings.update_column(
+                  :generic_duplicate_exception_regex,
+                  ".*#{existing_package.name.last(3)}.*"
+                )
+              end
+
+              it_behaves_like 'creates a new package'
+            end
+
+            context 'when regex matches package version' do
+              before do
+                package_settings.update_column(
+                  :generic_duplicate_exception_regex,
+                  ".*#{existing_package.version.last(3)}.*"
+                )
+              end
+
+              it_behaves_like 'creates a new package'
+            end
+
+            context 'when regex does not match package name or version' do
+              before do
+                package_settings.update_column(:generic_duplicate_exception_regex, ".*zzz.*")
+              end
+
+              it_behaves_like 'returns a bad request'
+            end
+          end
+        end
+
+        context 'when package duplicates are allowed' do
+          before do
+            package_settings.update!(generic_duplicates_allowed: true, generic_duplicate_exception_regex: '')
+          end
+
+          it_behaves_like 'creates a new package'
+
+          context 'when regex matches package name' do
+            before do
+              package_settings.update_column(
+                :generic_duplicate_exception_regex,
+                ".*#{existing_package.name.last(3)}.*"
+              )
+            end
+
+            it_behaves_like 'returns a bad request'
+          end
+
+          context 'when regex matches package version' do
+            before do
+              package_settings.update_column(
+                :generic_duplicate_exception_regex,
+                ".*#{existing_package.version.last(3)}.*"
+              )
+            end
+
+            it_behaves_like 'returns a bad request'
+          end
+
+          context 'when regex does not match package name or version' do
+            before do
+              package_settings.update_column(:generic_duplicate_exception_regex, ".*zzz.*")
+            end
+
+            it_behaves_like 'creates a new package'
+          end
+
+          context 'with packages_allow_duplicate_exceptions disabled' do
+            before do
+              stub_feature_flags(packages_allow_duplicate_exceptions: false)
+            end
+
+            it_behaves_like 'creates a new package'
+
+            context 'when regex matches package name' do
+              before do
+                package_settings.update_column(
+                  :generic_duplicate_exception_regex,
+                  ".*#{existing_package.name.last(3)}.*"
+                )
+              end
+
+              it_behaves_like 'creates a new package'
+            end
+
+            context 'when regex matches package version' do
+              before do
+                package_settings.update_column(
+                  :generic_duplicate_exception_regex,
+                  ".*#{existing_package.version.last(3)}.*"
+                )
+              end
+
+              it_behaves_like 'creates a new package'
+            end
+
+            context 'when regex does not match package name or version' do
+              before do
+                package_settings.update_column(:generic_duplicate_exception_regex, ".*zzz.*")
+              end
+
+              it_behaves_like 'creates a new package'
+            end
+          end
         end
 
         context 'marked as pending_destruction' do

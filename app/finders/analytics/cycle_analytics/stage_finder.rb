@@ -21,7 +21,8 @@ module Analytics
       end
 
       def find_in_memory_stage
-        # raise ActiveRecord::RecordNotFound, so it will behave similarly to AR models and produce 404 response in the controller
+        # raise ActiveRecord::RecordNotFound, so it will behave similarly to
+        # AR models and produce 404 response in the controller
         raw_stage = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.find do |hash|
           hash[:name].eql?(stage_id)
         end

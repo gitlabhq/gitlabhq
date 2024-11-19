@@ -10,6 +10,7 @@ module Gitlab
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
       include Gitlab::UsageDataCounters::RedisCounter
+      include Gitlab::UsageDataCounters::RedisSum
 
       def track_event(
         event_name, category: nil, send_snowplow_event: true,
@@ -58,6 +59,8 @@ module Gitlab
 
           if event_selection_rule.total_counter?
             update_total_counter(event_selection_rule)
+          elsif event_selection_rule.sum?
+            update_sums(event_selection_rule, **kwargs, **additional_properties)
           else
             update_unique_counter(event_selection_rule, **kwargs, **additional_properties)
           end
@@ -73,6 +76,16 @@ module Gitlab
 
         # Overrides for legacy keys of total counters are handled in `increment`
         increment(event_selection_rule.redis_key_for_date, expiry: expiry)
+      end
+
+      def update_sums(event_selection_rule, properties)
+        # Hardcoded to only look at 'value' since that all the schema allows.
+        # Should be dynamic based on the event selection rule
+        return unless properties.has_key?(:value)
+
+        expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
+
+        increment_sum_by(event_selection_rule.redis_key_for_date, properties[:value], expiry: expiry)
       end
 
       def update_unique_counter(event_selection_rule, properties)

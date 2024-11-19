@@ -132,6 +132,8 @@ RSpec.shared_examples 'every metric definition' do
 
     def assert_uses_all_nested_classes(parent_module)
       parent_module.constants(false).each do |const_name|
+        next if const_name == :TotalSumMetric # TODO: Remove when first metric is implemented
+
         constant = parent_module.const_get(const_name, false)
         next if parent_metric_classes.include?(constant) ||
           ignored_classes.include?(constant)

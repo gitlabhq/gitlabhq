@@ -160,7 +160,9 @@ module Users
           email: email,
           &creation_block
         )
-        user.assign_personal_namespace(Organizations::Organization.default_organization)
+
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/442780
+        user.assign_personal_namespace(Organizations::Organization.first)
 
         Users::UpdateService.new(user, user: user).execute(validate: false)
         user

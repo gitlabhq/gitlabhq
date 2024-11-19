@@ -2832,7 +2832,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/ee/identity/uniqueness_scopes.rb'
     - 'ee/app/models/ee/incident_management/issuable_escalation_status.rb'
     - 'ee/app/models/ee/incident_management/project_incident_management_setting.rb'
-    - 'ee/app/models/ee/integration.rb'
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/models/ee/issue_assignee.rb'
     - 'ee/app/models/ee/key.rb'

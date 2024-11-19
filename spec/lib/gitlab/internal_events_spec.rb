@@ -11,6 +11,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(redis).to receive(:expire)
     allow(redis).to receive(:incr)
+    allow(redis).to receive(:incrbyfloat)
     allow(redis).to receive(:multi).and_yield(redis)
     allow(redis).to receive(:pfadd)
     allow(redis).to receive(:set)
@@ -47,6 +48,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   def expect_redis_tracking
     redis_arguments.each do |redis_argument|
       expect(redis).to have_received(:incr).with(a_string_ending_with(redis_argument)).once
+    end
+  end
+
+  def expect_redis_sum_tracking(value)
+    redis_arguments.each do |redis_argument|
+      expect(redis).to have_received(:incrbyfloat).with(a_string_including(redis_argument), value).once
     end
   end
 
@@ -106,7 +113,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     [
       Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: false),
       Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true),
-      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, unique_identifier_name: :user)
+      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, unique_identifier_name: :user),
+      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, operator: 'sum(value)')
     ]
   end
 
@@ -172,29 +180,36 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       }
     end
 
-    it 'is sent to Snowplow' do
+    let(:properties) { additional_properties }
+
+    subject(:track_event) do
       described_class.track_event(
         event_name,
-        additional_properties: additional_properties,
+        additional_properties: properties,
         user: user,
         project: project
       )
+    end
+
+    it 'is sent to Snowplow' do
+      track_event
 
       expect_snowplow_tracking(nil, additional_properties)
     end
 
+    it 'updates sums' do
+      track_event
+
+      expect_redis_sum_tracking(16.17)
+    end
+
     context 'with a custom property' do
-      let(:custom_properties) do
+      let(:properties) do
         additional_properties.merge(custom: 'custom_property')
       end
 
       it 'is sent to Snowplow' do
-        described_class.track_event(
-          event_name,
-          additional_properties: custom_properties,
-          user: user,
-          project: project
-        )
+        track_event
 
         expect_snowplow_tracking(nil, additional_properties, extra: { custom: 'custom_property' })
       end

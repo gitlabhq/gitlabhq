@@ -29,7 +29,7 @@ export default {
       );
     },
     shouldShowLabelFilter() {
-      return this.searchType === SEARCH_TYPE_ADVANCED && this.glFeatures.searchMrFilterLabelIds;
+      return this.searchType === SEARCH_TYPE_ADVANCED;
     },
   },
 };

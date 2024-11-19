@@ -99,6 +99,7 @@ module Gitlab
         hset
         incr
         incrby
+        incrbyfloat
         ltrim
         mapped_hmset
         pfadd

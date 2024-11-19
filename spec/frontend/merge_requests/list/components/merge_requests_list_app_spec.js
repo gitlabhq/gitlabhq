@@ -641,4 +641,20 @@ describe('Merge requests list app', () => {
       },
     );
   });
+
+  describe('route watcher', () => {
+    it('refetches query when route changes', async () => {
+      createComponent();
+
+      router.replace('?assignee_username[]=test-username');
+
+      await waitForPromises();
+
+      expect(getQueryResponseMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          assigneeUsernames: 'test-username',
+        }),
+      );
+    });
+  });
 });
