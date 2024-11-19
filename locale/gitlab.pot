@@ -14082,6 +14082,9 @@ msgstr ""
 msgid "CompareRevisions|View open merge request"
 msgstr ""
 
+msgid "Comparison pipelines"
+msgstr ""
+
 msgid "Complete"
 msgstr ""
 
@@ -49386,6 +49389,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security policy"
+msgstr ""
+
 msgid "Security policy bot cannot be added as a group member"
 msgstr ""
 
@@ -50538,6 +50544,9 @@ msgid "SecurityOrchestration|YAML"
 msgstr ""
 
 msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} %{instance}."
+msgstr ""
+
+msgid "SecurityOrchestration|You can add a maximum of %{rulesCount} %{rules}."
 msgstr ""
 
 msgid "SecurityOrchestration|You can select this option only once."
@@ -53201,6 +53210,9 @@ msgstr ""
 msgid "Source branch"
 msgstr ""
 
+msgid "Source branch (%{branch})"
+msgstr ""
+
 msgid "Source branch does not exist"
 msgstr ""
 
@@ -54722,6 +54734,9 @@ msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"
+msgstr ""
+
+msgid "Target branch (%{branch})"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"

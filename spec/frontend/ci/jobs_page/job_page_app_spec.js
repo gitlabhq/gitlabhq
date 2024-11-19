@@ -4,7 +4,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { TEST_HOST } from 'spec/test_constants';
 import { createAlert } from '~/alert';
 import getJobsQuery from '~/ci/jobs_page/graphql/queries/get_jobs.query.graphql';
@@ -21,12 +20,7 @@ import {
   mockFailedSearchToken,
   mockJobsCountResponse,
 } from 'jest/ci/jobs_mock_data';
-import {
-  RAW_TEXT_WARNING,
-  DEFAULT_PAGINATION,
-  JOBS_PER_PAGE,
-  POLL_INTERVAL,
-} from '~/ci/jobs_page/constants';
+import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE } from '~/ci/jobs_page/constants';
 
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
@@ -71,7 +65,6 @@ describe('Job table app', () => {
     wrapper = mountFn(JobsTableApp, {
       provide: {
         fullPath: projectPath,
-        graphqlResourceEtag: '/etag',
         glFeatures: {
           populateAndUseBuildNamesTable: flagState,
         },
@@ -439,37 +432,6 @@ describe('Job table app', () => {
           name: null,
         });
       });
-    });
-  });
-
-  describe('polling', () => {
-    beforeEach(async () => {
-      createComponent();
-
-      await waitForPromises();
-    });
-
-    it('polls for project jobs and job count', async () => {
-      expect(successHandler).toHaveBeenCalledTimes(1);
-      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(POLL_INTERVAL);
-
-      await waitForPromises();
-
-      expect(successHandler).toHaveBeenCalledTimes(2);
-      expect(countSuccessHandler).toHaveBeenCalledTimes(2);
-
-      jest.advanceTimersByTime(POLL_INTERVAL);
-
-      await waitForPromises();
-
-      expect(successHandler).toHaveBeenCalledTimes(3);
-      expect(countSuccessHandler).toHaveBeenCalledTimes(3);
-    });
-
-    it('should set up a toggle visibility', () => {
-      expect(toggleQueryPollingByVisibility).toHaveBeenCalledTimes(2);
     });
   });
 

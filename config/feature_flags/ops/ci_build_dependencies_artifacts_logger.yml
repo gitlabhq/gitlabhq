@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93179
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369441
 milestone: '15.3'
 type: ops
-group: group::pipeline security
+group: group::pipeline execution
 default_enabled: false

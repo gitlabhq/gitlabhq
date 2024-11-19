@@ -5,94 +5,139 @@ require 'spec_helper'
 RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_category: :code_review_workflow do
   subject(:check_ci_status) { described_class.new(merge_request: merge_request, params: params) }
 
-  let_it_be(:project) { build(:project) }
-  let_it_be(:merge_request) { build(:merge_request, source_project: project) }
+  let(:project) do
+    build(:project,
+      auto_devops_status,
+      only_allow_merge_if_pipeline_succeeds: only_allow_merge_if_pipeline_succeeds,
+      allow_merge_on_skipped_pipeline: allow_merge_on_skipped_pipeline)
+  end
+
+  let(:merge_request) do
+    build(:merge_request,
+      source_project: project,
+      auto_merge_strategy: auto_merge_strategy,
+      auto_merge_enabled: auto_merge_enabled)
+  end
+
+  let(:allow_merge_on_skipped_pipeline) { false }
+  let(:only_allow_merge_if_pipeline_succeeds) { false }
+  let(:auto_merge_strategy) { nil }
+  let(:auto_merge_enabled) { false }
+  let(:auto_devops_status) { :auto_devops_disabled }
+
   let(:params) { { skip_ci_check: skip_check } }
   let(:skip_check) { false }
 
+  let(:result) { check_ci_status.execute }
+
   it_behaves_like 'mergeability check service', :ci_must_pass, 'Checks whether CI has passed'
 
-  describe '#execute' do
-    let(:result) { check_ci_status.execute }
-
-    before do
-      allow(merge_request)
-        .to receive(:only_allow_merge_if_pipeline_succeeds?)
-        .and_return(only_allow_merge_if_pipeline_succeeds)
-
-      allow(merge_request)
-        .to receive(:auto_merge_enabled?)
-        .and_return(auto_merge_enabled?)
+  shared_examples 'a valid diff head pipeline is required' do
+    context 'when there is no diff head pipeline' do
+      it 'is failure' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+      end
     end
 
-    context 'when only_allow_merge_if_pipeline_succeeds is true' do
+    context 'when there is a diff head pipeline' do
+      let(:pipeline) { create(:ci_empty_pipeline, sha: '1982309812309812') }
+
+      before do
+        merge_request.update_attribute(:head_pipeline_id, pipeline.id)
+      end
+
+      context 'when there is a pipeline being created' do
+        before do
+          allow(Ci::PipelineCreation::Requests).to receive(:pipeline_creating_for_merge_request?).and_return(true)
+        end
+
+        it 'is failure' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        end
+      end
+
+      context 'when there is no pipeline being created' do
+        before do
+          allow(Ci::PipelineCreation::Requests).to receive(:pipeline_creating_for_merge_request?).and_return(false)
+        end
+
+        context 'when the diff head pipeline is skipped' do
+          before do
+            pipeline.update_attribute(:status, :skipped)
+          end
+
+          context 'when it is allowed to be skipped' do
+            let(:allow_merge_on_skipped_pipeline) { true }
+
+            it 'is success' do
+              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+            end
+          end
+
+          context 'when it is not allowed to be skipped' do
+            let(:allow_merge_on_skipped_pipeline) { false }
+
+            it 'is failed' do
+              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+            end
+          end
+        end
+
+        context 'when the diff head pipeline is successful' do
+          before do
+            pipeline.update_attribute(:status, :success)
+          end
+
+          it 'is success' do
+            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+          end
+        end
+
+        context 'when the diff head pipeline is not skipped or successful' do
+          it 'is failed' do
+            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+          end
+        end
+      end
+    end
+  end
+
+  describe '#execute' do
+    context 'when a successful pipeline is required for merge' do
       let(:only_allow_merge_if_pipeline_succeeds) { true }
 
-      context 'when merge_request.auto_merge_enabled? is false' do
-        let(:auto_merge_enabled?) { false }
-
-        before do
-          expect(merge_request).to receive(:mergeable_ci_state?).and_return(mergeable)
-        end
-
-        context 'when the merge request is in a mergeable state' do
-          let(:mergeable) { true }
-
-          it 'returns a check result with status success' do
-            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
-          end
-        end
-
-        context 'when the merge request is not in a mergeable state' do
-          let(:mergeable) { false }
-
-          it 'returns a check result with status failed' do
-            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-            expect(result.payload[:identifier]).to eq :ci_must_pass
-          end
-        end
-      end
-
-      context 'when merge_request.auto_merge_enabled? is true ' do
-        let(:auto_merge_enabled?) { true }
-
-        before do
-          expect(merge_request).to receive(:mergeable_ci_state?).and_return(mergeable)
-        end
-
-        context 'when the merge request is in a mergeable state' do
-          let(:mergeable) { true }
-
-          it 'returns a check result with status success' do
-            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
-          end
-        end
-
-        context 'when the merge request is not in a mergeable state' do
-          let(:mergeable) { false }
-
-          it 'returns a check result with status failed' do
-            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-            expect(result.payload[:identifier]).to eq :ci_must_pass
-          end
-        end
-      end
+      it_behaves_like 'a valid diff head pipeline is required'
     end
 
-    context 'when only_allow_merge_if_pipeline_succeeds is false' do
-      let(:only_allow_merge_if_pipeline_succeeds) { false }
-      let(:auto_merge_enabled?) { false }
-
-      context 'when merge_request.auto_merge_enabled? is false' do
-        it 'returns a check result with inactive status' do
+    context 'when a successful pipeline is not required for merge' do
+      context 'when auto merge is not enabled' do
+        it 'is inactive' do
           expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
+        end
+      end
+
+      context 'when auto merge is enabled' do
+        let(:auto_merge_enabled) { true }
+        let(:auto_merge_strategy) { ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
+
+        context 'when the auto merge strategy is STATEGY_MERGE_WHEN_CHECKS_PASS and ci is disabled' do
+          it 'is success' do
+            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+          end
+        end
+
+        context 'when the auto merge strategy is STATEGY_MERGE_WHEN_CHECKS_PASS and ci is enabled' do
+          let(:auto_merge_strategy) { ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
+          let(:auto_devops_status) { :auto_devops }
+
+          it_behaves_like 'a valid diff head pipeline is required'
         end
       end
     end
   end
 
   describe '#skip?' do
-    context 'when skip check is true' do
+    context 'when skip check is present in the params' do
       let(:skip_check) { true }
 
       it 'returns true' do
@@ -100,7 +145,7 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
       end
     end
 
-    context 'when skip check is false' do
+    context 'when skip check is not present in the params' do
       let(:skip_check) { false }
 
       it 'returns false' do

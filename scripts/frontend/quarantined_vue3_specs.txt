@@ -250,7 +250,6 @@ spec/frontend/ide/ide_router_spec.js
 spec/frontend/ide/sync_router_and_store_spec.js
 spec/frontend/import_entities/import_projects/components/import_projects_table_spec.js
 spec/frontend/integrations/beyond_identity/components/exclusions_list_spec.js
-spec/frontend/integrations/edit/components/integration_form_spec.js
 spec/frontend/integrations/edit/components/sections/connection_spec.js
 spec/frontend/invite_members/components/members_token_select_spec.js
 spec/frontend/issuable/components/issuable_by_email_spec.js

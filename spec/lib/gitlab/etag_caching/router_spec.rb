@@ -25,15 +25,6 @@ RSpec.describe Gitlab::EtagCaching::Router do
         expect(result.urgency).to eq ::Gitlab::EndpointAttributes::DEFAULT_URGENCY
       end
 
-      it 'matches jobs endpoint' do
-        result = match_route('/api/graphql', 'projects/a/b/jobs')
-
-        expect(result).to be_present
-        expect(result.name).to eq 'jobs_table'
-        expect(result.router).to eq Gitlab::EtagCaching::Router::Graphql
-        expect(result.urgency).to eq ::Gitlab::EndpointAttributes::DEFAULT_URGENCY
-      end
-
       it 'matches pipeline sha endpoint' do
         result = match_route('/api/graphql', 'pipelines/sha/4asd12lla2jiwjdqw9as32glm8is8hiu8s2c5jsw')
 

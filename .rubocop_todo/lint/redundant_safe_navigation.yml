@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/RedundantSafeNavigation:
-  Exclude:
-    - 'app/presenters/packages/nuget/version_helpers.rb'
-    - 'lib/gitlab/ci/jwt_v2/claim_mapper.rb'
-    - 'lib/security/ci_configuration/sast_build_action.rb'

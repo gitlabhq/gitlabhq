@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435848
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161075
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474908
 milestone: '17.3'
-group: group::pipeline execution
+group: group::pipeline security
 type: ops
 default_enabled: false

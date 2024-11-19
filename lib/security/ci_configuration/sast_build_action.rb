@@ -21,8 +21,8 @@ module Security
       end
 
       def collect_values(config, key)
-        global_variables = config[:global]&.to_h { |k| [k[:field], k[key]] } || {}
-        pipeline_variables = config[:pipeline]&.to_h { |k| [k[:field], k[key]] } || {}
+        global_variables = config[:global].to_h { |k| [k[:field], k[key]] }
+        pipeline_variables = config[:pipeline].to_h { |k| [k[:field], k[key]] }
 
         analyzer_variables = collect_analyzer_values(config, key)
 

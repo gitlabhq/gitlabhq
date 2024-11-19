@@ -16,7 +16,7 @@ module Gitlab
         end
 
         def to_h
-          mapper&.to_h || {}
+          mapper.to_h
         end
 
         private

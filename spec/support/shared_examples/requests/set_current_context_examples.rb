@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "set_current_context" do
+RSpec.shared_examples 'set_current_context' do
   it 'sets the metadata of the request in the context' do |example|
     raise('this shared example should be used in a request spec only') unless example.metadata[:type] == :request
 

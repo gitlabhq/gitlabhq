@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50922
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/296772
 milestone: '13.8'
 type: ops
-group: group::pipeline security
+group: group::pipeline execution
 default_enabled: true

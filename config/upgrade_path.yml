@@ -12,7 +12,13 @@
   minor: 5
 
 - major: 10
+  minor: 0
+
+- major: 10
   minor: 8
+
+- major: 11
+  minor: 0
 
 - major: 11
   minor: 11
