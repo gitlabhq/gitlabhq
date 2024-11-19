@@ -71,9 +71,13 @@ eslint:
   needs: ['generate-apollo-graphql-schema']
   variables:
     USE_BUNDLE_INSTALL: "false"
+    ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
   script:
     - yarn_install_script
-    - run_timed_command "yarn run lint:eslint:all"
+    - run_timed_command "yarn run lint:eslint:all --format gitlab"
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
 
 eslint-docs:
   extends:

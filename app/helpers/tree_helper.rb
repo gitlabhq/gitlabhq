@@ -167,6 +167,7 @@ module TreeHelper
     {
       project_path: project.full_path,
       project_short_path: project.path,
+      target_branch: selected_branch,
       ref: ref,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       full_name: project.name_with_namespace,

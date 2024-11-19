@@ -248,7 +248,7 @@ export default {
         :label="$options.i18n.TARGET_BRANCH_LABEL"
         label-for="branch_name"
       >
-        <gl-form-input v-model="target" :disabled="loading" name="branch_name" />
+        <gl-form-input id="branch_name" v-model="target" :disabled="loading" name="branch_name" />
       </gl-form-group>
       <gl-form-checkbox v-if="showCreateNewMrToggle" v-model="createNewMr" :disabled="loading">
         {{ $options.i18n.TOGGLE_CREATE_MR_LABEL }}

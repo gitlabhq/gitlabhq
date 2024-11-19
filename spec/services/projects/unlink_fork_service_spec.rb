@@ -59,7 +59,7 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
   end
 
   it 'refreshes the project statistics of the forked project' do
-    expect(ProjectCacheWorker).to receive(:perform_async).with(forked_project.id, [], [:repository_size])
+    expect(ProjectCacheWorker).to receive(:perform_async).with(forked_project.id, [], %w[repository_size])
 
     subject.execute
   end

@@ -105,7 +105,7 @@ RSpec.describe LfsObjectsProject do
       new_project = create(:project)
 
       allow(ProjectCacheWorker).to receive(:perform_async).and_call_original
-      expect(ProjectCacheWorker).to receive(:perform_async).with(new_project.id, [], [:lfs_objects_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(new_project.id, [], %w[lfs_objects_size])
       expect { described_class.link_to_project!(lfs_objects_project.lfs_object, new_project) }
         .to change { described_class.count }
 
@@ -119,7 +119,7 @@ RSpec.describe LfsObjectsProject do
   describe '#update_project_statistics' do
     it 'updates project statistics when the object is added' do
       expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(project.id, [], [:lfs_objects_size])
+        .with(project.id, [], %w[lfs_objects_size])
 
       lfs_objects_project.save!
     end
@@ -128,7 +128,7 @@ RSpec.describe LfsObjectsProject do
       lfs_objects_project.save!
 
       expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(project.id, [], [:lfs_objects_size])
+        .with(project.id, [], %w[lfs_objects_size])
 
       lfs_objects_project.destroy!
     end

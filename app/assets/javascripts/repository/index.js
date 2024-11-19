@@ -45,6 +45,7 @@ export default function setupVueRepositoryList() {
     resourceId,
     userId,
     explainCodeAvailable,
+    targetBranch,
   } = dataset;
   const router = createRouter(projectPath, escapedRef);
 
@@ -308,6 +309,7 @@ export default function setupVueRepositoryList() {
     provide: {
       resourceId,
       userId,
+      targetBranch,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       highlightWorker: new HighlightWorker(),
     },

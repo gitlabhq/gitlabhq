@@ -39,7 +39,7 @@ module Gitlab
             count += relation.delete_all
           end
 
-          ProjectCacheWorker.perform_async(project.id, [], [:lfs_objects_size])
+          ProjectCacheWorker.perform_async(project.id, [], %w[lfs_objects_size])
 
           log_info("Removed invalid references: #{count}")
         end

@@ -79,7 +79,7 @@ module Ci
     end
 
     def job_variables
-      variables&.map(&:to_runner_variable) || []
+      variables&.map(&:to_hash_variable) || []
     end
 
     override :set_next_run_at

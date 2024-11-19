@@ -323,8 +323,7 @@ To keep placeholder users in bulk:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
-1. Select **More options icon** next to **Reassign with CSV**.
-1. Choose the **Keep all as placeholder** option.
+1. Above the list, select the vertical ellipsis (**{ellipsis_v}**) > **Keep all as placeholder**.
 1. On the confirmation dialog, select **Confirm**.
 
 #### Cancel reassignment request

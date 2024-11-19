@@ -394,12 +394,15 @@ RSpec.describe BlobHelper do
 
   describe '#vue_blob_app_data' do
     let(:blob) { fake_blob(path: 'file.md', size: 2.megabytes) }
-    let(:project) { build_stubbed(:project) }
+    let(:project) { create(:project) }
     let(:user) { build_stubbed(:user) }
     let(:ref) { 'main' }
 
+    before do
+      allow(helper).to receive_messages(selected_branch: ref, current_user: user)
+    end
+
     it 'returns data related to blob app' do
-      allow(helper).to receive(:current_user).and_return(user)
       assign(:ref, ref)
 
       expect(helper.vue_blob_app_data(project, blob, ref)).to include({

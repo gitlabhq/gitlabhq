@@ -8,4 +8,5 @@ description: Stores information about a CI pipeline created via chatops
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466
 milestone: '10.6'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458483
+sharding_key:
+  project_id: projects

@@ -297,8 +297,8 @@ module BlobHelper
       project_path: project.full_path,
       resource_id: project.to_global_id,
       user_id: current_user.present? ? current_user.to_global_id : '',
-      target_branch: project.empty_repo? ? ref : @ref,
-      original_branch: @ref,
+      target_branch: selected_branch,
+      original_branch: ref,
       can_download_code: can?(current_user, :download_code, project).to_s
     }
   end

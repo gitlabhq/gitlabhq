@@ -143,7 +143,7 @@ describe('CommitChangesModal', () => {
 
     it('shows the correct form fields when `canPushToBranch` is `false`', () => {
       createComponent({ canPushToBranch: false, canPushCode: true });
-      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('');
+      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('some-target-branch');
       expect(findCommitTextarea().exists()).toBe(true);
       expect(findRadioGroup().exists()).toBe(false);
       expect(findTargetInput().exists()).toBe(true);
@@ -156,7 +156,7 @@ describe('CommitChangesModal', () => {
         feedback: null,
         required: true,
         state: true,
-        value: 'main',
+        value: 'some-target-branch',
       });
 
       findFormRadioGroup().vm.$emit('input', true);

@@ -80,15 +80,14 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
     context 'when using multiple databases' do
       before do
         skip_if_shared_database(:ci)
-        skip_if_shared_database(:sec)
       end
 
       # rubocop: disable Layout/LineLength -- using table synxax
       where(:getter, :setter, :default, :values, :kwargs, :expected) do
         :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | { overrides: { ci: :delayed, main: :sticky } } | :delayed
         :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | {} | :always
-        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always, sec: :always } | [:sticky] | { overrides: { ci: :delayed } } | { ci: :delayed, main: :sticky, sec: :sticky }
-        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always, sec: :always } | [:sticky] | {} | { ci: :sticky, main: :sticky, sec: :sticky }
+        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always } | [:sticky] | { overrides: { ci: :delayed } } | { ci: :delayed, main: :sticky }
+        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always } | [:sticky] | {} | { ci: :sticky, main: :sticky }
       end
       # rubocop: enable Layout/LineLength
 
@@ -100,15 +99,14 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
     context 'when using a single database with ci connection' do
       before do
         skip_if_database_exists(:ci)
-        skip_if_database_exists(:sec)
-        skip_if_multiple_databases_not_setup(:ci, :sec)
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       # rubocop: disable Layout/LineLength -- using table synxax
       where(:getter, :setter, :default, :values, :kwargs, :expected) do
-        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always, sec: :always } | [:sticky] | { overrides: { ci: :delayed } } | { main: :sticky, ci: :sticky, sec: :sticky }
-        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always, sec: :always } | [:sticky] | {} | { main: :sticky, ci: :sticky, sec: :sticky }
-        :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | { overrides: { ci: :delayed, main: :sticky, sec: :delayed } } | :always
+        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always } | [:sticky] | { overrides: { ci: :delayed } } | { main: :sticky, ci: :sticky }
+        :get_data_consistency_per_database      | :data_consistency | { main: :always, ci: :always } | [:sticky] | {} | { main: :sticky, ci: :sticky }
+        :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | { overrides: { ci: :delayed, main: :sticky } } | :always
         :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | {} | :always
       end
       # rubocop: enable Layout/LineLength
@@ -121,15 +119,14 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
     context 'when using a single database' do
       before do
         skip_if_database_exists(:ci)
-        skip_if_database_exists(:sec)
-        skip_if_multiple_databases_are_setup(:ci, :sec)
+        skip_if_multiple_databases_are_setup(:ci)
       end
 
       # rubocop: disable Layout/LineLength -- using table synxax
       where(:getter, :setter, :default, :values, :kwargs, :expected) do
-        :get_data_consistency_per_database      | :data_consistency | { main: :always } | [:sticky] | { overrides: { ci: :delayed, sec: :delayed } } | { main: :sticky }
+        :get_data_consistency_per_database      | :data_consistency | { main: :always } | [:sticky] | { overrides: { ci: :delayed } } | { main: :sticky }
         :get_data_consistency_per_database      | :data_consistency | { main: :always } | [:sticky] | {} | { main: :sticky }
-        :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | { overrides: { ci: :delayed, main: :sticky, sec: :delayed } } | :always
+        :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | { overrides: { ci: :delayed, main: :sticky } } | :always
         :get_least_restrictive_data_consistency | :data_consistency | :always | [:always] | {} | :always
       end
       # rubocop: enable Layout/LineLength
@@ -250,14 +247,12 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
     context 'when overrides are provided in a multi database setup' do
       before do
         skip_if_shared_database(:ci)
-        skip_if_shared_database(:sec)
-        skip_if_multiple_databases_not_setup(:sec)
       end
 
       it 'returns correct feature flag value' do
         worker.data_consistency(:always, overrides: { ci: :delayed })
 
-        expect(worker.get_data_consistency_per_database).to eq({ ci: :delayed, main: :always, sec: :always })
+        expect(worker.get_data_consistency_per_database).to eq({ ci: :delayed, main: :always })
       end
 
       context 'when feature_flag is provided' do
@@ -273,7 +268,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
           it 'returns correct feature flag value' do
             worker.data_consistency(:always, feature_flag: :test_feature_flag, overrides: { ci: :delayed })
 
-            expect(worker.get_data_consistency_per_database).to eq({ main: :always, ci: :always, sec: :always })
+            expect(worker.get_data_consistency_per_database).to eq({ main: :always, ci: :always })
             expect(worker.get_least_restrictive_data_consistency).to eq(:always)
           end
         end
@@ -281,7 +276,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
         it 'returns correct feature flag value' do
           worker.data_consistency(:always, feature_flag: :test_feature_flag, overrides: { ci: :delayed })
 
-          expect(worker.get_data_consistency_per_database).to eq({ ci: :delayed, main: :always, sec: :always })
+          expect(worker.get_data_consistency_per_database).to eq({ ci: :delayed, main: :always })
           expect(worker.get_least_restrictive_data_consistency).to eq(:delayed)
         end
       end

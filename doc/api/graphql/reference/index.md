@@ -3725,7 +3725,7 @@ Input type: `CreateEpicInput`
 | <a id="mutationcreateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the epic. |
 | <a id="mutationcreateepicaddlabels"></a>`addLabels` | [`[String!]`](#string) | Array of labels to be added to the epic. |
 | <a id="mutationcreateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateepiccolor"></a>`color` | [`Color`](#color) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="mutationcreateepiccolor"></a>`color` | [`Color`](#color) | Color of the epic. |
 | <a id="mutationcreateepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="mutationcreateepicdescription"></a>`description` | [`String`](#string) | Description of the epic. |
 | <a id="mutationcreateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | End date of the epic. |
@@ -5140,7 +5140,7 @@ Input type: `EpicBoardCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicboardcreatedisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. Ignored unless `epic_color_highlight` flag is enabled. |
+| <a id="mutationepicboardcreatedisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. |
 | <a id="mutationepicboardcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
 | <a id="mutationepicboardcreatehidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationepicboardcreatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
@@ -5219,7 +5219,7 @@ Input type: `EpicBoardUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicboardupdatedisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. Ignored unless `epic_color_highlight` flag is enabled. |
+| <a id="mutationepicboardupdatedisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. |
 | <a id="mutationepicboardupdatehidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationepicboardupdatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="mutationepicboardupdateid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | Epic board global ID. |
@@ -10121,7 +10121,7 @@ Input type: `UpdateEpicInput`
 | <a id="mutationupdateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the epic. |
 | <a id="mutationupdateepicaddlabels"></a>`addLabels` | [`[String!]`](#string) | Array of labels to be added to the epic. |
 | <a id="mutationupdateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateepiccolor"></a>`color` | [`Color`](#color) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="mutationupdateepiccolor"></a>`color` | [`Color`](#color) | Color of the epic. |
 | <a id="mutationupdateepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="mutationupdateepicdescription"></a>`description` | [`String`](#string) | Description of the epic. |
 | <a id="mutationupdateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | End date of the epic. |
@@ -19374,7 +19374,7 @@ Represents an epic on an issue board.
 | <a id="boardepicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
 | <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
-| <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
+| <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. |
 | <a id="boardepiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="boardepiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
@@ -19413,7 +19413,7 @@ Represents an epic on an issue board.
 | <a id="boardepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="boardepicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
 | <a id="boardepicsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates the currently logged in user is subscribed to the epic. |
-| <a id="boardepictextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
+| <a id="boardepictextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the epic. |
 | <a id="boardepictitle"></a>`title` | [`String`](#string) | Title of the epic. |
 | <a id="boardepictitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
 | <a id="boardepicupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the epic was updated. |
@@ -22987,7 +22987,7 @@ Represents an epic.
 | <a id="epicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
 | <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
-| <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
+| <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. |
 | <a id="epiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="epiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
@@ -23026,7 +23026,7 @@ Represents an epic.
 | <a id="epicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="epicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
 | <a id="epicsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates the currently logged in user is subscribed to the epic. |
-| <a id="epictextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
+| <a id="epictextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the epic. |
 | <a id="epictitle"></a>`title` | [`String`](#string) | Title of the epic. |
 | <a id="epictitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
 | <a id="epicupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the epic was updated. |

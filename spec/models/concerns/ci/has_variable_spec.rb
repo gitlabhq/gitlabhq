@@ -67,13 +67,13 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
     end
   end
 
-  describe '#to_runner_variable' do
+  describe '#to_hash_variable' do
     let_it_be(:ci_variable) { create(:ci_variable) }
 
     subject { ci_variable }
 
     it 'returns a hash for the runner' do
-      expect(subject.to_runner_variable)
+      expect(subject.to_hash_variable)
         .to include(key: subject.key, value: subject.value, public: false)
     end
 
@@ -92,24 +92,24 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
       it 'decrypts once' do
         expect(OpenSSL::PKCS5).to receive(:pbkdf2_hmac).once.and_call_original
 
-        2.times { expect(subject.reload.to_runner_variable).to eq(expected) }
+        2.times { expect(subject.reload.to_hash_variable).to eq(expected) }
       end
 
       it 'does not cache similar keys', :aggregate_failures do
         group_var = create(:ci_group_variable, key: subject.key, value: 'group')
         project_var = create(:ci_variable, key: subject.key, value: 'project')
 
-        expect(subject.to_runner_variable).to include(key: subject.key, value: subject.value)
-        expect(group_var.to_runner_variable).to include(key: subject.key, value: 'group')
-        expect(project_var.to_runner_variable).to include(key: subject.key, value: 'project')
+        expect(subject.to_hash_variable).to include(key: subject.key, value: subject.value)
+        expect(group_var.to_hash_variable).to include(key: subject.key, value: 'group')
+        expect(project_var.to_hash_variable).to include(key: subject.key, value: 'project')
       end
 
       it 'does not cache unpersisted values' do
         new_variable = Ci::Variable.new(key: SecureRandom.hex, value: "12345")
-        old_value = new_variable.to_runner_variable
+        old_value = new_variable.to_hash_variable
         new_variable.value = '98765'
 
-        expect(new_variable.to_runner_variable).not_to eq(old_value)
+        expect(new_variable.to_hash_variable).not_to eq(old_value)
       end
     end
   end

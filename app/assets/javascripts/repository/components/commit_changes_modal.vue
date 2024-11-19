@@ -107,9 +107,9 @@ export default {
         // fields key must match case of form name for validation directive to work
         commit_message: initFormField({ value: this.commitMessage }),
         branch_name: initFormField({
-          value: this.canPushToBranch ? this.originalBranch : '',
+          value: this.targetBranch,
           // Branch name is pre-filled with the current branch name in two scenarios and therefore doesn't need validation:
-          // 1. When the user doesn't have permission to push to the repo (e.g., guest user)
+          // 1. When the user doesn't have permission to push to the repo (e.g. guest user)
           // 2. When the user can push directly to the current branch
           skipValidation: !this.canPushCode || this.canPushToBranch,
         }),
@@ -333,10 +333,11 @@ export default {
             </template>
 
             <template v-else>
-              <span>
+              <label for="branchNameInput">
                 {{ $options.i18n.NEW_BRANCH_LABEl }}
-              </span>
+              </label>
               <gl-form-input
+                id="branchNameInput"
                 v-model="form.fields['branch_name'].value"
                 v-validation:[form.showValidation]
                 :state="form.fields['branch_name'].state"

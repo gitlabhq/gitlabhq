@@ -22,13 +22,16 @@ RSpec.describe TreeHelper do
   describe '#vue_file_list_data' do
     it 'returns a list of attributes related to the project' do
       helper.instance_variable_set(:@ref_type, 'heads')
+      allow(helper).to receive(:selected_branch).and_return(sha)
+
       expect(helper.vue_file_list_data(project, sha)).to include(
         project_path: project.full_path,
         project_short_path: project.path,
         ref: sha,
         escaped_ref: sha,
         full_name: project.name_with_namespace,
-        ref_type: 'heads'
+        ref_type: 'heads',
+        target_branch: sha
       )
     end
   end

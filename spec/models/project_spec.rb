@@ -4429,7 +4429,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project) }
 
     it 'updates commit count' do
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:commit_count])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], %w[commit_count])
 
       project.after_repository_change_head
     end
@@ -6164,7 +6164,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project).to receive(:reset_counters_and_iids)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], %w[repository_size wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
 

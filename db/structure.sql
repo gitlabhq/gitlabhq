@@ -36145,9 +36145,6 @@ ALTER TABLE ONLY observability_logs_issues_connections
 ALTER TABLE ONLY packages_package_files
     ADD CONSTRAINT fk_86f0f182f8 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_87f4cefcda_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT fk_884056a10f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

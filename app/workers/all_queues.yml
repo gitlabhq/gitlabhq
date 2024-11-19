@@ -392,7 +392,7 @@
   :tags: []
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
-  :feature_category: :global_search
+  :feature_category: :scalability
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

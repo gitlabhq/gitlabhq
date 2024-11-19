@@ -61,6 +61,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_job_artifacts.project_id',
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_pipeline_chat_data.project_id',
       'ci_builds_metadata.project_id',
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources

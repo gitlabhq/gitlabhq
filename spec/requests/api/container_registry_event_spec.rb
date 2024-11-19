@@ -64,7 +64,7 @@ RSpec.describe API::ContainerRegistryEvent, feature_category: :container_registr
       it 'enqueues a project statistics update twice' do
         expect(ProjectCacheWorker)
           .to receive(:perform_async)
-          .with(project.id, [], [:container_registry_size])
+          .with(project.id, [], %w[container_registry_size])
           .twice.and_call_original
 
         expect { post_events }.to change { ProjectCacheWorker.jobs.size }.from(0).to(1)

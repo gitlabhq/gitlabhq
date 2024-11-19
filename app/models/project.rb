@@ -2140,7 +2140,7 @@ class Project < ApplicationRecord
 
   override :after_repository_change_head
   def after_repository_change_head
-    ProjectCacheWorker.perform_async(self.id, [], [:commit_count])
+    ProjectCacheWorker.perform_async(self.id, [], %w[commit_count])
 
     super
   end
@@ -2361,7 +2361,7 @@ class Project < ApplicationRecord
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)
-    ProjectCacheWorker.perform_async(self.id, [], [:repository_size, :wiki_size])
+    ProjectCacheWorker.perform_async(self.id, [], %w[repository_size wiki_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
     enqueue_record_project_target_platforms

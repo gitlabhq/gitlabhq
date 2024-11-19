@@ -23,7 +23,7 @@ RSpec.shared_examples 'CI variable' do
     expect(subject.key).to eq("SECRET")
   end
 
-  it 'can convert to runner variable' do
-    expect(subject.to_runner_variable.keys).to include(:key, :value, :public, :file)
+  it 'can convert to hash variable' do
+    expect(subject.to_hash_variable.keys).to include(:key, :value, :public, :file)
   end
 end

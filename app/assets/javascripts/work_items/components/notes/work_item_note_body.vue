@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <div ref="note-body" class="note-body">
+  <div ref="note-body">
     <div
       v-safe-html:[$options.safeHtmlConfig]="note.bodyHtml"
       class="note-text md"

@@ -239,7 +239,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     end
 
     def clears_extended_cache
-      clears_cache(extended: %i[readme])
+      clears_cache(extended: %w[readme])
     end
 
     context 'on default branch' do
