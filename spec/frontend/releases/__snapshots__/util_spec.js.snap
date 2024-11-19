@@ -62,7 +62,7 @@ exports[`releases/util.js convertAllReleasesGraphQLResponse matches snapshot 1`]
         <gl-emoji
           data-name="shrug"
           data-unicode-version="9.0"
-          title="shrug"
+          title="person shrugging"
         >
           🤷
         </gl-emoji>

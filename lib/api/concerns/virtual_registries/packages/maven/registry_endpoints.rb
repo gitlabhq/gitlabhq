@@ -52,7 +52,6 @@ module API
               params do
                 requires :group_id, type: Integer, desc: 'The ID of the group. Must be a top-level group',
                   allow_blank: false
-                optional :cache_validity_hours, type: Integer, desc: 'The validity of the cache in hours. Defaults to 1'
               end
               post do
                 group = find_group!(declared_params[:group_id])
@@ -82,31 +81,6 @@ module API
                 end
                 get do
                   authorize! :read_virtual_registry, registry
-
-                  present registry, with: ::API::Entities::VirtualRegistries::Packages::Maven::Registry
-                end
-
-                desc 'Update a specific maven virtual registry' do
-                  detail 'This feature was introduced in GitLab 17.4. \
-                    This feature is currently in an experimental state. \
-                    This feature is behind the `virtual_registry_maven` feature flag.'
-                  success ::API::Entities::VirtualRegistries::Packages::Maven::Registry
-                  failure [
-                    { code: 400, message: 'Bad request' },
-                    { code: 401, message: 'Unauthorized' },
-                    { code: 403, message: 'Forbidden' },
-                    { code: 404, message: 'Not found' }
-                  ]
-                  tags %w[maven_virtual_registries]
-                  hidden true
-                end
-                params do
-                  requires :cache_validity_hours, type: Integer, desc: 'The validity of the cache in hours'
-                end
-                patch do
-                  authorize! :update_virtual_registry, registry
-
-                  render_validation_error!(registry) unless registry.update(declared_params)
 
                   present registry, with: ::API::Entities::VirtualRegistries::Packages::Maven::Registry
                 end

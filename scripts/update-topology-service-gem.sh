@@ -45,7 +45,7 @@ else
   echo "$rev" > "$gem_target/REVISION"
   git add "$gem_target/REVISION"
   changelog=$(git -C "$tmp" log --no-merges --pretty="- %h: %s" "$prev_rev..$rev" -- clients/ruby/)
-  git commit -m "Updating Topology Service Client Gem to $short_rev" -m "$changelog" -m 'changelog: other'
+  git commit -m "Updating Topology Service Client Gem to $short_rev" -m "$changelog" -m 'Changelog: other'
 fi
 
 rm -rf "$tmp"

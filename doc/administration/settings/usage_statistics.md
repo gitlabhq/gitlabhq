@@ -102,7 +102,7 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 - Red: The version of GitLab you are running is vulnerable. You should install
   the latest version with security fixes as soon as possible.
 
-![Orange version check example](../settings/img/update_available_v10_6.png)
+![Version check showing that a non-critical update is available for the GitLab instance](../settings/img/non_critical_update_available_v10_6.png)
 
 ### Enable or disable version check
 

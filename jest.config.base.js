@@ -116,6 +116,8 @@ module.exports = (path, options = {}) => {
     '^shared_queries(/.*)$': '<rootDir>/app/graphql/queries$1',
     '^ee_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^jh_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^jh_else_ee(/.*)$':
+      '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',
     '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
@@ -204,6 +206,7 @@ module.exports = (path, options = {}) => {
   const transformIgnoreNodeModules = [
     'vue-test-utils-compat',
     '@gitlab/ui',
+    '@gitlab/duo-ui',
     '@gitlab/favicon-overlay',
     '@gitlab/cluster-client',
     '@gitlab/web-ide',
@@ -216,6 +219,7 @@ module.exports = (path, options = {}) => {
     'monaco-marker-data-provider',
     'monaco-worker-manager',
     'fast-mersenne-twister',
+    'pdfjs-dist-v4',
     'prosemirror-markdown',
     'marked',
     'fault',
@@ -254,7 +258,7 @@ module.exports = (path, options = {}) => {
     transform: {
       '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
-      '^.+\\.js$': 'babel-jest',
+      '^.+\\.m?js$': 'babel-jest',
       '^.+\\.vue$': VUE_JEST_TRANSFORMER,
       'spec/frontend/editor/schema/ci/yaml_tests/.+\\.(yml|yaml)$':
         './spec/frontend/__helpers__/yaml_transformer.js',

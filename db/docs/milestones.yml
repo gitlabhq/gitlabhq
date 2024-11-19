@@ -4,7 +4,8 @@ classes:
 - Milestone
 feature_categories:
 - team_planning
-description: Information related to milestones, used by team planning features to timebox work
+description: Information related to milestones, used by team planning features to
+  timebox work
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/23d950855d6d2524d00b1f0618c008e2529f06a4
 milestone: "<6.0"
 gitlab_schema: gitlab_main_cell

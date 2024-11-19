@@ -102,7 +102,7 @@ module CycleAnalyticsHelpers
 
   def create_value_stream_aggregation(namespace)
     aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(namespace)
-    Analytics::CycleAnalytics::AggregatorService.new(aggregation: aggregation).execute
+    Analytics::CycleAnalytics::NamespaceAggregatorService.new(aggregation: aggregation).execute
   end
 
   def select_group_and_custom_value_stream(group, custom_value_stream_name)

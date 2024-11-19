@@ -78,7 +78,7 @@ module InternalEventsMatchHelpers
 
   def check_if_events_exist!(event_names)
     event_names.each do |event_name|
-      next if Gitlab::InternalEvents::EventDefinitions.known_event?(event_name)
+      next if Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
 
       raise ArgumentError, "Unknown event '#{event_name}'! #{name} matcher accepts only existing events"
     end

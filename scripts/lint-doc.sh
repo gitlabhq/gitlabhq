@@ -30,7 +30,6 @@ if ! scripts/lint-docs-metadata.sh
 then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: These documentation pages need front matter!${COLOR_RESET}"
-  printf " See https://docs.gitlab.com/ee/development/documentation/index.html#stage-and-group-metadata for how to add it.\n" >&2
   ((ERRORCODE++))
 fi
 
@@ -106,7 +105,7 @@ fi
 
 # Do not use dashes (-) in filenames, use underscores (_) instead.
 # Number of filenames with dashes as of 2024-06-17
-FILE_NUMBER_DASHES=70
+FILE_NUMBER_DASHES=68
 FILE_FIND_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for filenames containing dashes...${COLOR_RESET}\n"

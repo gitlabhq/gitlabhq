@@ -23,10 +23,12 @@ Geo's synchronization logic is outlined in the [documentation](../index.md). Bot
 Selective synchronization:
 
 1. Does not restrict permissions from **secondary** sites.
+1. Does not prevent users from viewing, interacting with, cloning, and pushing to project repositories that are not included in the selective sync.
+   - For more details, see [Geo proxying for secondary sites](../secondary_proxy/index.md).
 1. Does not hide project metadata from **secondary** sites.
    - Since Geo relies on PostgreSQL replication, all project metadata
      gets replicated to **secondary** sites, but repositories that have not been
-     selected are empty.
+     selected will not exist on the secondary site.
 1. Does not reduce the number of events generated for the Geo event log.
    - The **primary** site generates events as long as any **secondary** sites are present.
      Selective synchronization restrictions are implemented on the **secondary** sites,

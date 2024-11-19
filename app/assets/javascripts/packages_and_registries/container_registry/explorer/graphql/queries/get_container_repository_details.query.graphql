@@ -13,7 +13,7 @@ query getContainerRepositoryDetails($id: ContainerRepositoryID!) {
       id
       visibility
       path
-      containerExpirationPolicy {
+      containerTagsExpirationPolicy {
         enabled
         nextRunAt
       }

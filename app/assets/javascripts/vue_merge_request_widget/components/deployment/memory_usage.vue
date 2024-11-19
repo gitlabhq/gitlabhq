@@ -4,7 +4,7 @@ import { backOff } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import { bytesToMiB } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
-import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
+import MemoryGraph from '~/vue_merge_request_widget/components/memory_graph.vue';
 import MRWidgetService from '../../services/mr_widget_service';
 
 export default {

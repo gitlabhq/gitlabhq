@@ -6,18 +6,18 @@ module TokenAuthenticatableStrategies
       relation(unscoped).find_by(@token_field => token) if token
     end
 
-    def get_token(instance)
-      instance.read_attribute(@token_field)
+    def get_token(token_owner_record)
+      token_owner_record.read_attribute(@token_field)
     end
 
-    def set_token(instance, token)
-      instance[@token_field] = token if token
+    def set_token(token_owner_record, token)
+      token_owner_record[@token_field] = token if token
     end
 
     protected
 
-    def token_set?(instance)
-      instance.read_attribute(@token_field).present?
+    def token_set?(token_owner_record)
+      token_owner_record.read_attribute(@token_field).present?
     end
   end
 end

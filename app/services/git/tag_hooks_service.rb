@@ -4,6 +4,8 @@ module Git
   class TagHooksService < ::Git::BaseHooksService
     private
 
+    alias_method :removing_tag?, :removing_ref?
+
     def hook_name
       :tag_push_hooks
     end
@@ -22,7 +24,7 @@ module Git
 
     def tag
       strong_memoize(:tag) do
-        next if Gitlab::Git.blank_ref?(newrev)
+        next if removing_tag?
 
         tag_name = Gitlab::Git.ref_name(ref)
         tag = project.repository.find_tag(tag_name)

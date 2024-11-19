@@ -11,21 +11,21 @@ class ProjectHook < WebHook
   self.limit_scope = :project
 
   triggerable_hooks [
-    :push_hooks,
-    :tag_push_hooks,
-    :issue_hooks,
     :confidential_issue_hooks,
-    :note_hooks,
     :confidential_note_hooks,
-    :merge_request_hooks,
-    :job_hooks,
-    :pipeline_hooks,
-    :wiki_page_hooks,
     :deployment_hooks,
-    :feature_flag_hooks,
-    :release_hooks,
     :emoji_hooks,
-    :resource_access_token_hooks
+    :feature_flag_hooks,
+    :issue_hooks,
+    :job_hooks,
+    :merge_request_hooks,
+    :note_hooks,
+    :pipeline_hooks,
+    :push_hooks,
+    :release_hooks,
+    :resource_access_token_hooks,
+    :tag_push_hooks,
+    :wiki_page_hooks
   ]
 
   belongs_to :project

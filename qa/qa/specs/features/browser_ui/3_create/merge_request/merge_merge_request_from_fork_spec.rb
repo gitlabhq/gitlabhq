@@ -9,7 +9,8 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can merge source branch from fork into upstream repository', :blocking,
+      # TODO: refactor/fix - gitlab-org/quality/quality-engineering/team-tasks#3153
+      it 'can merge source branch from fork into upstream repository', :blocking, :skip_live_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818' do
         merge_request.visit!
 

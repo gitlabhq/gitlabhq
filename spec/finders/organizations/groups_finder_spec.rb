@@ -66,7 +66,7 @@ RSpec.describe Organizations::GroupsFinder, feature_category: :groups_and_projec
     end
 
     it 'filters deleted groups' do
-      public_group.namespace_details.update!(pending_delete: true)
+      public_group.namespace_details.update!(deleted_at: Time.current)
 
       expect(result).not_to include(public_group)
     end

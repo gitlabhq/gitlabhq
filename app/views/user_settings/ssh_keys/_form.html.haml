@@ -6,12 +6,12 @@
     .form-group
       = f.label :key, s_('Profiles|Key'), class: 'label-bold'
       = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input", rows: 8, required: true, data: { supported_algorithms: Gitlab::SSHPublicKey.supported_algorithms, testid: 'key-public-key-field' }
-      %p.form-text.text-muted= s_('Profiles|Begins with %{ssh_key_algorithms}.') % { ssh_key_algorithms: ssh_key_allowed_algorithms }
+      %p.form-text.gl-text-subtle= s_('Profiles|Begins with %{ssh_key_algorithms}.') % { ssh_key_algorithms: ssh_key_allowed_algorithms }
     .form-row
       .col.form-group
         = f.label :title, s_('Profiles|Title'), class: 'label-bold'
         = f.text_field :title, class: "form-control gl-form-input input-lg", required: true, placeholder: s_('Profiles|Example: MacBook key'), data: { testid: 'key-title-field' }
-        %p.form-text.text-muted= s_('Profiles|Key titles are publicly visible.')
+        %p.form-text.gl-text-subtle= s_('Profiles|Key titles are publicly visible.')
     .form-row
       .col.form-group
         = f.label :usage_type, s_('Profiles|Usage type')
@@ -22,7 +22,7 @@
         .js-access-tokens-expires-at{ data: {min_date: Date.tomorrow, max_date: max_date, default_date_offset: 365, description: ssh_key_expires_field_description } }
           = f.label :expires_at, s_('Profiles|Expiration date'), class: 'label-bold'
           = f.text_field :expires_at, class: "form-control gl-form-input", placeholder: 'YYYY-MM-DD', min: Date.tomorrow, max: max_date, data: { js_name: 'expiresAt' }
-          %p.form-text.text-muted= ssh_key_expires_field_description
+          %p.form-text.gl-text-subtle= ssh_key_expires_field_description
 
     .js-add-ssh-key-validation-warning.hide
       = render Pajamas::AlertComponent.new(title: _('Are you sure?'), variant: :warning, dismissible: false) do |c|

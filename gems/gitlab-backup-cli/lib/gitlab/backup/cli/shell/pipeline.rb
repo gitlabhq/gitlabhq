@@ -18,9 +18,10 @@ module Gitlab
             end
           end
 
+          # List of Shell::Commands that are part of the pipeline
           attr_reader :shell_commands
 
-          # @param [Array<Shell::Command>] shell_commands
+          # @param [Array<Shell::Command>] shell_commands list of commands
           def initialize(*shell_commands)
             @shell_commands = shell_commands
           end
@@ -58,8 +59,13 @@ module Gitlab
 
           private
 
+          # Returns an array of arrays that contains the expanded command args with their env hashes when available
+          #
+          # The output is intended to be used directly by Open3.pipeline
+          #
+          # @return [Array<Array<Hash,String>>]
           def build_command_list
-            @shell_commands.map(&:cmd_args)
+            @shell_commands.map { |command| command.cmd_args(with_env: true) }
           end
         end
       end

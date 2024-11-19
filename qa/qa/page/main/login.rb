@@ -68,13 +68,14 @@ module QA
               raise QA::Resource::User::InvalidUserError, 'If an LDAP user is provided, it must be used for sign-in'
             end
 
+            test_user = user || Runtime::UserStore.test_user
             if Runtime::User.ldap_user?
-              sign_in_using_ldap_credentials(user: user || Runtime::User)
+              sign_in_using_ldap_credentials(user: test_user)
             else
-              sign_in_using_gitlab_credentials(user: user || Runtime::User, skip_page_validation: skip_page_validation)
+              sign_in_using_gitlab_credentials(user: test_user, skip_page_validation: skip_page_validation)
             end
 
-            set_up_new_password_if_required(user: user, skip_page_validation: skip_page_validation)
+            set_up_new_password_if_required(user: test_user, skip_page_validation: skip_page_validation)
           end
         end
 

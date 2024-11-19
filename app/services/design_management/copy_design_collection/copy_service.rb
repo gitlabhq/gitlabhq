@@ -267,7 +267,6 @@ module DesignManagement
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def link_lfs_files!
         oids = blobs.values.flat_map(&:values).map(&:lfs_oid)
         repository_type = LfsObjectsProject.repository_types[:design]
@@ -292,7 +291,6 @@ module DesignManagement
           on_conflict: :do_nothing # Upsert
         )
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # Blob data is used to find the oids for LfsObjects and to copy to Git.
       # Blobs are reasonably small in memory, as their data are LFS Pointer files.

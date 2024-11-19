@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::BaseFormatter, feature_category: :importers do
   let_it_be(:project) { create(:project, import_type: 'gitea', namespace: create(:namespace, path: 'octocat')) }
-  let(:client) { double }
+  let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -56,6 +56,12 @@ RSpec.describe Gitlab::LegacyGithubImport::BaseFormatter, feature_category: :imp
       it 'returns the correct value for a unknown import' do
         expect(base.imported_from).to eq(:none)
       end
+    end
+  end
+
+  describe '#contributing_user_formatters' do
+    it 'must be implemented in subclasses' do
+      expect { base.contributing_user_formatters }.to raise_error(NotImplementedError)
     end
   end
 end

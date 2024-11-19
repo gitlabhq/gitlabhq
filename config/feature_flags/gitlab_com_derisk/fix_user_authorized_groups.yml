@@ -1,9 +1,0 @@
----
-name: fix_user_authorized_groups
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/482866
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165276
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483175
-milestone: '17.5'
-group: group::project management
-type: gitlab_com_derisk
-default_enabled: false

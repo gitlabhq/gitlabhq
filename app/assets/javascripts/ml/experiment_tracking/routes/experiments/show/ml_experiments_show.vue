@@ -7,9 +7,9 @@ import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_ba
 import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+import KeysetPagination from '~/ml/experiment_tracking/components/pagination.vue';
 
 import { CREATE_EXPERIMENT_HELP_PATH as CREATE_CANDIDATE_HELP_PATH } from '../index/constants';
 import { LIST_KEY_CREATED_AT, BASE_SORT_FIELDS, METRIC_KEY_PREFIX } from './constants';

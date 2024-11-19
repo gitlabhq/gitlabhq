@@ -15,7 +15,7 @@ options:
     - i_code_review_click_single_file_mode_setting
 distribution:
   - ce
-tier:
+tiers:
   - free
   - premium
   - ultimate

@@ -31,6 +31,16 @@ RSpec.describe AuthorizedKeysWorker, feature_category: :source_code_management d
         end
       end
 
+      describe 'valid action but it is a symbol not a string' do
+        it 'raises an error' do
+          expect(Gitlab::AuthorizedKeys).not_to receive(:new)
+
+          expect do
+            worker.perform(:add_key, 'foo', 'bar')
+          end.to raise_error('Unknown action: :add_key')
+        end
+      end
+
       describe 'all other commands' do
         it 'raises an error' do
           expect(Gitlab::AuthorizedKeys).not_to receive(:new)

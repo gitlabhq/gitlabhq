@@ -3,6 +3,7 @@ stage: AI-powered
 group: AI Framework
 description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+ignore_in_report: true
 ---
 
 # Get started with GitLab Duo Code Suggestions
@@ -32,7 +33,7 @@ To ensure your preferred tooling is supported, review the:
 
 ## Step 3: Enable Code Suggestions
 
-First, [purchase seats for GitLab Duo](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-seats).
+First, [purchase seats for GitLab Duo](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
 
 Then, assign seats to users to grant access to GitLab Duo for:
 

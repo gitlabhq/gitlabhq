@@ -13,6 +13,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `glql_integration`. Disabled by default.
 > - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
+> - `iteration` and `cadence` fields [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/74) in GitLab 17.6.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -111,7 +112,8 @@ The following table lists all supported fields and their value types:
 | `closed` <br>`opened` <br>`confidential`          | `=` <br>`!=`                 | `Boolean`                                                                  | `closed = true` <br>`opened = true` <br>`confidential = true` |
 | `closed` <br>`opened` <br>`created` <br>`updated` | `=` <br>`!=` <br>`<` <br>`>` | `Date` <br>`String` <br>`today()`                                          | `updated = today()` <br>`created > -28d` (created in the last 28 days)<br>`created < -7d` (created at least a week ago)<br>`created > 2024-08-12` <br>`updated < "2024-08-12"` |
 | `health`                                          | `=` <br>`!=`                 | `Enum(` <br>`"on track"` <br>`"needsAttention"` <br>`"at risk"` <br>`)`    | `health = "on track"` <br>`health != "on track"` <br>`health = "at risk"` |
-| `milestone` <br>`iteration`                       | `=` <br>`!=`                 | `String` <br>`any` <br>`none` <br>`started` <br>`upcoming`                 | `milestone = "17.4"` <br>`milestone = "Backlog"` <br>`milestone != none` <br>`iteration = any` |
+| `milestone`                                       | `=` <br>`!=`                 | `String` <br>`any` <br>`none` <br>`started` <br>`upcoming`                 | `milestone = "17.4"` <br>`milestone = "Backlog"` <br>`milestone != none`                       |
+| `iteration` <br>`cadence`                         | `=` <br>`!=`                 | `String` <br>`any` <br>`none` <br>`current`                                | `iteration = 123` <br>`cadence = 123` <br>`cadence = 123 and iteration = current`              |
 | `label`                                           | `=` <br>`!=` <br>`in`        | `String` <br>`Collection<String>` <br>`any` <br>`none`                     | `label != none` <br>`label in ("feature", "bug")` (has the `feature` or `bug` label) <br>`label = ("bug", "priority::1")` (has both `bug` and `priority::1` labels)<br>`label = "bug"` |
 | `weight`                                          | `=` <br>`!=`                 | `Number`                                                                   | `weight = 1` <br>`weight != 2 and weight != 1` |
 
@@ -151,6 +153,8 @@ Supported fields to display:
 - `due`
 - `epic`
 - `health`
+- `iteration`
+- `cadence`
 - `labels`
 - `milestone`
 - `state`

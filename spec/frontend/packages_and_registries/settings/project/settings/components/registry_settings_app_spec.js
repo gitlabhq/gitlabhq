@@ -37,7 +37,6 @@ describe('Registry Settings app', () => {
     ...(IS_EE && { showDependencyProxySettings: true }),
     glFeatures: {
       containerRegistryProtectedContainers: true,
-      packagesProtectedPackages: true,
     },
     isContainerRegistryMetadataDatabaseEnabled: false,
   };
@@ -139,21 +138,6 @@ describe('Registry Settings app', () => {
       });
     }
 
-    describe('when feature flag "packagesProtectedPackages" is disabled', () => {
-      it.each([true, false])(
-        'package protection rules settings is hidden if showPackageRegistrySettings is %s',
-        (showPackageRegistrySettings) => {
-          mountComponent({
-            ...defaultProvide,
-            showPackageRegistrySettings,
-            glFeatures: { packagesProtectedPackages: false },
-          });
-
-          expect(findPackagesProtectionRules().exists()).toBe(false);
-        },
-      );
-    });
-
     describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
       it.each([true, false])(
         'container protection rules settings is hidden if showContainerRegistrySettings is %s',
@@ -164,7 +148,7 @@ describe('Registry Settings app', () => {
             glFeatures: { containerRegistryProtectedContainers: false },
           });
 
-          expect(findPackagesProtectionRules().exists()).toBe(false);
+          expect(findContainerProtectionRules().exists()).toBe(false);
         },
       );
     });

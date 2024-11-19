@@ -304,7 +304,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="work-item-description-wrapper">
     <gl-form v-if="isEditing" @submit.prevent="updateWorkItem" @reset.prevent="cancelEditing">
       <gl-form-group
         :class="formGroupClass"

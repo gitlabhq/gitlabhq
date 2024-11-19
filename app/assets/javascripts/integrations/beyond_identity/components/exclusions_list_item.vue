@@ -32,7 +32,7 @@ export default {
   <div
     class="gl-border-b gl-flex gl-items-center gl-justify-between gl-gap-3 gl-p-4 gl-py-3 gl-pl-7"
   >
-    <gl-icon :name="exclusion.icon" class="gl-text-secondary" />
+    <gl-icon :name="exclusion.icon" variant="subtle" />
     <gl-avatar
       :alt="exclusion.name"
       :entity-name="exclusion.name"

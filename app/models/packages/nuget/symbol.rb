@@ -10,13 +10,15 @@ module Packages
       # Used in destroying stale symbols in worker
       enum :status, default: 0, processing: 1, error: 3
 
-      belongs_to :package, -> { where(package_type: :nuget) }, inverse_of: :nuget_symbols
+      belongs_to :package, class_name: 'Packages::Nuget::Package', inverse_of: :nuget_symbols
+      belongs_to :project
 
       delegate :project_id, :project, to: :package
 
-      validates :package, :file, :file_path, :signature, :object_storage_key, :size, presence: true
+      validates :file, :file_path, :signature, :object_storage_key, :size, presence: true
       validates :signature, uniqueness: { scope: :file_path }
       validates :object_storage_key, uniqueness: true
+      validates :package, presence: true
 
       sha256_attribute :file_sha256
 

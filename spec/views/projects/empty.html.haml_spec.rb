@@ -68,8 +68,7 @@ RSpec.describe 'projects/empty' do
     it 'shows invite members info', :aggregate_failures do
       render
 
-      expect(rendered).to have_selector('[data-track-action=render]')
-      expect(rendered).to have_selector('[data-track-label=invite_members_empty_project]')
+      expect(rendered).to have_tracking(action: 'render', label: 'invite_members_empty_project')
       expect(rendered).to have_content('Invite your team')
       expect(rendered).to have_content('Add members to this project and start collaborating with your team.')
       expect(rendered).to have_selector('.js-invite-members-trigger')

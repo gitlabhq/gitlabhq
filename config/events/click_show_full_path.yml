@@ -1,0 +1,15 @@
+description: Tracks clicks on the button to show the full path of an image in the registry.
+action: click_show_full_path
+product_group: container_registry
+milestone: '15.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91548
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value registry_image_list

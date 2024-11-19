@@ -340,7 +340,7 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
       end
 
       context 'when Current.organization is set', :with_current_organization do
-        let(:extra_opts) { { organization_id: Current.organization_id } }
+        let(:extra_opts) { { organization_id: current_organization.id } }
 
         it 'sets the organization_id to nil' do
           expect(snippet.organization_id).to be_nil
@@ -368,10 +368,10 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
       it_behaves_like 'invalid params error response'
 
       context 'when Current.organization is set', :with_current_organization do
-        let(:extra_opts) { { organization_id: Current.organization_id } }
+        let(:extra_opts) { { organization_id: current_organization.id } }
 
         it 'sets the organization_id to the current organization' do
-          expect(snippet.organization_id).to eq(Current.organization_id)
+          expect(snippet.organization_id).to eq(current_organization.id)
         end
 
         it 'does not set organization_id to the default organization' do

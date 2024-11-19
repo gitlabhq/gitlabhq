@@ -1,16 +1,18 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
-import dateFormat from '~/lib/dateformat';
+import { localeDateFormat, toISODateFormat } from '~/lib/utils/datetime_utility';
 
 const createComponent = (dueDate = new Date(), closed = false) =>
   shallowMount(IssueDueDate, {
     propsData: {
       closed,
-      date: dateFormat(dueDate, 'yyyy-mm-dd', true),
+      date: toISODateFormat(dueDate),
     },
   });
 
 const findTime = (wrapper) => wrapper.find('time');
+const findIcon = (wrapper) => wrapper.findComponent(GlIcon);
 
 describe('Issue Due Date component', () => {
   let wrapper;
@@ -44,31 +46,39 @@ describe('Issue Due Date component', () => {
     date.setDate(date.getDate() + 5);
     wrapper = createComponent(date);
 
-    expect(findTime(wrapper).text()).toBe(dateFormat(date, 'dddd'));
+    expect(findTime(wrapper).text()).toBe('Saturday');
   });
 
   it('should render month and day for other dates', () => {
     date.setDate(date.getDate() + 17);
     wrapper = createComponent(date);
     const today = new Date();
-    const isDueInCurrentYear = today.getFullYear() === date.getFullYear();
-    const format = isDueInCurrentYear ? 'mmm d' : 'mmm d, yyyy';
+    const expected =
+      today.getFullYear() === date.getFullYear()
+        ? localeDateFormat.asDateWithoutYear.format(date)
+        : localeDateFormat.asDate.format(date);
 
-    expect(findTime(wrapper).text()).toBe(dateFormat(date, format));
+    expect(findTime(wrapper).text()).toBe(expected);
   });
 
-  it('should contain the correct `.gl-text-danger` css class for overdue issue that is open', () => {
+  it('should contain the correct icon for overdue issue that is open', () => {
     date.setDate(date.getDate() - 17);
     wrapper = createComponent(date);
 
-    expect(findTime(wrapper).classes('gl-text-danger')).toBe(true);
+    expect(findIcon(wrapper).props()).toMatchObject({
+      variant: 'danger',
+      name: 'calendar-overdue',
+    });
   });
 
-  it('should not contain the `.gl-text-danger` css class for overdue issue that is closed', () => {
+  it('should not contain the overdue icon for overdue issue that is closed', () => {
     date.setDate(date.getDate() - 17);
     const closed = true;
     wrapper = createComponent(date, closed);
 
-    expect(findTime(wrapper).classes('gl-text-danger')).toBe(false);
+    expect(findIcon(wrapper).props()).toMatchObject({
+      variant: 'current',
+      name: 'calendar',
+    });
   });
 });

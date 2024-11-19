@@ -23,7 +23,7 @@ module Gitlab
 
             collection =
               if offset_index && offset_index > 0
-                offset_collection = relation.limit(offset_index) # rubocop:disable CodeReuse/ActiveRecord
+                offset_collection = relation.limit(offset_index)
                 options[:offset_index] = offset_index
                 offset_collection + collection
               else

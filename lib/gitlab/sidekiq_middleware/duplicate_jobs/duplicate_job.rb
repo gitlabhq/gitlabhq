@@ -274,7 +274,12 @@ module Gitlab
         end
 
         def get_cookie
-          with_redis { |redis| MessagePack.unpack(redis.get(cookie_key) || "\x80") }
+          cookie = with_redis { |redis| MessagePack.unpack(redis.get(cookie_key) || "\x80") }
+
+          # Running cmsgpack.unpack and cmsgpack.pack would convert empty hashes into arrays
+          # NOTE: This is only safe because the current cookie structure does not use any arrays.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/501762
+          cookie.transform_values { |v| v.is_a?(Array) && v.empty? ? {} : v }
         end
 
         def idempotency_hash

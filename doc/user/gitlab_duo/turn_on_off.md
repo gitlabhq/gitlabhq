@@ -71,6 +71,7 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
+> - [Download health check report added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032) in GitLab 17.5.
 
 Run a health check to test if your instance meets the requirements to use GitLab Duo.
 When the health check completes, it displays a pass or fail result and the types of issues.
@@ -87,6 +88,7 @@ To run a health check:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. On the upper-right corner, select **Run health check**.
+1. Optional. In GitLab 17.5 and later, after the health check is complete, you can select **Download report** to save a detailed report of the health check results.
 
 ### Health check tests
 
@@ -117,16 +119,7 @@ When GitLab Duo is turned off for a group, project, or instance:
 
 - GitLab Duo features that access resources, like code, issues, and vulnerabilities, are not available.
 - Code Suggestions is not available.
-
-However, GitLab Duo Chat works differently. When you turn off GitLab Duo:
-
-- For a group or project:
-  - You can still ask questions of GitLab Duo Chat. These questions must be generic, like
-    asking about GitLab or asking general questions about code. GitLab Duo Chat will not access group or
-    project resources, and will reject questions about them.
-
-- For an instance:
-  - The **GitLab Duo Chat** button is not available anywhere in the UI.
+- Duo Chat is not available.
 
 ### Turn off for a group
 
@@ -325,8 +318,49 @@ In addition to [turning on GitLab Duo features](turn_on_off.md#prerequisites),
 you can also do the following:
 
 1. As administrator, [run a health check for GitLab Duo](#run-a-health-check-for-gitlab-duo).
+
+   ::Tabs
+
+   :::TabTitle In 17.5 and later
+
+   In GitLab 17.5 and later, you can use the UI to run health checks and download a detailed report that helps identify and troubleshoot issues.
+
+   :::TabTitle In 17.4
+
+   In GitLab 17.4, you can run the health check Rake task to generate a detailed report that helps identify and troubleshoot issues.
+
+   ```shell
+   sudo gitlab-rails 'cloud_connector:health_check(root,report.json)'
+   ```
+
+   :::TabTitle In 17.3 and earlier
+
+   In GitLab 17.3 and earlier, you can download and run the `health_check` script to generate a detailed report that helps identify and troubleshoot issues.
+
+   1. Download the health check script:
+
+      ```shell
+      wget https://gitlab.com/gitlab-org/gitlab/-/snippets/3734617/raw/main/health_check.rb
+      ```
+
+   1. Run the script using Rails Runner:
+
+      ```shell
+      gitlab-rails runner [full_path/to/health_check.rb] --debug --username [username] --output-file [report.txt]
+      ```
+
+       ```shell
+       Usage: gitlab-rails runner full_path/to/health_check.rb
+              --debug                Enable debug mode
+              --output-file FILE     Write a report to FILE
+              --username USERNAME    Provide a username to test seat assignments
+              --skip [CHECK]         Skip specific check (options: access_data, token, license, host, features, end_to_end)
+       ```
+
+   ::EndTabs
+
 1. Verify that the GitLab instance can reach the [required GitLab.com endpoints](#configure-gitlab-duo-on-a-self-managed-instance).
-You can use command-line tools such as `curl` to verify the connectivity.
+   You can use command-line tools such as `curl` to verify the connectivity.
 
     ```shell
     curl --verbose "https://cloud.gitlab.com"
@@ -342,6 +376,10 @@ You can use command-line tools such as `curl` to verify the connectivity.
     curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://customers.gitlab.com"
     ```
 
+1. Optional. If you are using a [proxy server](#allow-outbound-connections-from-the-gitlab-instance) between the GitLab
+   application and the public internet,
+   [disable DNS rebinding protection](../../security/webhooks.md#enforce-dns-rebinding-attack-protection).
+
 1. [Manually synchronize subscription data](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data).
    - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
@@ -350,7 +388,7 @@ You can use command-line tools such as `curl` to verify the connectivity.
 In addition to [turning on GitLab Duo features](turn_on_off.md#prerequisites),
 you can also do the following:
 
-1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-seats).
+1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
 1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 1. For IDE users with the [GitLab Duo extension](../../user/project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
    - Verify that the extension is up-to-date.

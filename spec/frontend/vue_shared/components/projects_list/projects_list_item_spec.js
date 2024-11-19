@@ -68,16 +68,16 @@ describe('ProjectsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findMergeRequestsLink = () =>
-    wrapper.findByRole('link', { name: ProjectsListItem.i18n.mergeRequests });
-  const findIssuesLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.issues });
-  const findForksLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.forks });
+  const findMergeRequestsLink = () => wrapper.findByTestId('mrs-btn');
+  const findIssuesLink = () => wrapper.findByTestId('issues-btn');
+  const findForksLink = () => wrapper.findByTestId('forks-btn');
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
@@ -174,7 +174,7 @@ describe('ProjectsListItem', () => {
   it('renders stars count', () => {
     createComponent();
 
-    const starsLink = wrapper.findByRole('link', { name: ProjectsListItem.i18n.stars });
+    const starsLink = wrapper.findByTestId('stars-btn');
     const tooltip = getBinding(starsLink.element, 'gl-tooltip');
 
     expect(tooltip.value).toBe(ProjectsListItem.i18n.stars);
@@ -521,6 +521,38 @@ describe('ProjectsListItem', () => {
             expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
           });
         });
+      });
+    });
+  });
+
+  describe('CI Catalog Badge', () => {
+    describe('when project is not in the CI Catalog', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render badge', () => {
+        expect(findCiCatalogBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when project is in the CI Catalog', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            project: {
+              ...project,
+              isCatalogResource: true,
+              exploreCatalogPath: `/catalog/${project.pathWithNamespace}`,
+            },
+          },
+        });
+      });
+
+      it('renders badge with correct link', () => {
+        expect(findCiCatalogBadge().exists()).toBe(true);
+        expect(findCiCatalogBadge().text()).toBe('CI/CD Catalog project');
+        expect(findCiCatalogBadge().props('href')).toBe(`/catalog/${project.pathWithNamespace}`);
       });
     });
   });

@@ -60,7 +60,6 @@ module WorkItems
 
     enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }
 
-    has_many :work_items, class_name: 'Issue', foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,
       inverse_of: :work_item_type, class_name: 'WorkItems::WidgetDefinition'

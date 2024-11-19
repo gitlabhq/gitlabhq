@@ -6,8 +6,7 @@ module Mutations
       module Rule
         class Create < ::Mutations::BaseMutation
           graphql_name 'CreatePackagesProtectionRule'
-          description 'Creates a protection rule to restrict access to project packages. ' \
-            'Available only when feature flag `packages_protected_packages` is enabled.'
+          description 'Creates a protection rule to restrict access to project packages.'
 
           include FindsProject
 
@@ -38,15 +37,11 @@ module Mutations
           field :package_protection_rule,
             Types::Packages::Protection::RuleType,
             null: true,
-            alpha: { milestone: '16.5' },
+            experiment: { milestone: '16.5' },
             description: 'Packages protection rule after mutation.'
 
           def resolve(project_path:, **kwargs)
             project = authorized_find!(project_path)
-
-            if Feature.disabled?(:packages_protected_packages, project)
-              raise_resource_not_available_error!("'packages_protected_packages' feature flag is disabled")
-            end
 
             response = ::Packages::Protection::CreateRuleService.new(project: project, current_user: current_user,
               params: kwargs).execute

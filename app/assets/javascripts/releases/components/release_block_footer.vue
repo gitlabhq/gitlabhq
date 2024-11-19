@@ -87,7 +87,7 @@ export default {
 <template>
   <div class="gl-flex gl-items-center gl-gap-5 gl-text-sm">
     <div v-if="commit" class="js-commit-info gl-flex gl-items-center gl-gap-2">
-      <gl-icon ref="commitIcon" name="commit" class="gl-text-secondary" />
+      <gl-icon ref="commitIcon" name="commit" variant="subtle" />
       <div v-gl-tooltip.bottom :title="commit.title">
         <gl-link
           v-if="commitPath"
@@ -101,7 +101,7 @@ export default {
     </div>
 
     <div v-if="tagName" class="js-tag-info gl-flex gl-items-center gl-gap-2">
-      <gl-icon name="tag" class="gl-text-secondary" />
+      <gl-icon name="tag" variant="subtle" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
         <gl-link v-if="tagPath" :href="tagPath" class="gl-mr-0 gl-text-secondary gl-font-monospace">
           {{ tagName }}

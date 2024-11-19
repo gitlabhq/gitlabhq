@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed, GitLab Dedicated
 
 You can manage [personal access tokens](../user/profile/personal_access_tokens.md) and
-[impersonation tokens](rest/index.md#impersonation-tokens) by using the REST API.
+[impersonation tokens](rest/authentication.md#impersonation-tokens) by using the REST API.
 
 ## Create a personal access token
 

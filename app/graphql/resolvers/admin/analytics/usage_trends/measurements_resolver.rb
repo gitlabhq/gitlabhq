@@ -10,16 +10,16 @@ module Resolvers
           type Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type, null: true
 
           argument :identifier, Types::Admin::Analytics::UsageTrends::MeasurementIdentifierEnum,
-                    required: true,
-                    description: 'Type of measurement or statistics to retrieve.'
+            required: true,
+            description: 'Type of measurement or statistics to retrieve.'
 
           argument :recorded_after, Types::TimeType,
-                    required: false,
-                    description: 'Measurement recorded after the date.'
+            required: false,
+            description: 'Measurement recorded after the date.'
 
           argument :recorded_before, Types::TimeType,
-                    required: false,
-                    description: 'Measurement recorded before the date.'
+            required: false,
+            description: 'Measurement recorded before the date.'
 
           def resolve(identifier:, recorded_before: nil, recorded_after: nil)
             authorize!

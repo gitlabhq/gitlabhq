@@ -1,0 +1,25 @@
+query provisionGkeRunnerProject(
+  $fullPath: ID!
+  $cloudProjectId: GoogleCloudProject!
+  $region: GoogleCloudRegion!
+  $zone: GoogleCloudZone!
+  $runnerToken: String!
+  $nodePools: [GoogleCloudNodePool!]
+) {
+  project(fullPath: $fullPath) {
+    id
+    runnerCloudProvisioning(provider: GKE, cloudProjectId: $cloudProjectId) {
+      ... on CiRunnerGkeProvisioning {
+        projectSetupShellScript
+        provisioningSteps(
+          region: $region
+          zone: $zone
+          runnerToken: $runnerToken
+          nodePools: $nodePools
+        ) {
+          instructions
+        }
+      }
+    }
+  }
+}

@@ -266,3 +266,240 @@ GitLab may decide to change these settings to speed up application performance, 
 You can see how each of these settings affect GC performance, memory use and application start-up time for an idle instance of
 GitLab by running the `scripts/perf/gc/collect_gc_stats.rb` script. It will output GC stats and general timing data to standard
 out as CSV.
+
+## An example of investigating performance issues
+
+The Pipeline Authoring team has worked on solving [the pipeline creation performance issues](https://gitlab.com/groups/gitlab-org/-/epics/7290)
+and used both the existing profiling methods such as [stackprof flamegraphs](#speedscope-flamegraphs) and [`memory_profiler`](performance.md#using-memory-profiler)
+and a new method [`ruby-prof`](https://ruby-prof.github.io/).
+
+### Using stackprof flamegraphs
+
+[Performance bar](../administration/monitoring/performance/performance_bar.md) is a great tool to get a stackprof report
+and see a flamegraph via a single click;
+
+![Performance Bar Flamegraph Link](img/performance_bar_flamegraph_link.png)
+
+However, it's not available for other than GET requests.
+
+To get a flamegraph for a POST request, we use the `performance_bar=flamegraph` parameter with the API request.
+In our case, we want to see the flamegraph for [the pipeline creation endpoint of a merge request](../api/merge_requests.md#create-merge-request-pipeline).
+
+Normally, we could use the following command to get a stackprof report as a JSON file but our user control
+of `Gitlab::PerformanceBar.allowed_for_user?(request.env['warden']&.user)` allows only users authenticated via the web interface.
+
+```shell
+# This will not work on production
+
+curl --request POST \
+  --output flamegraph.json \
+  --header 'Content-Type: application/json' \
+  --header 'PRIVATE-TOKEN: :token' \
+  "https://gitlab.example.com/api/v4/projects/:id/merge_requests/:iid/pipelines?performance_bar=flamegraph"
+```
+
+To get around this, we copy the request as `curl` and use it in the terminal.
+
+![Performance copy as curl](img/performance_copy_as_curl.png)
+
+We'll have a `curl` command like this:
+
+```shell
+curl "https://gitlab.com/api/v4/projects/:id/merge_requests/:iid/pipelines" \
+  -H 'accept: application/json, text/plain, */*' \
+  -H 'content-type: application/json' \
+  -H 'cookie: xyz' \
+  -H 'x-csrf-token: xyz' \
+  --data-raw '{"async":true}'
+```
+
+- Notice the `async` parameter in the request body.
+  We need to remove it to get the actual performance of the pipeline creation endpoint.
+- We need to add the `performance_bar=flamegraph` parameter to the request.
+- We need to add the `--output flamegraph.json` parameter to save the JSON response to a file.
+- Lastly, we need to accept the JSON response only.
+
+```shell
+curl "https://gitlab.com/api/v4/projects/:id/merge_requests/:iid/pipelines?performance_bar=flamegraph" \
+  -X POST \
+  -o flamegraph.json \
+  -H 'accept: application/json' \
+  -H 'content-type: application/json' \
+  -H 'cookie: xyz' \
+  -H 'x-csrf-token: xyz'
+```
+
+Then, we use the `flamegraph.json` file on the `https://www.speedscope.app/` website to see the flamegraph.
+
+![Speedscope flamegraph example](img/performance_speedscope_example.png)
+
+As an example, when investigating into this speedscope flamegraph, we saw that the `kubernetes_variables` method was
+taking a lot of time and created [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/498648).
+
+![Speedscope flamegraph Kubernetes example](img/performance_speedscope_example_kubernetes.png)
+
+### Using `ruby-prof`
+
+Another method to see where to spend most of the time is to use `ruby-prof`.
+It's not an included gem in the Gemfile, so we need to add it to the Gemfile and run `bundle install` first.
+
+To investigate the problem, we need to have a replica repository. To do this, we could mirror the repository
+from the production instance to the development instance. Then, we can run the `ruby-prof` profiler to see where
+the time is spent.
+
+```ruby
+# RAILS_PROFILE=true GITALY_DISABLE_REQUEST_LIMITS=true rails console
+
+require 'ruby-prof'
+
+ActiveRecord::Base.logger = nil
+project = Project.find_by_full_path('root/gitlab-mirror')
+user = project.first_owner
+merge_request = project.merge_requests.find_by_iid(1)
+
+profile = RubyProf::Profile.new
+profile.exclude_common_methods! # see https://github.com/ruby-prof/ruby-prof/blob/1.7.0/lib/ruby-prof/exclude_common_methods.rb
+
+profile.start
+
+Gitlab::SafeRequestStore.ensure_request_store do
+  Ci::CreatePipelineService
+    .new(project, user, ref: merge_request.source_branch)
+    .execute(:merge_request_event, merge_request: merge_request)
+    .payload
+end; nil
+
+result = profile.stop
+
+callstack_printer = RubyProf::CallStackPrinter.new(result)
+File.open('tmp/ruby-prof-callstack-report.html', 'w') do |file|
+  callstack_printer.print(file)
+end
+
+::Ci::DestroyPipelineService.new(project, user).execute(Ci::Pipeline.last)
+```
+
+![Ruby-prof callstack report](img/performance_ruby-prof_example.png)
+
+Here, we can see that we call `Ci::GenerateKubeconfigService` ~2k times.
+This is a good indicator that we need to investigate this.
+
+### Using `memory_profiler`
+
+[`memory_profiler`](performance.md#using-memory-profiler) is a tool to profile memory usage.
+This is also important because high memory usage can lead to performance issues.
+
+As we did with `stackprof`, we could also use `curl` with the `performance_bar` parameter.
+
+```shell
+curl "https://gitlab.com/api/v4/projects/:id/merge_requests/:iid/pipelines?performance_bar=memory" \
+  -X POST \
+  -o flamegraph.json \
+  -H 'accept: application/json' \
+  -H 'content-type: application/json' \
+  -H 'cookie: xyz' \
+  -H 'x-csrf-token: xyz'
+```
+
+However, this will not work on production because we have 60-second timeouts for the requests.
+So, we need to use the development environment to get the memory profile.
+More information can be found in the [memory profiler documentation](performance.md#using-memory-profiler).
+
+```ruby
+# RAILS_PROFILE=true GITALY_DISABLE_REQUEST_LIMITS=true rails console
+
+require 'memory_profiler'
+
+ActiveRecord::Base.logger = nil
+project = Project.find_by_full_path('root/gitlab-mirror')
+user = project.first_owner
+merge_request = project.merge_requests.find_by_iid(1)
+
+# Warmup
+Ci::CreatePipelineService
+  .new(project, user, ref: merge_request.source_branch)
+  .execute(:merge_request_event, merge_request: merge_request); nil
+
+report = MemoryProfiler.report do
+  Gitlab::SafeRequestStore.ensure_request_store do
+    Ci::CreatePipelineService
+      .new(project, user, ref: merge_request.source_branch)
+      .execute(:merge_request_event, merge_request: merge_request); nil
+  end
+end; nil
+
+output = File.open('tmp/memory-profile-report.txt', 'w')
+report.pretty_print(output, detailed_report: true, scale_bytes: true, normalize_paths: true)
+```
+
+Result;
+
+```plaintext
+#
+# Note: I redacted some parts related to the gems and the Rails framework.
+#       also, the output is shortened for readability.
+#
+
+Total allocated: 1.30 GB (12974240 objects)
+Total retained:  29.67 MB (335085 objects)
+
+allocated memory by gem
+-----------------------------------
+ 675.48 MB  gitlab/lib
+
+...
+
+allocated memory by file
+-----------------------------------
+ 253.68 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb
+ 143.58 MB  gitlab/lib/gitlab/ci/variables/collection.rb
+  51.66 MB  gitlab/lib/gitlab/config/entry/configurable.rb
+  20.89 MB  gitlab/lib/gitlab/ci/pipeline/expression/lexeme/base.rb
+
+...
+
+allocated memory by location
+-----------------------------------
+ 107.12 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb:64
+  70.22 MB  gitlab/lib/gitlab/ci/variables/collection.rb:28
+  57.66 MB  gitlab/lib/gitlab/ci/variables/collection.rb:82
+  45.70 MB  gitlab/lib/gitlab/config/entry/configurable.rb:67
+  42.35 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb:17
+  42.35 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb:80
+  41.32 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb:76
+  20.10 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb:72
+
+...
+```
+
+In this example, we see where we can optimize the memory usage by looking at the allocated memory by file and location.
+
+And in [a recent work](https://gitlab.com/gitlab-org/gitlab/-/issues/499707),
+we [found a way](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171387) to improve the memory usage and got this result;
+
+```plaintext
+#
+# Note: I redacted some parts related to the gems and the Rails framework.
+#       also, the output is shortened for readability.
+#
+
+Total allocated: 1.08 GB (11171148 objects)
+Total retained:  29.67 MB (335082 objects)
+
+allocated memory by gem
+-----------------------------------
+ 495.88 MB  gitlab/lib
+
+...
+
+allocated memory by file
+-----------------------------------
+ 112.44 MB  gitlab/lib/gitlab/ci/variables/collection.rb
+ 105.24 MB  gitlab/lib/gitlab/ci/variables/collection/item.rb
+  51.66 MB  gitlab/lib/gitlab/config/entry/configurable.rb
+  20.89 MB  gitlab/lib/gitlab/ci/pipeline/expression/lexeme/base.rb
+
+...
+```
+
+Total memory reduction for this example pipeline; ~200 MB.

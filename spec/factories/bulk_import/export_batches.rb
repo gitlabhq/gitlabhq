@@ -9,12 +9,16 @@ FactoryBot.define do
     status { 0 }
     batch_number { 1 }
 
-    trait :started do
+    trait :created do
       status { 0 }
     end
 
     trait :finished do
       status { 1 }
+    end
+
+    trait :started do
+      status { 2 }
     end
 
     trait :failed do

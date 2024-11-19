@@ -79,6 +79,8 @@ and changing the `8k` size, for example by doubling it to `16k`.
 If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the
 `/etc/gitlab/gitlab.rb` of the nodes behind the load balancer.
 
+On the primary site, go to **Admin > Geo > Settings** and find the **Allowed Geo IP** field. Ensure the IP address of the secondary site is listed.
+
 ### Primary site returns 500 error when accessing `/admin/geo/replication/projects`
 
 Navigating to **Admin > Geo > Replication** (or `/admin/geo/replication/projects`) on a primary Geo site, shows a 500 error, while that same link on the secondary works fine. The primary's `production.log` has a similar entry to the following:

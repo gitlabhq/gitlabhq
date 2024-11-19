@@ -139,8 +139,8 @@
   }
 
   .form-check:first-child,
-  .form-check .form-text.text-muted,
-  .form-check + .form-text.text-muted {
+  .form-check .form-text,
+  .form-check + .form-text {
     margin-top: 0;
   }
 
@@ -153,13 +153,13 @@
     }
   }
 
-  .form-check .form-text.text-muted {
+  .form-check .form-text {
     margin-bottom: $grid-size;
   }
 }
 
 .settings-list-icon {
-  color: var(--gray-500, $gl-text-color-secondary);
+  @apply gl-text-subtle;
   font-size: $default-icon-size;
   line-height: 42px;
 }

@@ -43,7 +43,6 @@ module Resolvers
 
     attr_reader :container
 
-    # rubocop: disable CodeReuse/ActiveRecord -- #references is not an ActiveRecord method
     def find_work_items(references)
       epic_refs, issue_refs = references.partition { |r| r.match?(/epics|&/) }
       item_ids = references_extractor(issue_refs)&.references(:work_item, ids_only: true) || []
@@ -54,7 +53,6 @@ module Resolvers
 
       WorkItem.id_in(item_ids.flatten.compact)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def references_extractor(refs)
       return unless refs.any?

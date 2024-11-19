@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views all merge requests', feature_category: :code_review_workflow do
+RSpec.describe 'User views all merge requests', :js, feature_category: :code_review_workflow do
   let!(:closed_merge_request) { create(:closed_merge_request, source_project: project, target_project: project) }
   let!(:issue) { create(:issue, project: project) }
   let!(:merge_request) do
@@ -20,8 +20,8 @@ RSpec.describe 'User views all merge requests', feature_category: :code_review_w
   end
 
   it 'links to listed merge requests' do
-    expect(page).to have_link(merge_request.title, href: project_merge_request_path(project, merge_request))
+    expect(page).to have_link(merge_request.title, href: /#{project_merge_request_path(project, merge_request)}$/)
     expect(page).to have_link(closed_merge_request.title,
-      href: project_merge_request_path(project, closed_merge_request))
+      href: /#{project_merge_request_path(project, closed_merge_request)}$/)
   end
 end

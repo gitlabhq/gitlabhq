@@ -16,13 +16,10 @@ RSpec.describe Gitlab::NamespacedSessionStore do
       it 'passes .each call to storage hash' do
         keys = []
         values = []
-        # rubocop:disable Lint/UnreachableLoop -- false positive
         instance.each do |key, val|
           keys << key
           values << val
         end
-        # rubocop:enable Lint/UnreachableLoop
-
         expect(keys).to match_array([:a, :b])
         expect(values).to match_array([1, 2])
       end

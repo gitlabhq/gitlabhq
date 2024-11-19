@@ -36,7 +36,6 @@ places. This can be done by defining the columns to ignore. For example, in rele
 
 ```ruby
 class User < ApplicationRecord
-  include IgnorableColumns
   ignore_column :updated_at, remove_with: '12.7', remove_after: '2019-12-22'
 end
 ```
@@ -184,7 +183,6 @@ This step is similar to [the first step when column is dropped](#ignoring-the-co
 
 ```ruby
 class User < ApplicationRecord
-  include IgnorableColumns
   ignore_column :updated_at, remove_with: '12.7', remove_after: '2019-12-22'
 end
 ```
@@ -220,9 +218,10 @@ Same as when column is dropped, after the rename is completed, we need to [remov
 ## Changing column constraints
 
 Adding or removing a `NOT NULL` clause (or another constraint) can typically be
-done without requiring downtime. However, this does require that any application
-changes are deployed _first_. Thus, changing the constraints of a column should
-happen in a post-deployment migration.
+done without requiring downtime. Adding a `NOT NULL` contraint requires that any application
+changes are deployed _first_, so it should happen in a post-deployment migration. 
+In contrary removing a `NOT NULL` contraint should be done in a regular migration. 
+This way any code which insers `NULL` values can safely run for the column.
 
 Avoid using `change_column` as it produces an inefficient query because it re-defines
 the whole column type.
@@ -463,7 +462,6 @@ Ignore the new `bigint` columns:
 # frozen_string_literal: true
 
 class MergeRequest::Metrics < ApplicationRecord
-  include IgnorableColumns
   ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 end
 ```

@@ -9,10 +9,21 @@
     "time_frame",
     "data_source",
     "distribution",
-    "tier",
     "data_category",
     "milestone",
     "introduced_by_url"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "tier"
+      ]
+    },
+    {
+      "required": [
+        "tiers"
+      ]
+    }
   ],
   "additionalProperties": false,
   "properties": {
@@ -24,6 +35,13 @@
     },
     "product_group": {
       "$ref": "product_groups.json"
+    },
+    "product_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "known_product_category"
+      }
     },
     "value_type": {
       "type": "string",
@@ -77,15 +95,6 @@
     },
     "options": {
       "type": "object"
-    },
-    "time_frame": {
-      "type": "string",
-      "enum": [
-        "7d",
-        "28d",
-        "all",
-        "none"
-      ]
     },
     "data_source": {
       "type": "string",
@@ -142,27 +151,64 @@
         "type": "string",
         "enum": [
           "free",
-          "starter",
           "premium",
-          "ultimate",
-          "bronze",
-          "silver",
-          "gold"
+          "ultimate"
+        ]
+      }
+    },
+    "tiers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "free",
+          "premium",
+          "ultimate"
         ]
       }
     },
     "value_json_schema": {
       "type": "string"
     },
-    "product_category": {
-      "type": "string"
-    },
     "name": {
       "type": "string"
     },
     "events": {
+    },
+    "time_frame": {
     }
   },
+  "oneOf": [
+    {
+      "properties": {
+        "time_frame": {
+          "type": "string",
+          "enum": [
+            "7d",
+            "28d",
+            "all",
+            "none"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "time_frame": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "7d",
+              "28d",
+              "all"
+            ]
+          }
+        }
+      }
+    }
+  ],
   "allOf": [
     {
       "$ref": "internal_events.json"

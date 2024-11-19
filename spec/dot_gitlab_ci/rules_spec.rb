@@ -29,31 +29,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
-  describe '.qa:rules:manual-e2e' do
-    let(:base_rules) { config.dig('.qa:rules:manual-e2e', 'rules') }
-
-    context 'with .qa:rules:follow-up-e2e' do
-      let(:derived_rules) { config.dig('.qa:rules:follow-up-e2e', 'rules') }
-
-      it 'has the same rules as the base, but with manual jobs changed to automatic' do
-        base_rules.zip(derived_rules).each do |(base, derived)|
-          # Exception:
-          #
-          # - !reference [".qa:rules:code-merge-request-manual", rules] becomes
-          # - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
-          #
-          # This is because we want the rules to be automatic, but still allowed to fail
-          if base.is_a?(Array) && base.first == '.qa:rules:code-merge-request-manual'
-            expect(derived.first).to eq('.qa:rules:code-merge-request-allowed-to-fail')
-            next
-          end
-
-          expect(derived).to eq(base)
-        end
-      end
-    end
-  end
-
   describe '.review:rules:start-review-app-pipeline' do
     let(:base_rules) { config.dig('.review:rules:start-review-app-pipeline', 'rules') }
 
@@ -217,7 +192,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.mailmap',
         '.prettierignore',
         '.projections.json.example',
-        '.rubocop_revert_ignores.txt',
         '.solargraph.yml.example',
         '.solargraph.yml',
         '.test_license_encryption_key.pub',
@@ -244,7 +218,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('.github/*') +
       Dir.glob('.gitlab/{issue,merge_request}_templates/**/*') +
       Dir.glob('.gitlab/*.toml') +
-      Dir.glob('{,**/}.{DS_Store,eslintrc.yml,gitignore,gitkeep,keep}', File::FNM_DOTMATCH) +
+      Dir.glob('{,**/}.{DS_Store,gitignore,gitkeep,keep}', File::FNM_DOTMATCH) +
       Dir.glob('{,vendor/}gems/*/.*') +
       Dir.glob('{.git,.lefthook,.ruby-lsp}/**/*') +
       Dir.glob('{file_hooks,log}/**/*') +

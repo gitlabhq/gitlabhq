@@ -11,8 +11,8 @@
             = _('Update selected')
         = render Pajamas::ButtonComponent.new(button_options: { class: 'js-bulk-update-menu-hide gl-float-right' }) do
           = _('Cancel')
-      - if params[:state] != 'merged'
-        .block
+      - if params[:state] != 'merged' || ::Feature.enabled?(:vue_merge_request_list, @project)
+        .block.js-status-dropdown-container
           .title
             = _('Status')
           .js-status-dropdown

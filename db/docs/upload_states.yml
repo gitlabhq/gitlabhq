@@ -8,4 +8,5 @@ description: Separate table for uploads containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65921
 milestone: '14.6'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464440 # Blocked on sharding the uploads table
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464440
+notes: Issue 464440 blocked on sharding the uploads table

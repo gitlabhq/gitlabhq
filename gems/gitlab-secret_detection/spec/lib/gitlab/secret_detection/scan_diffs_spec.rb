@@ -9,12 +9,12 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
     Struct.new(:left_blob_id, :right_blob_id, :patch, :status, :binary, :over_patch_bytes_limit, keyword_init: true)
   end
 
+  let(:exclusion) do
+    Struct.new('Exclusion', :value, :keyword_init)
+  end
+
   let(:sha1_blank_sha) { ('0' * 40).freeze }
   let(:sample_blob_id) { 'fe29d93da4843da433e62711ace82db601eb4f8f' }
-
-  let(:exclusion) do
-    Struct.new(:value, keyword_init: true)
-  end
 
   let(:ruleset) do
     {
@@ -52,6 +52,8 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
     }
   end
 
+  let(:empty_applied_exclusions) { [] }
+
   it "does not raise an error parsing the toml file" do
     expect { scan }.not_to raise_error
   end
@@ -86,7 +88,11 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
       end
 
       it "does not match" do
-        expected_response = Gitlab::SecretDetection::Response.new(Gitlab::SecretDetection::Status::NOT_FOUND)
+        expected_response = Gitlab::SecretDetection::Response.new(
+          Gitlab::SecretDetection::Status::NOT_FOUND,
+          nil,
+          empty_applied_exclusions
+        )
 
         expect(scan.secrets_scan(diffs)).to eq(expected_response)
       end
@@ -229,7 +235,8 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
               ruleset['rules'][2]['id'],
               ruleset['rules'][2]['description']
             )
-          ]
+          ],
+          empty_applied_exclusions
         )
       end
 
@@ -316,10 +323,15 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
       it "whole secret detection scan operation times out" do
         scan_timeout_secs = 0.000_001 # 1 micro-sec to intentionally timeout large diff
 
-        expected_response = Gitlab::SecretDetection::Response.new(Gitlab::SecretDetection::Status::SCAN_TIMEOUT)
+        expected_response = Gitlab::SecretDetection::Response.new(
+          Gitlab::SecretDetection::Status::SCAN_TIMEOUT,
+          nil,
+          empty_applied_exclusions
+        )
 
         begin
           response = scan.secrets_scan(diffs, timeout: scan_timeout_secs)
+
           expect(response).to eq(expected_response)
         rescue ArgumentError
           # When RSpec's main process terminates and attempts to clean up child processes upon completion, it terminates
@@ -350,7 +362,8 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
               diffs[2].right_blob_id,
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
-          ]
+          ],
+          empty_applied_exclusions
         )
 
         expect(scan.secrets_scan(diffs, payload_timeout: each_payload_timeout_secs)).to eq(expected_response)
@@ -375,7 +388,8 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
               all_large_diffs[2].right_blob_id,
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
-          ]
+          ],
+          empty_applied_exclusions
         )
 
         expect(scan.secrets_scan(all_large_diffs, payload_timeout: each_payload_timeout_secs)).to eq(expected_response)
@@ -482,10 +496,11 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
                 ruleset['rules'][1]['id'],
                 ruleset['rules'][1]['description']
               )
-            ]
+            ],
+            exclusions[:raw_value]
           )
 
-          expect(scan.secrets_scan(diffs, exclusions: exclusions)).to eq(expected_response)
+          expect(scan.secrets_scan(diffs, exclusions:)).to eq(expected_response)
         end
       end
 
@@ -512,10 +527,16 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
                 ruleset['rules'][1]['id'],
                 ruleset['rules'][1]['description']
               )
+            ],
+            [
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_personal_access_token")
             ]
           )
 
-          expect(scan.secrets_scan(diffs, exclusions: exclusions)).to eq(expected_response)
+          expect(scan.secrets_scan(diffs, exclusions:)).to eq(expected_response)
         end
       end
     end

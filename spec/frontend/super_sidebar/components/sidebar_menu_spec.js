@@ -1,11 +1,16 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '~/super_sidebar/constants';
-import { sidebarData } from '../mock_data';
+import { sidebarData, sidebarDataCountResponse } from '../mock_data';
 
 const menuItems = [
   { id: 1, title: 'No subitems' },
@@ -14,10 +19,21 @@ const menuItems = [
   { id: 4, title: 'Also with subitems', items: [{ id: 41, title: 'Subitem' }] },
 ];
 
+Vue.use(VueApollo);
+
 describe('Sidebar Menu', () => {
   let wrapper;
-  const createWrapper = (extraProps = {}) => {
+
+  const successHandler = jest.fn().mockResolvedValue(sidebarDataCountResponse);
+
+  const createWrapper = ({
+    handler = successHandler,
+    asyncSidebarCountsFlagEnabled = false,
+    provide = {},
+    ...extraProps
+  }) => {
     wrapper = shallowMountExtended(SidebarMenu, {
+      apolloProvider: createMockApollo([[superSidebarDataQuery, handler]]),
       propsData: {
         items: sidebarData.current_menu_items,
         isLoggedIn: sidebarData.is_logged_in,
@@ -25,6 +41,13 @@ describe('Sidebar Menu', () => {
         panelType: sidebarData.panel_type,
         updatePinsUrl: sidebarData.update_pins_url,
         ...extraProps,
+      },
+      provide: {
+        glFeatures: {
+          asyncSidebarCounts: asyncSidebarCountsFlagEnabled,
+        },
+        currentPath: 'group',
+        ...provide,
       },
     });
   };
@@ -196,6 +219,41 @@ describe('Sidebar Menu', () => {
 
       it('sets prop for pinned section to false', () => {
         expect(findPinnedSection().props('wasPinnedNav')).toBe(false);
+      });
+    });
+  });
+
+  describe('Fetching async nav item pill count', () => {
+    describe('when flag `asyncSidebarCounts` is disabled', () => {
+      it('async sidebar count query is not called, even with `currentPath` provided', async () => {
+        createWrapper({ asyncSidebarCountsFlagEnabled: false });
+        await waitForPromises();
+
+        expect(successHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when flag `asyncSidebarCounts` is enabled', () => {
+      it('when there is no `currentPath` prop, the query is not called', async () => {
+        createWrapper({
+          asyncSidebarCountsFlagEnabled: true,
+          provide: { currentPath: null },
+        });
+        await waitForPromises();
+
+        expect(successHandler).not.toHaveBeenCalled();
+      });
+
+      it('when there is a `currentPath` prop, the query is called', async () => {
+        createWrapper({
+          provide: {
+            currentPath: 'group',
+          },
+          asyncSidebarCountsFlagEnabled: true,
+        });
+        await waitForPromises();
+
+        expect(successHandler).toHaveBeenCalled();
       });
     });
   });

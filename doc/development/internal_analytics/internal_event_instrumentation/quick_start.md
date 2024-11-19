@@ -23,7 +23,7 @@ To create event and/or metric definitions, use the `internal_events` generator f
 scripts/internal_events/cli.rb
 ```
 
-This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.
+This CLI will help you create the correct definition files based on your specific use-case, then provide code examples for instrumentation and testing.
 
 Events should be named in the format of `<action>_<target_of_action>_<where/when>`, valid examples are `create_ci_build` or `click_previous_blame_on_blob_page`.
 
@@ -85,10 +85,7 @@ Tracking classes already have three built-in properties:
 - `value`(numeric)
 
 The arbitrary naming and typing of the these three properties is due to constraints from the data extraction process.
-It's recommended to use these properties first, even if their name does not match with the data you want to track.
-This recommendation is particularly important if you want to leverage these attributes as
-[metric filters](metric_definition_guide.md#filters). You can further describe what is the actual data being tracked
-by using the `description` property in the YAML definition of the event. For an example, see
+It's recommended to use these properties first, even if their name does not match with the data you want to track. You can further describe what is the actual data being tracked by using the `description` property in the YAML definition of the event. For an example, see
 [`create_ci_internal_pipeline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/537ea367dab731e886e6040d8399c430fdb67ab7/config/events/create_ci_internal_pipeline.yml):
 
 ```ruby
@@ -112,24 +109,25 @@ track_internal_event(
 )
 ```
 
-If you need to pass more than three additional properties, you can use the `additional_properties` hash with your custom keys:
+If you need to pass more than the three built-in additional properties, you can use the `additional_properties` hash with your custom keys:
 
 ```ruby
 track_internal_event(
   "code_suggestion_accepted",
   user: user,
+  additional_properties: {
+    # Built-in properties
     label: editor_name,
     property: suggestion_type,
-    value: suggestion_shown_duration
+    value: suggestion_shown_duration,
+    # Your custom properties
     lang: 'ruby',
     custom_key: 'custom_value'
   }
 )
 ```
 
-Please add custom properties only in addition to the built-in properties.
-
-Custom rules can not be used as [metric filters](metric_definition_guide.md#filters).
+Please add custom properties only in addition to the built-in properties. Additional properties can only have string or numeric values.
 
 #### Controller and API helpers
 
@@ -374,7 +372,7 @@ Sometimes we want to send internal events when the component is rendered or load
 
 #### Additional properties
 
-Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not sufficient.
 
 NOTE:
 Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.
@@ -420,6 +418,8 @@ For Haml:
 ```
 
 #### Frontend testing
+
+##### JavaScript/Vue
 
 If you are using the `trackEvent` method in any of your code, whether it is in raw JavaScript or a Vue component, you can use the `useMockInternalEventsTracking` helper method to assert if `trackEvent` is called.
 
@@ -563,6 +563,43 @@ describe('DeleteApplication', () => {
   });
 });
 ```
+
+#### Haml with data attributes
+
+If you are using the data attributes to register tracking at the Haml layer,
+you can use the `have_internal_tracking` matcher method to assert if expected data attributes are assigned.
+
+For example, if we need to test the below Haml,
+
+```haml
+%div{ data: { testid: '_testid_', event_tracking: 'render', event_label: '_tracking_label_' } }
+```
+
+Below would be the test case for above haml.
+
+- [RSpec view specs](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/)
+
+```ruby
+  it 'assigns the tracking items' do
+    render
+
+    expect(rendered).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+  end
+```
+
+- [ViewComponent](https://viewcomponent.org/) specs
+
+```ruby
+  it 'assigns the tracking items' do
+    render_inline(component)
+
+    expect(page).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+  end
+```
+
+`event` is required for the matcher and `label`/`testid` are optional.
+It is recommended to use `testid` when possible for exactness.
+When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
 
 ### Using Internal Events API
 

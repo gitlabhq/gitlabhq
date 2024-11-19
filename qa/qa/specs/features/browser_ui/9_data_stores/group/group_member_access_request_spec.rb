@@ -25,10 +25,6 @@ module QA
         end
       end
 
-      after do
-        user&.remove_via_api!
-      end
-
       it 'generates a todo item for the group owner', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370132' do
         Page::Dashboard::Todos.perform do |todos|

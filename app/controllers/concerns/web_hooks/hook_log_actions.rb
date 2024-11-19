@@ -31,11 +31,9 @@ module WebHooks
 
     private
 
-    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def hook_log
       @hook_log ||= hook.web_hook_logs.find(params[:id])
     end
-    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def execute_hook
       result = WebHooks::Events::ResendService.new(hook_log, current_user: current_user).execute

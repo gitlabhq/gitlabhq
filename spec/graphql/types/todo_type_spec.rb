@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Todo'], feature_category: :team_planning do
+RSpec.describe GitlabSchema.types['Todo'], feature_category: :notifications do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
 

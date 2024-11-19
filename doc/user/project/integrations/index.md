@@ -189,7 +189,7 @@ an internal list of certificate authorities. The SSL certificate cannot
 be self-signed.
 
 You can disable SSL verification when you configure
-[webhooks](webhooks.md#configure-webhooks-in-gitlab) and some integrations.
+[webhooks](webhooks.md#configure-webhooks) and some integrations.
 
 ## Related topics
 

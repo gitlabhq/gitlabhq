@@ -139,7 +139,7 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 AWS Identity providers (IDP) can be configured to authenticate into GitLab or GitLab can function as an IDP into AWS accounts.
 
-Top level groups on GitLab.com are also known as "Namespaces" and naming one after your company is the first step to setting up a tenant for your organization on GitLab.com. Namespaces can be configured for special functionality like SSO which then integrates your IDP into GitLab.
+Top-level groups on GitLab.com are also known as "Namespaces" and naming one after your company is the first step to setting up a tenant for your organization on GitLab.com. Namespaces can be configured for special functionality like SSO which then integrates your IDP into GitLab.
 
 ### User authentication and authorization between GitLab and AWS
 

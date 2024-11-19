@@ -87,9 +87,9 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 | `POSTGRES_CHART_REPOSITORY`             | Helm Chart repository used to search for PostgreSQL chart. Defaults to `https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami`. |
 | `POSTGRES_CHART_VERSION`                | Helm Chart version used for PostgreSQL chart. Defaults to `8.2.1`. |
 
-## Job-disabling variables
+## Job-skipping variables
 
-Use these variables to disable CI/CD jobs.
+ Use these variables to skip specific types of CI/CD jobs. When skipped, the CI/CD jobs don't get created or run.
 
 | **Job name**                           | **CI/CD variable**              | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
@@ -305,25 +305,25 @@ You can run the rollout jobs in any order. To scale down, rerun a
 lower percentage job.
 
 After you run the `rollout 100%` job, you cannot scale down, and must
-[roll back your deployment](../../ci/environments/index.md#retry-or-roll-back-a-deployment).
+[roll back your deployment](../../ci/environments/deployments.md#retry-or-roll-back-a-deployment).
 
 ### Example incremental rollout configurations
 
 Without `INCREMENTAL_ROLLOUT_MODE` and without `STAGING_ENABLED`:
 
-![Staging and rollout disabled](img/rollout_staging_disabled.png)
+![Staging and rollout disabled](img/rollout_staging_disabled_v11_0.png)
 
 Without `INCREMENTAL_ROLLOUT_MODE` and with `STAGING_ENABLED`:
 
-![Staging enabled](img/staging_enabled.png)
+![Staging enabled](img/staging_enabled_v11_0.png)
 
 With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and without `STAGING_ENABLED`:
 
-![Rollout enabled](img/rollout_enabled.png)
+![Rollout enabled](img/rollout_enabled_v10_8.png)
 
 With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`:
 
-![Rollout and staging enabled](img/rollout_staging_enabled.png)
+![Rollout and staging enabled](img/rollout_staging_enabled_v11_0.png)
 
 ## Timed incremental rollout to production
 

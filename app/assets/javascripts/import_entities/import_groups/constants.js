@@ -18,6 +18,7 @@ export const i18n = {
 
   NO_GROUPS_FOUND: s__('BulkImport|No groups found'),
   OWNER: __('Owner'),
+  LEARN_MORE: __('Learn more.'),
 
   features: {
     projectMigration: __('projects'),
@@ -47,6 +48,9 @@ export const PLACEHOLDER_USER_STATUS = {
   ],
   REASSIGNED: [PLACEHOLDER_STATUS_COMPLETED, PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER],
 };
+
+export const PLACEHOLDER_TAB_REASSIGNED = 'reassigned';
+export const PLACEHOLDER_TAB_AWAITING = 'awaiting';
 
 export const PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS = [
   {

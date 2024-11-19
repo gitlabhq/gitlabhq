@@ -448,7 +448,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
 
     context 'with the flag set' do
       before do
-        stub_feature_flags(load_balancer_low_statement_timeout: true)
+        stub_feature_flags(load_balancer_low_statement_timeout: Feature.current_pod)
       end
 
       it 'returns quickly if the underlying query takes a long time' do

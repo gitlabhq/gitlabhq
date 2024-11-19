@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -96,7 +96,7 @@ To enforce 2FA only for certain groups:
 1. Select **All users in this group must set up two-factor authentication**.
 1. Optional. In **Delay 2FA enforcement (hours)**, enter the number of hours you
    want the grace period to last for.
-   If there are multiple different grace periods in a top level group and its subgroups
+   If there are multiple different grace periods in a top-level group and its subgroups
    and projects, the shortest grace period is used.
 1. Select **Save changes**.
 
@@ -114,7 +114,7 @@ level group.
 
 You can prevent subgroups from setting up their own 2FA requirements:
 
-1. Go to the top level group's **Settings > General**.
+1. Go to the top-level group's **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
 
@@ -220,7 +220,7 @@ Then authenticate by either:
 
 - Entering the correct OTP.
 - In GitLab 15.3 and later, responding to a device push notification if
-  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-one-time-password-using-fortiauthenticator).
+  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
 
 After successful authentication, you can perform [Git over SSH operations](../development/gitlab_shell/features.md#git-operations) for 15 minutes (default) with the associated
 SSH key.

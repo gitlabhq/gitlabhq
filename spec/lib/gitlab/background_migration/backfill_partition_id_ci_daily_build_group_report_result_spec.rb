@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiDailyBuildGroupReportResult, feature_category: :ci_scaling do
+RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiDailyBuildGroupReportResult,
+  :suppress_partitioning_routing_analyzer,
+  feature_category: :continuous_integration do
   let(:ci_pipelines_table) { table(:ci_pipelines, primary_key: :id, database: :ci) }
   let(:ci_daily_build_group_report_results_table) { table(:ci_daily_build_group_report_results, database: :ci) }
   let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }

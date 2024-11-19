@@ -1,9 +1,10 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSorting } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
+import { FINISHED_STATUSES } from '~/deployments/utils';
 import environmentDetailsQuery from '../../graphql/queries/environment_details.query.graphql';
 import environmentToRollbackQuery from '../../graphql/queries/environment_to_rollback.query.graphql';
 import { convertToDeploymentTableRow } from '../../helpers/deployment_data_transformation_helper';
@@ -13,6 +14,9 @@ import Pagination from '../pagination.vue';
 import {
   ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL,
   ENVIRONMENT_DETAILS_PAGE_SIZE,
+  DEPLOYMENTS_SORT_OPTIONS,
+  DIRECTION_DESCENDING,
+  DIRECTION_ASCENDING,
 } from '../constants';
 
 export default {
@@ -22,6 +26,7 @@ export default {
     DeploymentsTable,
     EmptyState,
     GlLoadingIcon,
+    GlSorting,
   },
   inject: { graphqlEtagKey: { default: '' } },
   props: {
@@ -51,6 +56,8 @@ export default {
         return {
           projectFullPath: this.projectFullPath,
           environmentName: this.environmentName,
+          orderBy: this.orderBy,
+          statuses: this.statuses,
           first: this.before ? null : ENVIRONMENT_DETAILS_PAGE_SIZE,
           last: this.before ? ENVIRONMENT_DETAILS_PAGE_SIZE : null,
           after: this.after,
@@ -74,6 +81,8 @@ export default {
       environmentToRollback: {},
       isInitialPageDataReceived: false,
       isPrefetchingPages: false,
+      activeSortOption: DEPLOYMENTS_SORT_OPTIONS[0],
+      sortDirection: DIRECTION_DESCENDING,
     };
   },
   computed: {
@@ -96,6 +105,18 @@ export default {
     isPaginationDisabled() {
       return this.isLoading || this.isPrefetchingPages;
     },
+    pollingInterval() {
+      return this.graphqlEtagKey ? ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL : null;
+    },
+    isDirectionAscending() {
+      return this.sortDirection === DIRECTION_ASCENDING;
+    },
+    orderBy() {
+      return { [this.activeSortOption.value]: this.sortDirection };
+    },
+    statuses() {
+      return this.activeSortOption.value === 'finishedAt' ? FINISHED_STATUSES : [];
+    },
   },
   watch: {
     async project(newProject) {
@@ -103,11 +124,11 @@ export default {
       this.isPrefetchingPages = true;
 
       try {
-        // TLDR: when we load a page, if there's next and/or previous pages existing, we'll load their data as well to improve percepted performance.
+        // TL;DR: when we load a page, if there's next and/or previous pages existing, we'll load their data as well to improve perceived performance.
         const { endCursor, hasPreviousPage, hasNextPage, startCursor } =
           newProject.environment.deployments.pageInfo;
 
-        // At the moment we have a limit of deployments being requested only from a signle environment entity per query,
+        // At the moment we have a limit of deployments being requested only from a single environment entity per query,
         // and apparently two batched queries count as one on server-side
         // to load both next and previous page data, we have to query them sequentially
         if (hasNextPage) {
@@ -116,6 +137,8 @@ export default {
             variables: {
               projectFullPath: this.projectFullPath,
               environmentName: this.environmentName,
+              orderBy: this.orderBy,
+              statuses: this.statuses,
               first: ENVIRONMENT_DETAILS_PAGE_SIZE,
               after: endCursor,
               before: null,
@@ -130,6 +153,8 @@ export default {
             variables: {
               projectFullPath: this.projectFullPath,
               environmentName: this.environmentName,
+              orderBy: this.orderBy,
+              statuses: this.statuses,
               first: null,
               after: null,
               before: startCursor,
@@ -163,7 +188,21 @@ export default {
     resetPage() {
       this.$router.push({ query: {} });
     },
+    updateParams() {
+      if (this.after || this.before) {
+        this.resetPage();
+      }
+    },
+    onDirectionChange() {
+      this.sortDirection = this.isDirectionAscending ? DIRECTION_DESCENDING : DIRECTION_ASCENDING;
+      this.updateParams();
+    },
+    onSortItemClick(orderBy) {
+      this.activeSortOption = DEPLOYMENTS_SORT_OPTIONS.find((option) => option.value === orderBy);
+      this.updateParams();
+    },
   },
+  sortOptions: DEPLOYMENTS_SORT_OPTIONS,
 };
 </script>
 <template>
@@ -174,6 +213,16 @@ export default {
     ></div>
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-absolute gl-left-1/2 gl-top-1/2" />
     <div v-if="isDeploymentTableShown">
+      <div class="gl-my-3 gl-flex gl-justify-end">
+        <gl-sorting
+          :is-ascending="isDirectionAscending"
+          :sort-options="$options.sortOptions"
+          :sort-by="activeSortOption.value"
+          @sortDirectionChange="onDirectionChange"
+          @sortByChange="onSortItemClick"
+        />
+      </div>
+
       <deployments-table :deployments="deployments" />
       <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
     </div>

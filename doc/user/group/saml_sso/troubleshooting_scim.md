@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -84,7 +84,7 @@ To change the identifier values to match, you can do one of the following:
 - Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
 
   WARNING:
-  This resets all users' roles in the top level group and subgroups to the [configured default membership role](index.md#configure-gitlab).
+  This resets all users' roles in the top-level group and subgroups to the [configured default membership role](index.md#configure-gitlab).
 - Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
   `NameId` or SCIM `externalId`.
 

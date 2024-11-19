@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -84,7 +84,7 @@ On GitLab self-managed, you must also use a GitLab version that supports Advance
   - The latest template includes Advanced SAST in GitLab 17.2 or later. Note that you [should not mix latest and stable templates](../index.md#template-editions) in a single project.
 - At a minimum, GitLab Advanced SAST requires version 17.1 or later.
 
-### Enabling Advanced SAST scanning
+### Enable Advanced SAST scanning
 
 Advanced SAST is included in the standard GitLab SAST CI/CD template, but isn't yet enabled by default.
 To enable it, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
@@ -141,6 +141,14 @@ To enable Advanced SAST by using the pipeline editor:
 Pipelines now include an Advanced SAST job.
 
 ## Vulnerability code flow
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458062) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `vulnerability_code_flow`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/465776) in GitLab 17.4.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available in the [Vulnerability Page](../vulnerabilities/index.md).
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink),

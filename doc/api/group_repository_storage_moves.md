@@ -36,7 +36,7 @@ push new commits:
 The repository is temporarily read-only. Please try again later.
 ```
 
-This API requires you to [authenticate yourself](rest/index.md#authentication) as an administrator.
+This API requires you to [authenticate yourself](rest/authentication.md) as an administrator.
 
 APIs are also available to move other types of repositories:
 

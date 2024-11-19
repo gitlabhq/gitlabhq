@@ -180,7 +180,7 @@ After completing their portion of investigating or fixing the alert, users can u
 
 You can manually create a [to-do item](../../user/todos.md) for yourself from an alert, and view it later on your **To-Do List**.
 
-To add a to-do item, on the right sidebar, select **Add a to do**.
+To add a to-do item, on the right sidebar, select **Add a to-do item**.
 
 ### Trigger actions from alerts
 

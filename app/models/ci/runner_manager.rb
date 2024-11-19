@@ -36,7 +36,7 @@ module Ci
 
     EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
 
-    belongs_to :runner
+    belongs_to :runner, class_name: 'Ci::Runner', inverse_of: :runner_managers
 
     enum creation_state: {
       started: 0,
@@ -64,8 +64,6 @@ module Ci
 
     validate :no_sharding_key_id, if: :instance_type?
 
-    before_validation :copy_runner_fields
-
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner manager
@@ -85,8 +83,11 @@ module Ci
       ).where(created_before_stale_deadline)
     end
 
-    scope :for_runner, ->(runner_id) do
-      where(runner_id: runner_id)
+    scope :for_runner, ->(runner) do
+      scope = where(runner_id: runner)
+      scope = scope.where(runner_type: runner.runner_type) if runner.is_a?(Ci::Runner) # Use unique index if possible
+
+      scope
     end
 
     scope :with_system_xid, ->(system_xid) do
@@ -145,7 +146,7 @@ module Ci
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
-      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+      ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
 
         values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at
@@ -179,14 +180,6 @@ module Ci
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
-    end
-
-    def copy_runner_fields
-      return if runner_type && sharding_key_id
-      return unless runner
-
-      self.runner_type = runner.runner_type
-      self.sharding_key_id = runner.sharding_key_id
     end
 
     def no_sharding_key_id

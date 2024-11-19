@@ -970,7 +970,7 @@ To configure a notification endpoint for a Linux package installation:
      }
    ]
 
-   gitlab_rails['registry_notification_secret'] = 'AUTHORIZATION_EXAMPLE_TOKEN' # Must match the auth token in registry['notifications'] 
+   gitlab_rails['registry_notification_secret'] = 'AUTHORIZATION_EXAMPLE_TOKEN' # Must match the auth token in registry['notifications']
    ```
 
    NOTE:
@@ -1296,6 +1296,60 @@ blobs start being deleted is anything permanent done.
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
 if you migrate to the [metadata database](container_registry_metadata_database.md).
 
+## Scaling by component
+
+This section outlines the potential performance bottlenecks as registry traffic increases by component.
+Each subsection is roughly ordered by recommendations that benefit from smaller to larger registry workloads.
+The registry is not included in the [reference architectures](../reference_architectures/index.md),
+and there are no scaling guides which target number of seats or requests per second.
+
+### Database
+
+1. **Move to a separate database**: As database load increases, scale vertically by moving the registry metadata database
+   to a separate physical database. A separate database can increase the amount of resources available
+   to the registry database while isolating the traffic produced by the registry.
+1. **Move to a HA PostgreSQL third-party solution**: Similar to [Praefect](../reference_architectures/5k_users.md#praefect-ha-postgresql-third-party-solution),
+   moving to a reputable provider or solution enables HA and is suitable for multi-node registry deployments.
+   You must pick a provider that supports native Postgres partitioning, triggers, and functions,
+   as the registry makes heavy use of these.
+
+### Registry server
+
+1. **Move to a separate node**: A [separate node](#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations)
+   is one way to scale vertically to increase the resources available to the container registry server process.
+1. **Run multiple registry nodes behind a load balancer**: While the registry can handle
+   a high amount of traffic with a single large node, the registry is generally intended to
+   scale horizontally with multiple deployments. Configuring multiple smaller nodes
+   also enables techniques such as autoscaling.
+
+### Redis Cache
+
+Enabling the [Redis](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#redis)
+cache improves performance, but also enables features such as renaming repositories.
+
+1. **Redis Server**: A single Redis instance is supported and is the simplest way
+   to access the benefits of the Redis caching.
+1. **Redis Sentinel**: Redis Sentinel is also supported and enables the cache to be HA.
+1. **Redis Cluster**: Redis Cluster can also be used for further scaling as deployments grow.
+
+### Storage
+
+1. **Local file system**: A local file system is the default and is relatively performant,
+   but not suitable for multi-node deployments or a large amount of registry data.
+1. **Object storage**: [Use object storage](#use-object-storage) to enable the practical storage
+   of a larger amount of registry data. Object storage is also suitable for multi-node registry deployments.
+
+### Online garbage collection
+
+1. **Adjust defaults**: If online garbage collection is not reliably clearing the [review queues](container_registry_metadata_database.md#queue-monitoring),
+   you can adjust the `interval` settings in the `manifests` and `blobs` sections under the
+   [`gc`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#gc)
+   configuration section. The default is `5s`, and these can be configured with milliseconds as well,
+   for example `500ms`.
+1. **Scale horizontally with the registry server**: If you are scaling the registry application horizontally
+   with multi-node deployments, online garbage collection automatically scales without
+   the need for configuration changes.
+
 ## Configure GitLab and Registry to run on separate nodes (Linux package installations)
 
 By default, package assumes that both services are running on the same node.
@@ -1340,7 +1394,18 @@ The GitLab registry is what users use to store their own Docker images.
 Because of that the Registry is client facing, meaning that we expose it directly
 on the web server (or load balancers, LB for short).
 
-![GitLab Registry diagram](img/gitlab-registry-architecture.png)
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+    A[User] --->|1: Docker login<br>on port 443| C{Frontend load<br>balancer}
+    C --->|2: connection attempt<br>without token fails| D[Registry]
+    C --->|5: connect with <br>token succeeds| D[Registry]
+    C --->|3: Docker<br>requests token| E[API frontend]
+    E --->|4:API returns<br>signed token| C
+
+    linkStyle 1 stroke-width:4px,stroke:red
+    linkStyle 2 stroke-width:4px,stroke:green
+```
 
 The flow described by the diagram above:
 
@@ -1396,3 +1461,27 @@ The GitLab container registry is compatible with the basic functionality provide
 including all the supported storage backends. To migrate to the GitLab container registry
 you can follow the instructions on this page, and use the same storage backend as the Distribution Registry.
 The GitLab container registry should accept the same configuration that you are using for the Distribution Registry.
+
+## Max retries for deleting container images
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `set_delete_failed_container_repository`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490354) in GitLab 17.6. Feature flag `set_delete_failed_container_repository` removed.
+
+Errors could happen when deleting container images, so deletions are retried to ensure
+the error is not a transient issue. Deletion is retried up to 10 times, with a back off delay
+between retries. This delay gives more time between retries for any transient errors to resolve.
+
+Setting a maximum number of retries also helps detect if there are any persistent errors
+that haven't been solved in between retries. After a deletion fails the maximum number of retries,
+the container repository `status` is set to `delete_failed`. With this status, the
+repository no longer retries deletions.
+
+You should investigate any container repositories with a `delete_failed` status and
+try to resolve the issue. After the issue is resolved, you can set the repository status
+back to `delete_scheduled` so images can start to be deleted again. To update the repository status,
+from the rails console:
+
+```ruby
+container_repository = ContainerRepository.find(<id>)
+container_repository.update(status: 'delete_scheduled')
+```

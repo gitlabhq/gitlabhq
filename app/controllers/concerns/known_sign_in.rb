@@ -36,10 +36,9 @@ module KnownSignIn
   end
 
   def sessions
-    strong_memoize(:session) do
-      ActiveSession.list(current_user).reject(&:is_impersonated)
-    end
+    ActiveSession.list(current_user).reject(&:is_impersonated)
   end
+  strong_memoize_attr :sessions
 
   def known_ip_addresses
     [current_user.last_sign_in_ip, sessions.map(&:ip_address)].flatten

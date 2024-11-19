@@ -52,7 +52,8 @@ module Packages
             file_path: path,
             signature: signature,
             size: file.size,
-            file_sha256: checksum
+            file_sha256: checksum,
+            project_id: package.project_id
           )
         rescue StandardError => e
           Gitlab::ErrorTracking.track_exception(e, class: self.class.name, package_id: package.id)

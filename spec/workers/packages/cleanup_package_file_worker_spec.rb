@@ -2,10 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::CleanupPackageFileWorker, feature_category: :package_registry do
+RSpec.describe Packages::CleanupPackageFileWorker, type: :worker, feature_category: :package_registry do
   let_it_be_with_reload(:package) { create(:package) }
 
   let(:worker) { described_class.new }
+
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
+
+  it 'has :none deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:none)
+  end
 
   describe '#perform_work' do
     subject { worker.perform_work }

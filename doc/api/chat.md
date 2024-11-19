@@ -20,7 +20,7 @@ POST /chat/completions
 
 NOTE:
 Requests to this endpoint are proxied to the
-[AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
+[AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
 
 Supported attributes:
 

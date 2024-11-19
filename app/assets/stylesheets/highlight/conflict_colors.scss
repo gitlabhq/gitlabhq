@@ -17,7 +17,7 @@ $conflict-colors: (
   white-button-origin-chosen  : #268ced,
 
   white-header-not-chosen     : #f0f0f0,
-  white-line-not-chosen       : $gray-10,
+  white-line-not-chosen       : $gl-color-neutral-10,
 
   dark-header-head-neutral   : rgba(#3f3, 0.2),
   dark-line-head-neutral     : rgba(#3f3, 0.1),
@@ -95,23 +95,23 @@ $conflict-colors: (
   solarized_dark_header_not_chosen     : rgba(#839496, 0.25),
   solarized_dark_line_not_chosen       : rgba(#839496, 0.15),
 
-  none_header_head_neutral   : $gray-50,
-  none_line_head_neutral     : $gray-50,
-  none_button_head_neutral   : $gray-50,
+  none_header_head_neutral   : $gl-color-neutral-50,
+  none_line_head_neutral     : $gl-color-neutral-50,
+  none_button_head_neutral   : $gl-color-neutral-50,
 
-  none_header_head_chosen    : $gray-100,
-  none_line_head_chosen      : $gray-100,
-  none_button_head_chosen    : $gray-100,
+  none_header_head_chosen    : $gl-color-neutral-100,
+  none_line_head_chosen      : $gl-color-neutral-100,
+  none_button_head_chosen    : $gl-color-neutral-100,
 
-  none_header_origin_neutral : $gray-50,
-  none_line_origin_neutral   : $gray-50,
-  none_button_origin_neutral : $gray-50,
+  none_header_origin_neutral : $gl-color-neutral-50,
+  none_line_origin_neutral   : $gl-color-neutral-50,
+  none_button_origin_neutral : $gl-color-neutral-50,
 
-  none_header_origin_chosen  : $gray-100,
-  none_line_origin_chosen    : $gray-100,
-  none_button_origin_chosen  : $gray-100,
+  none_header_origin_chosen  : $gl-color-neutral-100,
+  none_line_origin_chosen    : $gl-color-neutral-100,
+  none_button_origin_chosen  : $gl-color-neutral-100,
 
-  none_header_not_chosen     : $gray-10,
-  none_line_not_chosen       : $gray-10
+  none_header_not_chosen     : $gl-color-neutral-10,
+  none_line_not_chosen       : $gl-color-neutral-10
 
 );

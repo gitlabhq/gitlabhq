@@ -13,7 +13,7 @@ Documentation at GitLab follows a workflow.
 Ensure your documentation includes:
 
 - [Product availability details](styleguide/availability_details.md).
-- The GitLab [version](versions.md) that introduced the feature.
+- The GitLab [version](styleguide/availability_details.md) that introduced the feature.
 - Accurate [links](styleguide/index.md#links).
 - Accurate [user permissions](../../user/permissions.md).
 
@@ -120,4 +120,4 @@ GitLab team members must follow the guidelines documented in the [internal handb
 - [Technical writing assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 - The [Style Guide](styleguide/index.md)
 - The [Word list](styleguide/word_list.md)
-- The [Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/)
+- The [Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/)

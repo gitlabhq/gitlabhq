@@ -26,21 +26,11 @@ module Organizations
       attr_reader :organization_user, :current_user, :params
 
       def allowed?
-        current_user&.can?(:update_organization_user, organization_user)
-      end
-
-      def can_admin_organization?
         current_user&.can?(:admin_organization, organization_user.organization)
       end
 
       def error_response
-        error_message = if can_admin_organization? && organization_user.last_owner?
-                          _('You cannot change the access of the last owner from the organization')
-                        else
-                          _('You have insufficient permissions to update the organization user')
-                        end
-
-        ServiceResponse.error(message: [error_message])
+        ServiceResponse.error(message: [_('You have insufficient permissions to update the organization user')])
       end
 
       def error_updating

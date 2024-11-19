@@ -108,4 +108,45 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
       end
     end
   end
+
+  context 'with history button' do
+    let(:ref) { 'master' }
+
+    it 'does not render the history button when show_history_button is not provided' do
+      render partial: template, formats: :html, locals: {
+        project: project,
+        ref: ref,
+        commit: commit
+      }
+
+      expect(rendered).not_to have_css('#js-commit-history-link')
+      expect(rendered).not_to have_content('History')
+    end
+
+    it 'renders the history button when show_history_button is true' do
+      allow(view).to receive(:project_commits_path).and_return('/commits/123')
+
+      render partial: template, formats: :html, locals: {
+        project: project,
+        ref: ref,
+        commit: commit,
+        show_history_button: true
+      }
+
+      expect(rendered).to have_css('#js-commit-history-link')
+      expect(rendered).to have_content('History')
+    end
+
+    it 'does not render the history button when show_history_button is false' do
+      render partial: template, formats: :html, locals: {
+        project: project,
+        ref: ref,
+        commit: commit,
+        show_history_button: false
+      }
+
+      expect(rendered).not_to have_css('#js-commit-history-link')
+      expect(rendered).not_to have_content('History')
+    end
+  end
 end

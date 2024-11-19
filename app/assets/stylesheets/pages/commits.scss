@@ -40,33 +40,10 @@
   }
 }
 
-.text-expander {
-  display: inline-flex;
-  background: $white;
-  color: $gl-text-color-secondary;
-  padding: 1px $gl-padding-4;
-  cursor: pointer;
-  border: 1px solid $gray-100;
-  border-radius: $gl-border-radius-base;
-  margin-left: 5px;
-  font-size: 12px;
-  line-height: $gl-font-size;
-  outline: none;
-
-  &.open {
-    background-color: $gray-100;
-    box-shadow: inset 0 0 2px rgba($black, 0.2);
-  }
-
-  &:hover {
-    background-color: $gray-100;
-    text-decoration: none;
-  }
-}
-
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+  min-width: 0;
 
   .commit-title {
     display: flex;
@@ -74,10 +51,10 @@
   }
 
   .committer {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
 
     .commit-author-link {
-      color: $gl-text-color;
+      @apply gl-text-default;
     }
 
     // stylelint-disable-next-line gitlab/no-gl-class
@@ -134,13 +111,12 @@
 
   .label-monospace {
     user-select: text;
-    color: $gl-text-color;
+    @apply gl-text-default;
     background-color: $gray-10;
   }
 
   .btn svg {
     top: auto;
-    fill: $gl-text-color-secondary;
   }
 
   :first-child {
@@ -161,7 +137,7 @@
 .commit,
 .generic-commit-status {
   a {
-    color: $gl-text-color;
+    @apply gl-text-default;
   }
 
   .commit-row-description {
@@ -189,7 +165,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
   }
 }

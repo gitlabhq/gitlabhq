@@ -53,6 +53,7 @@ export default {
       default: PIPELINE_MINI_GRAPH_POLL_INTERVAL,
     },
   },
+  emits: ['miniGraphStageClick'],
   data() {
     return {
       pipeline: {},
@@ -130,7 +131,6 @@ export default {
       />
       <pipeline-stages
         :is-merge-train="isMergeTrain"
-        :pipeline-etag="pipelineEtag"
         :stages="pipelineStages"
         @miniGraphStageClick="$emit('miniGraphStageClick')"
       />

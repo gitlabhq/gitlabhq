@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AwardEmojiPresenter do
-  let(:emoji_name) { 'thumbsup' }
+  let(:emoji_name) { AwardEmoji::THUMBS_UP }
   let(:award_emoji) { build(:award_emoji, name: emoji_name) }
   let(:presenter) { described_class.new(award_emoji) }
   let(:emoji) { TanukiEmoji.find_by_alpha_code(emoji_name) }

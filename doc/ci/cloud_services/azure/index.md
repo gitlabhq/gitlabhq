@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -39,7 +39,7 @@ To complete this tutorial:
 1. [Grant permissions for the service principal](#grant-permissions-for-the-service-principal).
 1. [Retrieve a temporary credential](#retrieve-a-temporary-credential).
 
-For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation).
+For more information about Azure identity federation, see [workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation).
 
 ## Create Azure AD application and service principal
 

@@ -130,6 +130,7 @@ DETAILS:
 **Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+> - Feature flag name was [changed] to `epics_list_drawer` in GitLab 17.6.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -194,7 +195,7 @@ The assignee is changed without having to refresh the page.
 ## Epic color
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) on GitLab.com, GitLab Dedicated, and self-managed in GitLab 16.11.
@@ -287,7 +288,7 @@ You can also create an epic by
 If an issue belongs to an epic, you can go to the parent epic with the
 link in the right sidebar.
 
-![containing epic](img/containing_epic.png)
+![containing epic](img/containing_epic_v10_3.png)
 
 ## View epics list
 
@@ -372,7 +373,7 @@ Each option contains a button that can toggle the order between **Ascending** an
 The sort option and order is saved and used wherever you browse epics, including the
 [Roadmap](../roadmap/index.md).
 
-![epics sort](img/epics_sort_14_7.png)
+![epics sort](img/epics_sort_v14_7.png)
 
 ## Change activity sort order
 

@@ -28,6 +28,10 @@ module RuboCop
       @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')
     end
 
+    def large_tables
+      @large_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'LargeTables')
+    end
+
     # Returns true if the given node originated from the db/migrate directory.
     def in_migration?(node)
       in_deployment_migration?(node) || in_post_deployment_migration?(node)

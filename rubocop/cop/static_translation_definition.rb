@@ -105,7 +105,7 @@ module RuboCop
       def named_block?(node)
         return unless node.block_type?
 
-        !NON_METHOD_DEFINITIONS.include?(node.method_name) # rubocop:disable Rails/NegateInclude
+        !NON_METHOD_DEFINITIONS.include?(node.method_name)
       end
 
       def instance_method_definition?(node)

@@ -19,8 +19,6 @@
 
 = render partial: 'flash_messages'
 
-= render_if_exists 'shared/duo_free_access_ending_banner', resource: @group
-
 = render 'groups/home_panel'
 
 = render_if_exists 'groups/group_activity_analytics', group: @group

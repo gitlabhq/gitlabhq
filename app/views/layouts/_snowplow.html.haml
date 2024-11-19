@@ -13,7 +13,7 @@
       namespace_id: namespace&.id,
       plan_name: namespace&.actual_plan_name,
       project_id: @project&.id,
-      user_id: current_user&.id
+      user: current_user
     ).to_context.to_json.to_json}
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};
     gl.maskedDefaultReferrerUrl = #{masked_referrer_url(request.referer).to_json};

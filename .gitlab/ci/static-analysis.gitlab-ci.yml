@@ -135,6 +135,14 @@ rubocop:
         fi
       fi
 
+rubocop-docs:
+  extends:
+    - .static-analysis-base
+    - .rubocop-job-cache
+    - .docs:rules:docs-lint
+  script:
+    - bundle exec rubocop --only Gitlab/DocumentationLinks/Link
+
 rails-next-dependency-check:
   stage: lint
   needs: []

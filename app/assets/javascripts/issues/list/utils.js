@@ -29,14 +29,13 @@ import {
   WORK_ITEM_TO_ISSUABLE_MAP,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_AWARD_EMOJI,
-  EMOJI_THUMBSUP,
-  EMOJI_THUMBSDOWN,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_TASK,
 } from '~/work_items/constants';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import { BoardType } from '~/boards/constants';
 import { STATUS_CLOSED, STATUS_OPEN, TYPE_EPIC } from '../constants';
 import {
@@ -74,6 +73,8 @@ import {
   urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
+  MERGED_AT_ASC,
+  MERGED_AT_DESC,
 } from './constants';
 
 /**
@@ -126,6 +127,7 @@ export const getSortOptions = ({
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
   hasManualSort = true,
+  hasMergedDate = false,
 } = {}) => {
   const sortOptions = [
     {
@@ -209,6 +211,17 @@ export const getSortOptions = ({
       },
     },
   ];
+
+  if (hasMergedDate) {
+    sortOptions.push({
+      id: sortOptions.length + 1,
+      title: s__('SortOptions|Merged date'),
+      sortDirection: {
+        ascending: MERGED_AT_ASC,
+        descending: MERGED_AT_DESC,
+      },
+    });
+  }
 
   if (hasIssuableHealthStatusFeature) {
     sortOptions.push({
@@ -521,9 +534,10 @@ export function updateUpvotesCount({ list, workItem, namespace = BoardType.proje
     }
 
     const upvotesCount =
-      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSUP)?.length ?? 0;
+      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBS_UP)?.length ?? 0;
     const downvotesCount =
-      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSDOWN)?.length ?? 0;
+      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBS_DOWN)?.length ??
+      0;
     activeItem.upvotes = upvotesCount;
     activeItem.downvotes = downvotesCount;
   });

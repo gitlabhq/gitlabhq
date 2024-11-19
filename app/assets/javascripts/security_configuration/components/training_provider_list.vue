@@ -268,7 +268,7 @@ export default {
                 <span
                   v-if="!securityTrainingEnabled"
                   data-testid="unavailable-text"
-                  class="gl-text-gray-600"
+                  class="gl-text-subtle"
                 >
                   {{ $options.i18n.unavailableText }}
                 </span>

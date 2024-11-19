@@ -1,0 +1,9 @@
+---
+name: diff_line_match
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/10101
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172067
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503981
+milestone: '17.6'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

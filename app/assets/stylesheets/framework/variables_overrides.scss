@@ -6,7 +6,7 @@
 $secondary: $gray-10;
 $input-disabled-bg: $gray-10;
 $input-border-color: $gray-400;
-$input-color: $gl-text-color;
+$input-color: $gl-text-color-default;
 $input-font-size: $gl-font-size;
 $font-family-sans-serif: $regular-font;
 $font-family-monospace: $monospace-font;
@@ -35,7 +35,7 @@ $h3-font-size: 14px * 1.75;
 $h4-font-size: 14px * 1.5;
 $h5-font-size: 14px * 1.25;
 $h6-font-size: 14px;
-$headings-color: $gl-text-color;
+$headings-color: $gl-text-color-heading;
 $headings-font-weight: $gl-font-weight-bold;
 $spacer: $grid-size;
 $spacers: (
@@ -50,7 +50,6 @@ $spacers: (
   8: ($spacer * 7),
   9: ($spacer * 8)
 );
-$pagination-color: $gl-text-color;
 $tooltip-padding-y: 0.5rem;
 $tooltip-padding-x: 0.75rem;
 $tooltip-arrow-height: 0.5rem;

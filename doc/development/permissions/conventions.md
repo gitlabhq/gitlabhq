@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
@@ -20,21 +20,21 @@ The purpose of this document is to provide guidance on:
 
 Introduce a new permission only when absolutely necessary. Always try to use an existing one first. For example, there's no need for a `read_issue_description` permission when we already have `read_issue`, and both require the same role. Similarly, with `create_pipeline` available, we don't need `create_build`.
 
-When introducing a new permission, always attempt to follow the naming conventions. Try to create a general permission, not a specific one, eg. it is better to add a permission `create_member_role` than `create_member_role_name`. If you're unsure, consult a Backend Engineer from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/) for advice or approval for exceptions.
+When introducing a new permission, always attempt to follow the naming conventions. Try to create a general permission, not a specific one. For example, it is better to add a permission `create_member_role` than `create_member_role_name`. If you're unsure, consult a Backend Engineer from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/) for advice or approval for exceptions.
 
 ### Naming Permissions
 
 Our goal is for all permissions to follow a consistent pattern: `verb-feature(-subfeature)`. The feature and subfeature should always be in the singular. Additionally, we aim to limit the verbs used to ensure clarity. The preferred verbs are:
 
-- `create` - for creating an object, e.g., `create_issue`
-- `read` - for reading an object, e.g., `read_issue`.
-- `update` - for updating an object, e.g., `update_issue`.
-- `delete` - for deleting an object, eg. `delete_issue`.
+- `create` - for creating an object. For example, `create_issue`.
+- `read` - for reading an object. For example, `read_issue`.
+- `update` - for updating an object. For example, `update_issue`.
+- `delete` - for deleting an object. For example, `delete_issue`.
 - `push` and `download` - these are specific verbs for file-related permissions. Other industry terms can be permitted after a justification.
 
 We recognize that this set of verbs is limited and not applicable to every feature. Here are some verbs that, while necessary, could potentially be rephrased to align with the above conventions:
 
-- `approve` - e.g., `approve_merge_request`. Though `approve` suggests a lower role than `manage`, it could be rephrased as `create_merge_request_approval`.
+- `approve` - For example, `approve_merge_request`. Though `approve` suggests a lower role than `manage`, it could be rephrased as `create_merge_request_approval`.
 
 #### Preferred Verbs
 

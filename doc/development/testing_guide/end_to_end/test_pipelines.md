@@ -39,7 +39,7 @@ E2E test execution pipeline consists of several stages which all support executi
 
 This stage is responsible for the following tasks:
 
-- Fetching `knapsack` reports that support [parallel test execution](index.md#run-tests-in-parallel).
+- Fetching `knapsack` reports that support [parallel test execution](index.md#test-parallelization).
 - Triggering downstream pipeline which builds the [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) Docker image.
 
 ##### test
@@ -175,7 +175,7 @@ execution of E2E tests.
 
 ##### .pre
 
-This stage is responsible for fetching `knapsack` reports that support [parallel test execution](index.md#run-tests-in-parallel).
+This stage is responsible for fetching `knapsack` reports that support [parallel test execution](index.md#test-parallelization).
 
 ##### test
 
@@ -197,10 +197,7 @@ Unlike `review-apps`, this pipeline uses local [kind](https://github.com/kuberne
 Deployment is managed by the [`cng`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-cng/README.md)
 orchestrator tool, which you can also use to locally recreate CI/CD deployments.
 
-This pipeline is executed every two hours on scheduled pipelines and runs the following validations:
-
-- Main test suite against the `CNG` deployment using default chart configuration.
-- Minimal `health_check` test suite against the `CNG` deployment that uses minimal supported `redis` version.
+This pipeline is executed in merge requests and is part of pre-merge validation lifecycle. If any test is failing, this will prevent ability to merge introduced code changes.
 
 ### Setup
 
@@ -238,3 +235,4 @@ To help with debugging:
 - Each test job prints a list of arguments that you can pass to the [`cng`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-cng/README.md)
   orchestrator to exactly recreate the same deployment for local debugging.
 - Cluster events log and all pod logs are saved in E2E test job artifacts.
+- `cng` orchestrator will automatically output all cluster events with errors in case of failed deployment

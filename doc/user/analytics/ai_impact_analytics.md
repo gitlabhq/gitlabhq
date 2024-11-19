@@ -7,13 +7,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # AI Impact analytics
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. On October 17, 2024, [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-AI Impact analytics displays software development life cycle (SDLC) metrics for a project or group in the month-to-date and the past six months.
+AI Impact analytics displays software development lifecycle (SDLC) metrics for a project or group in the month-to-date and the past six months.
 
 Use AI Impact analytics to:
 
@@ -30,19 +31,24 @@ AI Impact analytics displays key metrics and metric trends for a project or grou
 
 ### Key metrics
 
-- **GitLab Duo seats: Assigned and used**: Percentage of assigned licensed seats that have used at least one AI feature in the last 30 days.
 - **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
 - **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
+- **Duo Chat: Unique users**: Percentage of users that engage with Duo Chat every month. It is calculated as the number of monthly unique Duo Chat users divided by the total GitLab Duo assigned users.
 
 ### Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
+
+#### Lifecycle metrics
 
 - [**Cycle time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
 - [**Lead time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
 - [**Deployment frequency**](dora_metrics.md#deployment-frequency)
 - [**Change failure rate**](dora_metrics.md#change-failure-rate)
 - [**Critical vulnerabilities over time**](../application_security/vulnerability_report/index.md)
+
+#### AI usage metrics
+
 - **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
 
   - The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.

@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.projects_with_alerts_service_enabled
 description: Count of projects that have enabled the Alerts service
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: removed
 milestone_removed: '13.12'
@@ -11,7 +11,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

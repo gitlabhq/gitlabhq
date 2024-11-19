@@ -52,54 +52,11 @@ upstream members of the project you're contributing to:
 
 You can push directly to the branch of the forked repository if:
 
-- The author of the merge request has enabled contributions from upstream
-  members.
-- You have at least the Developer role for the
-  upstream project.
+- The author of the merge request enabled contributions from upstream members.
+- You have at least the Developer role for the upstream project.
 
-In the following example:
-
-- The forked repository URL is `git@gitlab.com:contributor/forked-project.git`.
-- The branch of the merge request is `fork-branch`.
-
-To change or add a commit to the contributor's merge request:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find the merge request.
-1. In the upper-right corner, select **Code**, then select **Check out branch**.
-1. On the dialog, select **Copy** (**{copy-to-clipboard}**).
-1. In your terminal, go to your cloned version of the repository, and
-   paste the commands. For example:
-
-   ```shell
-   git fetch "git@gitlab.com:contributor/forked-project.git" 'fork-branch'
-   git checkout -b 'contributor/fork-branch' FETCH_HEAD
-   ```
-
-   Those commands fetch the branch from the forked project, and create a local branch
-   for you to work on.
-
-1. Make your changes to your local copy of the branch, and then commit them.
-1. Push your local changes to the forked project. The following command pushes
-   the local branch `contributor/fork-branch` to the `fork-branch` branch of
-   the `git@gitlab.com:contributor/forked-project.git` repository:
-
-   ```shell
-   git push git@gitlab.com:contributor/forked-project.git contributor/fork-branch:fork-branch
-   ```
-
-   If you have amended or squashed any commits, you must force push. Proceed
-   with caution as this command rewrites the commit history:
-
-   ```shell
-   git push --force git@gitlab.com:contributor/forked-project.git contributor/fork-branch:fork-branch
-   ```
-
-   Note the colon (`:`) between the two branches. The general scheme is:
-
-   ```shell
-   git push <forked_repository_git_url> <local_branch>:<fork_branch>
-   ```
+To push changes, or add a commit, to the branch of a fork, you can use command line Git.
+For more information, see [use Git to push to a fork as an upstream member](../../../topics/git/forks.md#push-to-a-fork-as-an-upstream-member).
 
 ## Troubleshooting
 

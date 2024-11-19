@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: counts.create_ci_build
+description: This is a metric created to test using time_frame as an array
+product_group: project_management
+value_type: number
+status: active
+time_frame: [7d, all]
+data_source: internal_events
+events:
+  - name: create_ci_build
+distribution:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "17.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167201

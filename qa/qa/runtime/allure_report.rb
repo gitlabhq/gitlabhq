@@ -95,8 +95,10 @@ module QA
           -> do
             return {} unless Env.admin_personal_access_token || Env.personal_access_token
 
-            client = Env.admin_personal_access_token ? API::Client.as_admin : API::Client.new
-            response = get(API::Request.new(client, '/metadata').url)
+            response = get(API::Request.new(
+              API::Client.new(personal_access_token: Env.admin_personal_access_token || Env.personal_access_token),
+              '/metadata'
+            ).url)
 
             JSON.parse(response.body, symbolize_names: true).then do |metadata|
               {

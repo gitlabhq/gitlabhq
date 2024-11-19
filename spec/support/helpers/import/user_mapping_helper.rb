@@ -23,8 +23,9 @@ module Import
 
       user_references.map do |item|
         item = Import::SourceUserPlaceholderReference.from_serialized(item)
+        key = item.numeric_key || item.composite_key
 
-        [item.model, item.numeric_key, item.user_reference_column, item.source_user_id]
+        [item.model, key, item.user_reference_column, item.source_user_id]
       end
     end
   end

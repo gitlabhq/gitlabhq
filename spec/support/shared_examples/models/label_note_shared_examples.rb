@@ -123,7 +123,7 @@ RSpec.shared_examples 'label note created from events' do
 
       note = described_class.from_events([event])
 
-      expect(note.note).to eq "added #{other_label.to_reference(other_label.group, target_project: project, full: true)} label"
+      expect(note.note).to eq "added #{other_label.to_reference(other_label.group, target_container: project, full: true)} label"
     end
   end
 end

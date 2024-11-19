@@ -28,7 +28,7 @@
 
       // stylelint-disable-next-line gitlab/no-gl-class
         &:is(.gl-link):not(:hover) {
-            color: $gl-text-color;
+            @apply gl-text-default;
         }
 
       // stylelint-disable-next-line gitlab/no-gl-class

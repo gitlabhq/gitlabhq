@@ -4,10 +4,7 @@ import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import {
   COMMIT_FAILURE,
-  COMMIT_SUCCESS,
-  COMMIT_SUCCESS_WITH_REDIRECT,
   DEFAULT_FAILURE,
-  DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
   PIPELINE_FAILURE,
 } from '../../constants';
@@ -29,13 +26,6 @@ export default {
     [LOAD_FAILURE_UNKNOWN]: s__('Pipelines|The CI configuration was not loaded, please try again.'),
     [PIPELINE_FAILURE]: s__('Pipelines|There was a problem with loading the pipeline data.'),
   },
-  success: {
-    [COMMIT_SUCCESS]: __('Your changes have been successfully committed.'),
-    [COMMIT_SUCCESS_WITH_REDIRECT]: s__(
-      'Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page.',
-    ),
-    [DEFAULT_SUCCESS]: __('Your action succeeded.'),
-  },
   props: {
     failureType: {
       type: String,
@@ -52,16 +42,6 @@ export default {
       required: false,
       default: false,
     },
-    showSuccess: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    successType: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -77,14 +57,6 @@ export default {
         variant: 'danger',
       };
     },
-    success() {
-      const { success } = this.$options;
-
-      return {
-        text: success[this.successType] ?? success[DEFAULT_SUCCESS],
-        variant: 'info',
-      };
-    },
   },
   created() {
     this.parseCodeSnippetSourceParam();
@@ -95,9 +67,6 @@ export default {
     },
     dismissFailure() {
       this.$emit('hide-failure');
-    },
-    dismissSuccess() {
-      this.$emit('hide-success');
     },
     parseCodeSnippetSourceParam() {
       const [codeSnippetCopiedFrom] = getParameterValues(CODE_SNIPPET_SOURCE_URL_PARAM);
@@ -122,14 +91,6 @@ export default {
       class="gl-mb-5"
       @dismiss="dismissCodeSnippetAlert"
     />
-    <gl-alert
-      v-if="showSuccess"
-      :variant="success.variant"
-      class="gl-mb-5"
-      @dismiss="dismissSuccess"
-    >
-      {{ success.text }}
-    </gl-alert>
     <gl-alert
       v-if="showFailure"
       :variant="failure.variant"

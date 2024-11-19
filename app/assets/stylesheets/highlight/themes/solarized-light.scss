@@ -99,10 +99,12 @@ $solarized-light-il: #2aa198;
 :root {
   --default-diff-color-deletion: #dc322f;
   --default-diff-color-addition: #859900;
+  --diff-addition-color: #{$solarized-light-new-bg};
+  --diff-deletion-color: #{$solarized-light-old-bg};
 }
 
 @mixin match-line {
-  color: $t-gray-a-24;
+  color: $gl-color-alpha-dark-24;
   background: $solarized-light-matchline-bg;
 }
 
@@ -120,7 +122,7 @@ $solarized-light-il: #2aa198;
 
   // Line numbers
   .file-line-blame {
-    @include line-link($black, 'git');
+    @include line-link($gl-color-neutral-1000, 'git');
   }
 
   .line-links {
@@ -152,7 +154,7 @@ $solarized-light-il: #2aa198;
   }
 
   .diff-line-expand-button {
-    @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
+    @include diff-expansion($gl-color-neutral-100, $gl-color-neutral-700, $gl-color-neutral-200, $gl-color-neutral-800);
   }
 
   // Diff line
@@ -164,7 +166,7 @@ $solarized-light-il: #2aa198;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gray-100};
+      --diff-expansion-background-color: #{$gl-color-neutral-100};
     }
 
     &.diff-grid-row.expansion .diff-td {
@@ -277,11 +279,11 @@ $solarized-light-il: #2aa198;
 
   .file-holder div.code.solarized-light {
     .selected-inline-number-mark {
-      color: $gray-600;
+      color: $gl-color-neutral-600;
     }
 
     .unselected-inline-number-mark {
-      color: $gray-200;
+      color: $gl-color-neutral-200;
     }
   }
 

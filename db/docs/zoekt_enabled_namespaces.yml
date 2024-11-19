@@ -1,9 +1,9 @@
 ---
 table_name: zoekt_enabled_namespaces
 classes:
-  - Search::Zoekt::EnabledNamespace
+- Search::Zoekt::EnabledNamespace
 feature_categories:
-  - global_search
+- global_search
 description: Represents a root namespace that has zoekt enabled
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138992
 milestone: '16.8'

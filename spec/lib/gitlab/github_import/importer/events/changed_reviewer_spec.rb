@@ -2,20 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer do
+RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, :with_import_url) }
   let_it_be(:requested_reviewer) { create(:user) }
   let_it_be(:review_requester) { create(:user) }
+  let_it_be(:issuable) { create(:merge_request, source_project: project, target_project: project) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
-  let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
       'id' => 6501124486,
-      'actor' => { 'id' => 4, 'login' => 'alice' },
+      'actor' => { 'id' => review_requester.id, 'login' => review_requester.username },
       'event' => event_type,
       'commit_id' => nil,
       'created_at' => '2022-04-26 18:30:53 UTC',
@@ -71,16 +71,44 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer do
   shared_examples 'process review_requested & review_request_removed MR events' do
     context 'when importing a review_requested event' do
       let(:event_type) { 'review_requested' }
-      let(:expected_note_attrs) { note_attrs.merge(note: "requested review from @#{requested_reviewer.username}") }
+      let(:expected_note_attrs) { note_attrs.merge(note: "requested review from `@#{requested_reviewer.username}`") }
 
       it_behaves_like 'create expected notes'
     end
 
     context 'when importing a review_request_removed event' do
       let(:event_type) { 'review_request_removed' }
-      let(:expected_note_attrs) { note_attrs.merge(note: "removed review request for @#{requested_reviewer.username}") }
+      let(:expected_note_attrs) do
+        note_attrs.merge(note: "removed review request for `@#{requested_reviewer.username}`")
+      end
 
       it_behaves_like 'create expected notes'
+    end
+  end
+
+  shared_examples 'push placeholder reference' do
+    let(:event_type) { 'changed' }
+    it 'pushes the reference' do
+      expect(subject)
+      .to receive(:push_with_record)
+      .with(
+        an_instance_of(Note),
+        :author_id,
+        review_requester.id,
+        an_instance_of(Gitlab::Import::SourceUserMapper)
+      )
+
+      importer.execute(issue_event)
+    end
+  end
+
+  shared_examples 'do not push placeholder reference' do
+    let(:event_type) { 'changed' }
+    it 'does not push any reference' do
+      expect(subject)
+      .not_to receive(:push_with_record)
+
+      importer.execute(issue_event)
     end
   end
 
@@ -89,14 +117,60 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer do
       allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
         allow(finder).to receive(:database_id).and_return(issuable.id)
       end
-      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        allow(finder).to receive(:find).with(requested_reviewer.id, requested_reviewer.username)
-          .and_return(requested_reviewer.id)
-        allow(finder).to receive(:find).with(review_requester.id, review_requester.username)
-          .and_return(review_requester.id)
-      end
     end
 
-    it_behaves_like 'process review_requested & review_request_removed MR events'
+    context 'when user mapping is enabled' do
+      let_it_be(:source_user_requester) do
+        create(
+          :import_source_user,
+          placeholder_user_id: review_requester.id,
+          source_user_identifier: review_requester.id,
+          source_username: review_requester.username,
+          source_hostname: project.import_url,
+          namespace_id: project.root_ancestor.id
+        )
+      end
+
+      let_it_be(:source_user_requested) do
+        create(
+          :import_source_user,
+          placeholder_user_id: requested_reviewer.id,
+          source_user_identifier: requested_reviewer.id,
+          source_username: requested_reviewer.username,
+          source_hostname: project.import_url,
+          namespace_id: project.root_ancestor.id
+        )
+      end
+
+      let_it_be(:merge_request_reviewer) do
+        create(
+          :merge_request_reviewer,
+          user_id: requested_reviewer.id,
+          merge_request_id: issuable.id
+        )
+      end
+
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+      end
+
+      it_behaves_like 'process review_requested & review_request_removed MR events'
+      it_behaves_like 'push placeholder reference'
+    end
+
+    context 'when user mapping is disabled' do
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+          allow(finder).to receive(:find).with(requested_reviewer.id, requested_reviewer.username)
+            .and_return(requested_reviewer.id)
+          allow(finder).to receive(:find).with(review_requester.id, review_requester.username)
+            .and_return(review_requester.id)
+        end
+      end
+
+      it_behaves_like 'process review_requested & review_request_removed MR events'
+      it_behaves_like 'do not push placeholder reference'
+    end
   end
 end

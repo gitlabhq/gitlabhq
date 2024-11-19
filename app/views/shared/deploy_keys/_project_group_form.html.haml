@@ -10,7 +10,7 @@
   .form-group
     = f.label :key, class: "label-bold"
     = f.text_area :key, class: 'form-control gl-form-input gl-form-input-xl !gl-h-auto', rows: 5, required: true, data: { testid: 'deploy-key-field' }
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = _('Paste a public key here.')
       = link_to _('How do I generate it?'), help_page_path("user/ssh.md")
 
@@ -22,7 +22,7 @@
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
     .gl-form-input-xl
       = f.gitlab_ui_datepicker :expires_at, data: { testid: 'deploy-key-expires-at-field' }, value: f.object.expires_at
-      .form-text.text-muted= ssh_key_expires_field_description
+      .form-text.gl-text-subtle= ssh_key_expires_field_description
 
   .form-group.gl-mb-0
     = f.submit _("Add key"), data: { testid: "add-deploy-key-button"}, pajamas_button: true

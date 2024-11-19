@@ -80,7 +80,7 @@ By default, Google assigns an ephemeral IP to your instance. It is strongly
 recommended to assign a static IP if you are using GitLab in production
 and use a domain name as shown below.
 
-Read Google's documentation on how to [promote an ephemeral IP address](https://cloud.google.com/vpc/docs/reserve-static-external-ip-address#promote_ephemeral_ip).
+For more information, see [Promote an ephemeral external IP address](https://cloud.google.com/vpc/docs/reserve-static-external-ip-address#promote_ephemeral_ip).
 
 ### Using a domain name
 

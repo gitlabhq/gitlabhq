@@ -23,7 +23,6 @@ describe('PipelineStage', () => {
   let pipelineStageResponse;
 
   const defaultProps = {
-    pipelineEtag: '/etag',
     stage: pipelineStage,
   };
 

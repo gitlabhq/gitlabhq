@@ -1,4 +1,5 @@
 import waitForPromises from 'helpers/wait_for_promises';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import * as commonUtils from '~/lib/utils/common_utils';
 
@@ -12,6 +13,22 @@ describe('CopyAsGFM', () => {
 
     // Fake call to nodeToGfm so the import of lazy bundle happened
     return CopyAsGFM.nodeToGFM(document.createElement('div'));
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
+  it('copies .duo-chat-message content as markdown', () => {
+    setHTMLFixture('<div class="duo-chat-message"></div>');
+
+    const el = document.querySelector('.duo-chat-message');
+    const copyAsGFMSpy = jest.spyOn(CopyAsGFM, 'copyAsGFM');
+    const event = new Event('copy', { bubbles: true, cancelable: true });
+
+    el.dispatchEvent(event);
+
+    expect(copyAsGFMSpy).toHaveBeenCalled();
   });
 
   describe('CopyAsGFM.pasteGFM', () => {

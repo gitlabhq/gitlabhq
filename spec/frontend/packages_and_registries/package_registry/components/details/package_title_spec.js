@@ -235,7 +235,6 @@ describe('PackageTitle', () => {
   describe('badge "protected"', () => {
     const createComponentForBadgeProtected = async ({
       packageEntityProtectionRuleExists = true,
-      glFeaturesPackagesProtectedPackages = true,
     } = {}) => {
       await createComponent(
         {
@@ -244,7 +243,6 @@ describe('PackageTitle', () => {
         },
         {
           ...defaultProvide,
-          glFeatures: { packagesProtectedPackages: glFeaturesPackagesProtectedPackages },
         },
       );
     };
@@ -265,14 +263,6 @@ describe('PackageTitle', () => {
     describe('when no protection rule exists for the given package', () => {
       it('does not show badge', () => {
         createComponentForBadgeProtected({ packageEntityProtectionRuleExists: false });
-
-        expect(findProtectedBadge().exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag ":packages_protected_packages" is disabled', () => {
-      it('does not show badge', () => {
-        createComponentForBadgeProtected({ glFeaturesPackagesProtectedPackages: false });
 
         expect(findProtectedBadge().exists()).toBe(false);
       });

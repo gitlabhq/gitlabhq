@@ -20,6 +20,14 @@ module StreamDiffs
     response.stream.close
   end
 
+  def request
+    # We only need to do this in rapid diffs streaming endpoints
+    # as calling `request.format` (which can happen when rendering view components
+    # but can possibly happen in other places as well) can raise an exception
+    # while streaming diffs.
+    Request.new(super)
+  end
+
   private
 
   def rapid_diffs_enabled?
@@ -49,5 +57,11 @@ module StreamDiffs
       ::RapidDiffs::DiffFileComponent.new(diff_file: diff_file, parallel_view: view == :parallel),
       layout: false
     )
+  end
+
+  class Request < SimpleDelegator
+    def format
+      Mime::Type.lookup("text/html")
+    end
   end
 end

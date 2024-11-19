@@ -1,0 +1,9 @@
+---
+name: wiki_comments
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/488418
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171833
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502847
+milestone: '17.6'
+group: group::knowledge
+type: wip
+default_enabled: false

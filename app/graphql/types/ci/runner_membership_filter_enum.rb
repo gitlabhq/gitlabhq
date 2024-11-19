@@ -20,7 +20,7 @@ module Types
                        "Include all runners. This list includes runners for all projects in the group " \
           "and subgroups, as well as for the parent groups and instance.",
         value: :all_available,
-        alpha: { milestone: '15.5' }
+        experiment: { milestone: '15.5' }
     end
   end
 end

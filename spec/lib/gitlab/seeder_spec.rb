@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Seeder do
+RSpec.describe Gitlab::Seeder, feature_category: :shared do
   describe Namespace do
     subject { described_class }
 
@@ -25,7 +25,8 @@ RSpec.describe Gitlab::Seeder do
     let(:database_base_models) do
       {
         main: ActiveRecord::Base,
-        ci: Ci::ApplicationRecord
+        ci: Ci::ApplicationRecord,
+        sec: Gitlab::Database::SecApplicationRecord
       }
     end
 
@@ -34,12 +35,14 @@ RSpec.describe Gitlab::Seeder do
         .and_return(database_base_models.with_indifferent_access)
 
       described_class.quiet do
-        expect(ApplicationRecord.logger).to be_nil
-        expect(Ci::ApplicationRecord.logger).to be_nil
+        database_base_models.each do |name, model|
+          expect(model.logger).to be_nil if database_exists?(name)
+        end
       end
 
-      expect(ApplicationRecord.logger).not_to be_nil
-      expect(Ci::ApplicationRecord.logger).not_to be_nil
+      database_base_models.each do |name, model|
+        expect(model.logger).not_to be_nil if database_exists?(name)
+      end
     end
 
     it 'disables mail deliveries' do

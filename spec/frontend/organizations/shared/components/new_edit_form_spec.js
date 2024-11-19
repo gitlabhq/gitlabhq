@@ -2,7 +2,7 @@ import { nextTick } from 'vue';
 
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
-import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
+import AvatarUploadDropzone from '~/organizations/shared/components/avatar_upload_dropzone.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';

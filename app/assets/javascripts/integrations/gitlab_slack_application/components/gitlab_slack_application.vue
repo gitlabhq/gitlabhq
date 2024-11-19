@@ -78,7 +78,7 @@ export default {
   <div class="gl-mx-auto gl-mt-11 gl-max-w-max gl-text-center">
     <div v-once class="gl-my-5 gl-flex gl-items-center gl-justify-center">
       <img :src="gitlabLogoPath" :alt="$options.i18n.gitlabLogoAlt" class="gl-h-11 gl-w-11" />
-      <gl-icon name="arrow-right" :size="32" class="gl-mx-5 gl-text-gray-200" />
+      <gl-icon name="arrow-right" :size="32" class="gl-mx-5" variant="disabled" />
       <img
         :src="slackLogoPath"
         :alt="$options.i18n.slackLogoAlt"

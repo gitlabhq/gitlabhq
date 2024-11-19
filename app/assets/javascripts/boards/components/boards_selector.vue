@@ -126,8 +126,8 @@ export default {
     showCreate() {
       return this.multipleIssueBoardsAvailable;
     },
-    showDelete() {
-      return this.boards.length > 1;
+    isLastBoard() {
+      return this.boards.length === 1;
     },
     showDropdown() {
       return this.showCreate || this.hasMissingBoards;
@@ -311,7 +311,8 @@ export default {
         :weights="weights"
         :current-board="board"
         :current-page="boardModalForm"
-        :show-delete="showDelete"
+        :is-last-board="isLastBoard"
+        :parent-type="parentType"
         @addBoard="addBoard"
         @updateBoard="$emit('updateBoard', $event)"
         @showBoardModal="$emit('showBoardModal', $event)"

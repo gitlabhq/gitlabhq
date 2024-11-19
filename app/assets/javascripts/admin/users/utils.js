@@ -1,5 +1,12 @@
 import { queryToObject } from '~/lib/utils/url_utility';
-import { TOKENS } from './constants';
+import getSoloOwnedOrganizationsQuery from '~/admin/users/graphql/queries/get_solo_owned_organizations.query.graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import {
+  TOKENS,
+  SOLO_OWNED_ORGANIZATIONS_EMPTY,
+  SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT,
+} from './constants';
 
 export const generateUserPaths = (paths, id) => {
   return Object.fromEntries(
@@ -44,3 +51,23 @@ export function initializeValuesFromQuery(query = document.location.search) {
 
   return { tokens, sort };
 }
+
+export const getSoloOwnedOrganizations = async (apolloClient, userId) => {
+  if (!window.gon?.features?.uiForOrganizations) {
+    return Promise.resolve(SOLO_OWNED_ORGANIZATIONS_EMPTY);
+  }
+
+  const {
+    data: {
+      user: { organizations },
+    },
+  } = await apolloClient.query({
+    query: getSoloOwnedOrganizationsQuery,
+    variables: {
+      id: convertToGraphQLId(TYPENAME_USER, userId),
+      first: SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT,
+    },
+  });
+
+  return organizations;
+};

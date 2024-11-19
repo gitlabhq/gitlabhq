@@ -38,11 +38,11 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
       create(:note, :confidential, noteable: issue, in_reply_to: internal_note, project: project, author: internal_reply_author)
     end
 
-    let_it_be(:issue_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: issue).user }
-    let_it_be(:public_note_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: public_note).user }
-    let_it_be(:internal_note_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: internal_note).user }
-    let_it_be(:public_reply_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: public_reply).user }
-    let_it_be(:internal_reply_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: internal_reply).user }
+    let_it_be(:issue_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: issue).user }
+    let_it_be(:public_note_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_note).user }
+    let_it_be(:internal_note_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_note).user }
+    let_it_be(:public_reply_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_reply).user }
+    let_it_be(:internal_reply_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_reply).user }
 
     subject(:resolved_items) do
       resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items
@@ -131,9 +131,9 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
 
           create(:award_emoji, :upvote, awardable: issue)
           internal_note = create(:note, :confidential, project: project, noteable: issue, author: create(:user))
-          create(:award_emoji, name: 'thumbsup', awardable: internal_note)
+          create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_note)
           public_note = create(:note, project: project, noteable: issue, author: create(:user))
-          create(:award_emoji, name: 'thumbsup', awardable: public_note)
+          create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_note)
 
           # 1 extra query per source (3 emojis + 2 notes) to fetch participables collection
           # 2 extra queries to load work item widgets collection

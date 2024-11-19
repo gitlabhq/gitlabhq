@@ -32,6 +32,10 @@ module Gitlab
         end
       end
 
+      def contributing_user_formatters
+        {}
+      end
+
       private
 
       def state

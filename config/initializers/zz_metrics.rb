@@ -31,6 +31,7 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
 
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
+    Gitlab::Metrics::Middleware::PathTraversalCheck.initialize_slis!
     Gitlab::Metrics::GlobalSearchSlis.initialize_slis!
   elsif Gitlab::Runtime.sidekiq?
     Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis! if Gitlab.ee?

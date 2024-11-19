@@ -254,13 +254,13 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       it "normalizes +1 as thumbsup award" do
         post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: '+1' }
 
-        expect(issue.award_emoji.last.name).to eq("thumbsup")
+        expect(issue.award_emoji.last.name).to eq(AwardEmoji::THUMBS_UP)
       end
 
       context 'when the emoji already has been awarded' do
         it 'returns a 404 status code' do
-          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: 'thumbsup' }
-          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: 'thumbsup' }
+          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: AwardEmoji::THUMBS_UP }
+          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: AwardEmoji::THUMBS_UP }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response["message"]).to match("has already been taken")
@@ -309,7 +309,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     it "normalizes +1 as thumbsup award" do
       post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: '+1' }
 
-      expect(note.award_emoji.last.name).to eq("thumbsup")
+      expect(note.award_emoji.last.name).to eq(AwardEmoji::THUMBS_UP)
     end
 
     context 'when the emoji already has been awarded' do

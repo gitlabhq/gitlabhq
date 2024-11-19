@@ -12,7 +12,9 @@ class NoteEntity < API::Entities::Note
 
   expose :type
 
-  expose :external_author
+  expose :external_author do |note|
+    note_presenter(note).external_author
+  end
 
   expose :author, using: NoteUserEntity
 
@@ -113,16 +115,6 @@ class NoteEntity < API::Entities::Note
 
   def with_base_discussion?
     options.fetch(:with_base_discussion, true)
-  end
-
-  def external_author
-    return unless object.note_metadata&.external_author
-
-    if can?(current_user, :read_external_emails, object.project)
-      object.note_metadata.external_author
-    else
-      Gitlab::Utils::Email.obfuscated_email(object.note_metadata.external_author, deform: true)
-    end
   end
 
   def note_presenter(note)

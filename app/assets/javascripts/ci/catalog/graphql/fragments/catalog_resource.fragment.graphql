@@ -3,9 +3,9 @@ fragment CatalogResourceFields on CiCatalogResource {
   description
   fullPath
   icon
+  last30DayUsageCount
   name
   starCount
-  last30DayUsageCount
   starrersPath
   verificationLevel
   versions(first: 1) {
@@ -28,5 +28,6 @@ fragment CatalogResourceFields on CiCatalogResource {
       }
     }
   }
+  visibilityLevel
   webPath
 }

@@ -6,14 +6,14 @@ module Types
 
     include Gitlab::Graphql::MountMutation
 
-    mount_mutation Mutations::Achievements::Award, alpha: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Create, alpha: { milestone: '15.8' }
-    mount_mutation Mutations::Achievements::Delete, alpha: { milestone: '15.11' }
-    mount_mutation Mutations::Achievements::DeleteUserAchievement, alpha: { milestone: '16.1' }
-    mount_mutation Mutations::Achievements::Revoke, alpha: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Update, alpha: { milestone: '15.11' }
-    mount_mutation Mutations::Achievements::UpdateUserAchievement, alpha: { milestone: '17.3' }
-    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities, alpha: { milestone: '16.5' }
+    mount_mutation Mutations::Achievements::Award, experiment: { milestone: '15.10' }
+    mount_mutation Mutations::Achievements::Create, experiment: { milestone: '15.8' }
+    mount_mutation Mutations::Achievements::Delete, experiment: { milestone: '15.11' }
+    mount_mutation Mutations::Achievements::DeleteUserAchievement, experiment: { milestone: '16.1' }
+    mount_mutation Mutations::Achievements::Revoke, experiment: { milestone: '15.10' }
+    mount_mutation Mutations::Achievements::Update, experiment: { milestone: '15.11' }
+    mount_mutation Mutations::Achievements::UpdateUserAchievement, experiment: { milestone: '17.3' }
+    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities, experiment: { milestone: '16.5' }
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus
@@ -59,17 +59,18 @@ module Types
     mount_mutation Mutations::Environments::Delete
     mount_mutation Mutations::Environments::Stop
     mount_mutation Mutations::Environments::Update
-    mount_mutation Mutations::Import::SourceUsers::CancelReassignment, alpha: { milestone: '17.2' }
-    mount_mutation Mutations::Import::SourceUsers::KeepAsPlaceholder, alpha: { milestone: '17.2' }
-    mount_mutation Mutations::Import::SourceUsers::Reassign, alpha: { milestone: '17.2' }
-    mount_mutation Mutations::Import::SourceUsers::ResendNotification, alpha: { milestone: '17.2' }
-    mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, alpha: { milestone: '15.6' }
+    mount_mutation Mutations::Import::SourceUsers::CancelReassignment, experiment: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::KeepAllAsPlaceholder, experiment: { milestone: '17.6' }
+    mount_mutation Mutations::Import::SourceUsers::KeepAsPlaceholder, experiment: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::Reassign, experiment: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::ResendNotification, experiment: { milestone: '17.2' }
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, experiment: { milestone: '15.6' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Destroy
     mount_mutation Mutations::IncidentManagement::TimelineEventTag::Create
-    mount_mutation Mutations::Integrations::Exclusions::Create, alpha: { milestone: '17.0' }
-    mount_mutation Mutations::Integrations::Exclusions::Delete, alpha: { milestone: '17.0' }
+    mount_mutation Mutations::Integrations::Exclusions::Create, experiment: { milestone: '17.0' }
+    mount_mutation Mutations::Integrations::Exclusions::Delete, experiment: { milestone: '17.0' }
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetCrmContacts
@@ -83,7 +84,7 @@ module Types
     mount_mutation Mutations::Issues::Move
     mount_mutation Mutations::Issues::LinkAlerts
     mount_mutation Mutations::Issues::UnlinkAlert
-    mount_mutation Mutations::Issues::BulkUpdate, alpha: { milestone: '15.9' }
+    mount_mutation Mutations::Issues::BulkUpdate, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Labels::Create
     mount_mutation Mutations::Members::Groups::BulkUpdate
     mount_mutation Mutations::Members::Projects::BulkUpdate
@@ -107,7 +108,7 @@ module Types
       milestone: '16.0'
     }
     mount_mutation Mutations::Notes::AbuseReport::Create
-    mount_mutation Mutations::Notes::AbuseReport::Update, alpha: { milestone: '17.5' }
+    mount_mutation Mutations::Notes::AbuseReport::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
@@ -117,15 +118,15 @@ module Types
     mount_mutation Mutations::Notes::ConvertToThread
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
-    mount_mutation Mutations::Organizations::Create, alpha: { milestone: '16.6' }
-    mount_mutation Mutations::Organizations::Update, alpha: { milestone: '16.7' }
-    mount_mutation Mutations::Organizations::OrganizationUsers::Update, alpha: { milestone: '17.5' }
-    mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, alpha: { milestone: '17.1' }
-    mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, alpha: { milestone: '15.9' }
-    mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, alpha: { milestone: '17.1' }
-    mount_mutation Mutations::Projects::Star, alpha: { milestone: '16.7' }
-    mount_mutation Mutations::BranchRules::Update, alpha: { milestone: '16.7' }
-    mount_mutation Mutations::BranchRules::Create, alpha: { milestone: '16.7' }
+    mount_mutation Mutations::Organizations::Create, experiment: { milestone: '16.6' }
+    mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
+    mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
+    mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::BranchRules::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::BranchRules::Create, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Releases::Create
     mount_mutation Mutations::Releases::Update
     mount_mutation Mutations::Releases::Delete
@@ -142,8 +143,8 @@ module Types
     mount_mutation Mutations::Todos::Restore
     mount_mutation Mutations::Todos::MarkAllDone
     mount_mutation Mutations::Todos::RestoreMany
-    mount_mutation Mutations::Todos::Snooze, alpha: { milestone: '17.4' }
-    mount_mutation Mutations::Todos::UnSnooze, alpha: { milestone: '17.4' }
+    mount_mutation Mutations::Todos::Snooze, experiment: { milestone: '17.4' }
+    mount_mutation Mutations::Todos::UnSnooze, experiment: { milestone: '17.4' }
     mount_mutation Mutations::Snippets::Destroy
     mount_mutation Mutations::Snippets::Update
     mount_mutation Mutations::Snippets::Create
@@ -155,13 +156,13 @@ module Types
     mount_mutation Mutations::DesignManagement::Move
     mount_mutation Mutations::DesignManagement::Update
     mount_mutation Mutations::ContainerExpirationPolicies::Update
-    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, alpha: { milestone: '16.6' }
-    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete, alpha: { milestone: '16.7' }
-    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Update, alpha: { milestone: '16.7' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, experiment: { milestone: '16.6' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::ContainerRepositories::Destroy
     mount_mutation Mutations::ContainerRepositories::DestroyTags
-    mount_mutation Mutations::Ci::Catalog::Resources::Create, alpha: { milestone: '15.11' }
-    mount_mutation Mutations::Ci::Catalog::Resources::Destroy, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Ci::Catalog::Resources::Create, experiment: { milestone: '15.11' }
+    mount_mutation Mutations::Ci::Catalog::Resources::Destroy, experiment: { milestone: '16.6' }
     mount_mutation Mutations::Ci::Job::Cancel
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
@@ -169,10 +170,11 @@ module Types
     mount_mutation Mutations::Ci::Job::Unschedule
     mount_mutation Mutations::Ci::JobTokenScope::AddGroupOrProject
     mount_mutation Mutations::Ci::JobTokenScope::AddProject
-    mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.10' }
+    mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, experiment: { milestone: '15.10' }
     mount_mutation Mutations::Ci::JobArtifact::Destroy
     mount_mutation Mutations::Ci::JobTokenScope::RemoveGroup
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
+    mount_mutation Mutations::Ci::JobTokenScope::UpdateJobTokenPolicies, experiment: { milestone: '17.6' }
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
@@ -181,13 +183,13 @@ module Types
     mount_mutation Mutations::Ci::PipelineSchedule::Play
     mount_mutation Mutations::Ci::PipelineSchedule::TakeOwnership
     mount_mutation Mutations::Ci::PipelineSchedule::Update
-    mount_mutation Mutations::Ci::PipelineTrigger::Create, alpha: { milestone: '16.3' }
-    mount_mutation Mutations::Ci::PipelineTrigger::Delete, alpha: { milestone: '16.3' }
-    mount_mutation Mutations::Ci::PipelineTrigger::Update, alpha: { milestone: '16.3' }
+    mount_mutation Mutations::Ci::PipelineTrigger::Create, experiment: { milestone: '16.3' }
+    mount_mutation Mutations::Ci::PipelineTrigger::Delete, experiment: { milestone: '16.3' }
+    mount_mutation Mutations::Ci::PipelineTrigger::Update, experiment: { milestone: '16.3' }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
-    mount_mutation Mutations::Ci::Runner::BulkDelete, alpha: { milestone: '15.3' }
+    mount_mutation Mutations::Ci::Runner::BulkDelete, experiment: { milestone: '15.3' }
     mount_mutation Mutations::Ci::Runner::Cache::Clear
-    mount_mutation Mutations::Ci::Runner::Create, alpha: { milestone: '15.10' }
+    mount_mutation Mutations::Ci::Runner::Create, experiment: { milestone: '15.10' }
     mount_mutation Mutations::Ci::Runner::Delete
     mount_mutation Mutations::Ci::Runner::Update
     mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset
@@ -199,41 +201,41 @@ module Types
     mount_mutation Mutations::Packages::BulkDestroy,
       extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
-    mount_mutation Mutations::Packages::Protection::Rule::Create, alpha: { milestone: '16.5' }
-    mount_mutation Mutations::Packages::Protection::Rule::Delete, alpha: { milestone: '16.6' }
-    mount_mutation Mutations::Packages::Protection::Rule::Update, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Packages::Protection::Rule::Create, experiment: { milestone: '16.5' }
+    mount_mutation Mutations::Packages::Protection::Rule::Delete, experiment: { milestone: '16.6' }
+    mount_mutation Mutations::Packages::Protection::Rule::Update, experiment: { milestone: '16.6' }
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo
-    mount_mutation Mutations::WorkItems::Create, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::CreateFromTask, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::Delete, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::Export, alpha: { milestone: '15.10' }
-    mount_mutation Mutations::WorkItems::Convert, alpha: { milestone: '15.11' }
-    mount_mutation Mutations::WorkItems::LinkedItems::Add, alpha: { milestone: '16.3' }
-    mount_mutation Mutations::WorkItems::LinkedItems::Remove, alpha: { milestone: '16.3' }
-    mount_mutation Mutations::WorkItems::AddClosingMergeRequest, alpha: { milestone: '17.1' }
-    mount_mutation Mutations::WorkItems::Hierarchy::Reorder, alpha: { milestone: '17.3' }
-    mount_mutation Mutations::WorkItems::BulkUpdate, alpha: { milestone: '17.4' }
+    mount_mutation Mutations::WorkItems::Create, experiment: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::CreateFromTask, experiment: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Delete, experiment: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Update, experiment: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Export, experiment: { milestone: '15.10' }
+    mount_mutation Mutations::WorkItems::Convert, experiment: { milestone: '15.11' }
+    mount_mutation Mutations::WorkItems::LinkedItems::Add, experiment: { milestone: '16.3' }
+    mount_mutation Mutations::WorkItems::LinkedItems::Remove, experiment: { milestone: '16.3' }
+    mount_mutation Mutations::WorkItems::AddClosingMergeRequest, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::WorkItems::Hierarchy::Reorder, experiment: { milestone: '17.3' }
+    mount_mutation Mutations::WorkItems::BulkUpdate, experiment: { milestone: '17.4' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy
     mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
-    mount_mutation Mutations::WorkItems::Subscribe, alpha: { milestone: '16.3' }
-    mount_mutation Mutations::Admin::AbuseReportLabels::Create, alpha: { milestone: '16.4' }
-    mount_mutation Mutations::Ml::Models::Create, alpha: { milestone: '16.8' }
-    mount_mutation Mutations::Ml::Models::Edit, alpha: { milestone: '17.3' }
-    mount_mutation Mutations::Ml::Models::Destroy, alpha: { milestone: '16.10' }
-    mount_mutation Mutations::Ml::Models::Delete, alpha: { milestone: '17.0' }
-    mount_mutation Mutations::Ml::ModelVersions::Create, alpha: { milestone: '17.1' }
-    mount_mutation Mutations::Ml::ModelVersions::Edit, alpha: { milestone: '17.4' }
-    mount_mutation Mutations::Ml::ModelVersions::Delete, alpha: { milestone: '17.0' }
-    mount_mutation Mutations::BranchRules::Delete, alpha: { milestone: '16.9' }
-    mount_mutation Mutations::Pages::Deployment::Delete, alpha: { milestone: '17.1' }
-    mount_mutation Mutations::Pages::Deployment::Restore, alpha: { milestone: '17.1' }
+    mount_mutation Mutations::WorkItems::Subscribe, experiment: { milestone: '16.3' }
+    mount_mutation Mutations::Admin::AbuseReportLabels::Create, experiment: { milestone: '16.4' }
+    mount_mutation Mutations::Ml::Models::Create, experiment: { milestone: '16.8' }
+    mount_mutation Mutations::Ml::Models::Edit, experiment: { milestone: '17.3' }
+    mount_mutation Mutations::Ml::Models::Destroy, experiment: { milestone: '16.10' }
+    mount_mutation Mutations::Ml::Models::Delete, experiment: { milestone: '17.0' }
+    mount_mutation Mutations::Ml::ModelVersions::Create, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Ml::ModelVersions::Edit, experiment: { milestone: '17.4' }
+    mount_mutation Mutations::Ml::ModelVersions::Delete, experiment: { milestone: '17.0' }
+    mount_mutation Mutations::BranchRules::Delete, experiment: { milestone: '16.9' }
+    mount_mutation Mutations::Pages::Deployment::Delete, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Pages::Deployment::Restore, experiment: { milestone: '17.1' }
   end
 end
 

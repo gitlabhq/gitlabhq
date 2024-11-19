@@ -3,7 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.group_clusters_enabled
 description: Count disctinct user ids from GitLab Managed enabled clusters attached to groups
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 time_frame: 28d
@@ -11,7 +12,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

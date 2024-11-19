@@ -358,6 +358,7 @@ describe('import table', () => {
         variables: {
           importRequests: [
             {
+              migrateMemberships: true,
               migrateProjects: true,
               newName: FAKE_GROUP.lastImportTarget.newName,
               sourceGroupId: FAKE_GROUP.id,
@@ -823,11 +824,15 @@ describe('import table', () => {
               targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[0].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[0].id,
+              migrateProjects: true,
+              migrateMemberships: true,
             }),
             expect.objectContaining({
               targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[1].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[1].id,
+              migrateProjects: true,
+              migrateMemberships: true,
             }),
           ],
         },
@@ -909,7 +914,7 @@ describe('import table', () => {
       expect(findUnavailableFeaturesWarning().text()).toContain('projects (require v14.8.0)');
     });
 
-    it('does not renders alert when there are no unavailable features', async () => {
+    it('does not render alert when there are no unavailable features', async () => {
       createComponent({
         bulkImportSourceGroups: () => ({
           nodes: FAKE_GROUPS,
@@ -965,12 +970,14 @@ describe('import table', () => {
               newName: NEW_GROUPS[0].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[0].id,
               migrateProjects: true,
+              migrateMemberships: true,
             }),
             expect.objectContaining({
               targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[1].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[1].id,
               migrateProjects: true,
+              migrateMemberships: true,
             }),
           ],
         },
@@ -991,13 +998,66 @@ describe('import table', () => {
               newName: NEW_GROUPS[0].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[0].id,
               migrateProjects: false,
+              migrateMemberships: true,
             }),
             expect.objectContaining({
               targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[1].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[1].id,
               migrateProjects: false,
+              migrateMemberships: true,
             }),
+          ],
+        },
+      });
+    });
+  });
+
+  describe('migrateMemberships', () => {
+    const findImportUserMembershipsCheckbox = () =>
+      wrapper.find('[data-testid="toggle-import-user-memberships"]');
+
+    it('checkbox is rendered as checked by default', async () => {
+      await createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+
+      await waitForPromises();
+      expect(findImportUserMembershipsCheckbox().element.checked).toBe(true);
+    });
+
+    it('is included as false in the importGroupsMutation when checkbox is unchecked', async () => {
+      await createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      const mutateSpy = jest.spyOn(apolloProvider.defaultClient, 'mutate');
+
+      await waitForPromises();
+      await findImportUserMembershipsCheckbox().setChecked(false);
+      await nextTick();
+
+      await findRowImportDropdownAtIndex(0).trigger('click');
+      await waitForPromises();
+
+      expect(mutateSpy).toHaveBeenCalledWith({
+        mutation: importGroupsMutation,
+        variables: {
+          importRequests: [
+            {
+              migrateMemberships: false,
+              migrateProjects: true,
+              newName: FAKE_GROUP.lastImportTarget.newName,
+              sourceGroupId: FAKE_GROUP.id,
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+            },
           ],
         },
       });

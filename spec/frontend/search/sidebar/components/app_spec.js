@@ -2,11 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import {
-  SEARCH_TYPE_ZOEKT,
-  SEARCH_TYPE_ADVANCED,
-  SEARCH_TYPE_BASIC,
-} from '~/search/sidebar/constants';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
@@ -89,26 +84,23 @@ describe('GlobalSearchSidebar', () => {
       ${'wiki_blobs'}     | ${findWikiBlobsFilters}
       ${'wiki_blobs'}     | ${findAllScopesStartFilters}
     `('with sidebar scope: $scope', ({ scope, filter }) => {
-      describe.each([SEARCH_TYPE_BASIC, SEARCH_TYPE_ADVANCED])(
-        'with search_type %s',
-        (searchType) => {
-          beforeEach(() => {
-            getterSpies.currentScope = jest.fn(() => scope);
-            createComponent({ urlQuery: { scope }, searchType });
-          });
+      describe.each(['basic', 'advanced'])('with search_type %s', (searchType) => {
+        beforeEach(() => {
+          getterSpies.currentScope = jest.fn(() => scope);
+          createComponent({ urlQuery: { scope }, searchType });
+        });
 
-          it(`renders correctly ${filter.name.replace('find', '')}`, () => {
-            expect(filter().exists()).toBe(true);
-          });
-        },
-      );
+        it(`renders correctly ${filter.name.replace('find', '')}`, () => {
+          expect(filter().exists()).toBe(true);
+        });
+      });
     });
 
     describe.each`
-      scope      | searchType              | isShown
-      ${'blobs'} | ${SEARCH_TYPE_BASIC}    | ${false}
-      ${'blobs'} | ${SEARCH_TYPE_ADVANCED} | ${true}
-      ${'blobs'} | ${SEARCH_TYPE_ZOEKT}    | ${true}
+      scope      | searchType    | isShown
+      ${'blobs'} | ${'basic'}    | ${false}
+      ${'blobs'} | ${'advanced'} | ${true}
+      ${'blobs'} | ${'zoekt'}    | ${true}
     `('sidebar blobs scope:', ({ scope, searchType, isShown }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);

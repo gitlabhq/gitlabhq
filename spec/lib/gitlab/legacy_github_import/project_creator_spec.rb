@@ -24,7 +24,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
       allow(project).to receive(:add_import_job)
     end
 
-    stub_application_setting(import_sources: ['github'])
+    stub_application_setting(import_sources: %w[github gitea])
   end
 
   describe '#execute' do
@@ -38,6 +38,12 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
       expect(project.import_url).to eq('https://asdffg@gitlab.com/asd/vim.git')
       expect(project.safe_import_url).to eq('https://*****@gitlab.com/asd/vim.git')
       expect(project.import_data.credentials).to eq(user: 'asdffg', password: nil)
+    end
+
+    it 'sets user_contribution_mapping_enabled to false' do
+      project = service.execute
+
+      expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(false)
     end
 
     context 'when GitHub project is private' do
@@ -121,6 +127,40 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
         project = service.execute
 
         expect(project.wiki.repository_exists?).to eq true
+      end
+    end
+
+    context 'when the project is imported from Gitea' do
+      subject(:service) { described_class.new(repo, repo[:name], namespace, user, type: :gitea) }
+
+      it 'sets user_contribution_mapping_enabled to true' do
+        project = service.execute
+
+        expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(true)
+      end
+
+      context 'and gitea_user_mapping is disabled' do
+        before do
+          stub_feature_flags(gitea_user_mapping: false)
+        end
+
+        it 'sets user_contribution_mapping_enabled to false' do
+          project = service.execute
+
+          expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(false)
+        end
+      end
+
+      context 'and importer_user_mapping is disabled' do
+        before do
+          stub_feature_flags(importer_user_mapping: false)
+        end
+
+        it 'sets user_contribution_mapping_enabled to false' do
+          project = service.execute
+
+          expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(false)
+        end
       end
     end
   end

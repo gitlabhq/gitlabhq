@@ -21,6 +21,10 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = 'Creates merge requests that can be inferred from the current state of the codebase'
 
+  opts.on('--push-when-approved', 'Push code even if there is an existing MR with approvals. By default we do not force push code if the MR has any approvals.') do
+    options[:push_when_approved] = true
+  end
+
   opts.on('-b=BRANCH', '--target-branch=BRANCH', String, 'Target branch to use. Defaults to master.') do |branch|
     options[:target_branch] = branch
   end

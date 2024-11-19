@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlLoadingIcon, GlTableLite, GlSorting } from '@gitlab/ui';
 import resolvedEnvironmentDetails from 'test_fixtures/graphql/environments/graphql/queries/environment_details.query.graphql.json';
 import emptyEnvironmentDetails from 'test_fixtures/graphql/environments/graphql/queries/environment_details.query.graphql.empty.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -18,6 +18,10 @@ describe('~/environments/environment_details/index.vue', () => {
 
   let wrapper;
   let routerMock;
+  let environmentDetailsMock;
+
+  const projectFullPath = 'gitlab-group/test-project';
+  const environmentName = 'test-environment-name';
 
   const emptyEnvironmentToRollbackData = { id: '', name: '', lastDeployment: null, retryUrl: '' };
   const environmentToRollbackMock = jest.fn();
@@ -37,14 +41,15 @@ describe('~/environments/environment_details/index.vue', () => {
     resolvedData,
     environmentToRollbackData,
   } = defaultWrapperParameters) => {
+    environmentDetailsMock = jest.fn().mockResolvedValue(resolvedData);
+
     const mockApollo = createMockApollo(
-      [[getEnvironmentDetails, jest.fn().mockResolvedValue(resolvedData)]],
+      [[getEnvironmentDetails, environmentDetailsMock]],
       mockResolvers,
     );
     environmentToRollbackMock.mockReturnValue(
       environmentToRollbackData || emptyEnvironmentToRollbackData,
     );
-    const projectFullPath = 'gitlab-group/test-project';
     routerMock = {
       push: jest.fn(),
     };
@@ -57,13 +62,15 @@ describe('~/environments/environment_details/index.vue', () => {
       },
       propsData: {
         projectFullPath,
-        environmentName: 'test-environment-name',
+        environmentName,
       },
       mocks: {
         $router: routerMock,
       },
     });
   };
+
+  const findSorting = () => wrapper.findComponent(GlSorting);
 
   describe('when fetching data', () => {
     it('should show a loading indicator', () => {
@@ -80,16 +87,99 @@ describe('~/environments/environment_details/index.vue', () => {
         wrapper = createWrapper();
         await waitForPromises();
       });
-      it('should render a table when query is loaded', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).not.toBe(true);
+
+      it('should render a table', () => {
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
         expect(wrapper.findComponent(GlTableLite).exists()).toBe(true);
       });
 
       describe('on rollback', () => {
         it('sets the page back to default', () => {
           wrapper.findComponent(ConfirmRollbackModal).vm.$emit('rollback');
-
           expect(routerMock.push).toHaveBeenCalledWith({ query: {} });
+        });
+      });
+
+      describe('sorting', () => {
+        const defaultSortingProps = {
+          isAscending: false,
+          sortBy: 'createdAt',
+        };
+
+        const defaultQueryVariables = {
+          projectFullPath,
+          environmentName,
+          statuses: [],
+          orderBy: {
+            createdAt: 'DESC',
+          },
+        };
+
+        it('should render sorting component with default props', () => {
+          expect(findSorting().props()).toMatchObject(defaultSortingProps);
+        });
+
+        describe('sorting direction changes', () => {
+          it('updates props when direction changes', async () => {
+            findSorting().vm.$emit('sortDirectionChange');
+            await nextTick();
+
+            expect(findSorting().props()).toMatchObject({
+              ...defaultSortingProps,
+              isAscending: true,
+            });
+          });
+
+          it('requests data with updated direction', async () => {
+            expect(environmentDetailsMock).toHaveBeenCalledWith(
+              expect.objectContaining(defaultQueryVariables),
+            );
+
+            findSorting().vm.$emit('sortDirectionChange');
+            await nextTick();
+
+            expect(environmentDetailsMock).toHaveBeenCalledWith(
+              expect.objectContaining({
+                ...defaultQueryVariables,
+                orderBy: {
+                  createdAt: 'ASC',
+                },
+              }),
+            );
+          });
+        });
+
+        describe('sortBy field changes', () => {
+          const newSortField = 'finishedAt';
+
+          it('updates props when sortBy field changes', async () => {
+            findSorting().vm.$emit('sortByChange', newSortField);
+            await nextTick();
+
+            expect(findSorting().props()).toMatchObject({
+              ...defaultSortingProps,
+              sortBy: newSortField,
+            });
+          });
+
+          it('requests data with updated sort field', async () => {
+            expect(environmentDetailsMock).toHaveBeenCalledWith(
+              expect.objectContaining(defaultQueryVariables),
+            );
+
+            findSorting().vm.$emit('sortByChange', newSortField);
+            await nextTick();
+
+            expect(environmentDetailsMock).toHaveBeenCalledWith(
+              expect.objectContaining({
+                ...defaultQueryVariables,
+                statuses: ['SUCCESS', 'FAILED', 'CANCELED'],
+                orderBy: {
+                  [newSortField]: 'DESC',
+                },
+              }),
+            );
+          });
         });
       });
     });

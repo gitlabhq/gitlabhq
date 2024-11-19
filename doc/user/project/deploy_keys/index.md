@@ -200,9 +200,20 @@ There are a few scenarios where a deploy key fails to push to a
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
 - **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#add-protection-to-existing-branches) of the protected branch.
 
-All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
+This issue occurs because all deploy keys are associated to an account. Because the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 
-We recommend you create a service account, and associate a deploy key to the service account, for projects using deploy keys.
+To resolve this issue, you can use the deploy keys API to create deploy keys for project service account users, instead of for your own users:
+
+1. [Create a service account user](../../../api/group_service_accounts.md#create-a-service-account-user).
+1. [Create a personal access token](../../../api/user_tokens.md#create-a-personal-access-token) for that service account user. This token must have at least the `api` scope.
+1. [Invite the service account user to the project](../../profile/service_accounts.md#add-to-a-subgroup-or-project).
+1. Use the deploy key API to [create a deploy key for the service account user](../../../api/deploy_keys.md#add-deploy-key):
+
+   ```shell
+   curl --request POST --header "PRIVATE-TOKEN: <service_account_access_token>" --header "Content-Type: application/json" \
+   --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' \
+   "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
+   ```
 
 #### Identify deploy keys associated with non-member and blocked users
 

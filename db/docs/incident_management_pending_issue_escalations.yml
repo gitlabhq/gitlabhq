@@ -4,7 +4,8 @@ classes:
 - IncidentManagement::PendingEscalations::Issue
 feature_categories:
 - incident_management
-description: Represents when issues should be escalated according to a project's escalation policy
+description: Represents when issues should be escalated according to a project's escalation
+  policy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65209
 milestone: '14.3'
 gitlab_schema: gitlab_main_cell

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Members::DestroyService, feature_category: :groups_and_projects do
-  let(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
+
   let(:member_user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:group_project) { create(:project, :public, group: group) }
@@ -48,6 +49,20 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       end
 
       described_class.new(current_user).execute(member, **opts)
+    end
+
+    it 'triggers members destroyed event' do
+      expect(Gitlab::EventStore)
+        .to receive(:publish)
+        .with(an_instance_of(Members::DestroyedEvent))
+        .and_call_original
+
+      described_class.new(current_user).execute(member, **opts)
+    end
+
+    it 'does not remove user from organization' do
+      expect { described_class.new(current_user).execute(member, **opts) }
+        .not_to change { member.source.organization.organization_users.count }
     end
   end
 
@@ -165,19 +180,12 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
           # We need to account for other places involved in the Member deletion process that
           # uses ExclusiveLease.
 
-          # 1. `UpdateHighestRole` concern uses locks to peform work
+          # `UpdateHighestRole` concern uses locks to peform work
           # whenever a Member is committed, so that needs to be accounted for.
           lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
 
           expect(Gitlab::ExclusiveLease)
             .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
-
-          # 2. `Users::RefreshAuthorizedProjectsService` also uses locks to perform work,
-          # whenever a user's authorizations has to be refreshed, so that needs to be accounted for as well.
-          lock_key_for_authorizations_refresh = "refresh_authorized_projects:#{member_to_delete.user_id}"
-
-          expect(Gitlab::ExclusiveLease)
-            .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 1.minute.to_i).and_call_original
 
           # We do not use any locks for the member deletion process, from within this service.
           expect(Gitlab::ExclusiveLease)
@@ -748,5 +756,23 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
       expect(service.send(:recursive_call?)).to eq(true)
     end
+  end
+
+  context 'when member leaves their last group' do
+    let_it_be(:group) { create(:group).tap { |g| g.add_owner(current_user) } }
+    let(:member) { group.add_owner(member_user) }
+
+    specify { expect(member.user.groups.count).to eq(1) }
+
+    it_behaves_like 'a service destroying a member'
+  end
+
+  context 'when member leaves their last project' do
+    let_it_be(:project) { create(:project).tap { |g| g.add_owner(current_user) } }
+    let(:member) { project.add_owner(member_user) }
+
+    specify { expect(member.user.projects.count).to eq(1) }
+
+    it_behaves_like 'a service destroying a member'
   end
 end

@@ -3,7 +3,6 @@
 Style/NumericLiteralPrefix:
   Exclude:
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
-    - 'config/initializers/01_secret_token.rb'
     - 'config/initializers/1_settings.rb'
     - 'ee/lib/gitlab/geo/replication/blob_downloader.rb'
     - 'ee/spec/lib/bulk_imports/groups/pipelines/iterations_pipeline_spec.rb'

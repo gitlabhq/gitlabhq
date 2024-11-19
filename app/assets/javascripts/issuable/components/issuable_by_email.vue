@@ -150,7 +150,7 @@ export default {
         >
           <template #helpIcon>
             <gl-link :href="emailsHelpPagePath" target="_blank">
-              <gl-icon class="gl-text-blue-600" name="question-o" />
+              <gl-icon name="question-o" variant="info" />
             </gl-link>
           </template>
           <template #resetLink="{ content }">

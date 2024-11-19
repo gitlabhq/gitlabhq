@@ -27,9 +27,7 @@ describe('container Protection Rule Form', () => {
     wrapper.findByRole('textbox', { name: /repository path pattern/i });
   const findMinimumAccessLevelForPushSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for push/i });
-  const findMinimumAccessLevelForDeleteSelect = () =>
-    wrapper.findByRole('combobox', { name: /minimum access level for delete/i });
-  const findSubmitButton = () => wrapper.findByRole('button', { name: /add rule/i });
+  const findSubmitButton = () => wrapper.findByTestId('add-rule-btn');
 
   const mountComponent = ({ config, provide = defaultProvidedValues } = {}) => {
     wrapper = mountExtended(ContainerProtectionRuleForm, {
@@ -58,7 +56,7 @@ describe('container Protection Rule Form', () => {
           .findAll('option')
           .wrappers.map((option) => option.element.value);
 
-      it.each(['', 'MAINTAINER', 'OWNER', 'ADMIN'])(
+      it.each(['MAINTAINER', 'OWNER', 'ADMIN'])(
         'includes the access level "%s" as an option',
         (accessLevel) => {
           mountComponent();
@@ -80,7 +78,6 @@ describe('container Protection Rule Form', () => {
         expect(findSubmitButton().props('disabled')).toBe(true);
         expect(findRepositoryPathPatternInput().attributes('disabled')).toBe('disabled');
         expect(findMinimumAccessLevelForPushSelect().attributes('disabled')).toBe('disabled');
-        expect(findMinimumAccessLevelForDeleteSelect().attributes('disabled')).toBe('disabled');
       });
 
       it('displays a loading spinner', () => {
@@ -162,29 +159,6 @@ describe('container Protection Rule Form', () => {
 
         expect(mutationResolver).toHaveBeenCalledWith({
           input: { projectPath: 'path', ...createContainerProtectionRuleMutationInput },
-        });
-      });
-
-      it('dispatches correct apollo mutation when no minimumAccessLevelForPush is selected', async () => {
-        const mutationResolver = jest
-          .fn()
-          .mockResolvedValue(createContainerProtectionRuleMutationPayload());
-
-        mountComponentWithApollo({ mutationResolver });
-
-        await findRepositoryPathPatternInput().setValue(
-          createContainerProtectionRuleMutationInput.repositoryPathPattern,
-        );
-        await findMinimumAccessLevelForPushSelect().setValue('');
-
-        await submitForm();
-
-        expect(mutationResolver).toHaveBeenCalledWith({
-          input: {
-            projectPath: 'path',
-            ...createContainerProtectionRuleMutationInput,
-            minimumAccessLevelForPush: null,
-          },
         });
       });
 

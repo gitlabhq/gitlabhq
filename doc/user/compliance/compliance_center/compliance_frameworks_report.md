@@ -22,15 +22,15 @@ With the compliance frameworks report, you can see all the compliance frameworks
 
 The default framework for the group has a **default** badge.
 
-## View the compliance frameworks report for a group
+## View the compliance frameworks report
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Owner role for the project or group.
 
 To view the compliance frameworks report:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 

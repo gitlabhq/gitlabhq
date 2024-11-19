@@ -11,14 +11,14 @@ module Gitlab
         # Restricted read-write service to claim global uniqueness on resources
         class Service
 
-          include GRPC::GenericService
+          include ::GRPC::GenericService
 
           self.marshal_class_method = :encode
           self.unmarshal_class_method = :decode
           self.service_name = 'gitlab.cells.topology_service.ClaimService'
 
-          rpc :GetCells, Gitlab::Cells::TopologyService::GetCellsRequest, Gitlab::Cells::TopologyService::GetCellsResponse
-          rpc :CreateClaim, Gitlab::Cells::TopologyService::CreateClaimRequest, Gitlab::Cells::TopologyService::CreateClaimResponse
+          rpc :GetCells, ::Gitlab::Cells::TopologyService::GetCellsRequest, ::Gitlab::Cells::TopologyService::GetCellsResponse
+          rpc :CreateClaim, ::Gitlab::Cells::TopologyService::CreateClaimRequest, ::Gitlab::Cells::TopologyService::CreateClaimResponse
         end
 
         Stub = Service.rpc_stub_class

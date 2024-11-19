@@ -120,6 +120,22 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
       end
     end
 
+    context 'when Gitaly RPC returns an error' do
+      let(:error_message) { 'error message' }
+
+      it 'returns a generic error message' do
+        expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
+          blobs_removal = array_including(gitaly_request_with_params(blobs: blob_oids))
+          generic_error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::FAILED_PRECONDITION, error_message)
+          expect(instance).to receive(:rewrite_history).with(blobs_removal, kind_of(Hash)).and_raise(generic_error)
+        end
+
+        execute
+
+        expect(execute.message).to eq("9:#{error_message}")
+      end
+    end
+
     def expect_rewrite_history_requests(requests)
       expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
         rewrite_history_requests = contain_exactly(

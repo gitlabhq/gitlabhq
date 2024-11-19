@@ -210,7 +210,7 @@ class ProjectPolicy < BasePolicy
 
   with_scope :subject
   condition(:model_registry_enabled) do
-    Feature.enabled?(:model_registry, @subject) && @subject.feature_available?(:model_registry, @user)
+    @subject.feature_available?(:model_registry, @user)
   end
 
   with_scope :subject
@@ -1019,7 +1019,11 @@ class ProjectPolicy < BasePolicy
     enable :read_namespace_catalog
   end
 
-  rule { model_registry_enabled }.policy do
+  rule { public_project & model_registry_enabled }.policy do
+    enable :read_model_registry
+  end
+
+  rule { ~public_project & guest & model_registry_enabled }.policy do
     enable :read_model_registry
   end
 
@@ -1027,7 +1031,11 @@ class ProjectPolicy < BasePolicy
     enable :write_model_registry
   end
 
-  rule { model_experiments_enabled }.policy do
+  rule { public_project & model_experiments_enabled }.policy do
+    enable :read_model_experiments
+  end
+
+  rule { ~public_project & guest & model_experiments_enabled }.policy do
     enable :read_model_experiments
   end
 

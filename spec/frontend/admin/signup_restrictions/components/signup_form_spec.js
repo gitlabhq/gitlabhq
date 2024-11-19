@@ -1,4 +1,4 @@
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { shallowMount, mount, createWrapper } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
@@ -36,6 +36,7 @@ describe('Signup Form', () => {
 
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
+  const findUserCapGroup = () => wrapper.findByTestId('user-cap-group');
   const findUserCapInput = () => wrapper.findByTestId('user-cap-input');
   const findModal = () => wrapper.findComponent(GlModal);
 
@@ -209,6 +210,29 @@ describe('Signup Form', () => {
         await findModal().vm.$emit('primary');
 
         expect(formSubmitSpy).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('user cap help text', () => {
+    it('displays the default message', () => {
+      mountComponent();
+
+      expect(findUserCapGroup().text()).toBe(
+        'Users added beyond this limit require administrator approval. Leave blank for unlimited.',
+      );
+    });
+
+    describe('with a license', () => {
+      it('displays a message related to true up', () => {
+        mountComponent({
+          injectedProps: { licensedUserCount: 10 },
+          stubs: { GlSprintf },
+        });
+
+        expect(findUserCapGroup().text()).toContain(
+          'A user cap that exceeds the current licensed user count (10) might result in seat overages.',
+        );
       });
     });
   });

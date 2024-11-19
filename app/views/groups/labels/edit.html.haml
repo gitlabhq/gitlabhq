@@ -1,9 +1,8 @@
 - add_to_breadcrumbs _("Labels"), group_labels_path(@group)
+- add_to_breadcrumbs @label.name, group_labels_path(@group)
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @label.name, _("Labels")
 - show_lock_on_merge = @group.supports_lock_on_merge?
 
-%h1.page-title.gl-text-size-h-display
-  = _('Edit label')
-
+= render ::Layouts::PageHeadingComponent.new(_('Edit label'))
 = render 'shared/labels/form', url: group_label_path(@group, @label), back_path: @previous_labels_path, show_lock_on_merge: show_lock_on_merge

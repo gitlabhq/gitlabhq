@@ -111,6 +111,9 @@
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
+.if-merge-request-labels-sec-decomposition: &if-merge-request-labels-sec-decomposition
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /sec-decomposition/'
+
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
@@ -210,6 +213,9 @@
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
 
+.if-observability-skip-e2e-jobs: &if-observability-skip-e2e-jobs
+  if: '$SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER || $GITLAB_OBSERVABILITY_BACKEND_PIPELINE_TRIGGER_TOKEN == null || $GITLAB_OBSERVABILITY_BACKEND_TOKEN_FOR_CI_SCRIPTS == null'
+
 ####################
 # Changes patterns #
 ####################
@@ -296,6 +302,7 @@
   - "data/deprecations/**/*"
   - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
+  - "lib/tasks/gitlab/docs/compile_windows.rake"
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
@@ -472,7 +479,8 @@
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
-  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
@@ -500,7 +508,8 @@
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
-  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
@@ -535,7 +544,8 @@
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
-  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
@@ -565,7 +575,8 @@
 
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
-  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
@@ -613,7 +624,8 @@
   - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
@@ -656,7 +668,7 @@
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .static-analysis-patterns: &static-analysis-patterns
-  - ".{codeclimate,eslintrc,haml-lint,haml-lint_todo}.yml"
+  - ".{codeclimate,haml-lint,haml-lint_todo}.yml"
 
 .rubocop-patterns: &rubocop-patterns
   - ".{rubocop,rubocop_todo}.yml"
@@ -1283,13 +1295,11 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - !reference [".prevent-tier-2-and-below", rules]
-    # Rules to support .qa:rules:test-on-omnibus
+    # Rules to support e2e test execution
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-default-refs
       changes: *code-qa-patterns
-    - <<: *if-merge-request
-      changes: *cng-orchestrator-patterns
 
 .frontend:rules:compile-production-assets:
   rules:
@@ -1475,7 +1485,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-patterns
+      when: never
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
@@ -1521,6 +1531,12 @@
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-default-refs
       changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
+
+.frontend:rules:jest-vue3-check-quarantined:
+  rules:
+    - <<: *if-not-merge-request
+      when: never
+    - !reference [.frontend:rules:jest, rules]
 
 ################
 # Memory rules #
@@ -1646,7 +1662,7 @@
       allow_failure: true
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
-    # Rules to support .qa:rules:test-on-omnibus-ee
+    # Rules to support e2e test execution
     - <<: *if-merge-request
       changes: *dependency-patterns
       allow_failure: true
@@ -1671,45 +1687,11 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
 
-.qa:rules:test-on-omnibus-common:
-  rules:
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-merge-request-labels-run-all-e2e
-    # Run tests automatically for MRs that touch QA files
-    - <<: *if-merge-request
-      changes: *qa-patterns
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    - <<: *if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
-      when: never
-    # Otherwise, only run tests in pipeline::tier-3 and above
-    - !reference [".prevent-tier-2-and-below", rules]
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-      variables:
-        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *initializers-patterns
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-    - <<: *if-security-merge-request
-      changes: *code-patterns
-    - <<: *if-merge-request-and-specific-devops-stage
-      changes: *code-patterns
-    - <<: *if-ruby-branch
-
-# .qa:rules:e2e-blocking-base-* are similar to .qa:rules:test-on-omnibus-common, but not allowed to fail.
+# primary triggers for e2e tests
 .qa:rules:e2e-blocking-base-before:
   rules:
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
-    # Run tests automatically for MRs that touch Ruby version files
-    - <<: *if-merge-request
-      changes: *ruby-version-patterns
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1730,16 +1712,26 @@
         MR_CODE_PATTERNS: "true"
 
 .qa:e2e-test-schedule-variables: &qa-e2e-test-schedule-variables
-  variables:
-    CREATE_TEST_FAILURE_ISSUES: "true"
-    PROCESS_TEST_RESULTS: "true"
-    KNAPSACK_GENERATE_REPORT: "true"
-    QA_SAVE_TEST_METRICS: "true"
-    QA_RUN_IN_PARALLEL: "false" # disable single job parallelization due to incompatibility with knapsack and coverband
+  CREATE_TEST_FAILURE_ISSUES: "true"
+  PROCESS_TEST_RESULTS: "true"
+  QA_SAVE_TEST_METRICS: "true"
+
+.qa:rules:e2e-schedule-nightly:
+  rules:
+    - <<: *if-default-branch-schedule-nightly
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        KNAPSACK_GENERATE_REPORT: "true"
+        QA_RUN_IN_PARALLEL: "false"
+        COVERBAND_ENABLED: "false"
 
 .qa:rules:e2e-schedule-blocking:
   rules:
-    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        KNAPSACK_GENERATE_REPORT: "false"
 
 .qa:rules:code-suggestions-eval-base:
   rules:
@@ -1767,10 +1759,32 @@
     - <<: *if-merge-request
       changes: *code-patterns
 
-# Note: If any changes are made to this rule, the following should also be updated - .qa:rules:post-run-e2e-message
+# test-on-omnibus-ee rules, these tests are executed in following cases:
+# * for dependency changes to validate omnibus build
+# * stable branch merge request to validate release fixes
+# * manually on-demand for app and e2e code changes
 .qa:rules:test-on-omnibus-ee:
   rules:
-    - !reference [".qa:rules:test-on-omnibus-common", rules]
+    - !reference [".qa:rules:e2e-test-never-run", rules]
+    - <<: *if-merge-request-labels-run-all-e2e
+    # this rule needs to be synced with .notify:rules:notify-test-on-omnibus-failure to produce failure notification in stable branch merge requests
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+    # add option to trigger test-on-omnibus manually on qa changes ahead of tier-2
+    - <<: *if-merge-request
+      changes: *qa-patterns
+      when: manual
+      allow_failure: true
+    - !reference [".prevent-tier-2-and-below", rules]
+    # validate omnibus is built correctly when rails dependencies change
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+      variables:
+        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
+    - <<: *if-merge-request
+      changes: *code-qa-patterns
+      when: manual
+      allow_failure: true
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
 # Note: If any changes are made to this rule, the following should also be updated - .qa:rules:test-on-omnibus-ce:follow-up
@@ -1819,6 +1833,9 @@
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
@@ -1826,16 +1843,13 @@
       changes: *gdk-component-patterns
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        PROCESS_TEST_RESULTS: "true"
+        <<: *qa-e2e-test-schedule-variables
         KNAPSACK_GENERATE_REPORT: "true"
-        QA_SAVE_TEST_METRICS: "true"
         COVERBAND_ENABLED: "true"
+        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:e2e:test-on-cng:
   rules:
-    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
-      when: never
     # TODO: Enable for stable branches once cng is fully enabled in mr pipelines
     - <<: *if-merge-request-targeting-stable-branch
       when: never
@@ -1847,80 +1861,24 @@
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - !reference [".qa:rules:e2e-schedule-blocking", rules]
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        KNAPSACK_GENERATE_REPORT: "false"
+        QA_RUN_IN_PARALLEL: "true"
 
 .qa:rules:test-on-omnibus-nightly:
   rules:
     - !reference [".qa:rules:e2e-test-never-run", rules]
+    - <<: *if-security-schedule
+      when: never
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:
+        <<: *qa-e2e-test-schedule-variables
         KNAPSACK_GENERATE_REPORT: "true"
-        PROCESS_TEST_RESULTS: "true"
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        QA_SAVE_TEST_METRICS: "true"
-
-# These provide a manual way to trigger follow-up:e2e:test-on-omnibus-ee
-# It is fine if they're overlapping with the automatic ones.
-# It'll not hurt and it can simplify the rules, decoupling them.
-# If any changes are made to this rule, the following should also be updated:
-# 1) .qa:rules:follow-up-e2e
-# 2) .qa:rules:post-run-e2e-message
-.qa:rules:manual-e2e:
-  rules:
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - !reference [".qa:rules:code-merge-request-manual", rules]
-
-# These are based on `.qa:rules:manual-e2e` but with manual jobs changed to automatic.
-# If any changes are made to this rule, the following should also be updated:
-# 1) .qa:rules:manual-e2e
-.qa:rules:follow-up-e2e:
-  rules:
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
-
-# These are based on `qa:rules:test-on-omnibus-ee` but with when:never in all except for code-patterns in merge requests
-.qa:rules:post-run-e2e-message:
-  rules:
-    # From .qa:rules:test-on-omnibus-common
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
-      when: never
-    - <<: *if-ruby-branch
-      when: never
-    - <<: *if-merge-request-labels-run-all-e2e
-      when: never
-    - <<: *if-merge-request
-      changes: *qa-patterns
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-      when: never
-    - !reference [".prevent-tier-2-and-below", rules]
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *initializers-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-      when: never
-    - <<: *if-security-merge-request
-      changes: *code-patterns
-      when: never
-    - <<: *if-merge-request-and-specific-devops-stage
-      when: never
-    - <<: *if-dot-com-gitlab-org-schedule
-      when: never
-    # From .qa:rules:manual-e2e
-    - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
+        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:fulfillment-e2e-quarantine-report:
   rules:
@@ -2019,6 +1977,30 @@
       changes: *db-patterns
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
+
+.rails:rules:single-db-sec-connection:
+  rules:
+    - <<: *if-default-branch-schedule-nightly
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request-labels-sec-decomposition
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_RSPEC_SINGLE_DB_SEC_CONNECTION == "true"'
+    - <<: *if-merge-request-not-approved
+      when: never
+
+.rails:rules:single-db-sec-connection-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-db-sec-connection", "rules"]
+
+.rails:rules:db:check-migrations-single-db-sec-connection:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request-labels-sec-decomposition
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
 
 .rails:rules:db:migrate:multi-version-upgrade:
   rules:
@@ -2355,13 +2337,15 @@
       when: manual
       allow_failure: true
 
-.rails:rules:ee-mr-and-default-branch-only:
+.rails:rules:db:check-schema:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
+    # Remove the rule below once https://gitlab.com/gitlab-org/gitlab/-/issues/503221 is closed.
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
       changes: *code-backstage-patterns
     - <<: *if-default-branch-refs
@@ -2715,8 +2699,6 @@
       when: never
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
-    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
-    - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *dependency-patterns
 
@@ -2726,8 +2708,6 @@
       when: never
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
       when: never
-    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
-    - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *python-patterns
 
@@ -3069,8 +3049,6 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-      when: manual
-      allow_failure: true
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-merge-request
@@ -3409,28 +3387,21 @@
 ###############################
 .observability-backend-main-branch:rules:
   rules:
+    - <<: *if-observability-skip-e2e-jobs
+      when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
-      allow_failure: true
     - <<: *if-merge-request
       changes: *observability-code-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 .observability-backend-current-branch:rules:
   rules:
+    - <<: *if-observability-skip-e2e-jobs
+      when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 ##########################
 # Pre-merge checks rules #

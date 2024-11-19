@@ -75,7 +75,7 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
 
     context 'with project-level integration' do
       let(:subject) { create(:matrix_integration) }
-      let(:context) { { project: subject.project } }
+      let(:context) { { project: subject.project, no_sourcepos: true } }
 
       it 'sends PUT request with `project` context' do
         expect(Gitlab::HTTP).to receive(:put).with(anything, headers: header, body: Gitlab::Json.dump(body))
@@ -86,7 +86,7 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
 
     context 'without project-level integration' do
       let(:subject) { create(:matrix_integration, :instance) }
-      let(:context) { { skip_project_check: true } }
+      let(:context) { { skip_project_check: true, no_sourcepos: true } }
 
       it 'sends PUT request with `skip_project_check` context' do
         expect(Gitlab::HTTP).to receive(:put).with(anything, headers: header, body: Gitlab::Json.dump(body))

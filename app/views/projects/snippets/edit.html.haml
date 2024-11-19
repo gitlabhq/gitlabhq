@@ -1,5 +1,6 @@
 - add_to_breadcrumbs _("Snippets"), project_snippets_path(@project)
-- breadcrumb_title @snippet.to_reference
+- add_to_breadcrumbs @snippet.to_reference, project_snippet_path(@project, @snippet)
+- breadcrumb_title _("Edit")
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
 %h1.page-title.gl-text-size-h-display

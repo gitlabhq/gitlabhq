@@ -324,7 +324,7 @@ There are two Observability end-to-end jobs:
 - `e2e:observability-backend-main-branch`: executes the tests against the main branch of the GitLab Observability Backend.
 - `e2e:observability-backend`: executes the tests against a branch of the GitLab Observability Backend with the same name as the MR branch.
 
-The Observability E2E jobs are triggered automatically for merge requests that touch relevant files, such as those in the `lib/gitlab/observability/` directory or specific configuration files related to observability features.
+The Observability E2E jobs are triggered automatically **only** for merge requests that touch relevant files, such as those in the `lib/gitlab/observability/` directory or specific configuration files related to observability features.
 
 To run these jobs manually, you can add the `pipeline:run-observability-e2e-tests-main-branch` or `pipeline:run-observability-e2e-tests-current-branch` label to your merge request.
 
@@ -339,7 +339,7 @@ In the following example workflow, a developer creates an MR that touches Observ
 1. The developer should add the `pipeline:run-observability-e2e-tests-current-branch` label on the GitLab MR and wait for the `e2e:observability-backend` job to succeed.
 1. If `e2e:observability-backend` succeeds, the developer can merge both MRs.
 
-+In addition, the developer can manually add `pipeline:run-observability-e2e-tests-main-branch` to force the MR to run the `e2e:observability-backend-main-branch` job. This could be useful in case of changes to files that are not being tracked as related to observability.
+In addition, the developer can manually add `pipeline:run-observability-e2e-tests-main-branch` to force the MR to run the `e2e:observability-backend-main-branch` job. This could be useful in case of changes to files that are not being tracked as related to observability.
 
 ### Review app jobs
 

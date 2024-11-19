@@ -11,14 +11,14 @@ module Gitlab
         # Public read-only service used by various Routing Services
         class Service
 
-          include GRPC::GenericService
+          include ::GRPC::GenericService
 
           self.marshal_class_method = :encode
           self.unmarshal_class_method = :decode
           self.service_name = 'gitlab.cells.topology_service.ClassifyService'
 
-          rpc :GetCells, Gitlab::Cells::TopologyService::GetCellsRequest, Gitlab::Cells::TopologyService::GetCellsResponse
-          rpc :Classify, Gitlab::Cells::TopologyService::ClassifyRequest, Gitlab::Cells::TopologyService::ClassifyResponse
+          rpc :GetCells, ::Gitlab::Cells::TopologyService::GetCellsRequest, ::Gitlab::Cells::TopologyService::GetCellsResponse
+          rpc :Classify, ::Gitlab::Cells::TopologyService::ClassifyRequest, ::Gitlab::Cells::TopologyService::ClassifyResponse
         end
 
         Stub = Service.rpc_stub_class

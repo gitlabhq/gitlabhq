@@ -69,7 +69,7 @@ module API
           def build_package_file_upload_url(file_name)
             options = url_options(file_name).merge(
               conan_package_reference: params[:conan_package_reference],
-              package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_PACKAGE_REVISION
+              package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
             )
 
             package_file_url(options)
@@ -86,7 +86,7 @@ module API
               package_username: params[:package_username],
               package_channel: params[:package_channel],
               file_name: file_name,
-              recipe_revision: ::Packages::Conan::FileMetadatum::DEFAULT_RECIPE_REVISION
+              recipe_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
             }
           end
 
@@ -176,11 +176,20 @@ module API
           end
 
           def find_or_create_package
-            package || ::Packages::Conan::CreatePackageService.new(
+            return package if package
+
+            service_response = ::Packages::Conan::CreatePackageService.new(
               project,
               current_user,
               params.merge(build: current_authenticated_job)
             ).execute
+
+            if service_response.error?
+              forbidden!(service_response.message) if service_response.cause.package_protected?
+              bad_request!(service_response.message)
+            end
+
+            service_response[:package]
           end
 
           def track_push_package_event

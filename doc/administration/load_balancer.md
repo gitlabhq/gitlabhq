@@ -126,7 +126,7 @@ Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 
 
 ### The health check is returning a `408` HTTP code via the load balancer
 
-If you are using [AWS's Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)
+If you are using the [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)
 in GitLab 15.0 or later, you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
 See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx)
 for more information.

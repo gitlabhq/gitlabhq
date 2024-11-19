@@ -13,7 +13,7 @@ module Types
         ability_field :take_ownership_pipeline_schedule,
           deprecated: {
             reason: 'Use admin_pipeline_schedule permission to determine if the user can take ownership ' \
-                    'of a pipeline schedule',
+              'of a pipeline schedule',
             milestone: '15.9'
           }
       end

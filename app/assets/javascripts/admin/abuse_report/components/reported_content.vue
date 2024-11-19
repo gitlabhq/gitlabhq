@@ -98,9 +98,9 @@ export default {
       </div>
     </div>
     <gl-card
-      header-class="gl-bg-white js-test-card-header"
-      body-class="gl-bg-gray-50 gl-px-5 gl-py-3 js-test-card-body"
-      footer-class="gl-bg-white js-test-card-footer"
+      header-class="js-test-card-header"
+      body-class="gl-py-3 js-test-card-body"
+      footer-class="js-test-card-footer"
     >
       <template v-if="report.content" #header>
         <gl-truncate-text>

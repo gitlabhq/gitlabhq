@@ -54,7 +54,7 @@ module Types
         description: 'Raw content of the blob.'
 
       field :base64_encoded_blob, GraphQL::Types::String, null: true,
-        alpha: { milestone: '17.1' }, description: 'Content of blob is encoded base64. Returns `null` if the `unicode_escaped_data` feature flag is disabled.'
+        experiment: { milestone: '17.1' }, description: 'Content of blob is encoded base64. Returns `null` if the `unicode_escaped_data` feature flag is disabled.'
 
       field :raw_text_blob, GraphQL::Types::String, null: true, method: :text_only_data,
         description: 'Raw content of the blob, if the blob is text data.'
@@ -90,7 +90,7 @@ module Types
         description: 'Web path to blob blame page.'
 
       field :blame, Types::Blame::BlameType, null: true,
-        description: 'Blob blame.', alpha: { milestone: '16.3' }, resolver: Resolvers::BlameResolver
+        description: 'Blob blame.', experiment: { milestone: '16.3' }, resolver: Resolvers::BlameResolver
 
       field :history_path, GraphQL::Types::String, null: true,
         description: 'Web path to blob history page.'

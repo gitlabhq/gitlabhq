@@ -1,0 +1,13 @@
+---
+description: Tracks the loading of secure file metadata for CER files.
+action: load_secure_file_metadata_cer
+product_group: package_registry
+milestone: '15.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104162
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

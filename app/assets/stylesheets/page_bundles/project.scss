@@ -110,7 +110,7 @@
       background-color: transparent;
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
-      color: var(--gray-500, $gl-text-color-secondary);
+      @apply gl-text-subtle;
       white-space: pre-wrap;
     }
 
@@ -128,7 +128,7 @@
       }
 
       .icon {
-        color: var(--gray-500, $gl-text-color-secondary);
+        @apply gl-fill-icon-subtle;
       }
     }
 

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You have different options to create a project. You can create a blank project, create a project
-from built-in or custom templates, or create a project with `git push`.
+from built-in or custom templates, or [create a project with `git push`](../../topics/git/project.md).
 
 ## Create a blank project
 
@@ -154,75 +154,9 @@ Federal regulations, such as NIST and CISA [guidelines](https://csrc.nist.gov/pr
 which [FedRamp](https://www.fedramp.gov/) enforces, have set a due date in 2030 to stop using SHA-1 and
 encourage agencies to move away from SHA-1 earlier, if possible.
 
-## Create a project with `git push`
-
-Use `git push` to add a local project repository to GitLab. After you add a repository,
-GitLab creates your project in your chosen namespace.
-
-You cannot use `git push` to create projects with paths that have been used previously
-or [renamed](working_with_projects.md#rename-a-repository).
-
-Previously used project paths have a redirect. Instead of creating a new project, the redirect causes
-push attempts to redirect requests to the renamed project location.
-To create a new project for a previously used or renamed project, use the UI or the [Projects API](../../api/projects.md#create-a-project).
-
-Prerequisites:
-
-- To push with SSH, you must have [an SSH key](../ssh.md) that is
-  [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
-- You must have permission to add new projects to a namespace. To check if you have permission:
-
-  1. On the left sidebar, select **Search or go to** and find your group.
-  1. In the upper-right corner, confirm that **New project** is visible.
-
-If you do not have the necessary permission, contact your GitLab administrator.
-
-To create a project with `git push`:
-
-1. In your local repository, push either:
-
-   - With SSH, by running:
-
-      ```shell
-      # Use this version if your project uses the standard port 22
-      $ git push --set-upstream git@gitlab.example.com:namespace/myproject.git main
-
-      # Use this version if your project requires a non-standard port number
-      $ git push --set-upstream ssh://git@gitlab.example.com:00/namespace/myproject.git main
-      ```
-
-   - With HTTP, by running:
-
-      ```shell
-      git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
-      ```
-
-      In the commands above:
-
-      - Replace `gitlab.example.com` with the machine domain name hosts your Git repository.
-      - Replace `namespace` with your [namespace](../namespace/index.md) name.
-      - Replace `myproject` with your project name.
-      - If specifying a port, change `00` to your project's required port number.
-      - Optional. To export existing repository tags, append the `--tags` flag to your `git push` command.
-
-1. Optional. Configure the remote:
-
-   ```shell
-   git remote add origin https://gitlab.example.com/namespace/myproject.git
-   ```
-
-When the push completes, GitLab displays the following message:
-
-```shell
-remote: The private project namespace/myproject was created.
-```
-
-To view your new project, go to `https://gitlab.example.com/namespace/myproject`.
-By default, your project's visibility is set to **Private**,
-but you can [change the project's visibility](../public_access.md#change-project-visibility).
-
 ## Related topics
 
+- [Create a project with `git push`](../../topics/git/project.md)
 - [Reserved project and group names](../../user/reserved_names.md)
 - [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
 - [Manage projects](working_with_projects.md)

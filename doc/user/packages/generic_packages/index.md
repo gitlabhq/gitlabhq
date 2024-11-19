@@ -14,13 +14,13 @@ Publish generic files, like release binaries, in your project's package registry
 
 ## Authenticate to the package registry
 
-To authenticate to the package registry, you need either a [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
+To authenticate to the package registry, you need either a [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
 [CI/CD job token](../../../ci/jobs/ci_job_token.md), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package
 API allows authentication with HTTP Basic authentication for use with tools that
 do not support the other available mechanisms. The `user-id` is not checked and
-may be any value, and the `password` must be either a [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
+may be any value, and the `password` must be either a [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
 a [CI/CD job token](../../../ci/jobs/ci_job_token.md), or a [deploy token](../../project/deploy_tokens/index.md).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
@@ -31,7 +31,7 @@ When you publish a package file, if the package does not exist, it is created.
 
 Prerequisites:
 
-- You must [authenticate with the API](../../../api/rest/index.md#authentication).
+- You must [authenticate with the API](../../../api/rest/authentication.md).
   If authenticating with a deploy token, it must be configured with the `write_package_registry`
   scope. If authenticating with a personal access token or project access token, it must be
   configured with the `api` scope. Project access tokens must have at least the Developer role.
@@ -149,7 +149,7 @@ If multiple packages have the same name, version, and filename, then the most re
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/rest/index.md#authentication).
+- You need to [authenticate with the API](../../../api/rest/authentication.md).
   - If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
   - Project access tokens require the `read_api` scope and at least the `Reporter` role.
 - If you use cURL to download artifacts from a GitLab instance with object storage enabled,

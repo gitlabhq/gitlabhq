@@ -5,7 +5,7 @@
     .form-group
       = f.label :first_day_of_week, _('Default first day of the week'), class: 'label-bold'
       = f.select :first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Default first day of the week in calendars and date pickers.')
         = link_to _('Learn more.'), help_page_path('administration/settings/localization.md', anchor: 'change-the-default-first-day-of-the-week'), target: '_blank', rel: 'noopener noreferrer'
 
@@ -19,7 +19,7 @@
       = f.label :default_preferred_language, class: 'label-bold' do
         = _('Default language')
       = f.select :default_preferred_language, default_preferred_language_choices, {}, class: 'gl-form-select custom-select'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Default language for users who are not logged in.')
 
   = f.submit _('Save changes'), pajamas_button: true

@@ -4,7 +4,8 @@ classes:
 - Sbom::Component
 feature_categories:
 - dependency_management
-description: Stores information about software components produced by a Software Bill of Materials (SBoM)
+description: Stores information about software components produced by a Software Bill
+  of Materials (SBoM)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90809
 milestone: '15.2'
 gitlab_schema: gitlab_sec

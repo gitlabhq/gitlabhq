@@ -82,7 +82,7 @@ export default {
 </script>
 
 <template>
-  <div :data-for="name" class="project-feature-controls gl-mx-0 gl-my-3 gl-flex gl-items-center">
+  <div :data-for="name" class="project-feature-controls gl-mx-0 gl-mt-2 gl-flex">
     <input v-if="name" :name="name" :value="value" type="hidden" />
     <gl-toggle
       v-if="showToggle"
@@ -107,7 +107,7 @@ export default {
           {{ optionName }}
         </option>
       </select>
-      <gl-icon name="chevron-down" class="gl-absolute gl-right-3 gl-top-3 gl-text-gray-500" />
+      <gl-icon name="chevron-down" class="gl-absolute gl-right-3 gl-top-3" variant="default" />
     </div>
   </div>
 </template>

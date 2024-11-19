@@ -36,23 +36,16 @@ AllCops:
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'
-    - 'db/schema.rb'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
     - 'builds/**/*'
-    - 'plugins/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
-    - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
     # projects_controller.rb is used for testing LLM response and is very sensitive to whitespaces.
     - 'ee/spec/fixtures/llm/projects_controller.rb'
-    # Adding this specifically for a large revert: !118368
-    <% File.readlines('.rubocop_revert_ignores.txt').map(&:chomp).each do |f| %>
-    - '<%= f %>'
-    <% end %>
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 1_000_000
@@ -68,6 +61,11 @@ Rails:
     - 'danger/**/*'
     - 'tooling/danger/**/*'
     - 'rubocop/**/*'
+
+Rails/Date:
+  Exclude:
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/502580
+    - danger/database/Dangerfile
 
 RSpec:
   Language:
@@ -94,11 +92,6 @@ Cop/StaticTranslationDefinition:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
-
-# Disable old cop, needs to be removed when gitlab-styles 13.0.0 is merged
-# see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164582
-Cop/WithoutReactiveCache:
-  Enabled: false
 
 InternalAffairs/DeprecateCopHelper:
   Enabled: true
@@ -159,7 +152,7 @@ Style/SignalException:
     - '**/*/Dangerfile'
     - 'tooling/danger/**/*.rb'
 
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   Exclude:
     - 'qa/**/*'
     - 'spec/frontend/fixtures/*'
@@ -168,6 +161,14 @@ RSpec/FilePath:
     - 'spec/fixtures/**/*'
   CustomTransform:
     HTTPartyBasicAuth: httparty_basic_auth
+
+RSpec/SpecFilePathSuffix:
+  Exclude:
+    - 'qa/**/*'
+    - 'spec/frontend/fixtures/*'
+    - 'ee/spec/frontend/fixtures/*'
+    - 'spec/requests/api/v3/*'
+    - 'spec/fixtures/**/*'
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
@@ -548,6 +549,7 @@ Gitlab/RSpec/AvoidSetup:
   Include:
     - 'ee/spec/features/registrations/saas/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/creation_*'
+    - 'ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/**/*'
 
@@ -1125,6 +1127,7 @@ Search/NamespacedClass:
   Enabled: true
   Exclude:
     - 'config/**/*.rb'
+    - 'ee/config/**/*.rb'
     - 'db/**/*.rb'
     - 'ee/db/**/*.rb'
     - 'ee/bin/**/*'
@@ -1196,10 +1199,8 @@ Style/SymbolProc:
     - each_batch
     - each_sub_batch
 
-# Short-hand Hash syntax does not work prior 3.1.
-# See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
 Style/HashSyntax:
-  EnforcedShorthandSyntax: never
+  EnforcedShorthandSyntax: either_consistent
 
 Gitlab/LicenseAvailableUsage:
   Enabled: true
@@ -1232,3 +1233,10 @@ Gitlab/NoFindInWorkers:
   Include:
     - app/workers/**/*
     - ee/app/workers/**/*
+
+Tailwind/StringInterpolation:
+  Enabled: true
+  Include:
+  - '{,ee/,jh/}app/helpers/**/*.rb'
+  - '{,ee/,jh/}app/components/**/*.{haml,rb}'
+  - '{,ee/,jh/}app/views/**/*.haml'

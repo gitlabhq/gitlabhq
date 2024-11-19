@@ -16,24 +16,28 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.1.1)
-      activesupport (= 7.1.1)
-    activerecord (7.1.1)
-      activemodel (= 7.1.1)
-      activesupport (= 7.1.1)
+    activemodel (7.1.5)
+      activesupport (= 7.1.5)
+    activerecord (7.1.5)
+      activemodel (= 7.1.5)
+      activesupport (= 7.1.5)
       timeout (>= 0.4.0)
-    activesupport (7.1.1)
+    activesupport (7.1.5)
       base64
+      benchmark (>= 0.3)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       connection_pool (>= 2.2.5)
       drb
       i18n (>= 1.6, < 2)
+      logger (>= 1.4.2)
       minitest (>= 5.1)
       mutex_m
+      securerandom (>= 0.3)
       tzinfo (~> 2.0)
     ast (2.4.2)
     base64 (0.2.0)
+    benchmark (0.4.0)
     bigdecimal (3.1.4)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
@@ -53,6 +57,7 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
+    logger (1.6.1)
     minitest (5.18.1)
     mutex_m (0.2.0)
     parallel (1.23.0)
@@ -64,10 +69,10 @@ GEM
       parser
       unparser
     racc (1.7.1)
-    rack (3.0.8)
+    rack (3.1.8)
     rainbow (3.1.1)
     regexp_parser (2.8.1)
-    rexml (3.2.5)
+    rexml (3.3.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -123,6 +128,7 @@ GEM
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
+    securerandom (0.3.2)
     timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -143,4 +149,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.22)
 
 BUNDLED WITH
-   2.4.14
+   2.5.22

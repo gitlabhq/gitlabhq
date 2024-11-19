@@ -34,7 +34,6 @@ describe('WikiForm', () => {
   const findFormat = () => wrapper.find('#wiki_format');
   const findMessage = () => wrapper.find('#wiki_message');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-  const findSubmitButton = () => wrapper.findByTestId('wiki-submit-button');
   const findCancelButton = () => wrapper.findByTestId('wiki-cancel-button');
 
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
@@ -381,36 +380,6 @@ describe('WikiForm', () => {
       it('does not trim page content', () => {
         expect(findMarkdownEditor().props().value).toBe(' Lorem ipsum dolar sit! ');
       });
-    });
-  });
-
-  describe('submit button state', () => {
-    it.each`
-      title          | content        | buttonState   | disabledAttr
-      ${'something'} | ${'something'} | ${'enabled'}  | ${false}
-      ${''}          | ${'something'} | ${'disabled'} | ${true}
-      ${'something'} | ${''}          | ${'disabled'} | ${false}
-      ${''}          | ${''}          | ${'disabled'} | ${true}
-    `(
-      "when title='$title', content='$content', then the button is $buttonState'",
-      async ({ title, content, disabledAttr }) => {
-        createWrapper({ mountFn: mount });
-
-        await findTitle().setValue(title);
-        await findMarkdownEditor().vm.$emit('input', content);
-
-        expect(findSubmitButton().props().disabled).toBe(disabledAttr);
-      },
-    );
-
-    it.each`
-      persisted | buttonLabel
-      ${true}   | ${'Save changes'}
-      ${false}  | ${'Create page'}
-    `('when persisted=$persisted, label is set to $buttonLabel', ({ persisted, buttonLabel }) => {
-      createWrapper({ persisted });
-
-      expect(findSubmitButton().text()).toBe(buttonLabel);
     });
   });
 

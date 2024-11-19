@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { WatchApi } from '@gitlab/cluster-client';
+import { WatchApi, WebSocketWatchManager } from '@gitlab/cluster-client';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { resolvers } from '~/environments/graphql/resolvers';
@@ -23,14 +23,15 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
   const configuration = {
     basePath: 'kas-proxy/',
-    baseOptions: {
-      headers: { 'GitLab-Agent-Id': '1' },
-    },
+    headers: { 'GitLab-Agent-Id': '1' },
   };
 
   beforeEach(() => {
     mockResolvers = resolvers();
     mock = new MockAdapter(axios);
+    gon.features = {
+      useWebsocketForK8sWatch: false,
+    };
   });
 
   afterEach(() => {
@@ -64,7 +65,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     describe('when the Kustomization data is present', () => {
       beforeEach(() => {
         mock
-          .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
+          .onGet(endpoint, { withCredentials: true, headers: configuration.headers })
           .reply(HTTP_STATUS_OK, {
             apiVersion,
             ...fluxKustomizationMock,
@@ -107,11 +108,66 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
         expect(kustomizationStatus).toEqual(fluxKustomizationMapped);
       });
+
+      describe('when `useWebsocketForK8sWatch` feature is enabled', () => {
+        const mockWebsocketManager = WebSocketWatchManager.prototype;
+        const mockInitConnectionFn = jest.fn().mockImplementation(() => {
+          return Promise.resolve(mockWebsocketManager);
+        });
+
+        beforeEach(() => {
+          gon.features = {
+            useWebsocketForK8sWatch: true,
+          };
+
+          jest
+            .spyOn(mockWebsocketManager, 'initConnection')
+            .mockImplementation(mockInitConnectionFn);
+          jest.spyOn(mockWebsocketManager, 'on').mockImplementation(jest.fn());
+        });
+
+        it('calls websocket API', async () => {
+          await mockResolvers.Query.fluxKustomization(
+            null,
+            {
+              configuration,
+              fluxResourcePath,
+            },
+            { client },
+          );
+
+          expect(mockInitConnectionFn).toHaveBeenCalledWith({
+            configuration,
+            message: {
+              watchId: `kustomizations-${resourceName}`,
+              watchParams: {
+                fieldSelector: `metadata.name=${resourceName}`,
+                group: 'kustomize.toolkit.fluxcd.io',
+                namespace: resourceNamespace,
+                resource: 'kustomizations',
+                version: 'v1',
+              },
+            },
+          });
+        });
+
+        it("doesn't call watch API", async () => {
+          await mockResolvers.Query.fluxKustomization(
+            null,
+            {
+              configuration,
+              fluxResourcePath,
+            },
+            { client },
+          );
+          expect(mockKustomizationStatusFn).not.toHaveBeenCalled();
+        });
+      });
     });
 
     it('should not watch Kustomization by the metadata name from the cluster_client library when the data is not present', async () => {
       mock
-        .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
+        .onGet(endpoint, { withCredentials: true, headers: configuration.headers })
         .reply(HTTP_STATUS_OK, {});
 
       await mockResolvers.Query.fluxKustomization(
@@ -172,7 +228,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     describe('when the HelmRelease data is present', () => {
       beforeEach(() => {
         mock
-          .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
+          .onGet(endpoint, { withCredentials: true, headers: configuration.headers })
           .reply(HTTP_STATUS_OK, {
             apiVersion,
             ...fluxHelmReleaseMock,
@@ -213,7 +269,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
     it('should not watch Kustomization by the metadata name from the cluster_client library when the data is not present', async () => {
       mock
-        .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
+        .onGet(endpoint, { withCredentials: true, headers: configuration.headers })
         .reply(HTTP_STATUS_OK, {});
 
       await mockResolvers.Query.fluxHelmRelease(

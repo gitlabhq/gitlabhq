@@ -2,7 +2,7 @@
   flex: 1;
   min-width: 0;
   align-self: center;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 
   .avatar-tile {
     margin-right: 4px;

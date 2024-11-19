@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_change_confidential_monthly
 description: Count of users changing incidents to confidential per month
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 28d
@@ -14,7 +14,7 @@ options:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

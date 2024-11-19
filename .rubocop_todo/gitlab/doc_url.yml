@@ -17,7 +17,6 @@ Gitlab/DocUrl:
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/mailers/emails/user_cap.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'lib/feature.rb'

@@ -205,9 +205,7 @@ export default {
       </section>
     </main>
     <aside class="col-md-6 gl-pt-3">
-      <div
-        class="border-radius-default gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10"
-      >
+      <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10">
         <h6 class="text-secondary gl-p-2 gl-px-4" data-testid="editor-header">
           {{ sprintf($options.i18n.draft, { filename }) }}
         </h6>

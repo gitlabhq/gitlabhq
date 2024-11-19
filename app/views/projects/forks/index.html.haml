@@ -14,7 +14,7 @@
       = search_field_tag :filter_projects, nil, placeholder: _('Search forks'), class: 'projects-list-filter project-filter-form-field form-control input-short gl-grow',
         spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
-    .dropdown.gl-inline.md:gl-ml-3.issue-sort-dropdown.gl-mt-3.md:gl-mt-0
+    .dropdown.gl-inline.md:gl-ml-3.gl-mt-3.md:gl-mt-0
       .btn-group{ role: 'group' }
         = gl_redirect_listbox_tag [created_at, activity], @sort, class: 'btn-group'
         = forks_sort_direction_button(sort_value)

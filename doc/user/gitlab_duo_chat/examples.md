@@ -14,7 +14,7 @@ For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/
 ## Ask about GitLab
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, and JetBrains IDEs
 **LLMs:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), [Vertex AI Search](https://cloud.google.com/enterprise-search)
@@ -22,6 +22,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on self-managed in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ai_gateway_docs_search`. Enabled by default.
 > - [Generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154876) in GitLab 17.1.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask questions about how GitLab works. Things like:
 
@@ -31,19 +32,20 @@ You can ask questions about how GitLab works. Things like:
 GitLab Duo Chat uses the GitLab documentation as source. To keep Chat up to date with the documentation,
 its knowledge base is updated daily.
 
-- On GitLab.com the, the most recent version of the documentation is used.
+- On GitLab.com, the most recent version of the documentation is used.
 - On Self-managed and GitLab Dedicated, the documentation for the version of the instance is used.
 
 ## Ask about a specific issue
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask about a specific GitLab issue. For example:
 
@@ -61,13 +63,14 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 ## Ask about a specific epic
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab.com in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask about a specific GitLab epic. For example:
 
@@ -81,12 +84,13 @@ If the epic contains a large amount of text (more than 40,000 words), GitLab Duo
 ## Ask about a specific merge request
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464587) in GitLab 17.5.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab about the merge request you're viewing. You can ask about:
 
@@ -106,23 +110,57 @@ Chat is not aware of pipelines or commits. However, you can use
 [root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)
 to troubleshoot the jobs in your pipeline.
 
+## Ask about a specific commit
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468460) in GitLab 17.6.
+
+You can ask about a specific GitLab commit. For example:
+
+- `Generate a summary for the commit identified with this link: <link to your commit>`
+- `How can I improve the description of this commit?`
+- When you are viewing a commit in GitLab, you can ask `Generate a summary of the current commit.`
+
+## Ask about a specific pipeline job
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468461) in GitLab 17.6.
+
+You can ask about a specific GitLab pipeline job. For example:
+
+- `Generate a summary for the pipeline job identified via this link: <link to your pipeline job>`
+- `Can you suggest ways to fix this failed pipeline job?`
+- `What are the main steps executed in this pipeline job?`
+- When you are viewing a pipeline job in GitLab, you can ask `Generate a summary of the current pipeline job.`
+
 ## Explain selected code
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to explain selected code:
 
 1. Select some code in your IDE.
 1. In Duo Chat, type `/explain`.
 
-   ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat.png)
+   ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat_v17_4.png)
 
 You can also add additional instructions to be considered. For example:
 
@@ -145,13 +183,14 @@ In the GitLab UI, you can also explain code in:
 ## Ask about or generate code
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.1.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat questions about code by pasting that code into
 the Duo Chat window. For example:
@@ -197,13 +236,14 @@ Programming languages that require compiling the source code may throw cryptic e
 ## Refactor code in the IDE
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limted time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to refactor selected code:
 
@@ -222,12 +262,13 @@ You can include additional instructions to be considered. For example:
 ## Fix code in the IDE
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, self-managed and GitLab Dedicated in GitLab 17.3.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to fix selected code:
 
@@ -245,13 +286,14 @@ You can include additional instructions to be considered. For example:
 ## Write tests in the IDE
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to create tests for the selected code:
 
@@ -270,7 +312,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-d
 ## Ask about CI/CD
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -279,6 +321,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for self-managed and GitLab Dedicated in GitLab 16.8.
 > - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149619) from Claude 2.1 to Claude 3 Sonnet in GitLab 17.2.
 > - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157696) from Claude 3 Sonnet to Claude 3.5 Sonnet in GitLab 17.2.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to create a CI/CD configuration:
 
@@ -298,13 +341,14 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 ## Troubleshoot failed CI/CD jobs with Root Cause Analysis
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to determine the root cause of a CI/CD job failure by analyzing the logs.
 
@@ -331,10 +375,12 @@ An analysis of the reasons for the failure and an example fix is displayed.
 ## Explain a vulnerability
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to explain a vulnerability when you are viewing a SAST vulnerability report.
 
@@ -353,7 +399,7 @@ To start a new conversation, but keep the previous conversations visible in the 
 In both cases, the conversation history will not be considered when you ask new questions.
 Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
 
-## Supported slash commands
+## GitLab Duo Chat slash commands
 
 Duo Chat has a list of supported commands, each of which is preceded by a slash (`/`).
 Use the following commands to quickly accomplish specific tasks.

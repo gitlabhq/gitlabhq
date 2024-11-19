@@ -1,6 +1,6 @@
 ---
 key_path: counts.count_total_create_ci_internal_pipeline
-description: Total count of created internal Ci pipelines
+description: Total count of created internal CI pipelines
 product_group: pipeline_execution
 performance_indicator_type: []
 value_type: number
@@ -13,7 +13,7 @@ data_category: operational
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

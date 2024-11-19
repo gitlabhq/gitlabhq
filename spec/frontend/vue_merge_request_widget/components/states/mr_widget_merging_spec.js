@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import simplePoll from '~/lib/utils/simple_poll';
 import MrWidgetMerging from '~/vue_merge_request_widget/components/states/mr_widget_merging.vue';
 import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
@@ -59,7 +59,7 @@ describe('MRWidgetMerging', () => {
       pollMock.mockResolvedValueOnce({ data: { state: STATUS_MERGED } });
       createComponent();
 
-      await nextTick();
+      await waitForPromises();
 
       expect(fetchUserCounts).toHaveBeenCalled();
     });

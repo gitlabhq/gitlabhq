@@ -1,0 +1,13 @@
+---
+description: Tracks when the user views the organizations list.
+action: view_organizations_list
+product_group: product_planning
+milestone: '15.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95658
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

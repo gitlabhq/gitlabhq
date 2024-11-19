@@ -78,15 +78,6 @@ module Integrations
       []
     end
 
-    override :fields
-    def fields
-      return super if Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
-
-      super.reject do |field|
-        field[:name].include?('deployment_gating')
-      end
-    end
-
     def sections
       [
         {
@@ -136,7 +127,6 @@ module Integrations
     end
 
     def validate_deployment_gating_environments
-      return unless Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
       return unless jira_cloud_app_deployment_gating_environments.present?
 
       return if jira_cloud_app_deployment_gating_environments.split(',').all? do |env|
@@ -153,7 +143,6 @@ module Integrations
     end
 
     def validate_valid_deployment_gating_input
-      return unless Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
       return unless jira_cloud_app_enable_deployment_gating
       return if jira_cloud_app_deployment_gating_environments.present?
 

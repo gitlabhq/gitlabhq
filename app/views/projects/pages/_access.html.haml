@@ -1,5 +1,5 @@
 - if @project.pages_deployed?
-  - pages_url = build_pages_url(@project, with_unique_domain: true)
+  - pages_url = build_pages_url(@project)
   - pages_url_text = pages_url
 
   = render ::Layouts::CrudComponent.new(s_('GitLabPages|Access pages'),

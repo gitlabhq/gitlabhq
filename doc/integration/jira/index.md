@@ -18,9 +18,11 @@ If you want to continue to use Jira, you can integrate Jira with GitLab instead.
 GitLab offers two Jira integrations. You can use one or both integrations
 [depending on the features you need](#feature-availability).
 
-### Jira issue integration
+### Jira issues integration
 
-You can use the [Jira issue integration](configure.md) developed by GitLab with
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) feature name to Jira issues integration in GitLab 17.6.
+
+You can use the [Jira issues integration](configure.md) developed by GitLab with
 Jira Cloud, Jira Data Center, or Jira Server. With this integration, you can:
 
 - View and search Jira issues directly in GitLab.
@@ -38,9 +40,9 @@ including related branches, commits, and merge requests. To configure the Jira d
 
 ## Feature availability
 
-This table shows the features available with the Jira issue integration and the Jira development panel:
+This table shows the features available with the Jira issues integration and the Jira development panel:
 
-| Feature | Jira issue integration | Jira development panel |
+| Feature | Jira issues integration | Jira development panel |
 |-|-|-|
 | Mention a Jira issue ID in a GitLab commit or merge request, and a link to the Jira issue is created. | **{check-circle}** Yes | **{dotted-circle}** No |
 | Mention a Jira issue ID in GitLab, and the Jira issue shows the GitLab issue or merge request. | **{check-circle}** Yes, a Jira comment with the GitLab issue or merge request title links to GitLab. The first mention is also added to **Web links** in the Jira issue. | **{check-circle}** Yes, in the Jira issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
@@ -55,11 +57,11 @@ This table shows the features available with the Jira issue integration and the 
 
 ## Privacy considerations
 
-All Jira integrations share data outside of GitLab.
+All Jira issues integrations share data outside of GitLab.
 If you integrate a private GitLab project with Jira, the private
 data is shared with users who have access to your Jira project.
 
-The [Jira issue integration](configure.md) posts GitLab data as comments on Jira issues.
+The [Jira issues integration](configure.md) posts GitLab data as comments on Jira issues.
 The [GitLab for Jira Cloud app](connect-app.md) and the [Jira DVCS connector](dvcs/index.md)
 share GitLab data through the [Jira development panel](development_panel.md).
 With the Jira development panel, you can restrict access to certain user groups or roles.

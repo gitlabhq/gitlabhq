@@ -43,7 +43,7 @@ GitLab is a [DevSecOps platform](../devsecops.md) that
 integrates security throughout the development lifecycle.
 At its core, you can use GitLab to address a wide range of controls within the SA control family.
 
-#### System development life cycle
+#### System development lifecycle
 
 You can use GitLab to meet the core of this requirement. GitLab provides
 a platform where work can be
@@ -214,9 +214,9 @@ requirements:
 
 **Two-factor authentication** - [GitLab supports the following second factors](../user/profile/account/two_factor_authentication.md):
 
-- Time-based one-time passwords
+- One-time password authenticators
 
-- WebAuthN devices
+- WebAuthn devices
 
 [Instructions for enabling two-factor authentication](../user/profile/account/two_factor_authentication.md#enable-two-factor-authentication)
 are provided in the documentation. Customers pursuing FedRAMP must consider
@@ -224,7 +224,7 @@ two-factor providers that are FedRAMP authorized and support FIPS
 requirements. FedRAMP authorized providers can be found on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products).
 When selecting a second factor, it is important to note that NIST and
 FedRAMP are now indicating that phishing resistant authentication, such
-as WebAuthN, must be used (IA-2).
+as WebAuthn, must be used (IA-2).
 
 **SSH keys**
 

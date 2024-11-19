@@ -51,7 +51,6 @@ RSpec.describe OmniAuth::Strategies::Jwt do
         context "when the #{algorithm} algorithm is used" do
           let(:algorithm) { algorithm }
           let(:secret) do
-            # rubocop:disable Style/CaseLikeIf
             if private_key_class == OpenSSL::PKey::RSA
               private_key_class.generate(2048)
                 .to_pem
@@ -61,7 +60,6 @@ RSpec.describe OmniAuth::Strategies::Jwt do
             else
               private_key_class.new(jwt_config.strategy.secret)
             end
-            # rubocop:enable Style/CaseLikeIf
           end
 
           let(:private_key) { private_key_class ? private_key_class.new(secret) : secret }
@@ -144,16 +142,6 @@ RSpec.describe OmniAuth::Strategies::Jwt do
 
       it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/482939' do
         expect { jwt_strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::JwtTooLarge)
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(omniauth_validate_email_length: false)
-        end
-
-        it 'does not raise an error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/482940' do
-          expect { jwt_strategy.decoded }.not_to raise_error
-        end
       end
     end
   end

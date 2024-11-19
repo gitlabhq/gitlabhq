@@ -61,5 +61,12 @@ module Namespaces
 
       assign_attributes(attributes_to_sync)
     end
+
+    # It's always 1 project but it has to be an AR relation
+    def all_projects
+      Project.where(id: project.id)
+    end
   end
 end
+
+Namespaces::ProjectNamespace.prepend_mod

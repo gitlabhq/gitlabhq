@@ -16,7 +16,7 @@ module Types
           field :created_at, Types::TimeType, null: true, description: 'Timestamp of when the version was created.'
 
           field :released_at, Types::TimeType, null: true, description: 'Timestamp of when the version was released.',
-            alpha: { milestone: '16.7' }
+            experiment: { milestone: '16.7' }
 
           field :name, GraphQL::Types::String, null: true,
             description: 'Name that uniquely identifies the version within the catalog resource.'

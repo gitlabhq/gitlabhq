@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.in_product_marketing_email_team_1_sent
 description: Total sent emails of the team track's second email
 product_group: activation
+product_categories:
+- onboarding
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131860
@@ -18,7 +20,7 @@ options:
 distribution:
   - ce
   - ee
-tier:
+tiers:
   - free
   - premium
   - ultimate

@@ -30,9 +30,9 @@ RSpec.describe WorkItems::Widgets::EmailParticipants, feature_category: :team_pl
     it { is_expected.to eq(:email_participants) }
   end
 
-  describe '#email_participants_emails' do
-    subject { described_class.new(work_item).email_participants_emails }
+  describe '#issue_email_participants' do
+    subject { described_class.new(work_item).issue_email_participants }
 
-    it { is_expected.to eq(work_item.email_participants_emails) }
+    it { is_expected.to match_array(work_item.issue_email_participants) }
   end
 end

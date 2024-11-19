@@ -188,8 +188,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     context 'when user is no project member' do
       let_it_be(:user) { create(:user) }
 
-      it_behaves_like 'returning a success service response'
-      it_behaves_like 'valid package'
+      it_behaves_like 'returning an error service response', message: 'Unauthorized'
     end
 
     context 'when scoped package not following the naming convention' do
@@ -370,38 +369,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
-    context 'when feature flag :packages_protected_packages disabled' do
-      let_it_be_with_reload(:package_protection_rule) do
-        create(:package_protection_rule, package_type: :npm, project: project)
-      end
-
-      before do
-        stub_feature_flags(packages_protected_packages: false)
-      end
-
-      context 'with matching package protection rule for all roles' do
-        using RSpec::Parameterized::TableSyntax
-
-        let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
-
-        where(:package_name_pattern, :minimum_access_level_for_push) do
-          ref(:package_name)                  | :maintainer
-          ref(:package_name)                  | :owner
-          ref(:package_name_pattern_no_match) | :maintainer
-          ref(:package_name_pattern_no_match) | :owner
-        end
-
-        with_them do
-          before do
-            package_protection_rule.update!(package_name_pattern: package_name_pattern,
-              minimum_access_level_for_push: minimum_access_level_for_push)
-          end
-
-          it_behaves_like 'valid package'
-        end
-      end
-    end
-
     context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
       using RSpec::Parameterized::TableSyntax
 
@@ -454,7 +421,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       context 'with deploy token' do
-        let_it_be(:deploy_token) { create(:deploy_token, projects: [project]) }
+        let_it_be(:deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
         let_it_be(:user) { nil }
 
         let(:service) { described_class.new(project, deploy_token, params) }

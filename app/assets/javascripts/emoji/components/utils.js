@@ -1,6 +1,6 @@
 import { chunk, memoize, uniq } from 'lodash';
 import { getCookie, removeCookie } from '~/lib/utils/common_utils';
-import { initEmojiMap, getEmojiCategoryMap, getAllEmoji, loadCustomEmojiWithNames } from '~/emoji';
+import { initEmojiMap, getEmojiCategoryMap, getAllEmoji, getEmojisForCategory } from '~/emoji';
 import {
   EMOJIS_PER_ROW,
   EMOJI_ROW_HEIGHT,
@@ -35,8 +35,8 @@ export const getFrequentlyUsedEmojis = async () => {
     swapCookieToLocalStorage();
   }
 
-  const customEmoji = await loadCustomEmojiWithNames();
-  const possibleEmojiNames = [...customEmoji.names, ...getAllEmoji().map((e) => e.n)];
+  const customEmoji = await getEmojisForCategory('custom');
+  const possibleEmojiNames = [...customEmoji.map((e) => e.name), ...getAllEmoji().map((e) => e.n)];
 
   const emojis = chunk(
     uniq(savedEmojis.split(',')).filter((name) => possibleEmojiNames.includes(name)),

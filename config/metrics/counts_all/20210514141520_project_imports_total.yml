@@ -13,7 +13,7 @@ instrumentation_class: CountImportedProjectsTotalMetric
 distribution:
   - ce
   - ee
-tier:
+tiers:
   - free
   - premium
   - ultimate

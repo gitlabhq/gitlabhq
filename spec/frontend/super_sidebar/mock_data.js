@@ -285,3 +285,22 @@ export const sortedFrequentItems = [
   { id: 1, frequency: 12, lastAccessedOn: 1491400843391 },
   { id: 4, frequency: 8, lastAccessedOn: 1497979281815 },
 ];
+
+export const sidebarDataCountResponse = ({
+  openIssuesCount = null,
+  openMergeRequestsCount = null,
+}) => {
+  return {
+    data: {
+      namespace: {
+        id: 'gid://gitlab/Project/11',
+        sidebar: {
+          openIssuesCount,
+          openMergeRequestsCount,
+          __typename: 'NamespaceSidebar',
+        },
+        __typename: 'Namespace',
+      },
+    },
+  };
+};

@@ -1,3 +1,4 @@
+---
 table_name: p_ci_runner_machine_builds
 classes:
 - Ci::RunnerManagerBuild
@@ -7,14 +8,5 @@ description: Relationships between builds and runner managers
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111484
 milestone: '15.9'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: build_id
-        table: p_ci_builds
-        sharding_key: project_id
-        belongs_to: build
-        foreign_key_name: fk_bb490f12fe_p
-desired_sharding_key_migration_job_name: BackfillPCiRunnerMachineBuildsProjectId
+sharding_key:
+  project_id: projects

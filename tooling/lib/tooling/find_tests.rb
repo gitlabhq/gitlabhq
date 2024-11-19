@@ -15,7 +15,7 @@ module Tooling
     def execute
       tff = TestFileFinder::FileFinder.new(paths: changed_files).tap do |file_finder|
         if ENV['RSPEC_TESTS_MAPPING_ENABLED'] == 'true'
-          # Run 50% of the predictive backend tests for any file changed, with a minimum of 20 backend test files.
+          # Run 50% of the predictive backend tests for any file changed, with a minimum of 14 backend test files.
           #
           # See https://gitlab.com/gitlab-org/gitlab/-/issues/450374#note_1836131381
           file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(

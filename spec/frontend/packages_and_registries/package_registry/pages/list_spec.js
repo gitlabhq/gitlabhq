@@ -12,6 +12,7 @@ import PackageTitle from '~/packages_and_registries/package_registry/components/
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import OriginalPackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
+import PackageErrorsCount from '~/packages_and_registries/package_registry/components/list/package_errors_count.vue';
 import {
   GRAPHQL_PAGE_SIZE,
   EMPTY_LIST_HELP_URL,
@@ -62,6 +63,7 @@ describe('PackagesListApp', () => {
 
   const findPackageTitle = () => wrapper.findComponent(PackageTitle);
   const findSearch = () => wrapper.findComponent(PackageSearch);
+  const findPackageErrorsCount = () => wrapper.findComponent(PackageErrorsCount);
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
@@ -221,7 +223,6 @@ describe('PackagesListApp', () => {
       expect(findListComponent().props()).toMatchObject({
         list: expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
         isLoading: false,
-        hideErrorAlert: false,
         groupSettings: expect.objectContaining({
           mavenPackageRequestsForwarding: true,
           npmPackageRequestsForwarding: true,
@@ -230,14 +231,21 @@ describe('PackagesListApp', () => {
       });
     });
 
+    it('renders PackageErrorsCount component', async () => {
+      findSearch().vm.$emit('update', searchPayload);
+      await waitForPromises();
+
+      expect(findPackageErrorsCount().exists()).toBe(true);
+    });
+
     describe('when packageStatus filter is set to error', () => {
       beforeEach(async () => {
         findSearch().vm.$emit('update', { filters: { packageStatus: 'error' } });
         await nextTick();
       });
 
-      it('sets hideErrorAlert prop', () => {
-        expect(findListComponent().props('hideErrorAlert')).toBe(true);
+      it('does not render PackageErrorsCount component', () => {
+        expect(findPackageErrorsCount().exists()).toBe(false);
       });
     });
 
@@ -437,6 +445,16 @@ describe('PackagesListApp', () => {
       findListComponent().vm.$emit('delete', [{ id: 1 }]);
 
       expect(findDeletePackages().emitted('start')).toEqual([[]]);
+    });
+
+    it('deletePackages is bound to package-errors-count delete event', async () => {
+      mountComponent();
+
+      await waitForFirstRequest();
+
+      findPackageErrorsCount().vm.$emit('confirm-delete', [{ id: 1 }]);
+
+      expect(findDeletePackages().emitted('start')).toHaveLength(1);
     });
 
     it('start and end event set loading correctly', async () => {

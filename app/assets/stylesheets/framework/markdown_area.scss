@@ -26,16 +26,6 @@
   }
 }
 
-.md-header-tab {
-  @include media-breakpoint-down(xs) {
-    flex: 1;
-    flex-direction: column;
-    width: 100%;
-    border-bottom: 1px solid $border-color;
-    text-align: center;
-  }
-}
-
 .nav-links {
   li.md-header-toolbar {
     margin-left: auto;
@@ -57,7 +47,7 @@
 }
 
 .referenced-users {
-  color: $gl-text-color;
+  @apply gl-text-default;
   padding: 0 $gl-padding $gl-padding-8;
 }
 
@@ -75,19 +65,25 @@
   min-height: 177px;
   padding: 10px 0;
   overflow-x: auto;
+
+  a.anchor {
+    margin-left: -1rem !important;
+  }
+
+  details a.anchor {
+    margin-left: -1.75rem !important;
+  }
 }
 
 .markdown-area {
   border-radius: 0;
-  background: $white;
-  border: 1px solid $gray-50;
   min-height: 140px;
   max-height: 500px;
   padding: 5px;
   box-shadow: none;
   width: 100%;
   resize: none !important;
-  @apply gl-transition-box-shadow;
+  @apply gl-bg-transparent gl-border gl-border-subtle gl-transition-box-shadow;
 }
 
 .md-suggestion-diff {

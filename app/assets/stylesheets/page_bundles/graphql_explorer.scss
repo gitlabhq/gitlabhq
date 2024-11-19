@@ -1,0 +1,18 @@
+@use 'graphiql/graphiql.css';
+
+html, body, #graphiql-container {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.graphiql-container .graphiql-logo {
+  height: 24px;
+  padding: 0 15px;
+
+  a {
+    display: inline-block;
+    height: 100%;
+  }
+}

@@ -520,7 +520,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     context 'on organization_id' do
       it_behaves_like 'cleanup by a loose foreign key' do
         let_it_be(:parent) { create(:organization) }
-        let_it_be(:model) { create(:project_snippet, organization: parent) }
+        let_it_be(:model) { create(:personal_snippet, organization: parent) }
       end
     end
   end

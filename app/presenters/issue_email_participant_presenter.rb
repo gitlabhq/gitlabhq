@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class IssueEmailParticipantPresenter < Gitlab::View::Presenter::Delegated
+# Model is not in a product domain namespace.
+class IssueEmailParticipantPresenter < Gitlab::View::Presenter::Delegated # rubocop:disable Gitlab/NamespacedClass -- reason above
   presents ::IssueEmailParticipant, as: :participant
 
   delegator_override :email

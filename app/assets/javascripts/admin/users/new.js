@@ -60,10 +60,10 @@ export const setupInternalUserRegexHandler = () => {
   setupListeners();
 };
 
-export const initAdminUserOrganizationField = () => {
+export const initAdminNewUserOrganizationField = () => {
   Vue.use(VueApollo);
 
-  const el = document.getElementById('js-admin-user-organization-field');
+  const el = document.getElementById('js-admin-new-user-organization-field');
 
   if (!el) return false;
 
@@ -82,7 +82,7 @@ export const initAdminUserOrganizationField = () => {
 
   return new Vue({
     el,
-    name: 'AdminUserOrganizationFieldRoot',
+    name: 'AdminNewUserOrganizationFieldRoot',
     apolloProvider,
     render(createElement) {
       return createElement(NewUserOrganizationField, {

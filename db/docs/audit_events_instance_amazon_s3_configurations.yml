@@ -1,9 +1,9 @@
 ---
 table_name: audit_events_instance_amazon_s3_configurations
 classes:
-  - AuditEvents::Instance::AmazonS3Configuration
+- AuditEvents::Instance::AmazonS3Configuration
 feature_categories:
-  - audit_events
+- audit_events
 description: Stores Amazon S3 configurations used for instance level audit event streaming.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136492
 milestone: '16.7'

@@ -89,7 +89,7 @@ export default {
     <div class="sidebar-container">
       <div class="blocks-container gl-p-4 gl-pt-0">
         <sidebar-header
-          class="gl-border-b gl-border-gray-50 gl-py-4"
+          class="gl-py-4"
           :rest-job="job"
           :job-id="job.id"
           @updateVariables="$emit('updateVariables')"

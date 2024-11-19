@@ -201,7 +201,7 @@ export default {
       class="gl-border-b gl-flex gl-items-center gl-justify-between gl-bg-gray-10 gl-p-4 gl-py-5"
     >
       <span>{{ $options.i18n.helpText }}</span>
-      <gl-button variant="confirm" @click="isDrawerOpen = true">{{
+      <gl-button variant="confirm" data-testid="add-exclusions-btn" @click="isDrawerOpen = true">{{
         $options.i18n.addExclusions
       }}</gl-button>
     </div>

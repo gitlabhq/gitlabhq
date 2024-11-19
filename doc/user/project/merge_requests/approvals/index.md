@@ -138,7 +138,7 @@ After a merge request receives the required approvals, it is ready to merge, unl
 
 - [Merge conflicts](../conflicts.md)
 - [Unresolved threads](../index.md#prevent-merge-unless-all-threads-are-resolved)
-- [Failed CI/CD pipeline](../merge_when_pipeline_succeeds.md)
+- [Failed CI/CD pipeline](../auto_merge.md)
 
 ### Prevent author approval
 

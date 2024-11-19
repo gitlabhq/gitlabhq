@@ -5,7 +5,7 @@
     .form-group
       = f.label :polling_interval_multiplier, _('Polling interval multiplier'), class: 'label-bold'
       = f.text_field :polling_interval_multiplier, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1.')
 
   = f.submit _('Save changes'), pajamas_button: true

@@ -142,10 +142,10 @@ You can impersonate a user in the following ways:
   1. On the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
   1. Select **Impersonate**.
-- With the API, using [impersonation tokens](../api/rest/index.md#impersonation-tokens).
+- With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](audit_event_reports.md#user-impersonation).
-By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../api/rest/index.md#disable-impersonation).
+By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../api/rest/authentication.md#disable-impersonation).
 
 ![The user impersonation button.](img/impersonate_user_button_v13_8.png)
 
@@ -214,9 +214,9 @@ You must be an administrator to manually add emails to users:
 
 The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
 
-## Prevent a user from creating top level groups
+## Prevent a user from creating top-level groups
 
-By default, users can create top level groups. To prevent a user from creating a top level group:
+By default, users can create top-level groups. To prevent a user from creating a top-level group:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -239,8 +239,15 @@ To access the Groups page:
 For each group, the page displays their name, description, size, number of projects in the group,
 number of members, and whether the group is private, internal, or public. To edit a group, in the group's row, select **Edit**. To delete the group, in the group's row, select **Delete**.
 
-To change the sort order, select the sort dropdown list and select the desired order. The default
-sort order is by **Last created**.
+To change the sort order, select the sort dropdown list and choose the desired order.
+You can sort groups by:
+
+- Created date (default)
+- Updated date
+- Storage size
+
+The storage size option sorts groups by the total storage used, including Git repositories
+and Large File Storage (LFS) for all projects in the group. For more information, see [usage quotas](../user/storage_usage_quotas.md).
 
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.

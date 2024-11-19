@@ -3,7 +3,7 @@
 - label = local_assigns.fetch(:label)
 
 = render Pajamas::ButtonComponent.new(variant: :confirm, category: :secondary, href: help_path, button_options: { class: "gl-flex-col gl-basis-1/3" }) do
-  %span.gl-flex.gl-items-center.gl-m-3.gl-h-64
+  %span.gl-flex.gl-items-center.gl-m-3.gl-h-11
     = image_tag logo_path, alt: label, class: "gl-w-15 gl-max-h-full gl-max-w-full"
   %span.gl-whitespace-normal
     = label

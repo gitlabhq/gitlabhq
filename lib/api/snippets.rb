@@ -8,6 +8,10 @@ module API
     feature_category :source_code_management
     urgency :low
 
+    before do
+      set_current_organization
+    end
+
     helpers do
       def find_snippets(user: current_user, params: {})
         SnippetsFinder.new(user, params).execute

@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/LineContinuationLeadingSpace:
-  Exclude:
-    - 'ee/lib/tasks/gitlab/geo.rake'

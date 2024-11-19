@@ -58,6 +58,8 @@ module QA
         end
 
         def click_add_new_token_button
+          dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
+
           click_element('add-new-token-button')
         end
 

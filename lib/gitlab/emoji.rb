@@ -6,7 +6,7 @@ module Gitlab
 
     # When updating emoji assets increase the version below
     # and update the version number in `app/assets/javascripts/emoji/index.js`
-    EMOJI_VERSION = 3
+    EMOJI_VERSION = 4
 
     # Return a Pathname to emoji's current versioned folder
     #

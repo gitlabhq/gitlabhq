@@ -2,6 +2,8 @@
 key_path: deactivate_dormant_users_enabled
 description: Whether Dormant User Deactivation is enabled
 product_group: utilization
+product_categories:
+- seat_cost_management
 value_type: boolean
 status: active
 milestone: "15.6"
@@ -14,7 +16,7 @@ performance_indicator_type: []
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

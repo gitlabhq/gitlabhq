@@ -1,0 +1,7 @@
+fragment DoraMetricItem on DoraMetric {
+  date
+  deployment_frequency: deploymentFrequency
+  change_failure_rate: changeFailureRate
+  lead_time_for_changes: leadTimeForChanges
+  time_to_restore_service: timeToRestoreService
+}

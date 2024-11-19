@@ -45,11 +45,6 @@ RSpec.describe Gitlab::Cng::CLI do
   end
 
   describe "create command" do
-    context "with cluster subcommand" do
-      it_behaves_like "command with help", %w[create help cluster], /Create kind cluster for local deployments/
-      it_behaves_like "executable command", Gitlab::Cng::Commands::Create, %w[create cluster]
-    end
-
     context "with deployment subcommand" do
       context "with kind deployment" do
         it_behaves_like "command with help", %w[create deployment help kind],

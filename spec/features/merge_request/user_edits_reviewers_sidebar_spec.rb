@@ -20,15 +20,17 @@ RSpec.describe 'Merge request > User edits reviewers sidebar', :js, feature_cate
       it 'shows a link for inviting members and launches invite modal' do
         visit project_merge_request_path(project, merge_request)
 
-        reviewer_edit_link.click
+        page.within '.reviewer' do
+          click_button 'Edit'
+        end
 
         wait_for_requests
 
-        page.within '.dropdown-menu-user' do
-          expect(page).to have_link('Invite Members')
-        end
+        page.within '.reviewers-dropdown' do
+          expect(page).to have_button('Invite members')
 
-        click_link 'Invite Members'
+          click_button 'Invite members'
+        end
 
         expect(page).to have_content("You're inviting members to the")
       end
@@ -42,18 +44,16 @@ RSpec.describe 'Merge request > User edits reviewers sidebar', :js, feature_cate
       it 'shows author in assignee dropdown and no invite link' do
         visit project_merge_request_path(project, merge_request)
 
-        reviewer_edit_link.click
+        page.within '.reviewer' do
+          click_button 'Edit'
+        end
 
         wait_for_requests
 
-        page.within '.dropdown-menu-user' do
-          expect(page).not_to have_link('Invite Members')
+        page.within '.reviewers-dropdown' do
+          expect(page).not_to have_button('Invite members')
         end
       end
-    end
-
-    def reviewer_edit_link
-      find('.block.reviewer .edit-link')
     end
   end
 end

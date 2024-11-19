@@ -50,15 +50,6 @@ export const projectsWithScope = {
   },
 };
 
-export const addProjectSuccess = {
-  data: {
-    ciJobTokenScopeAddProject: {
-      errors: [],
-      __typename: 'CiJobTokenScopeAddProjectPayload',
-    },
-  },
-};
-
 export const removeProjectSuccess = {
   data: {
     ciJobTokenScopeRemoveProject: {
@@ -86,18 +77,21 @@ export const mockGroups = [
     id: 1,
     name: 'some-group',
     fullPath: 'some-group',
+    webUrl: 'http://localhost/some-group',
     __typename: 'Group',
   },
   {
     id: 2,
     name: 'another-group',
     fullPath: 'another-group',
+    webUrl: 'http://localhost/another-group',
     __typename: 'Group',
   },
   {
     id: 3,
     name: 'a-sub-group',
     fullPath: 'another-group/a-sub-group',
+    webUrl: 'http://localhost/a-sub-group',
     __typename: 'Group',
   },
 ];
@@ -111,6 +105,7 @@ export const mockProjects = [
       fullPath: 'root',
     },
     fullPath: 'root/merge-train-stuff',
+    webUrl: 'http://localhost/root/merge-train-stuff',
     isLocked: false,
     __typename: 'Project',
   },
@@ -122,6 +117,7 @@ export const mockProjects = [
       fullPath: 'root',
     },
     fullPath: 'root/ci-project',
+    webUrl: 'http://localhost/root/ci-project',
     isLocked: true,
     __typename: 'Project',
   },
@@ -182,6 +178,7 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
               id: 'gid://gitlab/Project/23',
               name: 'ci-project',
               avatarUrl: '',
+              webUrl: 'http://localhost/root/ci-project',
             },
           ],
         },
@@ -194,6 +191,7 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
               id: 'gid://gitlab/Group/45',
               name: 'ci-group',
               avatarUrl: '',
+              webUrl: 'http://localhost/root/ci-group',
             },
           ],
         },
@@ -217,6 +215,7 @@ export const inboundGroupsAndProjectsWithScopeResponseWithAddedItem = {
               id: 'gid://gitlab/Project/25',
               name: 'test',
               avatarUrl: '',
+              webUrl: 'http://localhost/root/test',
             },
           ],
         },
@@ -230,6 +229,7 @@ export const inboundGroupsAndProjectsWithScopeResponseWithAddedItem = {
               id: 'gid://gitlab/Group/49',
               name: 'gitlab-org',
               avatarUrl: '',
+              webUrl: 'http://localhost/gitlab-org',
             },
           ],
         },
@@ -238,31 +238,10 @@ export const inboundGroupsAndProjectsWithScopeResponseWithAddedItem = {
   },
 };
 
-export const getGroupsAndProjectsResponse = {
-  data: {
-    groups: {
-      nodes: [
-        { id: 1, name: 'gitlab-org', avatarUrl: '', fullPath: 'gitlab-org' },
-        { id: 2, name: 'ci-group', avatarUrl: '', fullPath: 'root/ci-group' },
-      ],
-    },
-    projects: {
-      nodes: [
-        { id: 1, name: 'gitlab', avatarUrl: '', fullPath: 'gitlab-org/gitlab' },
-        { id: 2, name: 'ci-project', avatarUrl: '', fullPath: 'root/ci-project' },
-      ],
-    },
-  },
-};
-
-export const inboundAddGroupOrProjectSuccessResponse = {
-  data: {
-    ciJobTokenScopeAddProject: {
-      errors: [],
-      __typename: 'CiJobTokenScopeAddProjectPayload',
-    },
-  },
-};
+export const getAddNamespaceHandler = (error) =>
+  jest.fn().mockResolvedValue({
+    data: { ciJobTokenScopeAddGroupOrProject: { errors: error ? [error] : [] } },
+  });
 
 export const inboundRemoveGroupSuccess = {
   data: {
@@ -321,6 +300,38 @@ export const mockPermissionsMutationResponse = ({
       },
       errors,
       __typename: 'Project',
+    },
+  },
+});
+
+export const mockAuthLogsResponse = (hasNextPage = false) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/26',
+      __typename: 'Project',
+      ciJobTokenAuthLogs: {
+        __typename: 'CiJobTokenAuthLogConnection',
+        count: 1,
+        nodes: [
+          {
+            __typename: 'CiJobTokenAuthLog',
+            lastAuthorizedAt: '2024-10-25',
+            originProject: {
+              __typename: 'Project',
+              fullPath: 'root/project-that-triggers-external-pipeline',
+              path: 'project-that-triggers-external-pipeline',
+              avatarUrl: null,
+              name: 'project-that-triggers-external-pipeline',
+              id: 'gid://gitlab/Project/26',
+            },
+          },
+        ],
+        pageInfo: {
+          __typename: 'PageInfo',
+          endCursor: 'eyJpZCI6IjEifQ',
+          hasNextPage,
+        },
+      },
     },
   },
 });

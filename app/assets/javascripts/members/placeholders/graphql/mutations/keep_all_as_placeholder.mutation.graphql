@@ -1,0 +1,6 @@
+mutation keepAllAsPlaceholder($namespaceId: NamespaceID!) {
+  importSourceUserKeepAllAsPlaceholder(input: { namespaceId: $namespaceId }) {
+    errors
+    updatedImportSourceUserCount
+  }
+}

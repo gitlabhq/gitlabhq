@@ -12,8 +12,8 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
 
   before do
     project.add_maintainer(user)
-    create_list(:award_emoji, 2, user: user, name: 'thumbsup')
-    create_list(:award_emoji, 1, user: user, name: 'thumbsdown')
+    create_list(:award_emoji, 2, user: user, name: AwardEmoji::THUMBS_UP)
+    create_list(:award_emoji, 1, user: user, name: AwardEmoji::THUMBS_DOWN)
     create_list(:award_emoji, 3, user: user, name: 'star')
   end
 

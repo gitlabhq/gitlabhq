@@ -113,7 +113,7 @@ You can override this behavior by defining specific variables:
 
 These variables also affect Auto Build and Auto Container Scanning. If you don't want to build and push an image to
 `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`, include only `Jobs/Deploy.gitlab-ci.yml`, or
-[disable the `build` jobs](cicd_variables.md#job-disabling-variables).
+[skip the `build` jobs](cicd_variables.md#job-skipping-variables).
 
 If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
 also update `$CS_DEFAULT_BRANCH_IMAGE`. For more information, see
@@ -134,7 +134,7 @@ You can extend and manage your Auto DevOps configuration with GitLab APIs:
 - [Use API calls to access settings](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls),
   which include `auto_devops_enabled`, to enable Auto DevOps on projects by default.
 - [Create a new project](../../api/projects.md#create-a-project).
-- [Edit groups](../../api/groups.md#update-group).
+- [Edit groups](../../api/groups.md#update-group-attributes).
 - [Edit projects](../../api/projects.md#edit-a-project).
 
 ## Forward CI/CD variables to the build environment
@@ -356,7 +356,7 @@ To use an external managed provider:
    Because the built-in PostgreSQL setup for review apps and staging is sufficient, you might only need to
    disable the installation for `production`.
 
-   ![Auto Metrics](img/disable_postgres.png)
+   ![Auto Metrics](img/disable_postgres_v12_4.png)
 
 1. Define the `DATABASE_URL` variable as an environment-scoped variable
    available to your application. This should be a URL in the following format:

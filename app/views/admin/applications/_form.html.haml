@@ -12,7 +12,7 @@
       = f.label :redirect_uri
       = f.text_area :redirect_uri, class: 'form-control gl-form-input', data: { testid: 'redirect-uri-field' }
       = doorkeeper_errors_for application, :redirect_uri
-      %span.form-text.text-muted
+      %span.form-text.gl-text-subtle
         Use one line per URI
 
   = content_tag :div, class: 'form-group row' do
@@ -30,6 +30,6 @@
       = f.label :scopes
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes, f: f
 
-  .gl-mt-5
+  .settings-sticky-footer.gl-flex.gl-gap-3
     = f.submit _('Save application'), pajamas_button: true, data: { testid: 'save-application-button' }
     = link_button_to _('Cancel'), admin_applications_path

@@ -18,11 +18,11 @@ For example, the following features are available by setting up tracking:
 - [Filter merge requests by environment or deployment date](../../user/project/merge_requests/index.md#by-environment-or-deployment-date).
 - [DevOps Research and Assessment (DORA) metrics](../../user/analytics/dora_metrics.md).
 - [View environments and deployments](index.md#view-environments-and-deployments).
-- [Track newly included merge requests per deployment](index.md#track-newly-included-merge-requests-per-deployment).
+- [Track newly included merge requests per deployment](deployments.md#track-newly-included-merge-requests-per-deployment).
 
 NOTE:
 Some of the features are not available because GitLab can't authorize and leverage those external deployments, including
-[Protected Environments](protected_environments.md), [Deployment Approvals](deployment_approvals.md), [Deployment safety](deployment_safety.md), and [Environment rollback](index.md#environment-rollback).
+[Protected Environments](protected_environments.md), [Deployment Approvals](deployment_approvals.md), [Deployment safety](deployment_safety.md), and [Deployment rollback](deployments.md#deployment-rollback).
 
 ## How to set up deployment tracking
 

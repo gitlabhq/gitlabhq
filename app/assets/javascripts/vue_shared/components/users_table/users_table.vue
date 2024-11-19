@@ -1,10 +1,19 @@
 <script>
 import NO_USERS_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-user-settings-md.svg';
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import UserAvatar from './user_avatar.vue';
+import {
+  FIELD_NAME,
+  FIELD_ORGANIZATION_ROLE,
+  FIELD_PROJECTS_COUNT,
+  FIELD_GROUP_COUNT,
+  FIELD_CREATED_AT,
+  FIELD_LAST_ACTIVITY_ON,
+  FIELD_SETTINGS,
+} from './constants';
 
 export default {
   components: {
@@ -33,39 +42,79 @@ export default {
       required: false,
       default: false,
     },
+    fieldsToRender: {
+      type: Array,
+      required: false,
+      default() {
+        return [
+          FIELD_NAME,
+          FIELD_PROJECTS_COUNT,
+          FIELD_GROUP_COUNT,
+          FIELD_CREATED_AT,
+          FIELD_LAST_ACTIVITY_ON,
+          FIELD_SETTINGS,
+        ];
+      },
+    },
+    columnWidths: {
+      type: Object,
+      required: false,
+      default() {
+        return {
+          [FIELD_NAME]: 'gl-w-8/20',
+          [FIELD_PROJECTS_COUNT]: 'gl-w-2/20',
+          [FIELD_GROUP_COUNT]: 'gl-w-2/20',
+          [FIELD_CREATED_AT]: 'gl-w-3/20',
+          [FIELD_LAST_ACTIVITY_ON]: 'gl-w-3/20',
+          [FIELD_SETTINGS]: 'gl-w-2/20',
+        };
+      },
+    },
   },
-  fields: [
-    {
-      key: 'name',
-      label: __('Name'),
-      thClass: 'gl-w-8/20',
+  computed: {
+    availableFields() {
+      return [
+        {
+          key: FIELD_NAME,
+          label: __('Name'),
+          thClass: this.columnWidths[FIELD_NAME],
+        },
+        {
+          key: FIELD_ORGANIZATION_ROLE,
+          label: s__('Organization|Organization role'),
+          thClass: this.columnWidths[FIELD_ORGANIZATION_ROLE],
+        },
+        {
+          key: FIELD_PROJECTS_COUNT,
+          label: __('Projects'),
+          thClass: this.columnWidths[FIELD_PROJECTS_COUNT],
+        },
+        {
+          key: FIELD_GROUP_COUNT,
+          label: __('Groups'),
+          thClass: this.columnWidths[FIELD_GROUP_COUNT],
+        },
+        {
+          key: FIELD_CREATED_AT,
+          label: __('Created on'),
+          thClass: this.columnWidths[FIELD_CREATED_AT],
+        },
+        {
+          key: FIELD_LAST_ACTIVITY_ON,
+          label: __('Last activity'),
+          thClass: this.columnWidths[FIELD_LAST_ACTIVITY_ON],
+        },
+        {
+          key: FIELD_SETTINGS,
+          label: '',
+          thClass: this.columnWidths[FIELD_SETTINGS],
+        },
+      ];
     },
-    {
-      key: 'projectsCount',
-      label: __('Projects'),
-      thClass: 'gl-w-2/20',
+    fields() {
+      return this.availableFields.filter((field) => this.fieldsToRender.includes(field.key));
     },
-    {
-      key: 'groupCount',
-      label: __('Groups'),
-      thClass: 'gl-w-2/20',
-    },
-    {
-      key: 'createdAt',
-      label: __('Created on'),
-      thClass: 'gl-w-3/20',
-    },
-    {
-      key: 'lastActivityOn',
-      label: __('Last activity'),
-      thClass: 'gl-w-3/20',
-    },
-    {
-      key: 'settings',
-      label: '',
-      thClass: 'gl-w-2/20',
-    },
-  ],
+  },
   NO_USERS_SVG,
 };
 </script>
@@ -74,12 +123,16 @@ export default {
   <gl-table
     v-if="users.length > 0"
     :items="users"
-    :fields="$options.fields"
+    :fields="fields"
     stacked="md"
     :tbody-tr-attr="{ 'data-testid': 'user-row-content' }"
   >
     <template #cell(name)="{ item: user }">
       <user-avatar :user="user" :admin-user-path="adminUserPath" />
+    </template>
+
+    <template v-if="$scopedSlots['organization-role']" #cell(organizationRole)="{ item: user }">
+      <slot name="organization-role" :user="user"></slot>
     </template>
 
     <template #cell(createdAt)="{ item: { createdAt } }">

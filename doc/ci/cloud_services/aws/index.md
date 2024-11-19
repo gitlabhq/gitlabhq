@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -29,7 +29,7 @@ Create GitLab as a IAM OIDC provider in AWS following these [instructions](https
 
 Include the following information:
 
-- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`. This address must be publically accessible.
+- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`. This address must be publicly accessible.
 - **Audience**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
   - The address must include `https://`.
   - Do not include a trailing slash.

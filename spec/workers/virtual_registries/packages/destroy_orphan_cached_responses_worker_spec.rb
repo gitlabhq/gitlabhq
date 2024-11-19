@@ -25,7 +25,9 @@ RSpec.describe VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker, 
 
     context 'with work to do' do
       let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
-      let_it_be(:orphan_cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan) }
+      let_it_be(:orphan_cached_response) do
+        create(:virtual_registries_packages_maven_cached_response, :pending_destruction)
+      end
 
       it 'destroys orphan cached responses' do
         expect(worker).to receive(:log_extra_metadata_on_done).with(:cached_response_id, orphan_cached_response.id)

@@ -53,6 +53,19 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
       end
     end
 
+    context 'when the user has access and checks for an directory' do
+      let(:route) do
+        "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow-artifacts/artifacts?path=#{model_version.id}/MlModel"
+      end
+
+      it 'returns an empty list of artifacts', :aggregate_failures do
+        is_expected.to have_gitlab_http_status(:ok)
+        expect(json_response).to have_key('files')
+        expect(json_response['files']).to be_an_instance_of(Array)
+        expect(json_response['files']).to be_empty
+      end
+    end
+
     context 'when the user lacks read_model_registry rights' do
       before do
         allow(Ability).to receive(:allowed?).and_call_original

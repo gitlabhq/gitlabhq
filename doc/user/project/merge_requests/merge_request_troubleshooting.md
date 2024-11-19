@@ -151,8 +151,8 @@ to determine the cause of the error. GitLab SaaS users should
 
 ## Cached merge request count
 
-In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
-than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+In a group, the sidebar displays the total count of open merge requests. This value is cached if it's
+greater than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
 
 ## Check out merge requests locally through the `head` ref
 

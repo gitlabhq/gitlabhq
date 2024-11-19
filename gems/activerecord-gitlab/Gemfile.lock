@@ -7,12 +7,12 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.0.8.4)
-      activesupport (= 7.0.8.4)
-    activerecord (7.0.8.4)
-      activemodel (= 7.0.8.4)
-      activesupport (= 7.0.8.4)
-    activesupport (7.0.8.4)
+    activemodel (7.0.8.6)
+      activesupport (= 7.0.8.6)
+    activerecord (7.0.8.6)
+      activemodel (= 7.0.8.6)
+      activesupport (= 7.0.8.6)
+    activesupport (7.0.8.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -36,10 +36,10 @@ GEM
       ast (~> 2.4.1)
       racc
     racc (1.7.1)
-    rack (3.0.8)
+    rack (3.1.8)
     rainbow (3.1.1)
     regexp_parser (2.8.1)
-    rexml (3.2.5)
+    rexml (3.3.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -102,4 +102,4 @@ DEPENDENCIES
   sqlite3 (~> 1.6)
 
 BUNDLED WITH
-   2.4.14
+   2.5.22

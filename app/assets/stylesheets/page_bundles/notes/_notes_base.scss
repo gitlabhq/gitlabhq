@@ -29,13 +29,8 @@
 
       .timeline-content {
         margin-left: $note-spacing-left;
-        @apply gl-border gl-rounded-base;
+        @apply gl-bg-section gl-border gl-border-section gl-rounded-base;
         padding: $gl-padding-4 $gl-padding-8;
-
-        // stylelint-disable-next-line gitlab/no-gl-class
-        .gl-dark & {
-          @apply gl-bg-strong gl-border-default;
-        }
       }
 
       .note-header-info {
@@ -64,22 +59,17 @@
 
             .timeline-content {
               margin-left: $note-spacing-left;
-              @apply gl-border gl-border-b-subtle gl-rounded-t-base;
+              @apply gl-bg-section gl-border gl-border-b-subtle dark:gl-border-section gl-rounded-t-base;
               padding: $gl-padding-4 $gl-padding-8;
-
-              // stylelint-disable-next-line gitlab/no-gl-class
-              .gl-dark & {
-                @apply gl-bg-strong gl-border-default;
-              }
             }
           }
 
           &:not(:first-of-type) .timeline-entry-inner {
             margin-left: $note-spacing-left;
-            @apply gl-bg-subtle gl-border-l gl-border-r;
+            @apply gl-bg-subtle gl-border-l gl-border-l-section gl-border-r gl-border-r-section;
 
             .timeline-content {
-              padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
+              @apply gl-p-3 gl-pl-5;
             }
 
             .timeline-discussion-body-footer {
@@ -102,7 +92,7 @@
       }
 
       .discussion-reply-holder {
-        @apply gl-border-1 gl-border-solid gl-border-default gl-border-t-0;
+        @apply gl-border gl-border-section gl-border-t-0;
         @apply gl-bg-subtle;
       }
     }
@@ -292,16 +282,10 @@
 
   .timeline-content {
     padding: $gl-padding-8 !important;
-    @apply gl-border gl-rounded-base;
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      @apply gl-bg-strong gl-border-b;
-    }
+    @apply gl-bg-section gl-border gl-border-section gl-rounded-base;
 
     &.expanded {
-      // Render border invisible
-      border-bottom: 1px solid var(--gl-background-color-subtle);
+      @apply gl-border-b-0;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }

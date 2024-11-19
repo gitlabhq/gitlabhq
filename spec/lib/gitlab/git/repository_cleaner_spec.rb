@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::RepositoryCleaner do
+RSpec.describe Gitlab::Git::RepositoryCleaner, feature_category: :source_code_management do
   include HttpIOHelpers
 
   let(:project) { create(:project, :repository) }
@@ -65,5 +65,61 @@ RSpec.describe Gitlab::Git::RepositoryCleaner do
     end
 
     include_examples '#apply_bfg_object_map_stream'
+  end
+
+  describe '#rewrite_history' do
+    subject(:rewrite_history) { cleaner.rewrite_history(blobs: blobs, redactions: redactions) }
+
+    let_it_be(:project) { create(:project, :empty_repo) }
+    let(:blobs) { ['53855584db773c3df5b5f61f72974cb298822fbb'] }
+    let(:redactions) { %w[hello world] }
+
+    before do
+      ::Gitlab::GitalyClient.clear_stubs!
+    end
+
+    it 'rewrites repository history' do
+      expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
+        expect(instance).to receive(:rewrite_history)
+          .with(array_including(
+            gitaly_request_with_params(blobs: blobs),
+            gitaly_request_with_params(redactions: redactions)
+          ), kind_of(Hash))
+          .and_return(Gitaly::RewriteHistoryResponse.new)
+      end
+
+      expect(rewrite_history).to eq(Gitaly::RewriteHistoryResponse.new)
+    end
+
+    context 'when Gitaly returns an error' do
+      let(:generic_error) do
+        GRPC::BadStatus.new(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          "error message"
+        )
+      end
+
+      it 'wraps the error' do
+        expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
+          expect(instance).to receive(:rewrite_history)
+            .with(array_including(
+              gitaly_request_with_params(blobs: blobs),
+              gitaly_request_with_params(redactions: redactions)
+            ), kind_of(Hash))
+            .and_raise(generic_error)
+        end
+
+        expect { rewrite_history }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+
+    context 'when blobs and redactions are missing' do
+      let(:blobs) { [] }
+      let(:redactions) { [] }
+
+      it 'returns an ArgumentError' do
+        expect { rewrite_history }.to raise_error(ArgumentError)
+      end
+    end
   end
 end

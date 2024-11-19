@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_terraform_module_user_monthly
-description: Number of distinct users creating Terraform Module packages in recent 28 days
+description: Count of distinct users that have interacted with Terraform modules in the package registry in the last 28 days
 product_group: package_registry
 value_type: number
 status: active
@@ -16,7 +16,7 @@ options:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

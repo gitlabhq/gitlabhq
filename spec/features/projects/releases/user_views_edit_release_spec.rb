@@ -43,7 +43,7 @@ RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery
         { text: project.name, href: project_path(project) },
         { text: 'Releases', href: project_releases_path(project) },
         { text: release.name, href: project_release_path(project, release) },
-        { text: 'Edit Release', href: edit_project_release_path(project, release) }
+        { text: 'Edit', href: edit_project_release_path(project, release) }
       )
     end
   end

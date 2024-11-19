@@ -55,7 +55,7 @@ module Types
     # board lists have a data dependency on label - so we batch load them here
     def title
       BatchLoader::GraphQL.for(object).batch do |lists, callback|
-        ActiveRecord::Associations::Preloader.new(records: lists, associations: :label).call # rubocop: disable CodeReuse/ActiveRecord
+        ActiveRecord::Associations::Preloader.new(records: lists, associations: :label).call
 
         # all list titles are preloaded at this point
         lists.each { |list| callback.call(list, list.title) }

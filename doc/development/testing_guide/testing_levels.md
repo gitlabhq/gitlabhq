@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Testing levels
 
-![Testing priority triangle](img/testing_triangle.png)
+![Testing priority triangle](img/testing_triangle_v15_7.png)
 
 _This diagram demonstrates the relative priority of each test type we use. `e2e` stands for end-to-end._
 

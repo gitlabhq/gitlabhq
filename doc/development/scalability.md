@@ -11,7 +11,7 @@ scalability and reliability.
 
 ## Reference Architecture Overview
 
-![Reference Architecture Diagram](img/reference_architecture.png)
+![Reference Architecture Diagram](img/reference_architecture_v12_8.png)
 
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1RTGtuoUrE0bDT-9smoHbFruhEMI4Ys6uNrufe5IA-VI/edit)_
 
@@ -283,12 +283,12 @@ From the Sidekiq logs, it's possible to see which jobs run the most
 frequently and/or take the longest. For example, these Kibana
 visualizations show the jobs that consume the most total time:
 
-![Most time-consuming Sidekiq jobs](img/sidekiq_most_time_consuming_jobs.png)
+![Most time-consuming Sidekiq jobs](img/sidekiq_most_time_consuming_jobs_v12_8.png)
 
 _[visualization source - GitLab employees only](https://log.gitlab.net/goto/2c036582dfc3219eeaa49a76eab2564b)_
 
 This shows the jobs that had the longest durations:
 
-![Longest running Sidekiq jobs](img/sidekiq_longest_running_jobs.png)
+![Longest running Sidekiq jobs](img/sidekiq_longest_running_jobs_v12_8.png)
 
 _[visualization source - GitLab employees only](https://log.gitlab.net/goto/494f6c8afb61d98c4ff264520d184416)_

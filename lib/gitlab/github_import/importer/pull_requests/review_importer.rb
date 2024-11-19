@@ -6,6 +6,7 @@ module Gitlab
       module PullRequests
         class ReviewImporter
           include ::Gitlab::Import::MergeRequestHelpers
+          include Gitlab::GithubImport::PushPlaceholderReferences
 
           # review - An instance of `Gitlab::GithubImport::Representation::PullRequestReview`
           # project - An instance of `Project`
@@ -15,6 +16,8 @@ module Gitlab
             @project = project
             @client = client
             @merge_request = project.merge_requests.find_by_iid(review.merge_request_iid)
+            @user_finder = GithubImport::UserFinder.new(project, client)
+            @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
           end
 
           def execute(options = {})
@@ -35,7 +38,7 @@ module Gitlab
 
           private
 
-          attr_reader :review, :merge_request, :project, :client
+          attr_reader :review, :merge_request, :project, :client, :mapper, :user_finder
 
           def add_review_note!(author_id)
             return if review.note.empty?
@@ -68,6 +71,10 @@ module Gitlab
             note = Note.new(note_attributes(author_id, note))
 
             note.save!
+
+            return unless mapper.user_mapping_enabled?
+
+            push_with_record(note, :author_id, review.author.id, mapper.user_mapper)
           end
 
           def note_attributes(author_id, note, extra = {})
@@ -88,11 +95,20 @@ module Gitlab
           def add_approval!(user_id)
             return unless review.review_type == 'APPROVED'
 
-            create_approval!(project.id, merge_request.id, user_id, submitted_at)
+            approval, approval_system_note = create_approval!(project.id, merge_request.id, user_id, submitted_at)
+
+            return unless mapper.user_mapping_enabled? && approval
+
+            push_with_record(approval, :user_id, review.author.id, mapper.user_mapper)
+            push_with_record(approval_system_note, :author_id, review.author.id, mapper.user_mapper)
           end
 
           def add_reviewer!(user_id)
-            create_reviewer!(merge_request.id, user_id, submitted_at)
+            reviewer = create_reviewer!(merge_request.id, user_id, submitted_at)
+
+            return unless mapper.user_mapping_enabled? && reviewer
+
+            push_with_record(reviewer, :user_id, review.author.id, mapper.user_mapper)
           end
 
           def submitted_at

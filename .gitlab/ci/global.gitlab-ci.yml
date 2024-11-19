@@ -8,6 +8,9 @@
       - scheduler_failure
       - stuck_or_timeout_failure
       - unknown_failure
+    exit_codes:
+      - 111 # low free disk space https://gitlab.com/gitlab-org/gitlab/-/issues/498142
+      - 112 # Known flaky tests
 
 .default-utils-before_script:
   before_script:
@@ -136,16 +139,12 @@
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
   key:
-    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
     files:
       - qa/Gemfile.lock
   paths:
     - qa/vendor/ruby
   policy: pull
-
-.qa-ruby-gems-cache-push: &qa-ruby-gems-cache-push
-  <<: *qa-ruby-gems-cache
-  policy: pull-push
 
 .setup-test-env-cache:
   cache:
@@ -211,7 +210,8 @@
 .qa-cache-push:
   <<: *qa-bundler-variables
   cache:
-    - *qa-ruby-gems-cache-push
+    - <<: *qa-ruby-gems-cache
+      policy: pull-push
 
 .yarn-cache:
   cache:

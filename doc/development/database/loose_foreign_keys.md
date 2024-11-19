@@ -377,7 +377,7 @@ end
 ```
 
 This endpoint still works when the parent `Project` model is deleted. This can be considered a
-a data leak which should not happen under typical circumstances:
+data leak which should not happen under typical circumstances:
 
 ```ruby
 def show

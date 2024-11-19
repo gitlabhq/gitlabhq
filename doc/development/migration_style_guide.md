@@ -196,6 +196,28 @@ VERSION=<migration ID> bundle exec rails db:migrate:main
 
 After a table has been created, it should be added to the database dictionary, following the steps mentioned in the [database dictionary guide](database/database_dictionary.md#adding-tables).
 
+### Migration checksum file
+
+When a migration is first executed, a new `migration checksum file` is created in [db/schema_migrations](https://gitlab.com/gitlab-org/gitlab/-/tree/v17.5.0-ee/db/schema_migrations) containing a `SHA256` generated from the migration's timestamp. The name of this new file is the same as the [timestamp portion](#migration-timestamp-age) of the migration filename, for example [db/schema_migrations/20241021120146](https://gitlab.com/gitlab-org/gitlab/blob/aa7cfb42c312/db/schema_migrations/20241021120146). The content of this file is the `SHA256` of the timestamp portion, for example:
+
+```shell
+$ echo -n "20241021120146" | sha256sum
+7a3e382a6e5564bfa7004bca1a357a910b151e7399c6466113daf01526d97470  -
+```
+
+The `SHA256` adds unique content to the file so Git rename detection sees them as [separate files](https://gitlab.com/gitlab-org/gitlab/-/issues/218590#note_384712827).
+
+This `migration checksum file` indicates that the migration executed successfully and the result recorded in `db/structure.sql`. The presence of this file prevents the same migration from being executed twice, and therefore, it's necessary to include this file in the merge request that adds the new migration.
+
+See [Development change: Database schema version handling outside of structure.sql](https://gitlab.com/gitlab-org/gitlab/-/issues/218590) for more details about the `db/schema_migrations` directory.
+
+#### Keeping the migration checksum file up-to-date
+
+- when a new migration is created, run `rake db:migrate` to execute the migration and generate the corresponding `db/schema_migration/<timestamp>` checksum file, and add this file into version control.
+- if the migration is deleted, remove the corresponding `db/schema_migration/<timestamp>` checksum file.
+- if the _timestamp portion_ of the migration is changed, remove the corresponding `db/schema_migration/<timestamp>` checksum file and run `rake db:migrate` to generate a new one, and add this file into version control.
+- if the content of the migration is changed, no changes are required to the `db/schema_migration/<timestamp>` checksum file.
+
 ## Avoiding downtime
 
 The document ["Avoiding downtime in migrations"](database/avoiding_downtime_in_migrations.md) specifies
@@ -740,7 +762,7 @@ timeout after failing to acquire the lock within the specified time period
 and allow other transactions to proceed:
 
 ```sql
--- Transaction 2 (version with with lock timeout)
+-- Transaction 2 (version with lock timeout)
 BEGIN;
 SET LOCAL lock_timeout to '100ms'; -- added by the lock retry helper.
 ALTER TABLE my_notes ADD COLUMN title text;

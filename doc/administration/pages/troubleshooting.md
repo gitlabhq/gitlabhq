@@ -22,6 +22,157 @@ sudo gitlab-ctl tail gitlab-pages
 
 You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
 
+For more information, see [Getting the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+
+## Debug GitLab Pages
+
+The following sequence diagram illustrates how GitLab Pages requests are served.
+For more information on how a GitLab Pages site is deployed and serves static content from Object Storage,
+see [GitLab Pages Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_native_gitlab_pages/#new-gitlab-pages-architecture).
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+sequenceDiagram
+    accTitle: GitLab Pages Request Flow
+    accDescr: Sequence diagram showing how a user request flows through GitLab Pages components to serve static files.
+
+    actor User
+    participant PagesNGINX as Pages NGINX
+    participant Pages as GitLab Pages
+    participant GitlabNGINX as GitLab NGINX
+    participant GitlabAPI as GitLab Rails
+    participant ObjectStorage as Object Storage
+
+    User->>PagesNGINX: Request to Pages
+    activate PagesNGINX
+    PagesNGINX->>Pages: Forwarded to Pages
+    activate Pages
+
+    Pages->>GitlabNGINX: Fetch domain info
+    activate GitlabNGINX
+    GitlabNGINX->>GitlabAPI: Forwarded to GitLab API
+    activate GitlabAPI
+    GitlabAPI->>GitlabNGINX: 200 OK (domain info)
+    deactivate GitlabAPI
+    GitlabNGINX->>Pages: 200 OK (domain info)
+    deactivate GitlabNGINX
+
+    Note right of Pages: Domain information cached in Pages
+
+    Pages->>ObjectStorage: Fetch static files
+    activate ObjectStorage
+    ObjectStorage->>Pages: 200 OK (files)
+    deactivate ObjectStorage
+
+    Pages->>User: 200 OK (static files served)
+    deactivate Pages
+    deactivate PagesNGINX
+```
+
+### Identify error logs
+
+You should check logs in the order shown in the previous sequence diagram.
+Filtering based on your domain can also help identify relevant logs.
+
+To start tailing the logs:
+
+1. For **GitLab Pages NGINX** logs, run:
+
+   ```shell
+   # View GitLab Pages NGINX error logs
+   sudo gitlab-ctl tail nginx/gitlab_pages_error.log
+
+   # View GitLab Pages NGINX access logs
+   sudo gitlab-ctl tail nginx/gitlab_pages_access.log
+   ```
+
+1. For **GitLab Pages** logs, run: Start by identifying the [correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+
+   ```shell
+   sudo gitlab-ctl tail gitlab-pages
+   ```
+
+1. For **GitLab NGINX** logs, run:
+
+   ```shell
+   # View GitLab NGINX error logs
+   sudo gitlab-ctl tail nginx/gitlab_error.log
+
+   # View GitLab NGINX access logs
+   sudo gitlab-ctl tail nginx/gitlab_access.log
+   ```
+
+1. For **GitLab Rails** logs, run:
+   You can filter these logs based on the `correlation_id` [identified in GitLab Pages logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+
+   ```shell
+   sudo gitlab-ctl tail gitlab-rails
+   ```
+
+## Authorization code flow
+
+The following sequence chart illustrates the OAuth authentication flow between the user, GitLab Pages,
+and GitLab Rails for accessing protected Pages sites.
+
+For more information, see
+[GitLab OAuth authorization code flow](../../api/oauth2.md#authorization-code-flow).
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+sequenceDiagram
+   accTitle: GitLab Pages OAuth Flow
+   accDescr: Sequence diagram showing the OAuth authentication flow between User, GitLab Pages, and GitLab Rails for accessing protected pages sites.
+
+   actor User
+   participant PagesService as GitLab Pages
+   participant GitlabApp as GitLab Rails
+
+   User->>PagesService: GET Request for site
+   activate PagesService
+   PagesService-->>User: 302 Redirect to project subdomain https://projects.gitlab.io/auth?state=state1
+   deactivate PagesService
+   Note left of User: Cookie state1
+
+   User->>PagesService: GET https://projects.gitlab.io/auth?state=state1
+   activate PagesService
+   PagesService-->>User: 302 Redirect to gitlab.com/oauth/authorize?state=state1
+   deactivate PagesService
+
+   User->>GitlabApp: GET oauth/authorize?state=state1
+   activate GitlabApp
+   GitlabApp-->>User: 200 OK (authorization form)
+   deactivate GitlabApp
+
+   User->>GitlabApp: POST authorization form
+   activate GitlabApp
+   GitlabApp-->>User: 302 Redirect to oauth/redirect
+   deactivate GitlabApp
+
+   User->>GitlabApp: GET oauth/redirect?state=state1
+   activate GitlabApp
+   GitlabApp-->>User: 200 OK (with auth code)
+   deactivate GitlabApp
+
+   User->>PagesService: GET https://projects.gitlab.io/auth?code=code1&state=state1
+   activate PagesService
+   PagesService->>GitlabApp: POST oauth/token with code=code1
+   activate GitlabApp
+   GitlabApp-->>PagesService: 200 OK (access token)
+   deactivate GitlabApp
+   PagesService-->>User: 302 Redirect to https://[namespace].gitlab.io/auth?code=code2&state=state1
+   deactivate PagesService
+
+   User->>PagesService: GET https://[namespace].gitlab.io/auth?code=code2&state=state1
+   activate PagesService
+   PagesService-->>User: 302 Redirect to site
+   deactivate PagesService
+
+   User->>PagesService: GET Request for site
+   activate PagesService
+   PagesService-->>User: 200 OK (site content)
+   deactivate PagesService
+```
+
 ## `unsupported protocol scheme \"\""`
 
 If you see the following error:

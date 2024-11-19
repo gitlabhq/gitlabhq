@@ -20,7 +20,17 @@ RSpec.describe AutoMergeProcessWorker, feature_category: :continuous_delivery do
       end
     end
 
-    context 'when a pipeline is passed with auto mergeable MRs' do
+    context 'when merge request is not found' do
+      let(:args) { { 'merge_request_id' => -1 } }
+
+      it 'does not execute AutoMergeService' do
+        expect(AutoMergeService).not_to receive(:new)
+
+        subject
+      end
+    end
+
+    context 'when a pipeline is passed with auto mergeable MRs', :aggregate_failures do
       let(:merge_service) { instance_double(AutoMergeService, process: true) }
       let(:mwps_merge_request) { create(:merge_request, :with_head_pipeline, :merge_when_pipeline_succeeds) }
       let(:mwcp_merge_request) { create(:merge_request, :with_head_pipeline, :merge_when_checks_pass) }
@@ -43,8 +53,8 @@ RSpec.describe AutoMergeProcessWorker, feature_category: :continuous_delivery do
       end
     end
 
-    context 'when merge request is not found' do
-      let(:args) { { 'merge_request_id' => -1 } }
+    context 'when pipeline is not found' do
+      let(:args) { { 'pipeline_id' => -1 } }
 
       it 'does not execute AutoMergeService' do
         expect(AutoMergeService).not_to receive(:new)
@@ -65,6 +75,7 @@ RSpec.describe AutoMergeProcessWorker, feature_category: :continuous_delivery do
 
     # Integer args are deprecated as of 17.5. IDs should be passed
     # as a hash with  merge_request_id and pipeline_id keys.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/497247
     context 'with integer args' do
       let(:args) { merge_request.id }
 

@@ -97,11 +97,11 @@ GitLab leverages one weekly maintenance window to keep your instance up to date,
 
 #### Upgrades
 
-GitLab performs monthly upgrades to your instance with the latest patch release during your preferred [maintenance window](../../administration/dedicated/create_instance.md#maintenance-window) tracking one release behind the latest GitLab release. For example, if the latest version of GitLab available is 16.8, GitLab Dedicated runs on 16.7.
+GitLab performs monthly upgrades to your instance with the latest patch release during your preferred [maintenance window](../../administration/dedicated/maintenance.md#maintenance-windows) tracking one release behind the latest GitLab release. For example, if the latest version of GitLab available is 16.8, GitLab Dedicated runs on 16.7.
 
 #### Unscheduled maintenance
 
-GitLab may conduct [unscheduled maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) to address high-severity issues affecting the security, availability, or reliability of your instance.
+GitLab may conduct [unscheduled maintenance](../../administration/dedicated/maintenance.md#emergency-maintenance) to address high-severity issues affecting the security, availability, or reliability of your instance.
 
 ### Application
 

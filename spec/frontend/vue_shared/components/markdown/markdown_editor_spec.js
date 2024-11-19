@@ -15,7 +15,6 @@ import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -83,7 +82,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
   const findTextarea = () => wrapper.find('textarea');
-  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findContentEditor = () => {
     const result = wrapper.findComponent(ContentEditor);
     // In Vue.js 3 there are nuances stubbing component with custom stub on mount
@@ -92,6 +90,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   };
 
   const enableContentEditor = () => {
+    window.gon = { text_editor: 'rich_text_editor' };
     return new Promise((resolve) => {
       markdownEditorEventHub.$once(CONTENT_EDITOR_READY_EVENT, resolve);
       findMarkdownField().vm.$emit('enableContentEditor');
@@ -99,6 +98,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   };
 
   const enableMarkdownEditor = () => {
+    window.gon = { text_editor: 'plain_text_editor' };
     return new Promise((resolve) => {
       markdownEditorEventHub.$once(MARKDOWN_EDITOR_READY_EVENT, resolve);
       findContentEditor().vm.$emit('enableMarkdownEditor');
@@ -458,10 +458,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       it('hides the markdown field', () => {
         expect(findMarkdownField().exists()).toBe(false);
       });
-
-      it('updates localStorage value', () => {
-        expect(findLocalStorageSync().props().value).toBe(EDITING_MODE_CONTENT_EDITOR);
-      });
     });
   });
 
@@ -580,10 +576,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
       it('shows the markdown field', () => {
         expect(findMarkdownField().exists()).toBe(true);
-      });
-
-      it('updates localStorage value', () => {
-        expect(findLocalStorageSync().props().value).toBe(EDITING_MODE_MARKDOWN_FIELD);
       });
     });
   });

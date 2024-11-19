@@ -1,8 +1,0 @@
----
-name: ci_current_partition_value_101
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136425
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431461
-milestone: '16.7'
-type: development
-group: group::pipeline execution
-default_enabled: false

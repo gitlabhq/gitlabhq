@@ -1,0 +1,16 @@
+---
+description: Tracks when a blob is pulled from the container registry
+action: pull_blob
+identifiers:
+- namespace
+- user
+product_group: container_registry
+milestone: '14.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

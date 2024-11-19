@@ -34,11 +34,6 @@ module Packages
       ApplicationRecord.transaction do
         inserted_ids = bulk_insert_package_dependencies(dependencies_to_insert)
         bulk_insert_package_dependency_links(type, (existing_ids + inserted_ids))
-        # TODO: remove the update operation when all packages dependencies have a `project_id`.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/481541
-        if Packages::Dependency.id_in(existing_ids).without_project.any?
-          bulk_update_project_id_package_dependencies(existing_ids)
-        end
       end
     end
 
@@ -83,10 +78,6 @@ module Packages
       end
 
       ApplicationRecord.legacy_bulk_insert(Packages::DependencyLink.table_name, rows)
-    end
-
-    def bulk_update_project_id_package_dependencies(ids)
-      Packages::Dependency.id_in(ids).without_project.update_all(project_id: project_id)
     end
   end
   # rubocop: enable Gitlab/BulkInsert

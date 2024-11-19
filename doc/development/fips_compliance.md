@@ -62,7 +62,6 @@ listed here that also do not work properly in FIPS mode:
 - [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
 - [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
 - [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
-- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/proxy-based.md) supports a reduced set of analyzers. The proxy-based analyzer and on-demand scanning is not available in FIPS mode today, however browser-based DAST, API security testing, and DAST API Fuzzing images are available.
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
   for yarn projects.
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
@@ -393,7 +392,7 @@ We use [`golang-fips`](https://github.com/golang-fips/go), [a fork of the `dev.b
 [dynamically link OpenSSL via `dlopen`](https://github.com/golang-fips/go/blob/go1.18.1-1-openssl-fips/src/crypto/internal/boring/boring.go#L47-L65). This has several advantages:
 
 - Using a FIPS-validated, system OpenSSL is straightforward.
-- This is the source code used by [Red Hat's go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources).
+- This is the source code used by the [Red Hat go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources).
 - Unlike [go-toolset](https://developers.redhat.com/blog/2019/06/24/go-and-fips-140-2-on-red-hat-enterprise-linux#), this fork appears to keep up with the latest Go releases.
 
 However, [cgo](https://pkg.go.dev/cmd/cgo) must be enabled via `CGO_ENABLED=1` for this to work. There
@@ -467,7 +466,7 @@ After this image has been tagged, add a new [CI job to Omnibus GitLab](https://g
 The Cloud Native GitLab CI pipeline generates images using several base images:
 
 - Debian
-- [Red Hat's Universal Base Image (UBI)](https://developers.redhat.com/products/rhel/ubi)
+- The [Red Hat Universal Base Image (UBI)](https://developers.redhat.com/products/rhel/ubi)
 
 UBI images ship with the same OpenSSL package as those used by
 RHEL. This makes it possible to build FIPS-compliant binaries without

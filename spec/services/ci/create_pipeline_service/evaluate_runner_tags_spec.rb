@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness,
+RSpec.describe Ci::CreatePipelineService,
   feature_category: :pipeline_composition do
   let_it_be(:group)          { create(:group, :private) }
   let_it_be(:group_variable) { create(:ci_group_variable, group: group, key: 'RUNNER_TAG', value: 'group') }
@@ -121,7 +121,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness,
   end
 
   context 'with parallel:matrix config' do
-    let(:tags) { pipeline.builds.map(&:tags).flatten.pluck(:name) }
+    let(:tags) { pipeline.builds.flat_map(&:tags).pluck(:name) }
 
     let(:config) do
       <<~EOS

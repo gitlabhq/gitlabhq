@@ -190,7 +190,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  describe ".active?" do
+  describe '#active?' do
     let(:active_personal_access_token) { build(:personal_access_token) }
     let(:revoked_personal_access_token) { build(:personal_access_token, :revoked) }
     let(:expired_personal_access_token) { build(:personal_access_token, :expired) }
@@ -208,7 +208,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  describe 'revoke!' do
+  describe '#revoke!' do
     let(:active_personal_access_token) { create(:personal_access_token) }
 
     context 'when the token is persisted' do
@@ -255,69 +255,84 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  context "validations" do
+  describe 'validations' do
     let(:personal_access_token) { build(:personal_access_token) }
 
-    it "requires at least one scope" do
-      personal_access_token.scopes = []
+    describe 'name' do
+      it "requires a name" do
+        personal_access_token.name = nil
 
-      expect(personal_access_token).not_to be_valid
-      expect(personal_access_token.errors[:scopes].first).to eq "can't be blank"
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:name].first).to eq "can't be blank"
+      end
     end
 
-    it "allows creating a token with API scopes" do
-      personal_access_token.scopes = [:api, :read_user]
+    describe 'scopes' do
+      it "requires at least one scope" do
+        personal_access_token.scopes = []
 
-      expect(personal_access_token).to be_valid
-    end
-
-    it "allows creating a token with `admin_mode` scope" do
-      personal_access_token.scopes = [:api, :admin_mode]
-
-      expect(personal_access_token).to be_valid
-    end
-
-    context 'when registry is disabled' do
-      before do
-        stub_container_registry_config(enabled: false)
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:scopes].first).to eq "can't be blank"
       end
 
-      it "rejects creating a token with read_registry scope" do
-        personal_access_token.scopes = [:read_registry]
+      it "allows creating a token with API scopes" do
+        personal_access_token.scopes = [:api, :read_user]
+
+        expect(personal_access_token).to be_valid
+      end
+
+      it "allows creating a token with `admin_mode` scope" do
+        personal_access_token.scopes = [:api, :admin_mode]
+
+        expect(personal_access_token).to be_valid
+      end
+
+      context 'when registry is disabled' do
+        before do
+          stub_container_registry_config(enabled: false)
+        end
+
+        it "rejects creating a token with read_registry scope" do
+          personal_access_token.scopes = [:read_registry]
+
+          expect(personal_access_token).not_to be_valid
+          expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
+        end
+
+        it "allows revoking a token with read_registry scope" do
+          personal_access_token.scopes = [:read_registry]
+
+          personal_access_token.revoke!
+
+          expect(personal_access_token).to be_revoked
+        end
+      end
+
+      context 'when registry is enabled' do
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
+        it "allows creating a token with read_registry scope" do
+          personal_access_token.scopes = [:read_registry]
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+
+      it "rejects creating a token with unavailable scopes" do
+        personal_access_token.scopes = [:openid, :api]
 
         expect(personal_access_token).not_to be_valid
         expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
       end
-
-      it "allows revoking a token with read_registry scope" do
-        personal_access_token.scopes = [:read_registry]
-
-        personal_access_token.revoke!
-
-        expect(personal_access_token).to be_revoked
-      end
     end
 
-    context 'when registry is enabled' do
+    describe 'expires_at' do
       before do
-        stub_container_registry_config(enabled: true)
+        stub_feature_flags(buffered_token_expiration_limit: false)
       end
 
-      it "allows creating a token with read_registry scope" do
-        personal_access_token.scopes = [:read_registry]
-
-        expect(personal_access_token).to be_valid
-      end
-    end
-
-    it "rejects creating a token with unavailable scopes" do
-      personal_access_token.scopes = [:openid, :api]
-
-      expect(personal_access_token).not_to be_valid
-      expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
-    end
-
-    context 'validates expires_at' do
       let(:max_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS }
 
       it "can't be blank" do
@@ -358,6 +373,45 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
       end
     end
+
+    describe 'buffered expires_at' do
+      let(:max_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED }
+      let(:max_unbuffered_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS }
+
+      it "can't be blank" do
+        personal_access_token.expires_at = nil
+
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:expires_at].first).to eq("can't be blank")
+      end
+
+      context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED days' do
+        it 'is valid' do
+          personal_access_token.expires_at = max_expiration_date - 1.day
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+
+      context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+        it 'is valid' do
+          personal_access_token.expires_at = max_unbuffered_expiration_date - 1.day
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+
+      context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED days', :freeze_time do
+        it 'is invalid' do
+          personal_access_token.expires_at = max_expiration_date + 1.day
+
+          expect(personal_access_token).not_to be_valid
+          expect(personal_access_token.errors.full_messages.to_sentence).to eq(
+            "Expiration date must be before #{max_expiration_date}"
+          )
+        end
+      end
+    end
   end
 
   describe 'scopes' do
@@ -378,6 +432,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token_and_7d_notified) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
       let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now) }
       let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
@@ -394,24 +449,105 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
-    describe '.expiring_and_not_notified_without_impersonation' do
+    context 'with existing tokens' do
       let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token_and_7d_notified) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
       let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now, impersonation: false) }
+      let_it_be(:thirty_days_token) { create(:personal_access_token, expires_at: 28.days.from_now) }
+      let_it_be(:sixty_days_token) { create(:personal_access_token, expires_at: 55.days.from_now) }
       let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
-      context 'when token is there to be notified' do
-        it "has only unnotified tokens" do
-          expect(described_class.expiring_and_not_notified_without_impersonation).to contain_exactly(valid_token)
+      describe '.scope_for_notification_interval' do
+        let(:interval) { :seven_days }
+
+        subject(:scope) { described_class.scope_for_notification_interval(interval) }
+
+        it 'returns a scope including expected tokens' do
+          expect(scope).to contain_exactly(valid_token)
+        end
+
+        context 'with invalid interval' do
+          let(:interval) { :one_million_days }
+
+          it 'throws an error' do
+            expect(described_class::NOTIFICATION_INTERVALS.keys).not_to include(interval)
+
+            expect { scope }.to raise_error(KeyError)
+          end
+        end
+
+        context 'with min_expires_at' do
+          let_it_be(:five_days_token) { create(:personal_access_token, expires_at: 5.days.from_now, impersonation: false) }
+          let(:min_expires_at) { 4.days.from_now }
+          let(:max_expires_at) { 8.days.from_now }
+
+          subject(:scope) { described_class.scope_for_notification_interval(:seven_days, min_expires_at: min_expires_at, max_expires_at: max_expires_at) }
+
+          it 'excludes tokens expiring before min_expires_at' do
+            expect(scope).to include(five_days_token)
+            expect(scope).not_to include(valid_token)
+            expect(scope).not_to include(thirty_days_token)
+            expect(scope).not_to include(sixty_days_token)
+          end
+
+          context 'with past min_expires_at' do
+            let(:min_expires_at) { 3.days.ago }
+
+            it 'overrides default expiration interval' do
+              expect(scope).to include(expired_token)
+              expect(scope).to include(valid_token)
+              expect(scope).to include(five_days_token)
+            end
+          end
+
+          context 'with truncated max_expires_at' do
+            let(:min_expires_at) { 1.minute.ago }
+            let(:max_expires_at) { 4.days.from_now }
+
+            it 'overrides default expiration interval' do
+              expect(scope).to include(valid_token)
+              expect(scope).not_to include(five_days_token)
+            end
+          end
+        end
+
+        context 'with 30d interval' do
+          let(:interval) { :thirty_days }
+
+          it 'returns a scope including expected tokens' do
+            expect(scope).to include(thirty_days_token)
+            expect(scope).not_to include(valid_token)
+            expect(scope).not_to include(sixty_days_token)
+          end
+        end
+
+        context 'with 60d interval' do
+          let(:interval) { :sixty_days }
+
+          it 'returns a scope including expected tokens' do
+            expect(scope).to include(sixty_days_token)
+            expect(scope).not_to include(valid_token)
+            expect(scope).not_to include(thirty_days_token)
+          end
         end
       end
 
-      context 'when no token is there to be notified' do
-        it "return empty array" do
-          valid_token.update!(impersonation: true)
+      describe '.expiring_and_not_notified_without_impersonation' do
+        context 'when token is there to be notified' do
+          it "has only unnotified tokens" do
+            expect(described_class.expiring_and_not_notified_without_impersonation).to contain_exactly(valid_token)
+          end
+        end
 
-          expect(described_class.expiring_and_not_notified_without_impersonation).to be_empty
+        context 'when no token is there to be notified' do
+          it "return empty array" do
+            valid_token.update!(impersonation: true)
+
+            expect(described_class.expiring_and_not_notified_without_impersonation).to be_empty
+          end
         end
       end
     end
@@ -488,6 +624,22 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe '.notification_interval' do
+    let(:interval) { :seven_days }
+
+    subject(:notification_interval) { described_class.notification_interval(interval) }
+
+    it { is_expected.to eq(7) }
+
+    context 'with invalid interval' do
+      let(:interval) { :not_real_interval }
+
+      it 'raises error' do
+        expect { notification_interval }.to raise_error(KeyError)
+      end
+    end
+  end
+
   describe 'ordering by expires_at' do
     let_it_be(:earlier_token) { create(:personal_access_token, expires_at: 2.days.ago) }
     let_it_be(:later_token) { create(:personal_access_token, expires_at: 1.day.ago) }
@@ -497,31 +649,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it 'returns ordered list in combination of expires_at ascending and id descending' do
         expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
-      end
-    end
-  end
-
-  # During the implementation of Admin Mode for API, tokens of
-  # administrators should automatically get the `admin_mode` scope as well
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
-  describe '`admin_mode scope' do
-    subject { create(:personal_access_token, user: user, scopes: ['api']) }
-
-    context 'with feature flag enabled' do
-      context 'with administrator user' do
-        let_it_be(:user) { create(:user, :admin) }
-
-        it 'does not add `admin_mode` scope before created' do
-          expect(subject.scopes).to contain_exactly('api')
-        end
-      end
-
-      context 'with normal user' do
-        let_it_be(:user) { create(:user) }
-
-        it 'does not add `admin_mode` scope before created' do
-          expect(subject.scopes).to contain_exactly('api')
-        end
       end
     end
   end

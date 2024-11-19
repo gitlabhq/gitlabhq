@@ -46,7 +46,7 @@ class SyncIndexForPipelinesIdBigintRelated < Gitlab::Database::Migration[2.2]
     {
       name: :idx_ci_pipelines_on_user_id_and_id_and_cancelable_status_bigint,
       columns: [:user_id, :id_convert_to_bigint],
-      options: { where: "((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]))" } # rubocop:disable Layout/LineLength -- Just too long
+      options: { where: "((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]))" }
     },
     {
       name: :idx_ci_pipelines_on_user_id_and_user_not_verified_bigint,

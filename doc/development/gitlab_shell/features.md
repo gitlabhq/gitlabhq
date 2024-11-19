@@ -87,3 +87,99 @@ Token:   glpat-...
 Scopes:  api
 Expires: 2022-02-05
 ```
+
+### Configuration options
+
+Administrators can control PAT generation with SSH.
+To configure PAT settings in GitLab Shell:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit the `/etc/gitlab/gitlab.rb` file.
+1. Add or modify the following configuration:
+
+   ```ruby
+   gitlab_shell['pat'] = { enabled: true, allowed_scopes: [] }
+   ```
+
+   - `enabled`: Set to `true` to enable PAT generation using SSH, or `false` to disable it.
+   - `allowed_scopes`: An array of scopes allowed for PATs generated with SSH.
+     Leave empty (`[]`) to allow all scopes.
+
+1. Save the file and [Restart GitLab](../../administration/restart_gitlab.md).
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Edit the `values.yaml` file:
+
+   ```yaml
+   gitlab:
+     gitlab-shell:
+       config:
+         pat:
+           enabled: true
+           allowedScopes: []
+   ```
+
+   - `enabled`: Set to `true` to enable PAT generation using SSH, or `false` to disable it.
+   - `allowedScopes`: An array of scopes allowed for PATs generated with SSH.
+     Leave empty (`[]`) to allow all
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit the `docker-compose.yaml` file:
+
+   ```yaml
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_shell['pat'] = { enabled: true, allowed_scopes: [] }
+   ```
+
+   - `enabled`: Set to `'true'` to enable PAT generation using SSH, or `'false'` to disable it.
+   - `allowed_scopes`: A comma-separated list of scopes allowed for PATs generated with SSH. Leave empty (`[]`) to allow all scopes.
+
+1. Save the file and restart GitLab and its services:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit the `/home/git/gitlab-shell/config.yml` file:
+
+   ```yaml
+   pat:
+     enabled: true
+     allowed_scopes: []
+   ```
+
+   - `enabled`: Set to `true` to enable PAT generation using SSH, or `false` to disable it.
+   - `allowed_scopes`: An array of scopes allowed for PATs generated with SSH.
+      Leave empty (`[]`) to allow all scopes.
+
+1. Save the file and restart GitLab Shell:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab-shell.target
+
+   # For systems running SysV init
+   sudo service gitlab-shell restart
+   ```
+
+::EndTabs
+
+NOTE:
+These settings only affect PAT generation with SSH and do not
+impact PATs created through the web interface.

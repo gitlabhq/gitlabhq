@@ -4267,7 +4267,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
-        it { expect(subject.mergeable_ci_state?).to be_truthy }
+        context 'and no pipelines are being created' do
+          it { expect(subject.mergeable_ci_state?).to be_truthy }
+        end
+
+        context 'and pipelines are being created' do
+          let!(:creation) { Ci::PipelineCreation::Requests.start_for_merge_request(subject) }
+
+          after do
+            Ci::PipelineCreation::Requests.succeeded(creation, pipeline.id)
+          end
+
+          it { expect(subject.mergeable_ci_state?).to be_falsey }
+        end
       end
 
       context 'and a skipped pipeline is associated' do

@@ -1,21 +1,19 @@
 import Vue from 'vue';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
-import store from '~/badges/store';
+import createStore from '~/badges/store';
 
 export default (kind) => {
   const badgeSettingsElement = document.getElementById('badge-settings');
 
   if (!badgeSettingsElement) return null;
 
-  store.dispatch('loadBadges', {
-    kind,
-    apiEndpointUrl: badgeSettingsElement.dataset.apiEndpointUrl,
-    docsUrl: badgeSettingsElement.dataset.docsUrl,
-  });
-
   return new Vue({
     el: badgeSettingsElement,
-    store,
+    store: createStore({
+      kind,
+      apiEndpointUrl: badgeSettingsElement.dataset.apiEndpointUrl,
+      docsUrl: badgeSettingsElement.dataset.docsUrl,
+    }),
     components: {
       BadgeSettings,
     },

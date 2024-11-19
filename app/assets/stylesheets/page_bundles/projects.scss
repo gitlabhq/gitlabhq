@@ -3,7 +3,7 @@
 .new_project,
 .edit-project,
 .import-project {
-  .form-text.text-muted {
+  .form-text {
     margin-bottom: 10px;
   }
 
@@ -250,11 +250,11 @@
 }
 
 .repository-language-bar-tooltip-language {
-  font-weight: $gl-font-weight-bold;
+  @apply gl-font-bold;
 }
 
 .repository-language-bar-tooltip-share {
-  color: var(--gray-200, $gray-200);
+  @apply gl-text-gray-200 dark:gl-text-gray-600;
 }
 
 /*
@@ -286,7 +286,7 @@
     vertical-align: top;
     padding-top: $gl-spacing-scale-4;
     padding-bottom: $gl-spacing-scale-4;
-    border-bottom: 1px solid var(--gray-50, $gray-50);
+    @apply gl-border-b gl-border-b-subtle;
   }
 
   .project-row:last-of-type {
@@ -302,7 +302,7 @@
       .stats {
         float: right;
         line-height: $list-text-height;
-        color: $gl-text-color-secondary;
+        @apply gl-text-subtle;
 
         @include media-breakpoint-down(xs) {
           padding-top: $gl-padding-6;

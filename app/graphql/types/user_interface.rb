@@ -74,7 +74,7 @@ module Types
     field :organizations,
       resolver: Resolvers::Users::OrganizationsResolver,
       null: true,
-      alpha: { milestone: '16.6' },
+      experiment: { milestone: '16.6' },
       description: 'Organizations where the user has access.'
     field :group_memberships,
       type: Types::GroupMemberType.connection_type,
@@ -167,7 +167,7 @@ module Types
     field :user_achievements,
       Types::Achievements::UserAchievementType.connection_type,
       null: true,
-      alpha: { milestone: '15.10' },
+      experiment: { milestone: '15.10' },
       description: "Achievements for the user. " \
         "Only returns for namespaces where the `achievements` feature flag is enabled.",
       extras: [:lookahead],

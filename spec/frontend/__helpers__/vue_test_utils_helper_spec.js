@@ -140,12 +140,10 @@ describe('Vue test utils helpers', () => {
       const text = 'foo bar';
       const options = { selector: 'div' };
       const mockDiv = document.createElement('div');
-      let mockVm;
 
       let wrapper;
       beforeEach(() => {
         jest.spyOn(vtu, 'createWrapper');
-        mockVm = new Vue({ render: (h) => h('div') }).$mount();
 
         wrapper = extendedWrapper(
           shallowMount({
@@ -180,19 +178,6 @@ describe('Vue test utils helpers', () => {
         });
       });
 
-      describe('when a Vue instance element is found', () => {
-        beforeEach(() => {
-          jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => [mockVm.$el]);
-        });
-
-        it('returns a VTU wrapper', () => {
-          const result = wrapper[findMethod](text, options);
-
-          expect(vtu.createWrapper).toHaveBeenCalledWith(mockVm, wrapper.options);
-          expect(result).toBeInstanceOf(VTUWrapper);
-          expect(result.vm).toBeInstanceOf(Vue);
-        });
-      });
       describe('when multiple elements are found', () => {
         beforeEach(() => {
           const mockSpan = document.createElement('span');
@@ -205,23 +190,6 @@ describe('Vue test utils helpers', () => {
           expect(vtu.createWrapper).toHaveBeenCalledWith(mockDiv, wrapper.options);
           expect(result).toBeInstanceOf(VTUWrapper);
           expect(result.vm).toBeUndefined();
-        });
-      });
-
-      describe('when multiple Vue instances are found', () => {
-        beforeEach(() => {
-          const mockVm2 = new Vue({ render: (h) => h('span') }).$mount();
-          jest
-            .spyOn(testingLibrary, expectedQuery)
-            .mockImplementation(() => [mockVm.$el, mockVm2.$el]);
-        });
-
-        it('returns the first element as a VTU wrapper', () => {
-          const result = wrapper[findMethod](text, options);
-
-          expect(vtu.createWrapper).toHaveBeenCalledWith(mockVm, wrapper.options);
-          expect(result).toBeInstanceOf(VTUWrapper);
-          expect(result.vm).toBeInstanceOf(Vue);
         });
       });
 

@@ -566,7 +566,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
     end
 
     context 'when querying an IntrospectionQuery', :use_clean_rails_memory_store_caching do
-      let_it_be(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
+      let_it_be(:query) { CachedIntrospectionQuery.query_string }
 
       context 'in dev or test env' do
         before do
@@ -635,7 +635,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         end
 
         it 'hits the cache even if the whitespace in the query differs' do
-          query_1 = File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql'))
+          query_1 = CachedIntrospectionQuery.query_string
           query_2 = "#{query_1}  " # add a couple of spaces to change the fingerprint
 
           expect(GitlabSchema).to receive(:execute).exactly(:once)
@@ -673,13 +673,6 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           get :execute,
             params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
         end
-      end
-
-      it 'fails if the GraphiQL gem version is not 1.10.0' do
-        # We cache the IntrospectionQuery based on the default IntrospectionQuery by GraphiQL. If this spec fails,
-        # GraphiQL has been updated, so we should check whether the IntropsectionQuery we cache is still valid.
-        # It is stored in `app/graphql/cached_introspection_query.rb#query_string`
-        expect(GraphiQL::Rails::VERSION).to eq("1.10.0")
       end
     end
 

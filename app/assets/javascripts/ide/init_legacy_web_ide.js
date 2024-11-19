@@ -34,7 +34,6 @@ export const initLegacyWebIDE = (el, options = {}) => {
         noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
         committedStateSvgPath: el.dataset.committedStateSvgPath,
         pipelinesEmptyStateSvgPath: el.dataset.pipelinesEmptyStateSvgPath,
-        promotionSvgPath: el.dataset.promotionSvgPath,
         switchEditorSvgPath: el.dataset.switchEditorSvgPath,
       });
       this.setLinks({

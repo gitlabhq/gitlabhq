@@ -30,8 +30,6 @@ export const designWidgetOf = (data) => findDesignWidget(data.workItem.widgets);
  */
 export const designUploadOptimisticResponse = (files) => {
   const designs = files.map((file) => ({
-    // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-    // eslint-disable-next-line @gitlab/require-i18n-strings
     __typename: 'Design',
     id: -uniqueId(),
     image: '',
@@ -75,8 +73,6 @@ export const designUploadOptimisticResponse = (files) => {
   }));
 
   return {
-    // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-    // eslint-disable-next-line @gitlab/require-i18n-strings
     __typename: 'Mutation',
     designManagementUpload: {
       __typename: 'DesignManagementUploadPayload',

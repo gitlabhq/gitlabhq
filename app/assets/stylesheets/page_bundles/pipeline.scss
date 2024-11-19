@@ -228,11 +228,11 @@
 }
 
 .ci-job-item-failed {
-  background-color: var(--red-50, $red-50);
+  @apply gl-bg-red-50;
 
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-dark & {
-    background-color: var(--gray-200, $gray-200);
+    background: var(--gl-action-danger-background-color-active);
   }
 }
 

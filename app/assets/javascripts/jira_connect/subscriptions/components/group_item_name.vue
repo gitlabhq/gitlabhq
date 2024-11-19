@@ -34,7 +34,7 @@ export default {
         {{ group.full_name }}
       </span>
       <div v-if="group.description">
-        <p class="!gl-mt-2 gl-mb-0 gl-text-gray-600" v-text="group.description"></p>
+        <p class="!gl-mt-2 gl-mb-0 gl-text-subtle" v-text="group.description"></p>
       </div>
     </div>
   </div>

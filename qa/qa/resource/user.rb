@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Cop/UserAdmin -- does not apply to test resource
 module QA
   module Resource
     class User < Base
@@ -13,13 +14,32 @@ module QA
         :expect_fabrication_success,
         :hard_delete_on_api_removal,
         :access_level,
-        :email_domain
+        :email_domain,
+        :with_personal_access_token
 
       attributes :id,
         :name,
         :first_name,
         :last_name,
-        :email
+        :email,
+        :commit_email
+
+      class << self
+        # TODO: remove as these methods can end up using same user which isn't fully compatible with parallel execution
+        def fabricate_or_use(username = nil, password = nil)
+          if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
+            fabricate_via_api! do |user|
+              user.username = username
+              user.password = password
+            end
+          else
+            fabricate! do |user|
+              user.username = username if username
+              user.password = password if password
+            end
+          end
+        end
+      end
 
       def initialize
         @admin = false
@@ -27,13 +47,8 @@ module QA
         @unique_id = SecureRandom.hex(8)
         @expect_fabrication_success = true
         @email_domain = 'example.com'
-      end
-
-      def self.default
-        Resource::User.init do |user|
-          user.username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
-          user.password = Runtime::User.ldap_user? ? Runtime::User.ldap_password : Runtime::User.password
-        end
+        @with_personal_access_token = false
+        @personal_access_tokens = []
       end
 
       def admin?
@@ -109,7 +124,7 @@ module QA
       def fabricate_via_api!
         resource_web_url(api_get)
       rescue ResourceNotFoundError
-        super
+        super.tap { create_personal_access_token! if with_personal_access_token }
       end
 
       def exists?
@@ -118,28 +133,27 @@ module QA
         false
       end
 
+      # TODO: implement separate delete method that only admin user can perform
+      # User resource can't delete itslef if it is using it's own pat
       def api_delete_path
         "/users/#{id}?hard_delete=#{hard_delete_on_api_removal}"
       rescue NoValueError
         "/users/#{fetch_id(username)}?hard_delete=#{hard_delete_on_api_removal}"
       end
 
+      # Default path to get full information on user object
+      #
+      # @return [String]
       def api_get_path
-        return "/user" if fetching_own_data?
-
-        "/users/#{fetch_id(username)}"
+        "/user"
       end
 
       def api_post_path
-        '/users'
+        "/users"
       end
 
       def api_put_path
         "/users/#{id}"
-      end
-
-      def api_block_path
-        "/users/#{id}/block"
       end
 
       def api_approve_path
@@ -157,35 +171,6 @@ module QA
         }.merge(ldap_post_body)
       end
 
-      def self.fabricate_or_use(username = nil, password = nil)
-        if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
-          fabricate_via_api! do |user|
-            user.username = username
-            user.password = password
-          end
-        else
-          fabricate! do |user|
-            user.username = username if username
-            user.password = password if password
-          end
-        end
-      end
-
-      # Get users from the API
-      #
-      # @param [Integer] per_page the number of pages to traverse (used for pagination)
-      # @return [Array<Hash>] parsed response body
-      def self.all(per_page: 100)
-        response = nil
-        Resource::User.init do |user|
-          response = user.get(Runtime::API::Request.new(
-            Runtime::API::Client.as_admin, '/users', per_page: per_page.to_s
-          ).url)
-
-          raise ResourceQueryError unless response.code == 200
-        end.parse_body(response)
-      end
-
       def approve!
         response = post(Runtime::API::Request.new(api_client, api_approve_path).url, nil)
         return if response.code == 201
@@ -193,8 +178,10 @@ module QA
         raise ResourceUpdateFailedError, "Failed to approve user. Request returned (#{response.code}): `#{response}`"
       end
 
-      def block!
-        response = post(Runtime::API::Request.new(api_client, api_block_path).url, nil)
+      def block!(user_id)
+        raise "Only admin can block other users" unless admin?
+
+        response = post(Runtime::API::Request.new(api_client, "/users/#{user_id}/block").url, nil)
         return if response.code == HTTP_STATUS_CREATED
 
         raise ResourceUpdateFailedError, "Failed to block user. Request returned (#{response.code}): `#{response}`."
@@ -210,6 +197,97 @@ module QA
         )
       end
 
+      # Get users last sign in ip address
+      #
+      # @param user_id [Integer]
+      # @return [String]
+      def get_user_ip_address(user_id)
+        raise "Only admin can get user's ip address" unless admin?
+
+        parse_body(api_get_from("/users/#{user_id}"))[:last_sign_in_ip]
+      end
+
+      # Get all users
+      #
+      # @param [Integer] per_page
+      # @return [Array<Hash>]
+      def users(per_page: 100)
+        raise("This method can be called only on the Admin user!") unless admin?
+
+        resp = get(Runtime::API::Request.new(api_client, '/users', per_page: per_page.to_s))
+        raise ResourceQueryError unless resp.code == Support::API::HTTP_STATUS_OK
+
+        parse_body(resp)
+      end
+
+      # Create new personal access token for user
+      #
+      # @return [QA::Resource::PersonalAccessToken]
+      def create_personal_access_token!(use_for_api_client: true)
+        user_id = begin
+          id
+        rescue NoValueError
+          nil
+        end
+
+        pat = Resource::PersonalAccessToken.fabricate! do |resource|
+          resource.username = username
+          resource.password = password
+          # if user is admin, use it's own api client for creation
+          resource.api_client = api_client if admin?
+          # if user id is not yet known, force token creation via UI by not setting user_id
+          resource.user_id = user_id if user_id
+        end
+
+        @personal_access_tokens << pat
+        self.api_client = Runtime::API::Client.new(personal_access_token: pat.token) if use_for_api_client
+        pat
+      end
+
+      # Get specific personal access token for user
+      #
+      # @param [Boolean] revoked
+      # @param [Boolean] active
+      # @return [QA::Resource::PersonalAccessToken]
+      def personal_access_token(revoked: false, active: true)
+        @personal_access_tokens.find { |pat| pat.revoked == revoked && pat.active == active }
+      end
+
+      # Get specific personal access tokens for user
+      #
+      # @param [Boolean] revoked
+      # @param [Boolean] active
+      # @return [Array<QA::Resource::PersonalAccessToken>]
+      def personal_access_tokens(revoked: false, active: true)
+        @personal_access_tokens.select { |pat| pat.revoked == revoked && pat.active == active }
+      end
+
+      # Add personal access token to user
+      #
+      # @param [QA::Resource::PersonalAccessToken] pat
+      # @return [void]
+      def add_personal_access_token(pat)
+        return if @personal_access_tokens.any? { |p| p.id == pat.id }
+        raise "Attempting to add token not belonging to this user" if pat.user_id != id
+
+        @personal_access_tokens << pat
+      end
+
+      # Return personal access token currently used by user resource for all api operations
+      #
+      # @return [String]
+      def current_personal_access_token
+        api_client.personal_access_token
+      end
+
+      # Users can only be created by admin, use global admin api client if not explicitly set
+      # Still revert to user_api_client in order to perform get operation for fetching existing user
+      #
+      # @return [QA::Runtime::API::Client]
+      def api_client
+        @api_client ||= Runtime::UserStore.admin_api_client || Runtime::UserStore.user_api_client
+      end
+
       protected
 
       # Compare users by username and password
@@ -220,6 +298,26 @@ module QA
       end
 
       private
+
+      # Use id specific path in case api get action was not performed with the token that belongs to user of resource
+      # This will happen when user was created with admin token without option 'with_personal_access_token' set to true
+      #
+      # @param api_resource [Hash]
+      # @return [Hash]
+      def transform_api_resource(api_resource)
+        return api_resource if api_resource[:username] == username
+
+        path = begin
+          # /users/:id can't be used as default get path because it returns very limited response if admin token is
+          # not used
+          "/users/#{id}"
+        rescue NoValueError
+          # if id is not yet known, attempt to find the id based on username
+          "/users/#{fetch_id(username)}"
+        end
+
+        parse_body(api_get_from(path))
+      end
 
       def ldap_post_body
         return {} unless extern_uid && provider
@@ -239,13 +337,9 @@ module QA
 
         users.first[:id]
       end
-
-      def fetching_own_data?
-        runtime_username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
-        api_user&.username == username || runtime_username == username
-      end
     end
   end
 end
+# rubocop:enable Cop/UserAdmin
 
-QA::Resource::User.prepend_mod_with('Resource::User', namespace: QA)
+QA::Resource::User.prepend_mod_with("Resource::User", namespace: QA)

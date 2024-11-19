@@ -1116,6 +1116,9 @@ You can add trusted proxies in `config/gitlab.yml` by customizing the `trusted_p
 option in section 1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
 for the changes to take effect.
 
+If you encounter problems with improperly encoded characters in URLs, see
+[Error: `404 Not Found` when using a reverse proxy](../api/rest/troubleshooting.md#error-404-not-found-when-using-a-reverse-proxy).
+
 ### Custom Redis Connection
 
 If you'd like to connect to a Redis server on a non-standard port or a different host, you can configure its connection string via the `config/resque.yml` file.

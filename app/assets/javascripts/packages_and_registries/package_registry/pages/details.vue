@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlBadge,
   GlButton,
   GlLink,
@@ -25,6 +26,7 @@ import PackageHistory from '~/packages_and_registries/package_registry/component
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import {
+  PACKAGE_DEPRECATED_STATUS,
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
   PACKAGE_TYPE_CONAN,
@@ -53,6 +55,7 @@ import Tracking from '~/tracking';
 export default {
   name: 'PackagesApp',
   components: {
+    GlAlert,
     GlBadge,
     GlButton,
     GlEmptyState,
@@ -190,6 +193,9 @@ export default {
     showDependencies() {
       return this.packageType === PACKAGE_TYPE_NUGET;
     },
+    showDeprecationAlert() {
+      return this.packageEntity.status === PACKAGE_DEPRECATED_STATUS;
+    },
     showFiles() {
       return this.packageType !== PACKAGE_TYPE_COMPOSER;
     },
@@ -295,6 +301,9 @@ export default {
         <div data-testid="package-information-content">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
 
+          <gl-alert v-if="showDeprecationAlert" :dismissible="false" variant="warning">
+            {{ s__('PackageRegistry|This package version has been deprecated.') }}
+          </gl-alert>
           <installation-commands :package-entity="packageEntity" />
 
           <additional-metadata

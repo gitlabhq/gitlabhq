@@ -121,7 +121,6 @@ export default {
             });
           },
           optimisticResponse: {
-            // eslint-disable-next-line @gitlab/require-i18n-strings
             __typename: 'Mutation',
             mergeRequestSetDraft: {
               __typename: 'MergeRequestSetWipPayload',

@@ -118,6 +118,7 @@ export default {
         category="tertiary"
         icon="plus"
         size="small"
+        data-testid="add-time-entry-button"
         :title="__('Add time entry')"
         :aria-label="__('Add time entry')"
       />
@@ -131,6 +132,8 @@ export default {
           v-gl-modal="'time-tracking-report'"
           v-gl-tooltip="s__('TimeTracking|View time tracking report')"
           variant="link"
+          class="!gl-text-sm"
+          data-testid="view-time-spent-button"
         >
           {{ humanTotalTimeSpent }}
         </gl-button>
@@ -150,6 +153,8 @@ export default {
             v-gl-modal="$options.setTimeEstimateModalId"
             v-gl-tooltip="s__('TimeTracking|Set estimate')"
             variant="link"
+            class="!gl-text-sm"
+            data-testid="set-estimate-button"
           >
             {{ humanTimeEstimate }}
           </gl-button>
@@ -160,8 +165,9 @@ export default {
         <gl-button
           v-else-if="canUpdate"
           v-gl-modal="$options.setTimeEstimateModalId"
-          class="gl-ml-auto"
+          class="gl-ml-auto !gl-text-sm"
           variant="link"
+          data-testid="add-estimate-button"
         >
           {{ s__('TimeTracking|Add estimate') }}
         </gl-button>
@@ -173,6 +179,7 @@ export default {
               v-gl-modal="$options.setTimeEstimateModalId"
               class="gl-align-baseline !gl-text-sm"
               variant="link"
+              data-testid="add-estimate-button"
             >
               {{ content }}
             </gl-button>
@@ -182,6 +189,7 @@ export default {
               v-gl-modal="$options.createTimelogModalId"
               class="gl-align-baseline !gl-text-sm"
               variant="link"
+              data-testid="add-time-spent-button"
             >
               {{ content }}
             </gl-button>

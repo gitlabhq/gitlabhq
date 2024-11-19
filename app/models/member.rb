@@ -16,6 +16,8 @@ class Member < ApplicationRecord
   include RestrictedSignup
   include Gitlab::Experiment::Dsl
 
+  ignore_column :last_activity_on, remove_with: '17.8', remove_after: '2024-12-23'
+
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
@@ -67,10 +69,7 @@ class Member < ApplicationRecord
   end
 
   scope :in_hierarchy, ->(source) do
-    for_self_and_descendants(source.root_ancestor)
-  end
-
-  scope :for_self_and_descendants, ->(source) do
+    source = source.root_ancestor
     groups = source.self_and_descendants
     group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
 
@@ -80,8 +79,28 @@ class Member < ApplicationRecord
     Member.default_scoped.from_union([group_members, project_members]).merge(self)
   end
 
+  scope :for_self_and_descendants, ->(group, columns = Member.cached_column_list) do
+    return self if group.blank?
+
+    group_members = where(source_id: group.self_and_descendant_ids, source_type: GroupMember::SOURCE_TYPE)
+    project_members = where(source_id: group.all_project_ids, source_type: ProjectMember::SOURCE_TYPE)
+
+    Member.unscoped.from_union([
+      group_members.select(*columns),
+      project_members.select(*columns)
+    ], remove_duplicates: false)
+  end
+
+  scope :including_user_ids, ->(user_ids) do
+    where(user_id: user_ids)
+  end
+
   scope :excluding_users, ->(user_ids) do
     where.not(user_id: user_ids)
+  end
+
+  scope :count_by_access_level, ->(column_name = nil) do
+    group(:access_level).count(column_name)
   end
 
   # This scope encapsulates (most of) the conditions a row in the member table
@@ -306,7 +325,6 @@ class Member < ApplicationRecord
   scope :order_updated_desc, -> { order(updated_at: :desc) }
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
   scope :with_static_role, -> { where(member_role_id: nil) }
-  scope :no_activity_today, -> { where('last_activity_on < ?', Date.today) }
 
   before_validation :set_member_namespace_id, on: :create
   before_validation :generate_invite_token, on: :create, if: ->(member) { member.invite_email.present? && !member.invite_accepted_at? }
@@ -318,7 +336,7 @@ class Member < ApplicationRecord
   after_create :update_two_factor_requirement, unless: :invite?
   after_create :create_organization_user_record
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
-  after_update :create_organization_user_record, if: :saved_change_to_user_id? # only occurs on invite acceptance
+  after_update :create_organization_user_record, if: :accepted_invite_or_request?
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_member_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_destroy :post_destroy_access_request_hook, if: [:request?, :hook_prerequisites_met?]
@@ -772,10 +790,16 @@ class Member < ApplicationRecord
   end
 
   def create_organization_user_record
-    return if invite?
+    return if pending?
     return if source.organization.blank?
 
     Organizations::OrganizationUser.create_organization_record_for(user_id, source.organization_id)
+  end
+
+  def accepted_invite_or_request?
+    # `user_id` is nil for member invited through email and will be set once the user has created an account.
+    # `requested_at` is defined only while the membership access request is still pending.
+    saved_change_to_user_id? || saved_change_to_requested_at?
   end
 end
 

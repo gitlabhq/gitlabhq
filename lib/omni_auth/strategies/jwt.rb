@@ -45,9 +45,7 @@ module OmniAuth
       def decoded
         jwt = request.params['jwt']
 
-        if Feature.enabled?(:omniauth_validate_email_length, :instance) && jwt.bytesize >= MAX_JWT_BYTESIZE
-          raise JwtTooLarge, _('JWT must be less than 10KB')
-        end
+        raise JwtTooLarge, _('JWT must be less than 10KB') if jwt.bytesize >= MAX_JWT_BYTESIZE
 
         @decoded ||= ::JWT.decode(jwt, secret, true, { algorithm: options.algorithm }).first
 

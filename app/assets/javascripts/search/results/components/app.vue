@@ -6,6 +6,7 @@ import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
 import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT } from '~/search/sidebar/constants/index';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
+import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import StatusBar from './status_bar.vue';
 
 import ZoektBlobResults from './zoekt_blob_results.vue';
@@ -50,6 +51,10 @@ export default {
         this.hasError = false;
         this.blobSearch = data?.blobSearch;
         this.hasResults = data?.blobSearch?.files?.length > 0;
+        this.$store.commit(RECEIVE_NAVIGATION_COUNT, {
+          key: 'blobs',
+          count: data?.blobSearch?.matchCount.toString(),
+        });
       },
       debounce: 500,
       error() {

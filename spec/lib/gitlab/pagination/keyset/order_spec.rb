@@ -657,7 +657,6 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       Class.new(ApplicationRecord) do
         self.table_name = 'users'
 
-        include IgnorableColumns
         include FromUnion
 
         ignore_column :username, remove_with: '16.4', remove_after: '2023-08-22'

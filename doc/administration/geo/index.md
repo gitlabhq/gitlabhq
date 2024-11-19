@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 Geo is the solution for widely distributed development teams and for providing
-a warm-standby as part of a disaster recovery strategy.
+a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.
 
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
@@ -218,7 +218,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
 - For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
 - Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
-- Backups [cannot be run on Geo secondary sites](replication/troubleshooting/replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
+- Backups [cannot be run on Geo secondary sites](replication/troubleshooting/postgresql_replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 - Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).
 - The Geo secondary site does not accelerate (serve) the clone request for the first stage of the pipeline in most cases. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In general, it does serve the clone request for subsequent stages. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) discusses the reasons for this and proposes an enhancement to increase the chance that Runner clone requests are served from the secondary site.
 - When a single Git repository receives pushes at a high-enough rate, the secondary site's local copy can be perpetually out-of-date. This causes all Git fetches of that repository to be forwarded to the primary site. See [GitLab issue #455870](https://gitlab.com/gitlab-org/gitlab/-/issues/455870).

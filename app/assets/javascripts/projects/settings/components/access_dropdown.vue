@@ -101,6 +101,11 @@ export default {
       required: false,
       default: false,
     },
+    sectionSelector: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -202,7 +207,12 @@ export default {
     },
   },
   created() {
-    this.getData({ initial: true });
+    const sectionEl = this.sectionSelector && document.querySelector(this.sectionSelector);
+    if (!sectionEl || sectionEl.classList.contains('expanded')) {
+      this.getData({ initial: true });
+      return;
+    }
+    this.observeSectionExpansion(sectionEl);
   },
   methods: {
     setDataForSave(items) {
@@ -449,6 +459,16 @@ export default {
     onShown() {
       this.$emit('shown');
       this.focusInput();
+    },
+    observeSectionExpansion(sectionEl) {
+      const observer = new MutationObserver(() => {
+        if (sectionEl.classList.contains('expanded')) {
+          this.getData({ initial: true });
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(sectionEl, { attributes: true, attributeFilter: ['class'] });
     },
   },
 };

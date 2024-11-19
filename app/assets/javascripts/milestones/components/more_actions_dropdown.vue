@@ -30,7 +30,6 @@ export default {
     'isActive',
     'showDelete',
     'isDetailPage',
-    'canReadMilestone',
     'milestoneUrl',
     'editUrl',
     'closeUrl',
@@ -127,6 +126,9 @@ export default {
     showTestIdIfNotDetailPage() {
       return !this.isDetailPage ? 'milestone-more-actions-dropdown-toggle' : false;
     },
+    hasEditOptions() {
+      return Boolean(this.closeUrl || this.reopenUrl || this.editUrl || this.promoteUrl);
+    },
   },
   methods: {
     showDropdown() {
@@ -203,8 +205,8 @@ export default {
       </div>
     </template>
 
-    <gl-disclosure-dropdown-item v-if="isActive" :item="closeItem" />
-    <gl-disclosure-dropdown-item v-else :item="reopenItem" />
+    <gl-disclosure-dropdown-item v-if="isActive && closeUrl" :item="closeItem" />
+    <gl-disclosure-dropdown-item v-else-if="reopenUrl" :item="reopenItem" />
 
     <gl-disclosure-dropdown-item v-if="editUrl" :item="editItem" />
 
@@ -214,7 +216,10 @@ export default {
       @action="setPromoteModalVisibility(true)"
     />
 
-    <gl-disclosure-dropdown-group v-if="canReadMilestone" bordered class="!gl-border-t-dropdown">
+    <gl-disclosure-dropdown-group
+      :bordered="hasEditOptions"
+      :class="{ '!gl-border-t-dropdown': hasEditOptions }"
+    >
       <gl-disclosure-dropdown-item :item="copyIdItem" :data-clipboard-text="id" />
     </gl-disclosure-dropdown-group>
 

@@ -4,9 +4,11 @@ import { TEST_HOST } from 'spec/test_constants';
 import actions, { transformBackendBadge } from '~/badges/store/actions';
 import mutationTypes from '~/badges/store/mutation_types';
 import createState from '~/badges/store/state';
+import { INITIAL_PAGE, PAGE_SIZE } from '~/badges/constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { createDummyBadge, createDummyBadgeResponse } from '../dummy_badge';
+import { MOCK_PAGINATION, MOCK_PAGINATION_HEADERS } from '../mock_data';
 
 describe('Badges store actions', () => {
   const dummyEndpointUrl = `${TEST_HOST}/badges/endpoint`;
@@ -25,6 +27,7 @@ describe('Badges store actions', () => {
       ...createState(),
       apiEndpointUrl: dummyEndpointUrl,
       badges: dummyBadges,
+      pagination: MOCK_PAGINATION,
     };
     badgeId = state.badges[0].id;
   });
@@ -33,51 +36,12 @@ describe('Badges store actions', () => {
     axiosMock.restore();
   });
 
-  describe('requestNewBadge', () => {
-    it('commits REQUEST_NEW_BADGE', () => {
-      return testAction(
-        actions.requestNewBadge,
-        null,
-        state,
-        [{ type: mutationTypes.REQUEST_NEW_BADGE }],
-        [],
-      );
-    });
-  });
-
-  describe('receiveNewBadge', () => {
-    it('commits RECEIVE_NEW_BADGE', () => {
-      const newBadge = createDummyBadge();
-      return testAction(
-        actions.receiveNewBadge,
-        newBadge,
-        state,
-        [{ type: mutationTypes.RECEIVE_NEW_BADGE, payload: newBadge }],
-        [],
-      );
-    });
-  });
-
-  describe('receiveNewBadgeError', () => {
-    it('commits RECEIVE_NEW_BADGE_ERROR', () => {
-      return testAction(
-        actions.receiveNewBadgeError,
-        null,
-        state,
-        [{ type: mutationTypes.RECEIVE_NEW_BADGE_ERROR }],
-        [],
-      );
-    });
-  });
-
   describe('addBadge', () => {
     let badgeInAddForm;
-    let dispatch;
     let endpointMock;
 
     beforeEach(() => {
       endpointMock = axiosMock.onPost(dummyEndpointUrl);
-      dispatch = jest.fn();
       badgeInAddForm = createDummyBadge();
       state = {
         ...state,
@@ -85,114 +49,97 @@ describe('Badges store actions', () => {
       };
     });
 
-    it('dispatches requestNewBadge and receiveNewBadge for successful response', async () => {
-      const dummyResponse = createDummyBadgeResponse();
-
+    it('commits REQUEST_NEW_BADGE, commits RECEIVE_NEW_BADGE, and dispatches loadBadges for the current page on successful response', () => {
       endpointMock.replyOnce((req) => {
         expect(req.data).toBe(
           JSON.stringify({
-            name: 'TestBadge',
+            name: badgeInAddForm.name,
             image_url: badgeInAddForm.imageUrl,
             link_url: badgeInAddForm.linkUrl,
           }),
         );
 
-        expect(dispatch.mock.calls).toEqual([['requestNewBadge']]);
-        dispatch.mockClear();
-        return [HTTP_STATUS_OK, dummyResponse];
+        return [HTTP_STATUS_OK, createDummyBadgeResponse()];
       });
 
-      const dummyBadge = transformBackendBadge(dummyResponse);
-
-      await actions.addBadge({ state, dispatch });
-      expect(dispatch.mock.calls).toEqual([['receiveNewBadge', dummyBadge]]);
+      return testAction({
+        action: actions.addBadge,
+        state,
+        expectedMutations: [
+          { type: mutationTypes.REQUEST_NEW_BADGE },
+          { type: mutationTypes.RECEIVE_NEW_BADGE },
+        ],
+        expectedActions: [{ type: 'loadBadges', payload: { page: state.pagination.page } }],
+      });
     });
 
-    it('dispatches requestNewBadge and receiveNewBadgeError for error response', async () => {
+    it('commits REQUEST_NEW_BADGE, commits RECEIVE_NEW_BADGE_ERROR, and throws an error on error response', () => {
       endpointMock.replyOnce((req) => {
         expect(req.data).toBe(
           JSON.stringify({
-            name: 'TestBadge',
+            name: badgeInAddForm.name,
             image_url: badgeInAddForm.imageUrl,
             link_url: badgeInAddForm.linkUrl,
           }),
         );
 
-        expect(dispatch.mock.calls).toEqual([['requestNewBadge']]);
-        dispatch.mockClear();
-        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, 'mock_new_badge_error'];
       });
 
-      await expect(actions.addBadge({ state, dispatch })).rejects.toThrow();
-      expect(dispatch.mock.calls).toEqual([['receiveNewBadgeError']]);
-    });
-  });
-
-  describe('requestDeleteBadge', () => {
-    it('commits REQUEST_DELETE_BADGE', () => {
-      return testAction(
-        actions.requestDeleteBadge,
-        badgeId,
+      return testAction({
+        action: actions.addBadge,
         state,
-        [{ type: mutationTypes.REQUEST_DELETE_BADGE, payload: badgeId }],
-        [],
-      );
-    });
-  });
-
-  describe('receiveDeleteBadge', () => {
-    it('commits RECEIVE_DELETE_BADGE', () => {
-      return testAction(
-        actions.receiveDeleteBadge,
-        badgeId,
-        state,
-        [{ type: mutationTypes.RECEIVE_DELETE_BADGE, payload: badgeId }],
-        [],
-      );
-    });
-  });
-
-  describe('receiveDeleteBadgeError', () => {
-    it('commits RECEIVE_DELETE_BADGE_ERROR', () => {
-      return testAction(
-        actions.receiveDeleteBadgeError,
-        badgeId,
-        state,
-        [{ type: mutationTypes.RECEIVE_DELETE_BADGE_ERROR, payload: badgeId }],
-        [],
-      );
+        expectedMutations: [
+          { type: mutationTypes.REQUEST_NEW_BADGE },
+          { type: mutationTypes.RECEIVE_NEW_BADGE_ERROR },
+        ],
+      }).catch(({ response }) => {
+        expect(response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        expect(response.data).toBe('mock_new_badge_error');
+      });
     });
   });
 
   describe('deleteBadge', () => {
-    let dispatch;
     let endpointMock;
 
     beforeEach(() => {
       endpointMock = axiosMock.onDelete(`${dummyEndpointUrl}/${badgeId}`);
-      dispatch = jest.fn();
     });
 
-    it('dispatches requestDeleteBadge and receiveDeleteBadge for successful response', async () => {
-      endpointMock.replyOnce(() => {
-        expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
-        dispatch.mockClear();
+    it('commits REQUEST_DELETE_BADGE and dispatches loadBadges for the current page on successful response', () => {
+      endpointMock.replyOnce((req) => {
+        expect(req.url).toBe(`${dummyEndpointUrl}/${badgeId}`);
         return [HTTP_STATUS_OK, ''];
       });
 
-      await actions.deleteBadge({ state, dispatch }, { id: badgeId });
-      expect(dispatch.mock.calls).toEqual([['receiveDeleteBadge', badgeId]]);
+      return testAction({
+        action: actions.deleteBadge,
+        payload: state.badges[0],
+        state,
+        expectedMutations: [{ type: mutationTypes.REQUEST_DELETE_BADGE, payload: badgeId }],
+        expectedActions: [{ type: 'loadBadges', payload: { page: state.pagination.page } }],
+      });
     });
 
-    it('dispatches requestDeleteBadge and receiveDeleteBadgeError for error response', async () => {
-      endpointMock.replyOnce(() => {
-        expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
-        dispatch.mockClear();
-        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
+    it('commits REQUEST_DELETE_BADGE, commits RECEIVE_DELETE_BADGE_ERROR, and throws an error on error response', () => {
+      endpointMock.replyOnce((req) => {
+        expect(req.url).toBe(`${dummyEndpointUrl}/${badgeId}`);
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, 'mock_delete_badge_error'];
       });
 
-      await expect(actions.deleteBadge({ state, dispatch }, { id: badgeId })).rejects.toThrow();
-      expect(dispatch.mock.calls).toEqual([['receiveDeleteBadgeError', badgeId]]);
+      return testAction({
+        action: actions.deleteBadge,
+        payload: state.badges[0],
+        state,
+        expectedMutations: [
+          { type: mutationTypes.REQUEST_DELETE_BADGE, payload: badgeId },
+          { type: mutationTypes.RECEIVE_DELETE_BADGE_ERROR, payload: badgeId },
+        ],
+      }).catch(({ response }) => {
+        expect(response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        expect(response.data).toBe('mock_delete_badge_error');
+      });
     });
   });
 
@@ -209,82 +156,66 @@ describe('Badges store actions', () => {
     });
   });
 
-  describe('requestLoadBadges', () => {
-    it('commits REQUEST_LOAD_BADGES', () => {
-      const dummyData = 'this is not real data';
-      return testAction(
-        actions.requestLoadBadges,
-        dummyData,
-        state,
-        [{ type: mutationTypes.REQUEST_LOAD_BADGES, payload: dummyData }],
-        [],
-      );
-    });
-  });
-
-  describe('receiveLoadBadges', () => {
-    it('commits RECEIVE_LOAD_BADGES', () => {
-      const badges = dummyBadges;
-      return testAction(
-        actions.receiveLoadBadges,
-        badges,
-        state,
-        [{ type: mutationTypes.RECEIVE_LOAD_BADGES, payload: badges }],
-        [],
-      );
-    });
-  });
-
-  describe('receiveLoadBadgesError', () => {
-    it('commits RECEIVE_LOAD_BADGES_ERROR', () => {
-      return testAction(
-        actions.receiveLoadBadgesError,
-        null,
-        state,
-        [{ type: mutationTypes.RECEIVE_LOAD_BADGES_ERROR }],
-        [],
-      );
-    });
-  });
-
   describe('loadBadges', () => {
-    let dispatch;
     let endpointMock;
 
     beforeEach(() => {
       endpointMock = axiosMock.onGet(dummyEndpointUrl);
-      dispatch = jest.fn();
     });
 
-    it('dispatches requestLoadBadges and receiveLoadBadges for successful response', async () => {
-      const dummyData = 'this is just some data';
+    it('commits REQUEST_LOAD_BADGES, commits RECEIVE_LOAD_BADGES, and commits RECEIVE_PAGINATION on successful response', () => {
       const dummyResponse = [
         createDummyBadgeResponse(),
         createDummyBadgeResponse(),
         createDummyBadgeResponse(),
       ];
-      endpointMock.replyOnce(() => {
-        expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
-        dispatch.mockClear();
-        return [HTTP_STATUS_OK, dummyResponse];
+
+      endpointMock.replyOnce((req) => {
+        expect(req.params).toStrictEqual({
+          page: INITIAL_PAGE,
+          per_page: PAGE_SIZE,
+        });
+
+        return [HTTP_STATUS_OK, dummyResponse, MOCK_PAGINATION_HEADERS];
       });
 
-      await actions.loadBadges({ state, dispatch }, dummyData);
-      const badges = dummyResponse.map(transformBackendBadge);
-
-      expect(dispatch.mock.calls).toEqual([['receiveLoadBadges', badges]]);
+      return testAction({
+        action: actions.loadBadges,
+        payload: { page: INITIAL_PAGE },
+        state,
+        expectedMutations: [
+          { type: mutationTypes.REQUEST_LOAD_BADGES },
+          {
+            type: mutationTypes.RECEIVE_LOAD_BADGES,
+            payload: dummyResponse.map(transformBackendBadge),
+          },
+          { type: mutationTypes.RECEIVE_PAGINATION, payload: MOCK_PAGINATION },
+        ],
+      });
     });
 
-    it('dispatches requestLoadBadges and receiveLoadBadgesError for error response', async () => {
-      const dummyData = 'this is just some data';
-      endpointMock.replyOnce(() => {
-        expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
-        dispatch.mockClear();
-        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
+    it('commits REQUEST_NEW_BADGE, commits RECEIVE_NEW_BADGE_ERROR, and throws an error on error response', () => {
+      endpointMock.replyOnce((req) => {
+        expect(req.params).toStrictEqual({
+          page: INITIAL_PAGE,
+          per_page: PAGE_SIZE,
+        });
+
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, 'mock_load_badges_error'];
       });
 
-      await expect(actions.loadBadges({ state, dispatch }, dummyData)).rejects.toThrow();
-      expect(dispatch.mock.calls).toEqual([['receiveLoadBadgesError']]);
+      return testAction({
+        action: actions.loadBadges,
+        payload: { page: INITIAL_PAGE },
+        state,
+        expectedMutations: [
+          { type: mutationTypes.REQUEST_LOAD_BADGES },
+          { type: mutationTypes.RECEIVE_LOAD_BADGES_ERROR },
+        ],
+      }).catch(({ response }) => {
+        expect(response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        expect(response.data).toBe('mock_load_badges_error');
+      });
     });
   });
 

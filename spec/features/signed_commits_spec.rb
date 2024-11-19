@@ -164,40 +164,89 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
     # The below situation can occur when using the git mailmap feature.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/425042.
-    context 'when user commit email is not verified and the commit is signed and verified' do
-      let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
-
-      before do
-        create(:ssh_signature, user: user_1, commit_sha: commit.sha, project: project, verification_status: :verified)
-        allow(commit).to receive(:author_email).and_return('unverified@email.org')
-      end
-
-      it 'label is mapped verified' do
-        visit project_commit_path(project, commit.sha)
+    describe 'the effect of mailmapping' do
+      def expect_to_have_mapped_verified_label_content(ref, fingerprint_message)
+        visit project_commit_path(project, ref)
         wait_for_all_requests
 
         page.find('.gl-badge', text: 'Verified').click
 
         within '.popover' do
           expect(page).to have_content 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.'
-          expect(page).to have_content "SSH key fingerprint: #{commit.signature.key_fingerprint_sha256}"
+          expect(page).to have_content fingerprint_message
         end
       end
 
-      context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
-        before do
-          stub_feature_flags(check_for_mailmapped_commit_emails: false)
+      def expect_to_have_verified_label_content(ref, fingerprint_message)
+        visit project_commit_path(project, ref)
+        wait_for_all_requests
+
+        page.find('.gl-badge', text: 'Verified').click
+
+        within '.popover' do
+          expect(page).to have_content 'Verified commit This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
+          expect(page).to have_content fingerprint_message
         end
+      end
 
-        it 'label is verified' do
-          visit project_commit_path(project, commit.sha)
-          wait_for_all_requests
+      context 'on SSH signed commits' do
+        let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
 
-          page.find('.gl-badge', text: 'Verified').click
+        context 'when user commit email is not verified and the commit is signed and verified' do
+          let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
+          let(:fingerprint) { commit.signature.key_fingerprint_sha256 }
 
-          within '.popover' do
-            expect(page).to have_content 'Verified commit This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
-            expect(page).to have_content "SSH key fingerprint: #{commit.signature.key_fingerprint_sha256}"
+          before do
+            create(:ssh_signature, user: user_1, commit_sha: commit.sha, project: project, verification_status: :verified)
+            allow(commit).to receive(:author_email).and_return('unverified@email.org')
+          end
+
+          it 'label is mapped verified' do
+            expect_to_have_mapped_verified_label_content(commit.sha, "SSH key fingerprint: #{fingerprint}")
+          end
+
+          context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
+            before do
+              stub_feature_flags(check_for_mailmapped_commit_emails: false)
+            end
+
+            it 'label is verified' do
+              expect_to_have_verified_label_content(commit.sha, "SSH key fingerprint: #{fingerprint}")
+            end
+          end
+        end
+      end
+
+      context 'on GPG on signed commits' do
+        let(:commit) { project.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
+
+        context 'when user commit email is not verified and the commit is signed and verified' do
+          let(:fingerprint) { GpgHelpers::User1.primary_keyid }
+
+          before do
+            create(
+              :gpg_signature,
+              commit_sha: commit.sha,
+              gpg_key: (create :gpg_key, user: user_1),
+              project: project,
+              verification_status: :verified
+            )
+
+            allow(commit).to receive(:author_email).and_return('unverified@email.org')
+          end
+
+          it 'label is mapped verified' do
+            expect_to_have_mapped_verified_label_content(commit.sha, "GPG Key ID: #{fingerprint}")
+          end
+
+          context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
+            before do
+              stub_feature_flags(check_for_mailmapped_commit_emails: false)
+            end
+
+            it 'label is verified' do
+              expect_to_have_verified_label_content(commit.sha, "GPG Key ID: #{fingerprint}")
+            end
           end
         end
       end

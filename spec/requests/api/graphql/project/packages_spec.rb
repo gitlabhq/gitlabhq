@@ -107,23 +107,5 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
         end
       end
     end
-
-    context "when feature flag ':packages_protected_packages' disabled" do
-      before_all do
-        resource.add_maintainer(current_user)
-      end
-
-      before do
-        stub_feature_flags(packages_protected_packages: false)
-
-        post_graphql(query, current_user: current_user)
-      end
-
-      it 'returns false for the field protectionRuleExists for each package' do
-        graphql_data_at(resource_type, :packages, :nodes).each do |package|
-          expect(package['protectionRuleExists']).to eq false
-        end
-      end
-    end
   end
 end

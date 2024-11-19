@@ -6,7 +6,6 @@ mutation updateContainerRegistryProtectionRule(
       id
       repositoryPathPattern
       minimumAccessLevelForPush
-      minimumAccessLevelForDelete
     }
     errors
   }

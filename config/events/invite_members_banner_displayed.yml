@@ -1,0 +1,13 @@
+---
+description: Tracks when the invite members banner is displayed to users.
+action: invite_members_banner_displayed
+product_group: activation
+milestone: '13.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41774
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

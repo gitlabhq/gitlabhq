@@ -1,12 +1,11 @@
 ---
 table_name: zoekt_repositories
 classes:
-  - Search::Zoekt::Repository
+- Search::Zoekt::Repository
 feature_categories:
-  - global_search
+- global_search
 description: Represents a zoekt repository
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141864
 milestone: '16.9'
 gitlab_schema: gitlab_main_cell
-sharding_key:
-  project_identifier: projects
+exempt_from_sharding: true

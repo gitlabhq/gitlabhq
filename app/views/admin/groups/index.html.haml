@@ -6,14 +6,9 @@
     = link_button_to new_admin_group_path, variant: :confirm do
       = _('New group')
 
-.md:gl-flex.gl-min-w-0.gl-grow.row-content-block
-  = form_tag admin_groups_path, method: :get, class: 'js-search-form gl-w-full' do |f|
-    = hidden_field_tag :sort, @sort
-    .search-holder
-      .search-field-holder
-        = search_field_tag :name, params[:name].presence, class: "form-control search-text-input js-search-input", spellcheck: false, placeholder: 'Search by name', data: { testid: 'group-search-field' }
-        = sprite_icon('search', css_class: 'search-icon')
-      = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
+#js-admin-groups-filtered-search-and-sort
+  -# This element takes up space while Vue is rendering to avoid page jump
+  .gl-h-12
 
 - if @groups.any?
   %ul.content-list

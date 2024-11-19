@@ -29,7 +29,7 @@ const createComponent = (propsData = mockIssuableShowProps) =>
       `,
       'right-sidebar-items': `
         <div class="js-todo">
-          To Do <button class="js-add-todo">Add a To Do</button>
+          To Do <button class="js-add-todo">Add a to-do item</button>
         </div>
       `,
     },

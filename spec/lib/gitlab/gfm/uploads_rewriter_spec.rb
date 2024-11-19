@@ -9,17 +9,11 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
   let(:rewriter) { described_class.new(+text, nil, old_project, user) }
 
   context 'text contains links to uploads' do
-    let(:image_uploader) do
-      build(:file_uploader, project: old_project)
-    end
-
-    let(:zip_uploader) do
-      build(:file_uploader, project: old_project,
-        fixture: 'ci_build_artifacts.zip')
-    end
+    let(:image_uploader) { build(:file_uploader, container: old_project) }
+    let(:zip_uploader) { build(:file_uploader, container: old_project, fixture: 'ci_build_artifacts.zip') }
 
     let(:text) do
-      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}".freeze # rubocop:disable Style/RedundantFreeze
+      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}".freeze
     end
 
     def referenced_files(text, project)
@@ -101,7 +95,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
     it 'does not rewrite plain links as embedded' do
       embedded_link = image_uploader.markdown_link
       plain_image_link = embedded_link.delete_prefix('!')
-      text = +"#{plain_image_link} and #{embedded_link}"
+      text = "#{plain_image_link} and #{embedded_link}"
 
       moved_text = described_class.new(text, nil, old_project, user).rewrite(new_project)
 

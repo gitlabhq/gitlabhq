@@ -576,123 +576,42 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   context 'create_projects' do
-    context 'when group has no project creation level set' do
-      before do
-        group.update!(project_creation_level: nil)
+    context 'without visibility levels restricted' do
+      where(:project_creation_level, :current_user, :create_projects_allowed?) do
+        nil                                                    | lazy { reporter }   | false
+        nil                                                    | lazy { developer }  | true
+        nil                                                    | lazy { maintainer } | true
+        nil                                                    | lazy { owner }      | true
+        nil                                                    | lazy { admin }      | true
+        ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { reporter }   | false
+        ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { developer }  | false
+        ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { maintainer } | false
+        ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { owner }      | false
+        ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { admin }      | false
+        ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { reporter }   | false
+        ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { developer }  | false
+        ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { maintainer } | true
+        ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { owner }      | true
+        ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { admin }      | true
+        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { reporter }   | false
+        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { developer }  | true
+        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { maintainer } | true
+        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { owner }      | true
+        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { admin }      | true
+        ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { reporter }   | false
+        ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { developer }  | false
+        ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { maintainer } | false
+        ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { owner }      | false
+        ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { admin }      | true
       end
 
-      context 'reporter' do
-        let(:current_user) { reporter }
+      with_them do
+        before do
+          group.update!(project_creation_level: project_creation_level)
+          enable_admin_mode!(current_user) if current_user.admin?
+        end
 
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-
-      context 'maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-    end
-
-    context 'when group has project creation level set to no one' do
-      before do
-        group.update!(project_creation_level: ::Gitlab::Access::NO_ONE_PROJECT_ACCESS)
-      end
-
-      context 'reporter' do
-        let(:current_user) { reporter }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-    end
-
-    context 'when group has project creation level set to maintainer only' do
-      before do
-        group.update!(project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
-      end
-
-      context 'reporter' do
-        let(:current_user) { reporter }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-    end
-
-    context 'when group has project creation level set to developers + maintainer' do
-      before do
-        group.update!(project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
-      end
-
-      context 'reporter' do
-        let(:current_user) { reporter }
-
-        it { is_expected.to be_disallowed(:create_projects) }
-      end
-
-      context 'developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-
-      context 'maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_allowed(:create_projects) }
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
-
-        it { is_expected.to be_allowed(:create_projects) }
+        it { is_expected.to(create_projects_allowed? ? be_allowed(:create_projects) : be_disallowed(:create_projects)) }
       end
     end
 

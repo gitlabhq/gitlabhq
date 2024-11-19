@@ -24,7 +24,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
   describe '#backup_basedir' do
     context 'with a relative path configured in gitlab.yml' do
       it 'returns a full path based on gitlab basepath' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.backup_basedir).to eq(fake_gitlab_basepath.join('tmp/tests/backups'))
       end
@@ -58,7 +58,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.ci_builds_path).to eq(Pathname('/tmp/gitlab/full/builds'))
       end
@@ -84,7 +84,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.ci_job_artifacts_path).to eq(Pathname('/tmp/gitlab/full/artifacts'))
       end
@@ -110,7 +110,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.ci_secure_files_path).to eq(Pathname('/tmp/gitlab/full/ci_secure_files'))
       end
@@ -136,7 +136,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.ci_lfs_path).to eq(Pathname('/tmp/gitlab/full/lfs-objects'))
       end
@@ -162,7 +162,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.packages_path).to eq(Pathname('/tmp/gitlab/full/packages'))
       end
@@ -188,7 +188,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.pages_path).to eq(Pathname('/tmp/gitlab/full/pages'))
       end
@@ -214,7 +214,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.registry_path).to eq(Pathname('/tmp/gitlab/full/registry'))
       end
@@ -240,7 +240,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.terraform_state_path).to eq(Pathname('/tmp/gitlab/full/terraform_state'))
       end
@@ -266,7 +266,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.upload_path).to eq(Pathname('/tmp/gitlab/full/public/uploads'))
       end
@@ -292,7 +292,7 @@ RSpec.shared_examples "context exposing all common configuration methods" do
 
     context 'with a full path configured in gitlab.yml' do
       it 'returns a full path as configured in gitlab.yml' do
-        use_gitlab_config_fixture('gitlab.yml')
+        use_gitlab_config_fixture('config/gitlab.yml')
 
         expect(context.send(:gitlab_shared_path)).to eq(Pathname('/tmp/gitlab/full/shared'))
       end

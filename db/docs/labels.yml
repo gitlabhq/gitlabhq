@@ -1,7 +1,6 @@
 ---
 table_name: labels
 classes:
-- Admin::AbuseReportLabel
 - GroupLabel
 - Label
 - ProjectLabel

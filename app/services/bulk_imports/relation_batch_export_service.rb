@@ -17,6 +17,7 @@ module BulkImports
       ensure_export_file_exists!
       compress_exported_relation
       upload_compressed_file
+      export.touch
 
       finish_batch!
     ensure

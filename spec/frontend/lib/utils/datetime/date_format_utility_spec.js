@@ -157,8 +157,8 @@ describe('date_format_utility.js', () => {
   describe('humanTimeframe', () => {
     it.each`
       startDate              | dueDate                 | returnValue
-      ${newDate('2021-1-1')} | ${newDate('2021-2-28')} | ${'Jan 1 – Feb 28, 2021'}
-      ${newDate('2021-1-1')} | ${newDate('2022-2-28')} | ${'Jan 1, 2021 – Feb 28, 2022'}
+      ${newDate('2021-1-1')} | ${newDate('2021-2-28')} | ${'Jan 1 – Feb 28, 2021'}
+      ${newDate('2021-1-1')} | ${newDate('2022-2-28')} | ${'Jan 1, 2021 – Feb 28, 2022'}
       ${newDate('2021-1-1')} | ${null}                 | ${'Jan 1, 2021 – No due date'}
       ${null}                | ${newDate('2021-2-28')} | ${'No start date – Feb 28, 2021'}
     `(
@@ -347,22 +347,6 @@ describe('date_format_utility.js', () => {
         });
       },
     );
-  });
-
-  describe('dateInWords', () => {
-    const date = new Date('07/01/2016');
-
-    it('should return date in words', () => {
-      expect(utils.dateInWords(date)).toEqual('July 1, 2016');
-    });
-
-    it('should return abbreviated month name', () => {
-      expect(utils.dateInWords(date, true)).toEqual('Jul 1, 2016');
-    });
-
-    it('should return date in words without year', () => {
-      expect(utils.dateInWords(date, true, true)).toEqual('Jul 1');
-    });
   });
 
   describe('monthInWords', () => {

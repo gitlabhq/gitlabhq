@@ -1,0 +1,16 @@
+---
+description: Tracks when a user clicks on a pipeline link in the package history.
+action: click_pipeline_link_from_package
+product_group: package_registry
+milestone: '15.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92940
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value click_pipeline_link_from_package

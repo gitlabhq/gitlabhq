@@ -61,6 +61,7 @@
         - 'runner_token_expiration/'
         - '*metadata_id_tokens*'
         - '/app/assets/javascripts/invite_members/'
+        - '/app/workers/authorized_keys_worker.rb'
       patterns:
         - '%{keyword}'
 

@@ -16,7 +16,7 @@
   .form-group
     = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold'
     = f.text_field :name, class: 'form-control gl-form-input gl-form-input-xl', required: true, data: { testid: 'access-token-name-field' }, :'aria-describedby' => 'access_token_help_text'
-    %span.form-text.text-muted#access_token_help_text
+    %span.form-text.gl-text-subtle#access_token_help_text
       - if resource
         - resource_type = resource.is_a?(Group) ? "group" : "project"
         = s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }

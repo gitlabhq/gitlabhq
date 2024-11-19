@@ -124,9 +124,9 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -140,6 +140,18 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
   | 17.0                    |  All                    | None     |
   | 17.1                    |  All                    | None     |
   | 17.2                    |  All                    | None     |
+
+- Geo replication details for secondary sites appear to be empty even if Geo replication is working. See [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.11                   |  16.11.5 - 16.11.10     | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
+  | 17.3                    |  All                    | 17.3.1   |
 
 ## 16.10.0
 
@@ -201,9 +213,9 @@ For more information on the changes introduced between version 2.1.0 and version
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -259,9 +271,9 @@ planned for release in 16.9.1.
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -337,9 +349,9 @@ planned for release in 16.9.1.
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -427,9 +439,9 @@ Specific information applies to Linux package installations:
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -516,9 +528,9 @@ Specific information applies to Linux package installations:
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -672,9 +684,9 @@ Specific information applies to installations using Geo:
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
-  | 16.8                    |  All                    | None     |
-  | 16.9                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.7        | 16.7.8   |
+  | 16.8                    |  16.8.0 - 16.8.7        | 16.8.8   |
+  | 16.9                    |  16.9.0 - 16.9.8        | 16.9.9   |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
@@ -1757,7 +1769,7 @@ was recently created:
 | 15.11                | [15.11](#workaround-instance-created-with-1511) |
 
 Most instances should use the 15.9 procedure. Only very new instances require the
-the 15.10 or 15.11 procedures. If you've migrated GitLab using backup and restore,
+15.10 or 15.11 procedures. If you've migrated GitLab using backup and restore,
 the database schema comes from the original instance. Select the workaround based
 on the source instance.
 

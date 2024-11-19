@@ -15,7 +15,7 @@ import {
 
 export default {
   i18n: {
-    addATodo: s__('WorkItem|Add a to do'),
+    addATodo: s__('WorkItem|Add a to-do item'),
     markAsDone: s__('WorkItem|Mark as done'),
   },
   directives: {
@@ -103,7 +103,6 @@ export default {
 
             if (todo.state === TODO_PENDING_STATE) {
               todos.push({
-                // eslint-disable-next-line @gitlab/require-i18n-strings
                 __typename: 'Todo',
                 id: todo.id,
               });

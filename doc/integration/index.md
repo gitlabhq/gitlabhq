@@ -47,7 +47,7 @@ You can also integrate GitLab with the following security partners:
 - [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)
 - [Tenable](https://docs.tenable.com/vulnerability-management/Content/ContainerSecurity/Dashboard.htm)
 - [Venafi](https://marketplace.venafi.com/xchange/620d2d6ed419fb06a5c5bd36/solution/6292c2ef7550f2ee553cf223)
-- [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
+- [Veracode](https://docs.veracode.com/r/c_integration_buildservs#gitlab)
 
 <!-- vale gitlab_base.Spelling = YES -->
 

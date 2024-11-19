@@ -157,6 +157,20 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
   end
 
+  describe '.sidekiq_interruptions_exhausted' do
+    it 'logs and sets status as failed' do
+      job = { 'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
+
+      expect(BulkImports::Failure).to receive(:create).with(hash_including(
+        bulk_import_entity_id: entity.id,
+        exception_class: 'Import::Exceptions::SidekiqExhaustedInterruptionsError'
+      ))
+
+      described_class.interruptions_exhausted_block.call(job)
+      expect(pipeline_tracker.reload).to be_failed
+    end
+  end
+
   context 'with stop signal from database health check' do
     let(:setter) { instance_double('Sidekiq::Job::Setter') }
 

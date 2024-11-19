@@ -466,21 +466,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
         expect(build.waiting_for_resource_at).not_to be_nil
       end
 
-      context 'when `assign_resource_worker_deduplicate_until_executing` FF is enabled and the override is disabled' do
-        before do
-          stub_feature_flags(assign_resource_worker_deduplicate_until_executing: true)
-          stub_feature_flags(assign_resource_worker_deduplicate_until_executing_override: false)
-        end
-
-        it 'is waiting for resource when build is enqueued' do
-          expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2).to receive(:perform_async).with(resource_group.id)
-
-          expect { build.enqueue! }.to change { build.status }.from('created').to('waiting_for_resource')
-
-          expect(build.waiting_for_resource_at).not_to be_nil
-        end
-      end
-
       context 'when build is waiting for resource' do
         before do
           build.update_column(:status, 'waiting_for_resource')
@@ -503,28 +488,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async).with(build.resource_group_id)
 
           build.success!
-        end
-
-        context 'when `assign_resource_worker_deduplicate_until_executing` FF is enabled and the override is disabled' do
-          before do
-            stub_feature_flags(assign_resource_worker_deduplicate_until_executing: true)
-            stub_feature_flags(assign_resource_worker_deduplicate_until_executing_override: false)
-          end
-
-          it 'releases a resource when build finished' do
-            expect(build.resource_group).to receive(:release_resource_from).with(build).and_return(true).and_call_original
-            expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2).to receive(:perform_async).with(build.resource_group_id)
-
-            build.enqueue_waiting_for_resource!
-            build.success!
-          end
-
-          it 're-checks the resource group even if the processable does not retain a resource' do
-            expect(build.resource_group).to receive(:release_resource_from).with(build).and_return(false).and_call_original
-            expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2).to receive(:perform_async).with(build.resource_group_id)
-
-            build.success!
-          end
         end
 
         context 'when build has prerequisites' do

@@ -13,4 +13,4 @@
                 - if branch[:pipeline_status].present?
                   %span.-gl-my-2
                     = render 'ci/status/icon', status: branch[:pipeline_status]
-                = link_to branch[:name], branch[:link], class: 'ref-name'
+                = link_to branch[:name], branch[:compare_path], class: 'ref-name'

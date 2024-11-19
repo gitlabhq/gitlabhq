@@ -21,7 +21,7 @@ To list all active sessions:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Active Sessions**.
 
-![Active sessions list](img/active_sessions_list.png)
+![Active sessions list](img/active_sessions_list_v12_7.png)
 
 ## Active sessions limit
 

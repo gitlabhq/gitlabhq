@@ -7,51 +7,43 @@ import { getNewWorkItemAutoSaveKey, newWorkItemFullPath } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
-  WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
+  WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   NEW_WORK_ITEM_IID,
-  CLEAR_VALUE,
+  WIDGET_TYPE_MILESTONE,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
 // eslint-disable-next-line max-params
 const updateWidget = (draftData, widgetType, newData, nodePath) => {
-  if (!newData) return;
+  /** set all other values other than when it is undefined including null/0 or empty array as well */
+  /** we have to make sure we do not pass values when custom types are introduced */
+  if (newData === undefined) return;
 
-  const widget = findWidget(widgetType, draftData.workspace.workItem);
-  set(widget, nodePath, newData);
+  if (draftData.workspace) {
+    const widget = findWidget(widgetType, draftData.workspace.workItem);
+    set(widget, nodePath, newData);
+  }
 };
 
-const updateHealthStatusWidget = (draftData, healthStatus) => {
-  if (!healthStatus) return;
+const updateDatesWidget = (draftData, dates) => {
+  if (!dates) return;
 
-  const newValue = healthStatus === CLEAR_VALUE ? null : healthStatus;
-  const widget = findWidget(WIDGET_TYPE_HEALTH_STATUS, draftData.workspace.workItem);
-  set(widget, 'healthStatus', newValue);
-};
+  const dueDate = dates.dueDate ? toISODateFormat(newDate(dates.dueDate)) : null;
+  const startDate = dates.startDate ? toISODateFormat(newDate(dates.startDate)) : null;
 
-const updateRolledUpDatesWidget = (draftData, rolledUpDates) => {
-  if (!rolledUpDates) return;
-
-  const dueDateFixed = rolledUpDates.dueDateFixed
-    ? toISODateFormat(newDate(rolledUpDates.dueDateFixed))
-    : null;
-  const startDateFixed = rolledUpDates.startDateFixed
-    ? toISODateFormat(newDate(rolledUpDates.startDateFixed))
-    : null;
-
-  const widget = findWidget(WIDGET_TYPE_ROLLEDUP_DATES, draftData.workspace.workItem);
+  const widget = findWidget(WIDGET_TYPE_START_AND_DUE_DATE, draftData.workspace.workItem);
   Object.assign(widget, {
-    dueDate: dueDateFixed,
-    dueDateFixed,
-    dueDateIsFixed: rolledUpDates.dueDateIsFixed,
-    startDate: startDateFixed,
-    startDateFixed,
-    startDateIsFixed: rolledUpDates.startDateIsFixed,
-    __typename: 'WorkItemWidgetRolledupDates',
+    dueDate,
+    startDate,
+    isFixed: dates.isFixed,
+    rollUp: dates.rollUp,
+    __typename: 'WorkItemWidgetStartAndDueDate',
   });
 };
 
@@ -68,6 +60,9 @@ export const updateNewWorkItemCache = (input, cache) => {
     labels,
     rolledUpDates,
     crmContacts,
+    iteration,
+    weight,
+    milestone,
   } = input;
 
   const query = workItemByIidQuery;
@@ -104,14 +99,33 @@ export const updateNewWorkItemCache = (input, cache) => {
           newData: description,
           nodePath: 'description',
         },
+        {
+          widgetType: WIDGET_TYPE_HEALTH_STATUS,
+          newData: healthStatus,
+          nodePath: 'healthStatus',
+        },
+        {
+          widgetType: WIDGET_TYPE_ITERATION,
+          newData: iteration,
+          nodePath: 'iteration',
+        },
+        {
+          widgetType: WIDGET_TYPE_WEIGHT,
+          newData: weight,
+          nodePath: 'weight',
+        },
+        {
+          widgetType: WIDGET_TYPE_MILESTONE,
+          newData: milestone,
+          nodePath: 'milestone',
+        },
       ];
 
       widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
         updateWidget(draftData, widgetType, newData, nodePath);
       });
 
-      updateRolledUpDatesWidget(draftData, rolledUpDates);
-      updateHealthStatusWidget(draftData, healthStatus);
+      updateDatesWidget(draftData, rolledUpDates);
 
       if (title) draftData.workspace.workItem.title = title;
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;

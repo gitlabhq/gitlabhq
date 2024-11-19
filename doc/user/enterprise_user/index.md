@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -71,7 +71,7 @@ Prerequisites:
 
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
-- A project in the group. This project will be linked to the verified domains, and should not be deleted. This project also needs to have the pages component enabled in its settings (**General** -> **Visibility, project features, permissions** -> **Pages**). If the pages component is disabled in its setttings, a `500` error will be generated during domain verification.
+- A project in the group. This project will be linked to the verified domains, and should not be deleted. This project also needs to have the pages component enabled in its settings (**General** -> **Visibility, project features, permissions** -> **Pages**). If the pages component is disabled in its settings, a `500` error will be generated during domain verification.
 - Ensure that [GitLab Pages](../project/pages/index.md) is enabled for the project. If GitLab Pages is disabled, adding the domain might result in an error.
 - You must have the Owner role for the top-level group.
 

@@ -1,13 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlForm,
-  GlFormGroup,
-  GlFormInput,
-  GlModal,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -16,7 +8,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { noSpacesRegex } from '~/lib/utils/regexp';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import editModelMutation from '../graphql/mutations/edit_model.mutation.graphql';
-import { MODEL_EDIT_MODAL_ID } from '../constants';
 
 export default {
   name: 'ModelEdit',
@@ -24,15 +15,10 @@ export default {
     MarkdownEditor,
     GlAlert,
     GlButton,
-    GlModal,
     GlForm,
     GlFormGroup,
     GlFormInput,
   },
-  directives: {
-    GlModal: GlModalDirective,
-  },
-  inject: ['projectPath', 'maxAllowedFileSize', 'markdownPreviewPath'],
   props: {
     model: {
       type: Object,
@@ -42,6 +28,18 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    modelPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -60,23 +58,12 @@ export default {
     modelNameIsValid() {
       return this.model.name && noSpacesRegex.test(this.model.name);
     },
-    submitButtonDisabled() {
-      return !this.modelNameIsValid;
-    },
-    actionPrimary() {
-      return {
-        text: s__('MlModelRegistry|Save changes'),
-        attributes: { variant: 'confirm', disabled: this.submitButtonDisabled },
-      };
-    },
     modelNameDescription() {
-      return !this.model.name || this.modelNameIsValid ? this.$options.modal.nameDescription : '';
+      return !this.model.name || this.modelNameIsValid ? this.$options.i18n.nameDescription : '';
     },
   },
   methods: {
-    async edit($event) {
-      $event.preventDefault();
-
+    async edit() {
       this.errorMessage = '';
       try {
         const { data } = await this.$apollo.mutate({
@@ -100,12 +87,6 @@ export default {
         this.errorMessage = error;
       }
     },
-    resetModal() {
-      this.name = null;
-      this.modelData = null;
-      this.description = null;
-      this.errorMessage = null;
-    },
     hideAlert() {
       this.errorMessage = null;
     },
@@ -115,23 +96,18 @@ export default {
       }
     },
   },
-  i18n: {},
   descriptionFormFieldProps: {
     placeholder: s__('MlModelRegistry|Enter a model description'),
     id: 'model-description',
     name: 'model-description',
   },
-  modal: {
-    id: MODEL_EDIT_MODAL_ID,
-    actionSecondary: {
-      text: __('Cancel'),
-      attributes: { variant: 'default' },
-    },
+  i18n: {
+    actionSecondaryText: __('Cancel'),
+    actionPrimaryText: s__('MlModelRegistry|Save changes'),
     nameDescriptionLabel: s__('MlModelRegistry|Must be unique. May not contain spaces.'),
     nameDescription: s__('MlModelRegistry|Example: my-model'),
     nameInvalid: s__('MlModelRegistry|May not contain spaces.'),
     nameDescriptionPlaceholder: s__('MlModelRegistry|Enter a model description'),
-    editButtonLabel: s__('MlModelRegistry|Edit model'),
     title: s__('MlModelRegistry|Edit model'),
     modelName: s__('MlModelRegistry|Model name'),
     modelDescription: __('Model description'),
@@ -142,67 +118,58 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modal.id">{{ $options.modal.editButtonLabel }}</gl-button>
-    <gl-modal
-      :modal-id="$options.modal.id"
-      :title="$options.modal.title"
-      :action-primary="actionPrimary"
-      :action-secondary="$options.modal.actionSecondary"
-      size="lg"
-      @primary="edit"
-      @secondary="resetModal"
-    >
-      <gl-form>
-        <gl-form-group
-          :label="$options.modal.modelName"
-          :label-description="$options.modal.nameDescriptionLabel"
-          label-for="nameId"
-          data-testid="nameGroupId"
-          :state="modelNameIsValid"
-          :invalid-feedback="$options.modal.nameInvalid"
-          :description="modelNameDescription"
-        >
-          <gl-form-input
-            id="nameId"
-            :value="model.name"
-            data-testid="nameId"
-            type="text"
-            :disabled="true"
-          />
-        </gl-form-group>
-        <gl-form-group
-          :label="$options.modal.modelDescription"
-          data-testid="descriptionGroupId"
-          label-for="descriptionId"
-          optional
-          :optional-text="$options.modal.optionalText"
-          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
-        >
-          <markdown-editor
-            ref="markdownEditor"
-            data-testid="descriptionId"
-            :value="model.description"
-            enable-autocomplete
-            :autocomplete-data-sources="autocompleteDataSources"
-            :enable-content-editor="true"
-            :form-field-props="$options.descriptionFormFieldProps"
-            :render-markdown-path="markdownPreviewPath"
-            :markdown-docs-path="markdownDocPath"
-            :disable-attachments="disableAttachments"
-            :placeholder="$options.modal.nameDescriptionPlaceholder"
-            :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
-            @input="setDescription"
-          />
-        </gl-form-group>
-      </gl-form>
-
-      <gl-alert
-        v-if="errorMessage"
-        data-testid="modalEditAlert"
-        variant="danger"
-        @dismiss="hideAlert"
-        >{{ errorMessage }}
-      </gl-alert>
-    </gl-modal>
+    <h2>{{ $options.i18n.title }}</h2>
+    <gl-form>
+      <gl-form-group
+        :label="$options.i18n.modelName"
+        :label-description="$options.i18n.nameDescriptionLabel"
+        label-for="nameId"
+        data-testid="nameGroupId"
+        :state="modelNameIsValid"
+        :invalid-feedback="$options.i18n.nameInvalid"
+        :description="modelNameDescription"
+      >
+        <gl-form-input
+          id="nameId"
+          :value="model.name"
+          data-testid="nameId"
+          type="text"
+          :disabled="true"
+        />
+      </gl-form-group>
+      <gl-form-group
+        :label="$options.i18n.modelDescription"
+        data-testid="descriptionGroupId"
+        label-for="descriptionId"
+        optional
+        :optional-text="$options.i18n.optionalText"
+        class="common-note-form gfm-form js-main-target-form new-note gl-grow"
+      >
+        <markdown-editor
+          ref="markdownEditor"
+          data-testid="descriptionId"
+          :value="model.description"
+          enable-autocomplete
+          :autocomplete-data-sources="autocompleteDataSources"
+          :enable-content-editor="true"
+          :form-field-props="$options.descriptionFormFieldProps"
+          :render-markdown-path="markdownPreviewPath"
+          :markdown-docs-path="markdownDocPath"
+          :disable-attachments="disableAttachments"
+          :placeholder="$options.i18n.nameDescriptionPlaceholder"
+          :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
+          @input="setDescription"
+        />
+      </gl-form-group>
+    </gl-form>
+    <gl-alert v-if="errorMessage" data-testid="edit-alert" variant="danger" @dismiss="hideAlert"
+      >{{ errorMessage }}
+    </gl-alert>
+    <gl-button data-testid="secondary-button" variant="default" :href="modelPath"
+      >{{ $options.i18n.actionSecondaryText }}
+    </gl-button>
+    <gl-button data-testid="primary-button" variant="confirm" @click="edit"
+      >{{ $options.i18n.actionPrimaryText }}
+    </gl-button>
   </div>
 </template>

@@ -1,7 +1,6 @@
 ---
 table_name: users
 classes:
-- TmpUser
 - User
 feature_categories:
 - user_profile
@@ -22,3 +21,4 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_users_on_email_trigram
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152249
+table_size: medium

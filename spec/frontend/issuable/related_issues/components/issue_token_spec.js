@@ -121,7 +121,7 @@ describe('IssueToken', () => {
       });
 
       it('emits event when clicked', () => {
-        findRemoveBtn().trigger('click');
+        findRemoveBtn().vm.$emit('click');
 
         const emitted = wrapper.emitted(`${eventNamespace}RemoveRequest`);
 

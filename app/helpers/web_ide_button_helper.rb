@@ -54,7 +54,7 @@ module WebIdeButtonHelper
   end
 
   def gitpod_url
-    return "" unless Gitlab::CurrentSettings.gitpod_enabled
+    return "" unless Gitlab::CurrentSettings.gitpod_enabled && @ref
 
     "#{Gitlab::CurrentSettings.gitpod_url}##{project_tree_url(@project, tree_join(@ref, @path || ''))}"
   end

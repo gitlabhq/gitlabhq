@@ -42,7 +42,6 @@ RSpec.describe ReleaseHighlights::Validator::Entry, type: :model, feature_catego
       it { is_expected.to validate_numericality_of(:release).with_message(/is not a number/) }
 
       it 'validates URI of "documentation_link" and "image_url"' do
-        stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
         allow(entry).to receive(:value_for).with(:image_url).and_return('https://foobar.x/images/ci/gitlab-ci-cd-logo_2x.png')
         allow(entry).to receive(:value_for).with(:documentation_link).and_return('')
 

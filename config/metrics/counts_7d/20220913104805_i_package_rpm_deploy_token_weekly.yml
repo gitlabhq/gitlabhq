@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_rpm_deploy_token_weekly
-description: A weekly count of RPM packages published to the registry using a deploy token
+description: A weekly count of distinct deploy tokens used for RPM package interactions with the package registry
 product_group: package_registry
 value_type: number
 status: active
@@ -16,7 +16,7 @@ options:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

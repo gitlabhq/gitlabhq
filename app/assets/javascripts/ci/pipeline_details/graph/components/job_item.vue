@@ -337,9 +337,9 @@ export default {
       :is="nameComponent"
       v-gl-tooltip.viewport.left="{ customClass: 'ci-job-component-tooltip' }"
       :title="tooltipText"
-      :class="jobClasses"
       :href="detailsPath"
-      class="menu-item gl-w-full gl-rounded-base gl-text-gray-900 hover:gl-bg-strong hover:gl-no-underline focus:gl-bg-strong focus:gl-no-underline active:gl-no-underline"
+      :class="jobClasses"
+      class="menu-item gl-w-full gl-rounded-base gl-text-strong hover:gl-bg-gray-50 hover:gl-no-underline focus:gl-bg-gray-50 focus:gl-no-underline active:gl-no-underline dark:hover:gl-bg-gray-200 dark:focus:gl-bg-gray-200"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"
@@ -348,7 +348,7 @@ export default {
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pipeline-job-width gl-flex gl-flex-col gl-pl-3 gl-pr-3">
           <div
-            class="gl-truncate gl-pr-9 gl-text-left gl-leading-normal gl-text-gray-700"
+            class="gl-truncate gl-pr-9 gl-text-left gl-leading-normal gl-text-default"
             :title="job.name"
           >
             {{ job.name }}
@@ -356,7 +356,7 @@ export default {
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-truncate gl-pr-9 gl-text-left gl-text-sm gl-leading-normal gl-text-gray-500"
+            class="gl-truncate gl-pr-9 gl-text-left gl-text-sm gl-leading-normal gl-text-subtle"
           >
             {{ stageName }}
           </div>

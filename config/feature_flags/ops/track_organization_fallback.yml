@@ -1,0 +1,9 @@
+---
+name: track_organization_fallback
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499994
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172017
+rollout_issue_url:
+milestone: '17.6'
+group: group::tenant scale
+type: ops
+default_enabled: false

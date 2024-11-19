@@ -211,10 +211,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
 
     context 'when the restore directory is not empty' do
       before do
-        # We only need a backup of the repositories for this test
-        stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,terraform_state,registry')
-
-        create(:project_with_design, :repository)
+        # We only need a backup of the repositories and the DB for this test
+        stub_env('SKIP', 'uploads,builds,artifacts,lfs,terraform_state,registry')
       end
 
       it 'removes stale data' do
@@ -226,6 +224,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
 
         raw_repo = excluded_project.repository.raw
 
+        expect(Project.find_by_full_path(excluded_project.full_path)).to be_nil
         expect(raw_repo).not_to exist
       end
     end

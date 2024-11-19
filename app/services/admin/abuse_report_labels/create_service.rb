@@ -10,7 +10,7 @@ module Admin
       def execute
         params[:color] = convert_color_name_to_hex if params[:color].present?
 
-        ::Admin::AbuseReportLabel.create(params)
+        ::AntiAbuse::Reports::Label.create(params)
       end
     end
   end

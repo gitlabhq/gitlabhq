@@ -57,11 +57,6 @@ module Gitlab
             validates :publish,
               absence: { message: "can only be used within a `pages` job" },
               unless: -> { config.is_a?(Hash) && pages_job? }
-
-            # The below validation should be removed entirely with the FF cleanup
-            validates :pages,
-              absence: { message: "can only be used within a `pages` job" },
-              unless: -> { (config.is_a?(Hash) && pages_job?) || ::Gitlab::Ci::Config::FeatureFlags.enabled?(:customizable_pages_job_name) }
           end
 
           entry :before_script, Entry::Commands,
@@ -201,8 +196,6 @@ module Gitlab
           end
 
           def pages_job?
-            return name == :pages unless ::Gitlab::Ci::Config::FeatureFlags.enabled?(:customizable_pages_job_name)
-
             return true if config[:pages].present?
 
             name == :pages && config[:pages] != false # legacy behavior, overridable with `pages: false`

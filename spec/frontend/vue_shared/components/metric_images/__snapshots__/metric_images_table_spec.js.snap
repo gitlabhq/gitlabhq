@@ -2,10 +2,10 @@
 
 exports[`Metrics upload item render the metrics image component 1`] = `
 <gl-card-stub
-  bodyclass="gl-border-1,gl-border-t-solid,gl-border-gray-100,[object Object]"
-  class="border collapsible-card gl-mb-5 gl-p-0"
+  bodyclass="[object Object]"
+  class="gl-mb-5"
   footerclass=""
-  headerclass="gl-flex gl-items-center gl-border-b-0 gl-py-3"
+  headerclass="gl-flex,gl-items-center,[object Object]"
 >
   <gl-modal-stub
     actioncancel="[object Object]"

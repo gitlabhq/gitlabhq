@@ -20,6 +20,7 @@ module Gitlab
       autoload :GitlabConfig, 'gitlab/backup/cli/gitlab_config'
       autoload :Metadata, 'gitlab/backup/cli/metadata'
       autoload :Output, 'gitlab/backup/cli/output'
+      autoload :RepoType, 'gitlab/backup/cli/repo_type'
       autoload :RestoreExecutor, 'gitlab/backup/cli/restore_executor'
       autoload :Runner, 'gitlab/backup/cli/runner'
       autoload :Shell, 'gitlab/backup/cli/shell'

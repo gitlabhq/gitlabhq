@@ -1,0 +1,9 @@
+---
+name: limit_normalized_email_reuse
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/812
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167357
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/495124
+milestone: '17.6'
+group: group::anti-abuse
+type: gitlab_com_derisk
+default_enabled: false

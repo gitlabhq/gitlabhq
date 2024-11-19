@@ -247,6 +247,11 @@ To do this:
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
+NOTE:
+Deleting a branch does not completely erase all related data.
+Some information persists to maintain project history and to support recovery processes.
+For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
+
 ## Configure workflows for target branches
 
 DETAILS:
@@ -397,3 +402,13 @@ in a Git repository:
 ```shell
 git for-each-ref --format='%(authoremail)'  | sort | uniq -c | sort -g
 ```
+
+### Error: `Failed to create branch 4:Deadline Exceeded`
+
+This error is caused by a timeout in Gitaly. It occurs when creating a branch
+take longer to complete than the configured timeout period.
+
+To resolve this issue, choose one of the following:
+
+- Disable time-consuming server hooks. See [Git server hooks](../../../../administration/server_hooks.md).
+- Increase Gitaly's timeout settings. See [Gitaly timeouts](../../../../administration/settings/gitaly_timeouts.md).

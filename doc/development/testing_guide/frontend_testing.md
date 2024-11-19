@@ -435,6 +435,49 @@ it('passes', () => {
 });
 ```
 
+### Testing clean-up of event listeners and timeouts
+
+Often times in components we create event listeners or timeouts on the `beforeDestroy` (`beforeUnmount` for Vue 3) hooks. It is important to test that both listeners and timeouts are cleared when the component instance is destroyed, as forgetting to clean up these events can cause problems like memory leaks and broken references on event listeners.
+
+Consider the following example:
+
+```javascript
+beforeDestroy() {
+  removeEventListener('keydown', someListener)
+  clearTimeout(timeoutPointer)
+}
+```
+
+In the above example, a component is both clearing a `keydown` event listener and a timeout that was created elsewhere.
+
+Let's take a look at the relevant tests.
+
+```javascript
+describe('Cleanup before destroy', () => {
+  beforeEach(() => {
+    createComponent()
+
+    // Destroy the component immediately to invoke the `beforeDestroy` hook
+    wrapper.destroy()
+  })
+
+  it('removes the event listener', () => {
+    const spy = jest.spyOn(window, 'removeEventListener')
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith('keydown', expect.any(Function))
+  })
+
+  it('clears the pending timeouts', () => {
+    const spy = jest.spyOn(window, 'clearTimeout')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+})
+```
+
+The above example does not explicitly check for the function that is called on the `keydown` listener as it will normally be an implementation detail. The same happens with the `clearTimeout` call, as the parameter will be a pointer to a timer created internally in the component.
+
+Due to this, it is normally sufficient to check that the spies have been called, with the recommended addition of checking the _times_ that they have been called.
+
 ### Waiting in tests
 
 Sometimes a test needs to wait for something to happen in the application before it continues.
@@ -1218,7 +1261,7 @@ testAction(
 <!-- vale gitlab_base.Spelling = NO -->
 
 The Axios Utils mock module located in `spec/frontend/__helpers__/mocks/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
-These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its life cycle.
+These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its lifecycle.
 
 <!-- vale gitlab_base.Spelling = YES -->
 

@@ -157,6 +157,19 @@ if you can't upgrade to 15.11.12 and later.
 
   For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/issues/415724).
 
+- A [bug with Terraform configuration](https://gitlab.com/gitlab-org/gitlab/-/issues/348453) caused Terraform state to
+  remain enabled even when `gitlab_rails['terraform_state_enabled']` was set to `false` in the `gitlab.rb` configuration
+  file. Because this bug was fixed in GitLab 15.10, upgrading to GitLab 15.10 could break projects that use the
+  [Terraform state](../../administration/terraform_state.md) feature if it's disabled in the `gitlab.rb` configuration.
+  If you have configured `gitlab_rails['terraform_state_enabled'] = false` in your `gitlab.rb`, check if any projects
+  are using the Terraform state feature. To check:
+  1. Read the [Rails console](../../administration/operations/rails_console.md) warning.
+  1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+  1. Run the command `Terraform::State.pluck(:project_id)`. This command returns an array of all projects IDs that have a
+     Terraform state.
+  1. Navigate to each project and work with stakeholders as necessary to determine if the Terraform state feature is
+     actively used. If Terraform state is no longer needed, you can follow the steps to [remove a state file](../../user/infrastructure/iac/terraform_state.md#remove-a-state-file).
+
 ### Geo installations
 
 DETAILS:
@@ -880,7 +893,7 @@ DETAILS:
 
   1. Only then, continue to upgrade to later versions of GitLab.
 - Unauthenticated requests to the [`ciConfig` GraphQL field](../../api/graphql/reference/index.md#queryciconfig) are no longer supported.
-  Before you upgrade to GitLab 15.1, add an [access token](../../api/rest/index.md#authentication) to your requests.
+  Before you upgrade to GitLab 15.1, add an [access token](../../api/rest/authentication.md) to your requests.
   The user creating the token must have [permission](../../user/permissions.md) to create pipelines in the project.
 
 ### Geo installations
@@ -989,9 +1002,9 @@ DETAILS:
   15.0.
 
 - Starting with GitLab 15.0, the `AES256-GCM-SHA384` SSL cipher will not be allowed by
-  NGINX by default. If you require this cipher (for example, if you use
-  [AWS's Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)),
-  you can add the cipher back to the allow list by following the steps below:
+  NGINX by default. If you use the
+  [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers) and require the cipher,
+  you can add it back to the allowlist. To add the SSL cipher to the allowlist:
 
   1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 

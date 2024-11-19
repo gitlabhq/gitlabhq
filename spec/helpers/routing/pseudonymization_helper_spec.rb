@@ -357,6 +357,15 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
         expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
       end
     end
+
+    context 'with group admin page' do
+      let(:original_url) { "http://localhost/admin/groups/#{group.full_path}" }
+      let(:masked_url) { 'http://localhost/admin/groups/id' }
+
+      it 'masks sensitive parameters in the URL for group admin page' do
+        expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
+      end
+    end
   end
 
   describe 'masked_query_params' do

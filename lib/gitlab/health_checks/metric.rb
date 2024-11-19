@@ -1,4 +1,3 @@
-# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 module Gitlab
@@ -6,5 +5,3 @@ module Gitlab
     Metric = Struct.new(:name, :value, :labels)
   end
 end
-
-# rubocop:enable Naming/FileName

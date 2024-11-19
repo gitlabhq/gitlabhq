@@ -2,7 +2,6 @@
 
 module Gitlab
   module BackgroundMigration
-    # rubocop: disable Style/Documentation
     class MigrateApproverToApprovalRules
       # @param target_type [String] class of target, either 'MergeRequest' or 'Project'
       # @param target_id [Integer] id of target

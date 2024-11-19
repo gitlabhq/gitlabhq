@@ -5,7 +5,7 @@
     .form-group
       = f.label :diff_max_patch_bytes, _('Maximum diff patch size (bytes)'), class: 'label-light'
       = f.number_field :diff_max_patch_bytes, class: 'form-control gl-form-input'
-      %span.form-text.text-muted
+      %span.form-text.gl-text-subtle
         = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),
@@ -14,7 +14,7 @@
 
       = f.label :diff_max_files, _('Maximum files in a diff'), class: 'label-light'
       = f.number_field :diff_max_files, class: 'form-control gl-form-input'
-      %span.form-text.text-muted
+      %span.form-text.gl-text-subtle
         = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),
@@ -23,7 +23,7 @@
 
       = f.label :diff_max_lines, _('Maximum lines in a diff'), class: 'label-light'
       = f.number_field :diff_max_lines, class: 'form-control gl-form-input'
-      %span.form-text.text-muted
+      %span.form-text.gl-text-subtle
         = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),

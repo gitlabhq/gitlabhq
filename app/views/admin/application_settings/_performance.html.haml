@@ -10,17 +10,17 @@
     .form-group
       = f.label :raw_blob_request_limit, _('Raw blob request rate limit per minute'), class: 'label-bold'
       = f.number_field :raw_blob_request_limit, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling.')
     .form-group
       = f.label :push_event_hooks_limit, class: 'label-bold'
       = f.number_field :push_event_hooks_limit, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered (default is 3). Setting to 0 does not disable throttling.')
     .form-group
       = f.label :push_event_activities_limit, class: 'label-bold'
       = f.number_field :push_event_activities_limit, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3). Setting to 0 does not disable throttling.')
 
   = f.submit _('Save changes'), pajamas_button: true

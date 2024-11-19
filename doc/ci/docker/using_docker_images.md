@@ -218,7 +218,7 @@ that runner.
 
 To access private container registries, the GitLab Runner process can use:
 
-- [Statically defined credentials](#use-statically-defined-credentials). That is, a username and password for a specific registry.
+- [Statically defined credentials](#use-statically-defined-credentials). A username and password for a specific registry.
 - [Credentials Store](#use-a-credentials-store). For more information, see [the relevant Docker documentation](https://docs.docker.com/reference/cli/docker/login/#credential-stores).
 - [Credential Helpers](#use-credential-helpers). For more information, see [the relevant Docker documentation](https://docs.docker.com/reference/cli/docker/login/#credential-helpers).
 
@@ -241,8 +241,7 @@ To define which option should be used, the runner process reads the configuratio
 
 ### Use statically-defined credentials
 
-There are two approaches that you can take to access a
-private registry. Both require setting the CI/CD variable
+You can access a private registry using two approaches. Both require setting the CI/CD variable
 `DOCKER_AUTH_CONFIG` with appropriate authentication information.
 
 1. Per-job: To configure one job to access a private registry, add
@@ -388,7 +387,7 @@ To configure a Credentials Store:
 1. To use a Credentials Store, you need an external helper program to interact with a specific keychain or external store.
    Make sure the helper program is available in the GitLab Runner `$PATH`.
 
-1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
+1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
    - Create a
      [CI/CD variable](../variables/index.md)
@@ -421,7 +420,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
 1. Make sure [`docker-credential-ecr-login`](https://github.com/awslabs/amazon-ecr-credential-helper) is available in the GitLab Runner `$PATH`.
 1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
    Make sure that GitLab Runner can access the credentials.
-1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
+1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
    - Create a [CI/CD variable](../variables/index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
@@ -446,7 +445,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      ```
 
      NOTE:
-     If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`), because the region must be specified when the ECR Credential Helper retrieves the authorization token.
+     If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
 
    - Or, if you're running self-managed runners,
      add the previous JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
@@ -468,7 +467,7 @@ registries to the `"credHelpers"` hash.
 
 ### Use checksum to keep your image secure
 
-We recommend using the image checksum in your job definition in your `.gitlab-ci.yml` file to verify the integrity of the image. A failed image integrity verification prevents you from using a modified container.
+Use the image checksum in your job definition in your `.gitlab-ci.yml` file to verify the integrity of the image. A failed image integrity verification prevents you from using a modified container.
 
 To use the image checksum you have to append the checksum at the end:
 
@@ -492,9 +491,9 @@ gitlab/gitlab-runner                                              latest    sha2
 ## Creating a Custom GitLab Runner Docker Image
 
 You can create a custom GitLab Runner Docker image to package AWS CLI and Amazon ECR Credential Helper. This setup facilitates
-secure and streamlined interactions with AWS services, especially for containerized applications. For example, to reduce time
-and error-prone manual configurations, teams who deploy microservices on AWS can use this setup to manage, deploy,
-and update Docker images on Amazon ECR, without using manual credential management.
+secure and streamlined interactions with AWS services, especially for containerized applications. For example, use this setup
+to manage, deploy, and update Docker images on Amazon ECR. This setup helps avoid time consuming, error-prone configurations,
+and manual credential management.
 
 1. [Authenticate GitLab with AWS](../cloud_deployment/index.md#authenticate-gitlab-with-aws).
 1. Create a `Dockerfile` with the following content:
@@ -536,7 +535,7 @@ and update Docker images on Amazon ECR, without using manual credential manageme
    COPY --from=aws-tools /root/.docker/config.json /root/.docker/config.json
    ```
 
-1. To build the custom GitLab Runner Docker image within a `.gitlab-ci.yml`, include the following example below:
+1. To build the custom GitLab Runner Docker image in a `.gitlab-ci.yml`, include the following example below:
 
    ```yaml
    variables:

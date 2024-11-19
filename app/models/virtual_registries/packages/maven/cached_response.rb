@@ -16,14 +16,16 @@ module VirtualRegistries
         update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
 
         # Used in destroying stale cached responses in DestroyOrphanCachedResponsesWorker
-        enum :status, default: 0, processing: 1, error: 3
+        enum :status, default: 0, processing: 1, pending_destruction: 2, error: 3
+
+        ignore_column :downloads_count, remove_with: '17.8', remove_after: '2024-12-23'
 
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
           :object_storage_key,
           :content_type,
-          :downloads_count,
           :size,
+          :file_sha1,
           presence: true
         validates :relative_path,
           :object_storage_key,
@@ -31,7 +33,6 @@ module VirtualRegistries
           :content_type,
           length: { maximum: 255 }
         validates :file_final_path, length: { maximum: 1024 }
-        validates :downloads_count, numericality: { greater_than: 0, only_integer: true }
         validates :relative_path,
           uniqueness: { scope: [:upstream_id, :status] },
           if: -> { upstream.present? && default? }
@@ -46,8 +47,6 @@ module VirtualRegistries
         scope :search_by_relative_path, ->(query) do
           fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
         end
-        scope :orphan, -> { where(upstream: nil) }
-        scope :pending_destruction, -> { orphan.default }
         scope :for_group, ->(group) { where(group: group) }
 
         def self.next_pending_destruction
@@ -64,7 +63,6 @@ module VirtualRegistries
             group_id: group_id,
             relative_path: relative_path
           ).tap do |record|
-            record.increment(:downloads_count) if record.persisted?
             record.update!(**updates)
           end
         rescue ActiveRecord::RecordInvalid => invalid
@@ -81,18 +79,16 @@ module VirtualRegistries
           File.basename(relative_path)
         end
 
-        # The registry parameter is there to counter a bug with has_one :through records that will fire an extra
-        # database query.
-        # See https://github.com/rails/rails/issues/51817.
-        def stale?(registry:)
-          return true unless registry
+        def stale?
+          return true unless upstream
+          return false if upstream.cache_validity_hours == 0
 
-          (upstream_checked_at + registry.cache_validity_hours.hours).past?
+          (upstream_checked_at + upstream.cache_validity_hours.hours).past?
         end
 
         def bump_statistics(include_upstream_checked_at: false)
           now = Time.zone.now
-          updates = { downloaded_at: now, downloads_count: downloads_count + 1 }
+          updates = { downloaded_at: now }
           updates[:upstream_checked_at] = now if include_upstream_checked_at
           update_columns(**updates)
         end

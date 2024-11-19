@@ -22,10 +22,13 @@ import {
 import {
   workItemTask,
   workItemObjectiveWithChild,
+  workItemObjectiveWithClosedChild,
   workItemEpic,
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeFailureResponse,
+  workItemHierarchyNoChildrenTreeResponse,
+  workItemHierarchyTreeSingleClosedItemResponse,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -60,6 +63,8 @@ describe('WorkItemLinkChild', () => {
     workItemTreeQueryHandler = getWorkItemTreeQueryHandler,
     isExpanded = false,
     showTaskWeight = false,
+    showClosed = true,
+    props = {},
   } = {}) => {
     const mockApollo = createMockApollo([[getWorkItemTreeQuery, workItemTreeQueryHandler]], {
       Mutation: {
@@ -85,6 +90,8 @@ describe('WorkItemLinkChild', () => {
         workItemType,
         workItemFullPath,
         showTaskWeight,
+        showClosed,
+        ...props,
       },
       stubs: {
         WorkItemChildrenWrapper,
@@ -168,6 +175,12 @@ describe('WorkItemLinkChild', () => {
       expect(findTreeChildren().exists()).toBe(false);
     });
 
+    it('do not displays expand button when children are all closed', () => {
+      createComponent({ showClosed: false, childItem: workItemObjectiveWithClosedChild });
+
+      expect(findExpandButton().exists()).toBe(false);
+    });
+
     it('calls createAlert when children fetch request fails on clicking expand button', async () => {
       const getWorkItemTreeQueryFailureHandler = jest
         .fn()
@@ -237,6 +250,22 @@ describe('WorkItemLinkChild', () => {
       );
     });
 
+    it('filters closed children', async () => {
+      createComponent({
+        workItemTreeQueryHandler: jest
+          .fn()
+          .mockRejectedValue(workItemHierarchyTreeSingleClosedItemResponse),
+        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        isExpanded: true,
+      });
+      await findExpandButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(findTreeChildren().exists()).toBe(true);
+      expect(findTreeChildren().props('children')).toHaveLength(0);
+    });
+
     describe('pagination', () => {
       const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
       let workItemTreeQueryHandler;
@@ -285,5 +314,57 @@ describe('WorkItemLinkChild', () => {
         });
       });
     });
+  });
+  describe('drag & drop', () => {
+    const allowedChildrenByType = { Issue: ['Task'], Epic: ['Epic', 'Issue'] };
+    const getWorkItemTreeNoChildrenQueryHandler = jest
+      .fn()
+      .mockResolvedValue(workItemHierarchyNoChildrenTreeResponse);
+
+    it('emits drag & drop events from children wrapper', () => {
+      createComponent({
+        isExpanded: true,
+      });
+
+      findTreeChildren().vm.$emit('drag', 'Task');
+      expect(wrapper.emitted('drag')).toEqual([['Task']]);
+
+      findTreeChildren().vm.$emit('drop');
+      expect(wrapper.emitted('drop').length).toBe(1);
+    });
+
+    it.each`
+      draggedItemType | childItemType | showChildrenDropzone
+      ${'Task'}       | ${'Task'}     | ${false}
+      ${'Task'}       | ${'Issue'}    | ${true}
+      ${'Task'}       | ${'Epic'}     | ${false}
+      ${'Issue'}      | ${'Task'}     | ${false}
+      ${'Issue'}      | ${'Issue'}    | ${false}
+      ${'Issue'}      | ${'Epic'}     | ${true}
+      ${'Epic'}       | ${'Task'}     | ${false}
+      ${'Epic'}       | ${'Issue'}    | ${false}
+      ${'Epic'}       | ${'Epic'}     | ${true}
+    `(
+      'shows children dropzone is $showChildrenDropzone when dragging $draggedItemType in $childItemType for orphans',
+      async ({ draggedItemType, childItemType, showChildrenDropzone }) => {
+        createComponent({
+          workItemTreeQueryHandler: getWorkItemTreeNoChildrenQueryHandler,
+          props: {
+            allowedChildrenByType,
+            draggedItemType,
+            childItem: {
+              ...workItemEpic,
+              workItemType: {
+                ...workItemEpic.workItemType,
+                name: childItemType,
+              },
+            },
+          },
+        });
+        await waitForPromises();
+
+        expect(findTreeChildren().exists()).toBe(showChildrenDropzone);
+      },
+    );
   });
 });

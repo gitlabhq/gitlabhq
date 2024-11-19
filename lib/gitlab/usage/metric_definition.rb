@@ -4,9 +4,13 @@ module Gitlab
   module Usage
     class MetricDefinition
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema', 'base.json')
-      SCHEMA = ::JSONSchemer.schema(METRIC_SCHEMA_PATH)
       AVAILABLE_STATUSES = %w[active broken].to_set.freeze
       VALID_SERVICE_PING_STATUSES = %w[active broken].to_set.freeze
+      TIME_FRAME_SUFFIX = {
+        '7d' => '_weekly',
+        '28d' => '_monthly',
+        'all' => ''
+      }.freeze
 
       InvalidError = Class.new(RuntimeError)
 
@@ -91,14 +95,14 @@ module Gitlab
       end
 
       def validation_errors
-        SCHEMA.validate(@attributes.deep_stringify_keys).map do |error|
+        self.class.definition_schema.validate(@attributes.deep_stringify_keys).map do |error|
           <<~ERROR_MSG
             --------------- VALIDATION ERROR ---------------
             Metric file: #{path}
             Error type: #{error['type']}
             Data: #{error['data']}
             Path: #{error['data_pointer']}
-            Details: #{error['details']}
+            Details: #{error['details'] || error['error']}
           ERROR_MSG
         end
       end
@@ -172,8 +176,24 @@ module Gitlab
           definitions[key_path]&.to_context
         end
 
-        def dump_metrics_yaml
-          @metrics_yaml ||= definitions.values.map(&:to_h).map(&:deep_stringify_keys).to_yaml
+        def dump_metrics_yaml(include_paths:)
+          @metrics_yaml ||= {}
+          @metrics_yaml[include_paths.to_s] ||= begin
+            metrics = definitions.values.map do |definition|
+              result = definition.to_h
+
+              # TODO: remove during clean up of replacing tier with tiers in definition files
+              result[:tiers] = result[:tier] unless result.key?(:tiers)
+
+              result[:file_path] = Pathname.new(definition.path).relative_path_from(Rails.root).to_s if include_paths
+              result
+            end
+            metrics.map(&:deep_stringify_keys).to_yaml
+          end
+        end
+
+        def definition_schema
+          @definition_schema ||= ::JSONSchemer.schema(METRIC_SCHEMA_PATH)
         end
 
         private
@@ -189,20 +209,32 @@ module Gitlab
           definition = YAML.safe_load(definition)
           definition.deep_symbolize_keys!
 
-          self.new(path, definition)
+          map_time_frames(path, definition, definition[:time_frame])
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(e.message))
         end
 
         def load_all_from_path!(definitions, glob_path)
           Dir.glob(glob_path).each do |path|
-            definition = load_from_file(path)
+            load_from_file(path).each do |definition|
+              if previous = definitions[definition.key]
+                Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new("Metric '#{definition.key}' from '#{definition.path}' is already defined in '#{previous.path}'"))
+              end
 
-            if previous = definitions[definition.key]
-              Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new("Metric '#{definition.key}' is already defined in '#{previous.path}'"))
+              definitions[definition.key] = definition
             end
+          end
+        end
 
-            definitions[definition.key] = definition
+        def map_time_frames(path, definition, time_frames)
+          return [self.new(path, definition)] unless time_frames.is_a?(Array)
+
+          time_frames.map do |time_frame|
+            current_definition = definition.dup
+            current_definition[:time_frame] = time_frame
+            current_definition[:key_path] += TIME_FRAME_SUFFIX[time_frame]
+
+            self.new(path, current_definition)
           end
         end
       end

@@ -18,7 +18,6 @@ module Ci
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def clone!(job, variables: [], enqueue_if_actionable: false, start_pipeline: false)
       # Cloning a job requires a strict type check to ensure
       # the attributes being used for the clone are taken straight
@@ -53,19 +52,12 @@ module Ci
         end
       end
 
-      if Feature.enabled?(:no_locking_for_stop_actions, new_job.project)
-        add_job.call
-      else
-        Gitlab::ExclusiveLease.skipping_transaction_check do
-          add_job.call
-        end
-      end
+      add_job.call
 
       job.reset # refresh the data to get new values of `retried` and `processed`.
 
       new_job
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

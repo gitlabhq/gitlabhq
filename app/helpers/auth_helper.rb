@@ -214,12 +214,19 @@ module AuthHelper
       password_required: password_required.to_s }
   end
 
-  def delete_webauthn_device_data(path)
+  def delete_webauthn_device_data(password_required, path)
+    message = if password_required
+                _('Are you sure you want to delete this WebAuthn device? ' \
+                  'Enter your password to continue.')
+              else
+                _('Are you sure you want to delete this WebAuthn device?')
+              end
+
     { button_text: _('Delete WebAuthn device'),
       icon: 'remove',
-      message: _('Are you sure you want to delete this WebAuthn device?'),
+      message: message,
       path: path,
-      password_required: 'false' }
+      password_required: password_required.to_s }
   end
 
   def disable_two_factor_authentication_data(password_required)

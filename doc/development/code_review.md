@@ -119,16 +119,17 @@ page, with these behaviors:
 - It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
   - Contains the string `OOO`, `PTO`, `Parental Leave`, `Friends and Family`, or `Conference`.
   - Emoji is from one of these categories:
-    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`, 🏙 `:cityscape:`
-    - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
+    - **On leave** - 🌴 `palm_tree`, 🏖️ `beach`, ⛱ `beach_umbrella`, 🏖 `beach_with_umbrella`, 🌞 `sun_with_face`, 🎡 `ferris_wheel`, 🏙 `cityscape`
+    - **Out sick** - 🌡️ `thermometer`, 🤒 `face_with_thermometer`
+  - Important: The status emojis are not detected when present on the free text input **status message**. They have to be set on your GitLab **status emoji** by clicking on the emoji selector beside the text input.
 - It doesn't pick people who are already assigned a number of reviews that is equal to
   or greater than their chosen "review limit". The review limit is the maximum number of
   reviews people are ready to handle at a time. Set a review limit by using one of the following
   as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-  - 2️⃣ - `:two:`
-  - 3️⃣ - `:three:`
-  - 4️⃣ - `:four:`
-  - 5️⃣ - `:five:`
+  - 2️⃣ - `two`
+  - 3️⃣ - `three`
+  - 4️⃣ - `four`
+  - 5️⃣ - `five`
 
   The minimum review limit is 2️⃣. The reason for not being able to completely turn oneself off
   for reviews has been discussed [in this issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/377).
@@ -211,7 +212,7 @@ on merge request rates.
 See the [Verify issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411559) for a good example.
 
 All other cases should not use mandatory sections as we favor
-[responsibility over ridigity](https://handbook.gitlab.com/handbook/values/#freedom-and-responsibility-over-rigidity).
+[responsibility over rigidity](https://handbook.gitlab.com/handbook/values/#freedom-and-responsibility-over-rigidity).
 
 Additionally, the current structure of the monolith means that merge requests
 are likely to touch seemingly unrelated parts.
@@ -236,17 +237,15 @@ Using checklists improves quality in software engineering. This checklist is a s
 See the [test engineering process](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/) for further quality guidelines.
 
 1. You have self-reviewed this MR per [code review guidelines](code_review.md).
-1. For the code that this change impacts, you believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
-1. If the existing automated tests do not cover the above functionality, you have added the necessary additional tests or added an issue to describe the automation testing gap and linked it to this MR.
-1. You have considered the technical aspects of this change's impact on GitLab.com hosted customers and self-managed customers.
+1. The code follows the [software design guidelines](software_design.md).
+1. Ensure [automated tests](testing_guide/index.md) exist following the [testing pyramid](testing_guide/testing_levels.md). Add missing tests or create an issue documenting testing gaps.
+1. You have considered the technical impacts on GitLab.com, Dedicated and self-managed.
 1. You have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
 1. You have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
 1. You have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or you have decided that this does not apply.
-1. You have properly separated EE content from FOSS, or this MR is FOSS only.
-   - [Where should EE code go?](ee_features.md)
-1. If this MR can impact EE and FOSS in different ways, you have considered [running the CI pipelines in a FOSS context](ee_features.md#run-ci-pipelines-in-a-foss-context).
-1. You have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
-1. If a test passes with warnings and the failed job includes the text `Flaky test '<path/to/test>' was found in the list of files changed by this MR.`, you have fixed this test, or provided evidence explaining why this flaky test can be ignored.
+1. You have properly separated [EE content](ee_features.md) (if any) from FOSS. Consider [running the CI pipelines in a FOSS context](ee_features.md#run-ci-pipelines-in-a-foss-context).
+1. You have considered that existing data may be surprisingly varied. For example, if adding a new model validation, consider making it optional on existing data.
+1. You have fixed flaky tests related to this MR, or have explained why they can be ignored. Flaky tests have error `Flaky test '<path/to/test>' was found in the list of files changed by this MR.` but can be in jobs that pass with warnings.
 
 ##### Performance, reliability, and availability
 
@@ -426,7 +425,6 @@ that it meets all requirements, you should:
 - `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
 - Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
   however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
-- Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
 
@@ -439,7 +437,7 @@ consistency, and readability.
 
 Because a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve, and merge
-merge requests from any team and in any product area.
+MRs from any team and in any product area.
 
 Maintainers are the DRI of assuring that the acceptance criteria of a merge request are reasonably met.
 In general, [quality is everyone's responsibility](https://handbook.gitlab.com/handbook/engineering/quality/),
@@ -464,7 +462,8 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
-required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
+required approvers.
+If still awaiting further approvals from others, `@` mention the author and explain why in a comment.
 
 Certain merge requests may target a stable branch. For an overview of how to handle these requests,
 see the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md).
@@ -479,8 +478,6 @@ Here is a summary of the changes, also reflected in this section above.
 
 - Merge request authors and DRIs stay as Assignees.
 - Authors request a review by assigning users as Reviewers.
-- Reviewers unassign themselves after they're done reviewing and approving.
-- The last approver (who merges the MR) stays assigned as Reviewer.
 
 ## Best practices
 

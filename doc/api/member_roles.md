@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -34,7 +34,7 @@ DETAILS:
 
 Prerequisites:
 
-- [Authenticate yourself](rest/index.md#authentication) as an administrator.
+- [Authenticate yourself](rest/authentication.md) as an administrator.
 
 You can get, create and delete instance-wide member roles.
 

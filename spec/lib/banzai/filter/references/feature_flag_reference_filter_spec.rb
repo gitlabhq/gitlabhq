@@ -209,7 +209,7 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
 
     it 'links to a valid reference' do
       reference = "[feature_flag:#{project.full_path}/#{feature_flag.iid}]"
-      result = reference_filter("See #{reference}", { project: nil, group: group } )
+      result = reference_filter("See #{reference}", { project: nil, group: group })
 
       expect(result.css('a').first.attr('href')).to eq(urls.edit_project_feature_flag_url(project, feature_flag))
     end

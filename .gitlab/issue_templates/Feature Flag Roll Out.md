@@ -64,7 +64,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
   Cross link the issue here if it does.
 - [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production.
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
-- [ ] Ensure that documentation exists for the feature, and the [version history text](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#add-version-history-text) has been updated.
+- [ ] Ensure that documentation exists for the feature, and the [version history text](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#add-history-text) has been updated.
 - [ ] Ensure that any breaking changes have been announced following the [release post process](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes) to ensure GitLab customers are aware.
 - [ ] Notify the [`#support_gitlab-com` Slack channel](https://gitlab.slack.com/archives/C4XFU81LG) and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
 
@@ -74,6 +74,7 @@ For visibility, all `/chatops` commands that target production must be executed 
 and cross-posted (with the command results) to the responsible team's Slack channel.
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature on production.
+  - Example: `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`.
   - Between every step wait for at least 15 minutes and monitor the appropriate graphs on https://dashboards.gitlab.net.
 - [ ] After the feature has been 100% enabled, wait for [at least one day before releasing the feature](#release-the-feature).
 

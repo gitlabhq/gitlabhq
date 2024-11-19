@@ -23,11 +23,13 @@ query getWorkItems(
   $firstPageSize: Int
   $lastPageSize: Int
   $isGroup: Boolean = true
+  $excludeProjects: Boolean
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
     name
     workItems(
+      excludeProjects: $excludeProjects
       includeDescendants: true
       search: $search
       sort: $sort

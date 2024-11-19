@@ -40,8 +40,8 @@ $item-remove-button-space: 42px;
 
   &:hover,
   &:focus-within {
-    background-color: var(--gl-background-color-default);
-    border-color: var(--gl-border-color-default);
+    background-color: var(--gl-background-color-section);
+    border-color: var(--gl-border-color-section);
   }
 
   .merge-request-status.closed {
@@ -57,7 +57,7 @@ $item-remove-button-space: 42px;
     cursor: help;
 
     &:focus {
-      @include gl-focus;
+      @apply gl-focus;
     }
   }
 
@@ -79,7 +79,7 @@ $item-remove-button-space: 42px;
   .item-milestone .milestone-title,
   .item-due-date,
   .item-weight .board-card-info-text {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -89,7 +89,7 @@ $item-remove-button-space: 42px;
 .item-meta {
   flex-basis: 100%;
   font-size: $gl-font-size;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 
   .item-due-date,
   .board-card-weight {
@@ -162,7 +162,7 @@ $item-remove-button-space: 42px;
 
   a:focus {
     border-radius: $gl-border-radius-full;
-    @include gl-focus;
+    @apply gl-focus;
   }
 }
 

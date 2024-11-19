@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category: :runner do
-  let(:service) { described_class.new(runner, new_project, user) }
-
   let_it_be(:organization1) { create(:organization) }
   let_it_be(:owner_group) { create(:group, organization: organization1) }
   let_it_be(:owner_project) { create(:project, group: owner_group, organization: organization1) }
   let_it_be(:new_project) { create(:project, organization: organization1) }
-  let_it_be(:runner) { create(:ci_runner, :project, projects: [owner_project]) }
+
+  let(:service) { described_class.new(runner, new_project, user) }
+  let(:runner) { create(:ci_runner, :project, projects: [owner_project]) }
 
   subject(:execute) { service.execute }
 
@@ -108,7 +108,7 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
   end
 
   context 'with admin user', :enable_admin_mode do
-    let(:user) { create(:user, :admin) }
+    let_it_be(:user) { create(:user, :admin) }
 
     it 'calls assign_to on runner and returns success response' do
       expect(runner).to receive(:assign_to).with(new_project, user).once.and_call_original
@@ -117,7 +117,7 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
     end
 
     context 'when runner is not associated with any projects' do
-      let_it_be(:runner) { create(:ci_runner, :project, :without_projects) }
+      let(:runner) { create(:ci_runner, :project, :without_projects) }
 
       it 'calls assign_to on runner and returns success response' do
         expect(runner).to receive(:assign_to).with(new_project, user).once.and_call_original

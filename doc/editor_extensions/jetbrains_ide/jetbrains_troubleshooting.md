@@ -21,7 +21,29 @@ To enable debug logs in JetBrains:
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
 
-The debug logs are available in the `idea.log` log file.
+To enable GitLab Language Server debug logs:
+
+1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
+1. On the left sidebar, select **Tools > GitLab Duo**.
+1. Select **GitLab Language Server** to expand the section.
+1. In **Logging > Log Level**, enter `debug`.
+1. Select **Apply**.
+1. Below **Enable GitLab Language Server**, select **Restart Language Server**.
+
+The debug logs are available in the `idea.log` log file. To view this file, either:
+
+- In your IDE, go to **Help > Show Log in Finder**.
+- Go to the directory `/Users/<user>/Library/Logs/JetBrains/IntelliJIdea<build_version>`, replacing
+  `<user>` and `<build_version>` with the appropriate values.
+
+## Use an HTTP proxy
+
+If you experience [certificate errors](#certificate-errors) or other connection errors, and
+use a HTTP proxy to connect to your GitLab instance, you must
+[configure the Language Server to use a proxy](../language_server/index.md#configure-the-language-server-to-use-a-proxy)
+for the GitLab Language Server.
+
+You can also [enable proxy authentication](../language_server/index.md#enable-proxy-authentication).
 
 ## Error: `unable to find valid certification path to requested target`
 

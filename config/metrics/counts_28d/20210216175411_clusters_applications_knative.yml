@@ -3,7 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_applications_knative
 description: Count user ids from GitLab Managed clusters with Knative enabled
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: removed
 time_frame: 28d
@@ -11,7 +12,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

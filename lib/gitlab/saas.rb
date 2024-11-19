@@ -5,6 +5,10 @@
 
 module Gitlab
   module Saas
+    def self.root_domain
+      'gitlab.com'
+    end
+
     def self.com_url
       'https://gitlab.com'
     end

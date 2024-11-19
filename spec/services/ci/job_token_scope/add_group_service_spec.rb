@@ -3,22 +3,49 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous_integration do
-  let(:service) { described_class.new(project, current_user) }
-
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_group) { create(:group, :private) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:policies) { %w[read_project read_package] }
+
+  let(:service) { described_class.new(project, current_user) }
 
   shared_examples 'adds group' do |_context|
-    it 'adds the group to the scope' do
-      expect do
+    it 'adds the group to the scope', :aggregate_failures do
+      expect { result }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
+
+      expect(result).to be_success
+
+      group_link = result.payload[:group_link]
+
+      expect(group_link.source_project).to eq(project)
+      expect(group_link.target_group).to eq(target_group)
+      expect(group_link.added_by).to eq(current_user)
+      expect(group_link.job_token_policies).to eq(policies)
+    end
+
+    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+      before do
+        stub_feature_flags(add_policies_to_ci_job_token: false)
+      end
+
+      it 'adds the group to the scope without the policies', :aggregate_failures do
+        expect { result }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
+
         expect(result).to be_success
-      end.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
+
+        group_link = result.payload[:group_link]
+
+        expect(group_link.source_project).to eq(project)
+        expect(group_link.target_group).to eq(target_group)
+        expect(group_link.added_by).to eq(current_user)
+        expect(group_link.job_token_policies).to eq([])
+      end
     end
   end
 
   describe '#execute' do
-    subject(:result) { service.execute(target_group) }
+    subject(:result) { service.execute(target_group, policies: policies) }
 
     it_behaves_like 'editable group job token scope' do
       context 'when user has permissions on source and target groups' do
@@ -48,7 +75,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
           service.execute(target_group)
         end
 
-        it_behaves_like 'returns error', 'Target group is already in the job token scope'
+        it_behaves_like 'returns error', 'This group is already in the job token allowlist.'
       end
 
       context 'when create method raises an invalid record exception' do

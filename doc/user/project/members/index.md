@@ -82,7 +82,7 @@ Prerequisites:
 - You must have the Owner or Maintainer role.
 - [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 - If [sign-up is disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
-- If [promotion management](../../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the invite.
+- If [approval for role promotion](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is enabled, an administrator must approve the invite.
 
 To add a user to a project:
 
@@ -125,7 +125,7 @@ The Owner [role](../../permissions.md#project-members-permissions) can be added 
 
 ### View users pending promotion
 
-When [promotion management](../../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the membership requests of users who would become billable users in the subscription.
+If [administrator approval for role promotions](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To view users pending promotion:
 

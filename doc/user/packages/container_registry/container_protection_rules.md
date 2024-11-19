@@ -31,7 +31,6 @@ When a container repository is protected, the default behavior enforces these re
 | Protect a container repository and its container images    | The Maintainer role. |
 | Push or create a new image in a container repository       | The role set in the [**Minimum access level for push**](#protect-a-container-repository-and-create-a-protection-rule) setting.   |
 | Push or update an existing image in a container repository | The role set in the [**Minimum access level for push**](#protect-a-container-repository-and-create-a-protection-rule) setting    |
-| Delete an existing image from a container repository       | The role set in the [**Minimum access level for delete**](#protect-a-container-repository-and-create-a-protection-rule) setting. |
 
 You can use a wildcard (`*`) to protect multiple container repositories with the same container protection rule.
 For example, you can protect different container repositories containing temporary container images built during a CI/CD pipeline.
@@ -65,8 +64,6 @@ To protect a container repository:
      The pattern can include a wildcard (`*`).
    - **Minimum access level for push** describes the minimum access level required
      to push (create or update) to the protected container repository path.
-   - **Minimum access level for delete** describes the minimum access level required
-     to delete from the protected container repository path.
 1. Select **Protect**.
 
 The container protection rule is created, and appears in the settings.

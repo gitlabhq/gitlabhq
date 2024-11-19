@@ -1,0 +1,12 @@
+fragment FlowMetricItem on ValueStreamAnalyticsMetric {
+  unit
+  value
+  identifier
+  links {
+    label
+    name
+    docsLink
+    url
+  }
+  title
+}

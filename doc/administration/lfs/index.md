@@ -349,6 +349,9 @@ To migrate back to local storage:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11872) in GitLab 17.2.
 > - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3845) for Helm chart (Kubernetes) in GitLab 17.3.
 
+WARNING:
+This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880). If you clone a repository with multiple Git LFS objects using the pure SSH protocol, the client might crash due to a `nil` pointer reference.
+
 [`git-lfs` 3.0.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#300-24-sep-2021)
 released support for using SSH as the transfer protocol instead of HTTP.
 SSH is handled transparently by the `git-lfs` command line tool.

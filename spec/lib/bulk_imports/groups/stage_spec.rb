@@ -34,7 +34,7 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
     end
 
     it 'only has pipelines with valid keys' do
-      pipeline_keys = described_class.new(entity).pipelines.collect(&:keys).flatten.uniq
+      pipeline_keys = described_class.new(entity).pipelines.flat_map(&:keys).uniq
       allowed_keys = %i[pipeline stage minimum_source_version maximum_source_version]
 
       expect(pipeline_keys - allowed_keys).to be_empty
@@ -103,6 +103,28 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
         expect(described_class.new(entity).pipelines).to include(
           hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
         )
+      end
+    end
+
+    describe 'migrate memberships flag' do
+      context 'when true' do
+        it 'includes members pipeline' do
+          entity.update!(migrate_memberships: true)
+
+          expect(described_class.new(entity).pipelines).to include(
+            hash_including({ pipeline: BulkImports::Common::Pipelines::MembersPipeline })
+          )
+        end
+      end
+
+      context 'when false' do
+        it 'does not include members pipeline' do
+          entity.update!(migrate_memberships: false)
+
+          expect(described_class.new(entity).pipelines).not_to include(
+            hash_including({ pipeline: BulkImports::Common::Pipelines::MembersPipeline })
+          )
+        end
       end
     end
   end

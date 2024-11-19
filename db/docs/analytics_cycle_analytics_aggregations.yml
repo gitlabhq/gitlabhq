@@ -4,7 +4,8 @@ classes:
 - Analytics::CycleAnalytics::Aggregation
 feature_categories:
 - value_stream_management
-description: Stores Value Stream Analytics aggregation related metadata for top-level groups.
+description: Stores Value Stream Analytics aggregation related metadata for top-level
+  groups.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79942
 milestone: '14.9'
 gitlab_schema: gitlab_main_cell

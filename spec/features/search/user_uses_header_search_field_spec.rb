@@ -82,16 +82,16 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         it 'shows assigned merge requests' do
           find(search_modal_results).click_link('Merge requests assigned to me')
 
-          expect(page).to have_selector('.mr-list .merge-request')
-          expect_tokens([assignee_token(user.name)])
+          expect(page).to have_selector('.issuable-list .merge-request')
+          expect_assignee_token(user.name)
           expect_filtered_search_input_empty
         end
 
         it 'shows created merge requests' do
           find(search_modal_results).click_link("Merge requests I've created")
 
-          expect(page).to have_selector('.mr-list .merge-request')
-          expect_tokens([author_token(user.name)])
+          expect(page).to have_selector('.issuable-list .merge-request')
+          expect_author_token(user.name)
           expect_filtered_search_input_empty
         end
       end

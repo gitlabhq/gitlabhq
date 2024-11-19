@@ -385,16 +385,7 @@ class Environment < ApplicationRecord
         # We should fix this inconsistency in https://gitlab.com/gitlab-org/gitlab/-/issues/420855.
       end
 
-      if Feature.enabled?(:no_locking_for_stop_actions, stop_action.project)
-        play_job.call(stop_action)
-      else
-        Gitlab::OptimisticLocking.retry_lock(
-          stop_action,
-          name: 'environment_stop_with_actions'
-        ) do |job|
-          play_job.call(job)
-        end
-      end
+      play_job.call(stop_action)
     end
 
     actions

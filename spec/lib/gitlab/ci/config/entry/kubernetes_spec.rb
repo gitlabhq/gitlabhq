@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes do
+RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes, feature_category: :kubernetes_management do
   let(:config) { Hash(namespace: 'namespace') }
 
   subject { described_class.new(config) }
@@ -31,6 +31,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes do
 
         it { is_expected.not_to be_valid }
       end
+
+      context 'is empty' do
+        let(:config) { {} }
+
+        it { is_expected.not_to be_valid }
+      end
     end
 
     describe 'namespace' do
@@ -47,9 +53,19 @@ RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes do
 
         it { is_expected.not_to be_valid }
       end
+    end
 
-      context 'is not present' do
-        let(:namespace) { '' }
+    describe 'agent' do
+      let(:config) { Hash(agent: agent) }
+
+      context 'is a string' do
+        let(:agent) { 'path/to/project:example-agent' }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'is a hash' do
+        let(:agent) { { key: 'agent' } }
 
         it { is_expected.not_to be_valid }
       end

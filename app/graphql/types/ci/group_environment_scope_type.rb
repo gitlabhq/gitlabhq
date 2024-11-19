@@ -5,7 +5,7 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class GroupEnvironmentScopeType < BaseObject
       graphql_name 'CiGroupEnvironmentScope'
-      description 'Ci/CD environment scope for a group.'
+      description 'CI/CD environment scope for a group.'
 
       connection_type_class Types::Ci::GroupEnvironmentScopeConnectionType
 

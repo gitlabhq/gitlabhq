@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectLabel do
+RSpec.describe ProjectLabel, feature_category: :team_planning do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end
@@ -114,6 +114,24 @@ RSpec.describe ProjectLabel do
       context 'using id' do
         it 'returns cross reference with label id' do
           expect(label.to_reference(project, format: :id))
+            .to eq %(#{label.project.full_path}~#{label.id})
+        end
+      end
+    end
+
+    context 'cross groups reference' do
+      let(:group) { build_stubbed(:group) }
+
+      context 'using name' do
+        it 'returns cross reference with label name' do
+          expect(label.to_reference(group, format: :name))
+            .to eq %(#{label.project.full_path}~"#{label.name}")
+        end
+      end
+
+      context 'using id' do
+        it 'returns cross reference with label id' do
+          expect(label.to_reference(group, format: :id))
             .to eq %(#{label.project.full_path}~#{label.id})
         end
       end

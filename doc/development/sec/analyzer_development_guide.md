@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Static Analysis
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
@@ -281,6 +281,41 @@ The [security-report-schema](https://gitlab.com/gitlab-org/security-products/sec
 - [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
 - [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
+
+#### Compatibility with report schema
+
+Security reports uploaded as [artifacts](../../user/application_security/index.md#all-tiers) to
+GitLab are [validated](../integrations/secure.md#report-validation) before being
+[ingested](security_report_ingestion_overview.md).
+
+Security report schemas are versioned using SchemaVer: `MODEL-REVISION-ADDITION`. The Sec Section
+is responsible for the
+[`security-report-schemas` project](https://gitlab.com/gitlab-org/security-products/security-report-schemas),
+including the compatibility of GitLab and the schema versions. Schema changes must follow the
+product-wide [deprecation guidelines](../deprecation_guidelines/index.md).
+
+When a new `MODEL` version is introduced, analyzers that adopt the new schema are responsible for
+ensuring that GitLab deployments that do not vendor this new schema version continue to ingest
+security reports without errors or warnings.
+
+This can be accomplished in different ways:
+
+1. Implement support for multiple schema versions in the analyzer. Based on the GitLab version, the
+   analyzer emits a security report using the latest schema version supported by GitLab.
+   - Pro: analyzer can decide at runtime what the best version to utilize is.
+   - Con: implementation effort and increased complexity.
+1. Release a new analyzer major version. Instances that don't vendor the latest `MODEL` schema
+   version continue to use an analyzer version that emits reports using version `MODEL-1`.
+   - Pro: keeps analyzer code simple.
+   - Con: extra analyzer version to maintain.
+1. Delay use of new schema. This relies on `additionalProperties=true`, which allows a report to
+   include properties that are not present in the schema. A new analyzer major version would be
+   released at the usual cadence.
+   - Pro: no extra analyzer to maintain, keep analyzer code simple.
+   - Con: increased risk and/or effort to mitigate the risk of not having the schema validated.
+
+If you are unsure which path to follow, reach-out to the
+[`security-report-schemas` maintainers](https://gitlab.com/groups/gitlab-org/maintainers/security-report-schemas/-/group_members?with_inherited_permissions=exclude).
 
 ### Location of Container Images
 

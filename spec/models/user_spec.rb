@@ -114,6 +114,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:use_work_items_view).to(:user_preference) }
     it { is_expected.to delegate_method(:use_work_items_view=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
+    it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -161,6 +164,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:bot_namespace).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:bot_namespace=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -726,11 +732,11 @@ RSpec.describe User, feature_category: :user_profile do
       include_examples 'username validations'
 
       context 'when created without an organization' do
-        let!(:default_organization) { create(:organization, :default) }
-        let(:user) { create(:user) }
+        let_it_be(:default_organization) { create(:organization, :default) }
+        let_it_be(:user) { create(:user) }
 
         it 'is assigned to the default organization' do
-          expect(user.organizations).to contain_exactly(Organizations::Organization.default_organization)
+          expect(user.reload.organizations).to contain_exactly(Organizations::Organization.default_organization)
         end
       end
     end
@@ -1187,6 +1193,16 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'scopes' do
+    describe '.ordered_by_name_asc_id_desc' do
+      it 'returns users ordered by name ASC, id DESC' do
+        user1 = create(:user, name: 'BBB')
+        user2 = create(:user, name: 'AAA')
+        user3 = create(:user, name: 'BBB')
+
+        expect(described_class.ordered_by_name_asc_id_desc).to match([user2, user3, user1])
+      end
+    end
+
     context 'blocked users' do
       let_it_be(:active_user) { create(:user) }
       let_it_be(:blocked_user) { create(:user, :blocked) }
@@ -2353,6 +2369,10 @@ RSpec.describe User, feature_category: :user_profile do
           .and change { user.projects_limit }.to(0)
       end
     end
+  end
+
+  it_behaves_like 'TokenAuthenticatable' do
+    let(:token_field) { :feed_token }
   end
 
   describe 'feed token' do
@@ -4482,6 +4502,32 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.followees).to contain_exactly(followee1, followee2)
     end
 
+    it 'provides the number of followers' do
+      user = create :user
+      follower1 = create :user
+      follower2 = create :user
+
+      expect(follower1.follow(user)).to be_truthy
+      expect(follower2.follow(user)).to be_truthy
+
+      follower1.block!
+
+      expect(user.followers).to contain_exactly(follower2)
+    end
+
+    it 'provides the number of followees' do
+      user = create :user
+      followee1 = create(:user)
+      followee2 = create(:user)
+
+      expect(user.follow(followee1)).to be_truthy
+      expect(user.follow(followee2)).to be_truthy
+
+      followee1.block!
+
+      expect(user.followees).to contain_exactly(followee2)
+    end
+
     it 'follow itself is not possible' do
       user = create :user
 
@@ -4796,17 +4842,49 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#can_be_removed?' do
     subject { create(:user) }
 
-    context 'no owned groups' do
-      it { expect(subject.can_be_removed?).to be_truthy }
-    end
+    let_it_be(:group) { create(:group) }
+    let_it_be(:organization) { create(:organization) }
 
-    context 'has owned groups' do
-      before do
-        group = create(:group)
-        group.add_owner(subject)
+    context 'when feature flag :ui_for_organizations is enabled' do
+      where(:solo_owned_groups, :solo_owned_organizations, :result) do
+        [
+          [[], [], true],
+          [[ref(:group)], [], false],
+          [[], [ref(:organization)], false],
+          [[ref(:group)], [ref(:organization)], false]
+        ]
       end
 
-      it { expect(subject.can_be_removed?).to be_falsey }
+      with_them do
+        before do
+          stub_feature_flags(ui_for_organizations: true)
+          allow(subject).to receive(:solo_owned_groups).and_return(solo_owned_groups)
+          allow(subject).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+        end
+
+        it { expect(subject.can_be_removed?).to be(result) }
+      end
+    end
+
+    context 'when feature flag :ui_for_organizations is disabled' do
+      where(:solo_owned_groups, :solo_owned_organizations, :result) do
+        [
+          [[], [], true],
+          [[ref(:group)], [], false],
+          [[], [ref(:organization)], true],
+          [[ref(:group)], [ref(:organization)], false]
+        ]
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(ui_for_organizations: false)
+          allow(subject).to receive(:solo_owned_groups).and_return(solo_owned_groups)
+          allow(subject).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+        end
+
+        it { expect(subject.can_be_removed?).to be(result) }
+      end
     end
   end
 
@@ -4866,43 +4944,11 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#solo_owned_organizations' do
-    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be(:organization_owner) { create(:user) }
 
-    subject(:solo_owned_organizations) { user.solo_owned_organizations }
+    subject { organization_owner.solo_owned_organizations }
 
-    context 'no owned organizations' do
-      it { is_expected.to be_empty }
-    end
-
-    context 'has owned organizations' do
-      let(:organization) { create(:organization) }
-
-      before do
-        organization.add_owner(user)
-      end
-
-      context 'not solo owner' do
-        let_it_be(:user2) { create(:user) }
-
-        before do
-          organization.add_owner(user2)
-        end
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'solo owner' do
-        it { is_expected.to include(organization) }
-      end
-
-      context 'solo owner with other members' do
-        before do
-          create(:organization_user, organization: organization)
-        end
-
-        it { is_expected.to include(organization) }
-      end
-    end
+    it_behaves_like 'resolves user solo-owned organizations'
   end
 
   describe '#can_remove_self?' do
@@ -4953,17 +4999,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to contain_exactly private_group, child_group, project_group, project_group_parent }
 
-    context 'when fix_user_authorized_groups is disabled' do
-      before do
-        stub_feature_flags(fix_user_authorized_groups: false)
-      end
-
-      it 'omits ancestor groups of projects' do
-        is_expected.to include project_group
-        is_expected.not_to include project_group_parent
-      end
-    end
-
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }
       let_it_be(:shared_group_descendant) { create(:group, parent: shared_group) }
@@ -4978,17 +5013,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it { is_expected.to include shared_group, shared_group_descendant }
       it { is_expected.not_to include other_group, shared_with_project_group }
-
-      context 'when fix_user_authorized_groups is disabled' do
-        before do
-          stub_feature_flags(fix_user_authorized_groups: false)
-        end
-
-        it 'omits subgroups of shared groups' do
-          is_expected.to include shared_group
-          is_expected.not_to include shared_group_descendant
-        end
-      end
     end
 
     context 'when a new column is added to namespaces table' do
@@ -5000,6 +5024,59 @@ RSpec.describe User, feature_category: :user_profile do
       #   ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  each UNION query must have the same number of columns
       it 'will not raise errors' do
         expect { subject.count }.not_to raise_error
+      end
+    end
+  end
+
+  describe '#search_on_authorized_groups' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group_1) { create(:group, name: 'test', path: 'blah') }
+    let_it_be(:group_2) { create(:group, name: 'blah', path: 'test') }
+    let(:search_term) { 'test' }
+
+    subject { user.search_on_authorized_groups(search_term) }
+
+    context 'when the user does not have any authorized groups' do
+      before do
+        allow(user).to receive(:authorized_groups).and_return(Group.none)
+      end
+
+      it 'does not return anything' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when the user has two authorized groups with name or path matching the search term' do
+      before do
+        allow(user).to receive(:authorized_groups).and_return(Group.id_in([group_1.id, group_2.id]))
+      end
+
+      it 'returns the groups' do
+        expect(subject).to match_array([group_1, group_2])
+      end
+
+      context 'if the search term does not match on name or path' do
+        let(:search_term) { 'unknown' }
+
+        it 'does not return anything' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'if the search term is less than MIN_CHARS_FOR_PARTIAL_MATCHING' do
+        let(:search_term) { 'te' }
+
+        it 'does not return anything' do
+          expect(subject).to be_empty
+        end
+
+        context 'if use_minimum_char_limit is false' do
+          subject { user.search_on_authorized_groups(search_term, use_minimum_char_limit: false) }
+
+          it 'returns the groups' do
+            expect(subject).to match_array([group_1, group_2])
+          end
+        end
       end
     end
   end
@@ -8834,51 +8911,164 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  context 'banned user normalized email reuse check' do
-    let_it_be(:existing_user) { create(:user) }
+  context 'normalized email reuse check' do
+    let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
+    let(:new_user) { build(:user, email: tumbled_email) }
 
-    shared_examples 'does not perform the check' do
+    subject(:validate) { new_user.validate }
+
+    shared_examples 'adds a validation error' do |reason|
       specify do
-        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+        expect(::Gitlab::AppLogger).to receive(:info).with(
+          message: 'Email failed validation check',
+          reason: reason,
+          username: new_user.username
+        )
 
-        subject
+        validate
+
+        expect(new_user.errors.full_messages).to include(error_message)
+      end
+    end
+
+    shared_examples 'checking normalized email reuse limit' do
+      before do
+        stub_const("AntiAbuse::UniqueDetumbledEmailValidator::NORMALIZED_EMAIL_ACCOUNT_LIMIT", 2)
+      end
+
+      context 'when the normalized email limit has been reached by unique users' do
+        before do
+          create(:user, email: tumbled_email.split('@').join('1@'))
+        end
+
+        it_behaves_like 'adds a validation error', 'Detumbled email has reached the reuse limit'
+
+        it 'performs the normalized email limit check' do
+          expect(Email).to receive(:users_by_detumbled_email_count).and_call_original
+
+          subject
+        end
+      end
+
+      context 'when the normalized email limit has been reached by non-unique users' do
+        before do
+          user = described_class.find_by(email: normalized_email)
+          create(:email, user: user, email: tumbled_email.split('@').join('1@'))
+        end
+
+        it 'does not add an error' do
+          validate
+
+          expect(new_user.errors).to be_empty
+        end
+      end
+
+      context 'when the normalized email limit has not been reached' do
+        it 'does not add an error' do
+          validate
+
+          expect(new_user.errors).to be_empty
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(limit_normalized_email_reuse: false)
+        end
+
+        it 'does not perform the check' do
+          expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+          subject
+        end
       end
     end
 
     context 'when email has other validation errors' do
-      subject(:new_user) { build(:user, email: existing_user.email).tap(&:valid?) }
+      subject { build(:user, email: 'invalid-email').tap(&:valid?) }
 
-      it_behaves_like 'does not perform the check'
+      it 'does not perform the normalized email checks' do
+        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+        expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+        subject
+      end
+    end
+
+    context 'when the email has not changed' do
+      it 'does not perform the normalized email checks' do
+        user = create(:user)
+
+        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+        expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+        user.valid?
+      end
     end
 
     context 'when email has no other validation errors' do
-      let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
-      let(:tumbled_email) { 'person+inbox1@test.com' }
-      let(:normalized_email) { 'person@test.com' }
-      let!(:banned_user) { create(:user, :banned, email: normalized_email) }
+      context 'when the email is associated with a banned user' do
+        let(:tumbled_email) { 'banned+inbox1@test.com' }
+        let(:normalized_email) { 'banned@test.com' }
 
-      subject(:new_user) { build(:user, email: tumbled_email).tap(&:valid?) }
-
-      it 'performs the check and adds an error' do
-        subject
-
-        expect(new_user.errors.full_messages).to include(error_message)
-      end
-
-      context 'and does not match normalized email of a banned user' do
-        let(:tumbled_email) { 'unique+tumbled@email.com' }
-
-        it 'does not add an error' do
-          expect(new_user.errors.full_messages).not_to include(error_message)
-        end
-      end
-
-      context 'when feature flag is disabled' do
         before do
-          stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+          create(:user, :banned, email: normalized_email)
         end
 
-        it_behaves_like 'does not perform the check'
+        it_behaves_like 'adds a validation error', 'Detumbled email is associated with a banned user'
+
+        it 'performs the banned user check' do
+          expect(::Users::BannedUser).to receive(:by_detumbled_email).and_call_original
+
+          subject
+        end
+
+        it 'does not perform the normalized email limit check' do
+          expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+          subject
+        end
+
+        context 'and does not match normalized email of a banned user' do
+          let(:tumbled_email) { 'unique+tumbled@email.com' }
+
+          it 'does not add an error' do
+            validate
+
+            expect(new_user.errors).to be_empty
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+          end
+
+          it 'does not perform the check' do
+            expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+          end
+
+          it_behaves_like 'checking normalized email reuse limit'
+        end
+      end
+
+      context 'when the email is not associated with a banned user' do
+        let(:tumbled_email) { 'active+inbox1@test.com' }
+        let(:normalized_email) { 'active@test.com' }
+
+        before do
+          create(:user, email: normalized_email)
+        end
+
+        it 'performs the check and does not add an error' do
+          expect(::Users::BannedUser).to receive(:by_detumbled_email).and_call_original
+
+          validate
+
+          expect(new_user.errors).to be_empty
+        end
+
+        it_behaves_like 'checking normalized email reuse limit'
       end
     end
   end

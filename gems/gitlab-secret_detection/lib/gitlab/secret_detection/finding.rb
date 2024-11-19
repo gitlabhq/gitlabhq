@@ -20,11 +20,11 @@ module Gitlab
 
       def to_h
         {
-          blob_id: blob_id,
-          status: status,
-          line_number: line_number,
-          type: type,
-          description: description
+          blob_id:,
+          status:,
+          line_number:,
+          type:,
+          description:
         }
       end
 

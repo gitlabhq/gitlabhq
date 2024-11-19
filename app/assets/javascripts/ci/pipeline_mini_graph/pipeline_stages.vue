@@ -4,30 +4,22 @@ import PipelineStage from './pipeline_stage.vue';
  * Renders the pipeline stages portion of the pipeline mini graph.
  */
 export default {
+  name: 'PipelineStages',
   components: {
     PipelineStage,
   },
   props: {
-    updateDropdown: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isMergeTrain: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    pipelineEtag: {
-      type: String,
-      required: false,
-      default: '',
     },
     stages: {
       type: Array,
       required: true,
     },
   },
+  emits: ['miniGraphStageClick'],
 };
 </script>
 <template>
@@ -40,7 +32,6 @@ export default {
       <pipeline-stage
         :stage="stage"
         :is-merge-train="isMergeTrain"
-        :pipeline-etag="pipelineEtag"
         @miniGraphStageClick="$emit('miniGraphStageClick')"
       />
     </div>

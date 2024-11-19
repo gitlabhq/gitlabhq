@@ -1,14 +1,12 @@
 import Vue from 'vue';
 
-import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/mount_markdown_editor';
-
+import { initMarkdownEditor } from 'ee_else_ce/pages/projects/merge_requests/init_markdown_editor';
 import { findTargetBranch } from 'ee_else_ce/pages/projects/merge_requests/creations/new/branch_finder';
 
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import MergeRequest from '~/merge_request';
 import CompareApp from '~/merge_requests/components/compare_app.vue';
 import { __ } from '~/locale';
-import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 
 const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
 if (mrNewCompareNode) {
@@ -123,6 +121,5 @@ if (mrNewCompareNode) {
     action: mrNewSubmitNode.dataset.mrSubmitAction,
   });
   initPipelines();
-  // eslint-disable-next-line no-new
-  new IssuableTemplateSelectors({ warnTemplateOverride: true, editor: mountMarkdownEditor() });
+  initMarkdownEditor();
 }

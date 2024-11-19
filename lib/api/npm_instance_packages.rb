@@ -9,7 +9,7 @@ module API
         namespace_path = ::Packages::Npm.scope_of(params[:package_name])
         return unless namespace_path
 
-        Namespace.top_most.by_path(namespace_path)
+        Namespace.top_level.by_path(namespace_path)
       end
     end
 

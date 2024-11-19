@@ -596,7 +596,7 @@ export const mockJobs = [
 ];
 
 export const mockErrors = [
-  '"job_1 job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post"',
+  '"job_1 job: chosen stage test does not exist; available stages are .pre, build, test, deploy, .post"',
 ];
 
 export const mockWarnings = [

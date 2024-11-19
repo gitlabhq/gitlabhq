@@ -148,66 +148,136 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       end
     end
 
-    context 'crm_enabled param' do
-      context 'when no existing crm_settings' do
-        it 'when param not present, leave crm enabled' do
-          params = {}
+    context 'crm params' do
+      let(:params) { {} }
 
+      context 'when no existing crm_settings' do
+        it 'when params not present, leave crm enabled' do
           described_class.new(public_group, user, params).execute
           updated_group = public_group.reload
 
           expect(updated_group.crm_enabled?).to be_truthy
         end
 
-        it 'when param set false, disables crm' do
+        it 'when crm_enabled param set false, disables crm' do
           params = { crm_enabled: false }
 
           described_class.new(public_group, user, params).execute
           updated_group = public_group.reload
 
           expect(updated_group.crm_enabled?).to be_falsy
+        end
+
+        it 'when crm_source_group_id present, updates crm_group' do
+          params = { crm_source_group_id: internal_group.id }
+
+          described_class.new(public_group, user, params).execute
+          updated_group = public_group.reload
+
+          expect(updated_group.crm_enabled?).to be_truthy
+          expect(updated_group.crm_group).to eq(internal_group)
         end
       end
 
       context 'with existing crm_settings' do
-        it 'when param set true, enables crm' do
-          params = { crm_enabled: true }
-          create(:crm_settings, group: public_group, enabled: false)
+        let(:init_enabled) { true }
 
+        before do
+          create(:crm_settings, group: public_group, enabled: init_enabled)
+        end
+
+        context 'when crm initially disabled' do
+          let(:init_enabled) { false }
+
+          context 'when crm_enabled param set true' do
+            let(:params) { { crm_enabled: true } }
+
+            it 'enables crm' do
+              described_class.new(public_group, user, params).execute
+
+              updated_group = public_group.reload
+              expect(updated_group.crm_enabled?).to be_truthy
+            end
+          end
+
+          it 'when crm_enabled param not present, crm remains disabled' do
+            described_class.new(public_group, user, params).execute
+
+            updated_group = public_group.reload
+            expect(updated_group.crm_enabled?).to be_falsy
+          end
+        end
+
+        context 'when crm_enabled param set false' do
+          let(:init_enabled) { true }
+          let(:params) { { crm_enabled: false } }
+
+          it 'disables crm' do
+            described_class.new(public_group, user, params).execute
+
+            updated_group = public_group.reload
+            expect(updated_group.crm_enabled?).to be_falsy
+          end
+        end
+
+        it 'when crm_enabled param not present, crm remains enabled' do
           described_class.new(public_group, user, params).execute
 
           updated_group = public_group.reload
           expect(updated_group.crm_enabled?).to be_truthy
         end
 
-        it 'when param set false, disables crm' do
-          params = { crm_enabled: false }
-          create(:crm_settings, group: public_group, enabled: true)
+        context 'when crm_source_group_id present' do
+          let(:params) { { crm_source_group_id: internal_group.id } }
 
-          described_class.new(public_group, user, params).execute
+          it 'updates crm_group' do
+            described_class.new(public_group, user, params).execute
+            updated_group = public_group.reload
 
-          updated_group = public_group.reload
-          expect(updated_group.crm_enabled?).to be_falsy
+            expect(updated_group.crm_enabled?).to be_truthy
+            expect(updated_group.crm_settings.source_group).to eq(internal_group)
+            expect(updated_group.crm_group).to eq(internal_group)
+          end
         end
 
-        it 'when param not present, crm remains disabled' do
-          params = {}
-          create(:crm_settings, group: public_group, enabled: false)
+        context 'when crm_source_group_id blank' do
+          let(:params) { { crm_source_group_id: '' } }
 
-          described_class.new(public_group, user, params).execute
+          it 'clears source_group and resets crm_group' do
+            described_class.new(public_group, user, params).execute
+            updated_group = public_group.reload
 
-          updated_group = public_group.reload
-          expect(updated_group.crm_enabled?).to be_falsy
+            expect(updated_group.crm_enabled?).to be_truthy
+            expect(updated_group.crm_settings.source_group).to be_nil
+            expect(updated_group.crm_group).to eq(public_group)
+          end
+        end
+      end
+
+      context 'when changing source' do
+        let(:params) { { crm_source_group_id: internal_group.id } }
+
+        context 'when issues do not have contacts' do
+          it 'updates crm_group' do
+            described_class.new(public_group, user, params).execute
+            updated_group = public_group.reload
+
+            expect(updated_group.crm_group).to eq(internal_group)
+          end
         end
 
-        it 'when param not present, crm remains enabled' do
-          params = {}
-          create(:crm_settings, group: public_group, enabled: true)
+        context 'when issues do have contacts' do
+          let!(:issue) { create(:issue, project: create(:project, group: public_group)) }
+          let!(:contact) { create(:contact, group: public_group) }
+          let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
 
-          described_class.new(public_group, user, params).execute
+          it 'returns an error and does not update crm_group' do
+            described_class.new(public_group, user, params).execute
+            updated_group = public_group.reload
 
-          updated_group = public_group.reload
-          expect(updated_group.crm_enabled?).to be_truthy
+            expect(public_group.errors).to contain_exactly('Contact source cannot be changed when issues already have contacts assigned from a different source.')
+            expect(updated_group.crm_group).to eq(public_group)
+          end
         end
       end
     end

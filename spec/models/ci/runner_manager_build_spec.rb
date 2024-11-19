@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :fleet_visibility do
+RSpec.describe Ci::RunnerManagerBuild, :model, feature_category: :fleet_visibility do
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
   let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }
@@ -14,6 +14,7 @@ RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :fleet_vis
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:build) }
+    it { is_expected.to validate_presence_of(:project_id) }
   end
 
   describe 'partitioning' do

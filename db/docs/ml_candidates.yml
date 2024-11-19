@@ -4,7 +4,8 @@ classes:
 - Ml::Candidate
 feature_categories:
 - mlops
-description: A Model Candidate is a record of the results on training a model on some configuration
+description: A Model Candidate is a record of the results on training a model on some
+  configuration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95168
 milestone: '15.4'
 gitlab_schema: gitlab_main_cell

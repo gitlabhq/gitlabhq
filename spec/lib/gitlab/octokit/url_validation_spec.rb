@@ -28,7 +28,6 @@ RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
 
       context 'with failed address check' do
         before do
-          stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
           allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError)
         end
 

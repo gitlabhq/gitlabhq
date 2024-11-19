@@ -726,4 +726,37 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
   end
+
+  describe 'GET #rapid_diffs' do
+    subject(:send_request) { get :rapid_diffs, params: request_params }
+
+    let(:format) { :html }
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        from: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+        to: '5937ac0a7beb003549fc5fd26fc247adbce4a52e'
+      }
+    end
+
+    it 'renders rapid_diffs template' do
+      send_request
+
+      expect(assigns(:diffs).diff_files.first).to be_present
+      expect(response).to render_template(:rapid_diffs)
+    end
+
+    context 'when the feature flag rapid_diffs is disabled' do
+      before do
+        stub_feature_flags(rapid_diffs: false)
+      end
+
+      it 'returns 404' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

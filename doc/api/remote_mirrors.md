@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Push mirrors](../user/project/repository/mirror/push.md)
-defined on a project's repository settings are called "remote mirrors". You
+defined on a project's repository settings are called remote mirrors. You
 can query and modify the state of these mirrors with the remote mirror API.
 
 For security reasons, the `url` attribute in the API response is always scrubbed of username

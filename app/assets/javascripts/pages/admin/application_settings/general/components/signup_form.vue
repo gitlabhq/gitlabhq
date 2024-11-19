@@ -13,6 +13,7 @@ import { toSafeInteger } from 'lodash';
 import SeatControlsSection from 'ee_component/pages/admin/application_settings/general/components/seat_controls_section.vue';
 import csrf from '~/lib/utils/csrf';
 import { __, n__, s__, sprintf } from '~/locale';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SignupCheckbox from './signup_checkbox.vue';
 
@@ -33,6 +34,7 @@ export default {
     GlLink,
     SignupCheckbox,
     GlModal,
+    HelpPageLink,
     SeatControlsSection,
     PasswordComplexityCheckboxGroup: () =>
       import(
@@ -60,6 +62,7 @@ export default {
     'emailRestrictions',
     'afterSignUpText',
     'pendingUserCount',
+    'licensedUserCount',
   ],
   data() {
     return {
@@ -224,9 +227,6 @@ export default {
       'ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
     ),
     userCapLabel: s__('ApplicationSettings|User cap'),
-    userCapDescription: s__(
-      'ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for unlimited.',
-    ),
     domainDenyListGroupLabel: s__('ApplicationSettings|Domain denylist'),
     domainDenyListLabel: s__('ApplicationSettings|Enable domain denylist for sign-ups'),
     domainDenyListTypeFileLabel: s__('ApplicationSettings|Upload denylist file'),
@@ -312,16 +312,37 @@ export default {
 
       <seat-controls-section @form-value-change="setFormValue" />
 
-      <gl-form-group
-        :label="$options.i18n.userCapLabel"
-        :description="$options.i18n.userCapDescription"
-      >
+      <gl-form-group :label="$options.i18n.userCapLabel" data-testid="user-cap-group">
         <gl-form-input
           v-model="form.userCap"
           type="text"
           name="application_setting[new_user_signups_cap]"
           data-testid="user-cap-input"
         />
+        <small class="form-text text-muted"
+          >{{
+            s__(
+              'ApplicationSettings|Users added beyond this limit require administrator approval. Leave blank for unlimited.',
+            )
+          }}
+          <gl-sprintf
+            v-if="licensedUserCount"
+            :message="
+              s__(
+                'ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) might result in %{linkStart}seat overages%{linkEnd}.',
+              )
+            "
+          >
+            <template #licensedUserCount>{{ licensedUserCount }}</template>
+            <template #link="{ content }">
+              <help-page-link
+                href="subscriptions/quarterly_reconciliation"
+                anchor="quarterly-reconciliation-versus-annual-true-ups"
+                >{{ content }}</help-page-link
+              >
+            </template>
+          </gl-sprintf>
+        </small>
       </gl-form-group>
 
       <gl-form-group :label="$options.i18n.minimumPasswordLengthLabel">

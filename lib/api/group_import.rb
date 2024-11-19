@@ -7,6 +7,10 @@ module API
 
     helpers Helpers::FileUploadHelpers
 
+    before do
+      set_current_organization
+    end
+
     helpers do
       def parent_group
         find_group!(params[:parent_id]) if params[:parent_id].present?

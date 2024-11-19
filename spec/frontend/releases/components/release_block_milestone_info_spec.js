@@ -41,7 +41,7 @@ describe('Release block milestone info', () => {
       const progressBar = milestoneProgressBarContainer().findComponent(GlProgressBar);
 
       expect(progressBar.exists()).toBe(true);
-      expect(progressBar.vm.$attrs).toEqual(
+      expect(progressBar.props()).toEqual(
         expect.objectContaining({
           value: 4,
           max: 9,

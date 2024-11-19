@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -627,7 +627,7 @@ Example response:
 ```
 
 NOTE:
-When the setting **[Manage non-billable promotions](../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval)** is enabled, new invited members with billable roles must be approved by an administrator.
+If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To enable **Manage Non-Billable Promotions**,
 you must first enable the `enable_member_promotion_management` application setting.
@@ -717,7 +717,7 @@ Example response:
 ```
 
 NOTE:
-When the setting **[Manage non-billable promotions](../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval)** is enabled, new invited users with billable roles must be approved by an administrator.
+If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To enable **Manage non-billable promotions**,
 you must first enable the `enable_member_promotion_management` application setting.

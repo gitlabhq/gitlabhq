@@ -8,6 +8,12 @@ export const graphqlPageInfo = {
 export const graphqlModelVersions = [
   {
     createdAt: '2021-08-10T09:33:54Z',
+    author: {
+      id: 'gid://gitlab/User/1',
+      name: 'Root',
+      avatarUrl: 'path/to/avatar',
+      webUrl: 'path/to/user',
+    },
     id: 'gid://gitlab/Ml::ModelVersion/243',
     version: '1.0.1',
     _links: {
@@ -17,6 +23,12 @@ export const graphqlModelVersions = [
   },
   {
     createdAt: '2021-08-10T09:33:54Z',
+    author: {
+      id: 'gid://gitlab/User/1',
+      name: 'Root',
+      avatarUrl: 'path/to/avatar',
+      webUrl: 'path/to/user',
+    },
     id: 'gid://gitlab/Ml::ModelVersion/244',
     version: '1.0.2',
     _links: {
@@ -104,6 +116,26 @@ export const candidate = {
 
 export const modelVersionWithCandidate = {
   id: 'gid://gitlab/Ml::ModelVersion/1',
+  version: '1.0.4999',
+  packageId: 'gid://gitlab/Packages::Package/12',
+  description: 'A model version description',
+  descriptionHtml: 'A model version description',
+  candidate,
+  _links: {
+    showPath: '/root/test-project/-/ml/models/1/versions/5000',
+  },
+};
+
+export const modelVersionWithCandidateAndAuthor = {
+  id: 'gid://gitlab/Ml::ModelVersion/1',
+  artifactsCount: 1,
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Root',
+    avatarUrl: 'path/to/avatar',
+    webUrl: 'path/to/user',
+  },
+  createdAt: '2023-12-06T12:41:48Z',
   version: '1.0.4999',
   packageId: 'gid://gitlab/Packages::Package/12',
   description: 'A model version description',
@@ -299,6 +331,12 @@ export const modelWithOneVersion = {
   name: 'model_2',
   versionCount: 1,
   createdAt: '2023-12-06T12:41:48Z',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'name',
+    avatarUrl: 'avatarUrl',
+    webUrl: 'webUrl',
+  },
   latestVersion: {
     id: 'gid://gitlab/Ml::ModelVersion/1',
     version: '1.0.0',
@@ -317,6 +355,12 @@ export const modelWithoutVersion = {
   versionCount: 0,
   latestVersion: null,
   createdAt: '2023-12-06T12:41:48Z',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'name',
+    avatarUrl: 'avatarUrl',
+    webUrl: 'webUrl',
+  },
   _links: {
     showPath: '/my_project/-/ml/models/3',
   },
@@ -324,12 +368,19 @@ export const modelWithoutVersion = {
 
 export const model = {
   id: 'gid://gitlab/Ml::Model/1',
+  createdAt: '2023-12-06T12:41:48Z',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Root',
+    avatarUrl: 'path/to/avatar',
+    webUrl: 'path/to/user',
+  },
   description: 'A model description',
   descriptionHtml: 'A model description',
   name: 'gitlab_amazing_model',
   versionCount: 1,
   candidateCount: 0,
-  latestVersion: modelVersionWithCandidate,
+  latestVersion: modelVersionWithCandidateAndAuthor,
 };
 
 export const modelDetailQuery = {
@@ -365,6 +416,16 @@ export const modelVersionQuery = {
       id: 'gid://gitlab/Ml::Model/1',
       name: 'blah',
       version: modelVersionWithCandidate,
+    },
+  },
+};
+
+export const modelVersionQueryWithAuthor = {
+  data: {
+    mlModel: {
+      id: 'gid://gitlab/Ml::Model/1',
+      name: 'blah',
+      version: modelVersionWithCandidateAndAuthor,
     },
   },
 };
@@ -411,3 +472,5 @@ export const createModelVersionResponses = {
     },
   },
 };
+
+export const graphqlModels = [model];

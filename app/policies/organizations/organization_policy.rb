@@ -22,11 +22,11 @@ module Organizations
 
     rule { organization_owner }.policy do
       enable :admin_organization
+      enable :read_organization_user
     end
 
     rule { organization_user }.policy do
       enable :read_organization
-      enable :read_organization_user
       enable :create_group
     end
 

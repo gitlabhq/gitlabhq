@@ -102,8 +102,8 @@ export default {
 </script>
 
 <template>
-  <div class="!gl-py-3">
-    <div class="gl-flex gl-justify-between gl-gap-3">
+  <div class="gl-mr-2 gl-py-5 lg:gl-mb-4 lg:gl-mr-4 lg:gl-py-6">
+    <div class="gl-flex gl-justify-end gl-gap-3">
       <div class="gl-flex gl-gap-3">
         <template v-if="jobHasPath">
           <gl-button

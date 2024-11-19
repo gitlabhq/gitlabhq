@@ -41,6 +41,10 @@
   }
 }
 
+.gfm-form .note-textarea, .md .ProseMirror {
+  resize: vertical !important;
+}
+
 .note-image-attach {
   margin-left: 45px;
   float: none;
@@ -48,8 +52,9 @@
 
 .common-note-form {
   .md-area {
-    border: 1px solid $gray-400;
-    @apply gl-bg-default gl-rounded-lg;
+    @apply gl-rounded-lg;
+    border: 1px solid var(--gl-control-border-color-default);
+    background: var(--gl-control-background-color-default);
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
 
@@ -66,7 +71,7 @@
 
     &:hover,
     &:focus-within {
-      @include gl-shadow-md;
+      @apply gl-shadow-md;
     }
 
     &:hover {
@@ -97,7 +102,7 @@
       }
 
       &:focus {
-        @include gl-focus;
+        @apply gl-focus;
       }
     }
 

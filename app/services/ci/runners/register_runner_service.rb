@@ -3,6 +3,7 @@
 module Ci
   module Runners
     class RegisterRunnerService
+      include Gitlab::InternalEventsTracking
       include Gitlab::Utils::StrongMemoize
 
       def initialize(registration_token, attributes)
@@ -30,6 +31,8 @@ module Ci
             end
           end
         end
+
+        track_runner_event(runner)
 
         ServiceResponse.success(payload: { runner: runner })
       end
@@ -83,6 +86,26 @@ module Ci
           attrs_from_token[:groups]&.first
           # No scope for instance type
         end
+      end
+
+      def track_runner_event(runner)
+        return if attributes[:maintenance_note].blank?
+
+        kwargs = {}
+        case runner.runner_type
+        when 'group_type'
+          kwargs[:namespace] = token_scope
+        when 'project_type'
+          kwargs[:project] = token_scope
+        end
+
+        track_internal_event(
+          'set_runner_maintenance_note',
+          **kwargs,
+          additional_properties: {
+            label: runner.runner_type
+          }
+        )
       end
     end
   end

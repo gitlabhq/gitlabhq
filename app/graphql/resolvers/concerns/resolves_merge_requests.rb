@@ -6,6 +6,11 @@ module ResolvesMergeRequests
   extend ActiveSupport::Concern
   include LooksAhead
 
+  NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
+    popularity_asc popularity_desc
+    label_priority_asc label_priority_desc
+    milestone_due_asc milestone_due_desc].freeze
+
   included do
     type Types::MergeRequestType, null: true
   end
@@ -23,7 +28,15 @@ module ResolvesMergeRequests
     mr_finder = MergeRequestsFinder.new(current_user, args.compact)
     finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)
 
-    select_result(finder.batching_find_all { |query| apply_lookahead(query) })
+    merge_requests = select_result(finder.batching_find_all { |query| apply_lookahead(query) })
+
+    if non_stable_cursor_sort?(args[:sort])
+      # Certain complex sorts are not supported by the stable cursor pagination yet.
+      # In these cases, we use offset pagination, so we return the correct connection.
+      offset_pagination(merge_requests)
+    else
+      merge_requests
+    end
   end
 
   def ready?(**args)
@@ -67,13 +80,18 @@ module ResolvesMergeRequests
       detailed_merge_status: [:merge_schedule],
       milestone: [:milestone],
       security_auto_fix: [:author],
-      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }],
+      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],
       timelogs: [:timelogs],
       pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
       committers: [merge_request_diff: [:merge_request_diff_commits]],
       suggested_reviewers: [:predictions],
-      diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]]
+      diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]],
+      source_branch_exists: [:source_project, { source_project: [:route] }]
     }
+  end
+
+  def non_stable_cursor_sort?(sort)
+    NON_STABLE_CURSOR_SORTS.include?(sort)
   end
 end
 

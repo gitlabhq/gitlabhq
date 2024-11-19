@@ -296,6 +296,14 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+
+        context 'when feature flag :packages_protected_packages_pypi is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_pypi: false)
+          end
+
+          it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+        end
       end
 
       context 'without requires_python' do
@@ -438,6 +446,65 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
             .and change { Packages::PackageFile.count }.by(1)
             .and change { Packages::Pypi::Metadatum.count }.by(1)
           expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    context 'with package protection rule for different roles and package_name_patterns' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :pypi, project: project)
+      end
+
+      let(:pypi_package_name) { base_params[:name] }
+      let(:pypi_package_name_no_match) { "#{pypi_package_name}_no_match" }
+
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token).merge(workhorse_headers) }
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+      end
+
+      shared_examples 'protected package' do |user_role, expected_status|
+        before do
+          project.send("add_#{user_role}", user)
+        end
+
+        it_behaves_like 'returning response status', expected_status
+
+        it 'does not create any pypi-related package records' do
+          expect { subject }
+            .to not_change { Packages::Package.count }
+            .and not_change { Packages::Package.pypi.count }
+            .and not_change { Packages::PackageFile.count }
+        end
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name, :user_role, :expected_status) do
+        ref(:pypi_package_name)          | :maintainer | 'protected package'     | :developer  | :forbidden
+        ref(:pypi_package_name)          | :maintainer | 'PyPI package creation' | :owner      | :created
+        ref(:pypi_package_name)          | :maintainer | 'PyPI package creation' | :maintainer | :created
+        ref(:pypi_package_name)          | :maintainer | 'PyPI package creation' | :admin      | :created
+        ref(:pypi_package_name)          | :owner      | 'protected package'     | :maintainer | :forbidden
+        ref(:pypi_package_name)          | :owner      | 'PyPI package creation' | :owner      | :created
+        ref(:pypi_package_name)          | :owner      | 'PyPI package creation' | :admin      | :created
+        ref(:pypi_package_name)          | :admin      | 'protected package'     | :owner      | :forbidden
+        ref(:pypi_package_name)          | :admin      | 'PyPI package creation' | :admin      | :created
+
+        ref(:pypi_package_name_no_match) | :maintainer | 'PyPI package creation' | :owner      | :created
+        ref(:pypi_package_name_no_match) | :admin      | 'PyPI package creation' | :owner      | :created
+      end
+
+      with_them do
+        if params[:user_role] == :admin
+          let_it_be(:user) { create(:admin) }
+          let_it_be(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api, :admin_mode]) }
+
+          it_behaves_like params[:shared_examples_name], :anonymous, params[:expected_status], false
+        else
+          it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status]
         end
       end
     end

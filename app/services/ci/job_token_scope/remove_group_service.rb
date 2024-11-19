@@ -14,7 +14,7 @@ module Ci
         return ServiceResponse.error(message: 'Target group is not in the job token scope') unless link
 
         if link.destroy
-          ServiceResponse.success
+          ServiceResponse.success(payload: link)
         else
           ServiceResponse.error(message: link.errors.full_messages.to_sentence, payload: { group_link: link })
         end

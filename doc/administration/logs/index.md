@@ -1213,6 +1213,8 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 For Linux package installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
+For Helm chart installations, the backup log is stored in the Toolbox pod, at `/var/log/gitlab/backup_json.log`.
+
 This log is populated when a [GitLab backup is created](../../administration/backup_restore/index.md). You can use this log to understand how the backup process performed.
 
 ## Performance bar stats

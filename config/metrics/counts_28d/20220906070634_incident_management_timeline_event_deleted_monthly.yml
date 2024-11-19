@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.incident_management.incident_management_timeline_event_deleted_monthly
 description: Count of unique users deleted timeline events
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 milestone: "15.5"
@@ -17,7 +17,7 @@ options:
 distribution:
   - ce
   - ee
-tier:
+tiers:
   - free
   - premium
   - ultimate

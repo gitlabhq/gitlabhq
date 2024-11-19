@@ -55,4 +55,10 @@ function cng() {
 
 ## Troubleshooting
 
+### Helm deployment
+
 Because `cng` tool essentially wraps `helm upgrade --install` command, official [Troubleshooting the GitLab chart](https://docs.gitlab.com/charts/troubleshooting/index.html) guide can be used for troubleshooting deployment failures.
+
+### CI setup
+
+Documentation on where to find environment logs and other useful information for troubleshooting failures on CI can be found in [test pipelines](../../../doc/development/testing_guide/end_to_end/test_pipelines.md#e2etest-on-cng) documentation section.

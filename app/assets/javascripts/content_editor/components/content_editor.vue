@@ -199,7 +199,7 @@ export default {
         this.contentEditor.setEditable(false);
         this.contentEditor.eventHub.$emit(ALERT_EVENT, {
           message: __(
-            'An error occurred while trying to render the content editor. Please try again.',
+            'An error occurred while trying to render the rich text editor. Please try again.',
           ),
           variant: VARIANT_DANGER,
           actionLabel: __('Retry'),

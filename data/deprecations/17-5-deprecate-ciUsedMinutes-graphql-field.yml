@@ -9,6 +9,7 @@
   scope: instance
   resolution_role: Admin
   manual_task: true
+  window: "2"
   body: |
     The `ciDuration` field of the `CiRunnerUsage` and `CiRunnerUsageByProject` types replaces the former `ciUsedMinutes` field.
     Update all references to `ciUsedMinutes` from these types to `ciDuration`.

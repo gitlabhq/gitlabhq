@@ -34,10 +34,10 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
     it 'shows available section' do
       subject
 
-      expect(find_by_testid('breadcrumb-links')).to have_content('Cleanup policies')
+      expect(find_by_testid('breadcrumb-links')).to have_content('Container registry cleanup policies')
 
       section = find_by_testid('container-expiration-policy-project-settings')
-      expect(section).to have_text 'Cleanup policies'
+      expect(section).to have_text 'Container registry cleanup policies'
     end
 
     it 'passes axe automated accessibility testing' do

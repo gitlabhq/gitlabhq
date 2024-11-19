@@ -7,5 +7,6 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c4982890489d254da2fe998aab30bf257767ed5e
 milestone: '9.0'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463785
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

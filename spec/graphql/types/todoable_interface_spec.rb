@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::TodoableInterface, feature_category: :team_planning do
+RSpec.describe Types::TodoableInterface, feature_category: :notifications do
   include GraphqlHelpers
 
   it 'exposes the expected fields' do

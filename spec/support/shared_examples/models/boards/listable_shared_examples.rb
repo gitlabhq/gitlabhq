@@ -86,7 +86,7 @@ RSpec.shared_examples 'boards listable model' do |list_factory|
     end
 
     it 'can not be destroyed when list_type is set to closed' do
-      subject = create(list_factory, list_type: :closed) # rubocop:disable Rails/SaveBang
+      subject = create(list_factory, list_type: :closed)
 
       expect(subject.destroy).to be_falsey
     end

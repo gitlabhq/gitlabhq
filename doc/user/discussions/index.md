@@ -296,7 +296,7 @@ To create a thread:
 > - Resolvable threads for issues [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
 > - Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
 > - Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
-> - Resolvable threads for epics [introduced](https://gitlab.com/groups/gitlab-org/-/issues/458818) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+> - Resolvable threads for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
 
 You can resolve a thread when you want to finish a conversation.
 
@@ -319,12 +319,13 @@ such as move unresolved threads to an issue or prevent merging until all threads
 ## Summarize issue discussions with Duo Chat
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162122) in GitLab 17.4.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Generate a summary of discussions on an issue.
 

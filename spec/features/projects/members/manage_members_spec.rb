@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :onboarding do
+RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers
@@ -185,6 +185,10 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     let_it_be(:members_page_path) { project_project_members_path(entity) }
     let_it_be(:subentity) { project }
     let_it_be(:subentity_members_page_path) { project_project_members_path(entity) }
+
+    before do
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(112)
+    end
   end
 
   describe 'member search results' do

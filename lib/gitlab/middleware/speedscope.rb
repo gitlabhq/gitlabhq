@@ -32,7 +32,11 @@ module Gitlab
           body.close if body.respond_to?(:close)
         end
 
-        render_flamegraph(flamegraph, request)
+        if request.accept == 'application/json'
+          render_flamegraph_json(flamegraph)
+        else
+          render_flamegraph_html(flamegraph, request)
+        end
       end
 
       private
@@ -41,7 +45,13 @@ module Gitlab
         request.params['performance_bar'] == 'flamegraph' && ::Gitlab::PerformanceBar.allowed_for_user?(request.env['warden']&.user)
       end
 
-      def render_flamegraph(graph, request)
+      def render_flamegraph_json(graph)
+        headers = { 'Content-Type' => 'application/json' }
+
+        [200, headers, [Gitlab::Json.generate(graph)]]
+      end
+
+      def render_flamegraph_html(graph, request)
         headers = { 'Content-Type' => 'text/html' }
         path = request.env['PATH_INFO'].sub('//', '/')
 

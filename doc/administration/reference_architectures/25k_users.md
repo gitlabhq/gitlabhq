@@ -1391,7 +1391,7 @@ To configure the Praefect nodes, on each one:
 
 1. SSH in to the Praefect server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
 
@@ -1551,7 +1551,7 @@ The following IPs will be used as an example:
 On each node:
 
 1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
@@ -2246,9 +2246,15 @@ cluster alongside your instance, read how to
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
 
-Run select components of cloud-native GitLab in Kubernetes with the [GitLab Helm chart](https://docs.gitlab.com/charts/). In this setup, you can run the equivalent of GitLab Rails in the Kubernetes cluster called Webservice. You can also run the equivalent of Sidekiq nodes in the Kubernetes cluster called Sidekiq. In addition,
-the following other supporting services are supported: NGINX, Toolbox, Migrations,
-Prometheus, and Grafana.
+An alternative approach is to run specific GitLab components in Kubernetes.
+The following services are supported:
+
+- GitLab Rails
+- Sidekiq
+- NGINX
+- Toolbox
+- Migrations
+- Prometheus
 
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native
@@ -2448,7 +2454,7 @@ pool as given, you can increase the node pool accordingly. Conversely, if the po
 
 ### Example config file
 
-An example for the GitLab Helm Charts targetting the above 500 RPS or 25,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/25k.yaml).
+An example for the GitLab Helm Charts targeting the above 500 RPS or 25,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/25k.yaml).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#set-up-components">

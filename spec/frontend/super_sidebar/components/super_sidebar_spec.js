@@ -35,20 +35,6 @@ jest.mock('~/super_sidebar/utils', () => ({
   trackContextAccess: jest.fn(),
 }));
 
-const trialStatusWidgetStubTestId = 'trial-status-widget';
-const TrialStatusWidgetStub = { template: `<div data-testid="${trialStatusWidgetStubTestId}" />` };
-const trialStatusPopoverStubTestId = 'trial-status-popover';
-const TrialStatusPopoverStub = {
-  template: `<div data-testid="${trialStatusPopoverStubTestId}" />`,
-};
-const duoProTrialStatusWidgetStubTestId = 'duo-pro-trial-status-widget';
-const DuoProTrialStatusWidgetStub = {
-  template: `<div data-testid="${duoProTrialStatusWidgetStubTestId}" />`,
-};
-const duoProTrialStatusPopoverStubTestId = 'duo-pro-trial-status-popover';
-const DuoProTrialStatusPopoverStub = {
-  template: `<div data-testid="${duoProTrialStatusPopoverStubTestId}" />`,
-};
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
 const UserBarStub = {
@@ -70,11 +56,6 @@ describe('SuperSidebar component', () => {
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
-  const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
-  const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
-  const findDuoProTrialStatusWidget = () => wrapper.findByTestId(duoProTrialStatusWidgetStubTestId);
-  const findDuoProTrialStatusPopover = () =>
-    wrapper.findByTestId(duoProTrialStatusPopoverStubTestId);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
@@ -90,8 +71,6 @@ describe('SuperSidebar component', () => {
 
     wrapper = shallowMountExtended(SuperSidebar, {
       provide: {
-        showTrialStatusWidget: false,
-        showDuoProTrialStatusWidget: false,
         showTrialWidget: false,
         ...provide,
       },
@@ -99,10 +78,6 @@ describe('SuperSidebar component', () => {
         sidebarData,
       },
       stubs: {
-        TrialStatusWidget: TrialStatusWidgetStub,
-        TrialStatusPopover: TrialStatusPopoverStub,
-        DuoProTrialStatusWidget: DuoProTrialStatusWidgetStub,
-        DuoProTrialStatusPopover: DuoProTrialStatusPopoverStub,
         TrialWidget: TrialWidgetStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
@@ -140,7 +115,7 @@ describe('SuperSidebar component', () => {
 
     it('adds inert attribute when collapsed', () => {
       createWrapper({ sidebarState: { isCollapsed: true } });
-      expect(findSidebar().attributes('inert')).toBe('inert');
+      expect(findSidebar().attributes('inert')).toBeDefined();
     });
 
     it('does not add inert attribute when expanded', () => {
@@ -222,20 +197,6 @@ describe('SuperSidebar component', () => {
       expect(Mousetrap.unbind).toHaveBeenCalledWith(['mod+\\']);
     });
 
-    it('does not render trial status widget', () => {
-      createWrapper();
-
-      expect(findTrialStatusWidget().exists()).toBe(false);
-      expect(findTrialStatusPopover().exists()).toBe(false);
-    });
-
-    it('does not render duo pro trial status widget', () => {
-      createWrapper();
-
-      expect(findDuoProTrialStatusWidget().exists()).toBe(false);
-      expect(findDuoProTrialStatusPopover().exists()).toBe(false);
-    });
-
     it('does not render trial widget', () => {
       createWrapper();
 
@@ -292,7 +253,7 @@ describe('SuperSidebar component', () => {
     it(`initially makes sidebar inert and peekable (${STATE_CLOSED})`, () => {
       createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
 
-      expect(findSidebar().attributes('inert')).toBe('inert');
+      expect(findSidebar().attributes('inert')).toBeDefined();
       expect(findSidebar().classes()).not.toContain(peekHintClass);
       expect(findSidebar().classes()).not.toContain(hasPeekedClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
@@ -304,7 +265,7 @@ describe('SuperSidebar component', () => {
       findPeekBehavior().vm.$emit('change', STATE_WILL_OPEN);
       await nextTick();
 
-      expect(findSidebar().attributes('inert')).toBe('inert');
+      expect(findSidebar().attributes('inert')).toBeDefined();
       expect(findSidebar().classes()).toContain(peekHintClass);
       expect(findSidebar().classes()).toContain(hasPeekedClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
@@ -355,43 +316,6 @@ describe('SuperSidebar component', () => {
 
     it('allows overflow with scroll scrim', () => {
       expect(findNavContainer().element.tagName).toContain('SCROLL-SCRIM');
-    });
-  });
-
-  describe('when a trial is active', () => {
-    beforeEach(() => {
-      createWrapper({ provide: { showTrialStatusWidget: true } });
-    });
-
-    it('renders trial status widget', () => {
-      expect(findTrialStatusWidget().exists()).toBe(true);
-      expect(findTrialStatusPopover().exists()).toBe(true);
-    });
-  });
-
-  describe('when a duo pro trial is active', () => {
-    beforeEach(() => {
-      createWrapper({ provide: { showDuoProTrialStatusWidget: true } });
-    });
-
-    it('renders duo pro trial status widget', () => {
-      expect(findDuoProTrialStatusWidget().exists()).toBe(true);
-      expect(findDuoProTrialStatusPopover().exists()).toBe(true);
-    });
-  });
-
-  describe('when a trial and duo pro trial is active', () => {
-    beforeEach(() => {
-      createWrapper({
-        provide: { showTrialStatusWidget: true, showDuoProTrialStatusWidget: true },
-      });
-    });
-
-    it('renders trial status widget only', () => {
-      expect(findTrialStatusWidget().exists()).toBe(true);
-      expect(findTrialStatusPopover().exists()).toBe(true);
-      expect(findDuoProTrialStatusWidget().exists()).toBe(false);
-      expect(findDuoProTrialStatusPopover().exists()).toBe(false);
     });
   });
 
@@ -461,6 +385,7 @@ describe('SuperSidebar component', () => {
 
       wrapper.vm.sidebarState.isCollapsed = false;
       await nextTick();
+      await nextTick();
 
       expect(focusSpy).toHaveBeenCalledTimes(1);
     });
@@ -479,6 +404,7 @@ describe('SuperSidebar component', () => {
 
       wrapper.vm.sidebarState.isCollapsed = false;
       await nextTick();
+      await nextTick();
 
       expect(focusSpy).toHaveBeenCalledTimes(1);
 
@@ -495,9 +421,10 @@ describe('SuperSidebar component', () => {
     });
 
     const ESC_KEY = 27;
-    it('collapses sidebar when sidebar is in overlay mode', () => {
+    it('collapses sidebar when sidebar is in overlay mode', async () => {
       jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
-      findSidebar().trigger('keydown', { keyCode: ESC_KEY });
+      await findSidebar().trigger('keydown.esc', { keyCode: ESC_KEY });
+
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalled();
     });
 

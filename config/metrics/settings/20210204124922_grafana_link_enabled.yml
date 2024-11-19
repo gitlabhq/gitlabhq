@@ -2,7 +2,7 @@
 data_category: optional
 key_path: grafana_link_enabled
 description: Whether Grafana is enabled
-product_group: respond
+product_group: platform_insights
 value_type: boolean
 status: active
 time_frame: none
@@ -12,7 +12,7 @@ options:
   setting_method: grafana_enabled?
 distribution:
 - ce
-tier:
+tiers:
 - free
 performance_indicator_type: []
 milestone: "<13.9"

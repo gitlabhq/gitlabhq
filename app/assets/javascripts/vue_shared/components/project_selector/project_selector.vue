@@ -130,12 +130,12 @@ export default {
           <span data-testid="legend-text">{{ legendText }}</span>
         </template>
       </gl-infinite-scroll>
-      <div v-if="showNoResultsMessage" class="js-no-results-message gl-ml-3 gl-text-gray-600">
+      <div v-if="showNoResultsMessage" class="js-no-results-message gl-ml-3 gl-text-subtle">
         {{ __('Sorry, no projects matched your search') }}
       </div>
       <div
         v-if="showMinimumSearchQueryMessage"
-        class="js-minimum-search-query-message gl-ml-3 gl-text-gray-600"
+        class="js-minimum-search-query-message gl-ml-3 gl-text-subtle"
       >
         {{ __('Enter at least three characters to search') }}
       </div>

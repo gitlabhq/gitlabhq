@@ -265,27 +265,27 @@ describe('GfmAutoComplete', () => {
       describe('data is not in cache', () => {
         beforeEach(() => {
           const context = {
-            isLoadingData: { '#': false },
-            dataSources: { issues: 'issues_autocomplete_url' },
+            isLoadingData: { '/': false },
+            dataSources: { commands: 'commands_autocomplete_url' },
             cachedData: {},
           };
-          fetchData.call(context, {}, '#', 'query');
+          fetchData.call(context, {}, '/', 'query');
         });
 
         it('should call AjaxCache', () => {
-          expect(AjaxCache.retrieve).toHaveBeenCalledWith('issues_autocomplete_url', true);
+          expect(AjaxCache.retrieve).toHaveBeenCalledWith('commands_autocomplete_url', true);
         });
       });
 
       describe('data is in cache', () => {
         beforeEach(() => {
           const context = {
-            isLoadingData: { '#': false },
-            dataSources: { issues: 'issues_autocomplete_url' },
-            cachedData: { '#': [{}] },
+            isLoadingData: { '/': false },
+            dataSources: { issues: 'commands_autocomplete_url' },
+            cachedData: { '/': [{}] },
             loadData: () => {},
           };
-          fetchData.call(context, {}, '#', 'query');
+          fetchData.call(context, {}, '/', 'query');
         });
 
         it('should not call AjaxCache', () => {

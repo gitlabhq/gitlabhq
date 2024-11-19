@@ -58,27 +58,6 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
         end
       end
 
-      shared_examples 'setting the status to delete_scheduled regardless of failed_deletion_count' do
-        let(:set_status_method) { :set_delete_scheduled_status }
-        let(:status_after_execution) { 'delete_scheduled' }
-
-        context 'when the failed_deletion_count is less than the max' do
-          before do
-            container_repository.update!(failed_deletion_count: ContainerRepository::MAX_DELETION_FAILURES - 1)
-          end
-
-          it_behaves_like 'not deleting the repository and setting the correct status'
-        end
-
-        context 'when the failed_deletion_count has reached the max' do
-          before do
-            container_repository.update!(failed_deletion_count: ContainerRepository::MAX_DELETION_FAILURES)
-          end
-
-          it_behaves_like 'not deleting the repository and setting the correct status'
-        end
-      end
-
       it 'picks and destroys the next container repository for destruction' do
         expect_next_pending_destruction_container_repository do |repo|
           expect_logs_on(repo, tags_size_before_delete: 100, deleted_tags_size: 0)
@@ -108,28 +87,12 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
           let(:cleanup_tags_service_response) { { status: :error, original_size: 100, deleted_size: 0 } }
 
           it_behaves_like 'setting the correct status based on failed_deletion_count'
-
-          context 'when the feature set_delete_failed_container_repository is disabled' do
-            before do
-              stub_feature_flags(set_delete_failed_container_repository: false)
-            end
-
-            it_behaves_like 'setting the status to delete_scheduled regardless of failed_deletion_count'
-          end
         end
 
         context 'with tags left to destroy' do
           let(:tags_count) { 10 }
 
           it_behaves_like 'setting the correct status based on failed_deletion_count'
-
-          context 'when the feature set_delete_failed_container_repository is disabled' do
-            before do
-              stub_feature_flags(set_delete_failed_container_repository: false)
-            end
-
-            it_behaves_like 'setting the status to delete_scheduled regardless of failed_deletion_count'
-          end
         end
       end
 
@@ -153,14 +116,6 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
         end
 
         it_behaves_like 'setting the correct status based on failed_deletion_count'
-
-        context 'when the feature set_delete_failed_container_repository is disabled' do
-          before do
-            stub_feature_flags(set_delete_failed_container_repository: false)
-          end
-
-          it_behaves_like 'setting the status to delete_scheduled regardless of failed_deletion_count'
-        end
       end
 
       context 'with no tags on the container repository' do

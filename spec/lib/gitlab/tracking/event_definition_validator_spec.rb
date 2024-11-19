@@ -22,7 +22,6 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
 
   let(:path) { File.join('events', 'issues_create.yml') }
   let(:definition) { Gitlab::Tracking::EventDefinition.new(path, attributes) }
-  # let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
 
   describe '#validate' do
     using RSpec::Parameterized::TableSyntax
@@ -38,6 +37,8 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       :product_group        | nil
       :distributions        | %(be eb)
       :tiers                | %(pro)
+      :product_categories     | 'bad_category'
+      :product_categories     | ['bad_category']
     end
 
     with_them do
@@ -69,15 +70,21 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       where(:label, :property, :value, :custom, :error?) do
         true  | true  | true  | true  | false
         true  | true  | true  | false | false
-        true  | true  | false | false | false
         true  | true  | false | true  | false
-        true  | false | false | false | false
-        false | true  | false | false | false
-        false | true  | true  | false | false
-        true  | false | true  | true  | true
+        true  | true  | false | false | false
+        true  | false | true  | true  | false
+        true  | false | true  | false | false
         true  | false | false | true  | true
-        false | true  | true  | true  | true
-        false | false | true  | true  | true
+        true  | false | false | false | false
+        false | true  | true  | true  | false
+        false | true  | true  | false | false
+        false | true  | false | true  | true
+        false | true  | false | false | false
+        false | false | true  | true  | false
+        false | false | true  | false | false
+        false | false | false | true  | true
+        false | false | false | false | false
+        nil   | nil   | nil   | nil   | false
       end
 
       with_them do
@@ -86,6 +93,8 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
           attributes[:additional_properties][:property] = { description: "button state" } if property
           attributes[:additional_properties][:value] = { description: "package version" } if value
           attributes[:additional_properties][:custom] = { description: "custom" } if custom
+
+          attributes.delete(:additional_properties) if [label, property, value, custom].all?(&:nil?)
         end
 
         subject { described_class.new(definition).validation_errors.any? }

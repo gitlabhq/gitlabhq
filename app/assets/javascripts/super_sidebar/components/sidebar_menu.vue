@@ -1,5 +1,6 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
@@ -21,6 +22,7 @@ export default {
     pinAdded: s__('Navigation|%{title} added to pinned items'),
     pinRemoved: s__('Navigation|%{title} removed from pinned items'),
   },
+  inject: ['currentPath'],
   provide() {
     return {
       pinnedItemIds: this.changedPinnedItemIds,
@@ -53,10 +55,10 @@ export default {
       default: '',
     },
   },
-
   data() {
     return {
       showFlyoutMenus: false,
+      asyncCount: {},
 
       // This is used to detect if user came to this page by clicking a
       // nav item in the pinned section.
@@ -67,8 +69,27 @@ export default {
       changedPinnedItemIds: { ids: this.pinnedItemIds },
     };
   },
-
+  apollo: {
+    asyncCount: {
+      query: superSidebarDataQuery,
+      variables() {
+        return { fullPath: this.currentPath };
+      },
+      skip() {
+        return !this.isAsyncSidebarCountsFlagEnabled || !this.currentPath;
+      },
+      update(data) {
+        return data.namespace.sidebar ?? {};
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+  },
   computed: {
+    isAsyncSidebarCountsFlagEnabled() {
+      return this.glFeatures.asyncSidebarCounts;
+    },
     // Returns the list of items that we want to have static at the top.
     // Only sidebars that support pins also support a static section.
     staticItems() {
@@ -180,13 +201,20 @@ export default {
 <template>
   <div class="gl-relative gl-p-2">
     <ul v-if="hasStaticItems" class="gl-m-0 gl-list-none gl-p-0" data-testid="static-items-section">
-      <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
+      <nav-item
+        v-for="item in staticItems"
+        :key="item.id"
+        :item="item"
+        is-static
+        :async-count="asyncCount"
+      />
     </ul>
     <pinned-section
       v-if="supportsPins"
       :items="pinnedItems"
       :has-flyout="showFlyoutMenus"
       :was-pinned-nav="wasPinnedNav"
+      :async-count="asyncCount"
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
@@ -208,6 +236,7 @@ export default {
           :item="item"
           :separated="item.separated"
           :has-flyout="showFlyoutMenus"
+          :async-count="asyncCount"
           tag="li"
           @pin-add="createPin"
           @pin-remove="destroyPin"
@@ -216,6 +245,7 @@ export default {
           v-else
           :key="item.id"
           :item="item"
+          :async-count="asyncCount"
           @pin-add="createPin"
           @pin-remove="destroyPin"
         />

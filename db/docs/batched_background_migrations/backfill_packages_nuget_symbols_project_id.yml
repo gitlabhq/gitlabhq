@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillPackagesNugetSymbolsProjectId
+description: Populates the `project_id` column of `packages_nuget_symbols` table from the `packages_packages` table
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166743
+milestone: '17.6'
+queued_migration_version: 20240911173549
+finalized_by: # version of the migration that finalized this BBM

@@ -1,0 +1,18 @@
+---
+description: Tracks toggling of the security training provider setting.
+action: toggle_security_training_provider
+product_group: threat_insights
+milestone: '14.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80458
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value update_security_training_provider
+  property:
+    description: id of the provider

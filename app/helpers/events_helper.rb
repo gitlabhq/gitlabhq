@@ -193,9 +193,7 @@ module EventsHelper
     elsif event.commit_note?
       project_commit_url(event.project, event.note_target)
     elsif event.note?
-      if event.note_target
-        event_note_target_url(event)
-      end
+      event_note_target_url(event) if event.note_target
     elsif event.push_action?
       push_event_feed_url(event)
     elsif event.created_project_action?
@@ -242,6 +240,8 @@ module EventsHelper
       project_merge_request_url(event.project, id: event.note_target, anchor: dom_id(event.target))
     elsif event.design_note?
       design_url(event.note_target, anchor: dom_id(event.note))
+    elsif event.wiki_page_note?
+      event_wiki_page_target_url(event, target: event.note_target, anchor: dom_id(event.note))
     else
       polymorphic_url([event.project, event.note_target], anchor: dom_id(event.target))
     end
@@ -271,8 +271,8 @@ module EventsHelper
     end
   end
 
-  def event_wiki_page_target_url(event)
-    project_wiki_url(event.project, event.target&.canonical_slug || Wiki::HOMEPAGE) if event.project_id.present?
+  def event_wiki_page_target_url(event, target: event.target, **options)
+    project_wiki_url(event.project, target&.canonical_slug || Wiki::HOMEPAGE, **options) if event.project_id.present?
   end
 
   def event_note_title_html(event)
@@ -320,7 +320,7 @@ module EventsHelper
 
   def inline_event_icon(event)
     unless current_path?('users#activity')
-      content_tag :span, class: "system-note-image-inline gl-flex gl-mr-2 #{event.action_name.parameterize}-icon align-self-center" do
+      content_tag :span, class: "system-note-image-inline gl-flex gl-mr-2 gl-mt-1 #{event.action_name.parameterize}-icon" do
         next design_event_icon(event.action, size: 14) if event.design?
 
         icon_for_event(event.action_name, size: 14)

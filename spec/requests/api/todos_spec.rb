@@ -26,9 +26,9 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
   let_it_be(:pending_4) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe, commit_id: 'invalid_id') }
   let_it_be(:pending_5) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: work_item, target_type: WorkItem.name) }
   let_it_be(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe, target: issue) }
-  let_it_be(:award_emoji_1) { create(:award_emoji, awardable: merge_request, user: author_1, name: 'thumbsup') }
-  let_it_be(:award_emoji_2) { create(:award_emoji, awardable: pending_1.target, user: author_1, name: 'thumbsup') }
-  let_it_be(:award_emoji_3) { create(:award_emoji, awardable: pending_2.target, user: author_2, name: 'thumbsdown') }
+  let_it_be(:award_emoji_1) { create(:award_emoji, awardable: merge_request, user: author_1, name: AwardEmoji::THUMBS_UP) }
+  let_it_be(:award_emoji_2) { create(:award_emoji, awardable: pending_1.target, user: author_1, name: AwardEmoji::THUMBS_UP) }
+  let_it_be(:award_emoji_3) { create(:award_emoji, awardable: pending_2.target, user: author_2, name: AwardEmoji::THUMBS_DOWN) }
 
   describe 'GET /todos' do
     context 'when unauthenticated' do

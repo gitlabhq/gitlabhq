@@ -2,11 +2,15 @@
 
 module Organizations
   class OrganizationUser < ApplicationRecord
+    include ActiveModel::Dirty
+
     belongs_to :organization, inverse_of: :organization_users, optional: false
     belongs_to :user, inverse_of: :organization_users, optional: false
 
     validates :user, uniqueness: { scope: :organization_id }
     validates :access_level, presence: true
+
+    validate :last_owner_access_level_change, if: :access_level_changed?
 
     before_destroy :ensure_user_has_an_organization
 
@@ -65,7 +69,6 @@ module Organizations
     def last_owner?
       return false unless owner?
 
-      other_owners = organization.organization_users.owners.id_not_in(id)
       # Try to keep the last active user as owner
       return other_owners.with_active_users.empty? if user.active?
 
@@ -74,12 +77,22 @@ module Organizations
 
     private
 
+    def other_owners
+      @other_owners ||= organization.organization_users.owners.id_not_in(id)
+    end
+
     def ensure_user_has_an_organization
       return unless user
 
       return unless user.organization_users.where.not(id: id).empty?
 
       errors.add(:base, _('A user must associate with at least one organization'))
+    end
+
+    def last_owner_access_level_change
+      return unless access_level_was == 'owner' && other_owners.empty?
+
+      errors.add(:base, _('You cannot change the access of the last owner from the organization'))
     end
   end
 end

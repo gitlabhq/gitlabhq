@@ -188,6 +188,7 @@ Settings.gitlab['default_branch_protection_defaults'] ||= ::Gitlab::Access::Bran
 # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
+Settings.gitlab['dns_rebinding_protection_enabled'] ||= !Gitlab.http_proxy_env?
 Settings.gitlab['custom_html_header_tags'] ||= Settings.gitlab['custom_html_header_tags'] || ''
 Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['cdn_host'] ||= ENV['GITLAB_CDN_HOST'].presence
@@ -719,6 +720,9 @@ Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBar
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker'] ||= {}
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '*/4 * * * *'
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['job_class'] = 'Ci::Catalog::Resources::AggregateLast30DayUsageWorker'
+Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker'] ||= {}
+Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker']['job_class'] = 'Ci::Catalog::Resources::CleanupLastUsagesWorker'
 Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker'] ||= {}
 Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['cron'] ||= '*/4 * * * *'
 Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['args'] ||= [1]
@@ -746,6 +750,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= {}
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '*/25 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
+  Settings.cron_jobs['analytics_cycle_analytics_stage_aggregation_worker'] ||= {}
+  Settings.cron_jobs['analytics_cycle_analytics_stage_aggregation_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['analytics_cycle_analytics_stage_aggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::StageAggregationWorker'
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker'] ||= {}
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['cron'] ||= '*/7 * * * *'
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['job_class'] = 'Analytics::ValueStreamDashboard::CountWorker'
@@ -915,6 +922,9 @@ Gitlab.ee do
   Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
   Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
   Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
+  Settings.cron_jobs['click_house_user_add_on_assignments_sync_worker'] ||= {}
+  Settings.cron_jobs['click_house_user_add_on_assignments_sync_worker']['cron'] = "*/3 * * * *"
+  Settings.cron_jobs['click_house_user_add_on_assignments_sync_worker']['job_class'] = 'ClickHouse::UserAddOnAssignmentsSyncWorker'
   Settings.cron_jobs['click_house_event_authors_consistency_cron_worker'] ||= {}
   Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['cron'] ||= "*/30 * * * *"
   Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['job_class'] = 'ClickHouse::EventAuthorsConsistencyCronWorker'
@@ -946,8 +956,11 @@ Gitlab.ee do
   Settings.cron_jobs['usage_events_dump_write_buffer_cron_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['usage_events_dump_write_buffer_cron_worker']['job_class'] = 'UsageEvents::DumpWriteBufferCronWorker'
   Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker'] ||= {}
-  Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['cron'] ||= "0 */1 * * *"
   Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['job_class'] = 'PackageMetadata::CveEnrichmentSyncWorker'
+  Settings.cron_jobs['members_schedule_prune_deletions_worker'] ||= {}
+  Settings.cron_jobs['members_schedule_prune_deletions_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['members_schedule_prune_deletions_worker']['job_class'] = 'Members::SchedulePruneDeletionsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1012,6 +1025,7 @@ Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topol
 # Cells
 #
 Settings['cell'] ||= {}
+Settings.cell['id'] ||= 1
 Settings.cell['name'] ||= 'cell-1'
 
 #

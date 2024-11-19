@@ -31,14 +31,6 @@
     }
   }
 
-  &.is-merge-request {
-    @include media-breakpoint-up(lg) {
-      .content-wrapper {
-        padding-right: $right-sidebar-collapsed-width;
-      }
-    }
-  }
-
   .sidebar-collapsed-icon {
     .btn {
       background-color: $gray-10;
@@ -85,7 +77,7 @@
   }
 
   @include media-breakpoint-only(sm) {
-    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar):not(.is-merge-request) .content-wrapper {
       padding-right: $right-sidebar-collapsed-width;
     }
   }
@@ -184,7 +176,7 @@
     font-weight: $gl-font-weight-bold;
 
     .gl-button {
-      color: $gl-text-color;
+      @apply gl-text-default;
     }
   }
 }
@@ -262,14 +254,14 @@
   padding: 0 $gl-padding;
   background-color: $gray-10;
   border: 0;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
   display: flex;
   align-items: center;
   border-bottom: 1px solid $border-color;
 
   &:hover {
     background-color: $border-color;
-    color: $gl-text-color;
+    @apply gl-text-default;
   }
 }
 
@@ -385,7 +377,7 @@
     height: 24px;
 
     &:hover {
-      color: $gl-text-color;
+      @apply gl-text-default;
       background: $gray-50;
     }
 
@@ -451,7 +443,7 @@
   }
 
   .title {
-    color: $gl-text-color;
+    @apply gl-text-default;
     line-height: $gl-line-height-20;
 
     .avatar {
@@ -530,7 +522,7 @@
     }
 
     .no-value {
-      color: $gl-text-color-secondary;
+      @apply gl-text-subtle;
     }
 
     .sidebar-collapsed-icon {
@@ -631,18 +623,18 @@
       width: 100%;
       height: $sidebar-toggle-height;
       text-align: center;
-      color: $gl-text-color-secondary;
+      @apply gl-text-subtle;
 
       > svg {
-        fill: $gl-text-color-secondary;
+        @apply gl-fill-icon-subtle;
       }
 
       &:hover:not(.disabled),
       &:hover .todo-undone {
-        color: $gl-text-color;
+        @apply gl-text-default;
 
         > svg {
-          fill: $gl-text-color;
+          @apply gl-fill-icon-default;
         }
       }
 
@@ -795,6 +787,8 @@
     padding: 16px 20px;
   }
 
+  // These are composite classes for use with Vue Transition
+  // https://vuejs.org/guide/built-ins/transition
   .help-state-toggle-enter-active {
     transition: all 0.8s ease;
   }
@@ -818,11 +812,11 @@
     svg {
       width: 16px;
       height: 16px;
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
 
     &:hover svg {
-      fill: $gl-text-color;
+      @apply gl-fill-icon-default;
     }
   }
 

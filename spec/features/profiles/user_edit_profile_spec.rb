@@ -66,7 +66,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   end
 
   it 'shows an error if the full name contains an emoji', :js do
-    simulate_input('#user_name', 'Martin 😀')
+    fill_in 'user_name', with: 'Martin 😀'
     submit_settings
 
     page.within('.rspec-full-name') do

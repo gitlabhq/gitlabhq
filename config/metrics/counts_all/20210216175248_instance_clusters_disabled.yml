@@ -3,7 +3,8 @@ data_category: optional
 key_path: counts.instance_clusters_disabled
 description: Total GitLab Managed disabled clusters previously attached to the instance
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 time_frame: all
@@ -11,7 +12,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

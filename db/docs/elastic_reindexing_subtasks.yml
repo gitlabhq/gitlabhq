@@ -1,11 +1,13 @@
 ---
 table_name: elastic_reindexing_subtasks
 classes:
-- Elastic::ReindexingSubtask
+- Search::Elastic::ReindexingSubtask
 feature_categories:
 - global_search
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48334
 milestone: '13.8'
 gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true  # data is specific to each cell's Elasticsearch cluster, no customer data
+exempt_from_sharding: true
+notes: Exempted because data is specific to each cell's Elasticsearch cluster, no
+  customer data

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Application, feature_category: :scalability do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::Application, feature_category: :scalability do # rubocop:disable RSpec/SpecFilePathFormat
   describe 'config.filter_parameters' do
     using RSpec::Parameterized::TableSyntax
 

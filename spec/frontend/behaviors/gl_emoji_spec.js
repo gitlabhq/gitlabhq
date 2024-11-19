@@ -122,7 +122,7 @@ describe('gl_emoji', () => {
       await waitForPromises();
 
       expect(glEmojiElement.outerHTML).toBe(
-        '<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/3/grey_question.png" align="absmiddle"></gl-emoji>',
+        `<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/${EMOJI_VERSION}/grey_question.png" align="absmiddle"></gl-emoji>`,
       );
     });
 

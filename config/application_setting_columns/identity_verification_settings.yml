@@ -1,0 +1,12 @@
+---
+api_type:
+attr: identity_verification_settings
+clusterwide: true
+column: identity_verification_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

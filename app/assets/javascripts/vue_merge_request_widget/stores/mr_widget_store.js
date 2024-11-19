@@ -206,6 +206,7 @@ export default class MergeRequestStore {
     this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;
     this.mergeError = mergeRequest.mergeError;
     this.mergeStatus = mergeRequest.mergeStatus;
+    this.mergeAfter = mergeRequest.mergeAfter;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
     this.shouldBeRebased = mergeRequest.shouldBeRebased;

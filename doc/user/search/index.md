@@ -34,6 +34,27 @@ To specify a search type, set the `search_type` URL parameter as follows:
 `search_type` replaces the deprecated `basic_search` parameter.
 For more information, see [issue 477333](https://gitlab.com/gitlab-org/gitlab/-/issues/477333).
 
+## Restrict search access
+
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+By default, requests to `/search` and global search are available for unauthenticated users.
+
+To restrict `/search` to authenticated users only, do one of the following:
+
+- [Restrict public visibility](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels)
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171368) in GitLab 17.6).
+- Disable the `ops` feature flag `allow_anonymous_searches`
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138975) in GitLab 16.7).
+
+To restrict global search to authenticated users only,
+enable the `ops` feature flag `block_anonymous_global_searches`.
+
 ## Global search scopes
 
 DETAILS:

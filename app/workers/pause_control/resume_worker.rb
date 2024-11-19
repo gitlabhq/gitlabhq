@@ -3,13 +3,13 @@
 module PauseControl
   class ResumeWorker
     include ApplicationWorker
+    include Search::Worker
     # There is no onward scheduling and this cron handles work from across the
     # application, so there's no useful context to add.
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     RESCHEDULE_DELAY = 1.second
 
-    feature_category :global_search
     data_consistency :sticky
     idempotent!
     urgency :low

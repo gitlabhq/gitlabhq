@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HookData::EmojiBuilder, feature_category: :team_planning do
+RSpec.describe Gitlab::HookData::EmojiBuilder, feature_category: :markdown do
   let_it_be(:award_emoji) { create(:award_emoji) }
 
   let(:builder) { described_class.new(award_emoji) }

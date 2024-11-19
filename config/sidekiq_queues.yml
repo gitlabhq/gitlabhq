@@ -23,12 +23,6 @@
 #     chance = (queue weight / total weight of all queues) * 100
 ---
 :queues:
-- - abuse_new_abuse_report
-  - 1
-- - abuse_spam_abuse_events
-  - 1
-- - abuse_trust_score
-  - 1
 - - activity_pub
   - 1
 - - adjourned_project_deletion
@@ -239,6 +233,10 @@
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals_group
   - 1
+- - compliance_management_standards_gitlab_dast
+  - 1
+- - compliance_management_standards_gitlab_dast_group
+  - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_author
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_author_group
@@ -246,6 +244,10 @@
 - - compliance_management_standards_gitlab_prevent_approval_by_committer
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_committer_group
+  - 1
+- - compliance_management_standards_gitlab_sast
+  - 1
+- - compliance_management_standards_gitlab_sast_group
   - 1
 - - compliance_management_standards_group_base
   - 1
@@ -377,9 +379,15 @@
   - 1
 - - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
   - 1
+- - gitlab_subscriptions_add_on_purchases_email_on_duo_bulk_user_assignments
+  - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
 - - gitlab_subscriptions_member_management_apply_pending_member_approvals
+  - 1
+- - gitlab_subscriptions_members_added
+  - 1
+- - gitlab_subscriptions_members_destroyed
   - 1
 - - gitlab_subscriptions_members_record_last_activity
   - 1
@@ -503,6 +511,8 @@
   - 1
 - - members_groups_export_detailed_memberships
   - 1
+- - members_prune_deletions
+  - 1
 - - merge
   - 5
 - - merge_request_cleanup_refs
@@ -582,8 +592,6 @@
 - - onboarding_add_on_seat_assignment_iterable_trigger
   - 1
 - - onboarding_create_iterable_trigger
-  - 1
-- - onboarding_create_iterable_triggers
   - 1
 - - onboarding_progress_tracking
   - 1
@@ -755,6 +763,8 @@
   - 1
 - - search_zoekt_index_over_watermark_event
   - 1
+- - search_zoekt_index_watermark_changed_event
+  - 1
 - - search_zoekt_indexing_task
   - 1
 - - search_zoekt_initial_indexing_event
@@ -772,6 +782,8 @@
 - - search_zoekt_project_transfer
   - 1
 - - search_zoekt_repo_marked_as_to_delete_event
+  - 1
+- - search_zoekt_repo_to_index_event
   - 1
 - - search_zoekt_task_failed_event
   - 1
@@ -827,6 +839,8 @@
   - 1
 - - security_sync_policy_violation_comment
   - 1
+- - security_sync_project_policies
+  - 1
 - - security_sync_project_policy
   - 1
 - - security_sync_scan_policies
@@ -877,11 +891,13 @@
   - 1
 - - users_experimental_communication_opt_in
   - 1
-- - users_record_last_activity
-  - 1
 - - users_track_namespace_visits
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
+  - 1
+- - vulnerabilities_namespace_historical_statistics_process_transfer_events
+  - 1
+- - vulnerabilities_namespace_historical_statistics_update_traversal_ids
   - 1
 - - vulnerabilities_process_archived_events
   - 1

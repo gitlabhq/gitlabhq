@@ -371,7 +371,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           .with(newrev, limit: threshold_limit)
           .and_call_original
 
-        expect(ProcessCommitWorker).to receive(:perform_async).twice
+        expect(ProcessCommitWorker).to receive(:perform_in).twice
 
         service.execute
 
@@ -407,7 +407,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           .with(oldrev, newrev, limit: threshold_limit)
           .and_call_original
 
-        expect(ProcessCommitWorker).to receive(:perform_async).twice
+        expect(ProcessCommitWorker).to receive(:perform_in).twice
 
         service.execute
 
@@ -421,7 +421,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
       it 'does not process commit messages' do
         expect(project.repository).not_to receive(:commits)
         expect(project.repository).not_to receive(:commits_between)
-        expect(ProcessCommitWorker).not_to receive(:perform_async)
+        expect(ProcessCommitWorker).not_to receive(:perform_in)
 
         service.execute
 
@@ -439,7 +439,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           .with(project.default_branch, newrev, limit: threshold_limit)
           .and_call_original
 
-        expect(ProcessCommitWorker).to receive(:perform_async).twice
+        expect(ProcessCommitWorker).to receive(:perform_in).twice
 
         service.execute
 
@@ -456,7 +456,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           .with(oldrev, newrev, limit: threshold_limit)
           .and_call_original
 
-        expect(ProcessCommitWorker).to receive(:perform_async).twice
+        expect(ProcessCommitWorker).to receive(:perform_in).twice
 
         service.execute
         expect(commits_count).to eq(project.repository.count_commits_between(oldrev, newrev))
@@ -470,7 +470,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
       it 'does not process commit messages' do
         expect(project.repository).not_to receive(:commits)
         expect(project.repository).not_to receive(:commits_between)
-        expect(ProcessCommitWorker).not_to receive(:perform_async)
+        expect(ProcessCommitWorker).not_to receive(:perform_in)
         expect(service).to receive(:branch_remove_hooks)
 
         service.execute
@@ -489,7 +489,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
 
       context 'when commits already exists in the upstream project' do
         it 'does not process commit messages' do
-          expect(ProcessCommitWorker).not_to receive(:perform_async)
+          expect(ProcessCommitWorker).not_to receive(:perform_in)
 
           forked_service.execute
         end
@@ -511,7 +511,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         let(:newrev) { forked_commit_ids.last }
 
         it 'processes the commit message' do
-          expect(ProcessCommitWorker).to receive(:perform_async).once
+          expect(ProcessCommitWorker).to receive(:perform_in).once
 
           forked_service.execute
         end
@@ -521,9 +521,37 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         it 'processes the commit messages' do
           upstream_project.destroy!
 
-          expect(ProcessCommitWorker).to receive(:perform_async).twice
+          expect(ProcessCommitWorker).to receive(:perform_in).twice
 
           forked_service.execute
+        end
+      end
+    end
+
+    context 'when rate limiting ProcessCommitWorker' do
+      context 'when process_commit_worker_pool is not a param' do
+        it 'queues jobs instantly' do
+          expect(ProcessCommitWorker).to receive(:perform_in).twice.with(0, any_args)
+
+          service.execute
+        end
+      end
+
+      context 'when process_commit_worker_pool is a param' do
+        let(:pool) { instance_double(Gitlab::Git::ProcessCommitWorkerPool) }
+
+        let(:service) do
+          described_class.new(project, user, {
+            process_commit_worker_pool: pool,
+            change: { oldrev: oldrev, newrev: newrev, ref: ref }
+          })
+        end
+
+        it 'delays jobs' do
+          expect(pool).to receive(:get_and_increment_delay).twice.and_return(99)
+          expect(ProcessCommitWorker).to receive(:perform_in).twice.with(99, any_args)
+
+          service.execute
         end
       end
     end

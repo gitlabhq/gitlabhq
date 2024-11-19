@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSecurityFindingsProjectId
+description: Backfills sharding key `security_findings.project_id` from `vulnerability_scanners`.
+feature_category: vulnerability_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169121
+milestone: '17.6'
+queued_migration_version: 20241014114624
+finalized_by: # version of the migration that finalized this BBM

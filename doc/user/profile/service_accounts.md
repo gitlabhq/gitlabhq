@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -124,7 +124,7 @@ There is no limit to the number of service accounts you can add to a project or 
 
 A service account:
 
-- Can have different roles across multiple subgroups and projects of the same top level group.
+- Can have different roles across multiple subgroups and projects of the same top-level group.
 - When created by a top-level group owner, only belongs to one top-level group.
 
 ### Add to a subgroup or project

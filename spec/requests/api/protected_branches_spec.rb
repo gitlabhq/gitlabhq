@@ -107,7 +107,12 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
 
       context 'when a deploy key is present' do
         let(:deploy_key) do
-          create(:deploy_key, deploy_keys_projects: [create(:deploy_keys_project, :write_access, project: project)])
+          create(
+            :deploy_keys_project,
+            :write_access,
+            project: project,
+            deploy_key: create(:deploy_key, user: user)
+          ).deploy_key
         end
 
         it 'returns deploy key information' do

@@ -56,7 +56,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
       Project.new(namespace: @subject).visibility_level_allowed?(level)
     end
 
-    @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS || allowed_visibility_levels.empty?
+    Group.prevent_project_creation?(user, @subject.project_creation_level) || allowed_visibility_levels.empty?
   end
 
   condition(:create_subgroup_disabled, scope: :subject) do

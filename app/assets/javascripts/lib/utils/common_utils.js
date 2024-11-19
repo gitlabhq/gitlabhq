@@ -703,7 +703,8 @@ export const navigationType = {
  * @param {Object} label
  * @returns Boolean
  */
-export const isScopedLabel = ({ title = '' } = {}) => title.includes(SCOPED_LABEL_DELIMITER);
+export const isScopedLabel = ({ title = '', name = '' } = {}) =>
+  title.includes(SCOPED_LABEL_DELIMITER) || name.includes(SCOPED_LABEL_DELIMITER);
 
 const scopedLabelRegex = new RegExp(`(.*)${SCOPED_LABEL_DELIMITER}.*`);
 

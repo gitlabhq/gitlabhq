@@ -70,7 +70,9 @@ RSpec.describe 'Setting Due Date of an issue', feature_category: :team_planning 
     it 'returns an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors).to include(a_hash_including('message' => 'issueSetDueDate has the wrong arguments'))
+      expect(graphql_errors).to include(
+        a_hash_including('message' => 'issueSetDueDate must include the following argument: dueDate.')
+      )
     end
   end
 

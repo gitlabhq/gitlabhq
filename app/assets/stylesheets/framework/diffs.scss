@@ -3,6 +3,15 @@
 
 $diff-file-header: 41px;
 
+:root {
+  --diff-warning-text-color: var(--gl-feedback-warning-text-color);
+  --diff-warning-background-color: var(--gl-feedback-warning-background-color);
+}
+
+:root.gl-dark {
+  --diff-warning-background-color: #453522;
+}
+
 // Common
 .diff-file {
   margin-bottom: $gl-padding;
@@ -37,17 +46,6 @@ $diff-file-header: 41px;
 
       +.diff-content .md-header-preview {
         top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header} - #{$gl-border-size-1});
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: -1px;
-        left: -11px;
-        width: 10px;
-        height: calc(100% + 1px);
-        @apply gl-bg-default;
-        pointer-events: none;
       }
 
       &.is-commit,
@@ -446,13 +444,10 @@ table.code {
     line-height: $code-line-height;
     font-size: $code-font-size;
     vertical-align: top;
+    word-wrap: break-word;
 
     span {
       white-space: break-spaces;
-
-      &.line {
-        word-wrap: break-word;
-      }
     }
 
     &.diff-line-num {
@@ -649,12 +644,6 @@ table.code {
   }
 }
 
-.files {
-  .diff-file:not(.is-virtual-scrolling):last-child {
-    margin-bottom: 0;
-  }
-}
-
 .diff-comments-more-count,
 .diff-notes-collapse,
 .inline-findings-collapse {
@@ -703,27 +692,27 @@ table.code {
     display: block;
     width: 100%;
     height: 10px;
-    @apply gl-bg-default;
+    @apply gl-bg-subtle;
     background-image: linear-gradient(45deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%),
+    $diff-jagged-bg-color 80%),
       linear-gradient(225deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%),
+    $diff-jagged-bg-color 80%),
       linear-gradient(135deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%),
+    $diff-jagged-bg-color 80%),
       linear-gradient(-45deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%);
+    $diff-jagged-bg-color 80%);
     background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
@@ -807,7 +796,7 @@ table.code {
       margin-left: $note-spacing-left;
 
       &[aria-expanded="false"] {
-        @apply gl-border-b;
+        @apply gl-border-b gl-border-b-section;
       }
     }
   }
@@ -889,4 +878,9 @@ table.code {
 // This is not inside page_bundles because then it won't receive a proper color value for the dark theme
 .diff-file-row.is-active.is-linked {
   background-color: $blue-50;
+}
+
+.collapsed-file-warning {
+  color: var(--diff-warning-text-color);
+  background-color: var(--diff-warning-background-color);
 }

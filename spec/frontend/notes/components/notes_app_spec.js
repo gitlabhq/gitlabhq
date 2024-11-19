@@ -19,7 +19,7 @@ import NotePreview from '~/notes/components/note_preview.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import * as constants from '~/notes/constants';
 import createStore from '~/notes/stores';
-import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
+import OrderedLayout from '~/notes/components/ordered_layout.vue';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -386,10 +386,11 @@ describe('note_app', () => {
 
   describe('preview note shown inside skeleton notes', () => {
     it.each`
-      urlHash       | exists
-      ${''}         | ${false}
-      ${'note_123'} | ${true}
-    `('url is `$urlHash`', ({ urlHash, exists }) => {
+      urlHash        | exists
+      ${''}          | ${false}
+      ${'heading_1'} | ${false}
+      ${'note_123'}  | ${true}
+    `('`$exists` when url hash is `$urlHash`', ({ urlHash, exists }) => {
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(urlHash);
 
       store = createStore();

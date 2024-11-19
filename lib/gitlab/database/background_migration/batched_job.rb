@@ -113,6 +113,24 @@ module Gitlab
           [exception, from_sub_batch]
         end
 
+        def job_attributes
+          {
+            batch_table: migration_table_name,
+            batch_column: migration_column_name,
+            sub_batch_size: sub_batch_size,
+            pause_ms: pause_ms,
+            job_arguments: migration_job_arguments
+          }.tap do |attributes|
+            if migration_job_class.cursor?
+              attributes[:start_cursor] = min_cursor
+              attributes[:end_cursor] = max_cursor
+            else
+              attributes[:start_id] = min_value
+              attributes[:end_id] = max_value
+            end
+          end
+        end
+
         def time_efficiency
           return unless succeeded?
           return unless finished_at && started_at
@@ -135,6 +153,7 @@ module Gitlab
 
         def split_and_retry!
           with_lock do
+            raise SplitAndRetryError, 'Split and retry not yet supported for cursor based jobs' unless max_cursor.nil?
             raise SplitAndRetryError, 'Only failed jobs can be split' unless failed?
 
             new_batch_size = batch_size / 2

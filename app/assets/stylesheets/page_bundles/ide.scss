@@ -343,7 +343,7 @@ $ide-commit-header-height: 48px;
   padding: $grid-size 0;
   min-height: 60px;
 
-  &.form-text.text-muted {
+  &.form-text {
     margin-left: 0;
     right: 0;
   }
@@ -500,7 +500,7 @@ $ide-commit-header-height: 48px;
   height: 60px;
   width: 100%;
   padding: 0 $gl-padding;
-  color: var(--ide-text-color-secondary, $gl-text-color-secondary);
+  color: var(--ide-text-color-secondary, var(--gl-text-color-subtle));
   background-color: transparent;
   border: 0;
   border-top: 1px solid transparent;
@@ -574,7 +574,7 @@ $ide-commit-header-height: 48px;
     height: 30px;
   }
 
-  .form-text.text-muted {
+  .form-text {
     margin-top: 2px;
     color: var(--ide-link-color, $blue-500);
     cursor: pointer;
@@ -702,6 +702,8 @@ $ide-commit-header-height: 48px;
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .commit-form-slide-up-enter-active,
 .commit-form-slide-up-leave-active {
   position: absolute;
@@ -742,7 +744,7 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-review-sub-header {
-  color: var(--ide-text-color-secondary, $gl-text-color-secondary);
+  color: var(--ide-text-color-secondary, var(--gl-text-color-subtle));
 }
 
 .ide-tree-changes {
@@ -949,7 +951,7 @@ $ide-commit-header-height: 48px;
 .ide-merge-request-project-path {
   font-size: 12px;
   line-height: 16px;
-  color: var(--ide-text-color-secondary, $gl-text-color-secondary);
+  color: var(--ide-text-color-secondary, var(--gl-text-color-subtle));
 }
 
 .ide-entry-dropdown-toggle {
@@ -1031,7 +1033,7 @@ $ide-commit-header-height: 48px;
   }
 
   .folder-icon {
-    fill: var(--ide-text-color-secondary, $gl-text-color-secondary);
+    fill: var(--ide-text-color-secondary, var(--gl-icon-color-subtle));
   }
 }
 

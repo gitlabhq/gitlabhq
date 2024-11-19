@@ -4,7 +4,8 @@ classes:
 - Search::Zoekt::Node
 feature_categories:
 - global_search
-description: Describes a Zoekt server that will be used for indexing and search for some configured namespaces
+description: Describes a Zoekt server that will be used for indexing and search for
+  some configured namespaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134901
 milestone: '16.6'
 gitlab_schema: gitlab_main_cell

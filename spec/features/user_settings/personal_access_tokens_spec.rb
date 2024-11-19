@@ -117,6 +117,33 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
     end
   end
 
+  describe "rotating tokens" do
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    it "displays the newly created token" do
+      visit user_settings_personal_access_tokens_path
+      accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
+      wait_for_all_requests
+      expect(page).to have_content("Your new personal access token has been created.")
+      expect(active_access_tokens).to have_text(personal_access_token.name)
+      expect(created_access_token).to match(/[\w-]{20}/)
+    end
+
+    context "when rotation fails" do
+      it "displays an error message" do
+        visit user_settings_personal_access_tokens_path
+
+        accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
+          personal_access_token.revoke!
+          click_on s_('AccessTokens|Rotate')
+        end
+
+        wait_for_all_requests
+        expect(page).to have_content(s_('AccessTokens|Token already revoked'))
+      end
+    end
+  end
+
   describe "feed token" do
     def feed_token_description
       "Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar\

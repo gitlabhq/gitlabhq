@@ -1,0 +1,22 @@
+---
+description: Event triggered when a user executes a search
+action: executed
+identifiers:
+- project
+- namespace
+- user
+product_group: global_search
+milestone: '15.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169895
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Either `redis_hll_counters.search.search_total_unique_counts_monthly` or `redis_hll_counters.search.i_search_paid_monthly`
+  property:
+    description: Either `i_search_advanced`, `i_search_paid` or `i_search_total`

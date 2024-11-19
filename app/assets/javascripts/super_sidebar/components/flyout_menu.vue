@@ -36,6 +36,11 @@ export default {
       type: Array,
       required: true,
     },
+    asyncCount: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -161,6 +166,7 @@ export default {
         :key="item.id"
         :item="item"
         :is-flyout="true"
+        :async-count="asyncCount"
         @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
         @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
         @nav-link-click="$emit('nav-link-click')"

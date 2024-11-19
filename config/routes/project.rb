@@ -118,6 +118,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             put :reset_registration_token
             post :create_deploy_token, path: 'deploy_token/create', to: 'repository#create_deploy_token'
             get :runner_setup_scripts, format: :json
+            get :export_job_token_authorizations, format: :csv
           end
 
           resource :operations, only: [:show, :update] do
@@ -478,8 +479,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ml do
           resources :experiments, only: [:index, :show, :destroy], controller: 'experiments', param: :iid
           resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
-          resources :models, only: [:index, :show, :destroy, :new], controller: 'models', param: :model_id do
-            resources :versions, only: [:show], controller: 'model_versions', param: :model_version_id
+          resources :models, only: [:index, :show, :edit, :destroy, :new], controller: 'models', param: :model_id do
+            resources :versions, only: [:new], controller: 'model_versions'
+            resources :versions, only: [:show, :edit], controller: 'model_versions', param: :model_version_id
           end
           post :preview_markdown
         end

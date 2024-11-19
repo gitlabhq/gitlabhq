@@ -3,40 +3,47 @@
 module WorkItems
   module DataSync
     class MoveService < ::WorkItems::DataSync::BaseService
-      MoveError = Class.new(StandardError)
-
       private
 
-      def verify_work_item_action_permission!
-        verify_can_move_work_item!(work_item, target_namespace)
+      def verify_work_item_action_permission
+        verify_can_move_work_item(work_item, target_namespace)
       end
 
       def data_sync_action
         move_work_item
       end
 
-      def verify_can_move_work_item!(work_item, target_namespace)
+      def verify_can_move_work_item(work_item, target_namespace)
         unless work_item.namespace.instance_of?(target_namespace.class)
-          raise MoveError, s_('MoveWorkItem|Cannot move work item between Projects and Groups.')
+          error_message = s_('MoveWorkItem|Cannot move work item between Projects and Groups.')
+
+          return error(error_message, :unprocessable_entity)
         end
 
         unless work_item.supports_move_and_clone?
-          raise MoveError, format(s_('MoveWorkItem|Cannot move work items of \'%{issue_type}\' type.'), {
-            issue_type: work_item.work_item_type.name
-          })
+          error_message = format(s_('MoveWorkItem|Cannot move work items of \'%{issue_type}\' type.'),
+            { issue_type: work_item.work_item_type.name })
+
+          return error(error_message, :unprocessable_entity)
         end
 
         unless work_item.can_move?(current_user, target_namespace)
-          raise MoveError, s_('MoveWorkItem|Cannot move work item due to insufficient permissions!')
+          error_message = s_('MoveWorkItem|Cannot move work item due to insufficient permissions!')
+
+          return error(error_message, :unprocessable_entity)
         end
 
         if target_namespace.pending_delete? # rubocop:disable Style/GuardClause -- does not read right with other checks above
-          raise MoveError, s_('MoveWorkItem|Cannot move work item to target namespace as it is pending deletion.')
+          error_message = s_('MoveWorkItem|Cannot move work item to target namespace as it is pending deletion.')
+
+          return error(error_message, :unprocessable_entity)
         end
+
+        success({})
       end
 
       def move_work_item
-        create_result = WorkItems::DataSync::Handlers::CopyDataHandler.new(
+        create_response = WorkItems::DataSync::Handlers::CopyDataHandler.new(
           work_item: work_item,
           target_namespace: target_namespace,
           current_user: current_user,
@@ -47,20 +54,23 @@ module WorkItems
           }
         ).execute
 
-        new_work_item = create_result[:work_item]
+        return create_response unless create_response.success? && create_response[:work_item].present?
 
-        raise MoveError, create_result.errors.join(', ') if create_result.error? && new_work_item.blank?
-
+        # this service is based on Issues::CloseService#execute, which does not provide a clear return, so we'll skip
+        # handling it for now. This will be moved to a cleanup service that would be more result oriented where we can
+        # handle the service response status
         WorkItems::DataSync::Handlers::CleanupDataHandler.new(
           work_item: work_item, current_user: current_user, params: params
         ).execute
+
+        new_work_item = create_response[:work_item]
 
         # this may need to be moved inside `BaseCopyDataService` so that this would be the first system note after
         # move action started, followed by some other system notes related to which data is removed, replaced, changed
         # etc during the move operation.
         move_system_notes(new_work_item)
 
-        new_work_item
+        create_response
       end
 
       def move_system_notes(new_work_item)

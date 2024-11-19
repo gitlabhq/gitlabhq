@@ -1,7 +1,7 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { omit } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
-import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
+import currentUserOrganizationsGraphQlResponse from 'test_fixtures/graphql/organizations/current_user_organizations.query.graphql.json';
 import OrganizationsList from '~/organizations/shared/components/list/organizations_list.vue';
 import OrganizationsListItem from '~/organizations/shared/components/list/organizations_list_item.vue';
 import { pageInfoMultiplePages, pageInfoOnePage } from 'jest/organizations/mock_data';
@@ -13,7 +13,7 @@ describe('OrganizationsList', () => {
     data: {
       currentUser: { organizations },
     },
-  } = organizationsGraphQlResponse;
+  } = currentUserOrganizationsGraphQlResponse;
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMount(OrganizationsList, {

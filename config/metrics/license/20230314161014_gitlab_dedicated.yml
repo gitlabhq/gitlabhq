@@ -13,5 +13,5 @@ instrumentation_class: GitlabDedicatedMetric
 performance_indicator_type: []
 distribution:
 - ee
-tier:
+tiers:
 - ultimate

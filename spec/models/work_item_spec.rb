@@ -92,6 +92,91 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#create_dates_source_from_current_dates' do
+    let_it_be(:start_date) { nil }
+    let_it_be(:due_date) { nil }
+    let(:dates_source) { work_item.dates_source }
+
+    let_it_be_with_reload(:work_item) do
+      create(:work_item, project: reusable_project, start_date: start_date, due_date: due_date)
+    end
+
+    before do
+      work_item.update!(start_date: start_date, due_date: due_date)
+    end
+
+    subject(:create_dates_source_from_current_dates) { work_item.create_dates_source_from_current_dates }
+
+    context 'when both due_date and start_date are present' do
+      let_it_be(:due_date) { Time.zone.tomorrow }
+      let_it_be(:start_date) { Time.zone.today }
+
+      it 'creates dates_source with correct attributes' do
+        expect { create_dates_source_from_current_dates }.to change { WorkItems::DatesSource.count }.by(1)
+
+        expect(dates_source.reload).to have_attributes(
+          due_date: due_date,
+          start_date: start_date,
+          start_date_is_fixed: true,
+          due_date_is_fixed: true,
+          start_date_fixed: start_date,
+          due_date_fixed: due_date
+        )
+      end
+    end
+
+    context 'when only due_date is present' do
+      let_it_be(:due_date) { Time.zone.tomorrow }
+      let_it_be(:start_date) { nil }
+
+      it 'creates dates_source with correct attributes' do
+        create_dates_source_from_current_dates
+
+        expect(dates_source).to have_attributes(
+          due_date: work_item.due_date,
+          start_date: nil,
+          start_date_is_fixed: true,
+          due_date_is_fixed: true,
+          start_date_fixed: nil,
+          due_date_fixed: work_item.due_date
+        )
+      end
+    end
+
+    context 'when only start_date is present' do
+      let_it_be(:due_date) { nil }
+      let_it_be(:start_date) { Time.zone.today }
+
+      it 'creates dates_source with correct attributes' do
+        create_dates_source_from_current_dates
+
+        expect(dates_source).to have_attributes(
+          due_date: nil,
+          start_date: work_item.start_date,
+          start_date_is_fixed: true,
+          due_date_is_fixed: true,
+          start_date_fixed: work_item.start_date,
+          due_date_fixed: nil
+        )
+      end
+    end
+
+    context 'when neither due_date nor start_date is present' do
+      it 'creates dates_source with correct attributes' do
+        dates_source = work_item.create_dates_source_from_current_dates
+
+        expect(dates_source).to have_attributes(
+          due_date: nil,
+          start_date: nil,
+          start_date_is_fixed: false,
+          due_date_is_fixed: false,
+          start_date_fixed: nil,
+          due_date_fixed: nil
+        )
+      end
+    end
+  end
+
   describe '#noteable_target_type_name' do
     it 'returns `issue` as the target name' do
       work_item = build(:work_item)

@@ -35,7 +35,8 @@ module EachBatch
     #
     # This will produce SQL queries along the lines of:
     #
-    #     User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 41654)  ORDER BY "users"."id" ASC LIMIT 1 OFFSET 1000
+    #     User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 41654)
+    #                        ORDER BY "users"."id" ASC LIMIT 1 OFFSET 1000
     #       (0.7ms)  SELECT COUNT(*) FROM "users" WHERE ("users"."id" >= 41654) AND ("users"."id" < 42687)
     #
     # of - The number of rows to retrieve per batch.
@@ -48,15 +49,17 @@ module EachBatch
     #   order_hint does not affect the search results. For example,
     #   `ORDER BY id ASC, updated_at ASC` means the same thing as `ORDER
     #   BY id ASC`.
-    def each_batch(of: 1000, column: primary_key, order: :asc, order_hint: nil)
+    def each_batch(of: 1000, column: primary_key, order: :asc, order_hint: nil, reset_order: true)
       unless column
         raise ArgumentError,
           'the column: argument must be set to a column name to use for ordering rows'
       end
 
+      order_with = reset_order ? :reorder : :order
+
       start = except(:select, :includes, :preload)
         .select(column)
-        .reorder(column => order)
+        .method(order_with).call(column => order)
 
       start = start.order(order_hint) if order_hint
       start = start.take
@@ -72,7 +75,7 @@ module EachBatch
         stop = except(:select, :includes, :preload)
           .select(column)
           .where(start_cond)
-          .reorder(column => order)
+          .method(order_with).call(column => order)
 
         stop = stop.order(order_hint) if order_hint
         stop = stop

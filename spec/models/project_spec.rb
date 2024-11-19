@@ -58,6 +58,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
     it { is_expected.to have_many(:ci_component_usages).class_name('Ci::Catalog::Resources::Components::Usage') }
+    it { is_expected.to have_many(:ci_component_last_usages).class_name('Ci::Catalog::Resources::Components::LastUsage').inverse_of(:component_project) }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
     it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
@@ -710,14 +711,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to validate_presence_of(:repository_storage) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_length_of(:suggestion_commit_message).is_at_most(255) }
-
-    context 'when require_organization feature is disabled' do
-      before do
-        stub_feature_flags(require_organization: false)
-      end
-
-      it { is_expected.not_to validate_presence_of(:organization) }
-    end
 
     it 'validates name is case-sensitively unique within the scope of namespace_id' do
       project = create(:project)
@@ -7707,7 +7700,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       before do
         allow(project).to receive(:read_attribute).with(setting_name).and_return(project_setting)
         allow(namespace).to receive(:closest_setting).with(setting_name).and_return(group_setting)
-        allow(Gitlab::CurrentSettings).to receive(setting_name).and_return(global_setting)
+        stub_application_setting(setting_name => global_setting)
       end
 
       it 'returns closest non-nil value' do
@@ -7866,26 +7859,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     subject { create(:project, group: group) }
 
-    context 'when feature flag `group_protected_branches` enabled' do
-      before do
-        stub_feature_flags(group_protected_branches: true)
-        stub_feature_flags(allow_protected_branches_for_group: true)
-      end
-
-      it 'return all protected branches' do
-        expect(subject.all_protected_branches).to match_array([group_protected_branch, project_protected_branch])
-      end
-    end
-
-    context 'when feature flag `group_protected_branches` disabled' do
-      before do
-        stub_feature_flags(group_protected_branches: false)
-        stub_feature_flags(allow_protected_branches_for_group: false)
-      end
-
-      it 'return only project-level protected branches' do
-        expect(subject.all_protected_branches).to match_array([project_protected_branch])
-      end
+    it 'return all protected branches' do
+      expect(subject.all_protected_branches).to match_array([group_protected_branch, project_protected_branch])
     end
   end
 
@@ -9035,6 +9010,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#wiki_comments_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :wiki_comments_feature_flag_enabled? }
+      let(:feature_flag) { :wiki_comments }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe '#work_items_beta_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -9716,6 +9701,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns the group.crm_group' do
         expect(project.crm_group).to be(group.crm_group)
       end
+    end
+  end
+
+  describe '#placeholder_reference_store' do
+    context 'when the project has an import state' do
+      let(:project) { build(:project, import_state: build(:import_state)) }
+
+      it { expect(project.placeholder_reference_store).to be_a(::Import::PlaceholderReferences::Store) }
+    end
+
+    context 'when the project has no import state' do
+      let(:project) { build(:project, import_state: nil) }
+
+      it { expect(project.placeholder_reference_store).to be_nil }
     end
   end
 end

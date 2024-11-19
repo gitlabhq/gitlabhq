@@ -29,14 +29,14 @@ RSpec.describe 'Merge request > User creates custom emoji', :js, feature_categor
 
       wait_for_requests
 
-      find_by_testid("custom-emoji-name-input").set 'parrot'
+      find_by_testid("custom-emoji-name-input").set 'flying_parrot'
       find_by_testid("custom-emoji-url-input").set 'https://example.com'
 
       click_button 'Save'
 
       wait_for_requests
 
-      expect(page).to have_content(':parrot:')
+      expect(page).to have_content(':flying_parrot:')
     end
   end
 

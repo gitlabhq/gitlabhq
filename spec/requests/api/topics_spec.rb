@@ -2,23 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Topics, :with_current_organization, :aggregate_failures, feature_category: :groups_and_projects do
+RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, feature_category: :groups_and_projects do
   include WorkhorseHelpers
 
   let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }
+
+  let_it_be(:current_organization, reload: true) { create(:organization, :public, name: 'Current Public Organization') }
+  let_it_be(:namespace) { create(:namespace, organization: current_organization) }
 
   let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, non_private_projects_count: 1, avatar: file, organization: current_organization) }
   let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2, non_private_projects_count: 2, organization: current_organization) }
   let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3, non_private_projects_count: 3, organization: current_organization) }
 
-  let_it_be(:admin) { create(:user, :admin, organization: current_organization) }
-  let_it_be(:user) { create(:user, organization: current_organization) }
+  let_it_be(:admin) { create(:user, :admin, namespace: namespace) }
+  let_it_be(:user) { create(:user, namespace: namespace) }
 
   let(:path) { '/topics' }
 
   describe 'GET /topics' do
     it 'returns topics ordered by total_projects_count' do
-      get api(path)
+      get api(path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -39,7 +42,9 @@ RSpec.describe API::Topics, :with_current_organization, :aggregate_failures, fea
     end
 
     context 'with without_projects' do
-      let_it_be(:topic_4) { create(:topic, name: 'unassigned topic', total_projects_count: 0) }
+      let_it_be(:topic_4) do
+        create(:topic, organization: current_organization, name: 'unassigned topic', total_projects_count: 0)
+      end
 
       it 'returns topics without assigned projects' do
         get api(path), params: { without_projects: true }
@@ -347,6 +352,9 @@ RSpec.describe API::Topics, :with_current_organization, :aggregate_failures, fea
     context 'as administrator' do
       let_it_be(:api_url) { api('/topics/merge', admin, admin_mode: true) }
 
+      let(:private_org) { create(:organization, :private) }
+      let(:private_topic) { create(:topic, name: 'Private Topic', organization: private_org) }
+
       it 'merge topics' do
         post api_url, params: { source_topic_id: topic_3.id, target_topic_id: topic_2.id }
 
@@ -355,6 +363,13 @@ RSpec.describe API::Topics, :with_current_organization, :aggregate_failures, fea
         expect { topic_3.reload }.to raise_error(ActiveRecord::RecordNotFound)
         expect(json_response['id']).to eq(topic_2.id)
         expect(json_response['total_projects_count']).to eq(topic_2.total_projects_count)
+      end
+
+      it 'returns 400 for topics belonging to different organizations' do
+        post api_url, params: { source_topic_id: private_topic.id, target_topic_id: topic_1.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eql('The source topic and the target topic must belong to the same organization.')
       end
 
       it 'returns 404 for non existing source topic id' do

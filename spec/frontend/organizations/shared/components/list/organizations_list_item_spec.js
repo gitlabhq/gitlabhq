@@ -1,5 +1,5 @@
 import { GlAvatarLabeled } from '@gitlab/ui';
-import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
+import currentUserOrganizationsGraphQlResponse from 'test_fixtures/graphql/organizations/current_user_organizations.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import OrganizationsListItem from '~/organizations/shared/components/list/organizations_list_item.vue';
@@ -15,7 +15,7 @@ describe('OrganizationsListItem', () => {
         },
       },
     },
-  } = organizationsGraphQlResponse;
+  } = currentUserOrganizationsGraphQlResponse;
 
   const defaultProps = {
     organization,

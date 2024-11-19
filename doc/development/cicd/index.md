@@ -6,6 +6,54 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # CI/CD development guidelines
 
+CI/CD pipelines are a fundamental part of GitLab development and deployment processes, automating tasks like building,
+testing, and deploying code changes.
+When developing features that interact with or trigger pipelines, it's essential to consider the broader implications
+these actions have on the system's security and operational integrity.
+
+This document provides guidelines to help you develop features that use CI/CD pipelines securely and effectively.
+It emphasizes the importance of understanding the implications of running pipelines, managing authentication tokens
+responsibly, and integrating security considerations from the beginning of the development process.
+
+## General guidelines
+
+- **Recognize pipelines as write operations:** Triggering a pipeline is a write operation that changes the system's
+  state. The write operation can initiate deployments, run tests, or alter configurations. Treat pipeline triggers with the same caution
+  as other critical write operations to prevent unauthorized changes or misuse of the system.
+- **Running a pipeline should be an explicit action**: Actions that create a pipeline in the user's context
+  should be designed so that it is clear to the user that a pipeline (or single job) is started when performing the action.
+  The user should be aware of the changes executed in the pipeline **before** they are executed.
+- **Remote execution and isolation:** The CI/CD pipeline functions as a remote execution environment where jobs can
+  execute scripts performing a wide range of actions. Ensure that jobs are adequately isolated and do not unintentionally
+  expose sensitive data or systems.
+- **Collaborate with AppSec and Verify teams:** Include [Application Security (AppSec)](https://handbook.gitlab.com/handbook/security/product-security/application-security/)
+  and [Verify](https://handbook.gitlab.com/handbook/engineering/development/ops/verify/) team members early in
+  the design process and when drafting proposals. Their expertise can help identify potential security risks and ensure
+  that security considerations are integrated into the feature from the outset. Additionally, involve them in the code
+  review process to benefit from their specialized knowledge in identifying vulnerabilities and ensuring compliance with
+  security standards.
+- **Determine the pipeline actor:** When building features that trigger pipelines, it's crucial to consider which user
+  initiates the pipeline. You need to determine who should be the actor of the event. Is it an intentional pipeline
+  run where a user directly triggers the pipeline (for example by pushing changes to the repository or clicking the "Run pipeline"
+  button), or is it a pipeline run initiated by the GitLab system or a policy?
+  Avoid scenarios in which the user creating the pipeline is not the author of the changes. If the users are not the same,
+  there is a risk that the author of the changes can run code in the context of the pipeline user.
+  Understanding the actor helps in managing permissions and ensuring that the pipeline runs in the correct execution context.
+- **Variability of job execution users:** The user running a specific job might not be the same user who created the pipeline.
+  While in the majority of cases the user is the same, there are scenarios where the user of the job changes, for example when
+  running a manual job or retrying a job. This variability can affect permissions and access levels in the job's execution
+  context. Always account for this possibility when developing features that use the CI/CD job token (`CI_JOB_TOKEN`). Consider whether the job
+  user should change and who the actor of the action is.
+- **Restrict scope of the operation:** When enabling a new endpoint for use with the CI/CD job token, strongly consider limiting
+  operations to the same job, pipeline, or project to enhance security. Strongly prefer the smaller scope (job) over larger
+  scope (project). For example, if allowing access to pipeline data, restrict it to the current pipeline to prevent
+  cross-project or cross-pipeline data exposure. Evaluate whether cross-project or cross-pipeline access is truly necessary
+  for the feature; limiting the scope reduces security risks.
+- **Monitor and audit activities:** Ensure that the feature is auditable and monitorable. Introduce detailed logs of events
+  that would trigger a pipeline, including the pipeline user, the actor initiating the action, and event details.
+
+## Other guides
+
 Development guides that are specific to CI/CD are listed here:
 
 - If you are creating new CI/CD templates, read [the development guide for GitLab CI/CD templates](templates.md).
@@ -27,7 +75,7 @@ be used for different scenarios.
 The following is a simplified diagram of the CI architecture. Some details are left out to focus on
 the main components.
 
-![CI software architecture](img/ci_architecture.png)
+![CI software architecture](img/ci_architecture_v13_0.png)
 <!-- Editable diagram available at https://app.diagrams.net/#G1LFl-KW4fgpBPzz8VIH9rsOlAH4t0xwKj -->
 
 On the left side we have the events that can trigger a pipeline based on various events (triggered by a user or automation):
@@ -38,7 +86,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - When a [merge request is created or updated](../../ci/pipelines/merge_request_pipelines.md).
 - When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md#merge-trains).
 - A [scheduled pipeline](../../ci/pipelines/schedules.md).
-- When project is [subscribed to an upstream project](../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt).
+- When project is [subscribed to an upstream project](../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
 - When [Auto DevOps](../../topics/autodevops/index.md) is enabled.
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).
 - When an upstream pipeline contains a [bridge job](../../ci/yaml/index.md#trigger) which triggers a downstream pipeline.
@@ -70,7 +118,7 @@ looks for the next jobs to be transitioned towards completion. While doing that,
 updates the status of jobs, stages and the overall pipeline.
 
 On the right side of the diagram we have a list of [runners](../../ci/runners/index.md)
-connected to the GitLab instance. These can be shared runners, group runners, or project runners.
+connected to the GitLab instance. These can be instance runners, group runners, or project runners.
 The communication between runners and the Rails server occurs through a set of API endpoints, grouped as
 the `Runner API Gateway`.
 
@@ -126,7 +174,7 @@ Once all jobs are completed for the current stage, the server "unlocks" all the 
 After the runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:
 
 - The type of runner it is registered as:
-  - a shared runner
+  - an instance runner
   - a group runner
   - a project runner
 - Any associated tags.
@@ -143,8 +191,8 @@ This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/
 
 There are 3 top level queries that this service uses to gather the majority of the jobs and they are selected based on the level where the runner is registered to:
 
-- Select jobs for shared runner (instance-wide)
-  - Utilizes a fair scheduling algorithm which prioritizes projects with fewer running builds
+- Select jobs for instance runner (instance-wide)
+  - Uses a fair scheduling algorithm which prioritizes projects with fewer running builds
 - Select jobs for group runner
 - Select jobs for project runner
 
@@ -230,7 +278,7 @@ See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the fu
 This diagram shows how the [Compute quota](../../ci/pipelines/compute_minutes.md)
 feature and its components work.
 
-![compute quota architecture](img/ci_minutes.png)
+![compute quota architecture](img/ci_minutes_v13_9.png)
 <!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
 
 Watch a walkthrough of this feature in details in the video below.

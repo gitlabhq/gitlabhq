@@ -1042,7 +1042,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       it 'returns false' do
         allow(lfs).to receive(:backup!).and_raise(Backup::FileBackupError.new('foo', 'bar'))
 
-        expect(subject.create).to be_falsey # rubocop:disable Rails/SaveBang -- not a Rails create method
+        expect(subject.create).to be_falsey
       end
     end
   end

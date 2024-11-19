@@ -7,7 +7,7 @@ module Users
 
     deduplicate :until_executed
     idempotent!
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- This is a cron job
+    data_consistency :always
     feature_category :user_management
 
     BATCH_SIZE = 1000

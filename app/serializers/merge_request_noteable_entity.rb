@@ -56,7 +56,7 @@ class MergeRequestNoteableEntity < IssuableEntity
   end
 
   expose :locked_discussion_docs_path, if: ->(merge_request) { merge_request.discussion_locked? } do |merge_request|
-    help_page_path('user/discussions/index.md', anchor: 'prevent-comments-by-locking-an-issue')
+    help_page_path('user/discussions/index.md', anchor: 'prevent-comments-by-locking-the-discussion')
   end
 
   expose :is_project_archived do |merge_request|
@@ -66,7 +66,7 @@ class MergeRequestNoteableEntity < IssuableEntity
   expose :project_id
 
   expose :archived_project_docs_path, if: ->(merge_request) { merge_request.project.archived? } do |merge_request|
-    help_page_path('user/project/settings/index.md', anchor: 'archive-a-project')
+    help_page_path('user/project/working_with_projects.md', anchor: 'delete-a-project')
   end
 
   private

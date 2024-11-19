@@ -101,6 +101,7 @@ describe('GroupRunnersApp', () => {
     props = {},
     provide = {},
     mountFn = shallowMountExtended,
+    stubs,
     ...options
   } = {}) => {
     const { cacheConfig, localMutations } = createLocalState();
@@ -122,6 +123,10 @@ describe('GroupRunnersApp', () => {
       provide: {
         localMutations,
         ...provide,
+      },
+      stubs: {
+        RunnerFilteredSearchBar: true,
+        ...stubs,
       },
       mocks: {
         $toast: {
@@ -149,9 +154,11 @@ describe('GroupRunnersApp', () => {
   it('shows the runner tabs with a runner count for each type', async () => {
     await createComponent({ mountFn: mountExtended });
 
-    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      `All ${mockGroupRunnersCount} Group ${mockGroupRunnersCount} Project ${mockGroupRunnersCount}`,
-    );
+    const tabs = findRunnerTypeTabs().text().replace(/\s+/g, ' ');
+    expect(tabs).toContain(`All ${mockGroupRunnersCount}`);
+    expect(tabs).toContain(`Group ${mockGroupRunnersCount}`);
+    expect(tabs).toContain(`Project ${mockGroupRunnersCount}`);
+    expect(tabs).not.toContain('Instance');
   });
 
   it('shows the runner setup instructions', () => {

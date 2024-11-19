@@ -84,7 +84,7 @@ module Users
       product_analytics_dashboard_feedback: 82, # EE-only
       joining_a_project_alert: 83, # EE-only
       transition_to_jihu_callout: 84,
-      summarize_code_changes: 85, # EE-only
+      # 85 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169248
       # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
       deployment_details_feedback: 87,
       # 88 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152999
@@ -94,7 +94,8 @@ module Users
       work_item_epic_feedback: 92, # EE-only
       branch_rules_tip_callout: 93,
       openssl_callout: 94,
-      duo_free_access_ending_banner: 95 # EE-only
+      # 95 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170868
+      new_mr_dashboard_banner: 96
     }
 
     validates :feature_name,

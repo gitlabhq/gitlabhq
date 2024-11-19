@@ -1,0 +1,12 @@
+---
+table_name: pipl_users
+classes:
+- ComplianceManagement::PiplUser
+feature_categories:
+- compliance_management
+description: Stores user accesses and notifications from PIPL countries
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169769
+milestone: '17.6'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true
+notes: Exempted because Not related to projects or groups

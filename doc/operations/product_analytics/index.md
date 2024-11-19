@@ -22,8 +22,8 @@ DETAILS:
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) in GitLab 16.11.
 > - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flag `product_analytics_admin_settings` added in GitLab 17.5.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta and feature flag `product_analytics_features` added in GitLab 17.5.
+> - Funnels support removed in GitLab 17.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flags `product_analytics_admin_settings` and [`product_analytics_features`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) added in GitLab 17.5.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -40,11 +40,11 @@ products that drive user engagement and business growth.
 For an overview of the product analytics setup and functionality,
 watch the [Product Analytics walkthrough videos](https://www.youtube.com/playlist?list=PL05JrBw4t0Kqfb4oLOFKkXxNrBJzDQ3sL&feature=shared).
 
-For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
+For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/platform-insights/product-analytics/).
 To leave feedback about product analytics bugs or functionality:
 
 - Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
-- Create an issue with the `group::product analytics` label.
+- Create an issue with the `group::platform insights` label.
 
 ## How product analytics works
 
@@ -105,7 +105,7 @@ process, store and query your analytics data.
 DETAILS:
 **Offering:** GitLab.com
 
-On GitLab.com you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`. This service is offered only in beta.
+On GitLab.com you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
 
 If GitLab manages your product analytics provider, then your analytics data is retained for one year.
 You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
@@ -119,21 +119,21 @@ A self-managed product analytics provider is a deployed instance of the
 
 On GitLab.com, the self-managed provider details are defined in [project-level settings](#project-level-settings).
 
-On GitLab self-managed and GitLab Dedicated, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
+On GitLab self-managed, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
 If you need different providers for different projects, you can define additional analytics providers in [project-level settings](#project-level-settings).
 
 ::EndTabs
 
 ### Instance-level settings
 
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Prerequisites:
 
 - You must have administrator access for the instance.
 
 NOTE:
-These instance-level settings are required to enable product analytics on GitLab self-managed and GitLab Dedicated,
+These instance-level settings are required to enable product analytics on GitLab self-managed,
 and cascade to all projects by default.
 
 To enable product analytics on your instance:
@@ -250,134 +250,6 @@ The autofill approach has both benefits and limitations.
     - The date selector in the UI already uses this filter.
   - The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
     returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
-
-## Funnel analysis
-
-Use funnel analysis to understand the flow of users through your application, and where
-users drop out of a predefined flow (for example, a checkout process or ticket purchase).
-
-Each project can define an unlimited number of funnels.
-Like dashboards, funnels are defined with the GitLab YAML schema
-and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
-If a repository has a custom dashboards pointer project that points to another repository,
-funnels must be defined in the pointer project.
-
-### Create a funnel dashboard
-
-To create a funnel dashboard, you must first create a funnel definition file and a visualization.
-Each funnel must have a custom visualization defined for it.
-When funnel definitions and visualizations are ready,
-you can [create a custom dashboard](../../user/analytics/analytics_dashboards.md#create-a-custom-dashboard)
-to visualize funnel analysis behavior.
-
-#### Create a funnel definition
-
-1. In the `.gitlab/analytics/` directory, create a directory named `funnels`.
-1. In the new `.gitlab/analytics/funnels` directory, create a funnel definition YAML file.
-
-Funnel definitions must include the key `seconds_to_convert` and an array of `steps`.
-
-| Key                  | Description                                              |
-|----------------------|----------------------------------------------------------|
-| `seconds_to_convert` | The number of seconds a user has to complete the funnel. |
-| `steps`              | An array of funnel steps.                                |
-
-Each step must include the keys `name`, `target`, and `action`.
-
-| Key      | Description                                                                              |
-|----------|------------------------------------------------------------------------------------------|
-| `name`   | The name of the step. This should be a unique slug.                                      |
-| `action` | The action performed. (Only `pageview` is supported.)                          |
-| `target` | The target of the step. (Because only `pageview` is supported, this should be a path.) |
-
-The following example defines a funnel that tracks users who completed a purchase within one hour by going through three target pages:
-
-```yaml
-seconds_to_convert: 3600
-steps:
-  - name: view_page_1
-    target: '/page1.html'
-    action: 'pageview'
-  - name: view_page_2
-    target: '/page2.html'
-    action: 'pageview'
-  - name: view_page_3
-    target: '/page3.html'
-    action: 'pageview'
-```
-
-#### Create a funnel visualization
-
-To create funnel visualizations, follow the steps for [defining a chart visualization](../../user/analytics/analytics_dashboards.md#define-a-chart-visualization).
-Funnel visualizations support the measure `count` and the dimension `step`.
-
-The following example defines a column chart that visualizes the number of users who reached different steps in a funnel:
-
-```yaml
-version: 1
-type: ColumnChart
-data:
-  type: cube_analytics
-  query:
-    measures:
-      - FUNNEL_NAME.count
-    dimensions:
-      - FUNNEL_NAME.step
-    limit: 100
-    timezone: UTC
-    timeDimensions: []
-options:
-  xAxis:
-    name: Step
-    type: category
-  yAxis:
-    name: Total
-    type: value
-```
-
-NOTE:
-The funnel name defined in the YAML definition is converted to a slug that can be referenced in visualization definitions.
-For example, the funnel name `Successful Conversions` is converted to `successful_conversions`.
-
-### Query a funnel
-
-You can [query the funnel data with the REST API](../../api/product_analytics.md#send-query-request-to-cube).
-To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
-
-NOTE:
-The name of a funnel is generated from the filename of the funnel definition YAML file,
-by separating words with underscores and removing special characters.
-For example, for a funnel definition file in `.gitlab/analytics/funnels/Successful Conversions.yaml`
-the funnel name is `successful_conversions`.
-This funnel name can be referenced in visualization definitions.
-
-NOTE:
-The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
-
-```json
-{
-  "query": {
-      "measures": [
-        "FUNNEL_NAME.count"
-      ],
-      "order": {
-        "FUNNEL_NAME.count": "desc"
-      },
-      "filters": [
-        {
-          "member": "FUNNEL_NAME.date",
-          "operator": "beforeDate",
-          "values": [
-            "2023-02-01"
-          ]
-        }
-      ],
-      "dimensions": [
-        "FUNNEL_NAME.step"
-      ]
-    }
-}
-```
 
 ## Raw data export
 

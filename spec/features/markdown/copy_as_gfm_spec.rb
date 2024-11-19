@@ -29,7 +29,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
     it 'transforms HTML to GFM', :aggregate_failures do
       verify(
         'nesting',
-        '> 1. [x] [**$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~**](http://google.com)'
+        "> 1. [x] [**$`2 + 2`$ {-=-}{+=+} 2^2 ~~:#{AwardEmoji::THUMBS_UP}:~~**](http://google.com)"
       )
 
       verify(
@@ -166,7 +166,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
 
       verify(
         'EmojiFilter',
-        ':thumbsup:'
+        ":#{AwardEmoji::THUMBS_UP}:"
       )
 
       verify(

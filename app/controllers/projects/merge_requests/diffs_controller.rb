@@ -38,7 +38,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     render_diffs
   end
 
-  # rubocop: disable Metrics/AbcSize
   def diffs_batch
     diff_options_hash = diff_options
     diff_options_hash[:paths] = params[:paths] if params[:paths]
@@ -86,7 +85,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
     end
   end
-  # rubocop: enable Metrics/AbcSize
 
   def diffs_metadata
     diffs = @compare.diffs(diff_options)

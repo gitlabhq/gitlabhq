@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.issues_created_gitlab_alerts
 description: Count of all issues created from GitLab alerts (bot and non-bot)
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all
@@ -11,7 +11,7 @@ instrumentation_class: CountIssuesCreatedManuallyFromAlertsMetric
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

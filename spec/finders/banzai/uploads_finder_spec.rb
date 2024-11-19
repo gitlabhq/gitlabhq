@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::UploadsFinder, feature_category: :team_planning do
+RSpec.describe Banzai::UploadsFinder, feature_category: :markdown do
   let_it_be(:project) { create(:project) }
   let_it_be(:project_upload_1) { create(:upload, :issuable_upload, model: project, filename: 'file1.jpg') }
   let_it_be(:project_upload_2) { create(:upload, :issuable_upload, model: project, filename: 'file2.jpg') }

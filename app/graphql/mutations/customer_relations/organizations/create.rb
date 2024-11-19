@@ -38,7 +38,11 @@ module Mutations
         def resolve(args)
           group = authorized_find!(id: args[:group_id])
 
-          result = ::CustomerRelations::Organizations::CreateService.new(group: group, current_user: current_user, params: args).execute
+          result = ::CustomerRelations::Organizations::CreateService.new(
+            group: group,
+            current_user: current_user,
+            params: args
+          ).execute
           { organization: result.payload, errors: result.errors }
         end
       end

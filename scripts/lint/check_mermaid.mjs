@@ -71,7 +71,6 @@ await Promise.all(
 
 if (errors > 0) {
   console.log(`Total errors: ${errors}`);
-  // eslint-disable-next-line no-restricted-syntax
   console.log(`To fix these errors, see https://docs.gitlab.com/ee/development/documentation/testing/#mermaid-chart-linting.`);
   process.exit(1);
 }

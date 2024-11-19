@@ -23,7 +23,7 @@ RSpec.describe Packages::Nuget::SearchService, feature_category: :package_regist
   describe '#execute' do
     subject { described_class.new(user, target, search_term, options).execute }
 
-    shared_examples 'handling all the conditions' do
+    shared_examples 'handling all the conditions' do |factory: :nuget_package|
       it { expect_search_results 3, package_a, packages_b, packages_c }
 
       context 'with a smaller per page count' do
@@ -104,7 +104,7 @@ RSpec.describe Packages::Nuget::SearchService, feature_category: :package_regist
 
       context 'with pre release packages' do
         let_it_be(:package_e) do
-          create(:nuget_package, project: project, name: 'DummyPackageE', version: '3.2.1-alpha')
+          create(factory, project: project, name: 'DummyPackageE', version: '3.2.1-alpha')
         end
 
         context 'when including them' do
@@ -118,7 +118,7 @@ RSpec.describe Packages::Nuget::SearchService, feature_category: :package_regist
 
           context 'when mixed with release versions' do
             let_it_be(:package_e_release) do
-              create(:nuget_package, project: project, name: 'DummyPackageE', version: '3.2.1')
+              create(factory, project: project, name: 'DummyPackageE', version: '3.2.1')
             end
 
             it { expect_search_results 4, package_a, packages_b, packages_c, package_e_release }
@@ -162,7 +162,7 @@ RSpec.describe Packages::Nuget::SearchService, feature_category: :package_regist
         context 'with public registry in private group' do
           before_all do
             [subgroup, group, project].each do |entity|
-              entity.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+              entity.reload.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
             end
             project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
           end

@@ -212,6 +212,7 @@ export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';
 
 export const SORT_QUERY_PARAM_NAME = 'sort';
 export const ACTIVE_TAB_QUERY_PARAM_NAME = 'tab';
+export const ACTIVE_SUBTAB_QUERY_PARAM = 'subtab';
 
 export const MEMBER_ACCESS_LEVEL_PROPERTY_NAME = 'access_level';
 

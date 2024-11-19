@@ -130,7 +130,7 @@ describe('HelpCenter component', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           {
             text: HelpCenter.i18n.version,
-            href: helpPagePath('update/index'),
+            href: helpPagePath('update/index.md'),
             version: '16.0',
             extraAttrs: trackingAttrs('version_help_dropdown'),
           },

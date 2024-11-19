@@ -51,11 +51,12 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
       end
     end
 
-    context 'when a base additional property is invalid' do
+    context 'when an additional property is invalid' do
       [
         { label: 123 },
         { value: 'test_value' },
-        { property: true }
+        { property: true },
+        { lang: [1, 2] }
       ].each do |invalid_property|
         context "when #{invalid_property.each_key.first} is invalid" do
           let(:additional_properties) { invalid_property }
@@ -75,7 +76,20 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
 
       it 'raises an InvalidPropertyError for unknown properties' do
         expect { validate }.to raise_error(Gitlab::Tracking::EventValidator::InvalidPropertyError,
-          'Unknown additional property: custom_property')
+          'Unknown additional property: custom_property for event_name: test_event')
+      end
+    end
+
+    context 'when additional properties are not defined in the event definition files' do
+      let(:additional_properties) { { custom_property: 'value' } }
+
+      before do
+        allow(event_definition).to receive(:to_h).and_return({})
+      end
+
+      it 'raises an InvalidPropertyError for unknown properties' do
+        expect { validate }.to raise_error(Gitlab::Tracking::EventValidator::InvalidPropertyError,
+          'Unknown additional property: custom_property for event_name: test_event')
       end
     end
   end

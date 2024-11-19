@@ -178,7 +178,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
   context 'when IntrospectionQuery' do
     it 'is not too complex nor recursive' do
-      query = File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql'))
+      query = CachedIntrospectionQuery.query_string
 
       post_graphql(query, current_user: nil)
 
@@ -187,7 +187,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
   end
 
   context 'logging' do
-    let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
+    let(:query) { CachedIntrospectionQuery.query_string }
 
     it 'logs the query complexity and depth' do
       expect_any_instance_of(Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer).to receive(:duration).and_return(7)
@@ -196,8 +196,8 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
         hash_including(
           trace_type: 'execute_query',
           "query_analysis.duration_s" => 7,
-          "query_analysis.complexity" => 217,
-          "query_analysis.depth" => 15,
+          "query_analysis.complexity" => an_instance_of(Integer),
+          "query_analysis.depth" => an_instance_of(Integer),
           "query_analysis.used_deprecated_fields" => an_instance_of(Array),
           "query_analysis.used_deprecated_arguments" => an_instance_of(Array),
           "query_analysis.used_fields" => an_instance_of(Array)

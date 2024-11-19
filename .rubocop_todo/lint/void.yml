@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+Lint/Void:
+  Exclude:
+    - 'spec/lib/gitlab/import_export/json/streaming_serializer_spec.rb'

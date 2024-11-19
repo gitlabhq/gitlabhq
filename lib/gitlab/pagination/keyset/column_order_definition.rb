@@ -129,7 +129,6 @@ module Gitlab
 
         attr_reader :attribute_name, :column_expression, :order_expression, :add_to_projections, :order_direction
 
-        # rubocop: disable Metrics/ParameterLists
         def initialize(attribute_name:, order_expression:, column_expression: nil, reversed_order_expression: nil, nullable: :not_nullable, order_direction: nil, sql_type: nil, add_to_projections: false)
           @attribute_name = attribute_name
           @order_expression = order_expression
@@ -140,7 +139,6 @@ module Gitlab
           @sql_type = sql_type
           @add_to_projections = add_to_projections
         end
-        # rubocop: enable Metrics/ParameterLists
 
         def reverse
           self.class.new(

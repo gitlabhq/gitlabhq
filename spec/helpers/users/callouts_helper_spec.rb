@@ -284,4 +284,24 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be false }
     end
   end
+
+  describe '.show_new_mr_dashboard_banner?' do
+    subject { helper.show_new_mr_dashboard_banner? }
+
+    before do
+      allow(helper).to receive(:user_dismissed?).with(described_class::NEW_MR_DASHBOARD_BANNER) { dismissed }
+    end
+
+    context 'when user has not dismissed' do
+      let(:dismissed) { false }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user dismissed' do
+      let(:dismissed) { true }
+
+      it { is_expected.to be false }
+    end
+  end
 end

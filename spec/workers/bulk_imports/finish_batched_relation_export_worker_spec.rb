@@ -40,16 +40,30 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
         end
       end
 
-      context 'when export is in progress' do
+      shared_examples 'reenqueues itself' do
         it 'reenqueues itself' do
-          create(:bulk_import_export_batch, :started, export: export)
-
           expect(described_class).to receive(:perform_in).twice.with(described_class::REENQUEUE_DELAY, export.id)
 
           perform_multiple(job_args)
 
           expect(export.reload.started?).to eq(true)
         end
+      end
+
+      context 'when export has started' do
+        before do
+          create(:bulk_import_export_batch, :started, export: export)
+        end
+
+        it_behaves_like 'reenqueues itself'
+      end
+
+      context 'when export has been created' do
+        before do
+          create(:bulk_import_export_batch, :created, export: export)
+        end
+
+        it_behaves_like 'reenqueues itself'
       end
 
       context 'when export timed out' do

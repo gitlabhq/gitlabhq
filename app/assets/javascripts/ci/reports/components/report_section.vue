@@ -201,10 +201,7 @@ export default {
 
         <slot name="action-buttons" :is-collapsible="isCollapsible"></slot>
 
-        <div
-          v-if="isCollapsible"
-          class="gl-ml-3 gl-border-l-1 gl-border-gray-100 gl-pl-3 gl-border-l-solid"
-        >
+        <div v-if="isCollapsible" class="gl-border-l gl-ml-3 gl-pl-3">
           <gl-button
             data-testid="report-section-expand-button"
             category="tertiary"

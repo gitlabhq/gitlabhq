@@ -18,14 +18,14 @@ module Gitlab
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
         extra = custom_additional_properties(additional_properties)
-        additional_properties = additional_properties.slice(*base_additional_properties.keys)
+        base_additional_properties = additional_properties.slice(*base_additional_properties_keys)
 
         project = kwargs[:project]
         kwargs[:namespace] ||= project.namespace if project
 
         update_redis_values(event_name, additional_properties, kwargs)
-        trigger_snowplow_event(event_name, category, additional_properties, extra, kwargs) if send_snowplow_event
-        send_application_instrumentation_event(event_name, additional_properties, kwargs) if send_snowplow_event
+        trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs) if send_snowplow_event
+        send_application_instrumentation_event(event_name, base_additional_properties, kwargs) if send_snowplow_event
 
         if Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
           create_early_access_program_event(event_name, category, additional_properties[:label], kwargs)
@@ -65,7 +65,7 @@ module Gitlab
       end
 
       def custom_additional_properties(additional_properties)
-        additional_properties.except(*base_additional_properties.keys)
+        additional_properties.except(*base_additional_properties_keys)
       end
 
       def update_total_counter(event_selection_rule)
@@ -103,7 +103,7 @@ module Gitlab
 
         standard_context = Tracking::StandardContext.new(
           project_id: project&.id,
-          user_id: user&.id,
+          user: user,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
@@ -160,8 +160,8 @@ module Gitlab
       end
       strong_memoize_attr :gitlab_sdk_client
 
-      def base_additional_properties
-        Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES
+      def base_additional_properties_keys
+        Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES.keys
       end
     end
   end

@@ -2,6 +2,7 @@ const path = require('path');
 const { existsSync, readFileSync } = require('fs');
 const { RuleTester } = require('eslint');
 const { marked } = require('marked');
+const vueEslintParser = require('vue-eslint-parser');
 const rule = require('../../../../../tooling/eslint-config/eslint-local-rules/vue_require_valid_help_page_link_component');
 
 jest.mock('fs');
@@ -26,8 +27,10 @@ readFileSync.mockImplementation(() => '');
 marked.parse.mockImplementation(() => VALID_ANCHOR);
 
 const ruleTester = new RuleTester({
-  parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2020 },
+  languageOptions: {
+    parser: vueEslintParser,
+    ecmaVersion: 2020,
+  },
 });
 
 function wrapTemplate(content) {
@@ -61,14 +64,6 @@ ruleTester.run('require-valid-help-page-path', rule, {
       errors: [
         {
           message: 'The `href` prop must be passed as a string literal.',
-        },
-      ],
-    },
-    {
-      code: makeComponent(INVALID_PATH),
-      errors: [
-        {
-          message: `\`${path.join(__dirname, '../../../../../doc', INVALID_PATH, 'index.md')}\` does not exist.`,
         },
       ],
     },

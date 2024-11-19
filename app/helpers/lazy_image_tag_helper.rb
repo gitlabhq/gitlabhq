@@ -31,7 +31,7 @@ module LazyImageTagHelper
   end
 
   # Required for Banzai::Filter::ImageLazyLoadFilter
-  module_function :placeholder_image # rubocop: disable Style/AccessModifierDeclarations
+  module_function :placeholder_image
 
   private
 
@@ -39,9 +39,7 @@ module LazyImageTagHelper
     dark_variant = options.delete(:dark_variant)
     auto_dark = options.delete(:auto_dark)
 
-    if dark_variant && auto_dark
-      raise ArgumentError, "dark_variant and auto_dark are mutually exclusive"
-    end
+    raise ArgumentError, "dark_variant and auto_dark are mutually exclusive" if dark_variant && auto_dark
 
     if (auto_dark || dark_variant) && user_application_dark_mode?
       if auto_dark

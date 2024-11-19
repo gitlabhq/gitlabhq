@@ -21,7 +21,7 @@ On top of each dashboard, there's the same panel with the [error budget](../inde
 Here, the time based targets adjust depending on the range.
 For example, while the budget was 20 minutes per 28 days, it is only 1/4 of that for 7 days:
 
-![5m budget in 7 days](img/error_budget_detail_7d_budget.png)
+![5m budget in 7 days](img/error_budget_detail_7d_budget_v14_10.png)
 
 Also, keep in mind that Grafana rounds the numbers. In this example the
 total time spent is 5 minutes and 24 seconds, so 24 seconds over
@@ -67,7 +67,7 @@ If this is something you would like for your group, let us know there.
 
 ### Stage group aggregation
 
-![stage group aggregation graphs](img/error_budget_detail_stage_group_aggregation.png)
+![stage group aggregation graphs](img/error_budget_detail_stage_group_aggregation_v14_10.png)
 
 The stage group aggregation shows a graph with the Apdex and errors
 portion of the error budget over time. The lower a dip in the Apdex
@@ -82,7 +82,7 @@ the graph.
 
 ### Service-level indicators
 
-![Rails requests service level indicator](img/error_budget_detail_sli.png)
+![Rails requests service level indicator](img/error_budget_detail_sli_v14_10.png)
 
 This time series shows a breakdown of each SLI that could be contributing to the
 error budget for a stage group. Similar to the stage group

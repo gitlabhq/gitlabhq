@@ -3,21 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DeployKeyAccess, feature_category: :source_code_management do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:deploy_key) { create(:deploy_key, user: user) }
-
-  let(:project) { create(:project, :repository) }
-  let(:protected_branch) { create(:protected_branch, :no_one_can_push, project: project) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
+  let_it_be(:deploy_key) { create(:deploy_key, :owned, write_access_to: project) }
 
   subject(:access) { described_class.new(deploy_key, container: project) }
 
-  before do
-    project.add_guest(user)
-    create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key)
+  before_all do
+    project.add_developer(deploy_key.user)
   end
 
   describe '#can_create_tag?' do
-    let!(:protected_tag) { create(:protected_tag, :no_one_can_create, project: project, name: 'v*') }
+    let_it_be(:protected_tag) { create(:protected_tag, :no_one_can_create, project: project, name: 'v*') }
 
     context 'when no-one can create tag' do
       it 'returns false' do
@@ -37,40 +33,25 @@ RSpec.describe Gitlab::DeployKeyAccess, feature_category: :source_code_managemen
   end
 
   describe '#can_push_for_ref?' do
-    context 'push to a protected branch of this project via a deploy key' do
+    let_it_be(:protected_branch) { create(:protected_branch, :no_one_can_push, project: project) }
+
+    subject(:can_push_for_ref) { access.can_push_for_ref?(protected_branch.name) }
+
+    it { is_expected.to be_falsey }
+
+    context 'when the deploy_key is active for the project' do
       before do
         create(:protected_branch_push_access_level, protected_branch: protected_branch, deploy_key: deploy_key)
       end
 
-      context 'when the project has active deploy key owned by this user' do
-        it 'returns true' do
-          expect(access.can_push_for_ref?(protected_branch.name)).to be_truthy
-        end
-      end
+      it { is_expected.to be_truthy }
 
-      context 'when the project has active deploy keys, but not by this user' do
-        let(:deploy_key) { create(:deploy_key, user: create(:user)) }
-
-        it 'returns false' do
-          expect(access.can_push_for_ref?(protected_branch.name)).to be_falsey
-        end
-      end
-
-      context 'when there is another branch no one can push to' do
-        let(:another_branch) { create(:protected_branch, :no_one_can_push, name: 'another_branch', project: project) }
-
-        it 'returns false when trying to push to that other branch' do
-          expect(access.can_push_for_ref?(another_branch.name)).to be_falsey
+      context 'but the deploy key user cannot read the project' do
+        before do
+          deploy_key.user = build(:user)
         end
 
-        context 'and the deploy key added for the first protected branch is also added for this other branch' do
-          it 'returns true for both protected branches' do
-            create(:protected_branch_push_access_level, protected_branch: another_branch, deploy_key: deploy_key)
-
-            expect(access.can_push_for_ref?(protected_branch.name)).to be_truthy
-            expect(access.can_push_for_ref?(another_branch.name)).to be_truthy
-          end
-        end
+        it { is_expected.to be_falsey }
       end
     end
   end

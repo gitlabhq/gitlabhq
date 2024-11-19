@@ -19,28 +19,28 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe 'Callbacks' do
-    context 'when combined_project_update_on_event_creation is enabled' do
-      before do
-        stub_feature_flags(combined_project_update_on_event_creation: project)
-      end
-
-      it 'does call update_project_activity instead of legacy callbacks' do
+    describe 'after_create :reset_project_activity' do
+      it 'calls the reset_project_activity method' do
         expect_next_instance_of(described_class) do |instance|
-          expect(instance).to receive(:update_project_activity)
-          expect(instance).not_to receive(:reset_project_activity)
-          expect(instance).not_to receive(:set_last_repository_updated_at)
+          expect(instance).to receive(:reset_project_activity)
         end
 
         create_push_event(project, project.first_owner)
       end
     end
 
-    context 'when combined_project_update_on_event_creation is disabled' do
-      before do
-        stub_feature_flags(combined_project_update_on_event_creation: false)
-      end
+    describe 'after_create :set_last_repository_updated_at' do
+      context 'with a push event' do
+        it 'updates the project last_repository_updated_at' do
+          project.update!(last_repository_updated_at: 1.year.ago)
 
-      describe 'after_create :reset_project_activity' do
+          event = create_push_event(project, project.first_owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_like_time(event.created_at)
+        end
+
         it 'calls the reset_project_activity method' do
           expect_next_instance_of(described_class) do |instance|
             expect(instance).to receive(:reset_project_activity)
@@ -50,37 +50,15 @@ RSpec.describe Event, feature_category: :user_profile do
         end
       end
 
-      describe 'after_create :set_last_repository_updated_at' do
-        context 'with a push event' do
-          it 'updates the project last_repository_updated_at' do
-            project.update!(last_repository_updated_at: 1.year.ago)
+      context 'without a push event' do
+        it 'does not update the project last_repository_updated_at' do
+          project.update!(last_repository_updated_at: 1.year.ago)
 
-            event = create_push_event(project, project.first_owner)
+          create(:closed_issue_event, project: project, author: project.first_owner)
 
-            project.reload
+          project.reload
 
-            expect(project.last_repository_updated_at).to be_like_time(event.created_at)
-          end
-
-          it 'calls the reset_project_activity method' do
-            expect_next_instance_of(described_class) do |instance|
-              expect(instance).to receive(:reset_project_activity)
-            end
-
-            create_push_event(project, project.first_owner)
-          end
-        end
-
-        context 'without a push event' do
-          it 'does not update the project last_repository_updated_at' do
-            project.update!(last_repository_updated_at: 1.year.ago)
-
-            create(:closed_issue_event, project: project, author: project.first_owner)
-
-            project.reload
-
-            expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
-          end
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
         end
       end
     end
@@ -359,6 +337,7 @@ RSpec.describe Event, feature_category: :user_profile do
     let(:note_on_project_snippet) { create(:note_on_project_snippet, author: author, noteable: project_snippet, project: project) }
     let(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: author, noteable: personal_snippet, project: nil) }
     let(:note_on_design) { create(:note_on_design, author: author, noteable: design, project: project) }
+    let(:note_on_wiki_page) { create(:note_on_wiki_page, author: author, project: project) }
     let(:milestone_on_project) { create(:milestone, project: project) }
     let(:event) do
       described_class.new(project: project, target: target, author_id: author.id)
@@ -610,6 +589,34 @@ RSpec.describe Event, feature_category: :user_profile do
 
     context 'wiki-page event', :aggregate_failures do
       let(:event) { create(:wiki_page_event, project: project) }
+
+      context 'on private project', :aggregate_failures do
+        let(:project) { create(:project, :wiki_repo) }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member, :admin) }
+          end
+        end
+      end
+
+      context 'wiki-page event on public project', :aggregate_failures do
+        let(:project) { create(:project, :public, :wiki_repo) }
+
+        include_examples 'visibility examples' do
+          let(:visibility) { visible_to_all }
+        end
+      end
+    end
+
+    context 'wiki page note event', :aggregate_failures do
+      let(:event) { create(:event, :for_wiki_page_note, project: project) }
 
       context 'on private project', :aggregate_failures do
         let(:project) { create(:project, :wiki_repo) }

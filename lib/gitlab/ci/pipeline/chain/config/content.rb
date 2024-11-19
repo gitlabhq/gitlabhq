@@ -11,7 +11,7 @@ module Gitlab
 
             def perform!
               if pipeline_config&.exists?
-                @pipeline.build_pipeline_config(content: pipeline_config.content)
+                @pipeline.build_pipeline_config(content: pipeline_config.content, project_id: @pipeline.project_id)
                 @command.config_content = pipeline_config.content
                 @pipeline.config_source = pipeline_config.source
                 @command.pipeline_config = pipeline_config

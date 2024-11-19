@@ -3,54 +3,50 @@
 RSpec.describe QA::Runtime::Namespace do
   include QA::Support::Helpers::StubEnv
 
-  describe '.name' do
-    context 'when CACHE_NAMESPACE_NAME is not defined' do
-      before do
-        stub_env('CACHE_NAMESPACE_NAME', nil)
-      end
+  let!(:time) { described_class.time }
 
-      it 'caches name by default' do
-        name = described_class.name
-        expect(described_class.name).to eq(name)
-      end
+  before(:context) do
+    described_class.instance_variable_set(:@time, nil)
+  end
 
-      it 'does not cache name when reset_cache is true' do
-        name = described_class.name
-        expect(described_class.name(reset_cache: true)).not_to eq(name)
-      end
-    end
-
-    context 'when CACHE_NAMESPACE_NAME is defined' do
-      before do
-        stub_env('CACHE_NAMESPACE_NAME', 'true')
-      end
-
-      it 'caches name by default' do
-        name = described_class.name
-        expect(described_class.name).to eq(name)
-      end
-
-      it 'caches name when reset_cache is false' do
-        name = described_class.name
-        expect(described_class.name(reset_cache: false)).to eq(name)
-      end
-
-      it 'does not cache name when reset_cache is true' do
-        name = described_class.name
-        expect(described_class.name(reset_cache: true)).not_to eq(name)
-      end
+  describe '.group_name' do
+    it "returns unique name with predefined pattern" do
+      expect(described_class.group_name).to match(/qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-[a-f0-9]{16}/)
     end
   end
 
-  describe '.path' do
+  describe '.sandbox_name' do
+    let(:dot_com) { false }
+    let(:release) { false }
+
     before do
-      allow(QA::Runtime::Scenario).to receive(:gitlab_address).and_return("http://gitlab.test")
-      described_class.instance_variable_set(:@sandbox_name, nil)
+      described_class.instance_variable_set(:@live_env, nil)
+      allow(QA::Runtime::Env).to receive_messages(
+        running_on_dot_com?: dot_com,
+        running_on_release?: release
+      )
     end
 
-    it 'is always cached' do
-      path = described_class.path
-      expect(described_class.path).to eq(path)
+    context "when running on .com environment" do
+      let(:dot_com) { true }
+
+      it "returns day specific sandbox name" do
+        expect(described_class.sandbox_name).to match(%r{gitlab-qa-sandbox-group-#{time.wday + 1}})
+      end
+    end
+
+    context "when running on release environment" do
+      let(:release) { true }
+
+      it "returns day specific sandbox name" do
+        expect(described_class.sandbox_name).to match(%r{gitlab-qa-sandbox-group-#{time.wday + 1}})
+      end
+    end
+
+    context "when running on ephemeral environment" do
+      it "returns random sandbox name" do
+        expect(described_class.sandbox_name).to match(/qa-sandbox-[a-f0-9]{12}/)
+      end
     end
   end
 end

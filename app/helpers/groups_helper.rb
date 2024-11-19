@@ -40,9 +40,7 @@ module GroupsHelper
   end
 
   def group_icon_url(group, options = {})
-    if group.is_a?(String)
-      group = Group.find_by_full_path(group)
-    end
+    group = Group.find_by_full_path(group) if group.is_a?(String)
 
     group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
@@ -213,11 +211,8 @@ module GroupsHelper
       show_schema_markup: 'true',
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
-      new_subgroup_illustration: image_path('illustrations/subgroup-create-new-sm.svg'),
-      new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),
       empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
-      empty_subgroup_illustration: image_path('illustrations/empty-state/empty-subgroup-md.svg'),
-      empty_search_illustration: image_path('illustrations/empty-state/empty-search-md.svg'),
+      empty_subgroup_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
@@ -315,7 +310,10 @@ module GroupsHelper
 
   def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path js-breadcrumb-item-text #{'hidable' if hidable}") do
-      icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16) if group.try(:avatar_url) || show_avatar
+      if group.try(:avatar_url) || show_avatar
+        icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16)
+      end
+
       [icon, simple_sanitize(group.name)].join.html_safe
     end
   end

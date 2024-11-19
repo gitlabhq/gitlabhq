@@ -28,7 +28,8 @@ module Mutations
 
       argument :milestones, [GraphQL::Types::String],
         required: false,
-        description: 'Title of each milestone the release is associated with. GitLab Premium customers can specify group milestones.'
+        description: 'Title of each milestone the release is associated with. ' \
+          'GitLab Premium customers can specify group milestones.'
 
       authorize :update_release
 

@@ -59,11 +59,14 @@ export function webpackTailwindCompilerPlugin({ shouldWatch = true }) {
 }
 
 if (wasScriptCalledDirectly()) {
-  build().then(() => {
-    console.log('Tailwind utils built successfully')
-  }).catch(e => {
-    console.warn('Building Tailwind utils produced an error')
-    console.error(e);
-    process.exitCode = 1;
-  });
+  build()
+    // eslint-disable-next-line promise/always-return
+    .then(() => {
+      console.log('Tailwind utils built successfully');
+    })
+    .catch((e) => {
+      console.warn('Building Tailwind utils produced an error');
+      console.error(e);
+      process.exitCode = 1;
+    });
 }

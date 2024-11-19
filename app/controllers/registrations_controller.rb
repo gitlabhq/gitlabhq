@@ -147,7 +147,7 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def onboarding_status
-    Onboarding::Status.new(onboarding_status_params, session, resource)
+    Onboarding::Status.new(onboarding_status_params, session['user_return_to'], resource)
   end
   strong_memoize_attr :onboarding_status
 
@@ -190,6 +190,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def check_captcha
+    set_current_organization
     return unless show_recaptcha_sign_up?
     return unless Gitlab::Recaptcha.load_configurations!
 
@@ -313,7 +314,7 @@ class RegistrationsController < Devise::RegistrationsController
     # overridden by EE module
   end
 
-  def arkose_labs_enabled?(user: nil) # rubocop:disable Lint/UnusedMethodArgument -- Param is unused here but used in EE override
+  def arkose_labs_enabled?(user:) # rubocop:disable Lint/UnusedMethodArgument -- Param is unused here but used in EE override
     false
   end
 

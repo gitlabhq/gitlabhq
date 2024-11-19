@@ -34,7 +34,7 @@ export default {
         : this.$options.i18n.enterFullScreen;
     },
     headerTopClass() {
-      return this.isFullScreen ? 'gl-top-0' : 'gl-top-app-header';
+      return this.isFullScreen ? 'gl-top-0' : 'top-app-header';
     },
   },
 };

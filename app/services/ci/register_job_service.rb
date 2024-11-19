@@ -43,7 +43,7 @@ module Ci
       if !replica_caught_up && !result.build
         metrics.increment_queue_operation(:queue_replication_lag)
 
-        ::Ci::RegisterJobService::Result.new(nil, nil, nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks
+        ::Ci::RegisterJobService::Result.new(nil, nil, nil, false)
       else
         result
       end
@@ -144,7 +144,7 @@ module Ci
       # We want to reset a load balancing session to discard the side
       # effects of writes that could have happened prior to this moment.
       #
-      ::Gitlab::Database::LoadBalancing::Session.clear_session
+      ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
 
       @metrics.observe_queue_time(:retrieve, @runner.runner_type) do
         queue_query_proc.call

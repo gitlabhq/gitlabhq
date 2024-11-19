@@ -24,16 +24,19 @@ module NavHelper
 
   def page_gutter_class
     merge_request_sidebar = current_controller?('merge_requests')
+    work_item_epic_page = current_controller?('epics') && @group.work_item_epics_enabled?
+    skip_right_sidebar_classes = merge_request_sidebar || work_item_epic_page
 
     if (page_has_markdown? || current_path?('projects/merge_requests#diffs')) && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'
-        ["page-gutter", ('right-sidebar-collapsed' unless merge_request_sidebar).to_s]
+        ["page-gutter", ('right-sidebar-collapsed' unless skip_right_sidebar_classes).to_s]
       else
-        ["page-gutter", ('right-sidebar-expanded' unless merge_request_sidebar).to_s]
+        ["page-gutter", ('right-sidebar-expanded' unless skip_right_sidebar_classes).to_s]
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]
-    elsif current_controller?('wikis') && current_action?('show', 'create', 'edit', 'update', 'history', 'git_access', 'destroy', 'diff')
+    elsif current_controller?('wikis') &&
+        current_action?('show', 'create', 'edit', 'update', 'history', 'git_access', 'destroy', 'diff')
       %w[page-gutter wiki-sidebar right-sidebar-expanded]
     else
       []

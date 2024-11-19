@@ -18,16 +18,16 @@ A single feature can span several merge requests, spread out across multiple pro
 and the order in which the work merges can be significant. Use merge request dependencies
 when it's important to merge work in a specific order. Some examples:
 
-- Ensure changes to a required library are merged before changes to a project that
+- Ensure changes to a required library merge before changes to a project that
   imports the library.
 - Prevent a documentation-only merge request from merging before the feature work
   is itself merged.
 - Require a merge request updating a permissions matrix to merge, before merging work
-  from someone who hasn't yet been granted permissions.
+  from someone who doesn't yet have the correct permissions.
 
 If your project `me/myexample` imports a library from `myfriend/library`,
-you might want to update your project to use a new feature in `myfriend/library`.
-However, if you merge changes to your project before the external library adds the
+you should update your project when `myfriend/library` releases a new feature.
+If you merge your changes to `me/myexample` before `myfriend/library` adds the
 new feature, you would break the default branch in your project. A merge request
 dependency prevents your work from merging too soon:
 
@@ -47,23 +47,23 @@ graph TB
   C-.->|blocks| D
 ```
 
-You could mark your `me/myexample` merge request as a [draft](drafts.md)
-and explain why in the comments. However, this approach is manual and does not scale, especially
-if your merge request relies on several others in multiple projects. Instead,
-use the draft (or ready) state to track the readiness of an individual
-merge request, and a merge request dependency to enforce merge order.
+It's possible to mark your `me/myexample` merge request as a [draft](drafts.md)
+and explain why in the comments. This approach is manual and does not scale, especially
+if your merge request relies on several others in different projects. Instead, you should:
 
-NOTE:
-Merge request dependencies are a **PREMIUM** feature, but this restriction is
-enforced only for the dependent merge request. A merge request in a **PREMIUM**
-project can depend on a merge request in a **FREE** project, but a merge request
-in a **FREE** project cannot be marked as dependent.
+- Track the readiness of an individual merge request with **Draft** or **Ready** status.
+- Enforce the order merge requests merge with a merge request dependency.
+
+Merge request dependencies are a **PREMIUM** feature, but GitLab enforces this restriction
+only for the *dependent* merge request:
+
+- A **PREMIUM** project's merge request can depend on any other merge request, even in a **FREE** project.
+- A **FREE** project's merge request cannot depend on other merge requests.
 
 ## Nested dependencies
 
-Indirect, nested dependencies are supported in GitLab 16.7 and later.
-A single merge request can be blocked by up to 10 merge requests, and,
-in turn, can block up to 10 merge requests. In this example, `myfriend/library!10`
+GitLab versions 16.7 and later support indirect, nested dependencies. A merge request can have up to 10 blockers,
+and in turn it can block up to 10 other merge requests. In this example, `myfriend/library!10`
 depends on `herfriend/another-lib!1`, which in turn depends on `mycorp/example!100`:
 
 ```mermaid
@@ -76,12 +76,11 @@ graph LR;
     B-->|depends on| C[mycorp/example!100]
 ```
 
-Nested dependencies do not display in the GitLab UI, but UI support has
-been proposed in [epic 5308](https://gitlab.com/groups/gitlab-org/-/epics/5308).
+Nested dependencies do not display in the GitLab UI, but UI support is
+proposed in [epic 5308](https://gitlab.com/groups/gitlab-org/-/epics/5308).
 
 NOTE:
-A merge request can't be made dependent on itself (self-referential), but
-it's possible to create circular dependencies.
+A merge request cannot depend on itself (self-referential), but it's possible to create circular dependencies.
 
 ## View dependencies for a merge request
 
@@ -100,26 +99,23 @@ To view dependency information on a merge request:
 1. Select **Expand** to view the title, milestone, assignee, and pipeline status
    of each dependency.
 
-Until your merge request's dependencies all merge, your merge request
-cannot be merged. The message
+Until your merge request's dependencies all merge, your merge request cannot merge. The message
 **Merge blocked: you can only merge after the above items are resolved** displays.
 
 ### Closed merge requests
 
-Closed merge requests still prevent their dependents from being merged, because
-a merge request can close regardless of whether or not the planned work actually merged.
-
-If a merge request closes and the dependency is no longer relevant,
+Closed merge requests still prevent their dependents from merging, because a merge request can close
+without merging its planned work. If a merge request closes and the dependency is no longer relevant,
 remove it as a dependency to unblock the dependent merge request.
 
 ## Create a new dependent merge request
 
 When you create a new merge request, you can prevent it from merging until after
-other specific work merges, even if the merge request is in a different project.
+other specific work merges. This dependency works even if the merge request is in a different project.
 
 Prerequisites:
 
-- You must have at least the Developer role or be allowed to create merge requests in the project.
+- You must have at least the Developer role, or have permission to create merge requests in the project.
 - The dependent merge request must be in a project in the Premium or Ultimate tier.
 
 To create a new merge request and mark it as dependent on another:
@@ -136,7 +132,7 @@ You can edit an existing merge request and mark it as dependent on another.
 
 Prerequisites:
 
-- You must have at least the Developer role or be allowed to edit merge requests in the project.
+- You must have at least the Developer role or have permission to edit merge requests in the project.
 
 To do this:
 
@@ -162,13 +158,13 @@ Prerequisites:
    for each dependency you want to remove.
 
    NOTE:
-   Dependencies for merge requests you don't have access to are displayed as
-   **1 inaccessible merge request**, and can be removed the same way.
+   Merge request dependencies you do not have permission to view are shown as
+   **1 inaccessible merge request**. You can still remove the dependency.
 1. Select **Save changes**.
 
 ## Troubleshooting
 
-### Preserving dependencies on project import or export
+### Preserve dependencies on project import or export
 
-Dependencies are not preserved when projects are imported or exported. For more
-information, read [issue #12549](https://gitlab.com/gitlab-org/gitlab/-/issues/12549).
+Dependencies are not preserved when you import or export a project. For more
+information, see [issue #12549](https://gitlab.com/gitlab-org/gitlab/-/issues/12549).

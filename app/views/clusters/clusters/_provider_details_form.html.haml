@@ -41,7 +41,7 @@
       .form-check
         = platform_field.check_box :authorization_type, { disabled: true, inline: true, class: 'form-check-input' }, 'rbac', 'abac'
         = platform_field.label :authorization_type, s_('ClusterIntegration|RBAC-enabled cluster'), class: 'form-check-label label-bold'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
         = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
 
@@ -49,7 +49,7 @@
       .form-check
         = field.check_box :managed, { class: 'js-gl-managed form-check-input' }
         = field.label :managed, s_('ClusterIntegration|GitLab-managed cluster'), class: 'form-check-label label-bold'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_('ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster.')
         = link_to _('More information'), help_page_path('user/project/clusters/gitlab_managed_clusters.md'), target: '_blank', rel: 'noopener noreferrer'
 
@@ -57,7 +57,7 @@
       .form-check
         = field.check_box :namespace_per_environment, { class: 'form-check-input' }
         = field.label :namespace_per_environment, s_('ClusterIntegration|Namespace per environment'), class: 'form-check-label label-bold'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_('ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared.')
         = link_to _('More information'), help_page_path('user/project/clusters/deploy_to_cluster.md', anchor: 'custom-namespace'), target: '_blank', rel: 'noopener noreferrer'
 

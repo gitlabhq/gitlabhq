@@ -34,12 +34,25 @@ module Sidebars
 
         override :pill_count
         def pill_count
+          return if Feature.enabled?(:async_sidebar_counts, context.group.root_ancestor)
+
           strong_memoize(:pill_count) do
             count_service = ::Groups::OpenIssuesCountService
-            count = count_service.new(context.group, context.current_user).count
 
-            format_cached_count(count_service::CACHED_COUNT_THRESHOLD, count)
+            format_cached_count(
+              count_service::CACHED_COUNT_THRESHOLD,
+              count_service.new(context.group, context.current_user, fast_timeout: true).count
+            )
           end
+        rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- used with fast_read_statement_timeout to prevent counts from slowing down the request
+          Gitlab::ErrorTracking.log_exception(e, group_id: context.group.id, query: 'group_sidebar_issues_count')
+
+          nil
+        end
+
+        override :pill_count_field
+        def pill_count_field
+          'openIssuesCount' if Feature.enabled?(:async_sidebar_counts, context.group.root_ancestor)
         end
 
         override :pill_html_options
@@ -54,6 +67,7 @@ module Sidebars
           super.merge({
             active_routes: list_menu_item.active_routes,
             pill_count: pill_count,
+            pill_count_field: pill_count_field,
             has_pill: has_pill?,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             item_id: :group_issue_list

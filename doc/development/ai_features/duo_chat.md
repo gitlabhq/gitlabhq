@@ -238,7 +238,7 @@ LangSmith has best-in-class tracing capabilities, and it's integrated with GitLa
 - Which process was a bottle neck of the latency.
 - What tool was used for an ambiguous question.
 
-![LangSmith UI](img/langsmith.png)
+![LangSmith UI](img/langsmith_v16_10.png)
 
 Tracing is especially useful for evaluation that runs GitLab Duo Chat against large dataset.
 LangSmith integration works with any tools, including [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)

@@ -57,7 +57,8 @@ RSpec.describe ApplicationController, feature_category: :shared do
   end
 
   describe '#set_current_organization' do
-    let_it_be(:current_organization) { create(:organization, :default) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:current_organization) { create(:organization, users: [user]) }
 
     before do
       sign_in user
@@ -68,7 +69,9 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
 
     it 'sets current organization' do
-      expect { get :index, format: :json }.to change { Current.organization }.from(nil).to(current_organization)
+      get :index, format: :json
+
+      expect(Current.organization).to eq(current_organization)
     end
 
     context 'when multiple calls in one example are done' do
@@ -1098,14 +1101,43 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
 
+    it 'returns a error response with 503 status' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:service_unavailable)
+      expect(response.headers['Retry-After']).to eq(50)
+      expect(response).to render_template('errors/service_unavailable')
+    end
+  end
+
+  context 'When Regexp::TimeoutError is raised' do
+    before do
+      sign_in user
+    end
+
+    controller(described_class) do
+      def index
+        raise Regexp::TimeoutError
+      end
+    end
+
     it 'returns a plaintext error response with 503 status' do
       get :index
 
       expect(response).to have_gitlab_http_status(:service_unavailable)
-      expect(response.body).to include(
-        "Upstream Gitaly has been exhausted: maximum time in concurrency queue reached. Try again later"
-      )
-      expect(response.headers['Retry-After']).to eq(50)
+    end
+  end
+
+  describe 'cross-site request forgery protection handling' do
+    describe '#handle_unverified_request' do
+      it 'increments counter of invalid CSRF tokens detected' do
+        stub_authentication_activity_metrics do |metrics|
+          expect(metrics).to increment(:user_csrf_token_invalid_counter)
+        end
+
+        expect { described_class.new.handle_unverified_request }
+          .to raise_error(ActionController::InvalidAuthenticityToken)
+      end
     end
   end
 end

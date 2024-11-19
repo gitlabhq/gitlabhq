@@ -10,7 +10,9 @@ class AddFileNameFileSha256IndexToPackageFiles < Gitlab::Database::Migration[2.2
   INDEX_NAME = 'index_packages_package_files_on_file_name_file_sha256'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :packages_package_files, 'file_name, file_sha256', name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

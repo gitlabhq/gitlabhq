@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting the GitLab Workflow extension for VS Code
@@ -44,8 +44,8 @@ Request failed: Can't add GitLab account for https://gitlab.com. Check your inst
 Fetching resource from https://gitlab.com/api/v4/personal_access_tokens/self failed
 ```
 
-GitLab Duo Code Suggestions does not support authenticated proxies. For the proposed feature,
-see [issue 1234](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1234) in the extension's project.
+You must [enable proxy authentication](../language_server/index.md#enable-proxy-authentication)
+for the GitLab Language Server.
 
 ## Configure self-signed certificates
 

@@ -70,7 +70,7 @@ export default {
       v-if="showDetailedCount"
       ref="info"
       tabindex="0"
-      class="gl-flex gl-gap-3 gl-text-sm"
+      class="gl-flex gl-gap-3 gl-text-nowrap gl-text-sm"
       data-testid="work-item-rolled-up-detailed-count"
     >
       <span

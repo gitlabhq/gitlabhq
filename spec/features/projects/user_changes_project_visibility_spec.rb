@@ -7,7 +7,7 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
 
   shared_examples 'changing visibility to private' do
     it 'requires confirmation' do
-      visibility_select = first('.project-feature-controls .select-control')
+      visibility_select = find_by_testid('project-visibility-dropdown')
       visibility_select.select('Private')
 
       page.within('#js-shared-permissions') do
@@ -28,7 +28,7 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
 
   shared_examples 'does not require confirmation' do
     it 'saves without confirmation' do
-      visibility_select = first('.project-feature-controls .select-control')
+      visibility_select = find_by_testid('project-visibility-dropdown')
       visibility_select.select('Private')
 
       page.within('#js-shared-permissions') do

@@ -22,12 +22,14 @@ module Gitlab
           job['load_balancing_strategy'] = strategy.to_s
 
           if use_primary?(strategy)
-            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+            ::Gitlab::Database::LoadBalancing::SessionMap
+              .with_sessions(Gitlab::Database::LoadBalancing.base_models)
+              .use_primary!
           elsif strategy == :retry
             raise JobReplicaNotUpToDate, "Sidekiq job #{resolved_class} JID-#{job['jid']} couldn't use the replica. "\
               "Replica was not up to date."
           else
-            # this means we selected an up-to-date replica, but there is nothing to do in this case.
+            set_per_database_strategy(resolved_class)
           end
 
           yield
@@ -39,7 +41,7 @@ module Gitlab
 
         def clear
           ::Gitlab::Database::LoadBalancing.release_hosts
-          ::Gitlab::Database::LoadBalancing::Session.clear_session
+          ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
         end
 
         def use_primary?(strategy)
@@ -91,7 +93,7 @@ module Gitlab
         end
 
         def can_retry?(worker_class, job)
-          worker_class.get_data_consistency == :delayed && not_yet_requeued?(job)
+          worker_class.get_least_restrictive_data_consistency == :delayed && not_yet_requeued?(job)
         end
 
         def replica_strategy(worker_class, job)
@@ -99,7 +101,15 @@ module Gitlab
         end
 
         def retried_before?(worker_class, job)
-          worker_class.get_data_consistency == :delayed && !not_yet_requeued?(job)
+          worker_class.get_least_restrictive_data_consistency == :delayed && !not_yet_requeued?(job)
+        end
+
+        def set_per_database_strategy(worker_class)
+          ::Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            next unless worker_class.get_data_consistency_per_database[lb.name] == :always
+
+            ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary!
+          end
         end
 
         def not_yet_requeued?(job)

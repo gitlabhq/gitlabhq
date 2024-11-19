@@ -13,13 +13,18 @@ RSpec.describe PersonalAccessTokenEntity do
                                           .revoke_user_settings_personal_access_token_path(
                                             { id: token })
 
+    expected_rotate_path = Gitlab::Routing.url_helpers
+                                          .rotate_user_settings_personal_access_token_path(
+                                            { id: token })
+
     expect(json).to(
       include(
         id: token.id,
         name: token.name,
         scopes: token.scopes,
         user_id: token.user_id,
-        revoke_path: expected_revoke_path
+        revoke_path: expected_revoke_path,
+        rotate_path: expected_rotate_path
       ))
 
     expect(json).not_to include(:token)

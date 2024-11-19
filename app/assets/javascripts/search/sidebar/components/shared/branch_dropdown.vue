@@ -95,6 +95,14 @@ export default {
     selectRef(ref) {
       this.$emit('selected', ref);
     },
+    onHide() {
+      if (!this.query || this.searchResults.length > 0) {
+        this.$emit('hide');
+        return;
+      }
+      this.$emit('selected', this.query);
+      this.$emit('hide');
+    },
   },
 };
 </script>
@@ -119,7 +127,7 @@ export default {
       :reset-button-label="s__('GlobalSearch|Reset')"
       v-bind="$attrs"
       v-on="$listeners"
-      @hidden="$emit('hide')"
+      @hidden="onHide"
       @search="onSearchBoxInput"
       @select="selectRef"
       @reset="$emit('reset')"

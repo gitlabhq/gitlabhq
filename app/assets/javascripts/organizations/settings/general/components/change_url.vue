@@ -95,11 +95,7 @@ export default {
 <template>
   <div>
     <form-errors-alert v-model="errors" />
-    <gl-card
-      class="gl-mt-0"
-      header-class="gl-px-5 gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-gray-100"
-      body-class="gl-px-5 gl-py-4"
-    >
+    <gl-card class="gl-mt-0">
       <template #header>
         <div class="gl-flex gl-grow">
           <h4 class="gl-m-0 gl-text-base gl-leading-24">{{ $options.i18n.cardHeaderTitle }}</h4>

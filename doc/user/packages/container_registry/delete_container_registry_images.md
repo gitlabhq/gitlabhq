@@ -58,6 +58,9 @@ To delete container images using the GitLab UI:
 
 1. On the dialog, select **Remove tag**.
 
+Container repositories that [fail deletion more than 10 times](../../../administration/packages/container_registry.md#max-retries-for-deleting-container-images)
+automatically stop attempting to delete images.
+
 ## Use the GitLab API
 
 You can use the API to automate the process of deleting container images. For more

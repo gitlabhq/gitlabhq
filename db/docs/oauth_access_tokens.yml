@@ -8,5 +8,7 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e41dadcb33fda44ee274daa673bd933e13aa90eb
 milestone: '7.7'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463785
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: over_limit

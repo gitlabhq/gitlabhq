@@ -34,7 +34,7 @@ This area of the merge request is where all of the options and commit messages a
 
 Reports are widgets within the merge request that report information about changes within the merge request. These widgets provide information to better help the author understand the changes and further improvements to the proposed changes.
 
-[Design Documentation](https://design.gitlab.com/patterns/merge-request-reports)
+[Design Documentation](https://design.gitlab.com/patterns/merge-request-reports/)
 
 ![merge request reports](../img/merge_request_reports_v14_7.png)
 

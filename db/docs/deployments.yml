@@ -4,9 +4,8 @@ classes:
 - Deployment
 feature_categories:
 - continuous_delivery
-description: >-
-  Stores metadata related to a deployment CI Build, including user, environment, status, and SHA. See https://docs.gitlab.com/ee/ci/environments/
-  for more details.
+description: Stores metadata related to a deployment CI Build, including user, environment,
+  status, and SHA. See https://docs.gitlab.com/ee/ci/environments/ for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/907c0e6796b69f9577c147dd489cf55748c749ac
 milestone: '8.9'
 gitlab_schema: gitlab_main_cell
@@ -24,3 +23,4 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_deployments_on_user_id_and_status_and_created_at
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157136
+table_size: over_limit

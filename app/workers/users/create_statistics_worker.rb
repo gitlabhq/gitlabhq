@@ -4,7 +4,7 @@ module Users
   class CreateStatisticsWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
 
     # rubocop:disable Scalability/CronWorkerContext
     # This worker does not perform work scoped to a context

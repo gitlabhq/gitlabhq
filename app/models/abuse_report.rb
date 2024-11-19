@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class AbuseReport < ApplicationRecord
+  ignore_column :assignee_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :reporter_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :resolved_by_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :user_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+
   include CacheMarkdownField
   include Sortable
   include Gitlab::FileTypeDetection
@@ -8,7 +14,6 @@ class AbuseReport < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Mentionable
   include Noteable
-  include IgnorableColumns
 
   ignore_column :assignee_id, remove_with: '16.9', remove_after: '2024-01-19'
 
@@ -22,8 +27,9 @@ class AbuseReport < ApplicationRecord
   belongs_to :resolved_by, class_name: 'User', inverse_of: :resolved_abuse_reports
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
-  has_many :label_links, as: :target, inverse_of: :target
-  has_many :labels, through: :label_links
+  has_many :label_links, inverse_of: :abuse_report, class_name: 'AntiAbuse::Reports::LabelLink'
+  has_many :labels, through: :label_links, source: :abuse_report_label,
+    class_name: 'AntiAbuse::Reports::Label'
   has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
   has_many :assignees, class_name: "User", through: :admin_abuse_report_assignees
 

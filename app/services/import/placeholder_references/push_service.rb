@@ -26,7 +26,9 @@ module Import
         end
       end
 
-      def initialize(import_source:, import_uid:, source_user_id:, source_user_namespace_id:, model:, user_reference_column:, numeric_key: nil, composite_key: nil) # rubocop:disable Layout/LineLength -- Its easier to read being on one line
+      def initialize(
+        import_source:, import_uid:, source_user_id:, source_user_namespace_id:, model:,
+        user_reference_column:, numeric_key: nil, composite_key: nil)
         super(import_source: import_source, import_uid: import_uid)
 
         @reference = Import::SourceUserPlaceholderReference.new(

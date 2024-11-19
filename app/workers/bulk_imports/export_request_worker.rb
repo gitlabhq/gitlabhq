@@ -5,7 +5,7 @@ module BulkImports
     include ApplicationWorker
 
     idempotent!
-    data_consistency :always
+    data_consistency :sticky
     feature_category :importers
     sidekiq_options dead: false, retry: 5
     worker_has_external_dependencies!

@@ -98,8 +98,10 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
     Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
   end
 
-  if Gitlab.ee? && Gitlab::Runtime.sidekiq?
-    Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start
+  if Gitlab::Runtime.sidekiq?
+    Gitlab::Metrics::Samplers::ConcurrencyLimitSampler.instance(logger: logger).start
+    Gitlab::Metrics::Samplers::StatActivitySampler.instance(logger: logger).start
+    Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start if Gitlab.ee?
   end
 
   Gitlab::Ci::Parsers.instrument!

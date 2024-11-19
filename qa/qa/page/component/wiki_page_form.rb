@@ -42,7 +42,7 @@ module QA
         end
 
         def set_content(content)
-          fill_element('markdown-editor-form-field', content)
+          fill_editor_element('markdown-editor-form-field', content)
         end
 
         def set_message(message)
@@ -67,6 +67,8 @@ module QA
         end
 
         def use_new_editor
+          return if has_element?('content-editor')
+
           click_element('editing-mode-switcher')
 
           wait_until(reload: false) do

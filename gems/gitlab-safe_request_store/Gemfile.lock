@@ -8,7 +8,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.6)
+    activesupport (7.0.8.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -36,12 +36,12 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.6.2)
-    rack (2.2.8)
+    rack (2.2.10)
     rainbow (3.1.1)
     regexp_parser (2.7.0)
     request_store (1.5.1)
       rack (>= 1.4)
-    rexml (3.2.5)
+    rexml (3.3.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -101,4 +101,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.22)
 
 BUNDLED WITH
-   2.4.16
+   2.5.22

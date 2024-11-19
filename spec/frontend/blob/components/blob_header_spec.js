@@ -6,11 +6,7 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
 import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
-import {
-  RICH_BLOB_VIEWER_TITLE,
-  SIMPLE_BLOB_VIEWER,
-  SIMPLE_BLOB_VIEWER_TITLE,
-} from '~/blob/components/constants';
+import { SIMPLE_BLOB_VIEWER } from '~/blob/components/constants';
 import TableContents from '~/blob/components/table_contents.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -32,8 +28,10 @@ describe('Blob Header Default Actions', () => {
   const findTableContents = () => wrapper.findComponent(TableContents);
   const findViewSwitcher = () => wrapper.findComponent(ViewerSwitcher);
   const findBlobFilePath = () => wrapper.findComponent(BlobFilepath);
-  const findRichTextEditorBtn = () => wrapper.findByLabelText(RICH_BLOB_VIEWER_TITLE);
-  const findSimpleTextEditorBtn = () => wrapper.findByLabelText(SIMPLE_BLOB_VIEWER_TITLE);
+  const findRichTextEditorBtn = () =>
+    wrapper.findComponent('[data-testid="rich-blob-viewer-button"]');
+  const findSimpleTextEditorBtn = () =>
+    wrapper.findComponent('[data-testid="simple-blob-viewer-button"]');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
 
   async function createComponent({
@@ -63,6 +61,9 @@ describe('Blob Header Default Actions', () => {
       propsData: {
         blob: { ...Blob, ...blobProps },
         ...propsData,
+      },
+      stubs: {
+        WebIdeLink,
       },
       ...options,
     });

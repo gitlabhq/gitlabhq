@@ -1,9 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.compare-versions-container {
-  min-width: 0;
-}
-
 .diff-comment-avatar-holders {
   position: absolute;
   margin-left: -$gl-padding;
@@ -128,6 +124,13 @@
 
   .vue-recycle-scroller__item-wrapper {
     overflow: visible;
+  }
+
+  .diff-file {
+    &.diff-file-is-active,
+    &:has(*:not(textarea):focus-visible) {
+      box-shadow: 0 0 0 2px var(--gl-border-color-strong);
+    }
   }
 }
 
@@ -309,10 +312,6 @@
   @include media-breakpoint-down(sm) {
     align-items: initial;
     flex-direction: column;
-
-    .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
-      transform: initial;
-    }
   }
 
   .coverage {
@@ -326,25 +325,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-
-  @include media-breakpoint-up(xs) {
-    flex-wrap: nowrap;
-    white-space: nowrap;
-  }
-
-  @container mr-widget-extension (max-width: 600px) {
-    flex-direction: column;
-    align-items: flex-start;
-
-    .deployment-info {
-      margin-bottom: $gl-padding-8;
-    }
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-button {
-      margin-left: 0;
-    }
-  }
+  justify-content: space-between;
 
   > *:not(:last-child) {
     margin-right: 0.3em;
@@ -355,19 +336,9 @@
   }
 
   .deployment-info {
-    flex: 1;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 100px;
-
-    display: grid;
+    white-space: nowrap;display: grid;
     grid-template-columns: max-content minmax(0, max-content) max-content;
     grid-gap: $gl-spacing-scale-2;
-
-    @include media-breakpoint-up(xs) {
-      min-width: 0;
-      max-width: 100%;
-    }
   }
 
   .dropdown-menu {
@@ -439,9 +410,7 @@
 }
 
 .mr-section-container {
-  border: 1px solid var(--gl-border-color-default);
-  border-radius: $gl-border-radius-base;
-  background: var(--white, $white);
+  @apply gl-bg-section gl-border gl-border-section gl-rounded-base;
 
   &:not(:first-child) {
     @apply gl-mt-5;

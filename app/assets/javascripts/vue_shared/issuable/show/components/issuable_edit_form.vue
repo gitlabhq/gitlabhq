@@ -152,7 +152,7 @@ export default {
         @keydown="handleKeydown($event, 'description')"
       />
     </gl-form-group>
-    <div data-testid="actions" class="col-12 clearfix gl-mb-3 gl-mt-3 gl-flex gl-gap-3 gl-px-0">
+    <div data-testid="actions" class="gl-my-3 gl-flex gl-flex-col gl-gap-3">
       <slot
         name="edit-form-actions"
         :issuable-title="title"

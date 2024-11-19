@@ -2055,17 +2055,9 @@ references refresh.
 ### Show comment preview when hovering on a link
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
+> - Feature flag removed in GitLab 17.6
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-When this feature is enabled, hovering over a link to a comment shows the author and
-part of the comment.
-
-When this feature is disabled, hovering over a link to a comment shows information about the item,
-such as issue or epic.
+Hovering over a link to a comment shows the author and first line of the comment.
 
 ### Embedding Observability dashboards
 

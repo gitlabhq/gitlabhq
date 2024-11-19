@@ -1,0 +1,67 @@
+id: arrow-statement-to-function
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: export const $ACTION = ({$$$}, $$$ARGS) => $BODY
+    - pattern: export const $ACTION = ({$$$}) => $BODY
+    - pattern: export const $ACTION = () => $BODY
+constraints: { BODY: { kind: statement_block } }
+fix: export function $ACTION($$$ARGS) $BODY
+
+---
+
+id: async-arrow-statement-to-function
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: export const $ACTION = async ({$$$}, $$$ARGS) => $BODY
+    - pattern: export const $ACTION = async ({$$$}) => $BODY
+    - pattern: export const $ACTION = async () => $BODY
+constraints: { BODY: { kind: statement_block } }
+fix: export async function $ACTION($$$ARGS) $BODY
+
+---
+
+id: arrow-call-expression-to-function
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: export const $ACTION = ({$$$}, $$$ARGS) => $BODY
+    - pattern: export const $ACTION = ({$$$}) => $BODY
+    - pattern: export const $ACTION = () => $BODY
+constraints: { BODY: { kind: call_expression } }
+fix: |-
+  export function $ACTION($$$ARGS) {
+    return $BODY
+  }
+
+---
+
+id: strip-first-argument
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: export function $ACTION ({$$$}, $$$ARGS) { $$$BODY }
+    - pattern: export function $ACTION ({$$$}) { $$$BODY }
+fix: |-
+  export function $ACTION($$$ARGS) {
+    $$$BODY
+  }
+
+---
+
+id: strip-first-argument-async
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: export async function $ACTION ({$$$}, $$$ARGS) { $$$BODY }
+    - pattern: export async function $ACTION ({$$$}) { $$$BODY }
+fix: |-
+  export async function $ACTION($$$ARGS) {
+    $$$BODY
+  }

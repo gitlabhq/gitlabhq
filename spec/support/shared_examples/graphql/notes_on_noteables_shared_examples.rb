@@ -66,6 +66,9 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
       create(:award_emoji, awardable: note, name: 'star', user: user)
       another_user = create(:user, developer_of: note.resource_parent)
       create(:note, project: note.project, noteable: noteable, author: another_user)
+      note_from_external_participant = create(:note,
+        project: note.project, noteable: noteable, author: Users::Internal.support_bot)
+      create(:note_metadata, note: note_from_external_participant)
 
       post_graphql(query, current_user: user)
 
@@ -78,6 +81,9 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
       another_user = create(:user, developer_of: note.resource_parent)
       note_with_different_user = create(:note, project: note.project, noteable: noteable, author: another_user)
       create(:award_emoji, awardable: note_with_different_user, name: 'star', user: user)
+      another_note_from_external_participant = create(:note,
+        project: note.project, noteable: noteable, author: Users::Internal.support_bot)
+      create(:note_metadata, note: another_note_from_external_participant)
 
       expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(control)
       expect_graphql_errors_to_be_empty

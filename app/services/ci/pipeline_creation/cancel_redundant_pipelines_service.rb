@@ -8,55 +8,58 @@ module Ci
       BATCH_SIZE = 25
       PAGE_SIZE = 500
       MAX_CANCELLATIONS_PER_PIPELINE = 3000
-      ID_BATCH_SIZE = 1000
+      PK_BATCH_SIZE = 1000
 
       def initialize(pipeline)
         @pipeline = pipeline
         @project = @pipeline.project
+
+        @skipped_for_old_age      = 0
+        @conservatively_cancelled = 0
+        @aggressively_cancelled   = 0
+        @configured_to_not_cancel = 0
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def execute
         return if service_disabled?
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
-        auto_cancel_all_pipelines_with_cancelable_statuses
+        cancelable_pipelines.each do |cancelable_pipe|
+          configured_cancellation_for(cancelable_pipe)
+        end
+
+        log_cancelable_pipeline_outcomes
       end
 
       private
 
       attr_reader :pipeline, :project
 
-      def cancelable_status_pipeline_ids
+      def cancelable_status_pipeline_pks
         project.all_pipelines
           .for_ref(pipeline.ref)
           .id_not_in(pipeline.id)
           .with_status(Ci::Pipeline::CANCELABLE_STATUSES)
           .order_id_desc # Query the most recently created cancellable Pipelines
           .limit(MAX_CANCELLATIONS_PER_PIPELINE)
-          .pluck(:id)
+          .pluck_primary_key
           .reverse # Once we have the most recent Pipelines, cancel oldest & upstreams first
       end
-      strong_memoize_attr :cancelable_status_pipeline_ids
+      strong_memoize_attr :cancelable_status_pipeline_pks
 
       def ref_head_sha
         project.commit(pipeline.ref).try(:id)
       end
       strong_memoize_attr :ref_head_sha
 
-      # rubocop:disable Metrics/CyclomaticComplexity -- Keep logic tightly bound while this is still experimental
-      def auto_cancel_all_pipelines_with_cancelable_statuses
-        skipped_for_old_age      = 0
-        conservatively_cancelled = 0
-        aggressively_cancelled   = 0
-        configured_to_not_cancel = 0
-
-        cancelable_status_pipeline_ids.each_slice(ID_BATCH_SIZE) do |ids_batch|
-          Ci::Pipeline.id_in(ids_batch).order_id_asc.each do |cancelable|
+      def cancelable_pipelines
+        cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE).with_object([]) do |pks_batch, cancelables|
+          Ci::Pipeline.primary_key_in(pks_batch).order_id_asc.each do |cancelable|
             case cancelable.source.to_sym
             when *Enums::Ci::Pipeline.ci_sources.keys
-              # Newer pipelines are not cancelable
+              # Newer pipelines are not cancelable. This doesn't normally occur
+              # but needs to be handled in asynchronous execution.
               next if cancelable.created_at >= pipeline.created_at
             when :parent_pipeline
               # Child pipelines are cancelable based on the root parent age
@@ -70,57 +73,47 @@ module Ci
             next if cancelable.sha == ref_head_sha
 
             if cancelable.created_at < pipelines_created_after
-              skipped_for_old_age += 1
+              @skipped_for_old_age += 1
 
               next
             end
 
-            # Cancel method based on configured strategy
-            case cancelable.auto_cancel_on_new_commit
-            when 'none'
-              # no-op
-
-              configured_to_not_cancel += 1
-            when 'conservative'
-              next unless conservative_cancellable_pipeline_ids(ids_batch).include?(cancelable.id)
-
-              conservatively_cancelled += 1
-
-              cancel_pipeline(cancelable, safe_cancellation: false)
-            when 'interruptible'
-
-              aggressively_cancelled += 1
-
-              cancel_pipeline(cancelable, safe_cancellation: true)
-            else
-              raise ArgumentError,
-                "Unknown auto_cancel_on_new_commit value: #{cancelable.auto_cancel_on_new_commit}"
-            end
+            # Keep the actual Pipeline instantiated
+            # so we can cancel it directly.
+            cancelables << cancelable
           end
         end
-
-        Gitlab::AppLogger.info(
-          class: self.class.name,
-          message: "Canceling redundant pipelines",
-          cancellable_count: cancelable_status_pipeline_ids.count,
-          skipped_for_old_age: skipped_for_old_age,
-          conservatively_cancelled: conservatively_cancelled,
-          aggressively_cancelled: aggressively_cancelled,
-          configured_to_not_cancel: configured_to_not_cancel,
-          canceled_by_pipeline_id: pipeline.id,
-          project_id: pipeline.project_id,
-          ref: pipeline.ref,
-          sha: pipeline.sha
-        )
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
-      def conservative_cancellable_pipeline_ids(pipeline_ids)
-        strong_memoize_with(:conservative_cancellable_pipeline_ids, pipeline_ids) do
-          ::Ci::Pipeline.id_in(pipeline_ids).conservative_interruptible.ids
+      def configured_cancellation_for(cancelable)
+        case cancelable.auto_cancel_on_new_commit
+        when 'none'
+          # no-op
+
+          @configured_to_not_cancel += 1
+        when 'conservative'
+          return unless conservative_cancelable_pipeline_pks.include?(cancelable.id)
+
+          @conservatively_cancelled += 1
+
+          cancel_pipeline(cancelable, safe_cancellation: false)
+        when 'interruptible'
+
+          @aggressively_cancelled += 1
+
+          cancel_pipeline(cancelable, safe_cancellation: true)
+        else
+          raise ArgumentError,
+            "Unknown auto_cancel_on_new_commit value: #{cancelable.auto_cancel_on_new_commit}"
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
+
+      def conservative_cancelable_pipeline_pks
+        cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE).with_object([]) do |pks_batch, conservative_pks|
+          conservative_pks.concat(::Ci::Pipeline.primary_key_in(pks_batch).conservative_interruptible.pluck_primary_key)
+        end
+      end
+      strong_memoize_attr :conservative_cancelable_pipeline_pks
 
       def cancel_pipeline(cancelable_pipeline, safe_cancellation:)
         Gitlab::AppLogger.info(
@@ -139,6 +132,22 @@ module Ci
           cascade_to_children: false,
           safe_cancellation: safe_cancellation
         ).force_execute
+      end
+
+      def log_cancelable_pipeline_outcomes
+        Gitlab::AppLogger.info(
+          class: self.class.name,
+          message: "Canceling redundant pipelines",
+          cancellable_count: cancelable_status_pipeline_pks.count,
+          skipped_for_old_age: @skipped_for_old_age,
+          conservatively_cancelled: @conservatively_cancelled,
+          aggressively_cancelled: @aggressively_cancelled,
+          configured_to_not_cancel: @configured_to_not_cancel,
+          canceled_by_pipeline_id: pipeline.id,
+          project_id: pipeline.project_id,
+          ref: pipeline.ref,
+          sha: pipeline.sha
+        )
       end
 
       def pipelines_created_after

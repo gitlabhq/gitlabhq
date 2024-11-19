@@ -738,7 +738,7 @@ export const mockEmojiToken = {
   title: TOKEN_TITLE_MY_REACTION,
   unique: true,
   token: EmojiToken,
-  fetchEmojis: expect.any(Function),
+  fetchEmojis: typeof expect !== 'undefined' ? expect.any(Function) : () => {},
 };
 
 export const mockConfidentialToken = {
@@ -819,7 +819,7 @@ export const mockTokens = (fetchLabels, isSignedIn) => [
     title: TOKEN_TITLE_RELEASE,
     icon: 'rocket',
     token: ReleaseToken,
-    fetchReleases: expect.any(Function),
+    fetchReleases: typeof expect !== 'undefined' ? expect.any(Function) : () => {},
   },
 ];
 

@@ -7,9 +7,10 @@ RSpec.describe CommitSignatures::GpgSignature do
   # For instructions on how to add more seed data, see the project README
   let_it_be(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
   let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
-  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
   let_it_be(:gpg_key) { create(:gpg_key) }
   let_it_be(:gpg_key_subkey) { create(:gpg_key_subkey, gpg_key: gpg_key) }
+  let(:commit) { create(:commit, project: project, sha: commit_sha, author: commit_author) }
+  let(:commit_author) { gpg_key.user }
 
   let(:signature) { create(:gpg_signature, commit_sha: commit_sha, gpg_key: gpg_key) }
 
@@ -91,11 +92,89 @@ RSpec.describe CommitSignatures::GpgSignature do
     it 'retrieves the gpg_key user' do
       expect(signature.signed_by_user).to eq(gpg_key.user)
     end
+
+    context 'when signature is verified system and no key is stored' do
+      let(:user) { create(:user) }
+
+      before do
+        signature.update!(gpg_key_id: nil, gpg_key_user_email: user.email, verification_status: :verified_system)
+      end
+
+      it 'retrieves the user from the gpg signature email' do
+        expect(signature.signed_by_user).to eq(user)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(check_for_mailmapped_commit_emails: false)
+        end
+
+        it 'returns nil' do
+          expect(signature.signed_by_user).to be_nil
+        end
+      end
+    end
   end
 
   describe '#reverified_status' do
-    it 'returns existing verification status' do
-      expect(signature.reverified_status).to eq(signature.verification_status)
+    let(:verification_status) { :verified }
+    let(:signature) do
+      create(:gpg_signature, commit_sha: commit_sha, gpg_key: gpg_key, project: project,
+        verification_status: verification_status)
+    end
+
+    before do
+      allow(project).to receive(:commit).with(commit_sha).and_return(commit)
+    end
+
+    # verified is used for user signed gpg commits.
+    context 'when verification_status is verified' do
+      it 'returns existing verification status' do
+        expect(signature.reverified_status).to eq('verified')
+      end
+
+      context 'when commit author does not match the gpg_key author' do
+        let(:commit_author) { create(:user) }
+
+        it 'returns unverified_author_email' do
+          expect(signature.reverified_status).to eq('unverified_author_email')
+        end
+
+        context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
+          before do
+            stub_feature_flags(check_for_mailmapped_commit_emails: false)
+          end
+
+          it 'verification status is unmodified' do
+            expect(signature.reverified_status).to eq('verified')
+          end
+        end
+      end
+    end
+
+    context 'when verification_status not verified' do
+      let(:verification_status) { :unverified }
+
+      it 'returns the signature verification status' do
+        expect(signature.reverified_status).to eq('unverified')
+      end
+    end
+
+    # verified_system is used for ui signed commits.
+    context 'when verification_status is verified_system' do
+      let(:verification_status) { :verified_system }
+
+      it 'returns existing verification status' do
+        expect(signature.reverified_status).to eq('verified_system')
+      end
+
+      context 'when commit author does not match the gpg_key author' do
+        let(:commit_author) { create(:user) }
+
+        it 'returns existing verification status' do
+          expect(signature.reverified_status).to eq('unverified_author_email')
+        end
+      end
     end
   end
 end

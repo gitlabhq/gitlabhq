@@ -4,6 +4,7 @@ class IssueEmailParticipant < ApplicationRecord
   include BulkInsertSafe
   include Presentable
   include CaseSensitivity
+  include EachBatch
 
   belongs_to :issue
 

@@ -12,20 +12,20 @@ module Mutations
       authorize :update_work_item
 
       argument :id, ::Types::GlobalIDType[::WorkItem],
-               required: true,
-               description: 'Global ID of the work item.'
+        required: true,
+        description: 'Global ID of the work item.'
       argument :work_item_data, ::Types::WorkItems::ConvertTaskInputType,
-               required: true,
-               description: 'Arguments necessary to convert a task into a work item.',
-               prepare: ->(attributes, _ctx) { attributes.to_h }
+        required: true,
+        description: 'Arguments necessary to convert a task into a work item.',
+        prepare: ->(attributes, _ctx) { attributes.to_h }
 
       field :work_item, Types::WorkItemType,
-            null: true,
-            description: 'Updated work item.'
+        null: true,
+        description: 'Updated work item.'
 
       field :new_work_item, Types::WorkItemType,
-            null: true,
-            description: 'New work item created from task.'
+        null: true,
+        description: 'New work item created from task.'
 
       def resolve(id:, work_item_data:)
         work_item = authorized_find!(id: id)

@@ -24,10 +24,10 @@ module QA
       let!(:user_api_client) do
         Runtime::API::Client.new(
           user: user,
-          is_new_session: false,
           # importing very large project can take multiple days
           # token must not expire while we still poll for import result
-          personal_access_token: create(:personal_access_token, user: user, expires_at: (Time.now.to_date + 6)).token
+          personal_access_token: create(:personal_access_token, user_id: user.id, expires_at: (Time.now.to_date + 6)
+          ).token
         )
       end
 
@@ -203,7 +203,6 @@ module QA
           project.github_repository_path = github_repo
           project.personal_namespace = user.username
           project.api_client = Runtime::API::Client.new(user: user)
-          project.issue_events_import = true
           project.full_notes_import = true
         end
       end

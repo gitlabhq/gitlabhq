@@ -1150,6 +1150,22 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)
       end
 
+      context 'when merge request has auto merge enabled' do
+        before do
+          merge_request.update!(auto_merge_enabled: true, merge_user: user)
+        end
+
+        it 'does not create `MergeRequestsClosingIssues` records' do
+          issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
+          service = described_class.new(project: project, current_user: user, params: issue_closing_opts)
+          allow(service).to receive(:execute_hooks)
+
+          expect do
+            service.execute(merge_request)
+          end.to not_change { MergeRequestsClosingIssues.count }.from(0)
+        end
+      end
+
       it_behaves_like 'merge request update that triggers work item updated subscription' do
         let(:update_params) { { description: "Closes #{first_issue.to_reference}" } }
         let(:issues_to_notify) { [first_issue] }

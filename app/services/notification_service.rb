@@ -75,7 +75,7 @@ class NotificationService
     end
   end
 
-  def bot_resource_access_token_about_to_expire(bot_user, token_name)
+  def bot_resource_access_token_about_to_expire(bot_user, token_name, params = {})
     recipients = bot_user.resource_bot_owners_and_maintainers.select { |user| user.can?(:receive_notifications) }
     resource = bot_user.resource_bot_resource
 
@@ -85,7 +85,8 @@ class NotificationService
       mailer.bot_resource_access_token_about_to_expire_email(
         recipient,
         resource,
-        token_name
+        token_name,
+        params
       ).deliver_later
     end
   end
@@ -99,12 +100,12 @@ class NotificationService
 
   # Notify the owner of the personal access token, when it is about to expire
   # And mark the token with about_to_expire_delivered
-  def access_token_about_to_expire(user, token_names)
+  def access_token_about_to_expire(user, token_names, params = {})
     return unless user.can?(:receive_notifications)
 
     log_info("Notifying User about expiring tokens", user)
 
-    mailer.access_token_about_to_expire_email(user, token_names).deliver_later
+    mailer.access_token_about_to_expire_email(user, token_names, params).deliver_later
   end
 
   # Notify the user when at least one of their personal access tokens has expired today

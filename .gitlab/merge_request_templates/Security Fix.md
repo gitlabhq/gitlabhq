@@ -12,8 +12,9 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 
 ## Developer checklist
 
-- [ ] **On "Related issues" section, write down the [GitLab Security] issue it belongs to (i.e. `Related to <issue_id>`).**
 - [ ] Familiarize yourself with the latest process to create Security merge requests: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#process
+- [ ] Create the [security implementation issue]. This is not the original vulnerability report issue on the GitLab canonical `gitlab-org/gitlab` repository or the SIRT issue.
+- [ ] **On "Related issues" section, add a link to the security implementation issue you just created (i.e. `Related to <issue_id>`).**
 - [ ] Merge request targets `master`, or a versioned stable branch (`X-Y-stable-ee`).
 - [ ] Title of this merge request is the same as for all backports.
 - [ ] A [CHANGELOG entry] has been included, with `Changelog` trailer set to `security`.
@@ -36,11 +37,11 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 
 /label ~security
 
-[GitLab Security]: https://gitlab.com/gitlab-org/security/gitlab
 [CHANGELOG entry]: https://docs.gitlab.com/ee/development/changelog.html#overview
 [Code Review process]: https://docs.gitlab.com/ee/development/code_review.html
-[Code reviews and Approvals]: (https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#code-reviews-and-approvals)
+[Code reviews and Approvals]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#code-reviews-and-approvals
 [Approval Guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
 [`e2e:test-on-omnibus` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-test-on-omnibus-job
 [Release Manager]: https://about.gitlab.com/community/release-managers/
+[security implementation issue]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-implementation-issue

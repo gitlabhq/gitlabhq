@@ -32,7 +32,11 @@ RSpec.describe SystemHooksService, feature_category: :webhooks do
         model = public_send(model_name)
 
         expect_next_instance_of(builder_class, model) do |builder|
-          expect(builder).to receive(:build).with(event).and_return(data)
+          if builder_class == Gitlab::HookData::ProjectBuilder
+            expect(builder).to receive(:build).with(event, include_deprecated_owner: true).and_return(data)
+          else
+            expect(builder).to receive(:build).with(event).and_return(data)
+          end
         end
 
         service = described_class.new

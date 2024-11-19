@@ -32,12 +32,13 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 ## Explaining a vulnerability
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 GitLab can help you with a vulnerability by using a large language model to:
 
@@ -75,7 +76,7 @@ To explain the vulnerability:
 
 The response is shown on the right side of the page.
 
-On GitLab.com this feature is available. By default, it is powered by Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+On GitLab.com this feature is available. By default, it is powered by the Anthropic [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 model. We cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
@@ -90,15 +91,16 @@ The following data is shared with third-party AI APIs:
 ## Vulnerability Resolution
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Changed to beta in GitLab 17.3.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
-resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
 
 We can't guarantee that the large language model produces correct results.
 You should always review the proposed change before merging it. When reviewing, check that:
@@ -123,11 +125,11 @@ To resolve the vulnerability:
 1. Select **Secure > Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** (**{clear}**).
 1. Above the list of vulnerabilities, select the filter bar.
-1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
+1. In the dropdown list that appears, select **Activity**, then select **Vulnerability Resolution available** in the **GitLab Duo (AI)** category.
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**.
+1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerablity and offered resolution. To create the MR privately, please [create a private fork](../../../user/project/merge_requests/confidential.md), and repeat this process. 
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/index.md#change-status-of-vulnerabilities).
@@ -217,6 +219,46 @@ The following data is shared with third-party AI APIs:
 - Entire file that contains the vulnerable lines of code
 - Vulnerable lines of code (line numbers)
 
+## Vulnerability Resolution in a merge request
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 17.6. This is a [beta](../../../policy/experiment-beta-support.md#beta) feature.
+
+Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
+resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+
+To resolve the vulnerability finding:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests**.
+1. Select a merge request.
+   - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon (**{tanuki-ai}**).
+1. Select the supported findings to open the security finding dialog.
+1. In the lower-right corner, select **Resolve with AI**. 
+ 
+A comment containing the AI remediation suggestions is opened in the merge request. Review the suggested changes, then apply the merge request suggestion according to your standard workflow.
+
+Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
+
+### Troubleshooting
+
+Vulnerability Resolution in a merge request sometimes cannot generate a suggested fix. Common causes include:
+
+- **False positive detected:** Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+  - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
+  - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
+    - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
+- **Temporary or unexpected error:** The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+  - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
+  - A new request may succeed, so you can try to resolve the vulnerability again.
+  - If you continue to see these errors, contact GitLab for assistance.
+- **Resolution target could not be found in the merge request, unable to create suggestion:**
+  - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../index.md#ultimate).
+
 ## Vulnerability code flow
 
 DETAILS:
@@ -244,32 +286,57 @@ The **Code flow** tab shows:
 
 A vulnerability's status can be:
 
-- **Detected**: The default state for a newly discovered vulnerability. Appears as "Needs triage" in the UI.
+- **Needs triage**: The default state for a newly discovered vulnerability.
 - **Confirmed**: A user has seen this vulnerability and confirmed it to be accurate.
-- **Dismissed**: A user has seen this vulnerability and dismissed it because it is not accurate or
-  otherwise not to be resolved. Dismissed vulnerabilities are ignored if detected in subsequent
-  scans.
+- **Dismissed**: A user has evaluated this vulnerability and [dismissed it](#vulnerability-dismissal-reasons).
+  Dismissed vulnerabilities are ignored if detected in subsequent scans.
 - **Resolved**: The vulnerability has been fixed or is no longer present. If a resolved
   vulnerability is reintroduced and detected again, its record is reinstated and its status set to
-  detected.
+  **Needs triage**.
+
+A vulnerability typically goes through the following lifecycle:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+stateDiagram
+    accTitle: Vulnerability lifecycle
+    accDescr: Typical lifecycle of a vulnerability
+
+    direction LR
+    Needs_triage: Needs triage
+
+    [*] --> Needs_triage
+    Needs_triage --> Confirmed
+    Needs_triage --> Dismissed
+    Dismissed --> [*]
+    Confirmed --> Resolved
+    Resolved --> Needs_triage: If reintroduced and detected again
+    Resolved --> [*]
+```
 
 ## Vulnerability dismissal reasons
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 with a feature flag named `dismissal_reason`.
-> - Enabled on GitLab.com in GitLab 15.11. For self-managed customers, [contact Support](https://about.gitlab.com/support/) if you would like to use this feature in GitLab 15.11.
-> - Enabled by default in GitLab 16.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `dismissal_reason`.
+> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/393005) in GitLab 16.0.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124397) in GitLab 16.2. Feature flag `dismissal_reason` removed.
 
-When dismissing a vulnerability, one of the following reasons must be chosen to clarify why it is being dismissed:
+When you dismiss a vulnerability you must choose one of the following reasons:
 
-- **Acceptable risk**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk.
-- **False positive**: An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present.
-- **Mitigating control**: A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system.
-- **Used in tests**: The finding is not a vulnerability because it is part of a test or is test data.
-- **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated.
+- **Acceptable risk**: The vulnerability is known, and has not been remediated or mitigated, but is
+  considered to be an acceptable business risk.
+- **False positive**: An error in reporting in which a test result incorrectly indicates the
+  presence of a vulnerability in a system when the vulnerability is not present.
+- **Mitigating control**: The vulnerability's risk is mitigated by a management, operational, or
+  technical control (that is, safeguard or countermeasure) employed by an organization that provides
+  equivalent or comparable protection for an information system.
+- **Used in tests**: The finding is not a vulnerability because it is part of a test or is test
+  data.
+- **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is
+  considered to be in a part of the application that will not be updated.
 
 ## Change the status of a vulnerability
 
-> - In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../../../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
+> - The permission allowing users with the `Developer` role to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424133) in GitLab 16.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) in GitLab 17.0.
 
 Prerequisites:
 
@@ -314,7 +381,7 @@ Adding a link helps track the issue that resolves or mitigates a vulnerability.
 
 Prerequisites:
 
-- [Jira issue integration](../../../integration/jira/configure.md) must not be enabled.
+- [Jira issues integration](../../../integration/jira/configure.md) must not be enabled.
 
 To link a vulnerability to existing GitLab issues:
 
@@ -343,7 +410,7 @@ Be aware of the following conditions between a vulnerability and a linked GitLab
 
 Prerequisites:
 
-- Ensure the Jira issue integration is [configured](../../../integration/jira/configure.md#configure-the-integration)
+- Ensure the Jira issues integration is [configured](../../../integration/jira/configure.md#configure-the-integration)
   and the **Create Jira issues for vulnerabilities** checkbox is selected.
 
 To link a vulnerability to existing Jira issues, add the following line to the Jira issue's description:

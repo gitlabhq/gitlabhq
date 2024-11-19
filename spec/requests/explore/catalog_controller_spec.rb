@@ -56,6 +56,8 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
   end
 
   describe 'GET #index' do
+    let_it_be(:event) { 'unique_users_visiting_ci_catalog' }
+
     subject(:visit_explore_catalog) { get explore_catalog_index_path }
 
     context 'with an authenticated user' do
@@ -68,18 +70,13 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
       it_behaves_like 'internal event tracking' do
         let(:namespace) { user.namespace }
         let(:project) { nil }
-        let(:event) { 'unique_users_visiting_ci_catalog' }
       end
     end
 
     context 'with an anonymous user' do
       it_behaves_like 'basic get requests', :index
 
-      it 'does not track the event' do
-        expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-        visit_explore_catalog
-      end
+      it_behaves_like 'internal event not tracked'
     end
   end
 end

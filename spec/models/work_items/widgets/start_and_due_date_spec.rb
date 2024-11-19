@@ -24,26 +24,26 @@ RSpec.describe WorkItems::Widgets::StartAndDueDate, feature_category: :team_plan
   end
 
   describe '#fixed?' do
-    specify { expect(widget.fixed?).to eq(true) }
+    specify { expect(widget.fixed?).to be(true) }
   end
 
   describe '#can_rollup?' do
-    specify { expect(widget.can_rollup?).to eq(false) }
+    specify { expect(widget.can_rollup?).to be(false) }
   end
 
   context 'when on FOSS', unless: Gitlab.ee? do
     context 'and work_item does not exist' do
       describe '#start_date' do
-        specify { expect(widget.start_date).to eq(nil) }
+        specify { expect(widget.start_date).to be_nil }
       end
 
       describe '#due_date' do
-        specify { expect(widget.due_date).to eq(nil) }
+        specify { expect(widget.due_date).to be_nil }
       end
     end
 
     context 'and work_item exists' do
-      let(:work_item) { build_stubbed(:work_item, start_date: Date.today, due_date: 1.week.from_now) }
+      let(:work_item) { build_stubbed(:work_item, start_date: Time.zone.today, due_date: 1.week.from_now) }
 
       context 'and work_item does not have a dates_source' do
         describe '#start_date' do
@@ -55,7 +55,21 @@ RSpec.describe WorkItems::Widgets::StartAndDueDate, feature_category: :team_plan
         end
       end
 
-      context 'and work_item does have a dates_source' do
+      context 'and work_item does have an empty dates_source' do
+        before do
+          work_item.build_dates_source
+        end
+
+        describe '#start_date' do
+          specify { expect(widget.start_date).to eq(work_item.start_date) }
+        end
+
+        describe '#due_date' do
+          specify { expect(widget.due_date).to eq(work_item.due_date) }
+        end
+      end
+
+      context 'and work_item does have a non empty dates_source' do
         let!(:dates_source) do
           work_item.build_dates_source(
             start_date_fixed: work_item.start_date - 1.day,

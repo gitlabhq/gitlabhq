@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlFormCheckbox,
@@ -15,6 +16,7 @@ import {
   ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
   PACKAGE_DEFAULT_STATUS,
+  PACKAGE_DEPRECATED_STATUS,
   WARNING_TEXT,
 } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
@@ -22,11 +24,11 @@ import PackageTags from '~/packages_and_registries/shared/components/package_tag
 import PublishMessage from '~/packages_and_registries/shared/components/publish_message.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PackageListRow',
   components: {
+    GlBadge,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlFormCheckbox,
@@ -38,7 +40,6 @@ export default {
     ListItem,
     ProtectedBadge,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroupPage', 'canDeletePackages'],
   props: {
     packageEntity: {
@@ -81,11 +82,17 @@ export default {
         ? this.packageEntity.statusMessage
         : ERRORED_PACKAGE_TEXT;
     },
+    showBadges() {
+      return this.showTags || this.showBadgeProtected || this.showDeprecatedBadge;
+    },
     showTags() {
       return Boolean(this.packageEntity.tags?.nodes?.length);
     },
     showBadgeProtected() {
-      return this.glFeatures.packagesProtectedPackages && this.packageEntity.protectionRuleExists;
+      return this.packageEntity.protectionRuleExists;
+    },
+    showDeprecatedBadge() {
+      return this.packageEntity.status === PACKAGE_DEPRECATED_STATUS;
     },
     nonDefaultRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
@@ -133,7 +140,7 @@ export default {
           {{ packageEntity.name }}
         </span>
 
-        <div v-if="showTags || showBadgeProtected" class="gl-flex gl-gap-3">
+        <div v-if="showBadges" class="gl-flex gl-gap-3">
           <package-tags
             v-if="showTags"
             :tags="packageEntity.tags.nodes"
@@ -145,6 +152,10 @@ export default {
             v-if="showBadgeProtected"
             :tooltip-text="$options.i18n.badgeProtectedTooltipText"
           />
+
+          <gl-badge v-if="showDeprecatedBadge" variant="warning">
+            {{ s__('PackageRegistry|deprecated') }}
+          </gl-badge>
         </div>
       </div>
     </template>

@@ -5,6 +5,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import DeleteImage from '../components/delete_image.vue';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
 import DeleteModal from '../components/delete_modal.vue';
@@ -45,6 +46,18 @@ export default {
     MISSING_OR_DELETED_IMAGE_TITLE,
     MISSING_OR_DELETED_IMAGE_MESSAGE,
   },
+  cleanupPoliciesHelpUrl: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage',
+    {
+      anchor: 'cleanup-policy',
+    },
+  ),
+  garbageCollectionHelpUrl: helpPagePath('administration/packages/container_registry', {
+    anchor: 'container-registry-garbage-collection',
+  }),
+  runCleanupPoliciesHelpUrl: helpPagePath('administration/packages/container_registry', {
+    anchor: 'run-the-cleanup-policy-now',
+  }),
   apollo: {
     containerRepository: {
       query: getContainerRepositoryDetailsQuery,
@@ -136,15 +149,15 @@ export default {
     <template v-if="containerRepository">
       <delete-alert
         v-model="deleteAlertType"
-        :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
+        :garbage-collection-help-page-path="$options.garbageCollectionHelpUrl"
         :is-admin="config.isAdmin"
         class="gl-my-2"
       />
 
       <partial-cleanup-alert
         v-if="showPartialCleanupWarning"
-        :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
-        :cleanup-policies-help-page-path="config.expirationPolicyHelpPagePath"
+        :run-cleanup-policies-help-page-path="$options.runCleanupPoliciesHelpUrl"
+        :cleanup-policies-help-page-path="$options.cleanupPoliciesHelpUrl"
         @dismiss="dismissPartialCleanupWarning"
       />
 

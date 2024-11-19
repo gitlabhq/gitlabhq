@@ -18,7 +18,14 @@ module Issues
     private
 
     def associations_to_preload
-      [:work_item_type, :author, :assignees, :timelogs, :milestone, { project: { namespace: :route } }]
+      [
+        ::Gitlab::Issues::TypeAssociationGetter.call,
+        :author,
+        :assignees,
+        :timelogs,
+        :milestone,
+        { project: { namespace: :route } }
+      ]
     end
 
     def header_to_value_hash
@@ -50,11 +57,9 @@ module Issues
       @labels[issue.id]
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def issue_time_spent(issue)
       issue.timelogs.sum(&:time_spent)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def preload_associations_in_batches?
       Feature.enabled?(:export_csv_preload_in_batches, resource_parent)

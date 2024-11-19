@@ -80,7 +80,7 @@ module QA
       #
       # @return [Runtime::API::Client]
       def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
+        @api_client ||= Runtime::API::Client.new(:gitlab, user: user)
       end
 
       def api_get_path

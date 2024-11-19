@@ -108,10 +108,26 @@ To switch organizations:
 1. Select the [**Visibility level**](../public_access.md) of the group.
 1. Select **Create group**.
 
-## Manage users
+## View users
+
+1. On the left sidebar, select **Organizations** and find the organization you want to view.
+1. Select **Manage > Users**.
+
+## Change a user's role
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+To change a user's role:
 
 1. On the left sidebar, select **Organizations** and find the organization you want to manage.
 1. Select **Manage > Users**.
+1. Find the user whose role you want to update.
+1. From the **Organization role** dropdown list, select a role.
+
+NOTE:
+If you cannot select from the **Organization role** dropdown list, this user is the organization's only Owner. To change this user's role, first assign the Owner role to another user.
 
 ## Supported Markdown for Organization description
 

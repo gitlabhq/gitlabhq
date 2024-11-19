@@ -5,12 +5,8 @@ module Gitlab
     module Email
       extend self
 
-      # Don't use Devise.email_regexp or URI::MailTo::EMAIL_REGEXP to be a bit more restrictive
-      # on the format of an email. Especially for custom email addresses which cannot contain a `+`
-      # in app/models/service_desk_setting.rb
-      EMAIL_REGEXP = /[\w\-._]+@[\w\-.]+\.{1}[a-zA-Z]{2,}/
+      EMAIL_REGEXP = %r{(?>[a-zA-Z0-9]+|[\-._!#$%&'*+\/=?^{|}~]+){1,255}@[\w\-.]{1,253}\.{1}[a-zA-Z]{2,63}}
       EMAIL_REGEXP_WITH_CAPTURING_GROUP = /(#{EMAIL_REGEXP})/
-      EMAIL_REGEXP_WITH_ANCHORS = /\A#{EMAIL_REGEXP.source}\z/
 
       # Replaces most visible characters with * to obfuscate an email address
       # deform adds a fix number of * to ensure the address cannot be guessed. Also obfuscates TLD with **

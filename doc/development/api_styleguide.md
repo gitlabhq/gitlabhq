@@ -21,7 +21,7 @@ For example, they could share the same [services](reusing_abstractions.md#servic
 
 ## Frontend
 
-See the [frontend guide](fe_guide/index.md#overview)
+See the [frontend guide](fe_guide/index.md#introduction)
 on details on which API to use when developing in the frontend.
 
 ## Instance variables

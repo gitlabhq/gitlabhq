@@ -12,7 +12,7 @@ which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab)
 
 Also see our [direction page](https://about.gitlab.com/direction/manage/import_and_integrate/integrations/) for an overview of our strategy around integrations.
 
-This guide is a work in progress. You're welcome to ping `@gitlab-org/manage/import-and-integrate`
+This guide is a work in progress. You're welcome to ping `@gitlab-org/foundations/import-and-integrate`
 if you need clarification or spot any outdated information.
 
 ## Add a new integration
@@ -107,11 +107,11 @@ The following events are supported for integrations:
 
 | Event type                                                                                     | Default | Value                | Trigger |
 |:-----------------------------------------------------------------------------------------------|:--------|:---------------------|:--|
-| Alert event                                                                                    |         | `alert`              | A a new, unique alert is recorded. |
+| Alert event                                                                                    |         | `alert`              | A new, unique alert is recorded. |
 | Commit event                                                                                   | ✓       | `commit`             | A commit is created or updated. |
 | [Deployment event](../../user/project/integrations/webhook_events.md#deployment-events)        |         | `deployment`         | A deployment starts or finishes. |
-| [Issue event](../../user/project/integrations/webhook_events.md#issue-events)                  | ✓       | `issue`              | An issue is created, updated, or closed. |
-| [Confidential issue event](../../user/project/integrations/webhook_events.md#issue-events)     | ✓       | `confidential_issue` | A confidential issue is created, updated, or closed. |
+| [Work item event](../../user/project/integrations/webhook_events.md#work-item-events)          | ✓       | `issue`              | An issue is created, updated, or closed. |
+| [Confidential issue event](../../user/project/integrations/webhook_events.md#work-item-events) | ✓       | `confidential_issue` | A confidential issue is created, updated, or closed. |
 | [Job event](../../user/project/integrations/webhook_events.md#job-events)                      |         | `job` | |
 | [Merge request event](../../user/project/integrations/webhook_events.md#merge-request-events)  | ✓       | `merge_request`      | A merge request is created, updated, or merged. |
 | [Comment event](../../user/project/integrations/webhook_events.md#comment-events)              |         | `comment`            | A new comment is added. |
@@ -471,4 +471,4 @@ You can refer to these issues for examples of adding new integrations:
 - [Datadog](https://gitlab.com/gitlab-org/gitlab/-/issues/270123): Metrics collector, similar to the Prometheus integration.
 - [EWM/RTC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36662): External issue tracker.
 - [Webex Teams](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31543): Chat notifications.
-- [ZenTao](https://gitlab.com/gitlab-org/gitlab/-/issues/338178): External issue tracker with custom issue views, similar to the Jira integration.
+- [ZenTao](https://gitlab.com/gitlab-org/gitlab/-/issues/338178): External issue tracker with custom issue views, similar to the Jira issues integration.

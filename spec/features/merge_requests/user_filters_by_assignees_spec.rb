@@ -18,7 +18,7 @@ RSpec.describe 'Merge Requests > User filters by assignees', :js, feature_catego
 
   context 'filtering by assignee:none' do
     it 'applies the filter' do
-      input_filtered_search('assignee:=none')
+      select_tokens 'Assignee', '=', 'None', submit: true
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).not_to have_content 'Bugfix1'
@@ -28,7 +28,7 @@ RSpec.describe 'Merge Requests > User filters by assignees', :js, feature_catego
 
   context 'filtering by assignee=@username' do
     it 'applies the filter' do
-      input_filtered_search("assignee:=@#{user.username}")
+      select_tokens 'Assignee', '=', user.username, submit: true
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content 'Bugfix1'

@@ -11,24 +11,25 @@ import notes from '../design_notes/mock_notes';
 Vue.use(VueApollo);
 
 describe('Design overlay component', () => {
+  /** @type { import('helpers/vue_test_utils_helper').ExtendedWrapper } */
   let wrapper;
   let apolloProvider;
 
   const mockDimensions = { width: 100, height: 100 };
 
-  const findOverlay = () => wrapper.findByTestId('design-overlay');
+  const findOverlay = () => wrapper.findComponentByTestId('design-overlay');
   const findAllNotes = () => wrapper.findAllByTestId('note-pin');
   const findCommentBadge = () => wrapper.findByTestId('comment-badge');
   const findBadgeAtIndex = (noteIndex) => findAllNotes().at(noteIndex);
   const findFirstBadge = () => findBadgeAtIndex(0);
   const findSecondBadge = () => findBadgeAtIndex(1);
 
-  const clickAndDragBadge = (elem, fromPoint, toPoint) => {
+  const clickAndDragBadge = async (elem, fromPoint, toPoint) => {
     elem.vm.$emit(
       'mousedown',
       new MouseEvent('click', { clientX: fromPoint.x, clientY: fromPoint.y }),
     );
-    findOverlay().trigger('mousemove', { clientX: toPoint.x, clientY: toPoint.y });
+    await findOverlay().trigger('mousemove', { clientX: toPoint.x, clientY: toPoint.y });
     elem.vm.$emit('mouseup', new MouseEvent('click', { clientX: toPoint.x, clientY: toPoint.y }));
   };
 
@@ -150,6 +151,8 @@ describe('Design overlay component', () => {
             });
 
             await nextTick();
+            await nextTick();
+
             expect(findBadgeAtIndex(0).props('isInactive')).toBe(false);
           },
         );
@@ -167,6 +170,8 @@ describe('Design overlay component', () => {
           });
 
           await nextTick();
+          await nextTick();
+
           expect(findSecondBadge().props('isInactive')).toBe(true);
           expect(findFirstBadge().props('isInactive')).toBe(false);
         });

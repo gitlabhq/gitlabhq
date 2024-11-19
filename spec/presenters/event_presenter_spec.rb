@@ -67,6 +67,11 @@ RSpec.describe EventPresenter do
         .to have_attributes(note_target_type_name: 'design')
     end
 
+    it 'returns wiki page for an event on a comment on a wiki page' do
+      expect(build(:event, :commented, :for_wiki_page_note).present)
+        .to have_attributes(note_target_type_name: 'wiki page')
+    end
+
     it 'returns nil for an event without a target' do
       expect(build(:event).present).to have_attributes(note_target_type_name: be_nil)
     end

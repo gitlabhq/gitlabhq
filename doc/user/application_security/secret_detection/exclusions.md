@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -28,6 +28,10 @@ In the [first iteration](https://gitlab.com/groups/gitlab-org/-/epics/14878) of 
 
 - Exclusions can only be defined for each project.
 - Exclusions apply only to [secret push protection](secret_push_protection/index.md).
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Secret Detection Exclusions - Demonstration](https://www.youtube.com/watch?v=vh_Uh4_4aoc).
+<!-- Video published on 2024-10-12 -->
 
 ## Add an exclusion
 

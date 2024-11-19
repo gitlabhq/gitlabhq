@@ -30,7 +30,7 @@ domains:
       - duo_chat
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
-      - cloud_connector  # Also in CloudConnector
+      - cloud_connector # Also in CloudConnector
       - duo_workflow
 
   Analytics:
@@ -116,6 +116,11 @@ domains:
     feature_categories:
       - container_registry
 
+  CustomerRelations:
+    description:
+    feature_categories:
+      - team_planning
+
   DependencyProxy:
     description: Dependency Proxy for container images.
     feature_categories:
@@ -159,7 +164,8 @@ domains:
       - integrations
 
   Issuables:
-    description: Common concerns between work items and merge requests such as setting milestone,
+    description:
+      Common concerns between work items and merge requests such as setting milestone,
       support discussions, adding labels, etc.
     feature_categories:
       - team_planning
@@ -369,7 +375,8 @@ domains:
 # Modules from the platform layer could potentially be extracted as gems.
 platform:
   Gitlab:
-    description: Platform layer containing infrastructure and technical concerns.
+    description:
+      Platform layer containing infrastructure and technical concerns.
       For example observability tools, generic base classes, utilities, database helpers, etc.
       Each functionality in this layer should be isolated and extracted into gems.
   Banzai:

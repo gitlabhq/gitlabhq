@@ -55,7 +55,7 @@ describe('User Actions App', () => {
   it('shows copy user id action', () => {
     createWrapper();
     expect(findAction().text()).toBe(`Copy user ID: ${USER_ID}`);
-    expect(findAction().findComponent('button').attributes('data-clipboard-text')).toBe(USER_ID);
+    expect(findAction().find('button').attributes('data-clipboard-text')).toBe(USER_ID);
   });
 
   it('shows subscription link when subscription url was presented', () => {

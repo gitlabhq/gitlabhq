@@ -63,7 +63,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :markdown_automatic_lists,
       :use_new_navigation,
       :enabled_following,
-      :use_work_items_view
+      :use_work_items_view,
+      :text_editor
     ]
   end
 end

@@ -1,0 +1,13 @@
+---
+table_name: ci_runner_taggings_instance_type
+classes:
+- Ci::RunnerTagging
+feature_categories:
+- runner
+- fleet_visibility
+- hosted_runners
+description: Table holding information for group runner taggings, partition of `ci_runner_taggings`
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170778
+milestone: '17.6'
+gitlab_schema: gitlab_ci
+exempt_from_sharding: true

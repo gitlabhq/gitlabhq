@@ -61,7 +61,6 @@ Rails/FilePath:
     - 'spec/db/development/create_base_work_item_types_spec.rb'
     - 'spec/db/production/add_security_training_providers_spec.rb'
     - 'spec/db/production/create_base_work_item_types_spec.rb'
-    - 'spec/db/schema_spec.rb'
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/design_management/versions.rb'
     - 'spec/factories/error_tracking/error_event.rb'

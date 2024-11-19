@@ -2258,9 +2258,15 @@ cluster alongside your instance, read how to
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
 
-Run select components of cloud-native GitLab in Kubernetes with the [GitLab Helm chart](https://docs.gitlab.com/charts/). In this setup, you can run the equivalent of GitLab Rails in the Kubernetes cluster called Webservice. You also can run the equivalent of Sidekiq nodes in the Kubernetes cluster called Sidekiq. In addition,
-the following other supporting services are supported: NGINX, Toolbox, Migrations,
-Prometheus.
+An alternative approach is to run specific GitLab components in Kubernetes.
+The following services are supported:
+
+- GitLab Rails
+- Sidekiq
+- NGINX
+- Toolbox
+- Migrations
+- Prometheus
 
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native
@@ -2420,7 +2426,7 @@ Each Webservice pod (Puma and Workhorse) is recommended to be run with the follo
 - 5 GB memory (request)
 - 7 GB memory (limit)
 
-For 500 RPS or 25,000 users we recommend a total Puma worker count of around 308 so in turn it's recommended to run at
+For 1000 RPS or 50,000 users we recommend a total Puma worker count of around 308 so in turn it's recommended to run at
 least 77 Webservice pods.
 
 For further information on Webservice resource usage, see the Charts documentation on [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
@@ -2460,7 +2466,7 @@ pool as given, you can increase the node pool accordingly. Conversely, if the po
 
 ### Example config file
 
-An example for the GitLab Helm Charts targetting the above 1000 RPS or 50,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/50k.yaml).
+An example for the GitLab Helm Charts targeting the above 1000 RPS or 50,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/50k.yaml).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#set-up-components">

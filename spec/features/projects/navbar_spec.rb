@@ -16,7 +16,6 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
 
     stub_config(registry: { enabled: false })
     stub_feature_flags(ml_experiment_tracking: false)
-    stub_feature_flags(model_registry: false)
     insert_package_nav
     insert_infrastructure_registry_nav(s_('Terraform|Terraform states'))
     insert_infrastructure_google_cloud_nav
@@ -36,7 +35,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
       stub_config(pages: { enabled: true })
 
       insert_after_sub_nav_item(
-        _('Package Registry'),
+        _('Model registry'),
         within: _('Deploy'),
         new_sub_nav_item_name: _('Pages')
       )
@@ -90,18 +89,6 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
       else
         insert_model_experiments_nav(_('Repository analytics'))
       end
-
-      visit project_path(project)
-    end
-
-    it_behaves_like 'verified navigation bar'
-  end
-
-  context 'when model registry is available' do
-    before do
-      stub_feature_flags(model_registry: true)
-
-      insert_model_registry_nav(_('Package Registry'))
 
       visit project_path(project)
     end

@@ -38,7 +38,7 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
             url: 'https://gitlab.com'
           },
           links: {
-            documentation: 'http://test.host/help/integration/jira_development_panel.md#gitlabcom-1'
+            documentation: 'http://test.host/help/integration/jira/development_panel.md'
           },
           authentication: {
             type: 'jwt'

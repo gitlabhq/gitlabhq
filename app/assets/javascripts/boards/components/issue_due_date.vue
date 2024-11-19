@@ -1,7 +1,12 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
 import dateFormat from '~/lib/dateformat';
-import { getDayDifference, getTimeago, dateInWords, newDate } from '~/lib/utils/datetime_utility';
+import {
+  getDayDifference,
+  getTimeago,
+  localeDateFormat,
+  newDate,
+} from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 
 export default {
@@ -60,6 +65,9 @@ export default {
 
       return standardDateFormat;
     },
+    iconName() {
+      return this.isOverdue ? 'calendar-overdue' : 'calendar';
+    },
     issueDueDate() {
       return newDate(this.date);
     },
@@ -67,15 +75,15 @@ export default {
       const today = new Date();
       return getDayDifference(today, this.issueDueDate);
     },
-    isPastDue() {
+    isOverdue() {
       if (this.timeDifference >= 0 || this.closed) return false;
       return true;
     },
     standardDateFormat() {
       const today = new Date();
-      const isDueInCurrentYear = today.getFullYear() === this.issueDueDate.getFullYear();
-
-      return dateInWords(this.issueDueDate, true, isDueInCurrentYear);
+      return today.getFullYear() === this.issueDueDate.getFullYear()
+        ? localeDateFormat.asDateWithoutYear.format(this.issueDueDate)
+        : localeDateFormat.asDate.format(this.issueDueDate);
     },
   },
 };
@@ -89,21 +97,17 @@ export default {
       class="board-card-info gl-mr-3 gl-cursor-help gl-text-secondary"
     >
       <gl-icon
-        :class="{ 'gl-text-danger': isPastDue }"
+        :variant="isOverdue ? 'danger' : 'current'"
         class="board-card-info-icon gl-mr-2"
-        name="calendar"
+        :name="iconName"
       />
-      <time
-        :class="{ 'gl-text-danger': isPastDue }"
-        datetime="date"
-        class="board-card-info-text gl-text-sm"
-        >{{ body }}</time
-      >
+      <time datetime="date" class="board-card-info-text gl-text-sm">{{ body }}</time>
     </span>
     <gl-tooltip :target="() => $refs.issueDueDate" :placement="tooltipPlacement">
       <span class="gl-font-bold">{{ __('Due date') }}</span>
       <br />
-      <span :class="{ 'gl-text-red-300': isPastDue }">{{ title }}</span>
+      <span>{{ title }}</span>
+      <div v-if="isOverdue">({{ __('overdue') }})</div>
     </gl-tooltip>
   </span>
 </template>

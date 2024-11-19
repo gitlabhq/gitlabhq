@@ -8,9 +8,17 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let!(:registry_scope) { Runtime::Namespace.sandbox_name }
-      let!(:personal_access_token) do
-        Resource::PersonalAccessToken.fabricate_via_api!.token
+      let!(:personal_access_token) { Runtime::UserStore.test_user.current_personal_access_token }
+      let!(:project) { create(:project, name: 'npm-group-publish') }
+      let!(:group) { project.group }
+      let!(:registry_scope) { group.sandbox.name }
+      let!(:another_project) { create(:project, name: 'npm-group-install', group: group) }
+      let!(:runner) do
+        create(:group_runner,
+          name: "qa-runner-#{SecureRandom.hex(6)}",
+          tags: ["runner-for-#{group.name}"],
+          executor: :docker,
+          group: group)
       end
 
       let(:project_deploy_token) do
@@ -26,19 +34,7 @@ module QA
 
       let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
       let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
-      let!(:project) { create(:project, name: 'npm-group-level-publish') }
-      let!(:another_project) { create(:project, name: 'npm-group-level-install', group: project.group) }
-      let!(:runner) do
-        create(:group_runner,
-          name: "qa-runner-#{SecureRandom.hex(6)}",
-          tags: ["runner-for-#{project.group.name}"],
-          executor: :docker,
-          group: project.group)
-      end
-
-      let(:package) do
-        build(:package, name: "@#{registry_scope}/#{project.name}-#{SecureRandom.hex(8)}", project: project)
-      end
+      let(:package) { build(:package, name: "@#{registry_scope}/#{project.name}", project: project) }
 
       before do
         Flow::Login.sign_in

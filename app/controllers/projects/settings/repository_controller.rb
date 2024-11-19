@@ -9,7 +9,6 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:edit_branch_rules, @project)
-        push_frontend_feature_flag(:async_rewrite_history, @project)
         push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
         push_frontend_ability(ability: :admin_protected_branch, resource: @project, user: current_user)
       end
@@ -19,7 +18,6 @@ module Projects
       urgency :low, [:show, :create_deploy_token]
 
       def show
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/482942')
         render_show
       end
 
@@ -95,8 +93,8 @@ module Projects
 
       # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
-        @protected_branches = fetch_protected_branches(@project)
-        @protected_tags = @project.protected_tags.order(:name).page(pagination_params[:page])
+        @protected_branches = fetch_protected_branches(@project).preload_access_levels
+        @protected_tags = @project.protected_tags.preload_access_levels.order(:name).page(pagination_params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
 

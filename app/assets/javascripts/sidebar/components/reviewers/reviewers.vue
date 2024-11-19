@@ -63,7 +63,7 @@ export default {
     <div class="value hide-collapsed">
       <span
         v-if="hasNoUsers"
-        class="no-value gl-flex gl-text-base gl-leading-normal"
+        class="no-value gl-flex gl-text-base gl-leading-normal !gl-text-subtle"
         data-testid="no-value"
       >
         {{ __('None') }}
@@ -76,7 +76,7 @@ export default {
             data-testid="assign-yourself"
             @click="assignSelf"
           >
-            <span class="gl-text-gray-500 hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
+            <span class="gl-text-subtle hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
           </gl-button>
         </template>
       </span>

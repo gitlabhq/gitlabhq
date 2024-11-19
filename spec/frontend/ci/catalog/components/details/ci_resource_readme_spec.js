@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -7,8 +7,10 @@ import getCiCatalogResourceReadme from '~/ci/catalog/graphql/queries/get_ci_cata
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 jest.mock('~/alert');
+jest.mock('~/behaviors/markdown/render_gfm');
 
 Vue.use(VueApollo);
 
@@ -88,6 +90,12 @@ describe('CiResourceReadme', () => {
     it('renders a versioned readme', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(wrapper.html()).toContain(versionedReadmeHtml);
+    });
+
+    it('calls `renderGFM` to ensure that all gitlab-flavoured markdown is rendered on the README', async () => {
+      await nextTick();
+
+      expect(renderGFM).toHaveBeenCalledWith(expect.anything());
     });
 
     it('does not render an error', () => {

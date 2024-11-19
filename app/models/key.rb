@@ -14,6 +14,8 @@ class Key < ApplicationRecord
 
   has_many :ssh_signatures, class_name: 'CommitSignatures::SshSignature'
 
+  has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- Polymorphic association
+
   before_validation :generate_fingerprint
 
   validates :title,
@@ -100,7 +102,7 @@ class Key < ApplicationRecord
   def add_to_authorized_keys
     return unless Gitlab::CurrentSettings.authorized_keys_enabled?
 
-    AuthorizedKeysWorker.perform_async(:add_key, shell_id, key)
+    AuthorizedKeysWorker.perform_async('add_key', shell_id, key)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -112,7 +114,7 @@ class Key < ApplicationRecord
   def remove_from_authorized_keys
     return unless Gitlab::CurrentSettings.authorized_keys_enabled?
 
-    AuthorizedKeysWorker.perform_async(:remove_key, shell_id)
+    AuthorizedKeysWorker.perform_async('remove_key', shell_id)
   end
 
   # rubocop: disable CodeReuse/ServiceClass

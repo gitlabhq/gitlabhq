@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -68,7 +68,7 @@ If you suspect that a user account or bot account has been compromised, you shou
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
 - Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/index.md#runner-registration-tokens-deprecated).
-- [Reset the user's password](../security/reset_user_password.md).
+- [Reset user passwords](../security/reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](../security/two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
 
@@ -186,13 +186,13 @@ If you suspect unauthorized modifications to project settings, consider taking t
 
 Before you ask GitLab for help, search the [GitLab documentation](https://docs.gitlab.com/). You should engage support once you have performed the preliminary investigation on your end and have additional questions or need of assistance. Eligibility for assistance from GitLab Support is [determined by your license](https://about.gitlab.com/support/#gitlab-support-service-levels).
 
-### Security Best Practices
+### Security best practices
 
-Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. If you are running a self-managed GitLab instance, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarise yourself with the various parts of a GitLab installation.
+Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. If you are running a self-managed GitLab instance, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
 
 #### Hardening Recommendations
 
-Consider reviewing the [GitLab Hardening Recommendations](../security/hardening.md) for recommendations on improving the security posture of your GitLab environment.
+For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](../security/hardening.md).
 
 You can also consider implementing abuse rate limiting as detailed in [Git abuse rate limit](../user/group/reporting/git_abuse_rate_limit.md). Setting abuse rate limits may be helpful to automatically mitigate certain types of security incidents.
 

@@ -11,7 +11,7 @@ class QueueDropVulnerabilitiesWithoutFindingId < Gitlab::Database::Migration[2.2
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+    Gitlab::Database::QueryAnalyzers::Base.suppress_schema_issues_for_decomposed_tables do
       queue_batched_background_migration(
         MIGRATION,
         :vulnerabilities,
@@ -24,7 +24,7 @@ class QueueDropVulnerabilitiesWithoutFindingId < Gitlab::Database::Migration[2.2
   end
 
   def down
-    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+    Gitlab::Database::QueryAnalyzers::Base.suppress_schema_issues_for_decomposed_tables do
       delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
     end
   end

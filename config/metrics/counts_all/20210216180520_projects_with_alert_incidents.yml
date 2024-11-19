@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.monitor.projects_with_alert_incidents
 description: Count of unique projects with an incident from an alert
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all
@@ -10,7 +10,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

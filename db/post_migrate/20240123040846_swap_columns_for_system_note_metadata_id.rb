@@ -73,7 +73,7 @@ class SwapColumnsForSystemNoteMetadataId < Gitlab::Database::Migration[2.2]
       # This will drop fk_2a039c40f4 ("resource_link_events" REFERENCES system_note_metadata(id) ON DELETE CASCADE)
       execute "ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{PRIMARY_KEY_CONSTRAINT_NAME} CASCADE"
       rename_index TABLE_NAME, NEW_PRIMARY_KEY_INDEX_NAME, PRIMARY_KEY_INDEX_NAME
-      execute "ALTER TABLE #{TABLE_NAME} ADD CONSTRAINT #{PRIMARY_KEY_CONSTRAINT_NAME} PRIMARY KEY USING INDEX #{PRIMARY_KEY_INDEX_NAME}" # rubocop:disable Layout/LineLength -- for readability
+      execute "ALTER TABLE #{TABLE_NAME} ADD CONSTRAINT #{PRIMARY_KEY_CONSTRAINT_NAME} PRIMARY KEY USING INDEX #{PRIMARY_KEY_INDEX_NAME}"
 
       # Rename the new FK
       rename_constraint FK_SOURCE_TABLE_NAME, TEMP_FK_NAME, FK_NAME

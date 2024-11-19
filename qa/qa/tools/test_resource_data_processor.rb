@@ -52,19 +52,30 @@ module QA
       def write_to_file(suite_failed)
         return if resources.empty?
 
-        start_str = suite_failed ? 'failed-test-resources' : 'test-resources'
+        start_str = mark_as_failed?(suite_failed) ? 'failed-test-resources' : 'test-resources'
         file_name = Runtime::Env.running_in_ci? ? "#{start_str}-#{SecureRandom.hex(3)}.json" : "#{start_str}.json"
         file = Pathname.new(File.join(Runtime::Path.qa_root, 'tmp', file_name))
         FileUtils.mkdir_p(file.dirname)
 
         data = resources.deep_dup
         # merge existing json if present
-        JSON.parse(File.read(file)).deep_merge!(data) { |key, val, other_val| val + other_val } if file.exist?
+        JSON.parse(File.read(file)).deep_merge!(data) { |_, val, other_val| val + other_val } if file.exist?
 
         File.write(file, JSON.pretty_generate(data))
       end
 
       private
+
+      # Check if resource file should be marked as failed
+      #
+      # @param [Boolean] suite_failed
+      # @return [Boolean]
+      def mark_as_failed?(suite_failed)
+        return suite_failed unless ::Gitlab::QA::Runtime::Env.retry_failed_specs?
+
+        # if suite ran in the initial run, do not mark resource as failed even if suite failed
+        Runtime::Env.rspec_retried? ? suite_failed : false
+      end
 
       # Determine resource api path or return default value
       # Some resources fabricated via UI can raise no attribute error

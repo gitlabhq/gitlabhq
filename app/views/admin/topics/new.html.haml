@@ -1,3 +1,5 @@
+- add_to_breadcrumbs _("Topics"), admin_topics_path
 - page_title _("New topic")
-%h1.page-title.gl-text-size-h-display= _('New topic')
+
+= render ::Layouts::PageHeadingComponent.new(_('New topic'))
 = render 'form', url: admin_topics_path(@topic)

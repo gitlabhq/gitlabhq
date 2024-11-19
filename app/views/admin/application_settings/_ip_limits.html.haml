@@ -68,7 +68,7 @@
       = f.label :rate_limiting_response_text, class: 'label-bold' do
         = _('Plain-text response to send to clients that hit a rate limit')
       = f.text_area :rate_limiting_response_text, placeholder: ::Gitlab::Throttle::DEFAULT_RATE_LIMITING_RESPONSE_TEXT, class: 'form-control gl-form-input', rows: 5
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = html_escape(_("If blank, defaults to %{code_open}Retry later%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
 
   = f.submit _('Save changes'), data: { testid: 'save-changes-button' }, pajamas_button: true

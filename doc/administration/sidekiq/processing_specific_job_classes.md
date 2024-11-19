@@ -84,8 +84,8 @@ These are not recommendations.
      # Run two high-urgency processes
      'high-urgency',
      'high-urgency',
-     # Run one process for throttled, network-intensive, import
-     'throttled,network-intensive,import',
+     # Run one process for throttled, network-intensive
+     'throttled,network-intensive',
      # Run one 'catchall' process on the default and mailers queues
      'default,mailers'
    ]

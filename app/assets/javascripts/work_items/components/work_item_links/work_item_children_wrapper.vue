@@ -11,14 +11,14 @@ import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC } from '../../constants';
-import { findHierarchyWidgetChildren } from '../../utils';
+import { findHierarchyWidgetChildren, getItems } from '../../utils';
 import {
   addHierarchyChild,
   removeHierarchyChild,
   optimisticUserPermissions,
 } from '../../graphql/cache_utils';
-import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import moveWorkItem from '../../graphql/move_work_item.mutation.graphql';
+import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
@@ -61,15 +61,15 @@ export default {
       required: false,
       default: true,
     },
+    showClosed: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     disableContent: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    allowedChildTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
     isTopLevel: {
       type: Boolean,
@@ -89,6 +89,16 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    allowedChildrenByType: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    draggedItemType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -129,6 +139,10 @@ export default {
     },
     apolloClient() {
       return this.$apollo.provider.clients.defaultClient;
+    },
+    displayableChildren() {
+      const filterClosed = getItems(this.showClosed);
+      return filterClosed(this.children);
     },
   },
   mounted() {
@@ -290,8 +304,9 @@ export default {
         parentId: toParentId,
       };
     },
-    handleDragOnStart() {
+    handleDragOnStart(params) {
       sortableStart();
+      this.$emit('drag', params.item.dataset.childType);
       this.dragCancelled = false;
       // Attach listener to detect `ESC` key press to cancel drag.
       document.addEventListener('keyup', this.handleDocumentKeyup);
@@ -299,6 +314,7 @@ export default {
     async handleDragOnEnd(params) {
       clearTimeout(this.toggleTimer);
       sortableEnd();
+      this.$emit('drop');
       document.removeEventListener('keyup', this.handleDocumentKeyup);
       // Drag was cancelled, prevent reordering.
       if (this.dragCancelled) return;
@@ -513,7 +529,7 @@ export default {
     @end="handleDragOnEnd"
   >
     <work-item-link-child
-      v-for="child in children"
+      v-for="child in displayableChildren"
       :key="child.id"
       :can-update="canUpdate"
       :issuable-gid="child.id"
@@ -522,12 +538,17 @@ export default {
       :work-item-type="child.workItemType.name"
       :has-indirect-children="hasIndirectChildren"
       :show-labels="showLabels"
+      :show-closed="showClosed"
       :work-item-full-path="fullPath"
       :show-task-weight="showTaskWeight"
-      :allowed-child-types="allowedChildTypes"
+      :dragged-item-type="draggedItemType"
+      :allowed-children-by-type="allowedChildrenByType"
       :is-top-level="isTopLevel"
       :data-child-title="child.title"
+      :data-child-type="child.workItemType.name"
       class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
+      @drag="$emit('drag', $event)"
+      @drop="$emit('drop')"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

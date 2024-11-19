@@ -10,7 +10,7 @@ module BulkImports
 
     idempotent!
     deduplicate :until_executing
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :always
     feature_category :importers
 
     version 2

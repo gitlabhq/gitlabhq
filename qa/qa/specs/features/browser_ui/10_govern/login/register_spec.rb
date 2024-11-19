@@ -1,24 +1,28 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_examples 'registration and login' do
-    it 'allows the user to register and login' do
-      Runtime::Browser.visit(:gitlab, Page::Main::Login)
+  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
+    shared_examples 'registration and login' do
+      it 'allows the user to register and login' do
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-      Resource::User.fabricate_via_browser_ui! do |user_resource|
-        user_resource.email_domain = 'gitlab.com'
-      end
+        Resource::User.fabricate_via_browser_ui! do |user_resource|
+          user_resource.email_domain = 'gitlab.com'
+        end
 
-      Page::Main::Menu.perform do |menu|
-        expect(menu).to have_personal_area
+        Page::Main::Menu.perform do |menu|
+          expect(menu).to have_personal_area
+        end
       end
     end
-  end
 
-  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
-    describe 'while LDAP is enabled', :blocking, :orchestrated, :ldap_no_tls,
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       let!(:personal_access_token) { Runtime::Env.personal_access_token }
+
+      around do |example|
+        with_application_settings(require_admin_approval_after_user_signup: false) { example.run }
+      end
 
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not
@@ -31,8 +35,6 @@ module QA
         ldap_username = Runtime::Env.ldap_username
         Runtime::Env.ldap_username = nil
 
-        set_require_admin_approval_after_user_signup(false)
-
         Runtime::Env.ldap_username = ldap_username
       end
 
@@ -43,33 +45,24 @@ module QA
       it_behaves_like 'registration and login'
     end
 
-    describe 'standard', :smoke, :external_api_calls,
-      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
+    # TODO: needs to be refactored to correctly support parallel testing
+    # If any other spec file depends on require_admin_approval setting, it could fail
+    describe 'standard', :smoke, :external_api_calls do
       context 'when admin approval is not required' do
-        before(:all) do
-          set_require_admin_approval_after_user_signup(false)
+        around do |example|
+          with_application_settings(require_admin_approval_after_user_signup: false) { example.run }
         end
 
-        it_behaves_like 'registration and login'
+        context "with basic registration",
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
+          it_behaves_like 'registration and login'
+        end
 
-        context 'when user account is deleted' do
-          let(:admin_api_client) { Runtime::API::Client.as_admin }
-          let(:name) { "FirstName Last#{SecureRandom.hex(6)}" }
-          let(:email) { "email_#{SecureRandom.hex(6)}@example.com" }
-          let(:username) { "username_#{SecureRandom.hex(6)}" }
-          let(:user) { create(:user, api_client: admin_api_client, name: name, email: email, username: username) }
-          let(:recreated_user) do
-            Resource::User.fabricate_via_browser_ui! do |resource|
-              resource.name = name
-              resource.username = username
-              resource.email = email
-            end
-          end
+        context "with user deletion" do
+          let(:user) { create(:user) }
 
-          before do
-            # Use the UI instead of API to delete the account since
-            # this is the only test that exercise this UI.
-            # Other tests should use the API for this purpose.
+          it "allows to delete user account",
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500258' do
             Flow::Login.sign_in(as: user)
             Page::Main::Menu.perform(&:click_edit_profile_link)
             Page::Profile::Menu.perform(&:click_account)
@@ -77,27 +70,29 @@ module QA
               show.delete_account(user.password)
             end
 
+            expect { user.exists? }.to eventually_be_falsey.within(max_duration: 120, sleep_interval: 3),
+              "Expected user to be deleted, but it still exists"
+          end
+
+          it "allows to recreate deleted user with same credeintials",
+            quarantine: {
+              issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500942',
+              type: :investigating
+            },
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500257' do
+            user.remove_via_api!
+            # make sure user is deleted
             Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3) { !user.exists? }
-          end
-
-          after do
-            if recreated_user
-              recreated_user.api_client = admin_api_client
-              recreated_user.remove_via_api!
-            end
-          end
-
-          it 'allows recreating with same credentials', :blocking, :external_api_calls,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
-            expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
             Flow::Login.sign_in(as: user, skip_page_validation: true)
-
             expect(page).to have_text("Invalid login or password")
 
-            recreated_user
-
-            expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
+            Resource::User.fabricate_via_browser_ui! do |resource|
+              resource.name = user.name
+              resource.username = user.username
+              resource.email = user.email
+            end
+            expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy, "Expected user to be recreated successfully"
           end
         end
       end
@@ -121,12 +116,8 @@ module QA
           end
         end
 
-        before do
-          set_require_admin_approval_after_user_signup(true)
-        end
-
-        after do
-          set_require_admin_approval_after_user_signup(false)
+        around do |example|
+          with_application_settings(require_admin_approval_after_user_signup: true) { example.run }
         end
 
         it 'allows user login after approval' do
@@ -172,17 +163,11 @@ module QA
       end
     end
 
-    def set_require_admin_approval_after_user_signup(enable_or_disable)
-      return if get_require_admin_approval_after_user_signup == enable_or_disable
-
-      Runtime::ApplicationSettings.set_application_settings(require_admin_approval_after_user_signup: enable_or_disable)
-      QA::Support::Retrier.retry_until(max_duration: 10, sleep_interval: 1) do
-        get_require_admin_approval_after_user_signup == enable_or_disable
-      end
-    end
-
-    def get_require_admin_approval_after_user_signup
-      Runtime::ApplicationSettings.get_application_settings[:require_admin_approval_after_user_signup]
+    def with_application_settings(**hargs)
+      Runtime::ApplicationSettings.set_application_settings(**hargs)
+      yield
+    ensure
+      Runtime::ApplicationSettings.restore_application_settings(*hargs.keys)
     end
   end
 end

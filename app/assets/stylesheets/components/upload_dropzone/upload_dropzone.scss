@@ -20,7 +20,7 @@
 .upload-dropzone-card {
   @apply gl-transition-[background,border];
 
-  color: $gl-text-color;
+  @apply gl-text-default;
 
   &:hover,
   &:focus,
@@ -28,13 +28,13 @@
   &:active {
     outline: none;
     @include dropzone-background($blue-500);
-    color: $gl-text-color;
+    @apply gl-text-default;
   }
 
   &:focus,
   &:focus-within,
   &:active {
-    @include gl-focus;
+    @apply gl-focus;
   }
 
   &:hover {
@@ -51,6 +51,8 @@
   opacity: 1;
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .upload-dropzone-fade-enter-active,
 .upload-dropzone-fade-leave-active {
   @apply gl-transition-opacity;

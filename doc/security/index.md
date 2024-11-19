@@ -1,11 +1,11 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 description: SSH key limits, 2FA, tokens, hardening.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secure your installation
+# Secure GitLab
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -22,7 +22,7 @@ This section covers some general information and recommendations regarding the p
 
 ## Recommendations
 
-The [Hardening Guide](hardening.md) contains additional general recommendations that can be implemented for hardening an install.
+For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](hardening.md).
 
 ### Antivirus software
 

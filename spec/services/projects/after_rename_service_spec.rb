@@ -114,7 +114,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
 
     context 'attachments' do
       let(:uploader) { create(:upload, :issuable_upload, :with_file, model: project) }
-      let(:file_uploader) { build(:file_uploader, project: project) }
+      let(:file_uploader) { build(:file_uploader, container: project) }
       let(:legacy_storage_path) { File.join(file_uploader.root, legacy_storage.disk_path) }
       let(:hashed_storage_path) { File.join(file_uploader.root, hashed_storage.disk_path) }
 

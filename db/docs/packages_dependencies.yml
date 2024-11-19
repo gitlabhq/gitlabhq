@@ -11,4 +11,5 @@ milestone: '12.6'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465276
+sharding_key:
+  project_id: projects

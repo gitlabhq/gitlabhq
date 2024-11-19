@@ -16,8 +16,7 @@ module Gitlab
         end
 
         def internal_event_exists?(event_name)
-          definitions
-            .any? { |event| event.attributes[:internal_events] && event.action == event_name } ||
+          internal_event_actions.include?(event_name) ||
             Gitlab::UsageDataCounters::HLLRedisCounter.legacy_event?(event_name)
         end
 
@@ -45,6 +44,12 @@ module Gitlab
 
         def load_all_from_path(glob_path)
           Dir.glob(glob_path).map { |path| load_from_file(path) }
+        end
+
+        def internal_event_actions
+          @internal_event_actions ||= definitions
+            .filter_map { |event| event.action if event.attributes[:internal_events] }
+            .to_set
         end
       end
 

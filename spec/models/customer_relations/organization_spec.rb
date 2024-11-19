@@ -7,6 +7,7 @@ RSpec.describe CustomerRelations::Organization, type: :model, feature_category: 
 
   describe 'associations' do
     it { is_expected.to belong_to(:group).with_foreign_key('group_id') }
+    it { is_expected.to have_many(:contacts) }
   end
 
   describe 'validations' do
@@ -63,36 +64,6 @@ RSpec.describe CustomerRelations::Organization, type: :model, feature_category: 
 
     it 'strips name' do
       expect(described_class.find_by_name(group.id, 'TEST')).to eq([crm_organiztion1])
-    end
-  end
-
-  describe '#self.move_to_root_group' do
-    let!(:old_root_group) { create(:group) }
-    let!(:crm_organizations) { create_list(:crm_organization, 4, group: old_root_group) }
-    let!(:new_root_group) { create(:group) }
-    let!(:contact1) { create(:contact, group: new_root_group, organization: crm_organizations[0]) }
-    let!(:contact2) { create(:contact, group: new_root_group, organization: crm_organizations[1]) }
-
-    let!(:dupe_crm_organization1) { create(:crm_organization, group: new_root_group, name: crm_organizations[1].name) }
-    let!(:dupe_crm_organization2) do
-      create(:crm_organization, group: new_root_group, name: crm_organizations[3].name.upcase)
-    end
-
-    before do
-      old_root_group.update!(parent: new_root_group)
-      described_class.move_to_root_group(old_root_group)
-    end
-
-    it 'moves organizations with unique names and deletes the rest' do
-      expect(crm_organizations[0].reload.group_id).to eq(new_root_group.id)
-      expect(crm_organizations[2].reload.group_id).to eq(new_root_group.id)
-      expect { crm_organizations[1].reload }.to raise_error(ActiveRecord::RecordNotFound)
-      expect { crm_organizations[3].reload }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it 'updates contact.organization_id for dupes and leaves the rest untouched' do
-      expect(contact1.reload.organization_id).to eq(crm_organizations[0].id)
-      expect(contact2.reload.organization_id).to eq(dupe_crm_organization1.id)
     end
   end
 

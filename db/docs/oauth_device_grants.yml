@@ -7,5 +7,6 @@ feature_categories:
 description: Used for OAuth device grant flow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155494
 milestone: '17.2'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463785
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

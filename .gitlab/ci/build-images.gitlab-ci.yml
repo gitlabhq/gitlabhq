@@ -28,13 +28,6 @@ build-qa-image as-if-foss:
     - .as-if-foss
     - .qa:rules:test-on-omnibus-ce:follow-up
 
-follow-up:build-qa-image:
-  extends:
-    - build-qa-image
-    - .qa:rules:follow-up-e2e
-  needs:
-    - manual:e2e-test-pipeline-generate
-
 retag-gdk-image:
   extends:
     - .base-image-build
@@ -88,9 +81,3 @@ build-assets-image as-if-foss:
     - .as-if-foss
     - .qa:rules:test-on-omnibus-ce:follow-up
   needs: ["compile-production-assets as-if-foss"]
-
-follow-up:build-assets-image:
-  extends:
-    - build-assets-image
-    - .qa:rules:follow-up-e2e
-  needs: ["follow-up:compile-production-assets"]

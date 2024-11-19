@@ -21,7 +21,11 @@ module Gitlab
               imported_from: imported_from
             }.merge(resource_event_belongs_to(issue_event))
 
-            ResourceLabelEvent.create!(attrs)
+            created_event = ResourceLabelEvent.create!(attrs)
+
+            return unless mapper.user_mapping_enabled?
+
+            push_with_record(created_event, :user_id, issue_event[:actor].id, mapper.user_mapper)
           end
 
           def label_finder

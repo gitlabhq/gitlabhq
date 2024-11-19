@@ -121,6 +121,90 @@ The following "hello world" example for the Rust programming language uses the `
    stages: [build, test, release]
    ```
 
+## CI/CD component patterns
+
+This section provides practical examples of implementing common patterns in CI/CD components.
+
+### Use boolean inputs to conditionally configure jobs
+
+You can compose jobs with two conditionals by combining `boolean` type inputs and
+[`extends`](../../ci/yaml/index.md#extends) functionality.
+
+For example, to configure complex caching behavior with a `boolean` input:
+
+```yaml
+spec:
+  inputs:
+    enable_special_caching:
+      description: 'If set to `true` configures a complex caching behavior'
+      type: boolean
+---
+
+.my-component:enable_special_caching:false:
+  extends: null
+
+.my-component:enable_special_caching:true:
+  cache:
+    policy: pull-push
+    key: $CI_COMMIT_SHA
+    paths: [...]
+
+my-job:
+  extends: '.my-component:enable_special_caching:$[[ inputs.enable_special_caching ]]'
+  script: ... # run some fancy tooling
+```
+
+This pattern works by passing the `enable_special_caching` input into
+the `extends` keyword of the job.
+Depending on whether `enable_special_caching` is `true` or `false`,
+the appropriate configuration is selected from the predefined hidden jobs
+(`.my-component:enable_special_caching:true` or `.my-component:enable_special_caching:false`).
+
+### Use `options` to conditionally configure jobs
+
+You can compose jobs with multiple options, for behavior similar to `if` and `elseif`
+conditionals. Use the [`extends`](../../ci/yaml/index.md#extends) with `string` type
+and multiple `options` for any number of conditions.
+
+For example, to configure complex caching behavior with 3 different options:
+
+```yaml
+spec:
+  inputs:
+    cache_mode:
+      description: Defines the caching mode to use for this component
+      type: string
+      options:
+        - default
+        - aggressive
+        - relaxed
+---
+
+.my-component:enable_special_caching:false:
+  extends: null
+
+.my-component:cache_mode:aggressive:
+  cache:
+    policy: push
+    key: $CI_COMMIT_SHA
+    paths: ['*/**']
+
+.my-component:cache_mode:relaxed:
+  cache:
+    policy: pull-push
+    key: $CI_COMMIT_BRANCH
+    paths: ['bin/*']
+
+my-job:
+  extends: '.my-component:cache_mode:$[[ inputs.cache_mode ]]'
+  script: ... # run some fancy tooling
+```
+
+In this example, `cache_mode` input offers `default`, `aggressive`, and `relaxed` options,
+each corresponding to a different hidden job.
+By extending the component job with `extends: '.my-component:cache_mode:$[[ inputs.cache_mode ]]'`,
+the job dynamically inherits the correct caching configuration based on the selected option.
+
 ## CI/CD component migration examples
 
 This section shows practical examples of migrating CI/CD templates and pipeline configuration

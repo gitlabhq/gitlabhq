@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Expand button on click when short text is provided renders button after text 1`] = `
+<span>
+  <button
+    aria-label="Click to expand text"
+    class="btn btn-default btn-default-tertiary btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-prepend"
+    style="display: none;"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-button-icon gl-fill-current gl-icon s16"
+      data-testid="ellipsis_h-icon"
+      role="img"
+    >
+      <use
+        href="file-mock#ellipsis_h"
+      />
+    </svg>
+  </button>
+  <span>
+    <p>
+      Expanded!
+    </p>
+  </span>
+  <button
+    aria-label="Click to expand text"
+    class="btn btn-default btn-default-tertiary btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-append"
+    style=""
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-button-icon gl-fill-current gl-icon s16"
+      data-testid="ellipsis_h-icon"
+      role="img"
+    >
+      <use
+        href="file-mock#ellipsis_h"
+      />
+    </svg>
+  </button>
+</span>
+`;
+
+exports[`Expand button when short text is provided renders button before text 1`] = `
+<span>
+  <button
+    aria-label="Click to expand text"
+    class="btn btn-default btn-default-tertiary btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-prepend"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-button-icon gl-fill-current gl-icon s16"
+      data-testid="ellipsis_h-icon"
+      role="img"
+    >
+      <use
+        href="file-mock#ellipsis_h"
+      />
+    </svg>
+  </button>
+  <span>
+    <p>
+      Short
+    </p>
+  </span>
+  <button
+    aria-label="Click to expand text"
+    class="btn btn-default btn-default-tertiary btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-append"
+    style="display: none;"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-button-icon gl-fill-current gl-icon s16"
+      data-testid="ellipsis_h-icon"
+      role="img"
+    >
+      <use
+        href="file-mock#ellipsis_h"
+      />
+    </svg>
+  </button>
+</span>
+`;

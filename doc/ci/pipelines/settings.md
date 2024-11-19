@@ -169,8 +169,8 @@ If the CI/CD configuration file is in a different project:
 For example:
 
 - `.gitlab-ci.yml@namespace/another-project`
-- `my/path/.my-custom-file.yml@namespace/sub-group/another-project`
-- `my/path/.my-custom-file.yml@namespace/sub-group1/sub-group2/another-project:refname`
+- `my/path/.my-custom-file.yml@namespace/subgroup/another-project`
+- `my/path/.my-custom-file.yml@namespace/subgroup1/subgroup2/another-project:refname`
 
 If the configuration file is in a separate project, you can set more granular permissions. For example:
 

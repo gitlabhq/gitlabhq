@@ -43,7 +43,7 @@ module QA
         end
 
         it(
-          'successfully imports ci pipeline',
+          'successfully imports ci pipeline', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354650'
         ) do
           expect_project_import_finished_successfully

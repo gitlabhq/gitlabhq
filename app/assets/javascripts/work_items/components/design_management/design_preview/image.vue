@@ -141,7 +141,7 @@ export default {
 
 <template>
   <div class="js-design-image gl-mx-auto gl-my-auto">
-    <gl-icon v-if="imageError" class="gl-text-gray-200" name="media-broken" :size="48" />
+    <gl-icon v-if="imageError" name="media-broken" :size="48" variant="disabled" />
     <img
       v-show="!imageError"
       ref="contentImg"

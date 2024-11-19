@@ -1,0 +1,14 @@
+---
+table_name: pm_epss
+classes:
+  - PackageMetadata::Epss
+feature_categories:
+  - software_composition_analysis
+  - container_scanning
+description: Stores EPSS data (https://www.first.org/epss/).
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158908
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168288
+milestone: '17.3'
+gitlab_schema: gitlab_sec
+exempt_from_sharding: true  # See discussion on keys for pm_ tables https://gitlab.com/gitlab-org/gitlab/-/issues/434988#note_1827421068
+removed_in_milestone: '17.6'

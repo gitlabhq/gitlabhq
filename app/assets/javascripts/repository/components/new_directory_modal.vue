@@ -6,7 +6,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormTextarea,
-  GlToggle,
+  GlFormCheckbox,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -20,7 +20,7 @@ import {
   NEW_BRANCH_IN_FORK,
 } from '../constants';
 
-const MODAL_TITLE = __('Create New Directory');
+const MODAL_TITLE = __('Create new directory');
 const PRIMARY_OPTIONS_TEXT = __('Create directory');
 const DIR_LABEL = __('Directory name');
 const ERROR_MESSAGE = __('Error creating new directory. Please try again.');
@@ -33,7 +33,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormTextarea,
-    GlToggle,
+    GlFormCheckbox,
   },
   i18n: {
     DIR_LABEL,
@@ -165,12 +165,9 @@ export default {
       >
         <gl-form-input v-model="target" :disabled="loading" name="branch_name" />
       </gl-form-group>
-      <gl-toggle
-        v-if="showCreateNewMrToggle"
-        v-model="createNewMr"
-        :disabled="loading"
-        :label="$options.i18n.TOGGLE_CREATE_MR_LABEL"
-      />
+      <gl-form-checkbox v-if="showCreateNewMrToggle" v-model="createNewMr" :disabled="loading">
+        {{ $options.i18n.TOGGLE_CREATE_MR_LABEL }}
+      </gl-form-checkbox>
       <gl-alert v-if="!canPushCode" variant="info" :dismissible="false" class="gl-mt-3">
         {{ $options.i18n.NEW_BRANCH_IN_FORK }}
       </gl-alert>

@@ -39,6 +39,10 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
     described_class.new(user: user, target: target, options: {})
   end
 
+  before do
+    stub_feature_flags(spamcheck_runway_migration: false)
+  end
+
   shared_examples 'execute spam verdict service' do
     subject(:execute) { service.execute }
 
@@ -274,7 +278,6 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
           let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::NOOP }
 
           it 'returns the verdict' do
-            expect(Abuse::TrustScoreWorker).not_to receive(:perform_async)
             expect(AntiAbuse::TrustScoreWorker).not_to receive(:perform_async)
             is_expected.to eq(NOOP)
           end
@@ -285,22 +288,9 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
           let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
 
           context 'the result was evaluated' do
-            context 'when the rename_abuse_workers feature is enabled' do
-              it 'returns the verdict and updates the spam score' do
-                expect(AntiAbuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
-                is_expected.to eq(ALLOW)
-              end
-            end
-
-            context 'when the rename_abuse_workers feature is not enabled' do
-              before do
-                stub_feature_flags(rename_abuse_workers: false)
-              end
-
-              it 'returns the verdict and updates the spam score' do
-                expect(Abuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
-                is_expected.to eq(ALLOW)
-              end
+            it 'returns the verdict and updates the spam score' do
+              expect(AntiAbuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
+              is_expected.to eq(ALLOW)
             end
           end
 
@@ -308,7 +298,6 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
             let(:verdict_evaluated) { false }
 
             it 'returns the verdict and does not update the spam score' do
-              expect(Abuse::TrustScoreWorker).not_to receive(:perform_async)
               expect(AntiAbuse::TrustScoreWorker).not_to receive(:perform_async)
               expect(subject).to eq(ALLOW)
             end
@@ -330,22 +319,9 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
           end
 
           with_them do
-            context 'when the rename_abuse_workers feature is enabled' do
-              it "returns expected spam constant and updates the spam score" do
-                expect(AntiAbuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
-                is_expected.to eq(expected)
-              end
-            end
-
-            context 'when the rename_abuse_workers feature is not enabled' do
-              before do
-                stub_feature_flags(rename_abuse_workers: false)
-              end
-
-              it "returns expected spam constant and updates the spam score" do
-                expect(Abuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
-                is_expected.to eq(expected)
-              end
+            it "returns expected spam constant and updates the spam score" do
+              expect(AntiAbuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
+              is_expected.to eq(expected)
             end
           end
         end

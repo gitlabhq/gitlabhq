@@ -51,8 +51,13 @@ module Git
       EventCreateService.new.push(project, current_user, event_push_data)
     end
 
+    def removing_ref?
+      Gitlab::Git.blank_ref?(newrev)
+    end
+
     def create_pipelines
       return unless params.fetch(:create_pipelines, true)
+      return if removing_ref?
 
       response = Ci::CreatePipelineService
           .new(project, current_user, pipeline_params)

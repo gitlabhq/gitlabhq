@@ -5,8 +5,13 @@ import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { parseBoolean } from '~/lib/utils/common_utils';
-
-import { archivedFilterData, TRACKING_NAMESPACE, TRACKING_LABEL_CHECKBOX } from './data';
+import {
+  ARCHIVED_TRACKING_NAMESPACE,
+  ARCHIVED_TRACKING_LABEL_CHECKBOX,
+  ARCHIVED_TRACKING_LABEL_CHECKBOX_LABEL,
+  LABEL_DEFAULT_CLASSES,
+  INCLUDE_ARCHIVED_FILTER_PARAM,
+} from '../../constants';
 
 export default {
   name: 'ArchivedFilter',
@@ -19,6 +24,8 @@ export default {
   },
   i18n: {
     tooltip: s__('GlobalSearch|Include search results from archived projects'),
+    headerLabel: s__('GlobalSearch|Archived'),
+    checkboxLabel: s__('GlobalSearch|Include archived'),
   },
   computed: {
     ...mapState(['urlQuery']),
@@ -28,7 +35,10 @@ export default {
       },
       set(value) {
         const includeArchived = [...value].pop() ?? false;
-        this.setQuery({ key: archivedFilterData.filterParam, value: includeArchived?.toString() });
+        this.setQuery({
+          key: INCLUDE_ARCHIVED_FILTER_PARAM,
+          value: includeArchived?.toString(),
+        });
         this.trackSelectCheckbox(includeArchived);
       },
     },
@@ -36,20 +46,20 @@ export default {
   methods: {
     ...mapActions(['setQuery']),
     trackSelectCheckbox(value) {
-      Tracking.event(TRACKING_NAMESPACE, TRACKING_LABEL_CHECKBOX, {
-        label: archivedFilterData.checkboxLabel,
+      Tracking.event(ARCHIVED_TRACKING_NAMESPACE, ARCHIVED_TRACKING_LABEL_CHECKBOX, {
+        label: ARCHIVED_TRACKING_LABEL_CHECKBOX_LABEL,
         property: value,
       });
     },
   },
-  archivedFilterData,
+  LABEL_DEFAULT_CLASSES,
 };
 </script>
 
 <template>
   <gl-form-checkbox-group v-model="selectedFilter">
     <div class="gl-mb-2 gl-text-sm gl-font-bold" data-testid="archived-filter-title">
-      {{ $options.archivedFilterData.headerLabel }}
+      {{ $options.i18n.headerLabel }}
     </div>
     <gl-form-checkbox
       class="gl-inline-flex gl-w-full gl-grow gl-justify-between"
@@ -57,7 +67,7 @@ export default {
       :value="true"
     >
       <span v-gl-tooltip="$options.i18n.tooltip" data-testid="label">
-        {{ $options.archivedFilterData.checkboxLabel }}
+        {{ $options.i18n.checkboxLabel }}
       </span>
     </gl-form-checkbox>
   </gl-form-checkbox-group>

@@ -6,6 +6,7 @@ export const formatStages = (graphQLStages = [], restStages = []) => {
   return graphQLStages.map((stage, index) => {
     return {
       name: stage.name,
+      id: restStages[index]?.id,
       status: stage.detailedStatus,
       dropdown_path: restStages[index]?.dropdown_path || '',
       title: restStages[index].title || '',

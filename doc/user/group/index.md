@@ -22,6 +22,34 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
+## Group hierarchy
+
+Groups are organized in a tree structure: 
+
+- A **top-level group** is a group created at the "root" of the organization. An organization can have one or more top-level groups. A top-level group can contain one or more subgroups.
+- A **parent group** is a group that contains one or more subgroups.
+- A **subgroup** is a group that is part of another group.
+
+For example, in the following diagram:
+
+- The organization has four groups: one top-level group (T), which contains one subgroup (G), and two subgroups within G (A and B).
+- T is a top-level group and the parent group of G.
+- G is a subgroup (child) of T and the parent group of A and B.
+- A and B are subgroups (children) of G.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans", 'theme':'neutral' }}%%
+flowchart TD
+  accTitle: Group hierarchy
+  accDescr: Example of a group hierarchy in an organization
+
+  subgraph Organization
+    T[Group T] --> G[Group G]
+    G --> A[Group A]
+    G --> B[Group B]  
+end
+```
+
 ## Group structure
 
 The way to set up a group depends on your use cases, team size, and access requirements.
@@ -213,7 +241,11 @@ You can also delete a group from the groups dashboard:
 
 On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-If the user who set up the deletion is removed from the group before the deletion occurs, the group deletion job is canceled.
+If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
+the deletion job will instead restore and unarchive the group, so the group will no longer be scheduled for deletion.
+
+   WARNING:
+   If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
 
 ### View groups pending deletion
 
@@ -361,7 +393,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 - If [sign-up is disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
-- If [promotion management](../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the invite.
+- If [administrator for role promotions](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, an administrator must approve the invite.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -399,7 +431,7 @@ This tab includes users who:
 
 ### View users pending promotion
 
-When [promotion management](../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the membership requests of users who would become billable users in the subscription.
+If [administrator approval for role promotions](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To view users pending promotion:
 
@@ -438,7 +470,7 @@ You can add a new project to a group in two ways:
 - Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md).
 - While you are creating a project, select a group from the dropdown list.
 
-  ![Select group](img/select_group_dropdown_13_10.png)
+  ![Select group](img/select_group_dropdown_v13_10.png)
 
 ### Specify who can add projects to a group
 

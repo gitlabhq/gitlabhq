@@ -83,7 +83,7 @@ and it's fairly complex to implement. An `EachBatch` or `find_in_batches` based
 solution would not work because:
 
 - The data (group IDs) are not sorted in the hierarchy.
-- Groups in sub groups don't know about the top-level group ID.
+- Groups in subgroups don't know about the top-level group ID.
 
 ## Algorithm
 

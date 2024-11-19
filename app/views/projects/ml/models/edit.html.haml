@@ -1,0 +1,5 @@
+- add_to_breadcrumbs s_('ModelRegistry|Model registry'), project_ml_models_path(@model.project)
+- breadcrumb_title @model.name
+- page_title @model.name
+
+#js-mount-edit-ml-model{ data: { view_model: edit_ml_model_data(@model, @current_user) } }

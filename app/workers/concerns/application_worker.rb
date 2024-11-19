@@ -2,7 +2,7 @@
 
 require 'sidekiq/api'
 
-Sidekiq::Worker.extend ActiveSupport::Concern # rubocop:disable Cop/SidekiqApiUsage
+Sidekiq::Worker.extend ActiveSupport::Concern
 
 module ApplicationWorker
   extend ActiveSupport::Concern
@@ -75,6 +75,10 @@ module ApplicationWorker
       set(rescheduled_once: true)
     end
 
+    def concurrency_limit_resume(buffered_at)
+      set(concurrency_limit_resume: true, concurrency_limit_buffered_at: buffered_at)
+    end
+
     def generated_queue_name
       Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
     end
@@ -82,7 +86,7 @@ module ApplicationWorker
     def validate_worker_attributes!
       # Since the delayed data_consistency will use sidekiq built in retry mechanism, it is required that this mechanism
       # is not disabled.
-      if retry_disabled? && get_data_consistency == :delayed
+      if retry_disabled? && get_data_consistency_per_database.value?(:delayed)
         raise ArgumentError, "Retry support cannot be disabled if data_consistency is set to :delayed"
       end
     end
@@ -100,7 +104,7 @@ module ApplicationWorker
     end
 
     override :data_consistency
-    def data_consistency(data_consistency, feature_flag: nil)
+    def data_consistency(default, overrides: nil, feature_flag: nil)
       super
 
       validate_worker_attributes!
@@ -121,7 +125,7 @@ module ApplicationWorker
       sidekiq_options queue: queue_name # rubocop:disable Cop/SidekiqOptionsQueue
 
       store_name = ::Gitlab::SidekiqConfig::WorkerRouter.global.store(self)
-      sidekiq_options store: store_name # rubocop:disable Cop/SidekiqOptionsQueue
+      sidekiq_options store: store_name
     end
 
     def queue_namespace(new_namespace = nil)

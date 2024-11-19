@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuablePolicy, models: true do
+RSpec.describe IssuablePolicy, :models do
   let_it_be(:user) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }

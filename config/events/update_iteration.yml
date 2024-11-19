@@ -1,0 +1,18 @@
+---
+description: Tracks when a user attempts to update the iteration for a work item.
+action: update_iteration
+product_group: project_management
+milestone: '16.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140636
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value item_iteration
+  property:
+    description: type of work item

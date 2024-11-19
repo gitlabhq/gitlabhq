@@ -1,4 +1,6 @@
 - return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 
-%p.gl-text-gray-500.gl-mt-5.gl-mb-0
+- css_class = local_assigns.fetch(:css_class, 'gl-mt-5')
+
+%p.gl-text-gray-500.gl-mb-0{ class: css_class }
   = terms_service_notice_link(button_text)

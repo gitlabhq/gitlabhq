@@ -37,9 +37,11 @@ Before migrating by using direct transfer, see the following prerequisites.
 
 To maximize the chance of a successful and performant migration, you should:
 
-- To take advantage of [batched exports and imports](https://gitlab.com/groups/gitlab-org/-/epics/9036) of relations, update the source and destination instances to GitLab 16.8 or later.
+- Upgrade both the source and destination instances to GitLab 16.8 or later to use bulk import and export of relations.
+  For more information, see [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036).
 - Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
   as possible to take advantage of bug fixes and improvements added over time.
+- [Configure Sidekiq](../../project/import/index.md#sidekiq-configuration) properly.
 
 We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
 GitLab 16.8.
@@ -70,9 +72,19 @@ GitLab 16.8.
 
 ## User contributions and membership mapping
 
+DETAILS:
+**Offering:** Self-managed, GitLab Dedicated
+
 > - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
 > - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
+> - Removed from GitLab.com direct transfer migrations in GitLab 17.5 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
+
+This method of user contributions and membership mapping is available for
+GitLab self-managed without enabled feature flags.
+For information on the other method available for GitLab self-managed
+with enabled feature flags and for GitLab.com,
+see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the
@@ -91,9 +103,6 @@ elevated permissions.
 
 NOTE:
 There is a [known issue](index.md#known-issues) affecting the mapping of shared memberships.
-
-For the new experimental user contribution and membership mapping feature, see
-[User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 ### Configure users on destination instance
 
@@ -116,7 +125,7 @@ a lot of user accounts to have public email addresses, see
 
 ## Connect the source GitLab instance
 
-Create the group you want to import to and connect the source GitLab instance:
+On the destination GitLab instance, create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
    - A new group. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**. Then select **Import group**.
@@ -130,14 +139,13 @@ Create the group you want to import to and connect the source GitLab instance:
 ## Select the groups and projects to import
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
+> - **Import user memberships** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477734) in GitLab 17.6.
 
-After you have authorized access to the source GitLab instance, you are redirected to the GitLab group
-importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner
-role.
+After you have authorized access to the source GitLab instance, you are redirected to the GitLab group importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner role.
 
-1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you
-   proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
-   and are normalized if necessary to avoid import failures.
+If you do not want to import all user memberships from the source instance, ensure the **Import user memberships** checkbox is cleared. For example, the source instance might have 200 members, but you might want to import 50 members only. After the import completes, you can add more members to groups and projects.
+
+1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
    - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.
@@ -145,8 +153,7 @@ role.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
-ready for production use.
+Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not ready for production use.
 
 ## Group import history
 

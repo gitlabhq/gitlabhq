@@ -1,7 +1,6 @@
 ---
 Capybara/VisibilityMatcher:
   Exclude:
-    - 'ee/spec/features/boards/sidebar_spec.rb'
     - 'ee/spec/features/epics/epic_show_spec.rb'
     - 'ee/spec/features/epics/todo_spec.rb'
     - 'ee/spec/features/epics/update_epic_spec.rb'

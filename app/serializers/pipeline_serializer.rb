@@ -33,6 +33,7 @@ class PipelineSerializer < BaseSerializer
   def preloaded_relations(preload_statuses: true, preload_downstream_statuses: true, **)
     [
       :pipeline_metadata,
+      :pipeline_schedule,
       :cancelable_statuses,
       :retryable_builds,
       :stages,

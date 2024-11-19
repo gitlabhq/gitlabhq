@@ -6,7 +6,7 @@
   font-size: $gl-font-size;
   padding: $gl-padding 0 $gl-padding $gl-spacing-scale-8;
   border-bottom: 1px solid $gray-50;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
   position: relative;
   line-height: $gl-line-height-20;
 
@@ -15,13 +15,13 @@
     left: 0;
 
     svg {
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
   }
 
   .system-note-image-inline {
     svg {
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
   }
 
@@ -52,7 +52,7 @@
 
     .author-name {
       a {
-        color: $gl-text-color;
+        @apply gl-text-default;
         font-weight: $gl-font-weight-bold;
       }
     }
@@ -64,17 +64,13 @@
 
   .event-body {
     margin-top: $gl-padding-4;
-    color: $gl-text-color;
+    @apply gl-text-default;
 
     .event-note {
       word-wrap: break-word;
 
       .md {
         font-size: $gl-font-size;
-
-        .badge.badge-pill {
-          color: $gl-text-color;
-        }
       }
 
       code {

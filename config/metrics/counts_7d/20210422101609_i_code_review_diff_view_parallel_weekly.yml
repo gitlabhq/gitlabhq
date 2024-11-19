@@ -15,7 +15,7 @@ options:
     - i_code_review_diff_view_parallel
 distribution:
   - ce
-tier:
+tiers:
   - free
   - premium
   - ultimate

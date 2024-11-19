@@ -6,7 +6,7 @@ RSpec.describe SystemNotes::DesignManagementService, feature_category: :design_m
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
 
-  let(:instance) { described_class.new(noteable: instance_noteable, project: instance_project, author: instance_author) }
+  let(:instance) { described_class.new(noteable: instance_noteable, container: instance_project, author: instance_author) }
 
   describe '#design_version_added' do
     let(:instance_noteable) { version.issue }

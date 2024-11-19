@@ -24,6 +24,7 @@ module API
         expose :updated_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
         expose :failures, using: EntityFailure, documentation: { is_array: true }
         expose :migrate_projects, documentation: { type: 'boolean', example: true }
+        expose :migrate_memberships, documentation: { type: 'boolean', example: true }
         expose :has_failures, documentation: { type: 'boolean', example: false }
         expose :checksums, as: :stats, documentation: { type: 'object' }
       end

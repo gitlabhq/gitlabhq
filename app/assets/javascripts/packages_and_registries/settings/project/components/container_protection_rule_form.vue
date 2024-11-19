@@ -12,7 +12,6 @@ import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.
 import createProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
-const GRAPHQL_ACCESS_LEVEL_VALUE_NULL = null;
 const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
@@ -42,7 +41,6 @@ export default {
       protectionRuleFormData: {
         repositoryPathPattern: '',
         minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
-        minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
       alertErrorMessages: [],
@@ -66,12 +64,10 @@ export default {
         projectPath: this.projectPath,
         repositoryPathPattern: this.protectionRuleFormData.repositoryPathPattern,
         minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush,
-        minimumAccessLevelForDelete: this.protectionRuleFormData.minimumAccessLevelForDelete,
       };
     },
     minimumAccessLevelOptions() {
       return [
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_NULL, text: __('Developer (default)') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: __('Admin') },
@@ -170,23 +166,11 @@ export default {
       />
     </gl-form-group>
 
-    <gl-form-group
-      :label="s__('ContainerRegistry|Minimum access level for delete')"
-      label-for="input-minimum-access-level-for-delete"
-      :disabled="isFieldDisabled"
-    >
-      <gl-form-select
-        id="input-minimum-access-level-for-delete"
-        v-model="protectionRuleFormData.minimumAccessLevelForDelete"
-        :options="minimumAccessLevelOptions"
-        :disabled="isFieldDisabled"
-      />
-    </gl-form-group>
-
     <div class="gl-flex gl-justify-start">
       <gl-button
         variant="confirm"
         type="submit"
+        data-testid="add-rule-btn"
         :disabled="isSubmitButtonDisabled"
         :loading="showLoadingIcon"
         >{{ s__('ContainerRegistry|Add rule') }}</gl-button

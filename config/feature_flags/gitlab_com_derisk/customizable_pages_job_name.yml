@@ -1,9 +1,0 @@
----
-name: customizable_pages_job_name
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232505
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166731
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497981
-milestone: '17.5'
-group: group::knowledge
-type: gitlab_com_derisk
-default_enabled: false

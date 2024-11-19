@@ -36,7 +36,9 @@ They are frequently updated, and everyone should make sure they are aware of the
 ## EM/PM release post item checklist
 
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
-- [ ] If the deprecation is a [breaking change](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes), add label `breaking change`.
+- [ ] For [breaking changes](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes): 
+  - [ ] Add the `breaking change` label to the MR.
+  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned release window for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
 - [ ] Confirm this MR is labeled ~"release post item::deprecation"
 - [ ] Follow the process to [create a deprecation YAML file](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 - [ ] Add reviewers by the 10th.

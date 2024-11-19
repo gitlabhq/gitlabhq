@@ -22,7 +22,7 @@ API Discovery analyzes your application and produces an OpenAPI document describ
 
 API Discovery runs as a standalone job in your pipeline. The resulting OpenAPI document is captured as a job artifact so it can be used by other jobs in later stages.
 
-API Discovery runs in the `test` stage by default. The `test` stage was chosen as it typically executes before the stages used by other API Security features such as DAST API and API Fuzzing.
+API Discovery runs in the `test` stage by default. The `test` stage was chosen as it typically executes before the stages used by other security features such as API security testing and API fuzzing.
 
 ## Example API Discovery configurations
 

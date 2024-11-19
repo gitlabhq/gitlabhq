@@ -41,7 +41,7 @@ module RuboCop
           return if feature_name(node).nil?
           return if ALL_FEATURES.include?(feature_name(node)) && args_count(node) == 2
 
-          if !ALL_FEATURES.include?(feature_name(node)) # rubocop:disable Rails/NegateInclude
+          if !ALL_FEATURES.include?(feature_name(node))
             add_offense(node, message: licensed_feature_message(node))
           elsif args_count(node) < 2
             add_offense(node, message: NOT_ENOUGH_ARGS_MSG)

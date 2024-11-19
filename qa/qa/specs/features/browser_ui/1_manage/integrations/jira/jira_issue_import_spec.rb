@@ -48,7 +48,7 @@ module QA
         end
 
         expect(page).not_to have_text("Url is blocked")
-        expect(page).to have_text("Jira settings saved and active.")
+        expect(page).to have_text("Jira issues settings saved and active.")
       end
 
       def import_jira_issues

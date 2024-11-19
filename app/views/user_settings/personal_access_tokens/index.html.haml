@@ -18,7 +18,7 @@
 
   = render ::Layouts::CrudComponent.new(_('Active personal access tokens'),
     icon: 'token',
-    count: @active_access_tokens.size,
+    count: @active_access_tokens_size,
     count_options: { class: 'js-token-count' },
     toggle_text: _('Add new token'),
     toggle_options: { data: { testid: 'add-new-token-button' } },
@@ -34,6 +34,6 @@
         help_path: help_page_path('user/profile/personal_access_tokens.md', anchor: 'personal-access-token-scopes')
 
     - c.with_body do
-      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json } }
+      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json } }
 
 #js-tokens-app{ data: { tokens_data: tokens_app_data } }

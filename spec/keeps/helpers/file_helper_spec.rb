@@ -137,4 +137,38 @@ RSpec.describe Keeps::Helpers::FileHelper, feature_category: :tooling do
       end
     end
   end
+
+  describe '#replace_as_string' do
+    let(:filename) { 'file.txt' }
+    let(:new_milestone) { '17.5' }
+    let(:parsed_file) do
+      <<~RUBY
+        # Migration type +class+
+        # frozen_string_literal: true
+
+        # See https://docs.gitlab.com/ee/development/migration_style_guide.html
+        # for more information on how to write migrations for GitLab.
+
+        =begin
+          This migration adds
+          a new column to project
+        =end
+        class AddColToProjects < Gitlab::Database::Migration[2.2]
+          milestone #{new_milestone} # Inline comment
+
+          def change
+            add_column :projects, :bool_col, :boolean, default: false, null: false # adds a new column
+          end
+        end# Another inline comment
+      RUBY
+    end
+
+    before do
+      described_class.def_node_matcher(:milestone_node, '`(send nil? :milestone $(str _) ...)')
+    end
+
+    it 'parses the file as expected' do
+      expect(helper.replace_as_string(helper.milestone_node, new_milestone)).to eq(parsed_file)
+    end
+  end
 end

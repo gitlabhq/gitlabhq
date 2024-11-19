@@ -77,7 +77,7 @@ class IssueEntity < IssuableEntity
   end
 
   expose :locked_discussion_docs_path, if: ->(issue) { issue.discussion_locked? } do |issue|
-    help_page_path('user/discussions/index.md', anchor: 'prevent-comments-by-locking-an-issue')
+    help_page_path('user/discussions/index.md', anchor: 'prevent-comments-by-locking-the-discussion')
   end
 
   expose :is_project_archived do |issue|
@@ -85,7 +85,7 @@ class IssueEntity < IssuableEntity
   end
 
   expose :archived_project_docs_path, if: ->(issue) { issue.project.archived? } do |issue|
-    help_page_path('user/project/settings/index.md', anchor: 'archive-a-project')
+    help_page_path('user/project/working_with_projects.md', anchor: 'delete-a-project')
   end
 
   expose :issue_email_participants do |issue|

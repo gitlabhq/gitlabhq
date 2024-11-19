@@ -60,7 +60,13 @@ class NotifyPreview < ActionMailer::Preview
         diff_refs: merge_request.diff_refs
       )
 
-      create_note(noteable_type: 'merge_request', noteable_id: merge_request.id, type: 'DiffNote', position: position, note: note)
+      create_note(
+        noteable_type: 'merge_request',
+        noteable_id: merge_request.id,
+        type: 'DiffNote',
+        position: position,
+        note: note
+      )
     end
   end
 
@@ -119,7 +125,12 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def issues_csv_email
-    Notify.issues_csv_email(user, project, '1997,Ford,E350', { truncated: false, rows_expected: 3, rows_written: 3 }).message
+    Notify.issues_csv_email(
+      user,
+      project,
+      '1997,Ford,E350',
+      { truncated: false, rows_expected: 3, rows_written: 3 }
+    ).message
   end
 
   def new_issue_email
@@ -190,7 +201,12 @@ class NotifyPreview < ActionMailer::Preview
 
   def pages_domain_enabled_email
     cleanup do
-      pages_domain = PagesDomain.new(domain: 'my.example.com', project: project, verified_at: Time.now, enabled_until: 1.week.from_now)
+      pages_domain = PagesDomain.new(
+        domain: 'my.example.com',
+        project: project,
+        verified_at: Time.now,
+        enabled_until: 1.week.from_now
+      )
 
       Notify.pages_domain_enabled_email(pages_domain, user).message
     end
@@ -350,7 +366,10 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def github_gists_import_errors_email
-    Notify.github_gists_import_errors_email(user.id, { '12345' => 'Snippet maximum file count exceeded', '67890' => 'error message 2' }).message
+    Notify.github_gists_import_errors_email(
+      user.id,
+      { '12345' => 'Snippet maximum file count exceeded', '67890' => 'error message 2' }
+    ).message
   end
 
   def bulk_import_complete
@@ -414,23 +433,25 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def custom_email_verification
-    @custom_email_verification ||= project.service_desk_custom_email_verification || ServiceDesk::CustomEmailVerification.create!(
-      project: project,
-      token: 'XXXXXXXXXXXX',
-      triggerer: user,
-      triggered_at: Time.current,
-      state: 'started'
-    )
+    @custom_email_verification ||= project.service_desk_custom_email_verification ||
+      ServiceDesk::CustomEmailVerification.create!(
+        project: project,
+        token: 'XXXXXXXXXXXX',
+        triggerer: user,
+        triggered_at: Time.current,
+        state: 'started'
+      )
   end
 
   def custom_email_credential
-    @custom_email_credential ||= project.service_desk_custom_email_credential || ServiceDesk::CustomEmailCredential.create!(
-      project: project,
-      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::HTTP_V2::UrlBlocker resolves DNS
-      smtp_port: 587,
-      smtp_username: 'user@gmail.com',
-      smtp_password: 'supersecret'
-    )
+    @custom_email_credential ||= project.service_desk_custom_email_credential ||
+      ServiceDesk::CustomEmailCredential.create!(
+        project: project,
+        smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::HTTP_V2::UrlBlocker resolves DNS
+        smtp_port: 587,
+        smtp_username: 'user@gmail.com',
+        smtp_password: 'supersecret'
+      )
   end
 
   def service_desk_setting

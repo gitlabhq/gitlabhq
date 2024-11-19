@@ -94,6 +94,8 @@ $monokai-gh: #75715e;
 :root {
   --default-diff-color-deletion: #c87872;
   --default-diff-color-addition: #678528;
+  --diff-addition-color: #{$monokai-new-bg};
+  --diff-deletion-color: #{$monokai-old-bg};
 }
 
 .code.monokai {
@@ -127,7 +129,7 @@ $monokai-gh: #75715e;
 
   // Line numbers
   .file-line-blame {
-    @include line-link($white, 'git');
+    @include line-link($gl-color-neutral-0, 'git');
   }
 
   .line-links {
@@ -146,8 +148,8 @@ $monokai-gh: #75715e;
   }
 
   .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
-    --highlight-border-color: #{$blue-600};
-    background-color: $blue-900;
+    --highlight-border-color: #{$gl-color-blue-600};
+    background-color: $gl-color-blue-900;
   }
 
   // Code itself
@@ -164,7 +166,7 @@ $monokai-gh: #75715e;
   }
 
   .diff-line-expand-button {
-    @include diff-expansion($gray-600, $gray-200, $gray-300, $white);
+    @include diff-expansion($gl-color-neutral-600, $gl-color-neutral-200, $gl-color-neutral-300, $gl-color-neutral-0);
   }
 
   // Diff line
@@ -176,7 +178,7 @@ $monokai-gh: #75715e;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gray-600};
+      --diff-expansion-background-color: #{$gl-color-neutral-600};
 
       @include dark-diff-expansion-line;
     }
@@ -188,8 +190,8 @@ $monokai-gh: #75715e;
     td.diff-line-num.hll,
     td.line-coverage.hll,
     td.line_content.hll {
-      --highlight-border-color: #{$orange-500};
-      background-color: $orange-800;
+      --highlight-border-color: #{$gl-color-orange-500};
+      background-color: $gl-color-orange-800;
     }
 
     .line-coverage {
@@ -252,7 +254,7 @@ $monokai-gh: #75715e;
       > .diff-line-num,
       > .line-coverage,
       > .line_content {
-        border-top: 1px solid $black;
+        border-top: 1px solid $gl-color-neutral-1000;
       }
     }
 
@@ -286,11 +288,11 @@ $monokai-gh: #75715e;
 
   .file-holder div.code.monokai {
     .selected-inline-number-mark {
-      color: $gray-200;
+      color: $gl-color-neutral-200;
     }
 
     .unselected-inline-number-mark {
-      color: $gray-600;
+      color: $gl-color-neutral-600;
     }
   }
 
@@ -299,7 +301,7 @@ $monokai-gh: #75715e;
   // Search result highlight
   span.highlight_word {
     background-color: $monokai-highlight-bg !important;
-    color: $black !important;
+    color: $gl-color-neutral-1000 !important;
   }
 
   // Links to URLs, emails, or dependencies

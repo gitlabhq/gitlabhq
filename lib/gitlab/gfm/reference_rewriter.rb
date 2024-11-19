@@ -90,8 +90,7 @@ module Gitlab
       end
 
       def find_referable(reference)
-        extractor = Gitlab::ReferenceExtractor.new(@source_parent,
-          @current_user)
+        extractor = Gitlab::ReferenceExtractor.new(@source_parent, @current_user)
         extractor.analyze(reference)
         extractor.all.first
       end
@@ -100,7 +99,7 @@ module Gitlab
         if referable.respond_to?(:project)
           referable.to_reference(target_parent)
         else
-          referable.to_reference(@source_parent, target_project: target_parent)
+          referable.to_reference(@source_parent, target_container: target_parent)
         end
       end
 

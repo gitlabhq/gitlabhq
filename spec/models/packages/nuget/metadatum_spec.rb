@@ -6,12 +6,11 @@ RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :pack
   it { is_expected.to be_a Packages::Nuget::VersionNormalizable }
 
   describe 'relationships' do
-    it { is_expected.to belong_to(:package).inverse_of(:nuget_metadatum) }
+    it { is_expected.to belong_to(:package).class_name('Packages::Nuget::Package').inverse_of(:nuget_metadatum) }
   end
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
-
     it { is_expected.to validate_presence_of(:authors) }
     it { is_expected.to validate_length_of(:authors).is_at_most(described_class::MAX_AUTHORS_LENGTH) }
     it { is_expected.to validate_presence_of(:description) }
@@ -36,20 +35,28 @@ RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :pack
         it { is_expected.not_to allow_value('sandbox.com').for(url) }
       end
 
-      describe '#ensure_nuget_package_type' do
-        subject { build(:nuget_metadatum) }
+      describe '#ensure_nuget_package_type', :aggregate_failures do
+        subject(:nuget_metadatum) { build(:nuget_metadatum) }
 
-        it 'rejects if not linked to a nuget package' do
-          subject.package = build(:npm_package)
+        it 'builds a valid metadatum' do
+          expect { nuget_metadatum }.not_to raise_error
+          expect(nuget_metadatum).to be_valid
+        end
 
-          expect(subject).not_to be_valid
-          expect(subject.errors).to contain_exactly('Package type must be NuGet')
+        context 'with a different package type' do
+          let(:package) { build(:package) }
+
+          it 'raises the error' do
+            expect { build(:nuget_metadatum, package: package) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+          end
         end
       end
     end
   end
 
-  it { is_expected.to delegate_method(:version).to(:package).with_prefix }
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:version).to(:package).with_prefix }
+  end
 
   describe '.normalized_version_in' do
     let_it_be(:nuget_metadatums) { create_list(:nuget_metadatum, 2) }

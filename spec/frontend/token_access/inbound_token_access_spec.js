@@ -1,34 +1,28 @@
-import { GlAlert, GlCollapsibleListbox, GlLoadingIcon, GlFormRadioGroup } from '@gitlab/ui';
-import Vue from 'vue';
+import { GlAlert, GlLoadingIcon, GlFormRadioGroup } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import GroupsAndProjectsListbox from '~/token_access/components/groups_and_projects_listbox.vue';
-import inboundAddGroupOrProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
+import NamespaceForm from '~/token_access/components/namespace_form.vue';
 import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
-import getGroupsAndProjectsQuery from '~/token_access/graphql/queries/get_groups_and_projects.query.graphql';
 import {
   inboundJobTokenScopeEnabledResponse,
   inboundJobTokenScopeDisabledResponse,
   inboundGroupsAndProjectsWithScopeResponse,
   inboundGroupsAndProjectsWithScopeResponseWithAddedItem,
-  getGroupsAndProjectsResponse,
-  inboundAddGroupOrProjectSuccessResponse,
   inboundRemoveGroupSuccess,
   inboundRemoveProjectSuccess,
   inboundUpdateScopeSuccessResponse,
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
-const testGroupPath = 'gitlab-org';
-const testProjectPath = 'root/test';
 const message = 'An error occurred';
 const error = new Error(message);
 
@@ -48,12 +42,6 @@ describe('TokenAccess component', () => {
   const inboundGroupsAndProjectsWithScopeResponseHandler = jest
     .fn()
     .mockResolvedValue(inboundGroupsAndProjectsWithScopeResponse);
-  const getGroupsAndProjectsSuccessResponseHandler = jest
-    .fn()
-    .mockResolvedValue(getGroupsAndProjectsResponse);
-  const inboundAddGroupOrProjectSuccessResponseHandler = jest
-    .fn()
-    .mockResolvedValue(inboundAddGroupOrProjectSuccessResponse);
   const inboundRemoveGroupSuccessHandler = jest.fn().mockResolvedValue(inboundRemoveGroupSuccess);
   const inboundRemoveProjectSuccessHandler = jest
     .fn()
@@ -66,33 +54,29 @@ describe('TokenAccess component', () => {
 
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAddProjectBtn = () => wrapper.findByTestId('add-project-btn');
-  const findCancelBtn = () => wrapper.findByRole('button', { name: 'Cancel' });
-  const findGroupOrProjectFormGroup = () => wrapper.findByTestId('group-or-project-form-group');
-  const findGroupsAndProjectsListbox = () => wrapper.findComponent(GroupsAndProjectsListbox);
-  const findListboxInput = () => wrapper.findComponent(GlCollapsibleListbox);
   const findRemoveProjectBtnAt = (i) =>
     wrapper.findAllByRole('button', { name: 'Remove access' }).at(i);
-  const findToggleFormBtn = () => wrapper.findByTestId('toggle-form-btn');
+  const findToggleFormBtn = () => wrapper.findByTestId('crud-form-toggle');
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
+  const findNamespaceForm = () => wrapper.findComponent(NamespaceForm);
   const findSaveChangesBtn = () => wrapper.findByTestId('save-ci-job-token-scope-changes-btn');
 
-  const createMockApolloProvider = (requestHandlers) => {
-    return createMockApollo(requestHandlers);
-  };
-
-  const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
+  const createComponent = (requestHandlers, mountFn = shallowMountExtended, provide = {}) => {
     wrapper = mountFn(InboundTokenAccess, {
       provide: {
         fullPath: projectPath,
+        enforceAllowlist: false,
+        ...provide,
       },
-      apolloProvider: createMockApolloProvider(requestHandlers),
+      apolloProvider: createMockApollo(requestHandlers),
       mocks: {
         $toast: {
           show: mockToastShow,
         },
       },
     });
+
+    return waitForPromises();
   };
 
   describe('loading state', () => {
@@ -134,12 +118,10 @@ describe('TokenAccess component', () => {
     });
 
     it('handles fetch groups and projects error correctly', async () => {
-      createComponent([
+      await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
         [inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery, failureHandler],
       ]);
-
-      await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'There was a problem fetching the projects',
@@ -147,15 +129,13 @@ describe('TokenAccess component', () => {
     });
 
     it('handles fetch scope error correctly', async () => {
-      createComponent([
+      await createComponent([
         [inboundGetCIJobTokenScopeQuery, failureHandler],
         [
           inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
           inboundGroupsAndProjectsWithScopeResponseHandler,
         ],
       ]);
-
-      await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'There was a problem fetching the job token scope value',
@@ -165,7 +145,7 @@ describe('TokenAccess component', () => {
 
   describe('inbound CI job token scope', () => {
     it('is on and the alert is hidden', async () => {
-      createComponent([
+      await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
         [
           inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
@@ -173,14 +153,12 @@ describe('TokenAccess component', () => {
         ],
       ]);
 
-      await waitForPromises();
-
       expect(findRadioGroup().attributes('checked')).toBe('true');
       expect(findTokenDisabledAlert().exists()).toBe(false);
     });
 
     it('is off and the alert is visible', async () => {
-      createComponent([
+      await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
         [
           inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
@@ -188,23 +166,19 @@ describe('TokenAccess component', () => {
         ],
       ]);
 
-      await waitForPromises();
-
       expect(findRadioGroup().attributes('checked')).toBeUndefined();
       expect(findTokenDisabledAlert().exists()).toBe(true);
     });
 
     describe('radio group', () => {
       it('uses the correct "options" prop', async () => {
-        createComponent([
+        await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
           [
             inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
             inboundGroupsAndProjectsWithScopeResponseHandler,
           ],
         ]);
-
-        await waitForPromises();
 
         const expectedOptions = [
           {
@@ -223,12 +197,10 @@ describe('TokenAccess component', () => {
 
     describe('on update', () => {
       it('calls inboundUpdateCIJobTokenScopeMutation mutation', async () => {
-        createComponent([
+        await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [inboundUpdateCIJobTokenScopeMutation, inboundUpdateScopeSuccessResponseHandler],
         ]);
-
-        await waitForPromises();
 
         const radioGroup = findRadioGroup();
 
@@ -251,12 +223,10 @@ describe('TokenAccess component', () => {
       });
 
       it('when mutation is successful, renders toast message', async () => {
-        createComponent([
+        await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [inboundUpdateCIJobTokenScopeMutation, inboundUpdateScopeSuccessResponseHandler],
         ]);
-
-        await waitForPromises();
 
         findSaveChangesBtn().vm.$emit('click');
 
@@ -268,12 +238,10 @@ describe('TokenAccess component', () => {
       });
 
       it('handles an update error correctly', async () => {
-        createComponent([
+        await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
           [inboundUpdateCIJobTokenScopeMutation, failureHandler],
         ]);
-
-        await waitForPromises();
 
         const radioGroup = findRadioGroup();
 
@@ -294,12 +262,10 @@ describe('TokenAccess component', () => {
 
     describe('save changes button', () => {
       it('shows a loading state on click', async () => {
-        createComponent([
+        await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [inboundUpdateCIJobTokenScopeMutation, inboundUpdateScopeSuccessResponseHandler],
         ]);
-
-        await waitForPromises();
 
         const button = findSaveChangesBtn();
 
@@ -315,181 +281,54 @@ describe('TokenAccess component', () => {
       });
 
       it('has a correct title', async () => {
-        createComponent([
+        await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [inboundUpdateCIJobTokenScopeMutation, inboundUpdateScopeSuccessResponseHandler],
         ]);
-
-        await waitForPromises();
 
         expect(findSaveChangesBtn().text()).toBe('Save Changes');
       });
     });
   });
 
-  describe.each`
-    type         | testPath
-    ${'group'}   | ${testGroupPath}
-    ${'project'} | ${testProjectPath}
-  `('add $type', ({ type, testPath }) => {
-    it(`calls add group or project mutation`, async () => {
+  describe('namespace form', () => {
+    beforeEach(() =>
       createComponent(
         [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
             inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
             inboundGroupsAndProjectsWithScopeResponseHandler,
           ],
-          [getGroupsAndProjectsQuery, getGroupsAndProjectsSuccessResponseHandler],
-          [
-            inboundAddGroupOrProjectCIJobTokenScopeMutation,
-            inboundAddGroupOrProjectSuccessResponseHandler,
-          ],
         ],
         mountExtended,
-      );
+      ),
+    );
 
-      await waitForPromises();
+    it('does not show form on page load', () => {
+      expect(findNamespaceForm().exists()).toBe(false);
+    });
 
-      await findToggleFormBtn().trigger('click');
-      await findListboxInput().vm.$emit('select', testPath);
-      findAddProjectBtn().trigger('click');
-
-      expect(inboundAddGroupOrProjectSuccessResponseHandler).toHaveBeenCalledWith({
-        projectPath,
-        targetPath: testPath,
+    describe('when Add group or project button is clicked', () => {
+      beforeEach(() => {
+        findToggleFormBtn().vm.$emit('click');
       });
-    });
 
-    it(`increments the ${type} count`, async () => {
-      createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            jest
-              .fn()
-              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponse)
-              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponseWithAddedItem),
-          ],
-          [getGroupsAndProjectsQuery, getGroupsAndProjectsSuccessResponseHandler],
-          [
-            inboundAddGroupOrProjectCIJobTokenScopeMutation,
-            inboundAddGroupOrProjectSuccessResponseHandler,
-          ],
-        ],
-        mountExtended,
-      );
+      it('shows form', () => {
+        expect(findNamespaceForm().exists()).toBe(true);
+      });
 
-      await waitForPromises();
+      it('closes form when form emits close event', async () => {
+        findNamespaceForm().vm.$emit('close');
+        await nextTick();
 
-      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('1');
-      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
-        `1 ${type} has access`,
-      );
+        expect(findNamespaceForm().exists()).toBe(false);
+      });
 
-      await findToggleFormBtn().trigger('click');
-      await findListboxInput().vm.$emit('select', testPath);
-      findAddProjectBtn().trigger('click');
+      it('refetches groups and projects when form emits saved event', () => {
+        findNamespaceForm().vm.$emit('saved');
 
-      await waitForPromises();
-
-      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('2');
-      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
-        `2 ${type}s have access`,
-      );
-    });
-
-    it('add group or project handles error correctly', async () => {
-      createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
-          [getGroupsAndProjectsQuery, getGroupsAndProjectsSuccessResponseHandler],
-          [inboundAddGroupOrProjectCIJobTokenScopeMutation, failureHandler],
-        ],
-        mountExtended,
-      );
-
-      await waitForPromises();
-
-      await findToggleFormBtn().trigger('click');
-      await findListboxInput().vm.$emit('select', testPath);
-      await findAddProjectBtn().trigger('click');
-
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalledWith({ message });
-    });
-
-    it('clicking cancel hides the form and clears the target path', async () => {
-      createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
-          [getGroupsAndProjectsQuery, getGroupsAndProjectsSuccessResponseHandler],
-        ],
-        mountExtended,
-      );
-
-      await waitForPromises();
-
-      await findToggleFormBtn().trigger('click');
-
-      expect(findListboxInput().exists()).toBe(true);
-
-      await findListboxInput().vm.$emit('select', testPath);
-      await findCancelBtn().trigger('click');
-
-      expect(findListboxInput().exists()).toBe(false);
-
-      await findToggleFormBtn().trigger('click');
-
-      expect(findListboxInput().props('selected')).toEqual('');
-    });
-  });
-
-  describe.each`
-    type         | testPath
-    ${'group'}   | ${inboundGroupsAndProjectsWithScopeResponse.data.project.ciJobTokenScope.inboundAllowlist.nodes[0].fullPath}
-    ${'project'} | ${inboundGroupsAndProjectsWithScopeResponse.data.project.ciJobTokenScope.groupsAllowlist.nodes[0].fullPath}
-  `('add a duplicate $type', ({ testPath }) => {
-    it(`validates whether path is already in the allowlist`, async () => {
-      createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
-          [getGroupsAndProjectsQuery, getGroupsAndProjectsSuccessResponseHandler],
-          [
-            inboundAddGroupOrProjectCIJobTokenScopeMutation,
-            inboundAddGroupOrProjectSuccessResponseHandler,
-          ],
-        ],
-        mountExtended,
-      );
-
-      await waitForPromises();
-
-      await findToggleFormBtn().trigger('click');
-
-      expect(findGroupOrProjectFormGroup().attributes('aria-invalid')).toBe(undefined);
-      expect(findGroupsAndProjectsListbox().props('isValid')).toBe(true);
-
-      await findListboxInput().vm.$emit('select', testPath);
-
-      expect(findGroupOrProjectFormGroup().attributes('aria-invalid')).toBe('true');
-      expect(findGroupsAndProjectsListbox().props('isValid')).toBe(false);
-      expect(findAddProjectBtn().props('disabled')).toBe(true);
-      expect(findGroupOrProjectFormGroup().find('label').text()).toBe('Add group or project');
+        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
+      });
     });
   });
 
@@ -499,7 +338,7 @@ describe('TokenAccess component', () => {
     ${'project'} | ${1}  | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler} | ${'targetProjectPath'}
   `('remove $type', ({ type, index, mutation, handler, target }) => {
     it(`calls remove ${type} mutation`, async () => {
-      createComponent(
+      await createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
@@ -511,8 +350,6 @@ describe('TokenAccess component', () => {
         mountExtended,
       );
 
-      await waitForPromises();
-
       findRemoveProjectBtnAt(index).trigger('click');
 
       expect(handler).toHaveBeenCalledWith({
@@ -522,7 +359,7 @@ describe('TokenAccess component', () => {
     });
 
     it(`decrements the ${type} count`, async () => {
-      createComponent(
+      await createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
@@ -536,8 +373,6 @@ describe('TokenAccess component', () => {
         ],
         mountExtended,
       );
-
-      await waitForPromises();
 
       expect(wrapper.findByTestId(`${type}-count`).text()).toBe('2');
       expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
@@ -555,7 +390,7 @@ describe('TokenAccess component', () => {
     });
 
     it(`remove ${type} handles error correctly`, async () => {
-      createComponent(
+      await createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
@@ -567,13 +402,32 @@ describe('TokenAccess component', () => {
         mountExtended,
       );
 
-      await waitForPromises();
-
       findRemoveProjectBtnAt(index).trigger('click');
 
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({ message });
+    });
+  });
+
+  describe('when allowlist is enforced by admin', () => {
+    beforeEach(() => {
+      const requestHandlers = [
+        [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
+      ];
+      const provide = { enforceAllowlist: true };
+
+      return createComponent(requestHandlers, shallowMountExtended, provide);
+    });
+
+    it('hides alert, options, and submit button', () => {
+      expect(findTokenDisabledAlert().exists()).toBe(false);
+      expect(findRadioGroup().exists()).toBe(false);
+      expect(findSaveChangesBtn().exists()).toBe(false);
     });
   });
 });

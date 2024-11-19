@@ -410,19 +410,6 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         end
       end
 
-      context 'when auto_cancel_on_new_commit is an invalid value' do
-        before do
-          allow(prev_pipeline).to receive(:auto_cancel_on_new_commit).and_return('invalid')
-          relation = Ci::Pipeline.id_in(prev_pipeline.id)
-          allow(relation).to receive(:each).and_yield(prev_pipeline)
-          allow(Ci::Pipeline).to receive(:id_in).and_return(relation)
-        end
-
-        it 'raises an error' do
-          expect { execute }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_new_commit value: invalid')
-        end
-      end
-
       it 'does not cancel future pipelines' do
         expect(prev_pipeline.id).to be < pipeline.id
         expect(build_statuses(pipeline)).to contain_exactly('pending')

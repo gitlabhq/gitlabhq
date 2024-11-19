@@ -139,7 +139,6 @@ module Gitlab
         # 254 characters. Do not allow longer emails to be passed in
         # because unicode normalization can be intensive.
         def valid_email_username_length?(email_or_username)
-          return true unless Feature.enabled?(:omniauth_validate_email_length, :instance)
           return true if email_or_username.length <= 254
 
           errors[:identity_provider_email] = _("must be 254 characters or less.")

@@ -10,33 +10,12 @@ class ProtectedBranch::CacheKey # rubocop:disable Style/ClassAndModuleChildren -
   end
 
   def to_s
-    need_to_scope? ? scoped_key : unscoped_key
+    [CACHE_ROOT_KEY, entity_scope, entity.id].join(':')
   end
 
   private
 
   attr_reader :entity
-
-  def need_to_scope?
-    Feature.enabled?(:group_protected_branches, group) ||
-      Feature.enabled?(:allow_protected_branches_for_group, group)
-  end
-
-  def scoped_key
-    [CACHE_ROOT_KEY, entity_scope, entity.id].join(':')
-  end
-
-  def unscoped_key
-    [CACHE_ROOT_KEY, entity.id].join(':')
-  end
-
-  def group
-    return entity if entity.is_a?(Group)
-    return entity.group if entity.is_a?(Project)
-
-    nil
-  end
-  strong_memoize_attr :group
 
   def entity_scope
     case entity

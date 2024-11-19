@@ -2,9 +2,9 @@ import { GlTableLite, GlLink, GlEmptyState, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
-import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlHelpers from '~/lib/utils/url_utility';
 import {

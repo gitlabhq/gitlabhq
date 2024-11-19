@@ -226,8 +226,8 @@ The following Git environment variables are supported for `pre-receive` and `pos
 |:-----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GIT_ALTERNATE_OBJECT_DIRECTORIES` | Alternate object directories in the quarantine environment. See [Git `receive-pack` documentation](https://git-scm.com/docs/git-receive-pack#_quarantine_environment). |
 | `GIT_OBJECT_DIRECTORY`             | GitLab project path in the quarantine environment. See [Git `receive-pack` documentation](https://git-scm.com/docs/git-receive-pack#_quarantine_environment).          |
-| `GIT_PUSH_OPTION_COUNT`            | Number of [push options](../user/project/push_options.md). See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).                                                          |
-| `GIT_PUSH_OPTION_<i>`              | Value of [push options](../user/project/push_options.md) where `i` is from `0` to `GIT_PUSH_OPTION_COUNT - 1`. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).      |
+| `GIT_PUSH_OPTION_COUNT`            | Number of [push options](../topics/git/commit.md#push-options). See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).                                                          |
+| `GIT_PUSH_OPTION_<i>`              | Value of [push options](../topics/git/commit.md#push-options) where `i` is from `0` to `GIT_PUSH_OPTION_COUNT - 1`. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).      |
 
 ## Custom error messages
 

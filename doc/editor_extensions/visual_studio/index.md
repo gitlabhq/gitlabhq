@@ -11,17 +11,6 @@ The [GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLa
 integrates GitLab with Visual Studio for Windows. GitLab for Visual Studio supports
 [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
-This project shows a status icon in the status bar:
-
-![The status bar in Visual Studio.](../img/visual_studio_status_bar_v17_4.png)
-
-| Icon | Status | Meaning |
-| :--- | :----- | :------ |
-| **{tanuki-ai}** | **Ready** | You've configured and enabled GitLab Duo, and using a language that supports Code Suggestions. |
-| **{tanuki-ai-off}** | **Not configured** | You haven't entered a personal access token, or using a language that Code Suggestions doesn't support. |
-| ![The status icon for fetching Code Suggestions.](../img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
-| ![The status icon for a Code Suggestions error.](../img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
-
 ## Download the extension
 
 Download the extension from the
@@ -30,6 +19,7 @@ Download the extension from the
 The extension requires:
 
 - Visual Studio 2022, either AMD64 or Arm64.
+- The [IntelliCode](https://visualstudio.microsoft.com/services/intellicode/) component for Visual Studio.
 - GitLab version 16.1 and later.
   - GitLab Duo Code Suggestions requires GitLab version 16.8 or later.
 - You are not using Visual Studio for Mac, as it is unsupported.
@@ -82,6 +72,7 @@ Report any issues, bugs, or feature requests in the
 - [About the Create:Editor Extensions Group](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/)
 - [Open issues for this plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/)
 - [View source code](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension)
+- [GitLab Language Server documentation](../language_server/index.md)
 
 ## Troubleshooting
 

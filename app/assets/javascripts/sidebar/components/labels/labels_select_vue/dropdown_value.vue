@@ -52,7 +52,7 @@ export default {
     }"
     class="hide-collapsed value issuable-show-labels js-value"
   >
-    <span v-if="!selectedLabels.length" class="text-secondary">
+    <span v-if="!selectedLabels.length" class="gl-text-subtle">
       <slot></slot>
     </span>
     <template v-for="label in sortedSelectedLabels" v-else>

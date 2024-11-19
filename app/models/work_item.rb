@@ -22,6 +22,7 @@ class WorkItem < Issue
     foreign_key: 'issue_id',
     inverse_of: :work_item,
     autosave: true
+  has_one :weights_source, class_name: 'WorkItems::WeightsSource'
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
@@ -30,7 +31,9 @@ class WorkItem < Issue
     through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
 
-  scope :inc_relations_for_permission_check, -> { includes(:author, :work_item_type, project: :project_feature) }
+  scope :inc_relations_for_permission_check, -> {
+    includes(:author, ::Gitlab::Issues::TypeAssociationGetter.call, project: :project_feature)
+  }
 
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
@@ -114,6 +117,17 @@ class WorkItem < Issue
     def related_link_class
       WorkItems::RelatedWorkItemLink
     end
+  end
+
+  def create_dates_source_from_current_dates
+    create_dates_source(
+      due_date: due_date,
+      start_date: start_date,
+      start_date_is_fixed: due_date.present? || start_date.present?,
+      due_date_is_fixed: due_date.present? || start_date.present?,
+      start_date_fixed: start_date,
+      due_date_fixed: due_date
+    )
   end
 
   def noteable_target_type_name
@@ -221,13 +235,17 @@ class WorkItem < Issue
   end
 
   def max_depth_reached?(child_type)
+    # Using the association here temporarily. We should use the `work_item_type_id` column value after the cleanup
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
     restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
-      work_item_type_id,
+      work_item_type.id,
       child_type.id
     )
     return false unless restriction&.maximum_depth
 
-    if work_item_type_id == child_type.id
+    # Using the association here temporarily. We should use the `work_item_type_id` column value after the cleanup
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+    if work_item_type.id == child_type.id
       same_type_base_and_ancestors.count >= restriction.maximum_depth
     else
       hierarchy(different_type_id: child_type.id).base_and_ancestors.count >= restriction.maximum_depth
@@ -254,9 +272,10 @@ class WorkItem < Issue
   end
 
   def hierarchy(options = {})
+    type_column_name = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
     base = self.class.where(id: id)
-    base = base.where(work_item_type_id: work_item_type_id) if options[:same_type]
-    base = base.where(work_item_type_id: options[:different_type_id]) if options[:different_type_id]
+    base = base.where(type_column_name => attributes[type_column_name.to_s]) if options[:same_type]
+    base = base.where(type_column_name => options[:different_type_id]) if options[:different_type_id]
 
     ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end
@@ -293,7 +312,9 @@ class WorkItem < Issue
   def validate_child_restrictions(child_links)
     return if child_links.empty?
 
-    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[:work_item_type_id]).distinct
+    type_id_column = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
+
+    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[type_id_column]).distinct
     restrictions = ::WorkItems::HierarchyRestriction.where(
       parent_type_id: work_item_type_id,
       child_type_id: child_type_ids

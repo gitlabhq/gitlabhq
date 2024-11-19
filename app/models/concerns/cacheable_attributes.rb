@@ -83,6 +83,10 @@ module CacheableAttributes
   end
 
   def cache!
-    self.class.cache_backend.write(self.class.cache_key, self, expires_in: Gitlab.config.gitlab['application_settings_cache_seconds'] || 60)
+    self.class.cache_backend.write(
+      self.class.cache_key,
+      self,
+      expires_in: Gitlab.config.gitlab['application_settings_cache_seconds'] || 60
+    )
   end
 end

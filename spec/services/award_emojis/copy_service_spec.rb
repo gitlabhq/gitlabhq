@@ -7,8 +7,8 @@ RSpec.describe AwardEmojis::CopyService, feature_category: :team_planning do
     create(
       :issue,
       award_emoji: [
-        build(:award_emoji, name: 'thumbsup'),
-        build(:award_emoji, name: 'thumbsdown')
+        build(:award_emoji, name: AwardEmoji::THUMBS_UP),
+        build(:award_emoji, name: AwardEmoji::THUMBS_DOWN)
       ])
   end
 
@@ -25,7 +25,7 @@ RSpec.describe AwardEmojis::CopyService, feature_category: :team_planning do
 
     it 'copies AwardEmojis', :aggregate_failures do
       expect { execute_service }.to change { AwardEmoji.count }.by(2)
-      expect(to_awardable.award_emoji.map(&:name)).to match_array(%w[thumbsup thumbsdown])
+      expect(to_awardable.award_emoji.map(&:name)).to match_array([AwardEmoji::THUMBS_UP, AwardEmoji::THUMBS_DOWN])
     end
 
     it 'returns success', :aggregate_failures do

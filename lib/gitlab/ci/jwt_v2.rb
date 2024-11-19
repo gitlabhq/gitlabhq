@@ -8,7 +8,9 @@ module Gitlab
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
 
-      def self.for_build(build, aud:, sub_components: [:project_path, :ref_type, :ref], target_audience: nil)
+      def self.for_build(
+        build, aud:, sub_components: [:project_path, :ref_type,
+          :ref], target_audience: nil)
         new(build, ttl: build.metadata_timeout, aud: aud, sub_components: sub_components,
           target_audience: target_audience).encoded
       end

@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+RSpec/RedundantAround:
+  Exclude:
+    - 'spec/spec_helper.rb'

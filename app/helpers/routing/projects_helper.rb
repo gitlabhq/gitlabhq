@@ -76,10 +76,6 @@ module Routing
       project_release_url(entity.project, entity, *args)
     end
 
-    def project_wiki_page_url(entity, *args)
-      project_wiki_url(entity.project, entity.canonical_slug, *args)
-    end
-
     def edit_milestone_path(entity, *args)
       if entity.resource_parent.is_a?(Group)
         edit_group_milestone_path(entity.resource_parent, entity, *args)

@@ -29,6 +29,7 @@ module VirtualRegistries
         validates :username, presence: true, if: :password?
         validates :password, presence: true, if: :username?
         validates :url, :username, :password, length: { maximum: 255 }
+        validates :cache_validity_hours, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
         after_initialize :read_credentials
         after_validation :reset_credentials, if: -> { persisted? && url_changed? }

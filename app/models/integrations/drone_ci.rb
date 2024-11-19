@@ -13,12 +13,14 @@ module Integrations
     field :drone_url,
       title: -> { s_('ProjectService|Drone server URL') },
       placeholder: 'http://drone.example.com',
+      description: -> { _('Drone CI URL (for example, `http://drone.example.com`).') },
       exposes_secrets: true,
       required: true
 
     field :token,
       type: :password,
       help: -> { s_('ProjectService|Token for the Drone project.') },
+      description: -> { _('Drone CI token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       required: true

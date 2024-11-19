@@ -11,6 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Milestones and iterations shown on issue cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25758) in GitLab 16.11.
+> - Ability to delete the last board in a group or project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499579) in GitLab 17.6.
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -97,6 +98,8 @@ To delete the open issue board:
 1. Select **Delete board**.
 1. Select **Delete** to confirm.
 
+If the board you've deleted was the last one, a new `Development` board is created.
+
 ## Issue boards use cases
 
 You can tailor GitLab issue boards to your own preferred workflow.
@@ -126,7 +129,7 @@ For example, let's consider this simplified development workflow:
 If you have the labels **Backend**, **Frontend**, **Staging**, and
 **Production**, and an issue board with a list for each, you can:
 
-- Visualize the entire flow of implementations since the beginning of the development life cycle
+- Visualize the entire flow of implementations since the beginning of the development lifecycle
   until deployed to production.
 - Prioritize the issues in a list by moving them vertically.
 - Move issues between lists to organize them according to the labels you've set.
@@ -230,7 +233,7 @@ Prerequisites:
 - You must have at least the Reporter role for the project.
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
-of that issue's project or root group. This means the issue is at the bottom of any issue list that
+of that issue's project or top-level group. This means the issue is at the bottom of any issue list that
 it appears in.
 
 When you visit a board, issues appear ordered in any list. You're able to change
@@ -319,7 +322,7 @@ Prerequisites:
 
 To add an assignee list:
 
-1. Select **Create list**.
+1. Select **New list**.
 1. Select **Assignee**.
 1. In the dropdown list, select a user.
 1. Select **Add to board**.
@@ -345,7 +348,7 @@ Prerequisites:
 
 To add a milestone list:
 
-1. Select **Create list**.
+1. Select **New list**.
 1. Select **Milestone**.
 1. In the dropdown list, select a milestone.
 1. Select **Add to board**.
@@ -370,7 +373,7 @@ Prerequisites:
 
 To add an iteration list:
 
-1. Select **Create list**.
+1. Select **New list**.
 1. Select **Iteration**.
 1. In the dropdown list, select an iteration.
 1. Select **Add to board**.
@@ -503,18 +506,29 @@ There, you can edit all the fields, including the description, comments, or rela
 
 ### Create a new list
 
-To create a new list:
+> - Creating a list between existing lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462515) in GitLab 17.5.
 
-1. Scroll to the right of the board, and then select **New list**.
+You can create a new list between two existing lists or at the right of an issue board.
+
+To create a new list between two lists:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issue boards**.
+1. Hover or move keyboard focus between two lists.
+1. Select **New list**.
    The new list panel opens.
 
-   ![creating a new list in an issue board](img/issue_board_add_list_v17_1.png)
+   ![creating a new list between two lists in an issue board](img/issue_board_add_list_between_lists_v17_6.png)
 
 1. Choose the label, user, milestone, or iteration to base the new list on.
 1. Select **Add to board**.
 
-The new list is inserted at the right end of the lists, before **Closed**.
+The new list is inserted in the same position on the board as the new list panel.
+
 To move and reorder lists, drag them around.
+
+Alternatively, you can select the **New list** at the right end of the board.
+The new list is inserted at the right end of the lists, before **Closed**.
 
 ### Remove a list
 

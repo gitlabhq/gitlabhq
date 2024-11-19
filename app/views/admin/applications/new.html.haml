@@ -1,7 +1,7 @@
+- add_to_breadcrumbs _("Applications"), admin_applications_path
 - breadcrumb_title _("Add new application")
 - page_title _("Add new application")
 
-%h1.page-title.gl-text-size-h-display
-  = _("Add new application")
+= render ::Layouts::PageHeadingComponent.new(_("Add new application"))
 - @url = admin_applications_path
 = render 'form', application: @application

@@ -3,7 +3,7 @@ import { GlFormGroup, GlModal, GlDatepicker, GlLink, GlSprintf, GlButton } from 
 
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
-import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import ContentTransition from '~/invite_members/components/content_transition.vue';
 import { initialSelectedRole, roleDropdownItems } from 'ee_else_ce/members/utils';
 import RoleSelector from '~/members/components/role_selector.vue';
 import {

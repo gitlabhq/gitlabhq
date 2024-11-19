@@ -92,6 +92,14 @@ module QA
             end
           end
 
+          def enable_reg_scan
+            card = find_security_testing_card('Container Scanning For Registry')
+            within(card) do
+              # The GitLabUI toggle uses a Close Icon button
+              click_element('close-xs-icon')
+            end
+          end
+
           private
 
           def go_to_tab(name)

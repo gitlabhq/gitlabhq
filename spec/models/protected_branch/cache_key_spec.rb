@@ -12,19 +12,6 @@ RSpec.describe ProtectedBranch::CacheKey, feature_category: :source_code_managem
   describe '#to_s' do
     subject { cache_key.to_s }
 
-    shared_examples 'group feature flags are disabled' do
-      context 'when feature flags are disabled' do
-        before do
-          stub_feature_flags(group_protected_branches: false)
-          stub_feature_flags(allow_protected_branches_for_group: false)
-        end
-
-        it 'returns an unscoped key' do
-          is_expected.to eq "cache:gitlab:protected_branch:#{entity.id}"
-        end
-      end
-    end
-
     context 'with entity project' do
       let(:entity) { project }
 
@@ -39,8 +26,6 @@ RSpec.describe ProtectedBranch::CacheKey, feature_category: :source_code_managem
           is_expected.to eq "cache:gitlab:protected_branch:project:#{project.id}"
         end
       end
-
-      it_behaves_like 'group feature flags are disabled'
     end
 
     context 'with entity group' do
@@ -49,8 +34,6 @@ RSpec.describe ProtectedBranch::CacheKey, feature_category: :source_code_managem
       it 'returns a scoped key' do
         is_expected.to eq "cache:gitlab:protected_branch:group:#{group.id}"
       end
-
-      it_behaves_like 'group feature flags are disabled'
     end
 
     context 'with an unsupported entity' do
@@ -59,8 +42,6 @@ RSpec.describe ProtectedBranch::CacheKey, feature_category: :source_code_managem
       it 'returns a scoped key' do
         is_expected.to eq "cache:gitlab:protected_branch:user:#{user.id}"
       end
-
-      it_behaves_like 'group feature flags are disabled'
     end
   end
 end

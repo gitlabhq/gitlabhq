@@ -48,7 +48,7 @@
   .dropdown-menu-inner-content,
   .file-row .file-row-icon svg,
   .file-row:hover .file-row-icon svg {
-    color: var(--ide-text-color-secondary, $gl-text-color-secondary);
+    color: var(--ide-text-color-secondary, var(--gl-text-color-subtle));
   }
 
   .nav-links li:not(.md-header-toolbar),
@@ -78,7 +78,7 @@
   }
 
   .text-secondary {
-    color: var(--ide-text-color-secondary, $gl-text-color-secondary) !important;
+    color: var(--ide-text-color-secondary, var(--gl-text-color-subtle)) !important;
   }
 
   input[type='search']::placeholder,
@@ -331,7 +331,7 @@
   .btn[disabled]:not(.gl-button) {
     background-color: var(--ide-btn-default-background, $gray-10) !important;
     border: 1px solid var(--ide-btn-disabled-border, $gray-100) !important;
-    color: var(--ide-btn-disabled-color, $gl-text-color-disabled) !important;
+    color: var(--ide-btn-disabled-color, var(--gl-text-color-disabled)) !important;
   }
 
   @function ide-btn-var($btn-type, $var-type, $value) {
@@ -378,7 +378,7 @@
   }
 
   .btn[disabled].gl-button.gl-button {
-    color: var(--ide-btn-disabled-color, $gl-text-color-disabled);
+    color: var(--ide-btn-disabled-color, var(--gl-text-color-disabled));
 
     @include ide-gl-button(disabled, $gray-10, $gray-10, $gray-10, $gray-100, $gray-100, $gray-100, $gray-100, 1px, transparent, transparent);
   }

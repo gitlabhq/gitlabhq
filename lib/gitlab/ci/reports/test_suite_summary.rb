@@ -42,7 +42,6 @@ module Gitlab
         def total_count
           @total_count ||= [success_count, failed_count, skipped_count, error_count].sum
         end
-        # rubocop: disable CodeReuse/ActiveRecord
 
         def suite_error
           strong_memoize(:suite_error) do

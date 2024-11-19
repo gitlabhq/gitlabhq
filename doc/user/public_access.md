@@ -41,7 +41,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-For internal projects, **any authenticated user**, including users with the Guest role, can:
+For internal projects, any authenticated user, including users with the Guest role, can:
 
 - Clone the project.
 - View the public access directory (`/public`).
@@ -54,7 +54,7 @@ Internal groups can have internal or private subgroups and projects.
 
 ## Public projects and groups
 
-For public projects, **unauthenticated users**, including users with the Guest role, can:
+For public projects, any user, including unauthenticated users, can:
 
 - Clone the project.
 - View the public access directory (`/public`).

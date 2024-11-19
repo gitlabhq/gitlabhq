@@ -40,7 +40,7 @@ class MemberEntity < Grape::Entity
   end
 
   expose :access_level do
-    expose :human_access, as: :string_value
+    expose :human_access_with_none, as: :string_value
     expose :access_level, as: :integer_value
     expose :member_role_id
     expose :member_role_description, as: :description

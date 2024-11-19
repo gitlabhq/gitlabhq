@@ -10,10 +10,12 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
   it { is_expected.to be_a Packages::Destructible }
 
   describe 'relationships' do
-    it { is_expected.to belong_to(:package).inverse_of(:nuget_symbols) }
+    it { is_expected.to belong_to(:package).class_name('Packages::Nuget::Package').inverse_of(:nuget_symbols) }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do
+    it { is_expected.to validate_presence_of(:package) }
     it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_presence_of(:file_path) }
     it { is_expected.to validate_presence_of(:signature) }

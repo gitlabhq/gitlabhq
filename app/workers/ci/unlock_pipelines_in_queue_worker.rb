@@ -4,7 +4,7 @@ module Ci
   class UnlockPipelinesInQueueWorker
     include ApplicationWorker
 
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :always
 
     include LimitedCapacity::Worker
 

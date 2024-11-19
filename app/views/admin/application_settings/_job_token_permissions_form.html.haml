@@ -1,0 +1,14 @@
+= gitlab_ui_form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-runner-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group.gl-mb-0
+      %h5
+        = s_('CICD|Authorized groups and projects')
+      %span.form-text.gl-mb-3.gl-mt-0
+        - enforce_allowlist_text = s_('CICD|Enable and enforce job token allowlist for all projects.')
+        - learn_more_link = link_to('', help_page_path('administration/settings/continuous_integration.md', anchor: 'job-token-permissions'), target: '_blank', rel: 'noopener noreferrer')
+        - help_text = safe_format(s_('CICD|When enabled, all projects must use their allowlist to control CI/CD job token access between projects. The option to allow access from all groups and projects is hidden. %{link_start}Learn More.%{link_end}'), tag_pair(learn_more_link, :link_start, :link_end))
+        = f.gitlab_ui_checkbox_component :enforce_ci_inbound_job_token_scope_enabled, enforce_allowlist_text, help_text: help_text
+
+  = f.submit _('Save changes'), pajamas_button: true

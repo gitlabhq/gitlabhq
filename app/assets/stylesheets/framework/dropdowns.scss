@@ -74,13 +74,8 @@
 .dropdown-menu-close {
   &:active,
   &:focus {
-    @include gl-focus;
+    @apply gl-focus;
   }
-}
-
-// Get search dropdown to line up with other nav dropdowns
-.search-input-container .dropdown-menu {
-  margin-top: 11px;
 }
 
 .dropdown-toggle,
@@ -342,7 +337,7 @@
   .unclickable {
     cursor: not-allowed;
     padding: 5px 8px;
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
   }
 
   .badge.badge-pill + span:not(.badge):not(.badge-pill) {
@@ -544,7 +539,7 @@
           mask-repeat: no-repeat;
           mask-size: cover;
           mask-position: center center;
-          background: $black-normal;
+          background: var(--gl-dropdown-option-indicator-color-selected-default);
         }
       }
     }
@@ -637,7 +632,7 @@
   outline: 0;
 
   &:focus {
-    @include gl-focus;
+    @apply gl-focus;
   }
 
   &:hover {
@@ -653,7 +648,7 @@
 }
 
 .dropdown-info-note {
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
   text-align: center;
 }
 
@@ -742,7 +737,7 @@
 
 .dropdown-menu-inner-content {
   display: block;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 }
 
 .dropdown-toggle-text {

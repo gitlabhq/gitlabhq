@@ -231,7 +231,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         title: s_('Terraform|Support for periods (`.`) in Terraform state names might break existing states.'),
         class: 'gl-ml-2',
         data: { toggle: 'tooltip' }
-      ) { sprite_icon('error', css_class: 'gl-text-gray-600') }
+      ) { sprite_icon('error', css_class: 'gl-text-subtle') }
 
       AnchorData.new(
         true,
@@ -454,7 +454,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def pages_anchor_data
     return unless project.pages_deployed? && can?(current_user, :read_pages_content, project)
 
-    pages_url = build_pages_url(project, with_unique_domain: true)
+    pages_url = build_pages_url(project)
     AnchorData.new(false, statistic_icon('external-link') + _('GitLab Pages'), pages_url, 'btn-default', nil)
   end
 

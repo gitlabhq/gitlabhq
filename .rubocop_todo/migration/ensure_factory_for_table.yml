@@ -1,12 +1,6 @@
 ---
 Migration/EnsureFactoryForTable:
   Exclude:
-    - 'db/migrate/20230821133549_create_packages_nuget_symbols.rb'
-    - 'db/migrate/20230823132142_create_instance_google_cloud_logging_configurations.rb'
-    - 'db/migrate/20230903170000_create_packages_protection_rules.rb'
-    - 'db/migrate/20230905234948_create_projects_visits_tables.rb'
-    - 'db/migrate/20230905234949_create_groups_visits_tables.rb'
-    - 'db/migrate/20230906072349_create_audit_events_amazon_s3_configurations.rb'
     - 'db/migrate/20230915103259_create_ci_finished_build_ch_sync_events.rb'
     - 'db/migrate/20230926092914_add_approval_group_rules.rb'
     - 'db/migrate/20230926092944_add_approval_group_rules_groups.rb'

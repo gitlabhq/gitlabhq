@@ -120,16 +120,16 @@ module Namespaces
         all_projects.select(:id)
       end
 
-      def self_and_descendants
+      def self_and_descendants(skope: self.class)
         return super unless use_traversal_ids?
 
-        lineage(top: self)
+        lineage(top: self, skope: skope)
       end
 
-      def self_and_descendant_ids
+      def self_and_descendant_ids(skope: self.class)
         return super unless use_traversal_ids?
 
-        self_and_descendants.as_ids
+        self_and_descendants(skope: skope).as_ids
       end
 
       def descendants
@@ -259,16 +259,14 @@ module Namespaces
           .new(Namespace.where(id: parent_ids))
           .base_and_ancestors
           .reorder(nil)
-          .where(parent_id: nil)
+          .top_level
 
         Namespace.lock.select(:id).where(id: roots).order(id: :asc).load
       end
 
       # Search this namespace's lineage. Bound inclusively by top node.
-      def lineage(top: nil, bottom: nil, hierarchy_order: nil)
+      def lineage(top: nil, bottom: nil, hierarchy_order: nil, skope: self.class)
         raise UnboundedSearch, 'Must bound search by either top or bottom' unless top || bottom
-
-        skope = self.class
 
         if top
           skope = skope.where("traversal_ids @> ('{?}')", top.id)

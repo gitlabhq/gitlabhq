@@ -1,0 +1,16 @@
+---
+description: Tracks clicks on the register link from the sign-in page.
+action: click_register_from_sign_in_page
+product_group: acquisition
+milestone: '17.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149060
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: free_registration / subscription_registration / invite_registration

@@ -7,7 +7,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, :web_ide_fast, feat
 
   let(:service_url) { "https://open-vsx.org/vscode/gallery" }
   let(:item_url) { "https://open-vsx.org/vscode/item" }
-  let(:resource_url_template) { "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}" }
+  let(:resource_url_template) { "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}" }
   let(:vscode_extensions_gallery) do
     {
       service_url: service_url,

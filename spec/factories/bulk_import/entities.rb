@@ -11,6 +11,7 @@ FactoryBot.define do
     destination_slug { 'imported-entity' }
     sequence(:source_xid)
     migrate_projects { true }
+    migrate_memberships { true }
 
     trait(:group_entity) do
       source_type { :group_entity }

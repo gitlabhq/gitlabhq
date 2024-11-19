@@ -267,13 +267,16 @@ RSpec.describe PlanLimits do
         import_placeholder_user_limit_tier_3
         import_placeholder_user_limit_tier_4
         ci_daily_pipeline_schedule_triggers
-        repository_size
         security_policy_scan_execution_schedules
         enforcement_limit
         notification_limit
         project_access_token_limit
         active_versioned_pages_deployments_limit_by_namespace
       ] + disabled_max_artifact_size_columns
+    end
+
+    let(:columns_with_nil) do
+      %w[repository_size]
     end
 
     let(:datetime_columns) do
@@ -289,6 +292,7 @@ RSpec.describe PlanLimits do
       attributes = attributes.except(described_class.primary_key)
       attributes = attributes.except(described_class.reflections.values.map(&:foreign_key))
       attributes = attributes.except(*columns_with_zero)
+      attributes = attributes.except(*columns_with_nil)
       attributes = attributes.except(*datetime_columns)
       attributes = attributes.except(*history_columns)
 
@@ -300,6 +304,13 @@ RSpec.describe PlanLimits do
       attributes = attributes.slice(*columns_with_zero)
 
       expect(attributes).to all(include(be_zero))
+    end
+
+    it "has nil values for disabled limits" do
+      attributes = plan_limits.attributes
+      attributes = attributes.slice(*columns_with_nil)
+
+      expect(attributes).to all(include(be_nil))
     end
   end
 

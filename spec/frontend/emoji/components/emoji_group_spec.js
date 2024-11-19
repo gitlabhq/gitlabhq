@@ -3,6 +3,7 @@ import Vue from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EmojiGroup from '~/emoji/components/emoji_group.vue';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 Vue.config.ignoredElements = ['gl-emoji'];
 
@@ -31,7 +32,7 @@ describe('Emoji group component', () => {
 
   it('renders emojis', () => {
     factory({
-      emojis: ['thumbsup', 'thumbsdown'],
+      emojis: [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN],
       renderGroup: true,
     });
 
@@ -41,12 +42,12 @@ describe('Emoji group component', () => {
 
   it('emits emoji-click', () => {
     factory({
-      emojis: ['thumbsup', 'thumbsdown'],
+      emojis: [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN],
       renderGroup: true,
     });
 
     wrapper.findComponent(GlButton).vm.$emit('click');
 
-    expect(wrapper.emitted('emoji-click')).toStrictEqual([['thumbsup']]);
+    expect(wrapper.emitted('emoji-click')).toStrictEqual([[EMOJI_THUMBS_UP]]);
   });
 });

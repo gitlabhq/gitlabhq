@@ -8,6 +8,10 @@ module Ml
       latest_version&.version
     end
 
+    def author
+      model.user
+    end
+
     def version_count
       return model.version_count if model.respond_to?(:version_count)
 

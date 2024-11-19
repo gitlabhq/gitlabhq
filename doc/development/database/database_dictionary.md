@@ -28,6 +28,7 @@ description: Represents a Terraform state backend
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26619
 milestone: '13.0'
 gitlab_schema: gitlab_main
+table_size: small
 ```
 
 ## Adding tables
@@ -43,6 +44,8 @@ gitlab_schema: gitlab_main
 | `introduced_by_url`        | URL           | no       | URL to the merge request or commit which introduced this table. |
 | `milestone`                | String        | yes      | The milestone that introduced this table. |
 | `gitlab_schema`            | String        | yes      | GitLab schema name. |
+| `notes`                    | String        | no       | Use for comments, as Psych cannot parse YAML comments. |
+| `table_size`               | String        | yes      | Classification of table size, based on size on GitLab.com. The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
 
 ### Process
 

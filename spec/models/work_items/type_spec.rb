@@ -8,8 +8,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe 'associations' do
-    it { is_expected.to have_many(:work_items).with_foreign_key('work_item_type_id') }
-
     it 'has many `widget_definitions`' do
       is_expected.to have_many(:widget_definitions)
         .class_name('::WorkItems::WidgetDefinition')

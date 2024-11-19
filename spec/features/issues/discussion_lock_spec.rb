@@ -114,6 +114,6 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
     expect(page).to be_axe_clean.within(issuable_note_warning)
 
     more_dropdown.click
-    expect(page).to be_axe_clean.within('[data-testid="lock-issue-toggle"] button') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+    expect(page).to be_axe_clean.within('[data-testid="lock-issue-toggle"] button')
   end
 end

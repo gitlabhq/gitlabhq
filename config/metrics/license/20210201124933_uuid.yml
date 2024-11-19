@@ -13,7 +13,7 @@ instrumentation_class: UuidMetric
 distribution:
 - ee
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

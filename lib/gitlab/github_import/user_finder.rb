@@ -14,7 +14,7 @@ module Gitlab
     class UserFinder
       include Gitlab::ExclusiveLeaseHelpers
 
-      attr_reader :project, :client
+      attr_reader :project, :client, :mapper
 
       # The base cache key to use for caching user IDs for a given GitHub user ID.
       ID_CACHE_KEY = 'github-import/user-finder/user-id/%s'
@@ -41,6 +41,7 @@ module Gitlab
       def initialize(project, client)
         @project = project
         @client = client
+        @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
       end
 
       # Returns the GitLab user ID of an object's author.
@@ -62,6 +63,8 @@ module Gitlab
                       object ? object[:author] : nil
                     end
 
+        # TODO when improved user mapping is released we can refactor everything below to just
+        # user_id_for(user_info)
         id = user_info ? user_id_for(user_info) : GithubImport.ghost_user_id
 
         if id
@@ -80,7 +83,29 @@ module Gitlab
       #
       # user - An instance of `Gitlab::GithubImport::Representation::User` or `Hash`.
       def user_id_for(user)
-        find(user[:id], user[:login]) if user.present?
+        return unless user.present?
+
+        if mapper.user_mapping_enabled?
+          source_user(user).mapped_user_id
+        else
+          find(user[:id], user[:login])
+        end
+      end
+
+      # Returns the GitLab user ID from placeholder or reassigned_to user.
+      def source_user(user)
+        mapper.user_mapper.find_or_create_source_user(
+          source_name: user[:login],
+          source_username: user[:login],
+          source_user_identifier: user[:id]
+        )
+      end
+
+      # Returns true if GitLab user has accepted their reassignment status or if UCM is not enabled
+      def source_user_accepted?(user)
+        return true unless mapper.user_mapping_enabled?
+
+        source_user(user).accepted_status?
       end
 
       # Returns the GitLab ID for the given GitHub ID or username.
@@ -197,17 +222,13 @@ module Gitlab
         Gitlab::Cache::Import::Caching.write(ID_FOR_EMAIL_CACHE_KEY % email, gitlab_id)
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def query_id_for_github_id(id)
         User.by_provider_and_extern_uid(:github, id).select(:id).first&.id
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def query_id_for_github_email(email)
         User.by_any_email(email).pick(:id)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # Reads an ID from the cache.
       #
@@ -254,7 +275,7 @@ module Gitlab
       def fetch_email_from_github(username, etag: nil)
         log(EMAIL_API_CALL_LOGGING_MESSAGE[etag.present?], username: username)
 
-        # Only make a rate-limited API call if the ETAG is not available })
+        # Only make a rate-limited API call if the ETAG is not available )
         user = client.user(username, { headers: { 'If-None-Match' => etag }.compact })
         user[:email] || '' if user
       end

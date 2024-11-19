@@ -2,9 +2,9 @@
 
 module QA
   RSpec.shared_context 'packages registry qa scenario' do
-    let(:personal_access_token) { Runtime::Env.personal_access_token }
-
-    let(:package_project) { create(:project, :private, :with_readme, name: "packages-#{SecureRandom.hex(8)}") }
+    let(:api_client) { Runtime::UserStore.default_api_client }
+    let(:personal_access_token) { api_client.personal_access_token }
+    let(:package_project) { create(:project, :private, :with_readme, name: "packages", api_client: api_client) }
 
     let(:client_project) do
       create(:project, :with_readme, name: "client-#{SecureRandom.hex(8)}", group: package_project.group)

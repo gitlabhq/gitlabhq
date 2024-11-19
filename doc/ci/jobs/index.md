@@ -4,45 +4,72 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs
+# CI/CD Jobs
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Jobs are fundamental elements of a GitLab CI/CD pipeline. Jobs are configured in the `.gitlab-ci.yml` file
-with a list of commands to run to accomplish tasks like building, testing, or deploying code.
+CI/CD jobs are the fundamental elements of a [GitLab CI/CD pipeline](../pipelines/index.md).
+Jobs are configured in the `.gitlab-ci.yml` file with a list of commands to execute
+to accomplish tasks like building, testing, or deploying code.
 
-Jobs are:
+Jobs:
 
-- Defined with constraints stating under what conditions they should be executed.
-- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/index.md#script) clause.
-- Not limited in how many can be defined.
+- Are defined at the top-level of the YAML configuration.
+- Must have a unique name.
+- Must have either a [`script`](../yaml/index.md#script) section defining commands to run,
+  or a [`trigger`](../yaml/index.md#trigger) section to trigger a [downstream pipeline](../pipelines/downstream_pipelines.md)
+  to run.
+- Execute on a [runner](../runners/index.md), for example in a Docker container.
+- Run independently from other jobs.
+- Have a [job log](job_logs.md) with the full execution log for the job.
 
 For example:
 
 ```yaml
-job1:
-  script: "execute-script-for-job1"
+my-ruby-job:
+  script:
+    - bundle install
+    - bundle exec my_ruby_command
 
-job2:
-  script: "execute-script-for-job2"
+my-shell-script-job:
+  script:
+    - my_shell_script.sh
 ```
 
-The above example is the simplest possible CI/CD configuration with two separate
-jobs, where each of the jobs executes a different command.
-Of course a command can execute code directly (`./configure;make;make install`)
-or run a script (`test.sh`) in the repository.
+Jobs can be defined with [YAML keywords](../yaml/index.md) that define all aspects
+of the job's execution, including:
 
-Jobs are picked up by [runners](../runners/index.md) and executed in the
-environment of the runner. What is important is that each job is run
-independently from each other.
+- [Controlling](job_control.md) in which pipelines jobs should run.
+- Grouping jobs together in collections called [stages](../yaml/index.md#stages).
+  Stages run in sequence, while all jobs in a stage can run in parallel.
+- Using [caching](../caching/index.md) to speed up job execution.
+- Saving files as [artifacts](job_artifacts.md) which can be used by other jobs,
+  including in deployments.
 
 ## View jobs in a pipeline
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Selecting an individual job shows you its job log, and allows you to:
+The order of jobs in a pipeline depends on the type of pipeline graph.
+
+- For [full pipeline graphs](../pipelines/index.md#pipeline-details), jobs are sorted by name.
+- For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
+  The job status order is:
+
+  1. failed
+  1. warning
+  1. pending
+  1. running
+  1. manual
+  1. scheduled
+  1. canceled
+  1. success
+  1. skipped
+  1. created
+
+Selecting an individual job shows you its [job log](job_logs.md), and allows you to:
 
 - Cancel the job.
 - Retry the job, if it failed.
@@ -64,7 +91,7 @@ To view the full list of jobs that ran in a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline) and [job name](#job-name-limitations).
+You can filter the list by [job status](#view-jobs-in-a-pipeline) and [job name](#job-name-limitations).
 
 ## See why a job failed
 
@@ -77,33 +104,13 @@ can find the reason:
 
 In each place, if you hover over the failed job you can see the reason it failed.
 
-![Pipeline detail](img/job_failure_reason.png)
+![A pipeline graph showing a failed job and the failure-reason.](img/job_failure_reason_v10_7.png)
 
 You can also see the reason it failed on the Job detail page.
 
 ### Troubleshoot a failed job with Root Cause Analysis
 
 You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
-
-## The order of jobs in a pipeline
-
-The order of jobs in a pipeline depends on the type of pipeline graph.
-
-- For [full pipeline graphs](../pipelines/index.md#pipeline-details), jobs are sorted by name.
-- For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
-
-The job status order is:
-
-- failed
-- warning
-- pending
-- running
-- manual
-- scheduled
-- canceled
-- success
-- skipped
-- created
 
 ## Job name limitations
 
@@ -141,11 +148,11 @@ to read.
 You can automatically group similar jobs together. If the job names are formatted in a certain way,
 they are collapsed into a single group in regular pipeline graphs (not the mini graphs).
 
-You can recognize when a pipeline has grouped jobs if you don't see the retry or
-cancel button inside them. Hovering over them shows the number of grouped
-jobs. Select to expand them.
+You can recognize when a pipeline has grouped jobs if you see a number next to a job
+name instead of the retry or cancel buttons. The number indicates the amount of grouped
+jobs. Hovering over them shows you if all jobs have passed or any has failed. Select to expand them.
 
-![Grouped pipelines](img/pipeline_grouped_jobs_v14_2.png)
+![A pipeline graph showing several stages and jobs, including three groups of grouped jobs.](img/pipeline_grouped_jobs_v14_2.png)
 
 To create a group of jobs, in the `.gitlab-ci.yml` file,
 separate each job name with a number and one of the following:
@@ -281,11 +288,11 @@ Define CI/CD variables here when you want to alter the execution of a job that u
 [CI/CD variables](../variables/index.md).
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
-the [variable is overridden](../variables/index.md#override-a-defined-cicd-variable) with the new value.
+the [variable is overridden](../variables/index.md#use-pipeline-variables) with the new value.
 Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
 and not [masked](../variables/index.md#mask-a-cicd-variable).
 
-![Manual job variables](img/manual_job_variables_v13_10.png)
+![The run manual job page with fields for specifying CI/CD variables.](img/manual_job_variables_v13_10.png)
 
 ## Delay a job
 
@@ -298,17 +305,9 @@ For example, if you start rolling out new code and:
 
 - Users do not experience trouble, GitLab can automatically complete the deployment from 0% to 100%.
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
-  and [rolling](../environments/index.md#retry-or-roll-back-a-deployment) back to the last stable version.
+  and [rolling](../environments/deployments.md#retry-or-roll-back-a-deployment) back to the last stable version.
 
-![Pipelines example](img/pipeline_delayed_job_v14_2.png)
-
-## View job logs in full screen mode
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
-
-You can view the contents of a job log in full screen mode by clicking **Show full screen**.
-
-To use full screen mode, your web browser must also support it. If your web browser does not support full screen mode, then the option is not available.
+![A pipeline graph with a delayed job.](img/pipeline_delayed_job_v14_2.png)
 
 ## Deployment jobs
 
@@ -335,12 +334,6 @@ The behavior of deployment jobs can be controlled with
 and [ensuring only one deployment job runs at a time](../environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
 
 ## Troubleshooting
-
-### Job log slow to update
-
-When you visit the job log page for a running job, there could be a delay of up to
-60 seconds before a log update. The default refresh time is 60 seconds, but after
-the log is viewed in the UI one time, log updates should occur every 3 seconds.
 
 ### `get_sources` job section fails because of an HTTP/2 problem
 

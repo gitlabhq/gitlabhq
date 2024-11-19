@@ -1,14 +1,24 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__, n__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 
+import Tracking from '~/tracking';
+import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
 import markAllAsDoneMutation from './mutations/mark_all_as_done.mutation.graphql';
 import undoMarkAllAsDoneMutation from './mutations/undo_mark_all_as_done.mutation.graphql';
 
 export default {
   components: {
     GlButton,
+  },
+  mixins: [Tracking.mixin()],
+  props: {
+    filters: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -33,9 +43,13 @@ export default {
       }
     },
     async markAllAsDone() {
+      this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+        label: 'mark_all_as_done',
+      });
       return this.performMutation(async () => {
         const resp = await this.$apollo.mutate({
           mutation: markAllAsDoneMutation,
+          variables: this.filters,
         });
         const data = resp.data.markAllAsDone;
 
@@ -62,6 +76,9 @@ export default {
       }, s__('Todos|Mark all as done failed. Try again later.'));
     },
     undoMarkAllAsDone(todoIDs) {
+      this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+        label: 'undo_mark_all_as_done',
+      });
       this.performMutation(async () => {
         const resp = await this.$apollo.mutate({
           mutation: undoMarkAllAsDoneMutation,

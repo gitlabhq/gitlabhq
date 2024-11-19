@@ -8,21 +8,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
-Federated Learning of Cohorts (FLoC) is a new feature of the Chrome browser.
-It works by categorizing users into different cohorts, so that
-advertisers can use this data to uniquely target and track users. For more
-information, see the [FLoC repository](https://github.com/WICG/floc).
+Federated Learning of Cohorts (FLoC) was a proposed feature
+for Google Chrome that categorized users into different cohorts for interest-based
+advertising. FLoC has been replaced by the [Topics API](https://patcg-individual-drafts.github.io/topics/),
+which provides similar functionality to help advertisers target and track users.
 
-To avoid users being tracked and categorized in any GitLab instance, FLoC is
-disabled by default by sending the following header:
+By default, GitLab opts out of user tracking for interest-based advertising
+by sending the following header:
 
 ```plaintext
 Permissions-Policy: interest-cohort=()
 ```
 
-To enable it:
+This header prevents users from being tracked and categorized in any GitLab instance.
+The header is compatible with the Topics API and the deprecated FLoC system.
+
+To enable user tracking for interest-based advertising:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

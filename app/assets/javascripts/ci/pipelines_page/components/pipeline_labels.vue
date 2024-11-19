@@ -14,9 +14,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
-    targetProjectFullPath: {
-      default: '',
-    },
     pipelineSchedulesPath: {
       default: '',
     },
@@ -34,17 +31,8 @@ export default {
     isTriggered() {
       return this.pipeline.source === TRIGGER_ORIGIN;
     },
-    isPipelineFromSource() {
-      if (!this.targetProjectFullPath) return true;
-
-      const fullPath = this.pipeline?.project?.full_path;
-      // We may or may not have a trailing slash in `targetProjectFullPath` value, so we account for both cases
-      return (
-        fullPath === `/${this.targetProjectFullPath}` || fullPath === this.targetProjectFullPath
-      );
-    },
-    isInFork() {
-      return !this.isPipelineFromSource;
+    isForked() {
+      return this.pipeline?.project?.forked;
     },
     showMergedResultsBadge() {
       // A merge train pipeline is technically also a merged results pipeline,
@@ -186,7 +174,7 @@ export default {
       >{{ s__('Pipeline|merged results') }}</gl-badge
     >
     <gl-badge
-      v-if="isInFork"
+      v-if="isForked"
       v-gl-tooltip
       :title="__('Pipeline ran in fork of project')"
       variant="info"

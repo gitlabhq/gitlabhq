@@ -59,7 +59,7 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       # We cannot disable SQL query limiting here, since the transaction does not
       # begin until we enter the controller.
       headers = {
-        'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => '206,https://gitlab.com/gitlab-org/gitlab/-/issues/469250'
+        'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => '224,https://gitlab.com/gitlab-org/gitlab/-/issues/469250'
       }
 
       post_graphql(query, current_user: current_user, headers: headers)
@@ -371,8 +371,8 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       let(:requested_fields) { 'upvotes downvotes awardEmoji { nodes { name } }' }
 
       before do
-        create_list(:award_emoji, 2, name: 'thumbsup', awardable: merge_request_a)
-        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: merge_request_b)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_UP, awardable: merge_request_a)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_DOWN, awardable: merge_request_b)
       end
 
       include_examples 'N+1 query check'

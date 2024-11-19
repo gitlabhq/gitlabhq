@@ -10,22 +10,22 @@
     .form-group
       = f.label :sentry_environment, _('Environment'), class: 'label-light'
       = f.text_field :sentry_environment, class: 'form-control gl-form-input', placeholder: Rails.env
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = safe_format(s_('AdminSettings|%{setting_name} value used by both Rails and Browser JavaScript SDKs.'), setting_name: content_tag(:code, 'environment'))
     .form-group
       = f.label :sentry_dsn, _('DSN'), class: 'label-light'
       = f.text_field :sentry_dsn, class: 'form-control gl-form-input', placeholder: 'https://public@sentry.example.com/1'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = safe_format(s_('AdminSettings|%{setting_name} value used by the Rails SDK.'), setting_name: content_tag(:code, 'dsn'))
     .form-group
       = f.label :sentry_clientside_dsn, _('Clientside DSN'), class: 'label-light'
       = f.text_field :sentry_clientside_dsn, class: 'form-control gl-form-input', placeholder: 'https://public@sentry.example.com/2'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = safe_format(s_('AdminSettings|%{setting_name} value used by the Browser JavaScript SDK.'), setting_name: content_tag(:code, 'dsn'))
     .form-group
       = f.label :sentry_clientside_traces_sample_rate, _('Clientside traces sample rate'), class: 'label-light'
       = f.number_field :sentry_clientside_traces_sample_rate, class: 'form-control gl-form-input', placeholder: '0.5', min: 0, max: 1, step: 0.001
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = safe_format(s_('AdminSettings|%{setting_name} value used by the Browser JavaScript SDK.'), setting_name: content_tag(:code, 'tracesSampleRate'))
 
   = f.submit _('Save changes'), pajamas_button: true

@@ -56,16 +56,16 @@ RSpec.describe ::Packages::Pypi::SimpleIndexPresenter, :aggregate_failures, feat
 
     context 'for project' do
       let(:project_or_group) { project }
-      let(:expected_link1) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/simple/#{package1.normalized_pypi_name}\" data-requires-python=\"#{expected_python_version}\">#{package1.name}</a>" } # rubocop:disable Layout/LineLength
-      let(:expected_link2) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/simple/#{package2.normalized_pypi_name}\" data-requires-python=\"\">#{package2.name}</a>" } # rubocop:disable Layout/LineLength
+      let(:expected_link1) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/simple/#{package1.normalized_pypi_name}\" data-requires-python=\"#{expected_python_version}\">#{package1.name}</a>" }
+      let(:expected_link2) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/simple/#{package2.normalized_pypi_name}\" data-requires-python=\"\">#{package2.name}</a>" }
 
       it_behaves_like 'pypi package presenter'
     end
 
     context 'for group' do
       let(:project_or_group) { group }
-      let(:expected_link1) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/simple/#{package1.normalized_pypi_name}\" data-requires-python=\"#{expected_python_version}\">#{package1.name}</a>" } # rubocop:disable Layout/LineLength
-      let(:expected_link2) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/simple/#{package2.normalized_pypi_name}\" data-requires-python=\"\">#{package2.name}</a>" } # rubocop:disable Layout/LineLength
+      let(:expected_link1) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/simple/#{package1.normalized_pypi_name}\" data-requires-python=\"#{expected_python_version}\">#{package1.name}</a>" }
+      let(:expected_link2) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/simple/#{package2.normalized_pypi_name}\" data-requires-python=\"\">#{package2.name}</a>" }
 
       it_behaves_like 'pypi package presenter'
     end

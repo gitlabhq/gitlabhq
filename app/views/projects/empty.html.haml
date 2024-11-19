@@ -3,7 +3,6 @@
 
 - @skip_current_level_breadcrumb = true
 
-= render_if_exists 'projects/duo_free_access_ending_banner', project: @project
 = render partial: 'flash_messages', locals: { project: @project }
 = render 'clusters_deprecation_alert'
 
@@ -17,7 +16,8 @@
       .project-clone-holder.gl-block.sm:gl-hidden
         = render "shared/mobile_clone_panel"
 
-      .project-clone-holder.gl-hidden.sm:gl-flex.gl-justify-end.gl-w-full
+      .project-clone-holder.gl-hidden.sm:gl-flex.gl-justify-end.gl-w-full.gl-gap-3
+        = render 'shared/web_ide_button', blob: nil
         = render "projects/buttons/code", ref: @ref
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-bg-gray-10 gl-p-5 gl-rounded-base' }) do |c|

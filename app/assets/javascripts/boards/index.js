@@ -127,6 +127,7 @@ function mountBoardApp(el) {
       hasIssueWeightsFeature: parseBoolean(el.dataset.weightFeatureAvailable),
       hasIssuableHealthStatusFeature: parseBoolean(el.dataset.healthStatusFeatureAvailable),
       hasSubepicsFeature: parseBoolean(el.dataset.subEpicsFeatureAvailable),
+      hasLinkedItemsEpicsFeature: parseBoolean(el.dataset.hasLinkedItemsEpicsFeature),
     },
     render: (createComponent) => createComponent(BoardApp),
   });

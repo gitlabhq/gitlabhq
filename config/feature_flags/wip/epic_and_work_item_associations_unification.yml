@@ -1,9 +1,0 @@
----
-name: epic_and_work_item_associations_unification
-feature_issue_url:
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156691
-rollout_issue_url:
-milestone: '17.1'
-group: group::product planning
-type: wip
-default_enabled: false

@@ -10,58 +10,30 @@ This page is about developing dark mode for GitLab. For more information on how 
 
 ## How dark mode works
 
-1. The [color palette](https://design.gitlab.com/product-foundations/color) values are reversed using [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) to provide darker colors for smaller scales.
-1. `app/assets/stylesheets/themes/_dark.scss` imports dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) SCSS variables for colors.
-1. `app/assets/stylesheets/themes/dark_mode_overrides.scss` imports dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) CSS custom properties for colors.
+### Current approach
+
+1. GitLab UI includes light and dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) CSS custom properties for colors and components.
+1. [Semantic design tokens](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens) provide values for light and dark mode in general usage, for example: background, text, and border colors.
+
+### Legacy approach
+
+1. SCSS variables for the [color palette](https://design.gitlab.com/product-foundations/color) are reversed using [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) to provide darker colors for smaller scales.
+1. `app/assets/stylesheets/color_modes/_dark.scss` imports dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) SCSS variables for colors.
 1. Bootstrap variables overridden in `app/assets/stylesheets/framework/variables_overrides.scss` are given dark mode values in `_dark.scss`.
 1. `_dark.scss` is loaded _before_ `application.scss` to generate separate `application_dark.css` stylesheet for dark mode users only.
 
-## SCSS variables vs CSS custom properties
-
-Design tokens generate both SCSS variables and CSS custom properties which are imported into the dark mode stylesheet.
-
-- **SCSS variables:** are used in framework, components, and utility classes and override existing color usage for dark mode.
-- **CSS custom properties:** are used for any colors within the `app/assets/stylesheets/page_bundles` directory.
-
-As we do not want to generate separate `*_dark.css` variants of every `page_bundle` file,
-we use CSS custom properties with SCSS variables as fallbacks. This is because when we generate the `page_bundles`
-CSS, we get the variable values from `_variables.scss`, so any SCSS variables have light mode values.
-
-As the CSS custom properties defined in `_dark.scss` are available in the browser, they have the correct colors for dark mode.
-
-```scss
-color: var(--gray-500, $gray-500);
-```
-
 ## Utility classes
 
-We generate a separate `utilities_dark.css` file for utility classes containing the inverted values. So a class
-such as `gl-text-white` specifies a text color of `#333` in dark mode. This means you do not have to
-add multiple classes every time you want to add a color.
+Design tokens for dark mode can be applied with Tailwind classes (`gl-text-subtle`) or with `@apply` rule (`@apply gl-text-subtle`).
 
-Currently, we cannot set up a utility class only in dark mode. We hope to address that
-[issue](https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1141) soon.
+## CSS custom properties vs SCSS variables
 
-## Using different values between light and dark mode
+Design tokens generate both CSS custom properties and SCSS variables which are imported into the dark mode stylesheet.
 
-In most cases, we can use the same values for light and dark mode. If that is not possible, you
-can add an override using the `.gl-dark` class that dark mode adds to `body`:
+- **CSS custom properties:** are preferred to update color modes without loading a color mode specific stylesheet, and are required for any colors within the `app/assets/stylesheets/page_bundles` directory.
+- **SCSS variables:** override existing color usage for dark mode and are compiled into a color mode specific stylesheet.
 
-```scss
-color: $gray-700;
-.gl-dark & {
-  color: var(--gray-500);
-}
-```
+### Page bundles
 
-NOTE:
-Avoid using a different value for the SCSS fallback
-
-```scss
-// avoid where possible
-// --gray-500 (#999) in dark mode
-// $gray-700 (#525252) in light mode
-color: var(--gray-500, $gray-700);
-```
-
-We [plan to add](https://gitlab.com/groups/gitlab-org/-/epics/7400) the CSS variables to light mode. When that happens, different values for the SCSS fallback will no longer work.
+To support dark mode CSS custom properties should be used in `page_bundle` styles as we do not generate separate
+`*_dark.css` variants of each `page_bundle` file.

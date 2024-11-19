@@ -56,6 +56,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     canBulkEditEpics,
     groupIssuesPath,
     labelsFetchPath,
+    hasLinkedItemsEpicsFeature,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -125,6 +126,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       canBulkEditEpics: parseBoolean(canBulkEditEpics),
       groupIssuesPath,
       labelsFetchPath,
+      hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
     },
     mounted() {
       performanceMarkAndMeasure({

@@ -11,7 +11,7 @@ class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migra
   SUB_BATCH_SIZE = 100
 
   def up
-    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+    Gitlab::Database::QueryAnalyzers::Base.suppress_schema_issues_for_decomposed_tables do
       # Clear previous background migration execution from QueueResolveVulnerabilitiesForRemovedAnalyzers
       delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
 
@@ -27,7 +27,7 @@ class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migra
   end
 
   def down
-    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+    Gitlab::Database::QueryAnalyzers::Base.suppress_schema_issues_for_decomposed_tables do
       delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
     end
   end

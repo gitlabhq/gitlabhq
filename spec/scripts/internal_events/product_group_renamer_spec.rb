@@ -18,9 +18,9 @@ RSpec.describe ProductGroupRenamer, feature_category: :service_ping do
         expect(File).not_to receive(:write).with(event_definition.path)
       end
 
-      Gitlab::Usage::MetricDefinition.definitions.each_value do |metric_definition|
-        expect(File).to receive(:read).with(metric_definition.path)
-        expect(File).not_to receive(:write).with(metric_definition.path)
+      Gitlab::Usage::MetricDefinition.definitions.values.map(&:path).uniq.each do |metric_definition_path|
+        expect(File).to receive(:read).with(metric_definition_path)
+        expect(File).not_to receive(:write).with(metric_definition_path)
       end
 
       renamer.rename_product_group('old_name', 'new_name')

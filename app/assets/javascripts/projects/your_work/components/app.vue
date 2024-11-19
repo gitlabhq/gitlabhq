@@ -34,7 +34,6 @@ export default {
   TIMESTAMP_TYPE_UPDATED_AT,
   PROJECT_DASHBOARD_TABS,
   i18n: {
-    heading: __('Projects'),
     projectCountError: __('An error occurred loading the project counts.'),
   },
   filteredSearchAndSort: {
@@ -218,52 +217,52 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1 class="page-title gl-mt-5 gl-text-size-h-display">{{ $options.i18n.heading }}</h1>
-
-    <gl-tabs :value="activeTabIndex" @input="onTabUpdate">
-      <gl-tab v-for="tab in $options.PROJECT_DASHBOARD_TABS" :key="tab.text" lazy>
-        <template #title>
-          <div class="gl-flex gl-items-center gl-gap-2" data-testid="projects-dashboard-tab-title">
-            <span>{{ tab.text }}</span>
-            <gl-badge v-if="shouldShowCountBadge(tab)" size="sm" class="gl-tab-counter-badge">{{
-              numberToMetricPrefix(tabCount(tab))
-            }}</gl-badge>
-          </div>
-        </template>
-
-        <tab-view
-          v-if="tab.query"
-          :tab="tab"
-          :start-cursor="startCursor"
-          :end-cursor="endCursor"
-          :sort="sort"
-          :filters="filters"
-          @page-change="onPageChange"
-        />
-        <template v-else>{{ tab.text }}</template>
-      </gl-tab>
-
-      <template #tabs-end>
-        <li class="gl-w-full">
-          <filtered-search-and-sort
-            class="gl-border-b-0"
-            :filtered-search-namespace="$options.filteredSearchAndSort.namespace"
-            :filtered-search-tokens="filteredSearchTokens"
-            :filtered-search-term-key="$options.filteredSearchAndSort.searchTermKey"
-            :filtered-search-recent-searches-storage-key="
-              $options.filteredSearchAndSort.recentSearchesStorageKey
-            "
-            :filtered-search-query="$route.query"
-            :is-ascending="isAscending"
-            :sort-options="$options.filteredSearchAndSort.sortOptions"
-            :active-sort-option="activeSortOption"
-            @filter="onFilter"
-            @sort-direction-change="onSortDirectionChange"
-            @sort-by-change="onSortByChange"
-          />
-        </li>
+  <gl-tabs :value="activeTabIndex" @input="onTabUpdate">
+    <gl-tab v-for="tab in $options.PROJECT_DASHBOARD_TABS" :key="tab.text" lazy>
+      <template #title>
+        <div class="gl-flex gl-items-center gl-gap-2" data-testid="projects-dashboard-tab-title">
+          <span>{{ tab.text }}</span>
+          <gl-badge
+            v-if="shouldShowCountBadge(tab)"
+            size="sm"
+            class="gl-tab-counter-badge"
+            data-testid="tab-counter-badge"
+            >{{ numberToMetricPrefix(tabCount(tab)) }}</gl-badge
+          >
+        </div>
       </template>
-    </gl-tabs>
-  </div>
+
+      <tab-view
+        v-if="tab.query"
+        :tab="tab"
+        :start-cursor="startCursor"
+        :end-cursor="endCursor"
+        :sort="sort"
+        :filters="filters"
+        @page-change="onPageChange"
+      />
+      <template v-else>{{ tab.text }}</template>
+    </gl-tab>
+
+    <template #tabs-end>
+      <li class="gl-w-full">
+        <filtered-search-and-sort
+          class="gl-border-b-0"
+          :filtered-search-namespace="$options.filteredSearchAndSort.namespace"
+          :filtered-search-tokens="filteredSearchTokens"
+          :filtered-search-term-key="$options.filteredSearchAndSort.searchTermKey"
+          :filtered-search-recent-searches-storage-key="
+            $options.filteredSearchAndSort.recentSearchesStorageKey
+          "
+          :filtered-search-query="$route.query"
+          :is-ascending="isAscending"
+          :sort-options="$options.filteredSearchAndSort.sortOptions"
+          :active-sort-option="activeSortOption"
+          @filter="onFilter"
+          @sort-direction-change="onSortDirectionChange"
+          @sort-by-change="onSortByChange"
+        />
+      </li>
+    </template>
+  </gl-tabs>
 </template>

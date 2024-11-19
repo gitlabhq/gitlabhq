@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EmojiList from '~/emoji/components/emoji_list.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 jest.mock('~/emoji', () => ({
   initEmojiMap: jest.fn(() => Promise.resolve()),
@@ -44,7 +45,7 @@ describe('Emoji list component', () => {
 
     expect(JSON.parse(findDefaultSlot().text())).toEqual({
       activity: {
-        emojis: [['thumbsup', 'thumbsdown']],
+        emojis: [[EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN]],
         height: expect.any(Number),
         top: expect.any(Number),
       },

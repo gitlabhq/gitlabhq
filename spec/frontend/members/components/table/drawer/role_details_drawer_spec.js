@@ -98,7 +98,7 @@ describe('Role details drawer', () => {
       });
 
       it('shows the role description', () => {
-        expect(findRoleDescription().text()).toBe(currentRole.description);
+        expect(findRoleDescription().text()).toBe(updateableMember.accessLevel.description);
       });
     });
 

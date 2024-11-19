@@ -15,7 +15,6 @@ class SwapColumnsForCiPipelineVariablesPipelineIdBigint < Gitlab::Database::Migr
   private
 
   def swap
-    # rubocop:disable Migration/WithLockRetriesDisallowedMethod
     with_lock_retries(raise_on_exhaustion: true) do
       lock_tables(:ci_pipelines, :ci_pipeline_variables)
 
@@ -41,6 +40,5 @@ class SwapColumnsForCiPipelineVariablesPipelineIdBigint < Gitlab::Database::Migr
         :index_ci_pipeline_variables_on_pipeline_id_bigint_and_key
       )
     end
-    # rubocop:enable Migration/WithLockRetriesDisallowedMethod
   end
 end

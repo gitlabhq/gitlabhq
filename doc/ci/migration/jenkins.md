@@ -73,7 +73,7 @@ hello-job:
 
 ### Jenkins pipeline syntax
 
-A Jenkins configuration is composed of a `pipeline` block with "sections" and "directives".
+A Jenkins configuration is composed of a `pipeline` block with sections and directives.
 GitLab CI/CD has similar functionality, configured with YAML keywords.
 
 #### Sections

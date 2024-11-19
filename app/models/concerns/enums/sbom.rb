@@ -20,7 +20,9 @@ module Enums
       deb: 11,
       'cbl-mariner': 12,
       wolfi: 13,
-      cargo: 14
+      cargo: 14,
+      swift: 15,
+      conda: 16
     }.with_indifferent_access.freeze
 
     REACHABILITY_TYPES = {
@@ -38,6 +40,8 @@ module Enums
       nuget
       pypi
       cargo
+      swift
+      conda
     ].freeze
 
     CONTAINER_SCANNING_PURL_TYPES = %w[
@@ -90,6 +94,7 @@ module Enums
       nuget: 'nuget',
       'dotnet-core': 'nuget',
       'conda-pkg': 'conda',
+      'conda-environment': 'conda',
       'python-pkg': 'pip',
       pip: 'pip',
       pipenv: 'pipenv',

@@ -1,0 +1,16 @@
+---
+description: Tracks changes to the sort order of work item notes.
+action: work_item_notes_sort_order_changed
+product_group: project_management
+milestone: '15.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18177
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value item_track_notes_sorting

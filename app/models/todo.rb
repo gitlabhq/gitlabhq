@@ -25,6 +25,7 @@ class Todo < ApplicationRecord
   OKR_CHECKIN_REQUESTED = 12 # This is an EE-only feature
   ADDED_APPROVER = 13 # This is an EE-only feature,
   SSH_KEY_EXPIRED = 14
+  SSH_KEY_EXPIRING_SOON = 15
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -40,7 +41,8 @@ class Todo < ApplicationRecord
     REVIEW_SUBMITTED => :review_submitted,
     OKR_CHECKIN_REQUESTED => :okr_checkin_requested,
     ADDED_APPROVER => :added_approver,
-    SSH_KEY_EXPIRED => :ssh_key_expired
+    SSH_KEY_EXPIRED => :ssh_key_expired,
+    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
@@ -126,6 +128,15 @@ class Todo < ApplicationRecord
           for_project(Project.for_group(groups_and_descendants)),
           for_group(groups_and_descendants)
         ], remove_duplicates: false)
+    end
+
+    def pending_for_expiring_ssh_keys(ssh_key_ids)
+      where(
+        target_type: Key,
+        target_id: ssh_key_ids,
+        action: ::Todo::SSH_KEY_EXPIRING_SOON,
+        state: :pending
+      )
     end
 
     # Returns `true` if the current user has any todos for the given target with the optional given state.

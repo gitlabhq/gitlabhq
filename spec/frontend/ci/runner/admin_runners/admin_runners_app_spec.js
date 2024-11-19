@@ -105,6 +105,7 @@ describe('AdminRunnersApp', () => {
   const createComponent = ({
     props = {},
     mountFn = shallowMountExtended,
+    stubs,
     provide,
     ...options
   } = {}) => {
@@ -131,6 +132,10 @@ describe('AdminRunnersApp', () => {
         $toast: {
           show: showToast,
         },
+      },
+      stubs: {
+        RunnerFilteredSearchBar: true,
+        ...stubs,
       },
       ...options,
     });
@@ -178,10 +183,11 @@ describe('AdminRunnersApp', () => {
     });
 
     it('shows the runner tabs', () => {
-      const tabs = findRunnerTypeTabs().text();
-      expect(tabs).toMatchInterpolatedText(
-        `All ${mockRunnersCount} ${I18N_INSTANCE_TYPE} ${mockRunnersCount} ${I18N_GROUP_TYPE} ${mockRunnersCount} ${I18N_PROJECT_TYPE} ${mockRunnersCount}`,
-      );
+      const tabs = findRunnerTypeTabs().text().replace(/\s+/g, ' ');
+      expect(tabs).toContain(`All ${mockRunnersCount}`);
+      expect(tabs).toContain(`${I18N_INSTANCE_TYPE} ${mockRunnersCount}`);
+      expect(tabs).toContain(`${I18N_GROUP_TYPE} ${mockRunnersCount}`);
+      expect(tabs).toContain(`${I18N_PROJECT_TYPE} ${mockRunnersCount}`);
     });
 
     it('shows the total', () => {
@@ -207,10 +213,6 @@ describe('AdminRunnersApp', () => {
 
     it('fetches only tab counts', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(TAB_COUNT_QUERIES);
-    });
-
-    it('does not shows counters', () => {
-      expect(findRunnerStats().text()).toBe('');
     });
   });
 

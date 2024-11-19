@@ -1,0 +1,8 @@
+mutation deleteWikiPageNote($input: DestroyNoteInput!) {
+  destroyNote(input: $input) {
+    errors
+    note {
+      id
+    }
+  }
+}

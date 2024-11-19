@@ -85,7 +85,6 @@ describe('GroupToken', () => {
 
   const itRendersToken = (group) => {
     const [tokenName, , tokenValue] = findGlFilteredSearchTokenSegments().wrappers;
-
     expect(tokenName.text()).toBe(mockToken.title);
     expect(tokenValue.text()).toBe(group.name);
   };
@@ -186,6 +185,22 @@ describe('GroupToken', () => {
     createComponent({
       props: {
         value: { data: String(getIdFromGraphQLId(selectedGroup.id)) },
+      },
+    });
+    await waitForPromises();
+
+    itRendersToken(selectedGroup);
+  });
+
+  it("renders the selected group's token without prefix", async () => {
+    const selectedGroup = todosGroupsResponse.data.currentUser.groups.nodes[0];
+    createComponent({
+      props: {
+        value: { data: String(getIdFromGraphQLId(selectedGroup.id)) },
+        config: {
+          ...mockToken,
+          skipIdPrefix: true,
+        },
       },
     });
     await waitForPromises();

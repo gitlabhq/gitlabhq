@@ -11,7 +11,7 @@ instrumentation_class: CountIssuesMetric
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

@@ -27,10 +27,12 @@ module Types
       description: 'State of the milestone.'
 
     field :expired, GraphQL::Types::Boolean, null: false,
-      description: 'Expired state of the milestone (a milestone is expired when the due date is past the current date). Defaults to `false` when due date has not been set.'
+      description: 'Expired state of the milestone (a milestone is expired when the due date is past the current ' \
+        'date). Defaults to `false` when due date has not been set.'
 
     field :upcoming, GraphQL::Types::Boolean, null: false,
-      description: 'Upcoming state of the milestone (a milestone is upcoming when the start date is in the future). Defaults to `false` when start date has not been set.'
+      description: 'Upcoming state of the milestone (a milestone is upcoming when the start date is in the future). ' \
+        'Defaults to `false` when start date has not been set.'
 
     field :web_path, GraphQL::Types::String, null: false, method: :milestone_path,
       description: 'Web path of the milestone.'

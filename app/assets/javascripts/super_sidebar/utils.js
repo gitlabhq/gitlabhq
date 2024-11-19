@@ -2,6 +2,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/super_sidebar/constants';
 import axios from '~/lib/utils/axios_utils';
+import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 
 /**
  * This takes an array of project or groups that were stored in the local storage, to be shown in
@@ -123,3 +124,11 @@ export const trackContextAccess = (username, context, trackVisitsPath) => {
 };
 
 export const ariaCurrent = (isActive) => (isActive ? 'page' : null);
+
+const isValidNumber = (count) => {
+  return typeof count === 'number';
+};
+
+export const formatAsyncCount = (count) => {
+  return isValidNumber(count) ? numberToMetricPrefix(count) : null;
+};

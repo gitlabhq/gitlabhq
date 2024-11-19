@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Members
-  class ExpiringEmailNotificationWorker # rubocop:disable Scalability/CronWorkerContext
+  class ExpiringEmailNotificationWorker
     include ApplicationWorker
 
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :always
     feature_category :system_access
     urgency :low
     idempotent!

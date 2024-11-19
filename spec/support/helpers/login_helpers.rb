@@ -62,9 +62,9 @@ module LoginHelpers
   end
 
   # Requires Javascript driver.
-  def gitlab_sign_out
+  def gitlab_sign_out(user = @current_user)
     if has_testid?('super-sidebar')
-      click_on "#{@current_user.name} user’s menu"
+      click_on "#{user.name} user’s menu"
     else
       # This can be removed once https://gitlab.com/gitlab-org/gitlab/-/issues/420121 is complete.
       find(".header-user-dropdown-toggle").click

@@ -61,7 +61,7 @@ module API
         requires :sha,          type: String, desc: 'The commit hash',
           documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
         requires :state,        type: String, desc: 'The state of the status',
-          values: %w[pending running success failed canceled],
+          values: %w[pending running success failed canceled skipped],
           documentation: { example: 'pending' }
         optional :ref,          type: String, desc: 'The ref',
           documentation: { example: 'develop' }
@@ -76,7 +76,6 @@ module API
           documentation: { example: 100.0 }
         optional :pipeline_id,  type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
 
@@ -91,8 +90,6 @@ module API
           present response.payload[:job], with: Entities::CommitStatus
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       helpers do
         def optional_commit_status_params
           updatable_optional_attributes = %w[target_url description coverage]

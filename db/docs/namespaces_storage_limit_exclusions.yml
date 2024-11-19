@@ -4,9 +4,8 @@ classes:
 - Namespaces::Storage::LimitExclusion
 feature_categories:
 - consumables_cost_management
-description: >-
-  Stores namespaces that are excluded from the storage limit. Any namespaces that are included in this table will not have
-  storage limitations applied.
+description: Stores namespaces that are excluded from the storage limit. Any namespaces
+  that are included in this table will not have storage limitations applied.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108449
 milestone: '15.9'
 gitlab_schema: gitlab_main_cell

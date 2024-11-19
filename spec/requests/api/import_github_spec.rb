@@ -205,7 +205,7 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         ActionController::Base.helpers.link_to(
           _('documentation'),
           Rails.application.routes.url_helpers.help_page_url(
-            'user/project/import/github', anchor: 'use-a-github-personal-access-token'
+            'user/project/import/github.md', anchor: 'use-a-github-personal-access-token'
           ),
           target: '_blank',
           rel: 'noopener noreferrer'

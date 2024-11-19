@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.secure.users_expanding_secure_security_report_weekly
 description: Count of expanding the security report widget
-product_group: static_analysis
+product_group: threat_insights
 value_type: number
 status: active
 milestone: '13.11'
@@ -16,7 +16,7 @@ options:
 distribution:
   - ce
   - ee
-tier:
+tiers:
   - free
   - premium
   - ultimate

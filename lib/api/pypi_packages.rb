@@ -306,6 +306,10 @@ module API
             .new(project, current_user, declared_params.merge(build: current_authenticated_job))
             .execute
 
+          if service_response.error? && service_response.reason == Packages::Pypi::CreatePackageService::ERROR_RESPONSE_PACKAGE_PROTECTED.reason
+            forbidden!(service_response.message)
+          end
+
           bad_request!(service_response.message) if service_response.error?
 
           created!

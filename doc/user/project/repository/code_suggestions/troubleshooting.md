@@ -8,8 +8,10 @@ description: "Troubleshooting tips for common problems in Code Suggestions."
 # Troubleshooting Code Suggestions
 
 DETAILS:
-**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing)
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
@@ -42,8 +44,6 @@ If the settings are enabled, but suggestions are still not displayed, try the fo
    - In the command palette, select `GitLab: Show Extension Logs`.
    - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.
 1. In the GitLab Workflow **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
-
-To enable debug logging for the Language Server (LS), enable **GitLab › Ls: Debug**.
 
 ### Suggestions not displayed in JetBrains IDEs
 

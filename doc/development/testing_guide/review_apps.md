@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Review apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
 
-![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
+![start-review-app-pipeline job](img/review-app-parent-pipeline_v14_4.png)
 
 For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started (only when the merge request is approved):
 
@@ -203,7 +203,7 @@ subgraph "CNG-mirror pipeline"
 **Additional notes:**
 
 - If the `review-deploy` job keeps failing (and a manual retry didn't help),
-  post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~"type::bug"`
+  post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"dx::review apps"` `~"type::bug"`
   issue with a link to your merge request. The deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!

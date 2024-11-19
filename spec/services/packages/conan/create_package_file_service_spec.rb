@@ -35,8 +35,10 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect(package_file.file_md5).to eq('12345')
         expect(package_file.size).to eq(128)
         expect(package_file.conan_file_metadatum).to be_valid
-        expect(package_file.conan_file_metadatum.recipe_revision).to eq('0')
-        expect(package_file.conan_file_metadatum.package_revision).to eq('0')
+        expect(package_file.conan_file_metadatum.recipe_revision_value).to eq('0')
+        expect(package_file.conan_file_metadatum.package_revision_value).to eq('0')
+        expect(package_file.conan_file_metadatum.recipe_revision_id).to be_nil
+        expect(package_file.conan_file_metadatum.package_revision_id).to be_nil
         expect(package_file.conan_file_metadatum.conan_package_reference).to eq('123456789')
         expect(package_file.conan_file_metadatum.conan_file_type).to eq('package_file')
         expect(package_file.file.read).to eq('content')
@@ -66,8 +68,10 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect(package_file.file_md5).to eq('12345')
         expect(package_file.size).to eq(128)
         expect(package_file.conan_file_metadatum).to be_valid
-        expect(package_file.conan_file_metadatum.recipe_revision).to eq('0')
-        expect(package_file.conan_file_metadatum.package_revision).to be_nil
+        expect(package_file.conan_file_metadatum.recipe_revision_value).to eq('0')
+        expect(package_file.conan_file_metadatum.package_revision_value).to be_nil
+        expect(package_file.conan_file_metadatum.recipe_revision_id).to be_nil
+        expect(package_file.conan_file_metadatum.package_revision_id).to be_nil
         expect(package_file.conan_file_metadatum.conan_package_reference).to be_nil
         expect(package_file.conan_file_metadatum.conan_file_type).to eq('recipe_file')
         expect(package_file.file.read).to eq('content')

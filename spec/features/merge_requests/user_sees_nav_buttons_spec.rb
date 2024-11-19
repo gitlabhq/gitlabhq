@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees nav buttons', feature_category: :code_review_workflow do
+RSpec.describe 'Merge request > User sees nav buttons', :js, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:guest) { create(:user) }

@@ -180,6 +180,18 @@ RSpec.describe GitlabUploader, feature_category: :shared do
     it { is_expected.to eq(%w[Running gitlab-runner]) }
   end
 
+  describe '#check_remote_file_existence_on_upload?' do
+    subject { uploader.check_remote_file_existence_on_upload? }
+
+    it { is_expected.to be(true) }
+  end
+
+  describe '#sync_model_object_store?' do
+    subject { uploader.sync_model_object_store? }
+
+    it { is_expected.to be(false) }
+  end
+
   describe '.version' do
     subject { uploader_class.version }
 

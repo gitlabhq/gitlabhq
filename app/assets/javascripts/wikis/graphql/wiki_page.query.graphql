@@ -1,0 +1,26 @@
+#import "./notes/wiki_page_note.fragment.graphql"
+
+query wikiPageQuery($slug: String, $projectId: ProjectID, $namespaceId: NamespaceID) {
+  wikiPage(slug: $slug, projectId: $projectId, namespaceId: $namespaceId) {
+    id
+    title
+    discussions {
+      nodes {
+        id
+        replyId
+        resolvable
+        resolved
+        resolvedAt
+        resolvedBy {
+          id
+          name
+        }
+        notes {
+          nodes {
+            ...WikiPageNote
+          }
+        }
+      }
+    }
+  }
+}

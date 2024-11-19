@@ -36,8 +36,8 @@ module API
           requires :message, type: String, desc: 'Message to display'
           optional :starts_at, type: DateTime, desc: 'Starting time', default: -> { Time.zone.now }
           optional :ends_at, type: DateTime, desc: 'Ending time', default: -> { 1.hour.from_now }
-          optional :color, type: String, desc: 'Background color'
-          optional :font, type: String, desc: 'Foreground color'
+          optional :color, type: String, desc: 'Background color (Deprecated. Use "theme" instead.)'
+          optional :font, type: String, desc: 'Foreground color (Deprecated. Use "theme" instead.)'
           optional :target_access_levels,
             type: Array[Integer],
             coerce_with: Validations::Types::CommaSeparatedToIntegerArray.coerce,
@@ -48,6 +48,7 @@ module API
                                                                                                                                                                 'banner'
                                                                                                                                                               }
           optional :dismissable, type: Boolean, desc: 'Is dismissable'
+          optional :theme, type: String, values: System::BroadcastMessage.themes.keys, desc: 'The theme for the message'
         end
         post do
           authenticated_as_admin!
@@ -83,8 +84,8 @@ module API
           optional :message, type: String, desc: 'Message to display'
           optional :starts_at, type: DateTime, desc: 'Starting time'
           optional :ends_at, type: DateTime, desc: 'Ending time'
-          optional :color, type: String, desc: 'Background color'
-          optional :font, type: String, desc: 'Foreground color'
+          optional :color, type: String, desc: 'Background color (Deprecated. Use "theme" instead.)'
+          optional :font, type: String, desc: 'Foreground color (Deprecated. Use "theme" instead.)'
           optional :target_access_levels,
             type: Array[Integer],
             coerce_with: Validations::Types::CommaSeparatedToIntegerArray.coerce,
@@ -94,6 +95,7 @@ module API
           optional :broadcast_type, type: String, values: System::BroadcastMessage.broadcast_types.keys,
             desc: 'Broadcast Type'
           optional :dismissable, type: Boolean, desc: 'Is dismissable'
+          optional :theme, type: String, values: System::BroadcastMessage.themes.keys, desc: 'The theme for the message'
         end
         put ':id' do
           authenticated_as_admin!

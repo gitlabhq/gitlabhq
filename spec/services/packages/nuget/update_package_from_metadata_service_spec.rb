@@ -6,7 +6,8 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
   include ExclusiveLeaseHelpers
 
   let!(:package) { create(:nuget_package, :processing, :with_symbol_package, :with_build) }
-  let(:package_file) { package.package_files.first }
+  # Reload factory to reset associations cache for package files
+  let(:package_file) { package.reload.package_files.first }
   let(:package_zip_file) { Zip::File.new(package_file.file) }
   let(:service) { described_class.new(package_file, package_zip_file) }
   let(:package_name) { 'DummyProject.DummyPackage' }
@@ -236,7 +237,8 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
     end
 
     context 'with a symbol package' do
-      let(:package_file) { package.package_files.last }
+      # Reload factory to reset associations cache for package files
+      let(:package_file) { package.reload.package_files.last }
       let(:package_file_name) { 'dummyproject.dummypackage.1.0.0.snupkg' }
 
       context 'with no existing package' do

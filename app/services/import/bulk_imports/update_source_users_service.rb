@@ -34,7 +34,7 @@ module Import
       def source_users_with_missing_information
         Import::SourceUser.source_users_with_missing_information(
           namespace: namespace,
-          source_hostname: bulk_import.configuration.url,
+          source_hostname: Gitlab::UrlHelpers.normalized_base_url(bulk_import.configuration.url),
           import_type: Import::SOURCE_DIRECT_TRANSFER
         )
       end
@@ -43,7 +43,7 @@ module Import
         Import::SourceUser.find_source_user(
           source_user_identifier: source_user_identifier,
           namespace: namespace,
-          source_hostname: bulk_import.configuration.url,
+          source_hostname: Gitlab::UrlHelpers.normalized_base_url(bulk_import.configuration.url),
           import_type: Import::SOURCE_DIRECT_TRANSFER
         )
       end
@@ -55,8 +55,6 @@ module Import
       end
 
       def fetch_users_data
-        parsed_query = graphql_client.parse(Common::Graphql::GetUsersQuery.new.to_s)
-
         Enumerator.new do |yielder|
           source_users_with_missing_information.each_batch(of: BATCH_SIZE, order: :desc) do |batch|
             ids = user_global_ids(batch)
@@ -104,6 +102,10 @@ module Import
 
         logger.error(message: 'Failed to update source user', source_user_id: source_user.id, error: result.message,
           bulk_import_id: bulk_import.id, importer: Import::SOURCE_DIRECT_TRANSFER)
+      end
+
+      def parsed_query
+        @parsed_query ||= graphql_client.parse(Common::Graphql::GetUsersQuery.new.to_s)
       end
 
       def logger

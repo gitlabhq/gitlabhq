@@ -55,4 +55,4 @@ module Users
   end
 end
 
-Users::ActivateService.prepend_mod_with('Users::ActivateService') # rubocop: disable Cop/InjectEnterpriseEditionModule
+Users::ActivateService.prepend_mod_with('Users::ActivateService')

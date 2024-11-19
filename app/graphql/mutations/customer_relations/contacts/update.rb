@@ -39,14 +39,21 @@ module Mutations
           description: 'State of the contact.'
 
         def resolve(args)
-          contact = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(args.delete(:id), expected_type: ::CustomerRelations::Contact))
+          contact = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(
+            args.delete(:id),
+            expected_type: ::CustomerRelations::Contact)
+                                                 )
           raise_resource_not_available_error! unless contact
 
           group = contact.group
           authorize!(group)
 
           set_organization!(args)
-          result = ::CustomerRelations::Contacts::UpdateService.new(group: group, current_user: current_user, params: args).execute(contact)
+          result = ::CustomerRelations::Contacts::UpdateService.new(
+            group: group,
+            current_user: current_user,
+            params: args
+          ).execute(contact)
           { contact: result.payload, errors: result.errors }
         end
       end

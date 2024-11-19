@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::Analytics::CycleAnalytics::ValueStreamsController < Projects::ApplicationController
+  extend ::Gitlab::Utils::Override
   include ::Analytics::CycleAnalytics::ValueStreamActions
 
   respond_to :json
@@ -14,3 +15,5 @@ class Projects::Analytics::CycleAnalytics::ValueStreamsController < Projects::Ap
     project.project_namespace
   end
 end
+
+Projects::Analytics::CycleAnalytics::ValueStreamsController.prepend_mod

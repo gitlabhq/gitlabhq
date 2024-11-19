@@ -62,7 +62,7 @@
         data: { testid: 'new-user-email-field', track_action_for_errors: preregistration_tracking_label },
         required: true,
         title: _('Please provide a valid email address.')
-      %p.validation-hint.gl-field-hint.text-secondary
+      %p.validation-hint.text-secondary
         = _('We recommend a work email address.')
       %p.validation-warning.gl-field-error-ignore.text-secondary.hide
         = _('This email address does not look right, are you sure you typed it correctly?')
@@ -86,12 +86,13 @@
   = render_if_exists 'devise/shared/phone_verification', form: f
 
   .form-group
-    - if arkose_labs_enabled?
+    - if arkose_labs_enabled?(user: nil)
       = render_if_exists 'devise/registrations/arkose_labs'
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce
 
-  = render 'devise/shared/terms_of_service_notice', button_text: button_text
+  = render_if_exists 'devise/registrations/opt_in_to_email', f: f
+  = render 'devise/shared/terms_of_service_notice', button_text: button_text, css_class: 'gl-mt-2'
 
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true,
     button_options: { class: "#{button_class} gl-mt-4",

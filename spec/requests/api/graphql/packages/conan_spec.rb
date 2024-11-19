@@ -46,7 +46,9 @@ RSpec.describe 'conan package details', feature_category: :package_registry do
     expect(first_file_response_metadata).to match(
       a_graphql_entity_for(
         first_file.conan_file_metadatum,
-        :package_revision, :conan_package_reference, :recipe_revision,
+        :conan_package_reference,
+        package_revision: first_file.conan_file_metadatum.package_revision_value,
+        recipe_revision: first_file.conan_file_metadatum.recipe_revision_value,
         conan_file_type: first_file.conan_file_metadatum.conan_file_type.upcase
       )
     )

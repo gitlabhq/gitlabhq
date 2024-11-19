@@ -31,6 +31,7 @@ module Deployments
         renew_external_url
         renew_auto_stop_in
         renew_deployment_tier
+        renew_cluster_agent
         environment.fire_state_event(action)
 
         if environment.save
@@ -67,6 +68,12 @@ module Deployments
       ExpandVariables.expand(auto_stop_in, -> { variables.sort_and_expand_all })
     end
 
+    def expanded_cluster_agent_path
+      return unless cluster_agent_path
+
+      ExpandVariables.expand(cluster_agent_path, -> { variables.sort_and_expand_all })
+    end
+
     def environment_url
       environment_options[:url]
     end
@@ -77,6 +84,10 @@ module Deployments
 
     def auto_stop_in
       deployable&.environment_auto_stop_in
+    end
+
+    def cluster_agent_path
+      environment_options.dig(:kubernetes, :agent)
     end
 
     def renew_external_url
@@ -99,6 +110,25 @@ module Deployments
       if (tier = deployable.environment_tier_from_options)
         environment.tier = tier
       end
+    end
+
+    def renew_cluster_agent
+      return unless cluster_agent_path && deployable.user
+
+      requested_project_path, requested_agent_name = expanded_cluster_agent_path.split(':')
+
+      matching_authorization = user_access_authorizations_for_project.find do |authorization|
+        requested_project_path == authorization.config_project.full_path &&
+          requested_agent_name == authorization.agent.name
+      end
+
+      return unless matching_authorization
+
+      environment.cluster_agent = matching_authorization.agent
+    end
+
+    def user_access_authorizations_for_project
+      Clusters::Agents::Authorizations::UserAccess::Finder.new(deployable.user, project: deployable.project).execute
     end
   end
 end

@@ -35,7 +35,10 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   end
 
   def show
-    @cycle_analytics = Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(cycle_analytics_project_params))
+    @cycle_analytics = Analytics::CycleAnalytics::ProjectLevel.new(
+      project: @project,
+      options: options(cycle_analytics_project_params)
+    )
     @request_params ||= ::Gitlab::Analytics::CycleAnalytics::RequestParams.new(all_cycle_analytics_params)
 
     respond_to do |format|

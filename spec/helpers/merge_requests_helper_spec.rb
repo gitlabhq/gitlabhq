@@ -326,6 +326,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:can?).with(current_user, :create_merge_request_in, project).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :admin_merge_request, project).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :create_merge_request_from, project).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :create_merge_request_in, project).and_return(true)
       allow(helper).to receive(:issuables_count_for_state).and_return(5)
       allow(helper).to receive(:url_for).and_return("/rss-url")
       allow(helper).to receive(:export_csv_project_merge_requests_path).and_return('/csv-url')
@@ -400,35 +402,32 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
   end
 
-  describe '#diffs_stream_url' do
-    let_it_be(:offset) { 5 }
-    let(:merge_request) { create(:merge_request_with_diffs) }
-    let(:id) { merge_request.iid }
-    let(:project_id) { merge_request.project.to_param }
-    let(:namespace_id) { merge_request.project.namespace.to_param }
-    let(:diff_view) { :inline }
+  describe '#show_mr_dashboard_banner?' do
+    include ApplicationHelper
 
-    subject { diffs_stream_url(merge_request, offset, diff_view) }
+    using RSpec::Parameterized::TableSyntax
 
-    it 'returns diffs stream url with offset' do
-      url = "/#{namespace_id}/#{project_id}/-/merge_requests/#{id}/diffs_stream?offset=#{offset}&view=inline"
-      expect(subject).to eq(url)
+    where(:query_string, :feature_flag_enabled, :search_page, :user_dismissed, :should_show) do
+      { assignee_user: 'test' } | true  | true  | false | true
+      { assignee_user: 'test' } | false | true  | false | false
+      { assignee_user: 'test' } | false | false | false | false
+      { assignee_user: 'test' } | false | false | true  | false
+      nil                       | false | false | false | false
     end
 
-    context 'when view is set to parallel' do
-      let_it_be(:diff_view) { :parallel }
-
-      it 'returns diffs stream url with parallel view' do
-        url = "/#{namespace_id}/#{project_id}/-/merge_requests/#{id}/diffs_stream?offset=#{offset}&view=parallel"
-        expect(subject).to eq(url)
+    with_them do
+      before do
+        stub_feature_flags(merge_request_dashboard: feature_flag_enabled)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive(:user_dismissed?)
+          .with(Users::CalloutsHelper::NEW_MR_DASHBOARD_BANNER).and_return(user_dismissed)
+        allow(helper).to receive(:request).and_return(double(query_string: query_string))
+        allow(helper).to receive(:current_page?)
+          .with(Gitlab::Routing.url_helpers.merge_requests_search_dashboard_path).and_return(search_page)
       end
-    end
 
-    context 'when offset is greater than the number of diffs' do
-      let_it_be(:offset) { 9999 }
-
-      it 'returns nil' do
-        expect(subject).to eq(nil)
+      it do
+        expect(helper.show_mr_dashboard_banner?).to eq(should_show)
       end
     end
   end

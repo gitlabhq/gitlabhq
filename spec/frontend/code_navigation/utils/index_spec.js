@@ -62,6 +62,19 @@ describe('addInteractionClass', () => {
     },
   );
 
+  describe('when end_char exists', () => {
+    it('wraps part of a word with code navigation element', () => {
+      addInteractionClass({
+        path: 'index.js',
+        d: { start_line: 0, start_char: 0, end_char: 5, end_line: 0 },
+      });
+
+      expect(document.querySelectorAll(`#LC1 span`)[0].outerHTML).toEqual(
+        '<span><span data-char-index="0" data-line-index="0" class="gl-cursor-pointer code-navigation js-code-navigation">conso</span>le</span>',
+      );
+    });
+  });
+
   describe('wrapTextNodes', () => {
     beforeEach(() => {
       setHTMLFixture(

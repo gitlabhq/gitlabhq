@@ -1,0 +1,13 @@
+---
+description: Tracks when a user selects a package file for deletion.
+action: select_package_file
+product_group: package_registry
+milestone: '15.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93169
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

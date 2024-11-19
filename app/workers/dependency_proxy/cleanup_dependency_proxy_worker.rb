@@ -5,7 +5,7 @@ module DependencyProxy
     include ApplicationWorker
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
-    data_consistency :always
+    data_consistency :sticky
     idempotent!
 
     feature_category :virtual_registry

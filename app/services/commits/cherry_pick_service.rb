@@ -39,7 +39,7 @@ module Commits
 
       ::SystemNotes::MergeRequestsService.new(
         noteable: merge_request,
-        project: project,
+        container: project,
         author: current_user
       ).picked_into_branch(@branch_name, pick_sha)
     end

@@ -23,7 +23,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     project.add_guest(guest)
     create_default(:owner)
     create_default(:user)
-    create_default(:ci_trigger_request)
+    create_default(:ci_trigger_request, project_id: project.id)
     create_default(:ci_stage)
   end
 
@@ -182,7 +182,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
         json_response.dig('pipeline', 'details', 'stages').tap do |stages|
           expect(stages.flat_map(&:keys))
-            .to eq %w[name title status path dropdown_path]
+            .to eq %w[name id title status path dropdown_path]
         end
       end
 

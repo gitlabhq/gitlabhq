@@ -11,7 +11,7 @@ module Users
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
-      @organization_id = params.delete(:organization_id)
+      @organization_params = params.slice(*organization_attributes).compact
       @identity_params = params.slice(*identity_attributes)
     end
 
@@ -19,14 +19,17 @@ module Users
       build_user
       build_identity
       build_user_detail
-      update_canonical_email
 
       user
     end
 
     private
 
-    attr_reader :identity_params, :user_params, :user, :organization_id
+    attr_reader :identity_params, :user_params, :user, :organization_params
+
+    def organization_attributes
+      admin? ? admin_organization_attributes : signup_organization_attributes
+    end
 
     def identity_attributes
       [:extern_uid, :provider]
@@ -39,9 +42,8 @@ module Users
         standard_build_user
       end
 
-      organization = Organizations::Organization.find_by_id(organization_id) if organization_id
-
-      user.assign_personal_namespace(organization)
+      assign_organization
+      assign_personal_namespace
     end
 
     def admin?
@@ -72,6 +74,27 @@ module Users
       assign_common_user_params
 
       @user = User.new(user_params)
+    end
+
+    def organization_access_level
+      return organization_params[:organization_access_level] if organization_params.has_key?(:organization_access_level)
+
+      Organizations::OrganizationUser.default_organization_access_level(user_is_admin: @user.admin?)
+    end
+
+    def assign_organization
+      # Allow invalid parameters for the validation errors to bubble up to the User.
+      return if organization_params.blank?
+
+      @user.organization_users << Organizations::OrganizationUser.new(
+        organization_id: organization_params[:organization_id],
+        access_level: organization_access_level
+      )
+    end
+
+    def assign_personal_namespace
+      organization = Organizations::Organization.find_by_id(organization_params[:organization_id])
+      user.assign_personal_namespace(organization)
     end
 
     def assign_common_user_params
@@ -147,10 +170,6 @@ module Users
       user.user_detail
     end
 
-    def update_canonical_email
-      Users::UpdateCanonicalEmailService.new(user: user).execute
-    end
-
     # Allowed params for creating a user (admins only)
     def admin_create_params
       [
@@ -190,6 +209,10 @@ module Users
       ]
     end
 
+    def admin_organization_attributes
+      [:organization_id, :organization_access_level]
+    end
+
     # Allowed params for user signup
     def signup_params
       [
@@ -203,6 +226,10 @@ module Users
         :first_name,
         :last_name
       ]
+    end
+
+    def signup_organization_attributes
+      [:organization_id]
     end
   end
 end

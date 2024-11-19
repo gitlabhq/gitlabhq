@@ -28,6 +28,7 @@ export default (function initInviteMembersModal() {
           overageMembersModalAvailable: parseBoolean(el.dataset.overageMembersModalAvailable),
           hasGitlabSubscription: parseBoolean(el.dataset.hasGitlabSubscription),
           addSeatsHref: el.dataset.addSeatsHref,
+          hasBsoEnabled: parseBoolean(el.dataset.hasBsoFeatureEnabled),
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {

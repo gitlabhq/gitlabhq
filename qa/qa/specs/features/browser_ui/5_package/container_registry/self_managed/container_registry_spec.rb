@@ -27,7 +27,7 @@ module QA
           project: project)
       end
 
-      let(:personal_access_token) { Runtime::Env.personal_access_token }
+      let(:personal_access_token) { Runtime::UserStore.default_api_client.personal_access_token }
 
       before do
         Flow::Login.sign_in

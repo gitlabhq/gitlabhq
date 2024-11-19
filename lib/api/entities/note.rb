@@ -44,7 +44,7 @@ module API
     # To be returned if the note was command-only
     class NoteCommands < Grape::Entity
       expose(:commands_changes) { |note| note.commands_changes || {} }
-      expose(:summary) { |note| note.errors[:commands_only] }
+      expose(:summary) { |note| note.quick_actions_status.messages }
     end
   end
 end

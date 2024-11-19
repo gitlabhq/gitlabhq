@@ -132,12 +132,6 @@ result in a `Key is still referenced from table ...` error and updating the
 partition column on the source table would raise a
 `Key is not present in table ...` error.
 
-This migration can be automatically generated using:
-
-```shell
-./scripts/partitioning/generate-fk --source source_table_name --target target_table_name
-```
-
 ### Step 5 - Swap primary key
 
 Swap the primary key including the partitioning key column. This can be done only after

@@ -1,34 +1,30 @@
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
-import AttachmentsWarning from '~/notes/components/attachments_warning.vue';
 import EmailParticipantsWarning from '~/notes/components/email_participants_warning.vue';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 
 describe('Comment Field Layout Component', () => {
   let wrapper;
 
-  const LOCKED_DISCUSSION_DOCS_PATH = 'docs/locked/path';
-  const CONFIDENTIAL_ISSUES_DOCS_PATH = 'docs/confidential/path';
+  const lockedDiscussionDocsPath = 'docs/locked/path';
+  const confidentialIssuesDocsPath = 'docs/confidential/path';
+  const noteWithAttachment =
+    'Have a look at this! ![image](/uploads/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/image.jpg)';
+  const attachmentMessage =
+    'Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members.';
+  const confidentialAttachmentMessage =
+    'Uploaded files will be accessible to anyone with the file URL. Use caution when sharing file URLs.';
 
   const noteableDataMock = {
     confidential: false,
     discussion_locked: false,
-    locked_discussion_docs_path: LOCKED_DISCUSSION_DOCS_PATH,
-    confidential_issues_docs_path: CONFIDENTIAL_ISSUES_DOCS_PATH,
-  };
-
-  const commentFieldWithAttachmentData = {
-    noteableData: {
-      ...noteableDataMock,
-      issue_email_participants: [{ email: 'someone@gitlab.com' }, { email: 'another@gitlab.com' }],
-    },
-    containsLink: true,
+    locked_discussion_docs_path: lockedDiscussionDocsPath,
+    confidential_issues_docs_path: confidentialIssuesDocsPath,
   };
 
   const findIssuableNoteWarning = () => wrapper.findComponent(NoteableWarning);
   const findEmailParticipantsWarning = () => wrapper.findComponent(EmailParticipantsWarning);
-  const findAttachmentsWarning = () => wrapper.findComponent(AttachmentsWarning);
   const findErrorAlert = () => wrapper.findByTestId('comment-field-alert-container');
 
   const createWrapper = (props = {}) => {
@@ -79,8 +75,8 @@ describe('Comment Field Layout Component', () => {
       expect(findIssuableNoteWarning().props()).toMatchObject({
         isLocked: false,
         isConfidential: true,
-        lockedNoteableDocsPath: LOCKED_DISCUSSION_DOCS_PATH,
-        confidentialNoteableDocsPath: CONFIDENTIAL_ISSUES_DOCS_PATH,
+        lockedNoteableDocsPath: lockedDiscussionDocsPath,
+        confidentialNoteableDocsPath: confidentialIssuesDocsPath,
       });
     });
   });
@@ -100,29 +96,38 @@ describe('Comment Field Layout Component', () => {
       expect(findIssuableNoteWarning().props()).toMatchObject({
         isConfidential: false,
         isLocked: true,
-        lockedNoteableDocsPath: LOCKED_DISCUSSION_DOCS_PATH,
-        confidentialNoteableDocsPath: CONFIDENTIAL_ISSUES_DOCS_PATH,
+        lockedNoteableDocsPath: lockedDiscussionDocsPath,
+        confidentialNoteableDocsPath: confidentialIssuesDocsPath,
       });
     });
   });
 
   describe('issue has no email participants', () => {
-    it('does not show EmailParticipantsWarning', () => {
+    beforeEach(() => {
       createWrapper();
+    });
 
+    it('does not show EmailParticipantsWarning', () => {
       expect(findEmailParticipantsWarning().exists()).toBe(false);
     });
 
     it('does not show AttachmentWarning', () => {
-      createWrapper();
-
-      expect(findAttachmentsWarning().exists()).toBe(false);
+      expect(wrapper.text()).not.toContain(attachmentMessage);
     });
   });
 
   describe('issue has email participants', () => {
     beforeEach(() => {
-      createWrapper(commentFieldWithAttachmentData);
+      createWrapper({
+        note: noteWithAttachment,
+        noteableData: {
+          ...noteableDataMock,
+          issue_email_participants: [
+            { email: 'someone@gitlab.com' },
+            { email: 'another@gitlab.com' },
+          ],
+        },
+      });
     });
 
     it('shows EmailParticipantsWarning', () => {
@@ -130,7 +135,7 @@ describe('Comment Field Layout Component', () => {
     });
 
     it('shows AttachmentsWarning', () => {
-      expect(findAttachmentsWarning().isVisible()).toBe(true);
+      expect(wrapper.text()).toContain(attachmentMessage);
     });
 
     it('sets EmailParticipantsWarning props', () => {
@@ -152,6 +157,48 @@ describe('Comment Field Layout Component', () => {
       });
 
       expect(findEmailParticipantsWarning().exists()).toBe(false);
+    });
+  });
+
+  describe('file attachments', () => {
+    describe('when issue is confidential', () => {
+      it('shows confidential attachment message', () => {
+        createWrapper({
+          note: noteWithAttachment,
+          noteableData: {
+            ...noteableDataMock,
+            confidential: true,
+          },
+        });
+
+        expect(wrapper.text()).toContain(confidentialAttachmentMessage);
+      });
+    });
+
+    describe('when note is internal', () => {
+      it('shows confidential attachment message', () => {
+        createWrapper({
+          note: noteWithAttachment,
+          isInternalNote: true,
+        });
+
+        expect(wrapper.text()).toContain(confidentialAttachmentMessage);
+      });
+    });
+
+    describe('when note is neither confidential nor internal', () => {
+      it('does not show confidential attachment message', () => {
+        createWrapper({
+          note: noteWithAttachment,
+          noteableData: {
+            ...noteableDataMock,
+            confidential: false,
+          },
+          isInternalNote: false,
+        });
+
+        expect(wrapper.text()).not.toContain(confidentialAttachmentMessage);
+      });
     });
   });
 });

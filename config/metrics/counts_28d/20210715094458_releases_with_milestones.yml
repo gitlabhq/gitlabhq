@@ -14,7 +14,7 @@ data_category: optional
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

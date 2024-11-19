@@ -8,7 +8,7 @@ class CleanupCiPipelineChatDataPipelineIdBigint < Gitlab::Database::Migration[2.
 
   def up
     with_lock_retries(raise_on_exhaustion: true) do
-      cleanup_conversion_of_integer_to_bigint(TABLE, COLUMNS) # rubocop:disable Migration/WithLockRetriesDisallowedMethod
+      cleanup_conversion_of_integer_to_bigint(TABLE, COLUMNS)
     end
   end
 

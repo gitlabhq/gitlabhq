@@ -9,7 +9,7 @@
     .form-group
       = f.label :commit_email_hostname, _('Custom hostname (for private commit emails)'), class: 'label-bold'
       = f.text_field :commit_email_hostname, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         - commit_email_hostname_docs_link = link_to _('Learn more'), help_page_path('administration/settings/email.md', anchor: 'custom-hostname-for-private-commit-emails'), target: '_blank', rel: 'noopener noreferrer'
         = _("Hostname used in private commit emails. %{learn_more}").html_safe % { learn_more: commit_email_hostname_docs_link }
 
@@ -21,7 +21,13 @@
     .form-group
       = f.label :deactivation_email_additional_text, _('Additional text for deactivation email')
       = f.text_area :deactivation_email_additional_text, class: 'form-control gl-form-input', rows: 4
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Text added to the body of user deactivation email messages. 1000 character limit.')
+
+    - if Feature.enabled?(:pat_expiry_inherited_members_notification, :instance)
+      .form-group
+        = f.label :resource_token_expiry_inherited_members, _('Expiry notification emails about group and project access tokens should be sent to:')
+        = f.gitlab_ui_radio_component :resource_token_expiry_inherited_members, true, _('All direct and inherited members of the group or project')
+        = f.gitlab_ui_radio_component :resource_token_expiry_inherited_members, false, _('Only direct members of the group or project')
 
   = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-changes-button' }

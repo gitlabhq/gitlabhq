@@ -38,6 +38,8 @@ module Projects
         params.symbolize_keys!
         relation_export = Projects::ImportExport::RelationExport.find(project_relation_export_id)
 
+        log_extra_metadata_on_done(:relation, relation_export.relation)
+
         relation_export.retry! if relation_export.started?
 
         if relation_export.queued?

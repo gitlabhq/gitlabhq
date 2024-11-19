@@ -113,6 +113,7 @@ To enable the agent server on multiple nodes:
    - Optional. By default, kas uses the `grpc` scheme. If you use TLS on the private API endpoint, configure `OWN_PRIVATE_API_SCHEME=grpcs`.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Optional. If you use a multi-server environment with separate GitLab Rails and Sidekiq nodes, enable the agent server on the Sidekiq nodes.
 
 ##### Agent server node settings
 

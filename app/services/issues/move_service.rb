@@ -4,6 +4,8 @@ module Issues
   class MoveService < Issuable::Clone::BaseService
     extend ::Gitlab::Utils::Override
 
+    BATCH_SIZE = 100
+
     MoveError = Class.new(StandardError)
 
     def execute(issue, target_project, move_any_issue_type = false)
@@ -91,7 +93,7 @@ module Issues
     def update_old_entity
       super
 
-      rewrite_related_issues
+      recreate_related_issues
       mark_as_moved
     end
 
@@ -154,12 +156,33 @@ module Issues
       original_entity.update(moved_to: new_entity)
     end
 
-    def rewrite_related_issues
+    def recreate_related_issues
       source_issue_links = IssueLink.for_source(original_entity)
-      source_issue_links.update_all(source_id: new_entity.id)
-
       target_issue_links = IssueLink.for_target(original_entity)
-      target_issue_links.update_all(target_id: new_entity.id)
+
+      source_issue_links.each_batch(of: BATCH_SIZE) do |links_batch|
+        new_links = new_links(links_batch, reference_attribute: 'source_id')
+        ::IssueLink.insert_all!(new_links) if new_links.any?
+      end
+
+      target_issue_links.each_batch(of: BATCH_SIZE) do |links_batch|
+        new_links = new_links(links_batch, reference_attribute: 'target_id')
+        ::IssueLink.insert_all!(new_links) if new_links.any?
+      end
+
+      source_issue_links.each_batch(of: BATCH_SIZE) do |links_batch|
+        links_batch.delete_all
+      end
+
+      target_issue_links.each_batch(of: BATCH_SIZE) do |links_batch|
+        links_batch.delete_all
+      end
+    end
+
+    def new_links(links_batch, reference_attribute:)
+      links_batch.map do |link|
+        link.attributes.except('id', 'namespace_id').merge(reference_attribute => new_entity.id)
+      end
     end
 
     def copy_contacts

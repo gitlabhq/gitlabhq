@@ -4,7 +4,7 @@ require 'rspec-parameterized'
 
 require_relative '../../sidekiq_cluster/sidekiq_cluster'
 
-RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/SpecFilePathFormat
   describe '.start' do
     it 'starts Sidekiq with the given queues, environment and options' do
       process_options = {

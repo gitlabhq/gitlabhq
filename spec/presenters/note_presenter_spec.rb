@@ -20,13 +20,13 @@ RSpec.describe NotePresenter, feature_category: :team_planning do
   describe '#note' do
     subject { presenter.note }
 
-    it_behaves_like 'a note content field with obfuscated email address'
+    it_behaves_like 'a field with obfuscated email address'
   end
 
   describe '#note_html' do
     subject { presenter.note_html }
 
-    it_behaves_like 'a note content field with obfuscated email address'
+    it_behaves_like 'a field with obfuscated email address'
 
     it 'runs post processing pipeline' do
       # Ensure post process pipeline runs
@@ -35,5 +35,15 @@ RSpec.describe NotePresenter, feature_category: :team_planning do
 
       is_expected.to include(obfuscated_email)
     end
+  end
+
+  describe '#external_author' do
+    let!(:note_text) { "note body" }
+    let!(:note) { build(:note, :system, author: Users::Internal.support_bot, note: note_text) }
+    let!(:note_metadata) { build(:note_metadata, note: note) }
+
+    subject { presenter.external_author }
+
+    it_behaves_like 'a field with obfuscated email address'
   end
 end

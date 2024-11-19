@@ -111,7 +111,7 @@ export default {
         />
       </li>
     </ul>
-    <p v-else class="multi-file-commit-list form-text gl-text-center gl-text-gray-600">
+    <p v-else class="multi-file-commit-list form-text gl-text-center gl-text-subtle">
       {{ emptyStateText }}
     </p>
     <gl-modal

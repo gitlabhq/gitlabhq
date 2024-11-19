@@ -28,5 +28,38 @@ RSpec.describe Admin::DashboardController do
         expect(response.body).not_to match(pending_delete_project.name)
       end
     end
+
+    describe 'GitLab KAS', feature_category: :deployment_management do
+      before do
+        allow(Gitlab::Kas).to receive(:enabled?).and_return(enabled)
+      end
+
+      context 'with kas enabled' do
+        let(:enabled) { true }
+
+        before do
+          response = instance_double(Gitlab::Agent::ServerInfo::ServerInfo)
+          allow_next_instance_of(Gitlab::Kas::Client) do |instance|
+            allow(instance).to receive(:get_server_info).and_return(response)
+          end
+        end
+
+        it 'retrieves and displays kas version' do
+          get :index
+
+          expect(assigns[:kas_server_info]).to be_present
+        end
+      end
+
+      context 'with kas disabled' do
+        let(:enabled) { false }
+
+        it 'does not retrieve kas source' do
+          get :index
+
+          expect(assigns[:kas_server_info]).to be_nil
+        end
+      end
+    end
   end
 end

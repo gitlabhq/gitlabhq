@@ -31,6 +31,10 @@ module API
                     content_type: action_params[:content_type],
                     content_disposition: 'inline'
                   )
+                when :download_digest
+                  content_type 'text/plain'
+                  env['api.format'] = :binary # to return data as-is
+                  body action_params[:digest]
                 end
               end
 
@@ -38,7 +42,7 @@ module API
                 case service_response.reason
                 when :unauthorized
                   unauthorized!
-                when :file_not_found_on_upstreams
+                when :file_not_found_on_upstreams, :digest_not_found_in_cached_responses
                   not_found!(service_response.message)
                 else
                   bad_request!(service_response.message)
@@ -79,6 +83,12 @@ module API
                 env['api.format'] = :binary
                 content_type 'application/octet-stream'
                 status :ok
+                body ''
+              end
+
+              def ok_empty_response
+                status :ok
+                env['api.format'] = :binary # to return data as-is
                 body ''
               end
             end

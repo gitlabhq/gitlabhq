@@ -20,6 +20,8 @@ This process is meant to ensure consistent and valid metrics defined for Service
 - Have a unique `key_path` .
 - Have an owner.
 
+We currently have `tier` as one of the required fields for a metric definition file, however, we are now moving towards replacing `tier` with `tiers`, for this purpose it is valid to add `tiers` as a field in the metric definition files. Until the replacement process is complete, both `tier` and `tiers` would be valid fields that can be added to the metric definition files.
+
 All metrics are stored in YAML files:
 
 - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
@@ -43,6 +45,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `distribution`               | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. |
 | `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau`, `customer_health_score` or `devops_report`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
 | `tier`                       | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
+| `tiers`                       | no      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tiers](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `milestone`                  | yes      | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
 | `milestone_removed`          | no       | The milestone when the metric is removed. Required for removed metrics. |
 | `introduced_by_url`          | yes      | The URL to the merge request that introduced the metric to be available for self-managed instances. |
@@ -127,6 +130,10 @@ distribution:
 - ce
 - ee
 tier:
+- free
+- premium
+- ultimate
+tiers:
 - free
 - premium
 - ultimate

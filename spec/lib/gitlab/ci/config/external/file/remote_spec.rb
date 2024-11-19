@@ -191,16 +191,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       it 'returns an error message describing invalid address' do
         expect(subject).to eq('Remote file `not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/?[MASKED]xxx.yml` does not have a valid address!')
       end
-
-      context 'when consistent_ci_variable_masking feature is disabled' do
-        before do
-          stub_feature_flags(consistent_ci_variable_masking: false)
-        end
-
-        it 'returns an error message describing invalid address with the variable masked in the old style' do
-          expect(subject).to eq('Remote file `not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/?xxxxxxxxxxx.yml` does not have a valid address!')
-        end
-      end
     end
 
     context 'when timeout error has been raised' do
@@ -210,16 +200,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
       it 'returns error message about a timeout' do
         expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched because of a timeout error!')
-      end
-
-      context 'when consistent_ci_variable_masking feature is disabled' do
-        before do
-          stub_feature_flags(consistent_ci_variable_masking: false)
-        end
-
-        it 'returns error message about a timeout with the variable masked in the old style' do
-          expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml` could not be fetched because of a timeout error!')
-        end
       end
     end
 
@@ -231,16 +211,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       it 'returns error message about a HTTP error' do
         expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched because of HTTP error!')
       end
-
-      context 'when consistent_ci_variable_masking feature is disabled' do
-        before do
-          stub_feature_flags(consistent_ci_variable_masking: false)
-        end
-
-        it 'returns error message about a HTTP error with the variable masked in the old style' do
-          expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml` could not be fetched because of HTTP error!')
-        end
-      end
     end
 
     context 'when response has 404 status' do
@@ -250,16 +220,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
       it 'returns error message about a timeout' do
         expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched because of HTTP code `404` error!')
-      end
-
-      context 'when consistent_ci_variable_masking feature is disabled' do
-        before do
-          stub_feature_flags(consistent_ci_variable_masking: false)
-        end
-
-        it 'returns error message about a timeout with the variable masked in the old style' do
-          expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml` could not be fetched because of HTTP code `404` error!')
-        end
       end
     end
 
@@ -314,24 +274,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         extra: {}
       )
     }
-
-    context 'when consistent_ci_variable_masking feature is disabled' do
-      before do
-        stub_feature_flags(consistent_ci_variable_masking: false)
-      end
-
-      it {
-        is_expected.to eq(
-          context_project: nil,
-          context_sha: '12345',
-          type: :remote,
-          location: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml',
-          raw: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml',
-          blob: nil,
-          extra: {}
-        )
-      }
-    end
   end
 
   describe '#to_hash' do

@@ -18,6 +18,7 @@ const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree))/${ref}/(.*
 export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {
   const url = new URL(window.location.href);
   const currentPath = url.pathname;
+  const encodedHash = '%23';
   let refType = null;
   let namespace = '/-/tree';
   let target;
@@ -38,7 +39,12 @@ export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {
   if (match) {
     [, namespace, , target] = match;
   }
-  url.pathname = joinPaths(projectRootPath, namespace, actualRef, target);
+  url.pathname = joinPaths(
+    projectRootPath,
+    namespace,
+    encodeURI(actualRef).replace(/#/g, encodedHash),
+    target,
+  );
 
   return url.toString();
 }

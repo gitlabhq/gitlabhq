@@ -44,6 +44,8 @@ module FastSpecHelper
         mocks.verify_doubled_constant_names = false # Allow mocking of non-lib module/class names from Rails
       end
     end
+
+    Time.zone = 'UTC' # rubocop:disable Gitlab/ChangeTimezone -- allow Time.zone to not be nil in fast_spec_helper, so Time.zone.now works
   end
 
   def self.domain_specific_spec_helper_support

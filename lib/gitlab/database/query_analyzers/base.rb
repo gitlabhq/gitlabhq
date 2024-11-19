@@ -33,6 +33,19 @@ module Gitlab
           attr_writer :suppress_in_rspec
         end
 
+        # During database decomposition, db migrations using tables that will be decomposed
+        # will begin to contravene their configuration for intended gitlab_schema and database connection.
+        # As these migrations already exist, ideally they should be finalized and removed prior to decomposition.
+        # In this situations, it's necessary to suppress warnings related to their incorrect connection and schema
+        # to progress our CI pipelines.
+        def self.suppress_schema_issues_for_decomposed_tables
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+            Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+              yield
+            end
+          end
+        end
+
         def self.with_suppressed(value = true, &blk)
           previous = self.suppressed?
           self.suppress = value

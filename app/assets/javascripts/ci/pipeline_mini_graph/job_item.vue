@@ -48,7 +48,7 @@ export default {
 };
 </script>
 <template>
-  <gl-disclosure-dropdown-item :item="item" class="ci-job-component">
+  <gl-disclosure-dropdown-item :item="item" class="ci-job-component" data-testid="job-item">
     <template #list-item>
       <div class="-gl-my-2 gl-flex gl-h-6">
         <job-name-component
@@ -57,6 +57,7 @@ export default {
           :title="tooltipText"
           :name="job.name"
           :status="status"
+          data-testid="job-name"
         />
         <job-action-button
           v-if="hasJobAction"

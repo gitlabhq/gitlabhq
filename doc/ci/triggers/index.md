@@ -88,7 +88,7 @@ In each example, replace:
 
 ### Use a CI/CD job
 
-You can use a CI/CD job with a pipeline triggers token to trigger pipelines when another pipeline
+You can use a CI/CD job with a pipeline trigger token to trigger pipelines when another pipeline
 runs.
 
 For example, to trigger a pipeline on the `main` branch of `project-B` when a tag
@@ -150,7 +150,7 @@ The parameter is of the form `variables[key]=value`, for example:
 curl --request POST \
      --form token=TOKEN \
      --form ref=main \
-     --form variables[UPLOAD_TO_S3]="true" \
+     --form "variables[UPLOAD_TO_S3]=true" \
      "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"
 ```
 

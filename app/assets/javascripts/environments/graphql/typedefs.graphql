@@ -127,6 +127,10 @@ type K8sEvent {
   type: String
 }
 
+type k8sWatcher {
+  watcher: JSON
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -151,6 +155,12 @@ extend type Query {
     namespace: String
     involvedObjectName: String
   ): [K8sEvent]
+  k8sPodLogsWatcher(
+    configuration: LocalConfiguration
+    namespace: String
+    podName: String
+    containerName: String
+  ): k8sWatcher
 }
 
 input ResourceTypeParam {
@@ -177,5 +187,11 @@ extend type Mutation {
     configuration: LocalConfiguration
     namespace: String
     podName: String
+  ): LocalErrors
+  abortPodLogsStream(
+    configuration: LocalConfiguration
+    namespace: String
+    podName: String
+    containerName: String
   ): LocalErrors
 }

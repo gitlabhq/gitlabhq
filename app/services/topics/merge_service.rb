@@ -31,6 +31,11 @@ module Topics
     def validate_parameters!
       raise ArgumentError, _('The source topic is not a topic.') unless source_topic.is_a?(Projects::Topic)
       raise ArgumentError, _('The target topic is not a topic.') unless target_topic.is_a?(Projects::Topic)
+
+      if source_topic.organization_id != target_topic.organization_id
+        raise ArgumentError, _('The source topic and the target topic must belong to the same organization.')
+      end
+
       raise ArgumentError, _('The source topic and the target topic are identical.') if source_topic == target_topic
     end
 

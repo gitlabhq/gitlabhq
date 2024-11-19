@@ -19,6 +19,7 @@ RSpec.describe Ci::JobTokenScope::RemoveGroupService, feature_category: :continu
     it 'removes the group from the scope' do
       expect do
         expect(result).to be_success
+        expect(result.payload).to eq(link)
       end.to change { Ci::JobToken::GroupScopeLink.count }.by(-1)
     end
   end

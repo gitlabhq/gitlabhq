@@ -1,0 +1,13 @@
+---
+description: Tracks when the user views error details.
+action: view_error_details
+product_group: platform_insights
+milestone: '16.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121259
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

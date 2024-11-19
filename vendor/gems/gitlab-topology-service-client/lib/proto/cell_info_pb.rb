@@ -5,16 +5,21 @@ require 'google/protobuf'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("proto/cell_info.proto", :syntax => :proto3) do
+    add_message "gitlab.cells.topology_service.SequenceRange" do
+      optional :minval, :int64, 1, json_name: "minval"
+      optional :maxval, :int64, 2, json_name: "maxval"
+    end
     add_message "gitlab.cells.topology_service.CellInfo" do
-      optional :id, :int64, 1
-      optional :name, :string, 2
-      optional :address, :string, 3
-      optional :session_prefix, :string, 4
+      optional :id, :int64, 1, json_name: "id"
+      optional :name, :string, 2, json_name: "name"
+      optional :address, :string, 3, json_name: "address"
+      optional :session_prefix, :string, 4, json_name: "sessionPrefix"
+      optional :sequence_range, :message, 5, "gitlab.cells.topology_service.SequenceRange", json_name: "sequenceRange"
     end
     add_message "gitlab.cells.topology_service.GetCellsRequest" do
     end
     add_message "gitlab.cells.topology_service.GetCellsResponse" do
-      repeated :cells, :message, 1, "gitlab.cells.topology_service.CellInfo"
+      repeated :cells, :message, 1, "gitlab.cells.topology_service.CellInfo", json_name: "cells"
     end
   end
 end
@@ -22,6 +27,7 @@ end
 module Gitlab
   module Cells
     module TopologyService
+      SequenceRange = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.SequenceRange").msgclass
       CellInfo = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.CellInfo").msgclass
       GetCellsRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.GetCellsRequest").msgclass
       GetCellsResponse = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.GetCellsResponse").msgclass

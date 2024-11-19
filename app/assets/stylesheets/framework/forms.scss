@@ -120,7 +120,7 @@ label {
     background: var(--gl-control-background-color-default);
     border-color: var(--gl-control-border-color-default);
     @apply gl-text-default;
-    @include gl-focus;
+    @apply gl-focus;
   }
 }
 
@@ -156,7 +156,7 @@ label {
   }
 }
 
-.form-text.text-muted {
+.form-text {
   margin-bottom: 0;
   margin-top: #{$grid-size / 2};
   font-size: $gl-font-size;
@@ -204,10 +204,6 @@ label {
   .gl-field-error-message {
     color: $red-500;
   }
-
-  .gl-field-hint {
-    color: $gl-text-color;
-  }
 }
 
 .show-password-complexity-errors {
@@ -239,11 +235,6 @@ label {
   color: $gray-400;
 }
 
-.input-md {
-  max-width: $input-md-width;
-  width: 100%;
-}
-
 .input-lg {
   max-width: $input-lg-width;
   width: 100%;
@@ -269,5 +260,5 @@ label {
 
 .add-issuable-form-input-wrapper.focus,
 .issue-token-remove-button:focus {
-  @include gl-focus;
+  @apply gl-focus;
 }

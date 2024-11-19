@@ -149,7 +149,9 @@ export default {
   cancelProps: {
     text: __('Cancel'),
   },
-  docsPath: helpPagePath('ci/environments/index.md', { anchor: 'retry-or-roll-back-a-deployment' }),
+  docsPath: helpPagePath('ci/environments/deployments.md', {
+    anchor: 'retry-or-roll-back-a-deployment',
+  }),
 };
 </script>
 <template>

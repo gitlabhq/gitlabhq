@@ -11,8 +11,10 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   before_action :ensure_token_granted!, only: [:blob, :manifest]
   before_action :ensure_feature_enabled!
 
-  before_action :verify_workhorse_api!, only: [:authorize_upload_blob, :upload_blob, :authorize_upload_manifest, :upload_manifest]
-  skip_before_action :verify_authenticity_token, only: [:authorize_upload_blob, :upload_blob, :authorize_upload_manifest, :upload_manifest]
+  before_action :verify_workhorse_api!,
+    only: [:authorize_upload_blob, :upload_blob, :authorize_upload_manifest, :upload_manifest]
+  skip_before_action :verify_authenticity_token,
+    only: [:authorize_upload_blob, :upload_blob, :authorize_upload_manifest, :upload_manifest]
 
   attr_reader :token
 
@@ -51,7 +53,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   def authorize_upload_blob
     set_workhorse_internal_api_content_type
 
-    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false, maximum_size: DependencyProxy::Blob::MAX_FILE_SIZE)
+    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false,
+      maximum_size: DependencyProxy::Blob::MAX_FILE_SIZE)
   end
 
   def upload_blob
@@ -70,7 +73,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   def authorize_upload_manifest
     set_workhorse_internal_api_content_type
 
-    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false, maximum_size: DependencyProxy::Manifest::MAX_FILE_SIZE)
+    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false,
+      maximum_size: DependencyProxy::Manifest::MAX_FILE_SIZE)
   end
 
   def upload_manifest

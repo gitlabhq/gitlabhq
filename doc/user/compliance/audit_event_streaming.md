@@ -24,7 +24,10 @@ With audit event streaming for top-level groups, group owners can:
 - Manage their audit logs in third-party systems. Any service that can receive structured JSON data can be used as the
   streaming destination.
 
-Each streaming destination can have up to 20 custom HTTP headers included with each streamed event.
+Each streaming destination:
+
+- Can have up to 20 custom HTTP headers included with each streamed event.
+- For GitLab.com, must allow traffic from the [GitLab.com IP address range](../gitlab_com/index.md#ip-range).
 
 GitLab can stream a single event more than once to the same destination. Use the `id` key in the payload to deduplicate
 incoming data.

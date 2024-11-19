@@ -10,43 +10,40 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token) }
-  let(:token) { nil }
-  let(:params) { { token: token } }
+  let(:plaintext) { nil }
+  let(:params) { { token: plaintext } }
 
   subject(:post_token) { post(api(url, api_user, admin_mode: true), params: params) }
 
   describe 'POST /admin/token' do
     context 'when the user is an admin' do
-      context 'with personal access token' do
-        let(:token) { personal_access_token.token }
-
-        it 'returns info about the token' do
-          post_token
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['id']).to eq(personal_access_token.id)
+      context 'with a valid token' do
+        where(:token, :plaintext) do
+          [
+            [ref(:personal_access_token), lazy { personal_access_token.token }],
+            [ref(:deploy_token), lazy { deploy_token.token }],
+            [ref(:user), lazy { user.feed_token }]
+          ]
         end
-      end
 
-      context 'with deploy token' do
-        let(:token) { deploy_token.token }
+        with_them do
+          it 'returns info about the token' do
+            post_token
 
-        it 'returns info about the token' do
-          post_token
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['id']).to eq(deploy_token.id)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['id']).to eq(token.id)
+          end
         end
       end
 
       context 'with non-existing token' do
-        let(:token) { "#{personal_access_token.token}-non-existing" }
+        let(:plaintext) { "#{personal_access_token.token}-non-existing" }
 
         it_behaves_like 'returning response status', :not_found
       end
 
       context 'with unsupported token type' do
-        let(:token) { 'unsupported' }
+        let(:plaintext) { 'unsupported' }
 
         it_behaves_like 'returning response status', :unprocessable_entity
       end

@@ -34,6 +34,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "value": "TEST_1",
         "protected": false,
         "masked": false,
+        "hidden": false,
         "raw": false,
         "environment_scope": "*",
         "description": null
@@ -44,6 +45,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "value": "TEST_2",
         "protected": false,
         "masked": false,
+        "hidden": false,
         "raw": false,
         "environment_scope": "*",
         "description": null
@@ -79,6 +81,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "value": "TEST_1",
     "protected": false,
     "masked": false,
+    "hidden": false,
     "raw": false,
     "environment_scope": "*",
     "description": null
@@ -86,6 +89,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 ## Create variable
+
+> - `masked_and_hidden` and `hidden` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4.
 
 Create a new variable.
 
@@ -101,6 +106,7 @@ POST /groups/:id/variables
 | `description`                         | string         | No       | The `description` of the variable; must have no more than 255 characters. Default: `null`. |
 | `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
 | `masked`                              | boolean        | No       | Whether the variable is masked. |
+| `masked_and_hidden`                   | boolean        | No       | Whether the variable is masked and hidden. Default: `false` |
 | `protected`                           | boolean        | No       | Whether the variable is protected. |
 | `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
@@ -117,6 +123,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
     "variable_type": "env_var",
     "protected": false,
     "masked": false,
+    "hidden": false,
     "raw": false,
     "environment_scope": "*",
     "description": null
@@ -159,6 +166,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
     "variable_type": "env_var",
     "protected": true,
     "masked": true,
+    "hidden": false,
     "raw": true,
     "environment_scope": "*",
     "description": null

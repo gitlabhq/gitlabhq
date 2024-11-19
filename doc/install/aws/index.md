@@ -63,7 +63,7 @@ It can take a few hours to validate a certificate provisioned through ACM. To av
 
 Below is a diagram of the recommended architecture.
 
-![AWS architecture diagram](img/aws_ha_architecture_diagram_v17_0.png)
+![Scaled down 2 Availability Zone Non-HA AWS architecture](img/aws_ha_architecture_diagram_v17_0.png)
 
 ## AWS costs
 
@@ -833,7 +833,7 @@ Because our instances are created by the auto scaling group, go back to your ins
 
 ## Health check and monitoring with Prometheus
 
-Apart from Amazon's Cloudwatch which you can enable on various services,
+Apart from Amazon CloudWatch, which you can enable on various services,
 GitLab provides its own integrated monitoring solution based on Prometheus.
 For more information about how to set it up, see
 [GitLab Prometheus](../../administration/monitoring/prometheus/index.md).

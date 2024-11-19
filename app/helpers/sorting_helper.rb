@@ -73,23 +73,6 @@ module SortingHelper
     }
   end
 
-  def groups_sort_options_hash
-    {
-      sort_value_name => sort_title_name,
-      sort_value_name_desc => sort_title_name_desc,
-      sort_value_recently_created => sort_title_recently_created,
-      sort_value_oldest_created => sort_title_oldest_created,
-      sort_value_latest_activity => sort_title_recently_updated,
-      sort_value_oldest_activity => sort_title_oldest_updated
-    }
-  end
-
-  def admin_groups_sort_options_hash
-    groups_sort_options_hash.merge(
-      sort_value_largest_group => sort_title_largest_group
-    )
-  end
-
   def milestones_sort_options_hash
     {
       sort_value_due_date_soon => sort_title_due_date_soon,
@@ -189,9 +172,21 @@ module SortingHelper
   def issuable_sort_options(viewing_issues, viewing_merge_requests)
     options = [
       { value: sort_value_priority, text: sort_title_priority, href: page_filter_path(sort: sort_value_priority) },
-      { value: sort_value_created_date, text: sort_title_created_date, href: page_filter_path(sort: sort_value_created_date) },
-      { value: sort_value_closed_date, text: sort_title_closed_date, href: page_filter_path(sort: sort_value_closed_date) },
-      { value: sort_value_recently_updated, text: sort_title_recently_updated, href: page_filter_path(sort: sort_value_recently_updated) },
+      {
+        value: sort_value_created_date,
+        text: sort_title_created_date,
+        href: page_filter_path(sort: sort_value_created_date)
+      },
+      {
+        value: sort_value_closed_date,
+        text: sort_title_closed_date,
+        href: page_filter_path(sort: sort_value_closed_date)
+      },
+      {
+        value: sort_value_recently_updated,
+        text: sort_title_recently_updated,
+        href: page_filter_path(sort: sort_value_recently_updated)
+      },
       { value: sort_value_milestone, text: sort_title_milestone, href: page_filter_path(sort: sort_value_milestone) }
     ]
 
@@ -221,15 +216,27 @@ module SortingHelper
   end
 
   def label_priority_option
-    { value: sort_value_label_priority, text: sort_title_label_priority, href: page_filter_path(sort: sort_value_label_priority) }
+    {
+      value: sort_value_label_priority,
+      text: sort_title_label_priority,
+      href: page_filter_path(sort: sort_value_label_priority)
+    }
   end
 
   def merged_option
-    { value: sort_value_merged_date, text: sort_title_merged_date, href: page_filter_path(sort: sort_value_merged_date) }
+    {
+      value: sort_value_merged_date,
+      text: sort_title_merged_date,
+      href: page_filter_path(sort: sort_value_merged_date)
+    }
   end
 
   def relative_position_option
-    { value: sort_value_relative_position, text: sort_title_relative_position, href: page_filter_path(sort: sort_value_relative_position) }
+    {
+      value: sort_value_relative_position,
+      text: sort_title_relative_position,
+      href: page_filter_path(sort: sort_value_relative_position)
+    }
   end
 
   def title_option
@@ -265,7 +272,10 @@ module SortingHelper
     sort_direction_button(url, reverse_sort, sort_value)
   end
 
-  def forks_sort_direction_button(sort_value, without = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id])
+  def forks_sort_direction_button(
+    sort_value,
+    without = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
+  )
     reverse_sort = forks_reverse_sort_options_hash[sort_value]
     url = page_filter_path(sort: reverse_sort, without: without)
 

@@ -3,7 +3,8 @@ key_path: database.mode
 description: What PostgreSQL database mode is used. Possible values are
   "single-database", "single-database-ci-connection", or "multiple-databases"
 product_group: database
-product_category: database
+product_categories:
+- database
 value_type: string
 status: active
 milestone: "15.11"
@@ -15,7 +16,7 @@ data_category: optional
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

@@ -1,0 +1,15 @@
+---
+description: Tracks when a blob is pulled from cache in the container registry
+action: pull_blob_from_cache
+identifiers:
+- namespace
+- user
+product_group: container_registry
+milestone: '14.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate

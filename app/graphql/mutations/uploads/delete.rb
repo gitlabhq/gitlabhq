@@ -11,16 +11,16 @@ module Mutations
       authorize :destroy_upload
 
       argument :secret, GraphQL::Types::String,
-               required: true,
-               description: 'Secret part of upload path.'
+        required: true,
+        description: 'Secret part of upload path.'
 
       argument :filename, GraphQL::Types::String,
-               required: true,
-               description: 'Upload filename.'
+        required: true,
+        description: 'Upload filename.'
 
       field :upload, Types::UploadType,
-            null: true,
-            description: 'Deleted upload.'
+        null: true,
+        description: 'Deleted upload.'
 
       def resolve(args)
         parent = authorized_resource_parent_find!(args)

@@ -343,31 +343,14 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
           expect(issue_closed_by_id_reference_1.model_record).to be_nil
         end
       end
-
-      context 'when the placeholder reference does not map to a real model' do
-        let!(:invalid_model) { 'ThisWillNeverMapToARealModel' }
-        let!(:user_reference_column) { 'user_id' }
-
-        let!(:invalid_placeholder_reference) do
-          create(
-            :import_source_user_placeholder_reference,
-            source_user: source_user_1,
-            model: invalid_model,
-            user_reference_column: user_reference_column
-          )
-        end
-
-        it 'raises an error' do
-          expect { invalid_placeholder_reference.model_record }.to raise_error(NameError)
-        end
-      end
     end
 
     describe '.model_relations_for_source_user_reference', :aggregate_failures do
       it 'yields numeric pkey model relations and placeholder reference relation' do
         expect do |block|
           described_class.model_relations_for_source_user_reference(
-            model: 'Issue', source_user: source_user_1, user_reference_column: 'author_id', &block
+            model: 'Issue', source_user: source_user_1, user_reference_column: 'author_id',
+            alias_version: 1, &block
           )
         end.to yield_with_args(
           [
@@ -380,7 +363,8 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
       it 'yields composite key model relation and placeholder reference relation' do
         expect do |block|
           described_class.model_relations_for_source_user_reference(
-            model: 'IssueAssignee', source_user: source_user_1, user_reference_column: 'user_id', &block
+            model: 'IssueAssignee', source_user: source_user_1, user_reference_column: 'user_id',
+            alias_version: 1, &block
           )
         end.to yield_with_args(
           [
@@ -400,7 +384,8 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
         it 'does not yield the record' do
           expect do |block|
             described_class.model_relations_for_source_user_reference(
-              model: 'Issue', source_user: source_user_1, user_reference_column: 'closed_by_id', &block
+              model: 'Issue', source_user: source_user_1, user_reference_column: 'closed_by_id',
+              alias_version: 1, &block
             )
           end.not_to yield_control
         end
@@ -419,12 +404,17 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
           )
         end
 
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        end
+
         it 'raises an error' do
           expect do |block|
             described_class.model_relations_for_source_user_reference(
-              model: invalid_model, source_user: source_user_1, user_reference_column: user_reference_column, &block
+              model: invalid_model, source_user: source_user_1, user_reference_column: user_reference_column,
+              alias_version: 1, &block
             )
-          end.to raise_error(NameError)
+          end.to raise_error(Import::PlaceholderReferences::AliasResolver::MissingAlias)
         end
       end
     end

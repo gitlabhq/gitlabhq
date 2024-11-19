@@ -54,7 +54,8 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.mr-list {
+.mr-list,
+.issuable-list {
   .merge-request {
     padding: 10px $gl-padding;
     display: flex;
@@ -151,7 +152,7 @@ $comparison-empty-state-height: 62px;
   .ci-table {
     th {
       background-color: var(--white, $white);
-      color: var(--gl-gray-700, $gl-text-color-secondary);
+      @apply gl-text-strong;
     }
   }
 }
@@ -274,6 +275,8 @@ $comparison-empty-state-height: 62px;
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .survey-slide-up-enter {
   transform: translateY(10px);
   opacity: 0;

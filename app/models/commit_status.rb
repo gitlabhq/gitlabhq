@@ -18,9 +18,18 @@ class CommitStatus < Ci::ApplicationRecord
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, ->(build) { in_partition(build) }, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses, partition_foreign_key: :partition_id
+  belongs_to :pipeline,
+    ->(build) { in_partition(build) },
+    class_name: 'Ci::Pipeline',
+    foreign_key: :commit_id,
+    inverse_of: :statuses,
+    partition_foreign_key: :partition_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
-  belongs_to :ci_stage, ->(build) { in_partition(build) }, class_name: 'Ci::Stage', foreign_key: :stage_id, partition_foreign_key: :partition_id
+  belongs_to :ci_stage,
+    ->(build) { in_partition(build) },
+    class_name: 'Ci::Stage',
+    foreign_key: :stage_id,
+    partition_foreign_key: :partition_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
@@ -141,7 +150,16 @@ class CommitStatus < Ci::ApplicationRecord
 
     event :drop do
       transition canceling: :canceled # runner returns success/failed
-      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
+      transition [
+        :created,
+        :waiting_for_resource,
+        :preparing,
+        :waiting_for_callback,
+        :pending,
+        :running,
+        :manual,
+        :scheduled
+      ] => :failed
     end
 
     event :success do
@@ -154,7 +172,14 @@ class CommitStatus < Ci::ApplicationRecord
       transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
     end
 
-    before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
+    before_transition [
+      :created,
+      :waiting_for_resource,
+      :preparing,
+      :skipped,
+      :manual,
+      :scheduled
+    ] => :pending do |commit_status|
       commit_status.queued_at = Time.current
     end
 
@@ -174,9 +199,7 @@ class CommitStatus < Ci::ApplicationRecord
       commit_status.allow_failure = true if reason.force_allow_failure?
       # Windows exit codes can reach a max value of 32-bit unsigned integer
       # We only allow a smallint for exit_code in the db, hence the added limit of 32767
-      if reason.exit_code && Feature.enabled?(:ci_retry_on_exit_codes, Feature.current_request)
-        commit_status.exit_code = reason.exit_code % 32768
-      end
+      commit_status.exit_code = reason.exit_code
     end
 
     before_transition [:skipped, :manual] => :created do |commit_status, transition|

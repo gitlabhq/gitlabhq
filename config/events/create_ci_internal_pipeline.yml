@@ -1,5 +1,5 @@
 ---
-description: Tracks the number of internal Ci pipelines created
+description: Tracks the number of internal CI pipelines created
 internal_events: true
 action: create_ci_internal_pipeline
 identifiers:

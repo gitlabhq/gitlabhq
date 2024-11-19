@@ -16,11 +16,18 @@ require 'digest'
 module Gitlab
   module Housekeeper
     class Runner
-      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [], target_branch: 'master')
+      def initialize(
+        max_mrs: 1,
+        dry_run: false,
+        keeps: nil,
+        filter_identifiers: [],
+        push_when_approved: false,
+        target_branch: 'master')
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
         @target_branch = target_branch
+        @push_when_approved = push_when_approved
         require_keeps
 
         @keeps = if keeps
@@ -161,7 +168,7 @@ module Gitlab
           target_project_id: housekeeper_target_project_id
         )
 
-        git.push(branch_name, change.push_options) if change.update_required?(:code)
+        git.push(branch_name, change.push_options) if self.class.should_push_code?(change, @push_when_approved)
 
         gitlab_client.create_or_update_merge_request(
           change: change,
@@ -179,6 +186,14 @@ module Gitlab
           target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
+      end
+
+      # We do not want to push code if the MR already has approvals as it will reset the approvals. Also we do not push
+      # if someone else has added commits already.
+      def self.should_push_code?(change, push_when_approved)
+        return false if change.already_approved? && !push_when_approved
+
+        change.update_required?(:code)
       end
 
       def housekeeper_fork_project_id

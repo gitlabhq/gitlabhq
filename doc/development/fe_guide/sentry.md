@@ -98,3 +98,7 @@ Frontend engineering team members can filter errors relevant to their group and/
 We use [BrowserTracing](https://docs.sentry.io/platforms/javascript/performance/) to report performance metrics to Sentry.
 
 You can visit [our performance data of the last 24 hours](https://new-sentry.gitlab.net/organizations/gitlab/performance/?environment=gprd-cny&environment=gprd&project=4&statsPeriod=24h) and use the filters to drill down and learn more.
+
+## Sentry instance infrastructure
+
+The GitLab infrastructure team manages the Sentry instance, you can find more details about its architecture and data management in its [runbook documentation](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/sentry/sentry.md).

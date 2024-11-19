@@ -39,9 +39,14 @@ Prerequisites:
 1. Expand **Visibility and access controls**.
 1. For **Default project creation protection**, select the desired roles:
    - No one.
+   - Administrators.
    - Maintainers.
    - Developers and Maintainers.
 1. Select **Save changes**.
+
+NOTE:
+If you select **Administrators** and [Admin Mode](sign_in_restrictions.md#admin-mode)
+is turned on, administrators must enter Admin Mode to create new projects.
 
 ## Restrict project deletion to administrators
 
@@ -253,7 +258,8 @@ Prerequisites:
 1. Select **Save changes**.
 
 NOTE:
-You cannot select the restricted default visibility level for new projects and groups.
+You cannot restrict a visibility level that is set as the default for new projects or groups.
+Conversely, you cannot set a restricted visibility level as the default for new projects or groups.
 
 ## Configure enabled Git access protocols
 

@@ -5,7 +5,7 @@ RSpec.shared_examples 'renders usage overview metrics' do
 
   it 'renders the metrics panel' do
     expect(usage_overview).to be_visible
-    expect(usage_overview).to have_content format(_("Usage overview for %{title}"), title: panel_title)
+    expect(usage_overview).to have_content format(_("Usage overview for the %{title}"), title: panel_title)
   end
 
   it 'renders each of the available metrics with the correct values' do
@@ -45,10 +45,9 @@ RSpec.shared_examples 'does not render usage overview background aggregation not
 end
 
 RSpec.shared_examples 'renders metrics comparison tables' do
-  let(:metric_tables) { page.all("[data-testid='panel-dora-chart']") }
-  let(:lifecycle_metrics_table) { metric_tables[0] }
-  let(:dora_metrics_table) { metric_tables[1] }
-  let(:security_metrics_table) { metric_tables[2] }
+  let(:lifecycle_metrics_table) { find_by_testid('panel-vsd-lifecycle-metrics-table') }
+  let(:dora_metrics_table) { find_by_testid('panel-vsd-dora-metrics-table') }
+  let(:security_metrics_table) { find_by_testid('panel-vsd-security-metrics-table') }
 
   def expect_row_content(id, name, values)
     row = find_by_testid("dora-chart-metric-#{id}")
@@ -64,7 +63,7 @@ RSpec.shared_examples 'renders metrics comparison tables' do
 
   it 'renders the Lifecycle metrics table' do
     expect(lifecycle_metrics_table).to be_visible
-    expect(lifecycle_metrics_table).to have_content format(_("Lifecycle metrics: %{title}"), title: panel_title)
+    expect(lifecycle_metrics_table).to have_content format(_("Lifecycle metrics for the %{title}"), title: panel_title)
     [
       ['lead-time', _('Lead time'), '4.0 d 33.3% 2.0 d 50.0% -'],
       ['cycle-time', _('Cycle time'), '3.0 d 50.0% 1.0 d 66.7% -'],
@@ -80,7 +79,7 @@ RSpec.shared_examples 'renders metrics comparison tables' do
 
   it 'renders the DORA metrics table' do
     expect(dora_metrics_table).to be_visible
-    expect(dora_metrics_table).to have_content format(_("DORA metrics: %{title}"), title: panel_title)
+    expect(dora_metrics_table).to have_content format(_("DORA metrics for the %{title}"), title: panel_title)
     [
       ['lead-time-for-changes', _('Lead time for changes'), '3.0 d 40.0% 1.0 d 66.7% 0.0 d'],
       ['time-to-restore-service', _('Time to restore service'), '3.0 d 57.1% 5.0 d 66.7% 0.0 d'],
@@ -97,7 +96,7 @@ RSpec.shared_examples 'renders metrics comparison tables' do
 
   it 'renders the Security metrics table' do
     expect(security_metrics_table).to be_visible
-    expect(security_metrics_table).to have_content format(_("Security metrics: %{title}"), title: panel_title)
+    expect(security_metrics_table).to have_content format(_("Security metrics for the %{title}"), title: panel_title)
     [
       ['vulnerability-critical', _('Critical vulnerabilities over time'), '5 3 -'],
       ['vulnerability-high', _('High vulnerabilities over time'), '4 2 -']
@@ -114,7 +113,10 @@ RSpec.shared_examples 'renders dora performers score' do
   it 'renders the dora performers score visualization' do
     expect(dora_performers_score).to be_visible
 
-    expect(dora_performers_score).to have_content format(_("DORA performers score for %{name} group"), name: group.name)
+    expect(dora_performers_score).to have_content format(
+      _("DORA performers score for the %{name} group (Last full calendar month)"),
+      name: group.name
+    )
     expect(dora_performers_chart_title).to have_content _("Total projects (3) with DORA metrics")
   end
 end

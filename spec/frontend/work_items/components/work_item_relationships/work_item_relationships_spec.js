@@ -4,6 +4,7 @@ import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
@@ -16,6 +17,10 @@ import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.
 
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as utils from '~/work_items/utils';
+import {
+  WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
+  WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
+} from '~/work_items/constants';
 import {
   removeLinkedWorkItemResponse,
   workItemLinkedItemsResponse,
@@ -68,6 +73,9 @@ describe('WorkItemRelationships', () => {
       stubs: {
         CrudComponent,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
 
     await waitForPromises();
@@ -83,6 +91,10 @@ describe('WorkItemRelationships', () => {
   const findAddButton = () => wrapper.findByTestId('link-item-add-button');
   const findWorkItemRelationshipForm = () => wrapper.findComponent(WorkItemAddRelationshipForm);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
+
+  beforeEach(() => {
+    utils.saveToggleToLocalStorage(WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY, true);
+  });
 
   it('calls workItemLinkedItemsQuery query', () => {
     createComponent();
@@ -193,8 +205,8 @@ describe('WorkItemRelationships', () => {
     useLocalStorageSpy();
 
     beforeEach(async () => {
-      jest.spyOn(utils, 'getShowLabelsFromLocalStorage');
-      jest.spyOn(utils, 'saveShowLabelsToLocalStorage');
+      jest.spyOn(utils, 'getToggleFromLocalStorage');
+      jest.spyOn(utils, 'saveToggleToLocalStorage');
       await createComponent();
     });
 
@@ -232,13 +244,26 @@ describe('WorkItemRelationships', () => {
       expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(true);
     });
 
-    it('calls saveShowLabelsToLocalStorage on toggle', () => {
+    it('calls saveToggleToLocalStorage on toggle-show-labels', () => {
       findMoreActions().vm.$emit('toggle-show-labels');
-      expect(utils.saveShowLabelsToLocalStorage).toHaveBeenCalled();
+      expect(utils.saveToggleToLocalStorage).toHaveBeenCalled();
     });
 
-    it('calls getShowLabelsFromLocalStorage on mount', () => {
-      expect(utils.getShowLabelsFromLocalStorage).toHaveBeenCalled();
+    it('calls getToggleFromLocalStorage on mount showLabels', () => {
+      expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
+        WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
+      );
+    });
+
+    it('calls saveToggleToLocalStorage on toggle-show-closed', () => {
+      findMoreActions().vm.$emit('toggle-show-closed');
+      expect(utils.saveToggleToLocalStorage).toHaveBeenCalled();
+    });
+
+    it('calls getToggleFromLocalStorage on mount for showClosed', () => {
+      expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
+        WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
+      );
     });
 
     it.each`
@@ -255,6 +280,17 @@ describe('WorkItemRelationships', () => {
         expect(findLinkedItemsCountBadge().attributes('aria-label')).toBe(ariaLabel);
       },
     );
+
+    it('toggles `showClosed` when `toggle-show-closed` is emitted', async () => {
+      await createComponent();
+      expect(findMoreActions().props('showClosed')).toBe(true);
+
+      await findMoreActions().vm.$emit('toggle-show-closed');
+      expect(findMoreActions().props('showClosed')).toBe(false);
+
+      await findMoreActions().vm.$emit('toggle-show-closed');
+      expect(findMoreActions().props('showClosed')).toBe(true);
+    });
   });
 
   it('updates linked item relationship type in UI', async () => {

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.error_tracking.error_tracking_total_unique_counts_weekly
 description: Total unique users accessing error tracking routes
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 milestone: "14.9"
@@ -18,7 +18,7 @@ events:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

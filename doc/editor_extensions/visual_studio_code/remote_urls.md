@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab remote URL format
@@ -32,13 +32,13 @@ GitLab remote URLs require these parameters:
 The parameters are then placed together in this order:
 
 ```plaintext
-gitlab-remote://<INSTANCE_URL>/<LABEL>?project=<PROJECT_ID>&ref=<GIT_REFERENCE>
+gitlab-remote://<instanceUrl>/<label>?project=<projectId>&ref=<gitReference>
 ```
 
 For example, the `projectID` for the main GitLab project is `278964`, so the remote URL for the main GitLab project is:
 
 ```plaintext
-gitlab-remote://gitlab.com/<LABEL>?project=278964&ref=master
+gitlab-remote://gitlab.com/<label>?project=278964&ref=master
 ```
 
 ## Browse a repository in read-only mode
@@ -51,7 +51,9 @@ Prerequisites:
 
 To browse a GitLab repository in read-only mode:
 
-1. Open the command palette by pressing <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
+1. Open the Command Palette by pressing:
+   - MacOS: <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
+   - Windows: <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
 1. Run the **GitLab: Open Remote Repository** command.
 1. Select **Open in current window**, **Open in new window**, or **Add to workspace**.
 1. To add a repository, select `Enter gitlab-remote URL`, then enter the `gitlab-remote://` URL for your desired project.

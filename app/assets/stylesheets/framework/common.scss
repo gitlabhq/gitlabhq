@@ -71,7 +71,7 @@
 
 /** COLORS **/
 .text-secondary {
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 }
 
 .text-warning,
@@ -88,10 +88,6 @@
   background: $line-target-blue;
 }
 
-.text-break-word {
-  word-break: break-all;
-}
-
 .text-underline,
 .text-underline:hover {
   text-decoration: underline;
@@ -102,10 +98,10 @@
   color: $gray-200;
 }
 
-.light { color: $gl-text-color; }
+.light { @apply gl-text-default; }
 
 .slead {
-  color: $gl-text-color;
+  @apply gl-text-default;
   font-size: 14px;
   margin-bottom: 12px;
   font-weight: $gl-font-weight-normal;
@@ -314,15 +310,10 @@ li.note {
     padding: 0 10px;
     clip: auto;
     text-decoration: none;
-    color: $gl-text-color;
+    @apply gl-text-default;
     background: $gray-10;
     z-index: 1;
   }
-}
-
-.bordered-box {
-  border: 1px solid $border-color;
-  border-radius: $gl-border-radius-base;
 }
 
 .tooltip {
@@ -423,7 +414,7 @@ li.note {
 .gl-pseudo-placeholder:empty::before {
   content: attr(data-placeholder);
   font-weight: $gl-font-weight-normal;
-  color: $gl-text-color-secondary;
+  color: var(--gl-control-placeholder-color);
   cursor: text;
 }
 
@@ -464,9 +455,7 @@ li.note {
 
 copy-code {
   position: absolute;
-  @apply gl-transition-all;
   opacity: 0;
-
   top: $gl-spacing-scale-3;
   right: $gl-spacing-scale-3;
 

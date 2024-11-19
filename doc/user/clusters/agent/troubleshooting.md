@@ -129,7 +129,7 @@ You might see a similar error in the [agent server (KAS) logs](../../../administ
 {"level":"error","time":"2023-03-07T20:19:48.151Z","msg":"AgentInfo()","grpc_service":"gitlab.agent.agent_configuration.rpc.AgentConfiguration","grpc_method":"GetConfiguration","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": x509: certificate signed by unknown authority"}
 ```
 
-To fix it, [install your internal CA's public certificate](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) in the `/etc/gitlab/trusted-certs` directory.
+To fix it, [install the public certificate of your internal CA](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) in the `/etc/gitlab/trusted-certs` directory.
 
 Alternatively, you can configure the agent server (KAS) to read the certificate from a custom directory.
 Add the following configuration to `/etc/gitlab/gitlab.rb`:

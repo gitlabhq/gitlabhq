@@ -2,8 +2,11 @@ import { nextTick } from 'vue';
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('CRUD Component', () => {
+  useLocalStorageSpy();
+
   let wrapper;
 
   const createComponent = (propsData, slots = {}) => {
@@ -31,6 +34,11 @@ describe('CRUD Component', () => {
   const findBody = () => wrapper.findByTestId('crud-body');
   const findFooter = () => wrapper.findByTestId('crud-footer');
   const findPagination = () => wrapper.findByTestId('crud-pagination');
+  const findCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+
+  afterEach(() => {
+    localStorage.clear();
+  });
 
   it('renders title', () => {
     createComponent();
@@ -126,5 +134,84 @@ describe('CRUD Component', () => {
     createComponent({}, { default: '<p>Body slot</p>', pagination: '<p>Pagination slot</p>' });
 
     expect(findPagination().text()).toBe('Pagination slot');
+  });
+
+  describe('with persistCollapsedState=true', () => {
+    describe('when the localStorage key is false or undefined', () => {
+      beforeEach(() => {
+        createComponent(
+          {
+            isCollapsible: true,
+            persistCollapsedState: true,
+            anchorId: 'test-anchor',
+            toggleText: 'Form action toggle',
+          },
+          { default: '<p>Body slot</p>' },
+        );
+      });
+
+      it('the collapsible area is not collapsed initially', () => {
+        expect(findBody().text()).toBe('Body slot');
+      });
+
+      it('toggles the collapsible area and sets the localStorage key to true', async () => {
+        findCollapseToggle().vm.$emit('click');
+        await nextTick();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith('crud-collapse-test-anchor', true);
+        expect(findBody().exists()).toBe(false);
+      });
+    });
+
+    describe('when the localStorage key is true', () => {
+      beforeEach(() => {
+        localStorage.setItem('crud-collapse-test-anchor', 'true');
+        createComponent(
+          {
+            isCollapsible: true,
+            persistCollapsedState: true,
+            anchorId: 'test-anchor',
+            toggleText: 'Form action toggle',
+          },
+          { default: '<p>Body slot</p>' },
+        );
+      });
+
+      it('the collapsible area is collapsed initially', () => {
+        expect(findBody().exists()).toBe(false);
+      });
+
+      it('toggles the collapsible area and sets the localStorage key to false', async () => {
+        findCollapseToggle().vm.$emit('click');
+        await nextTick();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith('crud-collapse-test-anchor', false);
+        expect(findBody().text()).toBe('Body slot');
+      });
+    });
+  });
+
+  describe('isCollapsible', () => {
+    it('renders collapsible toggle', () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
+
+      expect(findCollapseToggle().exists()).toBe(true);
+    });
+
+    it('click on toggle hides content', async () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
+
+      expect(findBody().exists()).toBe(true);
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(findBody().exists()).toBe(false);
+    });
+
+    it('`collapsed` hides content by default', () => {
+      createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
+
+      expect(findBody().exists()).toBe(false);
+    });
   });
 });

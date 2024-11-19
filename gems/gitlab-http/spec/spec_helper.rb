@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RAILS_ENV"] = 'test' # rubocop: disable RSpec/EnvAssignment -- this was not set when running tests
 
 require 'rspec/mocks'
 
@@ -9,8 +9,6 @@ require 'gitlab/http_v2'
 require 'gitlab/http_v2/configuration'
 require 'gitlab/stub_requests'
 require 'webmock/rspec'
-
-ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true' # rubocop: disable RSpec/EnvAssignment
 
 RSpec.configure do |config|
   config.include StubENV

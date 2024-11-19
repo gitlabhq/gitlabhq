@@ -156,35 +156,6 @@ e2e:test-on-omnibus-ee:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
-# Same as e2e:test-on-omnibus-ee but runs automatically after manual:e2e-test-pipeline-generate
-follow-up:e2e:test-on-omnibus-ee:
-  extends:
-    - e2e:test-on-omnibus-ee
-    - .qa:rules:follow-up-e2e
-  needs:
-    - follow-up:build-qa-image
-    - follow-up:build-assets-image
-    - manual:e2e-test-pipeline-generate
-
-e2e:post-run-e2e-message:
-  extends:
-    - .predictive-job
-    - .qa:rules:post-run-e2e-message
-  stage: qa
-  variables:
-    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - scripts/generate-message-to-run-e2e-pipeline.rb
-  needs: []
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - "${CI_PROJECT_DIR}/qa_tests_vars.env"
-
 e2e:test-on-omnibus-ce:
   extends:
     - e2e:test-on-omnibus-ee
@@ -231,8 +202,7 @@ e2e:test-on-gdk:
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
 
-# Disabled by adding '.' in front due to https://gitlab.com/gitlab-org/gitlab/-/issues/498523
-.e2e:test-product-analytics:
+e2e:test-product-analytics:
   extends:
     - .qa:rules:e2e:test-on-gdk
   stage: qa
@@ -262,7 +232,6 @@ e2e:test-on-cng:
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: test-on-cng-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-cng due to mr containing only quarantine changes!
-  allow_failure: true # TODO: remove once gitlab-org/quality/quality-engineering/team-tasks#3049 is finished
 
 e2e:code-suggestions-eval:
   extends:

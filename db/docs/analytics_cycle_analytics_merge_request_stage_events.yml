@@ -4,7 +4,8 @@ classes:
 - Analytics::CycleAnalytics::MergeRequestStageEvent
 feature_categories:
 - value_stream_management
-description: Contains various MergeRequest-related timestamps for aggregating Value Stream Analytics data.
+description: Contains various MergeRequest-related timestamps for aggregating Value
+  Stream Analytics data.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68950
 milestone: '14.3'
 gitlab_schema: gitlab_main_cell
@@ -12,3 +13,4 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:
   group_id: namespaces
+table_size: medium

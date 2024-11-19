@@ -1281,6 +1281,7 @@ production: &base
     # private_key_file: /home/git/gitlab/config/topology-service-key.pem
 
   cell:
+    # id: 1
     # name: cell-1
 
   gitlab_kas:
@@ -1428,10 +1429,6 @@ production: &base
       # Ban an IP for one hour (3600s) after too many auth attempts
       # bantime: 3600
 
-  ## OpenBao settings
-  openbao:
-    proxy_address: http://127.0.0.1:8100
-
 development:
   <<: *base
 
@@ -1452,8 +1449,6 @@ development:
 
 test:
   <<: *base
-  openbao:
-    proxy_address: http://www.example.com
   object_store:
     enabled: false
   gravatar:

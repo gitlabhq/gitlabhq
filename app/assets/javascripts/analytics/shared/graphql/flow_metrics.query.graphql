@@ -1,0 +1,58 @@
+#import "./flow_metric_item.fragment.graphql"
+
+query flowMetricsQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!, $labelNames: [String!]) {
+  project(fullPath: $fullPath) {
+    id
+    flowMetrics {
+      issues: issueCount(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      issues_completed: issuesCompletedCount(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+      ) {
+        ...FlowMetricItem
+      }
+      cycle_time: cycleTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      lead_time: leadTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      deploys: deploymentCount(from: $startDate, to: $endDate) {
+        ...FlowMetricItem
+      }
+      median_time_to_merge: timeToMerge(from: $startDate, to: $endDate) {
+        ...FlowMetricItem
+      }
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    flowMetrics {
+      issues: issueCount(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      issues_completed: issuesCompletedCount(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+      ) {
+        ...FlowMetricItem
+      }
+      cycle_time: cycleTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      lead_time: leadTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      deploys: deploymentCount(from: $startDate, to: $endDate) {
+        ...FlowMetricItem
+      }
+      median_time_to_merge: timeToMerge(from: $startDate, to: $endDate) {
+        ...FlowMetricItem
+      }
+    }
+  }
+}

@@ -19,7 +19,7 @@ options:
   - users_expanding_testing_accessibility_report
 distribution:
 - ce
-tier:
+tiers:
 - free
 performance_indicator_type: []
 milestone: "<13.9"

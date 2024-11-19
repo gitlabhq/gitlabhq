@@ -8,9 +8,16 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let!(:registry_scope) { Runtime::Namespace.sandbox_name }
-      let!(:personal_access_token) do
-        Resource::PersonalAccessToken.fabricate_via_api!.token
+      let!(:personal_access_token) { Runtime::UserStore.test_user.current_personal_access_token }
+      let!(:group) { create(:group) }
+      let!(:registry_scope) { group.sandbox.name }
+      let!(:project) { create(:project, :private, name: 'npm-project-level', group: group) }
+      let!(:runner) do
+        create(:project_runner,
+          name: "qa-runner-#{SecureRandom.hex(6)}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:project_deploy_token) do
@@ -26,15 +33,6 @@ module QA
 
       let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
       let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
-      let!(:project) { create(:project, :private, name: 'npm-project-level') }
-      let!(:runner) do
-        create(:project_runner,
-          name: "qa-runner-#{SecureRandom.hex(6)}",
-          tags: ["runner-for-#{project.name}"],
-          executor: :docker,
-          project: project)
-      end
-
       let(:package) { build(:package, name: "@#{registry_scope}/mypackage-#{SecureRandom.hex(8)}", project: project) }
 
       before do

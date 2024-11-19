@@ -57,10 +57,6 @@ module QA
           wait_until_project_is_ready(different_project)
         end
 
-        after do
-          different_project.remove_via_api!
-        end
-
         it 'cannot be used to create a file via the project API', :smoke,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347860' do
           expect do

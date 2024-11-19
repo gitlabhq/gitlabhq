@@ -8,7 +8,6 @@ query getMergeRequests(
   $sort: MergeRequestSort
   $state: MergeRequestState
   $approvedBy: [String!]
-  $approver: [String!]
   $assigneeUsernames: String
   $assigneeWildcardId: AssigneeWildcardId
   $reviewerUsername: String
@@ -38,7 +37,6 @@ query getMergeRequests(
       sort: $sort
       state: $state
       approvedBy: $approvedBy
-      approver: $approver
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
       reviewerUsername: $reviewerUsername

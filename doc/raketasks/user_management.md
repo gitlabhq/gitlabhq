@@ -186,7 +186,7 @@ sudo /etc/init.d/gitlab start
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142189) in GitLab 16.9.
 
@@ -227,4 +227,4 @@ The task might raise the following error messages:
 
 ## Related topics
 
-- [Reset a user's password](../security/reset_user_password.md#use-a-rake-task)
+- [Reset user passwords](../security/reset_user_password.md#use-a-rake-task)

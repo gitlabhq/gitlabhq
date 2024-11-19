@@ -92,3 +92,22 @@ pipenv shell
 
 After running that command, you can run GitLab on the same shell and it uses the Python and dependencies
 installed from the `pipenv install` command.
+
+## Learning resources
+
+If you are new to Python or looking to refresh your knowledge, this section provides variours materials for 
+learning the language. 
+
+1. **[Python Cheatsheet](https://www.pythoncheatsheet.org)** 
+A comprehensive reference covering essential Python syntax, built-in functions, and useful libraries. 
+This is ideal for both beginners and experienced users who want a quick, organized summary of Python's key features.
+
+1. **[A Whirlwind Tour of Python (Jupyter Notebook)](https://github.com/jakevdp/WhirlwindTourOfPython)**  
+A fast-paced introduction to Python fundamentals, tailored especially for data science practitioners but works well for everyone who wants to get just the basic understanding of the language.
+This is a Jupiter Notebook which makes this guide an interactive resource as well as a good introduction to Jupiter Notebook itself.
+
+1. **[100-page Python Intro](https://learnbyexample.github.io/100_page_python_intro)**  
+Brief guide provides a straightforward introduction to Python, covering all the essentials needed to start programming effectively. It’s a beginner-friendly option that covers everything from syntax to debugging and testing.
+
+1. **[Learn X in Y Minutes: Python](https://learnxinyminutes.com/docs/python)**  
+A very brief, high-level introduction cuts directly to the core syntax and features of Python, making it a valuable quick start for developers transitioning to Python.

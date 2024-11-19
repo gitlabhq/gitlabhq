@@ -1,0 +1,18 @@
+---
+description: Tracks Credit card validation errors as part of Identity Verification
+action: failed_attempt
+identifiers:
+- user
+product_group: anti-abuse
+milestone: '15.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169117
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  property:
+    description: Error message

@@ -210,6 +210,36 @@ RSpec.describe API::BulkImports, feature_category: :importers do
           end
         end
       end
+
+      describe 'migrate memberships flag' do
+        context 'when true' do
+          it 'sets true' do
+            params[:entities][0][:migrate_memberships] = true
+
+            request
+
+            expect(user.bulk_imports.last.entities.pluck(:migrate_memberships)).to contain_exactly(true)
+          end
+        end
+
+        context 'when false' do
+          it 'sets false' do
+            params[:entities][0][:migrate_memberships] = false
+
+            request
+
+            expect(user.bulk_imports.last.entities.pluck(:migrate_memberships)).to contain_exactly(false)
+          end
+        end
+
+        context 'when unspecified' do
+          it 'sets true' do
+            request
+
+            expect(user.bulk_imports.last.entities.pluck(:migrate_memberships)).to contain_exactly(true)
+          end
+        end
+      end
     end
 
     include_examples 'starting a new migration' do

@@ -86,9 +86,9 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     end
   end
 
-  shared_examples 'marks the group as pending delete' do |async|
-    specify do
-      expect(group).to receive(:update_attribute).with(:pending_delete, true)
+  shared_examples 'marks the group as delete' do |async|
+    it 'marks the group as deleted', :freeze_time do
+      expect(group).to receive(:update_attribute).with(:deleted_at, Time.current)
 
       destroy_group(group, user, async)
     end
@@ -96,7 +96,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
   describe 'asynchronous delete' do
     it_behaves_like 'group destruction', true
-    it_behaves_like 'marks the group as pending delete', true
+    it_behaves_like 'marks the group as delete', true
 
     context 'Sidekiq fake' do
       before do
@@ -114,17 +114,17 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
   describe 'synchronous delete' do
     it_behaves_like 'group destruction', false
-    it_behaves_like 'marks the group as pending delete', false
+    it_behaves_like 'marks the group as delete', false
 
     context 'when destroying the group throws an error' do
       before do
         allow(group).to receive(:destroy).and_raise(StandardError)
       end
 
-      it 'unmarks the group as pending delete' do
+      it 'unmarks the group as delete' do
         expect { destroy_group(group, user, false) }.to raise_error(StandardError)
 
-        expect(group.pending_delete).to be_falsey
+        expect(group.deleted_at).to be_nil
       end
     end
   end

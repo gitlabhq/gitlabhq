@@ -1,0 +1,9 @@
+---
+name: auto_merge_process_worker_pipeline
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483008
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167095
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499877
+milestone: '17.6'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

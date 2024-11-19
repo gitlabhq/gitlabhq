@@ -17,7 +17,6 @@ export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_TIME_TRACKING = 'TIME_TRACKING';
-export const WIDGET_TYPE_ROLLEDUP_DATES = 'ROLLEDUP_DATES';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_PARTICIPANTS = 'PARTICIPANTS';
 export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
@@ -31,6 +30,7 @@ export const WIDGET_TYPE_COLOR = 'COLOR';
 export const WIDGET_TYPE_DESIGNS = 'DESIGNS';
 export const WIDGET_TYPE_DEVELOPMENT = 'DEVELOPMENT';
 export const WIDGET_TYPE_CRM_CONTACTS = 'CRM_CONTACTS';
+export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -46,8 +46,8 @@ export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
 export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
 export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
 export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
-export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
-export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
+export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test Case';
+export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirement';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
@@ -104,6 +104,7 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
 
 export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
+export const I18N_WORK_ITEM_NEW_RELATED_ITEM = s__('WorkItem|New related %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
 export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
@@ -171,6 +172,7 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `issue-type-issue`,
     name: s__('WorkItem|Issue'),
     value: WORK_ITEM_TYPE_VALUE_ISSUE,
+    routeParamName: 'issues',
   },
   [WORK_ITEM_TYPE_ENUM_TASK]: {
     icon: `issue-type-task`,
@@ -201,6 +203,7 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `epic`,
     name: s__('WorkItem|Epic'),
     value: WORK_ITEM_TYPE_VALUE_EPIC,
+    routeParamName: 'epics',
   },
 };
 
@@ -277,9 +280,6 @@ export const TODO_DONE_ICON = 'todo-done';
 export const TODO_DONE_STATE = 'done';
 export const TODO_PENDING_STATE = 'pending';
 
-export const EMOJI_THUMBSUP = 'thumbsup';
-export const EMOJI_THUMBSDOWN = 'thumbsdown';
-
 export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_ASSIGNEES]: 'assignees',
   [WIDGET_TYPE_LABELS]: 'labels',
@@ -354,8 +354,6 @@ export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
 export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const FEATURE_NAME = 'work_item_epic_feedback';
 
-export const CLEAR_VALUE = 'CLEAR_VALUE';
-
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const ROUTES = {
   index: 'workItemList',
@@ -376,4 +374,10 @@ export const WORK_ITEM_BASE_ROUTE_MAP = {
 
 export const WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemLinks.showLabels';
 export const WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY = 'workItemTree.showLabels';
+export const WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemTree.showClosed';
 export const WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemRelationships.showLabels';
+export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelationships.showClosed';
+
+export const INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION = Symbol(
+  'injection:prevent-router-navigation',
+);

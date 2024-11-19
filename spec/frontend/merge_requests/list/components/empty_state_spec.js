@@ -21,9 +21,9 @@ describe('Merge request list app empty state component', () => {
     it('sets the correct title and description', () => {
       createComponent({ hasSearch: true });
 
-      expect(findEmptyState().attributes('title')).toBe('Sorry, your filter produced no results');
+      expect(findEmptyState().attributes('title')).toBe('No results found');
       expect(findEmptyState().attributes('description')).toBe(
-        'To widen your search, change or remove filters above',
+        'To widen your search, change or remove filters above.',
       );
     });
   });

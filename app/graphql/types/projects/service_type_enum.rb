@@ -15,7 +15,7 @@ module Types
       end
 
       # This prepend must stay here because the dynamic block below depends on it.
-      prepend_mod # rubocop: disable Cop/InjectEnterpriseEditionModule
+      prepend_mod
 
       ::Integration.available_integration_names(
         include_instance_specific: false, include_dev: false, include_disabled: true

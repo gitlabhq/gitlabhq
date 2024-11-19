@@ -145,7 +145,7 @@ export default {
     <div class="gl-grow md:gl-flex">
       <div class="gl-flex gl-grow gl-items-start">
         <div v-if="showGroupIcon" class="gl-mr-3 gl-flex gl-h-9 gl-shrink-0 gl-items-center">
-          <gl-icon class="gl-text-secondary" :name="groupIconName" />
+          <gl-icon variant="subtle" :name="groupIconName" />
         </div>
         <gl-avatar-labeled
           :entity-id="group.id"
@@ -164,7 +164,7 @@ export default {
                     v-if="visibility"
                     v-gl-tooltip="visibilityTooltip"
                     :name="visibilityIcon"
-                    class="gl-text-secondary"
+                    variant="subtle"
                   />
                 </div>
                 <div class="gl-px-2">

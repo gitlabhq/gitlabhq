@@ -8,7 +8,7 @@ RSpec.describe ::SystemNotes::AlertManagementService, feature_category: :groups_
   let_it_be(:noteable) { create(:alert_management_alert, :with_incident, :acknowledged, project: project) }
 
   describe '#create_new_alert' do
-    subject { described_class.new(noteable: noteable, project: project).create_new_alert('Some Service') }
+    subject { described_class.new(noteable: noteable, container: project).create_new_alert('Some Service') }
 
     it_behaves_like 'a system note' do
       let(:author) { Users::Internal.alert_bot }
@@ -21,7 +21,7 @@ RSpec.describe ::SystemNotes::AlertManagementService, feature_category: :groups_
   end
 
   describe '#change_alert_status' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).change_alert_status(reason) }
+    subject { described_class.new(noteable: noteable, container: project, author: author).change_alert_status(reason) }
 
     context 'with no specified reason' do
       let(:reason) { nil }
@@ -47,7 +47,7 @@ RSpec.describe ::SystemNotes::AlertManagementService, feature_category: :groups_
   describe '#new_alert_issue' do
     let_it_be(:issue) { noteable.issue }
 
-    subject { described_class.new(noteable: noteable, project: project, author: author).new_alert_issue(issue) }
+    subject { described_class.new(noteable: noteable, container: project, author: author).new_alert_issue(issue) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'alert_issue_added' }
@@ -59,7 +59,7 @@ RSpec.describe ::SystemNotes::AlertManagementService, feature_category: :groups_
   end
 
   describe '#log_resolving_alert' do
-    subject { described_class.new(noteable: noteable, project: project).log_resolving_alert('Some Service') }
+    subject { described_class.new(noteable: noteable, container: project).log_resolving_alert('Some Service') }
 
     it_behaves_like 'a system note' do
       let(:author) { Users::Internal.alert_bot }

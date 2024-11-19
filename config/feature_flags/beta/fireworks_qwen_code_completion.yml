@@ -1,0 +1,9 @@
+---
+name: fireworks_qwen_code_completion
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500742
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170503
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500744
+milestone: '17.6'
+group: group::code creation
+type: beta
+default_enabled: false

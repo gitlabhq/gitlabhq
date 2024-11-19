@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -26,6 +26,7 @@ For information on how to control the application settings cache for an instance
 > - `in_product_marketing_emails_enabled` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
 > - `repository_storages` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429675) in GitLab 16.6.
 > - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
+> - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
@@ -147,6 +148,7 @@ Example response:
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
+  "concurrent_relation_batch_export_limit": 25,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
@@ -157,6 +159,8 @@ Example response:
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
+- `allow_all_integrations`
+- `allowed_integrations`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
@@ -184,7 +188,9 @@ these parameters:
   "deletion_adjourned_period": 7,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
-  "lock_duo_features_enabled": false
+  "lock_duo_features_enabled": false,
+  "allow_all_integrations": true,
+  "allowed_integrations": []
   ...
 }
 ```
@@ -195,6 +201,7 @@ these parameters:
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 > - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 > - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
+> - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
@@ -322,6 +329,7 @@ Example response:
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
+  "concurrent_relation_batch_export_limit": 25,
   "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
@@ -333,6 +341,8 @@ Example response:
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
+- `allow_all_integrations`
+- `allowed_integrations`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
@@ -355,6 +365,8 @@ Example responses:
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
+  "allow_all_integrations": true,
+  "allowed_integrations": []
 ```
 
 ## List of settings that can be accessed via API calls
@@ -365,6 +377,7 @@ Example responses:
 > - `silent_admin_exports_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918) in GitLab 17.0.
 > - `require_personal_access_token_expiry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
 > - `receptive_cluster_agents_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463427) in GitLab 17.4.
+> - `allow_all_integrations` and `allowed_integrations` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
 In general, all settings are optional. Certain settings though, if enabled,
 require other settings to be set to function properly. These requirements are
@@ -382,6 +395,8 @@ listed in the descriptions of the relevant settings.
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up. |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable Akismet spam protection. |
+| `allow_all_integrations`                 | boolean          | no                                   | When `false`, only integrations in `allowed_integrations` are allowed on the instance. Premium and Ultimate only. |
+| `allowed_integrations`                   | array of strings | no                                   | When `allow_all_integrations` is `false`, only integrations in this list are allowed on the instance. Premium and Ultimate only. |
 | `allow_account_deletion`                 | boolean          | no                                   | Set to `true` to allow users to delete their accounts. Premium and Ultimate only. |
 | `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | Set to `true` to allow group owners to manage LDAP. Premium and Ultimate only. |
 | `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from webhooks and integrations. |
@@ -428,7 +443,7 @@ listed in the descriptions of the relevant settings.
 | `default_ci_config_path`                 | string           | no                                   | Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.|
 | `default_preferred_language`             | string           | no                                   | Default preferred language for users who are not logged in. |
-| `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_ or `2` _(Developers + Maintainers)_|
+| `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers + Maintainers)_, or `3` _(Administrators)_.|
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.|
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
@@ -478,6 +493,7 @@ listed in the descriptions of the relevant settings.
 | `elasticsearch_url`                        | string         | no                                   | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (for example, `http://localhost:9200, http://localhost:9201"`). Premium and Ultimate only. |
 | `elasticsearch_username`                   | string         | no                                   | The `username` of your Elasticsearch instance. Premium and Ultimate only. |
 | `elasticsearch_password`                   | string         | no                                   | The password of your Elasticsearch instance. Premium and Ultimate only. |
+| `elasticsearch_retry_on_failure`           | integer        | no                                   | Maximum number of possible retries for Elasticsearch search requests. Premium and Ultimate only. |
 | `email_additional_text`                    | string         | no                                   | Additional text added to the bottom of every email for legal/auditing/compliance reasons. Premium and Ultimate only. |
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `email_confirmation_setting`             | string           | no                                   | Specifies whether users must confirm their email before sign in. Possible values are `off`, `soft`, and `hard`. |
@@ -547,8 +563,8 @@ listed in the descriptions of the relevant settings.
 | `max_import_remote_file_size`            | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `max_login_attempts`                     | integer          | no                                   | Maximum number of sign-in attempts before locking out the user. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
-| `max_personal_access_token_lifetime`     | integer          | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked. Self-managed, Ultimate only.|
-| `max_ssh_key_lifetime`                   | integer          | no                                   | Maximum allowable lifetime for SSH keys in days. Self-managed, Ultimate only.|
+| `max_personal_access_token_lifetime`     | integer          | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked. Self-managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.|
+| `max_ssh_key_lifetime`                   | integer          | no                                   | Maximum allowable lifetime for SSH keys in days. Self-managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.|
 | `max_terraform_state_size_bytes`         | integer          | no                                   | Maximum size in bytes of the [Terraform state](../administration/terraform_state.md) files. Set this to 0 for unlimited file size. |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
 | `max_number_of_repository_downloads`     | integer          | no                                   | Maximum number of unique repositories a user can download in the specified time period before they are banned. Default: 0, Maximum: 10,000 repositories. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980) in GitLab 15.1. Self-managed, Ultimate only. |
@@ -623,9 +639,9 @@ listed in the descriptions of the relevant settings.
 | `security_approval_policies_limit`       | integer          | no                                   | Maximum number of active merge request approval policies per security policy project. Default: 5. Maximum: 20 |
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |
-| `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
-| `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on shared runners per month. Premium and Ultimate only. |
-| `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
+| `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable instance runners for new projects. |
+| `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on instance runners per month. Premium and Ultimate only. |
+| `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Instance runners text. |
 | `runner_token_expiration_interval`         | integer        | no                                   | Set the expiration time (in seconds) of authentication tokens of newly registered instance runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens). |
 | `group_runner_token_expiration_interval`   | integer        | no                                   | Set the expiration time (in seconds) of authentication tokens of newly registered group runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens). |
 | `project_runner_token_expiration_interval` | integer        | no                                   | Set the expiration time (in seconds) of authentication tokens of newly registered project runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens). |
@@ -698,7 +714,8 @@ listed in the descriptions of the relevant settings.
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
-| `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous Direct Transfer batches to process. |
+| `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous direct transfer batch exports to process. |
+| `concurrent_relation_batch_export_limit` | integer          | no                                   | Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6. |
 | `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |
 | `duo_features_enabled`                   | boolean          | no                                   | Indicates whether GitLab Duo features are enabled for this instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
 | `lock_duo_features_enabled`              | boolean          | no                                   | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |

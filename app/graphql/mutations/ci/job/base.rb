@@ -9,10 +9,6 @@ module Mutations
         argument :id, JobID,
           required: true,
           description: 'ID of the job to mutate.'
-
-        def find_object(id:)
-          GlobalID::Locator.locate(id)
-        end
       end
     end
   end

@@ -11,6 +11,34 @@ to GitLab features.
 
 For details about the terms used on this page, see [the terminology](../../update/terminology.md).
 
+## Minimize the impact of breaking changes
+
+Minimizing the impact to our customers ahead of a breaking change will ensure that disruptions will be minimized as much as possible. Product and Engineering teams should work closely together to understand 1) who would be most impacted and 2) whether tooling may help our users to migrate.
+
+It is **strongly recommended** that teams create an issue to track the work for each of the following:
+
+1. Measure product usage of the feature impacted by the breaking change.
+1. Assess how many customers will be impacted by the breaking change.
+1. Create tooling for users to manually migrate their own data or workflows.
+1. Allow them to manually enable the breaking change so that they can control when it takes effect.
+1. Automate the migration process **as much as possible** for users who do not take any manual steps to migrate.
+1. (Optional) Create UI controls for instance admins to disable the breaking change, providing flexibility to Self-Managed / Dedicated customers to plan for their migration path. Optional as this depends on the breaking change.
+
+### Planning
+
+Each breaking change should have a:
+
+- Rollout plan **(DRI: Engineering)**
+  - Is there a % roll out on GitLab.com?
+  - During that major milestone, when should the roll out begin?
+- Migration plan **(DRI: Engineering)**
+  - Are we instrumenting usage? If so, how are we using that data to inform what users will be impacted?
+  - How do we quickly and safely migrate them?
+- Communication plan **(DRI: Product)**
+  - Are customers aware of the upcoming changes?
+  - Do they know when the changes will go into effect?
+  - Do they know what actions to take?
+
 ## When can a feature be deprecated?
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
@@ -21,7 +49,7 @@ Do not include the deprecation announcement in the merge request that introduces
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
 [Update the deprecations doc](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
 
-![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
+![Deprecation, End of Support, Removal process](img/deprecation_removal_process_v15_1.png)
 
 ## How are Community Contributions to a deprecated feature handled?
 
@@ -99,6 +127,32 @@ Related Handbook pages:
 
 - <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes>
 - <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
+
+## Update the breaking change windows documentation
+
+The [breaking change windows](../../update/breaking_windows.md)
+documentation is generated based on the `window` value in the YAML files located in
+[`gitlab/data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
+
+To update the breaking change windows page when a YAML file is added,
+edited, or removed:
+
+1. From the command line, go to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
+1. Compile the breaking change windows documentation:
+
+   ```shell
+   bin/rake gitlab:docs:compile_windows
+   ```
+
+1. If needed, you can verify the documentation is up to date with:
+
+   ```shell
+   bin/rake gitlab:docs:check_windows
+   ```
+
+1. Commit the updated documentation and push the changes.
+1. Create a merge request.
 
 ## Update the related documentation
 

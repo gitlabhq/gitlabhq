@@ -35,7 +35,8 @@ describe('Packages protection rules project settings', () => {
     extendedWrapper(wrapper.findByRole('table', { name: /protected packages/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
-  const findTableRowButtonDelete = (i) => findTableRow(i).findByRole('button', { name: /delete/i });
+  const findTableRowButtonDelete = (i) =>
+    extendedWrapper(wrapper.findAllByTestId('delete-rule-btn').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);
   const findAddProtectionRuleButton = () =>
@@ -262,9 +263,7 @@ describe('Packages protection rules project settings', () => {
 
     describe('column "Minimum access level for push" with selectbox (combobox)', () => {
       const findComboboxInTableRow = (i) =>
-        extendedWrapper(
-          findTableRow(i).findByRole('combobox', { name: /minimum access level for push/i }),
-        );
+        extendedWrapper(wrapper.findAllByTestId('push-access-select').at(i));
 
       it('contains combobox with respective access level', async () => {
         createComponent();

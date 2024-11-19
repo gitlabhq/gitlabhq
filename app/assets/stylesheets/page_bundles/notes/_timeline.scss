@@ -1,3 +1,14 @@
+:root {
+  --timeline-entry-internal-note-background-color: var(--gl-color-orange-50);
+  --timeline-entry-target-background-color : var(--gl-color-blue-50);
+}
+
+// stylelint-disable-next-line gitlab/no-gl-class
+:root.gl-dark {
+  --timeline-entry-internal-note-background-color: #453522;
+  --timeline-entry-target-background-color : #2A394E;
+}
+
 .timeline {
   margin: 0;
   padding: 0;
@@ -11,12 +22,12 @@
 
   .system-note {
     .note-text {
-      color: var(--gl-text-color-default);
+      @apply gl-text-default;
     }
   }
 
   .diff-file {
-    border: 1px solid $border-color;
+    @apply gl-border;
     margin: 0;
   }
 
@@ -26,10 +37,10 @@
 }
 
 .timeline-entry {
-  color: var(--gl-text-color-default);
+  @apply gl-text-default;
 
   &:not(.note-form).internal-note .timeline-content {
-    background-color: var(--orange-50) !important;
+    background-color: var(--timeline-entry-internal-note-background-color) !important;
   }
 
   .timeline-entry-inner {
@@ -39,7 +50,7 @@
   &:target,
   &.target {
     .timeline-content {
-      background-color: var(--blue-50) !important;
+      background-color: var(--timeline-entry-target-background-color) !important;
     }
 
     + .discussion-reply-holder {
@@ -47,7 +58,7 @@
     }
 
     &.system-note .note-body .note-text.system-note-commit-list::after {
-      background: linear-gradient(rgba(var(--blue-50), 0.1) -100px, var(--blue-50) 100%);
+      background: linear-gradient(rgba(var(--timeline-entry-target-background-color), 0.1) -100px, var(--timeline-entry-target-background-color) 100%);
     }
   }
 
@@ -77,9 +88,8 @@
   .timeline-entry:not(.draft-note):last-child::before {
     @apply gl-bg-default;
 
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark .modal-body & {
-      @apply gl-bg-strong;
+    .modal-body & {
+      @apply gl-bg-overlap;
     }
   }
 }

@@ -3,6 +3,8 @@
 module Ci
   module Runners
     class CreateRunnerService
+      include Gitlab::InternalEventsTracking
+
       RUNNER_CLASS_MAPPING = {
         'instance_type' => Ci::Runners::RunnerCreationStrategies::InstanceRunnerStrategy,
         'group_type' => Ci::Runners::RunnerCreationStrategies::GroupRunnerStrategy,
@@ -11,6 +13,7 @@ module Ci
 
       def initialize(user:, params:)
         @user = user
+        @scope = params[:scope]
         @params = params
         @strategy = RUNNER_CLASS_MAPPING[params[:runner_type]].new(user: user, params: params)
       end
@@ -27,7 +30,11 @@ module Ci
 
         runner = ::Ci::Runner.new(params)
 
-        return ServiceResponse.success(payload: { runner: runner }) if runner.save
+        if runner.save
+          track_runner_event(runner)
+
+          return ServiceResponse.success(payload: { runner: runner })
+        end
 
         ServiceResponse.error(message: runner.errors.full_messages, reason: :save_error)
       end
@@ -43,6 +50,26 @@ module Ci
       private
 
       attr_reader :user, :params, :strategy
+
+      def track_runner_event(runner)
+        return if params[:maintenance_note].blank?
+
+        kwargs = { user: user }
+        case runner.runner_type
+        when 'group_type'
+          kwargs[:namespace] = @scope
+        when 'project_type'
+          kwargs[:project] = @scope
+        end
+
+        track_internal_event(
+          'set_runner_maintenance_note',
+          **kwargs,
+          additional_properties: {
+            label: params[:runner_type]
+          }
+        )
+      end
     end
   end
 end

@@ -13,7 +13,7 @@ For guidelines on specific words, see [the word list](word_list.md).
 ## The GitLab voice
 
 The GitLab brand guidelines define the
-[voice used by the larger organization](https://design.gitlab.com/brand-overview/brand-voice).
+[voice used by the larger organization](https://design.gitlab.com/brand-overview/introduction/#brand-personality).
 
 Building on that guidance, the voice in the GitLab documentation strives to be concise,
 direct, and precise. The goal is to provide information that's easy to search and scan.
@@ -109,7 +109,7 @@ features is limited by our linters, so, use regular Markdown and follow the rule
 linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
 
 For a complete Kramdown reference, see the
-[GitLab Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/).
+[GitLab Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/).
 
 The Markdown format is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
 
@@ -142,7 +142,7 @@ GitLab documentation should be clear and easy to understand.
 
 - Avoid unnecessary words.
 - Be clear, concise, and stick to the goal of the topic.
-- Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
+- Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/British.yml).)
 
 ### Active voice
 
@@ -276,7 +276,7 @@ You can use these fake tokens as examples:
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
 | CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
 | Project runner token  | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
-| Shared runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Instance runner token | `6Vk7ZsosqQyfreAxXTZr`                                             |
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
 | Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
 | Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
@@ -375,13 +375,13 @@ Follow these guidelines for punctuation.
 <!-- vale gitlab_base.Repetition = NO -->
 
 - End full sentences with a period, including full sentences in tables.
-- Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
+- Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/OxfordComma.yml).)
 
 <!-- vale gitlab_base.Repetition = YES -->
 
 When spacing content:
 
-- Use one space between sentences. (Use of more than one space is tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).)
+- Use one space between sentences. (Use of more than one space is tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SentenceSpacing.yml).)
 - Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
 - Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the <kbd>Tab</kbd> key.
 
@@ -389,7 +389,7 @@ Do not use these punctuation characters:
 
 - `;` (semicolon): Use two sentences instead.
 - `–` (en dash) or `—` (em dash): Use separate sentences, or commas, instead.
-- `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
+- `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/NonStandardQuotes.yml).)
 
 ### Placeholder text
 
@@ -455,6 +455,18 @@ To make text bold, wrap it with double asterisks (`**`). For example:
 ```markdown
 1. Select **Cancel**.
 ```
+
+When using bold format for UI elements or keywords, place any punctuation outside the bold tag.
+This rule includes periods, commas, colons, and right-angle brackets (`>`).
+
+The punctuation is part of the sentence structure rather than the UI element or keyword that you're emphasizing.
+
+Include punctuation in the bold tag when it's part of the UI element or keyword itself.
+
+For example:
+
+- `**Option**: This an option description.`
+- `Select **Overview** > **Users**.`
 
 ### Inline code
 
@@ -803,7 +815,7 @@ Links help the docs adhere to the
 However, you should avoid putting too many links on any page. Too many links can hinder readability.
 
 - Do not duplicate links on the same page. For example, on **Page A**, do not link to **Page B** multiple times.
-- Do not use links in headings. Subheadings are rendered as links, and subheadings that contain links cause errors.
+- Do not use links in headings. Headings that contain links cause errors.
 - Avoid multiple links in a single paragraph.
 - Avoid multiple links in a single task.
 - On any one page, try not to use more than 15 links to other pages.
@@ -815,7 +827,7 @@ However, you should avoid putting too many links on any page. Too many links can
 To link to another documentation (`.md`) file in the same repository:
 
 - Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/index.md)`.
-- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/MultiLineLinks.yml)).
+- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
 To link to a file outside of the documentation files, for example to link from development
 documentation to a specific code file, you can:
@@ -847,15 +859,11 @@ When you change topic title text, the anchor link changes. To avoid broken links
 
 #### Changing links and titles
 
-When you change a topic title, the anchor link changes. To ensure you update
-any related links, search these directories:
+When you change a topic title, the anchor link changes. If other documentation pages
+or code files link to this anchor, [pipeline jobs could fail](../testing/index.md).
 
-- `doc/*`
-- `app/views/*`
-- `ee/app/views/*`
-
-If you do not fix these links, the [`ui-docs-lint` job](../testing/index.md#tests-in-ui-docs-links-lint)
-in your merge request might fail.
+Consider [running the link checks locally](../testing/links.md) before pushing your changes
+to prevent failing pipelines.
 
 ### Text for links
 
@@ -938,18 +946,20 @@ If you must use one of these links:
 
 Examples:
 
-```markdown
-GitLab team members can view more information in this confidential issue:
-`https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
-```
+- ```markdown
+  GitLab team members can view more information in this confidential issue:
+  `https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
+  ```
 
-GitLab team members can view more information in this internal handbook page:
-`https://internal.gitlab.com/handbook/<link>`
+- ```markdown
+  GitLab team members can view more information in this internal handbook page:
+  `https://internal.gitlab.com/handbook/<link>`
+  ```
 
-```markdown
-Users with the Maintainer role for the project can use the pipeline editor:
-`https://gitlab.com/gitlab-org/gitlab/-/ci/editor`
-```
+- ```markdown
+  Users with the Maintainer role for the project can use the pipeline editor:
+  `https://gitlab.com/gitlab-org/gitlab/-/ci/editor`
+  ```
 
 ### Link to specific lines of code
 
@@ -1104,6 +1114,13 @@ For example:
 1. Recommended. Enter a description for the job.
 ```
 
+### Documenting keyboard shortcuts and commands
+
+Write UI instructions instead of keyboard commands when both options exist.
+This guideline applies to GitLab and third-party applications, like VS Code.
+
+Keyboard commands for GitLab are documented in [GitLab keyboard shortcuts](../../../user/shortcuts.md).
+
 ### Documenting multiple fields at once
 
 If the UI text sufficiently explains the fields in a section, do not include a task step for every field.
@@ -1187,7 +1204,7 @@ If you need to emphasize an area in a screenshot, use an arrow.
 - Use the arrow style shown in the following image.
 - If you have multiple arrows, make them parallel when possible.
 
-![callout example](img/callouts.png)
+![callout example](img/callouts_v14_6.png)
 
 #### Image requirements
 
@@ -1373,7 +1390,7 @@ To create a diagram, use [Mermaid](https://mermaid.js.org/#/), which has the fol
 - The diagram is rendered as a scalable image, better suited to various output devices and sizes.
 
 To learn how to create diagrams with the [Mermaid syntax](https://mermaid.js.org/intro/syntax-reference.html),
-see the Mermaid [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
+see the [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
 and the examples on the Mermaid site.
 
 #### Guidelines
@@ -1394,6 +1411,7 @@ To create accessible and easily maintainable diagrams, follow these guidelines:
 - Include a title and brief description for the diagram.
 - For complex processes, consider creating multiple simple diagrams instead of one large diagram.
 - Validate diagrams work well when viewed on different devices and screen sizes.
+- Do not include links. Links embedded in diagrams with [`click` actions](https://mermaid.js.org/syntax/classDiagram.html#interaction) are not testable with our link checking tools.
 - Update diagrams along with documentation or code when processes change to maintain accuracy.
 
 #### Create a diagram

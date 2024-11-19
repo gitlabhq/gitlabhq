@@ -13,7 +13,9 @@ a base64-encoded ASCII text file with a `.gitlab-license` extension.
 The first time you sign in to your GitLab instance, a note with a
 link to the **Add license** page should be displayed.
 
-Otherwise, to add your license:
+Otherwise, add your license in the Admin area.
+
+## Add license in the Admin area
 
 1. Sign in to GitLab as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -61,8 +63,8 @@ a license, add the license in the **Admin area** in the web user interface.
 
 ## Submit license usage data
 
-If you use a license file or key to activate your instance in an offline environment, you must submit your license
-usage data monthly.
+If you use a license file or key to activate your instance in an offline environment, you are encouraged to submit your license
+usage data monthly to simplify future purchases and renewals.
 To submit the data, [export your license usage](../subscriptions/self_managed/index.md#export-your-license-usage)
 and send it by email to the renewals service, `renewals-service@customers.gitlab.com`. **You must not open the license
 usage file before you send it**. Otherwise, the file's content could be manipulated by the used program (for example,
@@ -70,7 +72,8 @@ timestamps could be converted to another format) and cause failures when the fil
 
 If you don't submit your data each month after your subscription start date, an email is sent to the address
 associated with your subscription and a banner displays to remind you to submit your data. The banner displays
-in the **Admin area** on the **Dashboard** and on the **Subscription** pages. You can only dismiss it until the
+in the **Admin** area on the **Dashboard** and on the **Subscription** pages, and can be dismissed after
+the usage file has been downloaded. You can only dismiss it until the
 following month after you submit your license usage data.
 
 ## What happens when your license expires
@@ -211,7 +214,7 @@ License.current # check to make sure it applied
 ```
 
 These snippets can be saved to a file and executed [using the Rails Runner](operations/rails_console.md#using-the-rails-runner) so the
-license can be applied via shell automation scripts.
+license can be applied through shell automation scripts.
 
 This is needed for example in a known edge-case with
 [expired license and multiple LDAP servers](../administration/auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).

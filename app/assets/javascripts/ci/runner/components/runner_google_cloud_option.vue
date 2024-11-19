@@ -1,13 +1,16 @@
 <script>
-import { GOOGLE_CLOUD_PLATFORM } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { GOOGLE_CLOUD_PLATFORM, GOOGLE_KUBERNETES_ENGINE } from '../constants';
 import RunnerPlatformsRadio from './runner_platforms_radio.vue';
 
 export default {
   name: 'RunnerGoogleCloudOption',
   GOOGLE_CLOUD_PLATFORM,
+  GOOGLE_KUBERNETES_ENGINE,
   components: {
     RunnerPlatformsRadio,
   },
+  mixins: [glFeatureFlagsMixin()],
   model: {
     event: 'input',
     prop: 'checked',
@@ -34,6 +37,15 @@ export default {
       >
         <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
         Google Cloud
+        <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
+      </runner-platforms-radio>
+      <runner-platforms-radio
+        :checked="checked"
+        :value="$options.GOOGLE_KUBERNETES_ENGINE"
+        @input="$emit('input', $event)"
+      >
+        <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+        GKE
         <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
       </runner-platforms-radio>
     </div>

@@ -230,7 +230,7 @@ function in Rugged. In the stack, we can see `rev_parse` is being called by the 
 
 `rbspy` requires additional [capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
 in [containerized environments](https://rbspy.github.io/using-rbspy/index.html#containers).
-It requires at least the `SYS_PTRACE` capabiltiy, otherwise it terminates with a `permission denied` error.
+It requires at least the `SYS_PTRACE` capability, otherwise it terminates with a `permission denied` error.
 
 ::Tabs
 

@@ -1,6 +1,11 @@
 import axios from '~/lib/utils/axios_utils';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import {
+  convertObjectPropsToCamelCase,
+  normalizeHeaders,
+  parseIntPagination,
+} from '~/lib/utils/common_utils';
 import { isValidURL } from '~/lib/utils/url_utility';
+import { PAGE_SIZE } from '../constants';
 import types from './mutation_types';
 
 export const transformBackendBadge = (badge) => ({
@@ -9,19 +14,10 @@ export const transformBackendBadge = (badge) => ({
 });
 
 export default {
-  requestNewBadge({ commit }) {
-    commit(types.REQUEST_NEW_BADGE);
-  },
-  receiveNewBadge({ commit }, newBadge) {
-    commit(types.RECEIVE_NEW_BADGE, newBadge);
-  },
-  receiveNewBadgeError({ commit }) {
-    commit(types.RECEIVE_NEW_BADGE_ERROR);
-  },
-  addBadge({ dispatch, state }) {
+  addBadge({ dispatch, commit, state }) {
     const newBadge = state.badgeInAddForm;
     const endpoint = state.apiEndpointUrl;
-    dispatch('requestNewBadge');
+    commit(types.REQUEST_NEW_BADGE);
     return axios
       .post(endpoint, {
         name: newBadge.name,
@@ -29,34 +25,27 @@ export default {
         link_url: newBadge.linkUrl,
       })
       .catch((error) => {
-        dispatch('receiveNewBadgeError');
+        commit(types.RECEIVE_NEW_BADGE_ERROR);
         throw error;
       })
-      .then((res) => {
-        dispatch('receiveNewBadge', transformBackendBadge(res.data));
+      .then(() => {
+        commit(types.RECEIVE_NEW_BADGE);
+        dispatch('loadBadges', { page: state.pagination.page });
       });
   },
-  requestDeleteBadge({ commit }, badgeId) {
-    commit(types.REQUEST_DELETE_BADGE, badgeId);
-  },
-  receiveDeleteBadge({ commit }, badgeId) {
-    commit(types.RECEIVE_DELETE_BADGE, badgeId);
-  },
-  receiveDeleteBadgeError({ commit }, badgeId) {
-    commit(types.RECEIVE_DELETE_BADGE_ERROR, badgeId);
-  },
-  deleteBadge({ dispatch, state }, badge) {
+
+  deleteBadge({ dispatch, commit, state }, badge) {
     const badgeId = badge.id;
-    dispatch('requestDeleteBadge', badgeId);
+    commit(types.REQUEST_DELETE_BADGE, badgeId);
     const endpoint = `${state.apiEndpointUrl}/${badgeId}`;
     return axios
       .delete(endpoint)
       .catch((error) => {
-        dispatch('receiveDeleteBadgeError', badgeId);
+        commit(types.RECEIVE_DELETE_BADGE_ERROR, badgeId);
         throw error;
       })
       .then(() => {
-        dispatch('receiveDeleteBadge', badgeId);
+        dispatch('loadBadges', { page: state.pagination.page });
       });
   },
 
@@ -64,27 +53,23 @@ export default {
     commit(types.START_EDITING, badge);
   },
 
-  requestLoadBadges({ commit }, data) {
-    commit(types.REQUEST_LOAD_BADGES, data);
-  },
-  receiveLoadBadges({ commit }, badges) {
-    commit(types.RECEIVE_LOAD_BADGES, badges);
-  },
-  receiveLoadBadgesError({ commit }) {
-    commit(types.RECEIVE_LOAD_BADGES_ERROR);
-  },
-
-  loadBadges({ dispatch, state }, data) {
-    dispatch('requestLoadBadges', data);
+  loadBadges({ commit, state }, { page }) {
+    commit(types.REQUEST_LOAD_BADGES);
     const endpoint = state.apiEndpointUrl;
     return axios
-      .get(endpoint)
+      .get(endpoint, {
+        params: {
+          page,
+          per_page: PAGE_SIZE,
+        },
+      })
       .catch((error) => {
-        dispatch('receiveLoadBadgesError');
+        commit(types.RECEIVE_LOAD_BADGES_ERROR);
         throw error;
       })
-      .then((res) => {
-        dispatch('receiveLoadBadges', res.data.map(transformBackendBadge));
+      .then(({ data, headers }) => {
+        commit(types.RECEIVE_LOAD_BADGES, data.map(transformBackendBadge));
+        commit(types.RECEIVE_PAGINATION, parseIntPagination(normalizeHeaders(headers)));
       });
   },
 

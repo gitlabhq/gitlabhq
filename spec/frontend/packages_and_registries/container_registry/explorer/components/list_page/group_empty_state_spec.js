@@ -12,7 +12,6 @@ describe('Registry Group Empty state', () => {
   let wrapper;
   const config = {
     noContainersImage: 'foo',
-    helpPagePath: 'baz',
   };
 
   beforeEach(() => {

@@ -1,5 +1,6 @@
 <script>
-import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
+import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
@@ -13,7 +14,7 @@ import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from './components/jobs_table.vue';
 import JobsTableEmptyState from './components/jobs_table_empty_state.vue';
 import JobsTableTabs from './components/jobs_table_tabs.vue';
-import { RAW_TEXT_WARNING } from './constants';
+import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE, POLL_INTERVAL } from './constants';
 
 export default {
   name: 'JobsPageApp',
@@ -26,26 +27,25 @@ export default {
     'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-b gl-border-gray-100',
   components: {
     GlAlert,
+    GlKeysetPagination,
     JobsFilteredSearch,
     JobsTable,
     JobsTableEmptyState,
     JobsTableTabs,
-    GlIntersectionObserver,
-    GlLoadingIcon,
     JobsSkeletonLoader,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: {
-    fullPath: {
-      default: '',
-    },
-  },
+  inject: ['fullPath', 'graphqlResourceEtag'],
   apollo: {
     jobs: {
       query: GetJobs,
+      context() {
+        return etagQueryHeaders('jobs_table', this.graphqlResourceEtag);
+      },
       variables() {
         return {
           fullPath: this.fullPath,
+          first: JOBS_PER_PAGE,
           ...this.validatedQueryString,
         };
       },
@@ -60,9 +60,13 @@ export default {
         this.error = this.$options.i18n.jobsFetchErrorMsg;
         reportToSentry(this.$options.name, error);
       },
+      pollInterval: POLL_INTERVAL,
     },
     jobsCount: {
       query: GetJobsCount,
+      context() {
+        return etagQueryHeaders('jobs_table', this.graphqlResourceEtag);
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -76,6 +80,7 @@ export default {
         this.error = this.$options.i18n.jobsCountErrorMsg;
         reportToSentry(this.$options.name, error);
       },
+      pollInterval: POLL_INTERVAL,
     },
   },
   data() {
@@ -85,11 +90,13 @@ export default {
       },
       error: '',
       scope: null,
-      infiniteScrollingTriggered: false,
       filterSearchTriggered: false,
       jobsCount: null,
       count: 0,
       requestData: {},
+      pagination: {
+        ...DEFAULT_PAGINATION,
+      },
     };
   },
   computed: {
@@ -108,14 +115,8 @@ export default {
         !this.validatedQueryString
       );
     },
-    hasNextPage() {
-      return this.jobs?.pageInfo?.hasNextPage;
-    },
-    showLoadingSpinner() {
-      return this.loading && this.infiniteScrollingTriggered;
-    },
-    showSkeletonLoader() {
-      return this.loading && !this.showLoadingSpinner;
+    showPagination() {
+      return this.jobs?.pageInfo?.hasNextPage || this.jobs.pageInfo?.hasPreviousPage;
     },
     showFilteredSearch() {
       return !this.scope;
@@ -137,6 +138,10 @@ export default {
       }
     },
   },
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.jobs);
+    toggleQueryPollingByVisibility(this.$apollo.queries.jobsCount);
+  },
   methods: {
     resetRequestData() {
       if (this.glFeatures.populateAndUseBuildNamesTable) {
@@ -144,6 +149,11 @@ export default {
       } else {
         this.requestData = { statuses: null };
       }
+    },
+    resetPagination() {
+      this.pagination = {
+        ...DEFAULT_PAGINATION,
+      };
     },
     updateHistoryAndFetchCount() {
       this.$apollo.queries.jobsCount.refetch(this.requestData);
@@ -153,23 +163,22 @@ export default {
       });
     },
     fetchJobsByStatus(scope) {
-      this.infiniteScrollingTriggered = false;
-
       if (this.scope === scope) return;
 
       this.scope = scope;
 
       this.resetRequestData();
+      this.resetPagination();
 
       if (!this.scope) this.updateHistoryAndFetchCount();
 
-      this.$apollo.queries.jobs.refetch({ statuses: scope });
+      this.$apollo.queries.jobs.refetch({ statuses: scope, ...DEFAULT_PAGINATION });
     },
     filterJobsBySearch(filters) {
-      this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
 
       this.resetRequestData();
+      this.resetPagination();
 
       filters.forEach((filter) => {
         if (!filter.type) {
@@ -188,20 +197,31 @@ export default {
         }
       });
 
-      this.$apollo.queries.jobs.refetch(this.requestData);
+      this.$apollo.queries.jobs.refetch({
+        ...this.requestData,
+        ...DEFAULT_PAGINATION,
+      });
       this.updateHistoryAndFetchCount();
     },
-    fetchMoreJobs() {
-      if (!this.loading) {
-        this.infiniteScrollingTriggered = true;
+    nextPage() {
+      this.pagination = {
+        after: this.jobs?.pageInfo?.endCursor,
+        before: null,
+        first: JOBS_PER_PAGE,
+        last: null,
+      };
 
-        this.$apollo.queries.jobs.fetchMore({
-          variables: {
-            fullPath: this.fullPath,
-            after: this.jobs?.pageInfo?.endCursor,
-          },
-        });
-      }
+      this.$apollo.queries.jobs.refetch(this.pagination);
+    },
+    prevPage() {
+      this.pagination = {
+        after: null,
+        before: this.jobs?.pageInfo?.startCursor,
+        first: null,
+        last: JOBS_PER_PAGE,
+      };
+
+      this.$apollo.queries.jobs.refetch(this.pagination);
     },
   },
 };
@@ -223,6 +243,7 @@ export default {
     <jobs-table-tabs
       :all-jobs-count="count"
       :loading="loading"
+      class="gl-mt-3"
       @fetchJobsByStatus="fetchJobsByStatus"
     />
     <div v-if="showFilteredSearch" :class="$options.filterSearchBoxStyles">
@@ -232,18 +253,19 @@ export default {
       />
     </div>
 
-    <jobs-skeleton-loader v-if="showSkeletonLoader" class="gl-mt-5" />
+    <jobs-skeleton-loader v-if="loading" class="gl-mt-5" />
 
     <jobs-table-empty-state v-else-if="showEmptyState" />
 
     <jobs-table v-else :jobs="jobs.list" class="gl-table-no-top-border" />
 
-    <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
-      <gl-loading-icon
-        v-if="showLoadingSpinner"
-        size="lg"
-        :aria-label="$options.i18n.loadingAriaLabel"
+    <div class="gl-mt-5 gl-flex gl-justify-center">
+      <gl-keyset-pagination
+        v-if="showPagination"
+        v-bind="jobs.pageInfo"
+        @prev="prevPage"
+        @next="nextPage"
       />
-    </gl-intersection-observer>
+    </div>
   </div>
 </template>

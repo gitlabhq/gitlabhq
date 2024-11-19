@@ -13,9 +13,8 @@ module QA
       create(:group, api_client: api_client, path: "destination-group-for-import-#{SecureRandom.hex(4)}")
     end
 
-    let!(:user) { create(:user, :hard_delete, api_client: api_client) }
-
-    let!(:user_api_client) { Runtime::API::Client.new(user: user) }
+    let!(:user) { Runtime::UserStore.test_user }
+    let!(:user_api_client) { user.api_client }
 
     let(:imported_project) do
       Resource::ProjectImportedFromGithub.fabricate_via_api! do |project|
@@ -25,7 +24,6 @@ module QA
         project.github_personal_access_token = Runtime::Env.github_access_token
         project.github_repository_path = github_repo
         project.api_client = user_api_client
-        project.issue_events_import = true
         project.full_notes_import = true
       end
     end

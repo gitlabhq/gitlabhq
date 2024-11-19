@@ -18,8 +18,8 @@ You can import your GitHub projects from either GitHub.com or GitHub Enterprise.
 migrate or import any types of groups or organizations from GitHub to GitLab.
 
 WARNING:
-Importing from GitHub to GitLab.com is [currently unavailable](https://status.gitlab.com). We don't have an
-estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+Importing from GitHub to GitLab.com is [unavailable](https://status.gitlab.com).
+For more information, contact [GitLab Support](https://about.gitlab.com/support/).
 
 Imported issues, merge requests, comments, and events have an **Imported** badge in GitLab.
 
@@ -84,6 +84,9 @@ If the above requirements are not met, the importer can't map the particular use
   describing that non-existent users were added as reviewers and approvers. However, the actual reviewer status and
   approval are not applied to the merge request in GitLab.
 
+[In GitLab 17.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/477553), GitLab adds backticks to username mentions in issues, merge requests, and notes.
+These backticks prevent linking to an incorrect user with the same username on the GitLab instance.
+
 ## Known issues
 
 - GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
@@ -91,7 +94,7 @@ If the above requirements are not met, the importer can't map the particular use
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424400), Markdown attachments from
   repositories on GitHub Enterprise Server instances aren't imported.
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/418800), when importing projects that used
-  [GitHub auto-merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request), the imported project in GitLab can have merge commits labeled "unverified" if the commit was signed with GitHub's internal GPG key.
+  [GitHub auto-merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request), the imported project in GitLab can have merge commits labeled `unverified` if the commit was signed with the GitHub internal GPG key.
 - GitLab [can't import](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) GitHub Markdown image attachments that
   were uploaded to private repositories before 2023-05-09. If you encounter this problem, would like to help us resolve the problem, and are willing to provide a sample repository
   for us, please add a comment to [issue 424046](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) and we'll contact you.
@@ -258,7 +261,6 @@ Expand **Details** to see a list of [repository entities](#imported-data) that f
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.

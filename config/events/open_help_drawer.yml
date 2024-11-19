@@ -1,0 +1,16 @@
+---
+description: Tracks when a user open the help drawer in the pipeline editor.
+action: open_help_drawer
+product_group: pipeline_authoring
+milestone: '15.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88258
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: pipeline_editor

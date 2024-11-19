@@ -113,26 +113,8 @@ describe('Container protection rules project settings', () => {
         (protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
           expect(findTableRowCellComboboxSelectedOption(i, 1).text).toBe('Maintainer');
-          expect(findTableRowCellComboboxSelectedOption(i, 2).text).toBe('Maintainer');
         },
       );
-    });
-
-    it('renders table with container protection rule with blank minimumAccessLevelForDelete', async () => {
-      const containerProtectionRuleQueryResolver = jest.fn().mockResolvedValue(
-        containerProtectionRuleQueryPayload({
-          nodes: [{ ...containerProtectionRulesData[0], minimumAccessLevelForDelete: null }],
-        }),
-      );
-      createComponent({ containerProtectionRuleQueryResolver });
-
-      await waitForPromises();
-
-      expect(findTableRowCell(0, 0).text()).toBe(
-        containerProtectionRulesData[0].repositoryPathPattern,
-      );
-      expect(findTableRowCellComboboxSelectedOption(0, 1).text).toBe('Maintainer');
-      expect(findTableRowCellComboboxSelectedOption(0, 2).text).toBe('Developer (default)');
     });
 
     it('displays table in busy state and shows loading icon inside table', async () => {
@@ -298,16 +280,13 @@ describe('Container protection rules project settings', () => {
     });
 
     describe.each`
-      comboboxName                         | minimumAccessLevelAttribute
-      ${'Minimum access level for push'}   | ${'minimumAccessLevelForPush'}
-      ${'Minimum access level for delete'} | ${'minimumAccessLevelForDelete'}
+      comboboxName            | minimumAccessLevelAttribute
+      ${'push-access-select'} | ${'minimumAccessLevelForPush'}
     `(
       'column "$comboboxName" with selectbox (combobox)',
       ({ comboboxName, minimumAccessLevelAttribute }) => {
         const findComboboxInTableRow = (i) =>
-          extendedWrapper(findTableRow(i).findByRole('combobox', { name: comboboxName }));
-        const findAllComboboxesInTableRow = (i) =>
-          extendedWrapper(findTableRow(i).findAllByRole('combobox'));
+          extendedWrapper(wrapper.findAllByTestId(comboboxName).at(i));
 
         it('contains correct access level as options', async () => {
           createComponent();
@@ -377,25 +356,19 @@ describe('Container protection rules project settings', () => {
 
             await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
 
-            findAllComboboxesInTableRow(0).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(true),
-            );
-            expect(findTableRowButtonDelete(0).props('disabled')).toBe(true);
-            findAllComboboxesInTableRow(1).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(false),
-            );
-            expect(findTableRowButtonDelete(1).props('disabled')).toBe(false);
+            expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
+            expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
+
+            expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+            expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
 
             await waitForPromises();
 
-            findAllComboboxesInTableRow(0).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(false),
-            );
-            expect(findTableRowButtonDelete(0).props('disabled')).toBe(false);
-            findAllComboboxesInTableRow(1).wrappers.forEach((combobox) =>
-              expect(combobox.props('disabled')).toBe(false),
-            );
-            expect(findTableRowButtonDelete(1).props('disabled')).toBe(false);
+            expect(findComboboxInTableRow(0).props('disabled')).toBe(false);
+            expect(findTableRowButtonDelete(0).attributes('disabled')).toBeUndefined();
+
+            expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+            expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
           });
 
           it('handles erroneous graphql mutation', async () => {
@@ -504,9 +477,9 @@ describe('Container protection rules project settings', () => {
 
         await clickOnModalPrimaryBtn();
 
-        expect(findTableRowButtonDelete(0).props().disabled).toBe(true);
+        expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
 
-        expect(findTableRowButtonDelete(1).props().disabled).toBe(false);
+        expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
       });
 
       it('sends graphql mutation', async () => {

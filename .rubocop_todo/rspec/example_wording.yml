@@ -9,7 +9,6 @@ RSpec/ExampleWording:
     - 'ee/spec/features/projects/mirror_spec.rb'
     - 'ee/spec/graphql/mutations/projects/product_analytics_project_settings_update_spec.rb'
     - 'ee/spec/graphql/mutations/projects/project_settings_update_spec.rb'
-    - 'ee/spec/lib/code_suggestions/programming_language_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/utils/prompt_spec.rb'
     - 'ee/spec/lib/product_analytics/settings_spec.rb'
     - 'ee/spec/models/incident_management/issuable_resource_link_spec.rb'

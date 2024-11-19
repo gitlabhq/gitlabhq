@@ -69,9 +69,7 @@ class Appearance < ApplicationRecord
   end
 
   def single_appearance_row
-    if self.class.any?
-      errors.add(:base, _('Only 1 appearances row can exist'))
-    end
+    errors.add(:base, _('Only 1 appearances row can exist')) if self.class.any?
   end
 
   def pwa_icon_path_scaled(width)

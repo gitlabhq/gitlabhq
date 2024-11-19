@@ -4,11 +4,12 @@ import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
+import { findWidget } from '~/issues/list/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
-import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
+import { TRACKING_CATEGORY_SHOW, WIDGET_TYPE_EMAIL_PARTICIPANTS, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
@@ -199,6 +200,9 @@ export default {
     resolveDiscussionTitle() {
       return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
+    hasEmailParticipantsWidget() {
+      return Boolean(findWidget(WIDGET_TYPE_EMAIL_PARTICIPANTS, this.workItem));
+    },
   },
   watch: {
     autofocus: {
@@ -227,29 +231,7 @@ export default {
               internal: isNoteInternal,
             },
           },
-          update(store, createNoteData) {
-            const numErrors = createNoteData.data?.createNote?.errors?.length;
-
-            if (numErrors) {
-              const { errors } = createNoteData.data.createNote;
-
-              // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/346557
-              // When a note only contains quick actions,
-              // additional "helpful" messages are embedded in the errors field.
-              // For instance, a note solely composed of "/assign @foobar" would
-              // return a message "Commands only Assigned @root." as an error on creation
-              // even though the quick action successfully executed.
-              if (
-                numErrors === 2 &&
-                errors[0].includes('Commands only') &&
-                errors[1].includes('Command names')
-              ) {
-                return;
-              }
-
-              throw new Error(createNoteData.data?.createNote?.errors[0]);
-            }
-          },
+          update: this.onNoteUpdate,
         });
         /**
          * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
@@ -277,6 +259,37 @@ export default {
     showReplyForm() {
       this.isEditing = true;
       this.$emit('startReplying');
+    },
+    onNoteUpdate(store, createNoteData) {
+      const numErrors = createNoteData.data?.createNote?.errors?.length;
+
+      if (numErrors) {
+        const { errors } = createNoteData.data.createNote;
+
+        // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503600
+        // Refetching widgets as a temporary solution for dynamic updates
+        // of the sidebar on changing the work item type
+        if (numErrors === 2 && errors[1].includes('"type"')) {
+          this.$apollo.queries.workItem.refetch();
+          return;
+        }
+
+        // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/346557
+        // When a note only contains quick actions,
+        // additional "helpful" messages are embedded in the errors field.
+        // For instance, a note solely composed of "/assign @foobar" would
+        // return a message "Commands only Assigned @root." as an error on creation
+        // even though the quick action successfully executed.
+        if (
+          numErrors === 2 &&
+          errors[0].includes('Commands only') &&
+          errors[1].includes('Command names')
+        ) {
+          return;
+        }
+
+        throw new Error(createNoteData.data?.createNote?.errors[0]);
+      }
     },
   },
 };
@@ -306,6 +319,7 @@ export default {
             :work-item-id="workItemId"
             :autofocus="autofocus"
             :comment-button-text="commentButtonText"
+            :is-discussion-internal="isInternalThread"
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="isWorkItemConfidential"
             :is-discussion-resolved="isDiscussionResolved"
@@ -313,6 +327,7 @@ export default {
             :full-path="fullPath"
             :has-replies="hasReplies"
             :work-item-iid="workItemIid"
+            :has-email-participants-widget="hasEmailParticipantsWidget"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"

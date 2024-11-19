@@ -33,14 +33,6 @@ module QA
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 
-      after do
-        group.set_require_two_factor_authentication(value: 'false')
-        group.remove_via_api! do |resource|
-          resource.api_client = admin_api_client
-        end
-        developer_user.remove_via_api!
-      end
-
       it(
         'allows enforcing 2FA via UI and logging in with 2FA', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'

@@ -57,13 +57,11 @@ module Ci
       specs
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def all_dependencies
       dependencies = super
       ActiveRecord::Associations::Preloader.new(records: dependencies, associations: :job_artifacts_archive).call
       dependencies
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_jobs_running_on_instance_runners_count
       # if not instance runner we don't care about that value and present `+Inf` as a placeholder for Prometheus

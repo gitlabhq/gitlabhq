@@ -19,8 +19,12 @@
           tag_pair(tag.strong, :strong_start, :strong_end))
   - if @pre_auth.scopes
     - @pre_auth.scopes.each do |scope|
-      %strong= t scope, scope: [:doorkeeper, :scopes]
-      .gl-text-gray-500.gl-pb-5.gl-text-sm= t scope, scope: [:doorkeeper, :scope_desc]
+      .js-experimental-setting-accordion.gl-mb-5
+        - title = t(scope, scope: [:doorkeeper, :scopes])
+        - description = t(scope, scope: [:doorkeeper, :scope_desc])
+        = render Pajamas::AccordionItemComponent.new(title: title, state: :closed, button_options: { class: '!gl-text-default gl-font-bold' }) do
+          .gl-text-gray-500.gl-text-sm
+            = description
   .info-well
     .well-segment
       - if Gitlab.com? && !@pre_auth.client.application.owner

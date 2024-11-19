@@ -66,7 +66,7 @@ fi
 
 if [ "$FAILING_FILES" -gt 0 ]; then
   # shellcheck disable=SC2059
-  printf "\n${COLOR_RED}ERROR: Documentation metadata is missing in ${FAILING_FILES} of ${TOTAL_FILES} documentation files.${COLOR_RESET} For more information, see https://docs.gitlab.com/ee/development/documentation/#metadata.\n" >&2
+  printf "\n${COLOR_RED}ERROR: Documentation metadata is missing in ${FAILING_FILES} of ${TOTAL_FILES} documentation files.${COLOR_RESET} For more information, see https://docs.gitlab.com/ee/development/documentation/metadata.html.\n" >&2
   exit 1
 else
   # shellcheck disable=SC2059

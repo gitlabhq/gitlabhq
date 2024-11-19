@@ -4,7 +4,8 @@ classes:
 - VirtualRegistries::Packages::Maven::CachedResponse
 feature_categories:
 - virtual_registry
-description: Cached response from a Maven upstream. Contains references to an object storage file.
+description: Cached response from a Maven upstream. Contains references to an object
+  storage file.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157055
 milestone: '17.3'
 gitlab_schema: gitlab_main_cell

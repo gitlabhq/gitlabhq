@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::WikiPushService, services: true, feature_category: :wiki do
+RSpec.describe Git::WikiPushService, :services, feature_category: :wiki do
   include RepoHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -339,7 +339,7 @@ RSpec.describe Git::WikiPushService, services: true, feature_category: :wiki do
   end
 
   def post_received(base, refs)
-    change_str = refs.map { |ref| +"#{base} #{current_sha} #{ref}" }.join("\n")
+    change_str = refs.map { |ref| "#{base} #{current_sha} #{ref}" }.join("\n")
     post_received = ::Gitlab::GitPostReceive.new(wiki.container, key_id, change_str, {})
     allow(post_received).to receive(:identify).with(key_id).and_return(current_user)
 

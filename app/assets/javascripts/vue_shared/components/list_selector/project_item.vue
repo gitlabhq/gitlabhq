@@ -45,7 +45,7 @@ export default {
     />
     <span class="gl-flex gl-max-w-30 gl-grow gl-flex-col">
       <span class="gl-font-bold">{{ name }}</span>
-      <span class="gl-text-gray-600">{{ data.nameWithNamespace }}</span>
+      <span class="gl-text-subtle">{{ data.nameWithNamespace }}</span>
     </span>
 
     <gl-button

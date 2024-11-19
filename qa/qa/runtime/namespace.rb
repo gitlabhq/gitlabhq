@@ -2,35 +2,43 @@
 
 module QA
   module Runtime
+    # Global helper methods for unique group name generation
+    #
+    # Avoid using directly, instead use through fabricated instances of Sandbox and Group resources
     module Namespace
-      extend self
+      class << self
+        def time
+          @time ||= Time.now
+        end
 
-      def time
-        @time ||= Time.now
-      end
+        # Random group name with specific pattern
+        #
+        # @return [String]
+        def group_name
+          Env.namespace_name || "qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-#{SecureRandom.hex(8)}"
+        end
 
-      def name(reset_cache: !Runtime::Env.cache_namespace_name?)
-        # If any changes are made to the name tag, following script has to be considered:
-        # https://ops.gitlab.net/gitlab-com/gl-infra/traffic-generator/blob/master/bin/janitor.bash
-        reset_name_cache if reset_cache
-        @name ||= Runtime::Env.namespace_name || "qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-#{SecureRandom.hex(8)}" # rubocop:disable Gitlab/ModuleWithInstanceVariables
-      end
+        # Top level group name
+        #
+        # @return [String]
+        def sandbox_name
+          return "gitlab-qa-sandbox-group-#{Time.now.wday + 1}" if live_env?
 
-      def reset_name_cache
-        @name = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
-      end
+          "qa-sandbox-#{SecureRandom.hex(6)}"
+        end
 
-      def path
-        "#{sandbox_name}/#{name(reset_cache: false)}"
-      end
+        private
 
-      def sandbox_name
-        @sandbox_name ||= Runtime::Env.sandbox_name ||
-          if !QA::Runtime::Env.running_on_dot_com? && QA::Runtime::Env.run_in_parallel?
-            "gitlab-qa-sandbox-group-#{SecureRandom.hex(4)}-#{Time.now.wday + 1}"
-          else
-            "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
-          end
+        # Test is running on live environment with limitations for top level group creation
+        #
+        # @return [Boolean]
+        def live_env?
+          return @live_env unless @live_env.nil?
+
+          # Memoize the result of this check so every call doesn't parse gitlab address and check hostname
+          # There is no case to change gitlab address in the middle of test process so it should be safe to do
+          @live_env = Runtime::Env.running_on_dot_com? || Runtime::Env.running_on_release?
+        end
       end
     end
   end

@@ -7,6 +7,8 @@ class Namespace::Detail < ApplicationRecord
   validates :namespace, presence: true
   validates :description, length: { maximum: 255 }
 
+  ignore_column :pending_delete, remove_with: '17.7', remove_after: '2024-11-22'
+
   self.primary_key = :namespace_id
 
   # This method should not be called directly. Instead, it is available on the namespace via delegation and should

@@ -274,9 +274,7 @@ module CommitsHelper
     external_url = environment.external_url_for(diff_new_path, commit_sha)
     return unless external_url
 
-    render Pajamas::ButtonComponent.new(href: external_url, target: '_blank', button_options: { rel: 'noopener noreferrer', title: "View on #{environment.formatted_external_url}", data: { container: 'body' } }) do
-      sprite_icon('external-link')
-    end
+    render Pajamas::ButtonComponent.new(href: external_url, icon: 'external-link', target: '_blank', button_options: { rel: 'noopener noreferrer', title: "View on #{environment.formatted_external_url}", class: 'has-tooltip', data: { container: 'body' } })
   end
 
   def truncate_sha(sha)

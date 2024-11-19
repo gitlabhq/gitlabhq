@@ -3,14 +3,50 @@
 # of opstrace being brought in through an acquisition.
 .e2e-observability-backend-base:
   stage: test
+  image: alpine:latest
   needs: []
-  inherit:
-    variables: false
-  variables:
-    TEST_GITLAB_COMMIT: $CI_COMMIT_SHA
-  trigger:
-    project: gitlab-org/opstrace/opstrace
-    strategy: depend
+  before_script:
+    - apk add jq curl
+  script:
+    - |
+      OPSTRACE_PROJECT_ID="32149347"
+      echo "Triggering pipeline on opstrace/opstrace project with: ref=${OPSTRACE_REF} TEST_GITLAB_COMMIT=${CI_COMMIT_SHA}"
+      response=$(curl -s -X POST --fail \
+        -F "token=${GITLAB_OBSERVABILITY_BACKEND_PIPELINE_TRIGGER_TOKEN}" \
+        -F "ref=${OPSTRACE_REF}" \
+        -F "variables[TEST_GITLAB_COMMIT]=${CI_COMMIT_SHA}" \
+        "https://gitlab.com/api/v4/projects/${OPSTRACE_PROJECT_ID}/trigger/pipeline")
+      # Extract the pipeline ID from the response
+      pipeline_id=$(echo "$response" | jq -r '.id')
+      if [ -z "$pipeline_id" ] || [ "$pipeline_id" == "null" ]; then
+        echo "Failed to trigger pipeline."
+        exit 1
+      else
+        web_url=$(echo "$response" | jq -r '.web_url')
+        echo "Pipeline $pipeline_id created: $web_url"
+      fi
+      # Poll the pipeline status until it succeeds or fails
+      status=""
+      while true; do
+        status=$(curl -s --header "PRIVATE-TOKEN: ${GITLAB_OBSERVABILITY_BACKEND_TOKEN_FOR_CI_SCRIPTS}" \
+          "https://gitlab.com/api/v4/projects/${OPSTRACE_PROJECT_ID}/pipelines/$pipeline_id" | jq -r '.status')
+        if [ -z "$status" ] || [ "$status" == "null" ]; then
+          echo "Failed to get pipeline status"
+          exit 1
+        fi
+        echo "Pipeline status: $status"
+        if [ "$status" == "success" ]; then
+          echo "Triggered pipeline succeeded."
+          exit 0
+        elif [ "$status" == "failed" ]; then
+          echo "Triggered pipeline failed."
+          exit 1
+        elif [ "$status" == "canceled" ] || [ "$status" == "canceling" ]; then
+          echo "Triggered pipeline was canceled."
+          exit 1
+        fi
+        sleep 60
+      done
 
 # e2e:observability-backend uses $CI_COMMIT_REF_NAME to
 # checkout a branch in gitlab-org/opstrace/opstrace with
@@ -21,21 +57,17 @@ e2e:observability-backend:
   extends:
     - .e2e-observability-backend-base
     - .observability-backend-current-branch:rules
-  trigger:
-    project: gitlab-org/opstrace/opstrace
-    branch: $CI_COMMIT_REF_NAME
+  variables:
+    OPSTRACE_REF: $CI_COMMIT_REF_NAME
+
 
 # e2e:observability-backend-main-branch will trigger
 # an e2e test pipeline that checks out GitLab to
 # $CI_COMMIT_SHA and Opstrace to the latest commit
-# on main branch. Devs run this manually on local
-# installs today periodically during development
-# and this manual job increases dev velocity
-# and testing reliablity.
+# on main branch.
 e2e:observability-backend-main-branch:
   extends:
     - .e2e-observability-backend-base
     - .observability-backend-main-branch:rules
-  trigger:
-    project: gitlab-org/opstrace/opstrace
-    branch: main
+  variables:
+    OPSTRACE_REF: main

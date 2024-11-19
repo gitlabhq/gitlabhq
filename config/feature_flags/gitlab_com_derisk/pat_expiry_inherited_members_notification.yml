@@ -1,0 +1,9 @@
+---
+name: pat_expiry_inherited_members_notification
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463016
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168245
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497743
+milestone: '17.6'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

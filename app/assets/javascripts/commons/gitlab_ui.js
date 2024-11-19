@@ -60,5 +60,6 @@ applyGitLabUIConfig({
     'GlPagination.nextText': NEXT,
     'GlPagination.prevText': PREV,
     'GlCollapsibleListbox.srOnlyResultsLabel': (count) => n__('%d result', '%d results', count),
+    'GlProgressBar.ariaLabel': __('Progress bar'),
   },
 });

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [AI gateway](../../architecture/blueprints/ai_gateway/index.md) is a standalone service that gives access to AI-powered GitLab Duo features.
 
-GitLab operates an instance of *AI Gateway* that is used by all GitLab instances, including self-managed, GitLab Dedicated, and GitLab.com via [Cloud Connector](../../development/cloud_connector/index.md).
+GitLab operates an instance of *AI gateway* that is used by all GitLab instances, including self-managed, GitLab Dedicated, and GitLab.com via [Cloud Connector](../../development/cloud_connector/index.md).
 
 This page describes where the AI gateway is deployed, and answers questions about region selection, data routing, and data sovereignty.
 
@@ -22,7 +22,7 @@ Runway, is currently not available to external customers. GitLab is working on e
 
 For GitLab.com customers, it's important to note that the current routing mechanism is based on the location of the GitLab instance, not the user's location. As GitLab.com is currently single-homed in `us-east1`, requests to the AI gateway are routed to us-east4 in almost all cases. This means that the routing may not always result in the absolute nearest deployment for every user.
 
-GitLab is working on an initiative to bypass the monolith when communicating with the AI Gateway (Epic: [Let the client (IDE) request Code Suggestions](https://gitlab.com/groups/gitlab-org/-/epics/13252)). This effort aims to improve routing efficiency and potentially allow for more user-location-based routing in the future.
+GitLab is working on an initiative to bypass the monolith when communicating with the AI gateway (Epic: [Let the client (IDE) request Code Suggestions](https://gitlab.com/groups/gitlab-org/-/epics/13252)). This effort aims to improve routing efficiency and potentially allow for more user-location-based routing in the future.
 
 ### Automatic routing
 
@@ -52,7 +52,7 @@ The following factors influence where data is routed.
 - **Service availability:** In case of regional outages or service disruptions, requests might be automatically rerouted to ensure uninterrupted service.
 - **Third-Party dependencies:** The GitLab AI infrastructure relies on third-party model providers, like Google Vertex AI, which have their own data handling practices.
 
-### AI-gateway deployment regions
+### AI gateway deployment regions
 
 For the most up-to-date information on AI gateway deployment regions, please refer to the [AI-assist runway configuration file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.runway/runway.yml?ref_type=heads#L12).
 
@@ -64,7 +64,7 @@ As of the last update (2023-11-21), GitLab deploys the AI gateway in the followi
 
 Please note that deployment regions may change frequently. For the most current information, always check the configuration file linked above.
 
-The exact location of the LLM models used by the AI gateway is determined by the third-party model providers. Currently, there is no guarantee that the models reside in the same geographical regions as the AI gateway deployments. This implies that data may flow back to the US or other regions where the model provider operates, even if the AI-gateway processes the initial request in a different region.
+The exact location of the LLM models used by the AI gateway is determined by the third-party model providers. Currently, there is no guarantee that the models reside in the same geographical regions as the AI gateway deployments. This implies that data may flow back to the US or other regions where the model provider operates, even if the AI gateway processes the initial request in a different region.
 
 ### Data Flow and LLM model locations
 

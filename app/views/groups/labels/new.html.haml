@@ -2,7 +2,6 @@
 - breadcrumb_title _("New label")
 - page_title _("New Label")
 
-%h1.page-title.gl-text-size-h-display
-  = _('New Label')
+= render ::Layouts::PageHeadingComponent.new(_('New label'))
 
 = render 'shared/labels/form', url: group_labels_path, back_path: @previous_labels_path

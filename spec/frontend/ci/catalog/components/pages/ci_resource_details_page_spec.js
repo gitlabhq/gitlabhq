@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlEmptyState } from '@gitlab/ui';
+import { GlAlert, GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -39,6 +39,7 @@ describe('CiResourceDetailsPage', () => {
   const findDetailsComponent = () => wrapper.findComponent(CiResourceDetails);
   const findHeaderComponent = () => wrapper.findComponent(CiResourceHeader);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findVisibilityAlert = () => wrapper.findComponent(GlAlert);
   const findHeaderSkeletonLoader = () => wrapper.findComponent(CiResourceHeaderSkeletonLoader);
 
   const createComponent = ({ props = {} } = {}) => {
@@ -164,6 +165,32 @@ describe('CiResourceDetailsPage', () => {
           version: defaultSharedData.versions.nodes[0].name,
         });
       });
+    });
+  });
+
+  describe('Project visibility', () => {
+    it('does not render alert for public projects', async () => {
+      sharedDataResponse.mockResolvedValue(catalogSharedDataMock);
+      createComponent();
+      await waitForPromises();
+
+      expect(findVisibilityAlert().exists()).toBe(false);
+    });
+
+    it('renders alert for private projects', async () => {
+      const privateProjectMockData = {
+        data: {
+          ciCatalogResource: {
+            ...catalogSharedDataMock.data.ciCatalogResource,
+            ...{ visibilityLevel: 'private' },
+          },
+        },
+      };
+      sharedDataResponse.mockResolvedValue(privateProjectMockData);
+      createComponent();
+      await waitForPromises();
+
+      expect(findVisibilityAlert().exists()).toBe(true);
     });
   });
 });

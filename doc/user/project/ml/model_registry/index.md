@@ -9,13 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9423) in GitLab 16.8 as an [experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `model_registry`. Disabled by default. To enable the feature, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `model_registry`.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
-
-NOTE:
-Model registry is in [beta](../../../../policy/experiment-beta-support.md). [Provide feedback](https://gitlab.com/groups/gitlab-org/-/epics/9423).
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14998) to general availability in GitLab 17.6.
 
 Model registry allows data scientists and developers to manage their machine learning
 models, along with all metadata associated with their creation: parameters, performance
@@ -39,15 +36,14 @@ at least the [Reporter role](../../../permissions.md#roles) to modify or delete 
 
 ## Create machine learning models by using the UI
 
-To create a new machine learning model and model version by using the GitLab UI:
+To create a new machine learning model by using the GitLab UI:
 
 1. On the left sidebar, select **Deploy > Model registry**.
-1. On the **Model registry** page, select **Create Model**.
+1. On the **Model registry** page, select **Create/Import**.
+1. In the dropdown, select **Create new model**.
 1. Complete the fields:
    - Enter a unique name for your model name.
    - Optional. Provide a description for the model.
-   - Optional. Create a version for the model along with a version description.
-   - Upload any files, logs, metrics, or parameters associated with the model.
 1. Select **Create**.
 
 You can now view the newly created model in the model registry.
@@ -56,7 +52,7 @@ You can now view the newly created model in the model registry.
 
 To create a new model version:
 
-1. On the model details page, select **Create model version**.
+1. On the model details page, select **Create new version**.
 1. Complete the fields:
    - Enter a unique version number following semantic versioning.
    - Optional. Provide a description for the model version.
@@ -71,6 +67,12 @@ To delete a model and all its associated versions:
 
 1. On the left sidebar, select **Deploy > Model registry**.
 1. Find the model you want to delete.
+1. In the most right column, select the vertical ellipsis (**{ellipsis_v}**) and **Delete model**.
+
+Alternatively you can delete models from the model details page:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. Find the model you want to delete.
 1. Select the model name to view its details.
 1. Select the vertical ellipsis (**{ellipsis_v}**) and **Delete model**.
 1. Confirm the deletion.
@@ -78,6 +80,15 @@ To delete a model and all its associated versions:
 ### Delete a model version
 
 To delete a model version:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. Find the model with a version you want to delete.
+1. Select the model name to view its details.
+1. Select the **Versions** tab.
+1. Find the model version you want to delete
+1. In the most right column, select the vertical ellipsis (**{ellipsis_v}**) and **Delete model version**.
+
+Alternatively you can delete models from the model version details page:
 
 1. On the left sidebar, select **Deploy > Model registry**.
 1. Find the model with a version you want to delete.
@@ -96,7 +107,8 @@ To add artifacts to a model version:
 1. Select the model name to view its details.
 1. Select the **Versions** tab.
 1. Select the version name to view its details.
-1. Optional. Specify a path for the files to be uploaded to. For example `config`.
+1. Select the **Artifacts** tab.
+1. Optional. Specify a subfolder path for the files to be uploaded to. For example `config`.
 1. Use **select** to choose the files to upload.
 1. Select **Upload**.
 
@@ -111,6 +123,7 @@ To delete artifacts of a version:
 1. Select the model name to view its details.
 1. Select the **Versions** tab.
 1. Select the version name to view its details.
+1. Select the **Artifacts** tab.
 1. Select the box next to each artifact you want to delete.
 1. Select **Delete**.
 1. Confirm the deletion.
@@ -172,7 +185,3 @@ if a new version can be deployed without changes to the application:
 - Prerelease: 2.0.1-alpha1 - A prerelease version of the model, with an alpha release.
 - Prerelease: 2.0.1-rc2 - A release candidate version of the model.
 - New Feature: 2.1.0 - A new feature has been added to the model, so the minor version is incremented.
-
-## Related topics
-
-- Development details, feedback, and feature requests in [epic 9423](https://gitlab.com/groups/gitlab-org/-/epics/9423).

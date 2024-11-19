@@ -42,11 +42,19 @@ RSpec.describe Organizations::OrganizationUsers::UpdateService, feature_category
       context 'when the organization user is the last owner' do
         let_it_be(:organization_user) { organization_owner }
 
-        it 'returns an error' do
-          expect(response).to be_error
+        context 'when new access level is owner' do
+          specify { expect(response).to be_success }
+        end
 
-          error_message = _('You cannot change the access of the last owner from the organization')
-          expect(response.message).to contain_exactly(error_message)
+        context 'when new access level is less than owner' do
+          let(:access_level) { 'default' }
+
+          it 'returns an error' do
+            expect(response).to be_error
+
+            error_message = _('You cannot change the access of the last owner from the organization')
+            expect(response.message).to contain_exactly(error_message)
+          end
         end
       end
 

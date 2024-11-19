@@ -1,10 +1,10 @@
 = form.label :name, s_('Profiles|Full name')
 - if user.read_only_attribute?(:name)
   = form.text_field :name, class: 'gl-form-input form-control', required: true, readonly: true
-  %small.form-text.gl-text-secondary
+  .form-text.gl-text-subtle
     = s_("Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you.") % { provider_label: attribute_provider_label(:name) }
 - else
   = form.text_field :name, class: 'gl-form-input form-control', required: true, title: s_("Profiles|Using emoji in names seems fun, but please try to set a status message instead")
-  %small.form-text.gl-text-secondary
+  .form-text.gl-text-subtle
     = s_("Profiles|Enter your name, so people you know can recognize you.")
     = safe_format(_("Profiles|No \"&lt;\" or \"&gt;\" characters, please."))

@@ -1,9 +1,9 @@
 import { GlEmptyState, GlLink, GlTableLite } from '@gitlab/ui';
 import MlExperimentsIndexApp from '~/ml/experiment_tracking/routes/experiments/index';
-import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { TITLE_LABEL } from '~/ml/experiment_tracking/routes/experiments/index/translations';
+import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
 import {
   startCursor,
   firstExperiment,

@@ -94,7 +94,7 @@ export default {
       :item="listItem"
     >
       <template #list-item>
-        <gl-icon name="branch" class="gl-mr-2 gl-text-secondary" />
+        <gl-icon name="branch" class="gl-mr-2" variant="subtle" />
         {{ listItem.text }}
       </template>
     </gl-disclosure-dropdown-item>

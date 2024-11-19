@@ -1,0 +1,4 @@
+.gl-alert-actions
+  = message
+  = _("You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
+  = link_button_to(_('Configure it later'), skip_profile_two_factor_auth_path, { variant: :confirm, method: :patch, data: { testid: 'configure-it-later-button' } })

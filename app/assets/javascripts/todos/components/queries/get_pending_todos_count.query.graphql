@@ -1,0 +1,21 @@
+query pending_todos_count(
+  $projectId: [ID!]
+  $groupId: [ID!]
+  $authorId: [ID!]
+  $action: [TodoActionEnum!]
+  $type: [TodoTargetEnum!]
+) {
+  currentUser {
+    id
+    todos(
+      state: [pending]
+      projectId: $projectId
+      groupId: $groupId
+      authorId: $authorId
+      action: $action
+      type: $type
+    ) {
+      count
+    }
+  }
+}

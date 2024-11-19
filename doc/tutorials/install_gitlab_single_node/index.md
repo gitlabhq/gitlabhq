@@ -260,7 +260,7 @@ Now that your server is set up, install GitLab:
    use your own, read how to [configure GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/).
 
    If the password you set wasn't picked up, read more about
-   [resetting the root account password](../../security/reset_user_password.md).
+   [resetting the root account password](../../security/reset_user_password.md#reset-the-root-password).
 
 1. After a few minutes, GitLab is installed. Sign in
    using the URL you set up in `EXTERNAL_URL`. Use `root` as the username and

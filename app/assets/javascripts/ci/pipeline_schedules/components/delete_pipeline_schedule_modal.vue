@@ -6,10 +6,10 @@ export default {
   modal: {
     id: 'delete-pipeline-schedule-modal',
     deleteConfirmation: s__(
-      'PipelineSchedules|Are you sure you want to delete this pipeline schedule?',
+      'PipelineSchedules|Are you sure you want to delete this scheduled pipeline?',
     ),
     actionPrimary: {
-      text: s__('PipelineSchedules|Delete pipeline schedule'),
+      text: s__('PipelineSchedules|Delete scheduled pipeline'),
       attributes: { variant: 'danger' },
     },
     actionCancel: {

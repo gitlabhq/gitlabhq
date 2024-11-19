@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NewMergeRequestWorker # rubocop:disable Scalability/IdempotentWorker
+class NewMergeRequestWorker
   include ApplicationWorker
   include NewIssuable
 

@@ -1,12 +1,11 @@
 ---
 table_name: zoekt_indices
 classes:
-  - Search::Zoekt::Index
+- Search::Zoekt::Index
 feature_categories:
-  - global_search
+- global_search
 description: Represents a zoekt index for a root namespace
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138992
 milestone: '16.8'
 gitlab_schema: gitlab_main_cell
-sharding_key:
-  namespace_id: namespaces
+exempt_from_sharding: true

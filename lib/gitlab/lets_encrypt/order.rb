@@ -23,6 +23,10 @@ module Gitlab
 
       def challenge_error
         authorization.challenges.first&.error
+      rescue StandardError => e
+        # Getting authorizations is an additional network request which can raise errors
+        Gitlab::ErrorTracking.track_exception(e)
+        e.message
       end
 
       delegate :url, :status, :expires, :certificate, to: :acme_order

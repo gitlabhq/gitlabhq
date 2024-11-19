@@ -6,6 +6,8 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
   include Devise::Test::ControllerHelpers
   include StubVersion
 
+  let(:kas_enabled) { false }
+
   before do
     counts = Admin::DashboardController::COUNTED_ITEMS.index_with { 100 }
 
@@ -14,6 +16,7 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     assign(:users, create_list(:user, 1))
     assign(:groups, create_list(:group, 1))
 
+    allow(Gitlab::Kas).to receive(:enabled?).and_return(kas_enabled)
     allow(view).to receive(:admin?).and_return(true)
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
   end
@@ -73,24 +76,41 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
   end
 
   describe 'GitLab KAS', feature_category: :deployment_management do
-    before do
-      allow(Gitlab::Kas).to receive(:enabled?).and_return(enabled)
-    end
+    context 'when KAS is enabled' do
+      let(:retrieved_server_info?) { true }
 
-    context 'KAS enabled' do
-      let(:enabled) { true }
-      let(:expected_kas_version) { Gitlab::Kas.display_version_info }
+      before do
+        server_info = instance_double(
+          Gitlab::Kas::ServerInfoPresenter,
+          retrieved_server_info?: retrieved_server_info?,
+          version: '17.4.0-rc1',
+          git_ref_for_display: '6a0281c6896',
+          git_ref_url: 'some/url'
+        )
+        assign(:kas_server_info, server_info)
+      end
 
-      it 'includes KAS version' do
-        render
+      context 'when successfully fetched KAS version' do
+        it 'includes KAS version' do
+          render
 
-        expect(rendered).to have_content("GitLab KAS #{expected_kas_version}")
+          expect(rendered).to have_content("GitLab KAS 17.4.0-rc1 6a0281c6896")
+          expect(rendered).to have_link('6a0281c6896', href: 'some/url')
+        end
+      end
+
+      context 'when failed to fetch KAS version' do
+        let(:retrieved_server_info?) { false }
+
+        it 'includes error message' do
+          render
+
+          expect(rendered).to have_content("GitLab KAS Unknown")
+        end
       end
     end
 
-    context 'KAS disabled' do
-      let(:enabled) { false }
-
+    context 'when KAS is disabled' do
       it 'does not include KAS version' do
         render
 

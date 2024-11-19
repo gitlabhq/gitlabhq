@@ -1,0 +1,9 @@
+fragment ContainerTagsExpirationPolicyFields on ContainerTagsExpirationPolicy {
+  cadence
+  enabled
+  keepN
+  nameRegex
+  nameRegexKeep
+  olderThan
+  nextRunAt
+}

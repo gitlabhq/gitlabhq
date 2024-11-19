@@ -71,7 +71,7 @@ git config --global credential.helper 'cache --timeout=3600'
 To store and encrypt credentials, see:
 
 - MacOS: use `osxkeychain`.
-- Windows: use `wincred` or Microsoft's
+- Windows: use `wincred` or the Microsoft
   [Git Credential Manager for Windows](https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases).
 
 To learn more about storing your user credentials, see the

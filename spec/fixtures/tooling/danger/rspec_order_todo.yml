@@ -1,0 +1,3 @@
+---
+- './app/controllers/application/controller.rb'
+- './ee/app/models/epic.rb'

@@ -6,7 +6,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, :private, group: group) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group) }
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:work_item) do
@@ -85,7 +85,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'adminParentLink' => true,
           'setWorkItemMetadata' => true,
           'createNote' => true,
-          'adminWorkItemLink' => true
+          'adminWorkItemLink' => true,
+          'markNoteAsInternal' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -315,8 +316,14 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
 
       describe 'assignees widget' do
-        let(:assignees) { create_list(:user, 2) }
         let(:work_item) { create(:work_item, project: project, assignees: assignees) }
+        let(:assignees) do
+          [
+            create(:user, name: 'BBB'),
+            create(:user, name: 'AAA'),
+            create(:user, name: 'BBB')
+          ]
+        end
 
         let(:work_item_fields) do
           <<~GRAPHQL
@@ -337,7 +344,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           GRAPHQL
         end
 
-        it 'returns widget information' do
+        it 'returns widget information, assignees are ordered by name ASC id DESC' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
             'widgets' => include(
@@ -346,9 +353,11 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'allowsMultipleAssignees' => boolean,
                 'canInviteMembers' => boolean,
                 'assignees' => {
-                  'nodes' => match_array(
-                    assignees.map { |a| { 'id' => a.to_gid.to_s, 'username' => a.username } }
-                  )
+                  'nodes' => [
+                    { 'id' => assignees[1].to_gid.to_s, 'username' => assignees[1].username },
+                    { 'id' => assignees[2].to_gid.to_s, 'username' => assignees[2].username },
+                    { 'id' => assignees[0].to_gid.to_s, 'username' => assignees[0].username }
+                  ]
                 }
               )
             )
@@ -1093,6 +1102,49 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
 
     describe 'development widget' do
+      context 'when fetching related merge requests' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedMergeRequests {
+                  nodes {
+                    id
+                    iid
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        before do
+          post_graphql(query, current_user: current_user)
+        end
+
+        context 'when user is developer' do
+          let(:current_user) { developer }
+
+          # Adding as empty list first to make the field available in next release
+          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503834
+          it 'returns related merge requests in the response' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_global_id.to_s,
+              'widgets' => array_including(
+                hash_including(
+                  'type' => 'DEVELOPMENT',
+                  'relatedMergeRequests' => {
+                    'nodes' => []
+                  }
+                )
+              )
+            )
+          end
+        end
+      end
+
       context 'when fetching closing merge requests' do
         let_it_be(:merge_request1) { create(:merge_request, source_project: project) }
         let_it_be(:merge_request2) { create(:merge_request, source_project: project, target_branch: 'feature2') }
@@ -1186,6 +1238,142 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             end.to issue_same_number_of_queries_as(control)
             expect(graphql_errors).to be_blank
           end
+        end
+      end
+
+      context 'when fetching related branches' do
+        let_it_be(:branch_name) { "#{work_item.iid}-another-branch" }
+        let_it_be(:pipeline1) { create(:ci_pipeline, :success, project: project, ref: work_item.to_branch_name) }
+        let_it_be(:pipeline2) { create(:ci_pipeline, :success, project: project, ref: branch_name) }
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedBranches  {
+                  nodes {
+                    name
+                    comparePath
+                    pipelineStatus { name label favicon }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        before_all do
+          project.repository.create_branch(work_item.to_branch_name, pipeline1.sha)
+          project.repository.create_branch(branch_name, pipeline2.sha)
+          project.repository.create_branch("#{work_item.iid}doesnt-match", project.repository.root_ref)
+          project.repository.create_branch("#{work_item.iid}-0-stable", project.repository.root_ref)
+
+          project.repository.add_tag(developer, work_item.to_branch_name, pipeline1.sha)
+          create(
+            :merge_request,
+            source_project: work_item.project,
+            source_branch: work_item.to_branch_name,
+            description: "Related to #{work_item.to_reference}"
+          ).tap { |merge_request| merge_request.create_cross_references!(developer) }
+        end
+
+        before do
+          post_graphql(query, current_user: current_user)
+        end
+
+        context 'when user is developer' do
+          let(:current_user) { developer }
+
+          it 'returns related branches not referenced in merge requests' do
+            brach_compare_path = Gitlab::Routing.url_helpers.project_compare_path(
+              project,
+              from: project.default_branch,
+              to: branch_name
+            )
+
+            expect(work_item_data).to include(
+              'id' => work_item.to_global_id.to_s,
+              'widgets' => array_including(
+                hash_including(
+                  'type' => 'DEVELOPMENT',
+                  'relatedBranches' => {
+                    'nodes' => containing_exactly(
+                      hash_including(
+                        'name' => branch_name,
+                        'comparePath' => brach_compare_path,
+                        'pipelineStatus' => {
+                          'name' => 'SUCCESS',
+                          'label' => 'passed',
+                          'favicon' => 'favicon_status_success'
+                        }
+                      )
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+      end
+    end
+
+    describe 'email participants widget' do
+      let_it_be(:email) { 'user@example.com' }
+      let_it_be(:obfuscated_email) { 'us*****@e*****.c**' }
+      let_it_be(:issue_email_participant) { create(:issue_email_participant, issue_id: work_item.id, email: email) }
+
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetEmailParticipants {
+              emailParticipants {
+                nodes {
+                  email
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'contains the email' do
+        expect(work_item_data).to include(
+          'widgets' => array_including(
+            hash_including(
+              'type' => 'EMAIL_PARTICIPANTS',
+              'emailParticipants' => {
+                'nodes' => containing_exactly(
+                  hash_including(
+                    'email' => email
+                  )
+                )
+              }
+            )
+          )
+        )
+      end
+
+      context 'when user has the guest role' do
+        let(:current_user) { guest }
+
+        it 'contains the obfuscated email' do
+          expect(work_item_data).to include(
+            'widgets' => array_including(
+              hash_including(
+                'type' => 'EMAIL_PARTICIPANTS',
+                'emailParticipants' => {
+                  'nodes' => containing_exactly(
+                    hash_including(
+                      'email' => obfuscated_email
+                    )
+                  )
+                }
+              )
+            )
+          )
         end
       end
     end

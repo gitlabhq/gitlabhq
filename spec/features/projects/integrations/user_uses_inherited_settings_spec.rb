@@ -36,7 +36,7 @@ RSpec.describe 'User uses inherited settings', :js, feature_category: :integrati
 
         click_save_integration
 
-        expect(page).to have_text('Jira settings saved and active.')
+        expect(page).to have_text('Jira issues settings saved and active.')
         expect(integration.reload).to have_attributes(
           inherit_from_id: nil,
           url: 'http://custom.com',
@@ -63,7 +63,7 @@ RSpec.describe 'User uses inherited settings', :js, feature_category: :integrati
 
         click_save_integration
 
-        expect(page).to have_text('Jira settings saved and active.')
+        expect(page).to have_text('Jira issues settings saved and active.')
         expect(integration.reload).to have_attributes(
           inherit_from_id: parent_integration.id,
           **parent_settings

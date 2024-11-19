@@ -10,14 +10,14 @@
         input_id: 'group_id',
         input_name: 'group_id',
         root_url: root_url } }
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = _('Choose the top-level group for your repository imports.')
 
   .form-group
     = label_tag :manifest, class: 'label-bold' do
       = _('Manifest')
     = file_field_tag :manifest, class: 'form-control-file w-auto', required: true
-    .form-text.text-muted
+    .form-text.gl-text-subtle
       = _('Import multiple repositories by uploading a manifest file.')
       = link_to sprite_icon('question-o'), help_page_path('user/project/import/manifest.md')
 

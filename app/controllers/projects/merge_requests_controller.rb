@@ -13,6 +13,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include Gitlab::Cache::Helpers
   include MergeRequestsHelper
   include ParseCommitDate
+  include DiffsStreamResource
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -47,8 +48,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
     push_frontend_feature_flag(:vulnerability_code_flow, project)
     push_frontend_feature_flag(:pipeline_vulnerability_code_flow, project)
-    push_frontend_feature_flag(:issue_autocomplete_backend_filtering, project)
-    push_frontend_feature_flag(:realtime_issuable_todo, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
@@ -660,6 +659,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @merge_request.merge_request_diff.files_count
+  end
+
+  def diffs_stream_resource_url(merge_request, offset, diff_view)
+    diffs_stream_namespace_project_merge_request_path(
+      id: merge_request.iid,
+      project_id: merge_request.project.to_param,
+      namespace_id: merge_request.project.namespace.to_param,
+      offset: offset,
+      view: diff_view
+    )
   end
 end
 

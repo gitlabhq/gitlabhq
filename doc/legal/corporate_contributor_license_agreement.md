@@ -8,14 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Corporate contributor license agreement
 
 You accept and agree to the following terms and conditions for Your present and
-future Contributions submitted to GitLab B.V.. Except for the license granted
-herein to GitLab B.V. and recipients of software distributed by GitLab B.V., You
+future Contributions submitted to GitLab Inc. Except for the license granted
+herein to GitLab Inc. and recipients of software distributed by GitLab Inc., You
 reserve all right, title, and interest in and to Your Contributions.
 
 "1." **Definitions:**
 
   "You" (or "Your") shall mean the copyright owner or legal entity authorized by
-  the copyright owner that is making this Agreement with GitLab B.V.. For legal
+  the copyright owner that is making this Agreement with GitLab Inc. For legal
   entities, the entity making a Contribution and all other entities that
   control, are controlled by, or are under common control with that entity are
   considered to be a single Contributor. For the purposes of this definition,
@@ -26,20 +26,20 @@ reserve all right, title, and interest in and to Your Contributions.
 
   "Contribution" shall mean the code, documentation or other original works of
   authorship, including any modifications or additions to an existing work, that
-  is submitted by You to GitLab B.V. for inclusion in, or documentation of, any
-  of the products owned or managed by GitLab B.V. (the "Work"). For the purposes
+  is submitted by You to GitLab Inc. for inclusion in, or documentation of, any
+  of the products owned or managed by GitLab Inc. (the "Work"). For the purposes
   of this definition, "submitted" means any form of electronic, verbal, or
-  written communication sent to GitLab B.V. or its representatives, including
+  written communication sent to GitLab Inc. or its representatives, including
   but not limited to communication on electronic mailing lists, source code
   control systems, and issue tracking systems that are managed by, or on behalf
-  of, GitLab B.V. for the purpose of discussing and improving the Work, but
+  of, GitLab Inc. for the purpose of discussing and improving the Work, but
   excluding communication that is conspicuously marked or otherwise designated
   in writing by You as "Not a Contribution."
 
 "2." **Grant of Copyright License:**
 
   Subject to the terms and conditions of this Agreement, You hereby grant to
-  GitLab B.V. and to recipients of software distributed by GitLab B.V. a
+  GitLab Inc. and to recipients of software distributed by GitLab Inc. a
   perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable
   copyright license to reproduce, prepare derivative works of, publicly display,
   publicly perform, sublicense, and distribute Your Contributions and such
@@ -48,7 +48,7 @@ reserve all right, title, and interest in and to Your Contributions.
 "3." **Grant of Patent License:**
 
   Subject to the terms and conditions of this Agreement, You hereby grant to
-  GitLab B.V. and to recipients of software distributed by GitLab B.V. a
+  GitLab Inc. and to recipients of software distributed by GitLab Inc. a
   perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable
   (except as stated in this section) patent license to make, have made, use,
   offer to sell, sell, import, and otherwise transfer the Work, where such
@@ -68,7 +68,7 @@ reserve all right, title, and interest in and to Your Contributions.
   writing by You as "Not authorized to submit Contributions on behalf of (name
   of Your corporation here)." Such designations of exclusion for unauthorized
   employees are to be submitted via email to `legal@gitlab.com`. It is Your
-  responsibility to notify GitLab B.V. when any change is required to the list
+  responsibility to notify GitLab Inc. when any change is required to the list
   of designated employees excluded from submitting Contributions on Your behalf.
   Such notification should also be sent via email to `legal@gitlab.com`.
 
@@ -77,7 +77,7 @@ reserve all right, title, and interest in and to Your Contributions.
   You represent that each of Your Contributions is Your original creation.
 
   Should You wish to submit work that is not Your original creation, You may
-  submit it to GitLab B.V. separately from any Contribution, identifying the
+  submit it to GitLab Inc. separately from any Contribution, identifying the
   complete details of its source and of any license or other restriction
   (including, but not limited to, related patents, trademarks, and license
   agreements) of which you are personally aware, and conspicuously marking the

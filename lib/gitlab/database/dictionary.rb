@@ -57,7 +57,7 @@ module Gitlab
 
       private_class_method def self.dictionary_paths
         ::Gitlab::Database.all_database_connections
-          .values.map(&:db_docs_dir).uniq
+                          .values.map(&:db_docs_dir).uniq
       end
 
       class Entry
@@ -102,6 +102,10 @@ module Gitlab
           data['gitlab_schema']
         end
 
+        def table_size
+          data['table_size'] || 'unknown'
+        end
+
         def sharding_key
           data['sharding_key']
         end
@@ -144,7 +148,7 @@ module Gitlab
           raise(
             GitlabSchema::UnknownSchemaError,
             "#{file_path} must specify a valid gitlab_schema for #{key_name}. " \
-            "See #{help_page_url}"
+              "See #{help_page_url}"
           )
         end
 

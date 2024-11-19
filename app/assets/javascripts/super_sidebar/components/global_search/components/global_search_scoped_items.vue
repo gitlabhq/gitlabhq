@@ -89,7 +89,7 @@ export default {
 <template>
   <div>
     <ul class="gl-m-0 gl-list-none gl-p-0 gl-pb-2" data-testid="scoped-items">
-      <gl-disclosure-dropdown-group :group="group" bordered @action="trackingTypes">
+      <gl-disclosure-dropdown-group :group="group" @action="trackingTypes">
         <template #list-item="{ item }">
           <search-result-hover-layover :text-message="$options.i18n.OVERLAY_SEARCH">
             <gl-icon

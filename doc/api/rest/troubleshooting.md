@@ -40,7 +40,7 @@ The following table shows the possible return codes for API requests.
 | `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers. |
 | `304 Not Modified`        | The resource hasn't been modified since the last request. |
 | `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given. |
-| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](index.md#authentication) is necessary. |
+| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](authentication.md) is necessary. |
 | `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project. |
 | `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource. |
 | `405 Method Not Allowed`  | The request isn't supported. |
@@ -165,3 +165,67 @@ REST API requests can be detected as spam. If a request is detected as spam and:
     "https://gitlab.example.com/api/v4/snippets?
     title=Title&file_name=FileName&content=Content&visibility=public"
     ```
+
+## Error: `404 Not Found` when using a reverse proxy
+
+If your GitLab instance uses a reverse proxy, you might see `404 Not Found` errors when
+using a GitLab [editor extension](../../editor_extensions/index.md), the GitLab CLI, or
+API calls with URL-encoded parameters.
+
+This problem occurs when your reverse proxy decodes characters like `/`, `?`, and `@`
+before passing the parameters on to GitLab.
+
+To resolve this problem, edit the configuration for your reverse proxy:
+
+- In the `VirtualHost` section, add `AllowEncodedSlashes NoDecode`.
+- In the `Location` section, edit `ProxyPass` and add the `nocanon` flag.
+
+For example:
+
+::Tabs
+
+:::TabTitle Apache configuration
+
+```plaintext
+<VirtualHost *:443>
+  ServerName git.example.com
+
+  SSLEngine on
+  SSLCertificateFile     /etc/letsencrypt/live/git.example.com/fullchain.pem
+  SSLCertificateKeyFile  /etc/letsencrypt/live/git.example.com/privkey.pem
+  SSLVerifyClient None
+
+  ProxyRequests     Off
+  ProxyPreserveHost On
+  AllowEncodedSlashes NoDecode
+
+  <Location />
+     ProxyPass http://127.0.0.1:8080/ nocanon
+     ProxyPassReverse http://127.0.0.1:8080/
+     Order deny,allow
+     Allow from all
+  </Location>
+</VirtualHost>
+```
+
+:::TabTitle NGINX configuration
+
+```plaintext
+server {
+  listen       80;
+  server_name  gitlab.example.com;
+  location / {
+     proxy_pass    http://ip:port;
+     proxy_set_header        X-Forwarded-Proto $scheme;
+     proxy_set_header        Host              $http_host;
+     proxy_set_header        X-Real-IP         $remote_addr;
+     proxy_set_header        X-Forwarded-For   $proxy_add_x_forwarded_for;
+     proxy_read_timeout    300;
+     proxy_connect_timeout 300;
+  }
+}
+```
+
+::EndTabs
+
+For more information, see [issue 18775](https://gitlab.com/gitlab-org/gitlab/-/issues/18775).

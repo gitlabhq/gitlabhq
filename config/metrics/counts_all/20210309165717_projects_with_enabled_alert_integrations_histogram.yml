@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.monitor.projects_with_enabled_alert_integrations_histogram
 description: Histogram (buckets 1 to 100) of projects with at least 1 enabled integration.
-product_group: respond
+product_group: platform_insights
 value_type: object
 status: active
 milestone: "13.10"
@@ -12,7 +12,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

@@ -30,6 +30,22 @@ module Gitlab
       def pull_request?
         raw_data[:pull_request].present?
       end
+
+      def project_assignee_association
+        :issue_assignees
+      end
+
+      def contributing_user_formatters
+        {
+          author_id: author
+        }
+      end
+
+      def contributing_assignee_formatters
+        {
+          user_id: assignee
+        }
+      end
     end
   end
 end

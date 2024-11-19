@@ -1,0 +1,15 @@
+- title: "Deprecate CI job implementation of Repository X-Ray"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "17.6"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jordanjanes  # (required) GitLab username of the person reporting the change
+  stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500146  # (required) Link to the deprecation issue in GitLab
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  window: "1"  # Can be "1", "2" or "3"
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    GitLab 18.0 removes the Repository X-Ray CI job:
+
+    - The initial implementation of [Repository X-Ray](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/repository_xray.html), using a CI job, is deprecated in GitLab 17.6.
+    - This CI job is being replaced by an automated [background job](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/repository_xray.html#how-repository-x-ray-works), triggered when a new commit is pushed to your project's default branch.

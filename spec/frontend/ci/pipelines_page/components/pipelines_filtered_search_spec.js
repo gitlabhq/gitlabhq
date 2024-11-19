@@ -11,7 +11,7 @@ import {
   OPERATORS_IS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
-import { users, mockSearch, branches, tags } from 'jest/ci/pipeline_details/mock_data';
+import { branches, mockSearch, tags, users } from 'jest/ci/pipeline_details/mock_data';
 
 describe('Pipelines filtered search', () => {
   let wrapper;
@@ -31,9 +31,11 @@ describe('Pipelines filtered search', () => {
   const createComponent = (params = {}) => {
     wrapper = mount(PipelinesFilteredSearch, {
       propsData: {
-        projectId: '21',
-        defaultBranchName: 'main',
         params,
+      },
+      provide: {
+        defaultBranchName: 'main',
+        projectId: '21',
       },
       attachTo: document.body,
     });

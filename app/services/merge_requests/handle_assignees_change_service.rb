@@ -26,6 +26,8 @@ module MergeRequests
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
       end
 
+      invalidate_cache_counts(merge_request, users: old_assignees)
+
       execute_assignees_hooks(merge_request, old_assignees) if options['execute_hooks']
     end
 

@@ -78,7 +78,6 @@ module Notes
       content, update_params, message, command_names = quick_actions_service.execute(note, quick_action_options)
       only_commands = content.empty?
       note.note = content
-      note.command_names = command_names
 
       yield(only_commands)
 
@@ -123,22 +122,22 @@ module Notes
     end
 
     def do_commands(note, update_params, message, command_names, only_commands)
+      status = ::Notes::QuickActionsStatus.new(
+        command_names: command_names&.flatten,
+        commands_only: only_commands)
+      status.add_message(message)
+
+      note.quick_actions_status = status
+
       return if quick_actions_service.commands_executed_count.to_i == 0
 
       update_error = quick_actions_update_errors(note, update_params)
       if update_error
         note.errors.add(:validation, update_error)
-        message = update_error
+        status.add_error(update_error)
       end
 
-      # We must add the error after we call #save because errors are reset
-      # when #save is called
-      if only_commands
-        note.errors.add(:commands_only, message.presence || _('Failed to apply commands.'))
-        note.errors.add(:command_names, command_names.flatten)
-        # Allow consumers to detect problems applying commands
-        note.errors.add(:commands, _('Failed to apply commands.')) unless message.present?
-      end
+      status.add_error(_('Failed to apply commands.')) if only_commands && message.blank?
     end
 
     def quick_actions_update_errors(note, params)

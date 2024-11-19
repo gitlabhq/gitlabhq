@@ -16,7 +16,14 @@ RSpec.shared_context 'with group members shared context' do
     create(:group_group_link, shared_group: sub_group_1, shared_with_group: shared_group)
   end
 
-  let_it_be(:users) { create_list(:user, 6) }
+  let_it_be(:users) do
+    create_list(:user, 6).tap do |result|
+      # setting last_activity_on for some users in the list
+      result[0].update!(last_activity_on: 1.day.ago)
+      result[2].update!(last_activity_on: 3.days.ago)
+      result[5].update!(last_activity_on: 4.days.ago)
+    end
+  end
 
   let_it_be(:group_owner_1) { create(:group_member, :owner, group: group, user: users[0]) }
   let_it_be(:group_maintainer_2) { create(:group_member, :maintainer, group: group, user: users[1]) }

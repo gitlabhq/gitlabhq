@@ -9,6 +9,8 @@ extends: substitution
 message: "Use '%s' instead of '%s'."
 link: https://handbook.gitlab.com/handbook/communication/top-misused-terms/
 level: error
+action:
+  name: replace
 ignorecase: true
 swap:
   admin user: administrator
@@ -39,6 +41,8 @@ swap:
   guest access: the Guest role
   guest permission: the Guest role
   guest permissions: the Guest role
+  life cycle: "lifecycle"
+  life-cycle: "lifecycle"
   maintainer access: the Maintainer role
   maintainer permission: the Maintainer role
   maintainer permissions: the Maintainer role

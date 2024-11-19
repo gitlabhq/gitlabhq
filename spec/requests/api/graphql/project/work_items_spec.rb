@@ -14,8 +14,11 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let_it_be(:milestone1) { create(:milestone, project: project) }
   let_it_be(:milestone2) { create(:milestone, project: project) }
 
-  let_it_be(:item1) { create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1]) }
-  let_it_be(:item2) do
+  let_it_be_with_reload(:item1) do
+    create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1])
+  end
+
+  let_it_be_with_reload(:item2) do
     create(
       :work_item,
       project: project,
@@ -27,7 +30,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     )
   end
 
-  let_it_be(:confidential_item) { create(:work_item, confidential: true, project: project, title: 'item3') }
+  let_it_be_with_reload(:confidential_item) { create(:work_item, confidential: true, project: project, title: 'item3') }
   let_it_be(:other_item) { create(:work_item) }
 
   let(:items_data) { graphql_data['project']['workItems']['nodes'] }
@@ -123,6 +126,50 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       end
 
       it_behaves_like 'work items resolver without N + 1 queries'
+    end
+  end
+
+  context 'when querying WorkItemWidgetAssignees' do
+    let(:work_items_data) { graphql_data['project']['workItems']['nodes'].pluck('widgets') }
+    let(:widget_data) { work_items_data.map { |data| data.find { |widget| widget['type'] == 'ASSIGNEES' } } }
+    let(:assignee_data) { widget_data.map { |data| data.dig('assignees', 'nodes') } }
+    let(:assignees) do
+      [
+        create(:user, name: 'BBB'),
+        create(:user, name: 'AAA'),
+        create(:user, name: 'BBB')
+      ]
+    end
+
+    let(:fields) do
+      <<~GRAPHQL
+        nodes {
+          widgets {
+            type
+            ... on WorkItemWidgetAssignees {
+              assignees { nodes { id } }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    before do
+      project.work_items.each { |work_item| work_item.update!(assignees: assignees) }
+    end
+
+    it 'returns assignees ordered by name ASC id DESC' do
+      post_graphql(query, current_user: current_user)
+
+      expect(assignee_data).to all(
+        eq(
+          [
+            { 'id' => assignees[1].to_gid.to_s },
+            { 'id' => assignees[2].to_gid.to_s },
+            { 'id' => assignees[0].to_gid.to_s }
+          ]
+        )
+      )
     end
   end
 
@@ -772,14 +819,14 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         post_graphql(query, current_user: current_user)
       end
 
-      let(:item_filter_params) { { my_reaction_emoji: 'thumbsup' } }
+      let(:item_filter_params) { { my_reaction_emoji: AwardEmoji::THUMBS_UP } }
 
       it 'returns items with the reaction emoji' do
         expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
       end
 
       context 'when using NOT' do
-        let(:item_filter_params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+        let(:item_filter_params) { { not: { my_reaction_emoji: AwardEmoji::THUMBS_UP } } }
 
         it 'returns items without the reaction emoji' do
           expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)

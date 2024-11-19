@@ -1,5 +1,6 @@
 - add_to_breadcrumbs _("Messages"), admin_broadcast_messages_path
-- breadcrumb_title @broadcast_message.id
+- add_to_breadcrumbs @broadcast_message.id, edit_admin_broadcast_message_path(@broadcast_message)
+- breadcrumb_title _("Edit")
 - page_title _("Broadcast Messages")
 
 #js-broadcast-message{ data: broadcast_message_data(@broadcast_message) }

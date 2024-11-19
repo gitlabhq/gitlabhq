@@ -1,8 +1,8 @@
 %h5.gl-heading-4= s_('ProjectMaintenance|Remove blobs')
-%p.gl-text-secondary
+%p.gl-text-subtle
   = s_('ProjectMaintenance|Provide a list of blob object IDs to be removed.')
   = link_to s_('ProjectMaintenance|How do I get a list of object IDs?'), help_page_path('user/project/repository/repository_size.md', anchor: 'get-a-list-of-object-ids')
-%p.gl-text-secondary
+%p.gl-text-subtle
   = s_('ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the file from Git history.')
 
 .js-maintenance-remove-blobs{ data: { project_path: @project.full_path, housekeeping_path: edit_project_path(@project, anchor: 'js-project-advanced-settings') } }

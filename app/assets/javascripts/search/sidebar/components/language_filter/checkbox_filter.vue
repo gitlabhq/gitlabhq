@@ -7,9 +7,7 @@ import { intersection } from 'lodash';
 import Tracking from '~/tracking';
 import { NAV_LINK_COUNT_DEFAULT_CLASSES, LABEL_DEFAULT_CLASSES } from '../../constants';
 import { formatSearchResultCount } from '../../../store/utils';
-
-export const TRACKING_LABEL_SET = 'set';
-export const TRACKING_LABEL_CHECKBOX = 'checkbox';
+import { TRACKING_LABEL_SET, TRACKING_LABEL_CHECKBOX } from './tracking';
 
 export default {
   name: 'CheckboxFilter',
@@ -23,6 +21,10 @@ export default {
       required: true,
     },
     trackingNamespace: {
+      type: String,
+      required: true,
+    },
+    queryParam: {
       type: String,
       required: true,
     },
@@ -40,7 +42,7 @@ export default {
         return intersection(this.flatDataFilterValues, this.queryLanguageFilters);
       },
       async set(value) {
-        this.setQuery({ key: this.filtersData?.filterParam, value });
+        this.setQuery({ key: this.queryParam, value });
 
         await Vue.nextTick();
         this.trackSelectCheckbox();

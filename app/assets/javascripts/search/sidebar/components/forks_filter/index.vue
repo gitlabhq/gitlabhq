@@ -5,11 +5,12 @@ import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE } from '~/search/sidebar/constants';
+import {
+  EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE,
+  INCLUDE_FORKED_FILTER_PARAM,
+} from '~/search/sidebar/constants';
 
 const trackingMixin = InternalEvents.mixin();
-
-export const INCLUDE_FORKED_FILTER_PARAM = 'include_forked';
 
 export default {
   name: 'ForksFilter',

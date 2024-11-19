@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper do
+RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_category: :importers do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, iid: 999) }
 
   describe '.create_merge_request_without_hooks' do
     let(:iid) { 42 }
@@ -68,8 +69,6 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper do
   end
 
   describe '.insert_merge_request_reviewers' do
-    let_it_be(:merge_request) { create(:merge_request) }
-
     subject { helper.insert_merge_request_reviewers(merge_request, reviewers) }
 
     context 'when reviewers are not present' do
@@ -86,6 +85,38 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper do
       it 'inserts reviewers' do
         expect { subject }.to change { MergeRequestReviewer.count }.by(3)
       end
+    end
+  end
+
+  describe '.create_approval!', :aggregate_failures do
+    let(:submitted_at) { Time.utc(2023, 1, 1, 1) }
+
+    subject(:create_approval) { helper.create_approval!(project.id, merge_request.id, user.id, submitted_at) }
+
+    it 'creates an approval and system note and returns them' do
+      approval, note = create_approval
+
+      expect(approval).to be_a(Approval)
+      expect(approval).to have_attributes(
+        merge_request_id: merge_request.id,
+        user_id: user.id,
+        created_at: submitted_at,
+        updated_at: submitted_at
+      )
+
+      expect(note).to be_a(Note)
+      expect(note).to have_attributes(
+        importing: true,
+        noteable_id: merge_request.id,
+        noteable_type: 'MergeRequest',
+        project_id: project.id,
+        author_id: user.id,
+        note: 'approved this merge request',
+        system: true,
+        created_at: submitted_at,
+        updated_at: submitted_at
+      )
+      expect(note.system_note_metadata).to have_attributes(action: 'approved')
     end
   end
 end

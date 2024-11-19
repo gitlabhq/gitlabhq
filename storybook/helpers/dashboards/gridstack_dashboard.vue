@@ -1,5 +1,5 @@
 <script>
-import GridstackWrapper from 'ee/vue_shared/components/customizable_dashboard/gridstack_wrapper.vue';
+import GridstackWrapper from '~/vue_shared/components/customizable_dashboard/gridstack_wrapper.vue';
 import GridstackPanel from 'storybook_helpers/dashboards/gridstack_panel.vue';
 
 export default {

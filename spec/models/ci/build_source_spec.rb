@@ -7,7 +7,6 @@ RSpec.describe Ci::BuildSource, feature_category: :continuous_integration do
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:build) }
-    it { is_expected.to validate_presence_of(:source) }
   end
 
   describe 'partitioning' do

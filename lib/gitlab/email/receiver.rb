@@ -46,6 +46,7 @@ module Gitlab
           mail_key: mail_key,
           references: Array(mail.references),
           delivered_to: delivered_to.map(&:value),
+          x_delivered_to: x_delivered_to.map(&:value),
           envelope_to: envelope_to.map(&:value),
           x_envelope_to: x_envelope_to.map(&:value),
           x_original_to: x_original_to.map(&:value),
@@ -109,6 +110,7 @@ module Gitlab
       def key_from_additional_headers
         find_key_from_references ||
           find_first_key_from(delivered_to) ||
+          find_first_key_from(x_delivered_to) ||
           find_first_key_from(envelope_to) ||
           find_first_key_from(x_envelope_to) ||
           find_first_key_from(recipients_from_received_headers) ||
@@ -171,6 +173,10 @@ module Gitlab
 
       def x_forwarded_to
         Array(mail[:x_forwarded_to])
+      end
+
+      def x_delivered_to
+        Array(mail[:x_delivered_to])
       end
 
       def recipients_from_received_headers

@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { visitUrl, getLocationHash } from '~/lib/utils/url_utility';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -32,7 +33,7 @@ export default {
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
-  mixins: [getRefMixin, highlightMixin],
+  mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin()],
   inject: {
     originalBranch: {
       default: '',
@@ -334,7 +335,7 @@ export default {
         :override-copy="true"
         :show-fork-suggestion="showSingleFileEditorForkSuggestion"
         :show-web-ide-fork-suggestion="showWebIdeForkSuggestion"
-        :show-blame-toggle="true"
+        :show-blame-toggle="glFeatures.inlineBlame"
         :project-path="projectPath"
         :project-id="projectId"
         @viewer-changed="handleViewerChanged"
@@ -375,7 +376,7 @@ export default {
         :content="legacySimpleViewer"
         :is-raw-content="true"
         :active-viewer="viewer"
-        :show-blame="showBlame"
+        :show-blame="showBlame && glFeatures.inlineBlame"
         :current-ref="currentRef"
         :loading="isLoadingLegacyViewer"
         :project-path="projectPath"
@@ -386,7 +387,7 @@ export default {
         v-else
         :blob="blobInfo"
         :chunks="chunks"
-        :show-blame="showBlame"
+        :show-blame="showBlame && glFeatures.inlineBlame"
         :project-path="projectPath"
         :current-ref="currentRef"
         class="blob-viewer"

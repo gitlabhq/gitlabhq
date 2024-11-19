@@ -8,7 +8,7 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { __, getPreferredLocales, s__, sprintf } from '~/locale';
+import { getPreferredLocales, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -29,9 +29,12 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_GID,
   WIDGET_TYPE_LABELS,
-  WIDGET_TYPE_ROLLEDUP_DATES,
+  WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_MILESTONE,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -43,6 +46,7 @@ import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
+import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
@@ -58,14 +62,17 @@ export default {
     WorkItemTitle,
     WorkItemAssignees,
     WorkItemLabels,
+    WorkItemMilestone,
     WorkItemLoading,
     WorkItemCrmContacts,
     WorkItemProjectsListbox,
+    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemRolledupDates: () =>
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
+    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
   inject: ['fullPath'],
   props: {
@@ -118,9 +125,11 @@ export default {
       isRelatedToItem: true,
       error: null,
       workItemTypes: [],
-      selectedProjectFullPath: null,
+      selectedProjectFullPath: this.fullPath || null,
       selectedWorkItemTypeId: null,
       loading: false,
+      initialLoadingWorkItem: true,
+      initialLoadingWorkItemTypes: true,
       showWorkItemTypeSelect: false,
     };
   },
@@ -135,10 +144,13 @@ export default {
         };
       },
       skip() {
-        return !this.fullPath || !this.selectedWorkItemTypeName;
+        return this.skipWorkItemQuery;
       },
       update(data) {
         return data?.workspace?.workItem ?? {};
+      },
+      result() {
+        this.initialLoadingWorkItem = false;
       },
       error() {
         this.error = i18n.fetchError;
@@ -161,11 +173,20 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       async result() {
+        this.initialLoadingWorkItemTypes = false;
         if (!this.workItemTypes?.length) {
           return;
         }
         if (this.workItemTypes?.length === 1) {
-          this.selectedWorkItemTypeId = this.workItemTypes[0]?.id;
+          const workItemType = this.workItemTypes[0];
+          await setNewWorkItemCache(
+            this.fullPath,
+            workItemType?.widgetDefinitions,
+            workItemType.name,
+            workItemType.id,
+            workItemType.iconName,
+          );
+          this.selectedWorkItemTypeId = workItemType?.id;
         } else {
           this.workItemTypes.forEach(async (workItemType) => {
             await setNewWorkItemCache(
@@ -173,6 +194,7 @@ export default {
               workItemType?.widgetDefinitions,
               workItemType.name,
               workItemType.id,
+              workItemType.iconName,
             );
           });
           this.showWorkItemTypeSelect = true;
@@ -188,7 +210,12 @@ export default {
       return newWorkItemFullPath(this.fullPath, this.selectedWorkItemTypeName);
     },
     isLoading() {
-      return this.$apollo.queries.workItemTypes.loading || this.$apollo.queries.workItem.loading;
+      return (
+        this.initialLoadingWorkItemTypes || (this.initialLoadingWorkItem && !this.skipWorkItemQuery)
+      );
+    },
+    skipWorkItemQuery() {
+      return !this.fullPath || !this.selectedWorkItemTypeName;
     },
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
@@ -196,8 +223,17 @@ export default {
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
     },
+    workItemMilestone() {
+      return findWidget(WIDGET_TYPE_MILESTONE, this.workItem);
+    },
     workItemLabels() {
       return findWidget(WIDGET_TYPE_LABELS, this.workItem);
+    },
+    workItemIteration() {
+      return findWidget(WIDGET_TYPE_ITERATION, this.workItem);
+    },
+    workItemWeight() {
+      return findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
     },
     workItemHealthStatus() {
       return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
@@ -221,6 +257,9 @@ export default {
     },
     selectedWorkItemTypeName() {
       return this.selectedWorkItemType?.name;
+    },
+    selectedWorkItemTypeIconName() {
+      return this.selectedWorkItemType?.iconName;
     },
     formOptions() {
       return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypesForSelect];
@@ -262,6 +301,13 @@ export default {
       const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
       return labelsWidget?.labels?.nodes?.map((label) => label.id) || [];
     },
+    workItemWeightValue() {
+      const weightWidget = findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
+      return weightWidget?.weight ?? null;
+    },
+    workItemMilestoneId() {
+      return this.workItemMilestone?.milestone?.id || null;
+    },
     workItemCrmContactIds() {
       return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
     },
@@ -283,20 +329,11 @@ export default {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description || this.description;
     },
-    workItemRolledupDates() {
-      return findWidget(WIDGET_TYPE_ROLLEDUP_DATES, this.workItem);
+    workItemStartAndDueDate() {
+      return findWidget(WIDGET_TYPE_START_AND_DUE_DATE, this.workItem);
     },
-    workItemDueDateFixed() {
-      return this.workItemRolledupDates?.dueDateFixed;
-    },
-    workItemStartDateFixed() {
-      return this.workItemRolledupDates?.startDateFixed;
-    },
-    workItemDueDateIsFixed() {
-      return this.workItemRolledupDates?.dueDateIsFixed;
-    },
-    workItemStartDateIsFixed() {
-      return this.workItemRolledupDates?.startDateIsFixed;
+    workItemIterationId() {
+      return this.workItemIteration?.iteration?.id;
     },
     workItemId() {
       return this.workItem?.id;
@@ -356,11 +393,6 @@ export default {
         return;
       }
 
-      if (this.showProjectSelector && !this.selectedProjectFullPath) {
-        this.error = __('Please select a project.');
-        return;
-      }
-
       this.loading = true;
 
       const workItemCreateInput = {
@@ -399,12 +431,29 @@ export default {
         };
       }
 
-      if (this.isWidgetSupported(WIDGET_TYPE_ROLLEDUP_DATES)) {
-        workItemCreateInput.rolledupDatesWidget = {
-          dueDateIsFixed: this.workItemDueDateIsFixed,
-          startDateIsFixed: this.workItemStartDateIsFixed,
-          startDateFixed: this.workItemStartDateFixed,
-          dueDateFixed: this.workItemDueDateFixed,
+      if (this.isWidgetSupported(WIDGET_TYPE_ITERATION)) {
+        workItemCreateInput.iterationWidget = {
+          iterationId: this.workItemIterationId,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_WEIGHT)) {
+        workItemCreateInput.weightWidget = {
+          weight: this.workItemWeightValue,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_MILESTONE)) {
+        workItemCreateInput.milestoneWidget = {
+          milestoneId: this.workItemMilestoneId,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_START_AND_DUE_DATE)) {
+        workItemCreateInput.startAndDueDateWidget = {
+          isFixed: this.workItemStartAndDueDate.isFixed,
+          startDate: this.workItemStartAndDueDate.startDate,
+          dueDate: this.workItemStartAndDueDate.dueDate,
         };
       }
 
@@ -457,11 +506,15 @@ export default {
       const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
       const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
       clearDraft(autosaveKey);
+
+      const selectedWorkItemWidgets = this.selectedWorkItemType.widgetDefinitions || [];
+
       setNewWorkItemCache(
         this.fullPath,
-        this.workItemTypes[0]?.widgetDefinitions,
+        selectedWorkItemWidgets,
         this.selectedWorkItemTypeName,
-        this.workItemTypes[0]?.id,
+        this.selectedWorkItemTypeId,
+        this.selectedWorkItemTypeIconName,
       );
     },
   },
@@ -501,6 +554,7 @@ export default {
           <gl-form-select
             id="work-item-type"
             v-model="selectedWorkItemTypeId"
+            data-testid="work-item-types-select"
             :options="formOptions"
           />
         </gl-form-group>
@@ -553,79 +607,106 @@ export default {
             class="work-item-overview-right-sidebar gl-px-3"
             :class="{ 'is-modal': true }"
           >
-            <template v-if="workItemAssignees">
-              <work-item-assignees
-                class="js-assignee work-item-attributes-item"
-                :can-update="canUpdate"
-                :full-path="fullPath"
-                :is-group="isGroup"
-                :work-item-id="workItemId"
-                :assignees="workItemAssignees.assignees.nodes"
-                :participants="workItemParticipantNodes"
-                :work-item-author="workItemAuthor"
-                :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-                :work-item-type="selectedWorkItemTypeName"
-                :can-invite-members="workItemAssignees.canInviteMembers"
-                @error="$emit('error', $event)"
-              />
-            </template>
-            <template v-if="workItemLabels">
-              <work-item-labels
-                class="js-labels work-item-attributes-item"
-                :can-update="canUpdate"
-                :full-path="fullPath"
-                :is-group="isGroup"
-                :work-item-id="workItemId"
-                :work-item-iid="workItemIid"
-                :work-item-type="selectedWorkItemTypeName"
-                @error="$emit('error', $event)"
-              />
-            </template>
-            <template v-if="workItemRolledupDates">
-              <work-item-rolledup-dates
-                class="work-item-attributes-item"
-                :can-update="canUpdate"
-                :full-path="fullPath"
-                :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
-                :due-date-fixed="workItemRolledupDates.dueDateFixed"
-                :due-date-inherited="workItemRolledupDates.dueDate"
-                :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
-                :start-date-fixed="workItemRolledupDates.startDateFixed"
-                :start-date-inherited="workItemRolledupDates.startDate"
-                :work-item-type="selectedWorkItemTypeName"
-                :work-item="workItem"
-                @error="$emit('error', $event)"
-              />
-            </template>
-            <template v-if="workItemHealthStatus">
-              <work-item-health-status
-                class="work-item-attributes-item"
-                :work-item-id="workItemId"
-                :work-item-iid="workItemIid"
-                :work-item-type="selectedWorkItemTypeName"
-                :full-path="fullPath"
-                @error="$emit('error', $event)"
-              />
-            </template>
-            <template v-if="workItemColor">
-              <work-item-color
-                class="work-item-attributes-item"
-                :work-item="workItem"
-                :full-path="fullPath"
-                :can-update="canUpdate"
-                @error="$emit('error', $event)"
-              />
-            </template>
-            <template v-if="workItemCrmContacts">
-              <work-item-crm-contacts
-                class="work-item-attributes-item"
-                :full-path="fullPath"
-                :work-item-id="workItemId"
-                :work-item-iid="workItemIid"
-                :work-item-type="selectedWorkItemTypeName"
-                @error="$emit('error', $event)"
-              />
-            </template>
+            <work-item-assignees
+              v-if="workItemAssignees"
+              class="js-assignee work-item-attributes-item"
+              :can-update="canUpdate"
+              :full-path="fullPath"
+              :is-group="isGroup"
+              :work-item-id="workItemId"
+              :assignees="workItemAssignees.assignees.nodes"
+              :participants="workItemParticipantNodes"
+              :work-item-author="workItemAuthor"
+              :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+              :work-item-type="selectedWorkItemTypeName"
+              :can-invite-members="workItemAssignees.canInviteMembers"
+              @error="$emit('error', $event)"
+            />
+            <work-item-labels
+              v-if="workItemLabels"
+              class="js-labels work-item-attributes-item"
+              :can-update="canUpdate"
+              :full-path="fullPath"
+              :is-group="isGroup"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-type="selectedWorkItemTypeName"
+              @error="$emit('error', $event)"
+            />
+            <work-item-iteration
+              v-if="workItemIteration"
+              class="work-item-attributes-item"
+              :full-path="fullPath"
+              :is-group="isGroup"
+              :iteration="workItemIteration.iteration"
+              :can-update="canUpdate"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-type="selectedWorkItemTypeName"
+              @error="$emit('error', $event)"
+            />
+            <work-item-milestone
+              v-if="workItemMilestone"
+              class="work-item-attributes-item"
+              :is-group="isGroup"
+              :full-path="fullPath"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-milestone="workItemMilestone.milestone"
+              :work-item-type="selectedWorkItemTypeName"
+              :can-update="canUpdate"
+              @error="$emit('error', $event)"
+            />
+            <work-item-weight
+              v-if="workItemWeight"
+              class="work-item-attributes-item"
+              :can-update="canUpdate"
+              :full-path="fullPath"
+              :widget="workItemWeight"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-type="selectedWorkItemTypeName"
+              @error="$emit('error', $event)"
+            />
+            <work-item-rolledup-dates
+              v-if="workItemStartAndDueDate"
+              class="work-item-attributes-item"
+              :can-update="canUpdate"
+              :full-path="fullPath"
+              :start-date="workItemStartAndDueDate.startDate"
+              :due-date="workItemStartAndDueDate.dueDate"
+              :is-fixed="workItemStartAndDueDate.isFixed"
+              :should-roll-up="workItemStartAndDueDate.rollUp"
+              :work-item-type="selectedWorkItemTypeName"
+              :work-item="workItem"
+              @error="$emit('error', $event)"
+            />
+            <work-item-health-status
+              v-if="workItemHealthStatus"
+              class="work-item-attributes-item"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-type="selectedWorkItemTypeName"
+              :full-path="fullPath"
+              @error="$emit('error', $event)"
+            />
+            <work-item-color
+              v-if="workItemColor"
+              class="work-item-attributes-item"
+              :work-item="workItem"
+              :full-path="fullPath"
+              :can-update="canUpdate"
+              @error="$emit('error', $event)"
+            />
+            <work-item-crm-contacts
+              v-if="workItemCrmContacts"
+              class="work-item-attributes-item"
+              :full-path="fullPath"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-type="selectedWorkItemTypeName"
+              @error="$emit('error', $event)"
+            />
           </aside>
           <div class="gl-col-start-1 gl-flex gl-gap-3 gl-py-3">
             <gl-button

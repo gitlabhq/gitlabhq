@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -12,10 +12,10 @@ DETAILS:
 
 Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
 
-- Authenticate with the [GitLab API](../../api/rest/index.md#personalprojectgroup-access-tokens).
+- Authenticate with the [GitLab API](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
 - Authenticate with Git using HTTP Basic Authentication.
 
-In both cases, you authenticate with a personal access token in place of your password.
+In both cases, you authenticate with a personal access token in place of your password. Username is not evaluated as part of the authentication process.
 
 Personal access tokens are:
 
@@ -32,15 +32,20 @@ Though required, GitLab usernames are ignored when authenticating with a persona
 There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
 use the username.
 
-For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/rest/index.md#personalprojectgroup-access-tokens).
+For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
 
-Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/rest/index.md#impersonation-tokens).
+Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/rest/authentication.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
 ## Create a personal access token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
 > - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+FLAG:
+The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+For more information, see the history.
 
 WARNING:
 The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on when personal access tokens expire and expiry dates are added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
@@ -54,7 +59,8 @@ You can create as many personal access tokens as you like.
 1. Enter a name and expiry date for the token.
    - The token expires on that date at midnight UTC.A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date.
+   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
+
 1. Select the [desired scopes](#personal-access-token-scopes).
 1. Select **Create personal access token**.
 
@@ -75,15 +81,18 @@ WARNING:
 Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/index.md#security-considerations)
 for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
-## Revoke a personal access token
+## Revoke or rotate a personal access token
 
-At any time, you can revoke a personal access token.
+At any time, you can revoke or rotate a personal access token.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
-1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
-1. On the confirmation dialog, select **Revoke**.
+1. In the **Active personal access tokens** area, for the relevant token, select **Revoke** (**{remove}**) or **Rotate** (**{retry}**).
+1. On the confirmation dialog, select **Revoke** or **Rotate**.
+
+   WARNING:
+   These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
 
 ## Disable personal access tokens
 
@@ -184,10 +193,10 @@ A personal access token can perform actions based on the assigned scopes.
 | `read_registry`    | Grants read-only (pull) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.                                                                                               |
 | `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.  |
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
-| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.)                                                                                                                             |
+| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8. Available on GitLab self-managed only.)                                                                                                                             |
 | `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
 | `manage_runner`    | Grants permission to manage runners.                                                                    |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                                                |
+| `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and Duo Chat API.<br>- Does not work for GitLab self-managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
 | `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
 
@@ -196,13 +205,19 @@ If you enabled [external authorization](../../administration/settings/external_a
 
 ## Access token expiration
 
+> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+FLAG:
+The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+For more information, see the history.
+
 Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
 
-- GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
+- GitLab runs a check at 1:00 AM UTC every day to identify personal access tokens that expire soon. The owners of these tokens are [notified by email](#personal-access-token-expiry-emails).
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.
 - In GitLab Ultimate, administrators can
-  [limit the allowable lifetime of access tokens](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens). If not set, the maximum allowable lifetime of a personal access token is 365 days.
-- In GitLab Free and Premium, the maximum allowable lifetime of a personal access token is 365 days.
+  [limit the allowable lifetime of access tokens](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens). If not set, the maximum allowable lifetime of a personal access token is 365 days. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
+- In GitLab Free and Premium, the maximum allowable lifetime of a personal access token is 365 days. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
 - If you do not set an expiry date when creating a personal access token, the expiry date is set to the
   [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
   If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
@@ -238,6 +253,18 @@ automatically applied:
 - 17.0.5
 - 17.1.3
 - 17.2.1
+
+### Personal access token expiry emails
+
+> - Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+
+FLAG:
+The availability of the sixty and thirty day expiry notification emails is controlled by a feature flag. For more information, see the history.
+
+GitLab runs a check every day at 1:00 AM UTC to identify personal access tokens that are expiring in the near future. The owners of these tokens are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+
+- In GitLab 17.6 and later, personal access token owners are notified by email when the check identifies their personal access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their group access tokens as expiring in the next thirty days.
+- Personal access token owners are notified by email when the check identifies their group access tokens as expiring in the next seven days.
 
 ### Personal access token expiry calendar
 

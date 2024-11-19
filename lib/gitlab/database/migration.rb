@@ -8,7 +8,7 @@ module Gitlab
 
         class_methods do
           def enable_lock_retries!
-            @enable_lock_retries = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
+            @enable_lock_retries = true
           end
 
           def enable_lock_retries?

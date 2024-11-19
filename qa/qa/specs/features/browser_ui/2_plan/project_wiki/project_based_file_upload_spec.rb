@@ -12,10 +12,6 @@ module QA
         Flow::Login.sign_in
       end
 
-      after do
-        initial_wiki.project.remove_via_api!
-      end
-
       it 'by creating a formatted page with an image uploaded',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347640' do
         initial_wiki.visit!

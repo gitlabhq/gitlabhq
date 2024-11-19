@@ -153,7 +153,7 @@ describe('~/deployments/components/show_deployment.vue', () => {
       return createComponent();
     });
 
-    it('should set up a toggle visiblity hook on mount', () => {
+    it('should set up a toggle visibility hook on mount', () => {
       expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
     });
   });

@@ -11,7 +11,7 @@ export class CopyAsGFM {
     const isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
     if (isIOS) return;
 
-    $(document).on('copy', '.md', (e) => {
+    $(document).on('copy', '.md, .duo-chat-message', (e) => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
     });
     $(document).on('copy', 'pre.code.highlight, table.code td.line_content', (e) => {

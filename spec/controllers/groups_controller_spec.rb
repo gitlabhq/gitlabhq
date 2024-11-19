@@ -530,9 +530,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       end
 
       context 'when the user already has a value for `setup_for_company`' do
-        before do
-          user.update_attribute(:setup_for_company, true)
-        end
+        let_it_be(:user) { create(:user, setup_for_company: true) }
 
         it 'does not change the users `setup_for_company` value' do
           expect(Users::UpdateService).not_to receive(:new)
@@ -688,19 +686,18 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
     end
 
     context 'as the group owner' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+
       before do
+        group.add_owner(user)
         sign_in(user)
       end
 
-      it 'schedules a group destroy', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/469091' do
+      it 'schedules a group destroy and redirects to the root path' do
         Sidekiq::Testing.fake! do
           expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
         end
-      end
-
-      it 'redirects to the root path' do
-        delete :destroy, params: { id: group.to_param }
-
         expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
         expect(response).to redirect_to(root_path)
       end

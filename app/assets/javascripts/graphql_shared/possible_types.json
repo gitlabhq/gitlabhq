@@ -23,7 +23,12 @@
     "AbuseReportNote",
     "Note"
   ],
+  "CiJobTokenScopeTarget": [
+    "Group",
+    "Project"
+  ],
   "CiRunnerCloudProvisioning": [
+    "CiRunnerGkeProvisioning",
     "CiRunnerGoogleCloudProvisioning"
   ],
   "CiVariable": [
@@ -106,7 +111,8 @@
     "Issue",
     "MergeRequest",
     "Snippet",
-    "Vulnerability"
+    "Vulnerability",
+    "WikiPage"
   ],
   "NoteableType": [
     "Design",
@@ -159,6 +165,10 @@
     "AbuseReportNote",
     "Discussion",
     "Note"
+  ],
+  "RoleInterface": [
+    "MemberRole",
+    "StandardRole"
   ],
   "SecurityPolicySource": [
     "GroupSecurityPolicySource",

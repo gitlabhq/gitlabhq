@@ -7,17 +7,17 @@ module Gitlab
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(
-        namespace_id: nil, plan_name: nil, project_id: nil, user_id: nil,
+        namespace_id: nil, plan_name: nil, project_id: nil, user: nil,
         feature_enabled_by_namespace_ids: nil, **extra)
         check_argument_type(:namespace_id, namespace_id, [Integer])
         check_argument_type(:plan_name, plan_name, [String])
         check_argument_type(:project_id, project_id, [Integer])
-        check_argument_type(:user_id, user_id, [Integer])
+        check_argument_type(:user, user, [User, DeployToken])
 
         @namespace_id = namespace_id
         @plan_name = plan_name
         @project_id = project_id
-        @user_id = user_id
+        @user = user
         @extra = extra
         @feature_enabled_by_namespace_ids = feature_enabled_by_namespace_ids
       end
@@ -44,7 +44,7 @@ module Gitlab
 
       private
 
-      attr_accessor :namespace_id, :project_id, :extra, :plan_name, :user_id, :feature_enabled_by_namespace_ids
+      attr_accessor :namespace_id, :project_id, :extra, :plan_name, :user, :feature_enabled_by_namespace_ids
 
       def to_h
         {
@@ -53,8 +53,9 @@ module Gitlab
           correlation_id: Labkit::Correlation::CorrelationId.current_or_new_id,
           plan: plan_name,
           extra: extra,
-          user_id: user_id,
-          is_gitlab_team_member: gitlab_team_member?(user_id),
+          user_id: user&.id,
+          global_user_id: global_user_id,
+          is_gitlab_team_member: gitlab_team_member?(user&.id),
           namespace_id: namespace_id,
           project_id: project_id,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
@@ -72,6 +73,12 @@ module Gitlab
         exception = "Invalid argument type passed for #{argument_name}. " \
           "Should be one of #{allowed_classes.map(&:to_s)}"
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ArgumentError.new(exception))
+      end
+
+      def global_user_id
+        return unless user.is_a? User
+
+        Gitlab::GlobalAnonymousId.user_id(user)
       end
 
       # Overridden in EE

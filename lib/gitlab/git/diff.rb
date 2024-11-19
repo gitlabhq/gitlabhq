@@ -97,7 +97,7 @@ module Gitlab
         #    as generated.
         def filter_diff_options(options, default_options = {})
           allowed_options = [:ignore_whitespace_change, :max_files, :max_lines,
-                             :limits, :expanded, :collect_all_paths, :generated_files]
+                             :limits, :expanded, :collect_all_paths, :generated_files, :offset_index]
 
           if default_options
             actual_defaults = default_options.dup

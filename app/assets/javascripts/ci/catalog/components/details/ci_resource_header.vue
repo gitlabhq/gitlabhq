@@ -14,8 +14,9 @@ import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
-import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
+import { VERIFICATION_LEVEL_UNVERIFIED, VISIBILITY_LEVEL_PRIVATE } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
+import ProjectVisibilityIcon from '../shared/project_visibility_icon.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 
 export default {
@@ -36,6 +37,7 @@ export default {
     GlDisclosureDropdownItem,
     GlLink,
     Markdown,
+    ProjectVisibilityIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -67,6 +69,9 @@ export default {
     },
     hasLatestVersion() {
       return this.latestVersion?.name;
+    },
+    isProjectPrivate() {
+      return this.resource?.visibilityLevel === VISIBILITY_LEVEL_PRIVATE;
     },
     isVerified() {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
@@ -121,17 +126,18 @@ export default {
           <div class="gl-text-sm gl-text-secondary">
             {{ webPath }}
           </div>
-          <span class="gl-flex">
+          <span class="gl-flex gl-items-center gl-gap-3">
             <gl-link
               class="gl-text-lg gl-font-bold gl-text-gray-900 hover:gl-text-gray-900"
               :href="resource.webPath"
             >
               {{ resource.name }}
             </gl-link>
+            <project-visibility-icon v-if="isProjectPrivate" />
             <gl-badge
               v-if="hasLatestVersion"
               v-gl-tooltip
-              class="gl-my-1 gl-ml-3"
+              class="gl-my-1"
               variant="info"
               :href="latestVersion.path"
               :title="lastReleaseText"
@@ -174,7 +180,7 @@ export default {
       v-if="isLoadingData"
       class="gl-animate-skeleton-loader gl-my-3 gl-h-4 !gl-max-w-20 gl-rounded-base"
     ></div>
-    <markdown v-else class="gl-mb-5" :markdown="resource.description" />
+    <markdown v-else-if="resource.description" class="gl-mb-5" :markdown="resource.description" />
     <abuse-category-selector
       v-if="hasLatestVersion && isReportAbuseDrawerOpen && reportAbusePath"
       :reported-user-id="authorId"

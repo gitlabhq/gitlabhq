@@ -1,9 +1,9 @@
 ---
 table_name: zoekt_tasks
 classes:
-  - Search::Zoekt::Task
+- Search::Zoekt::Task
 feature_categories:
-  - global_search
+- global_search
 description: Represents a zoekt task for a project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143063
 milestone: '16.10'

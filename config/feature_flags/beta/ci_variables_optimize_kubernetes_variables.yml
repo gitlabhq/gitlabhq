@@ -1,0 +1,9 @@
+---
+name: ci_variables_optimize_kubernetes_variables
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498648
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168809
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498651
+milestone: '17.6'
+group: group::pipeline authoring
+type: beta
+default_enabled: true

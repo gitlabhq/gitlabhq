@@ -7,20 +7,18 @@ import {
   GRAPHQL_PAGE_SIZE,
   LIST_KEY_CREATED_AT,
   LIST_KEY_VERSION,
-  MODEL_VERSION_CREATION_MODAL_ID,
   SORT_KEY_CREATED_AT,
   SORT_KEY_ORDER,
 } from '../constants';
-import SearchableList from './searchable_list.vue';
+import SearchableTable from './searchable_table.vue';
 import EmptyState from './model_list_empty_state.vue';
-import ModelVersionRow from './model_version_row.vue';
 
 export default {
   components: {
     EmptyState,
-    ModelVersionRow,
-    SearchableList,
+    SearchableTable,
   },
+  inject: ['createModelVersionPath'],
   props: {
     modelId: {
       type: String,
@@ -98,18 +96,18 @@ export default {
     title: s__('MlModelRegistry|Manage versions of your machine learning model'),
     description: s__('MlModelRegistry|Use versions to track performance, parameters, and metadata'),
     primaryText: s__('MlModelRegistry|Create model version'),
-    modalId: MODEL_VERSION_CREATION_MODAL_ID,
   },
 };
 </script>
 <template>
-  <searchable-list
+  <searchable-table
     show-search
     :page-info="pageInfo"
-    :items="versions"
+    :model-versions="versions"
     :error-message="errorMessage"
     :is-loading="isLoading"
     :sortable-fields="$options.sortableFields"
+    can-write-model-registry
     @fetch-page="fetchPage"
   >
     <template #empty-state>
@@ -117,12 +115,8 @@ export default {
         :title="$options.emptyState.title"
         :description="$options.emptyState.description"
         :primary-text="$options.emptyState.primaryText"
-        :modal-id="$options.emptyState.modalId"
+        :primary-link="createModelVersionPath"
       />
     </template>
-
-    <template #item="{ item }">
-      <model-version-row :model-version="item" />
-    </template>
-  </searchable-list>
+  </searchable-table>
 </template>

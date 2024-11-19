@@ -94,7 +94,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
   it_behaves_like 'bot user avatars', :automation_bot, 'support-bot.png'
   it_behaves_like 'bot user avatars', :llm_bot, 'support-bot.png'
-  it_behaves_like 'bot user avatars', :duo_code_review_bot, 'support-bot.png'
+  it_behaves_like 'bot user avatars', :duo_code_review_bot, 'duo-bot.png'
   it_behaves_like 'bot user avatars', :admin_bot, 'admin-bot.png'
 
   context 'when bot is the support_bot' do

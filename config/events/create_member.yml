@@ -1,0 +1,20 @@
+---
+description: Triggered when a member is invited
+action: create_member
+identifiers:
+- user
+product_group: activation
+milestone: '14.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164498
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  property:
+    description: 'Either "net_new_user" or "existing_user"'
+  label:
+    description: Source of the invite

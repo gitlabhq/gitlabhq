@@ -95,6 +95,13 @@ module API
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+    def set_current_organization(user: current_user)
+      ::Current.organization = Gitlab::Current::Organization.new(
+        params: {},
+        user: user
+      ).organization
+    end
+
     def save_current_user_in_env(user)
       env[API_USER_ENV] = { user_id: user.id, username: user.username }
     end
@@ -227,12 +234,10 @@ module API
       check_group_access(group)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_group_by_full_path!(full_path)
       group = Group.find_by_full_path(full_path)
       check_group_access(group)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def check_group_access(group)
       return group if can?(current_user, :read_group, group)
@@ -695,7 +700,7 @@ module API
       if file.file_storage?
         file_content_type = content_type || 'application/octet-stream'
         present_disk_file!(file.path, file.filename, file_content_type)
-      elsif supports_direct_download && file.class.direct_download_enabled?
+      elsif supports_direct_download && file.direct_download_enabled?
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
         redirect_params = {}

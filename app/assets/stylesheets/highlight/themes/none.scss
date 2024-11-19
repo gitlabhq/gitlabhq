@@ -7,13 +7,15 @@
 $none-code-mark: #d3e3f4;
 
 @mixin match-line {
-  color: $t-gray-a-24;
-  background-color: $gray-50;
+  color: $gl-color-alpha-dark-24;
+  background-color: $gl-color-neutral-50;
 }
 
 :root {
   --default-diff-color-deletion: #b4b4b4;
   --default-diff-color-addition: #b4b4b4;
+  --diff-addition-color: #{$gl-color-neutral-50};
+  --diff-deletion-color: #{$gl-color-neutral-50};
 }
 
 .code.none {
@@ -21,13 +23,13 @@ $none-code-mark: #d3e3f4;
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   &.blob-viewer {
     [class^="hljs-"] {
-      color: $gl-text-color;
+      color: $gl-color-neutral-800;
     }
   }
 
   // Line numbers
   .file-line-blame {
-    @include line-link($black, 'git');
+    @include line-link($gl-color-neutral-1000, 'git');
   }
 
   .line-links {
@@ -37,29 +39,29 @@ $none-code-mark: #d3e3f4;
   .line-numbers,
   .diff-line-num,
   .code-search-line {
-    background-color: $gray-10;
+    background-color: $gl-color-neutral-10;
   }
 
   .diff-line-num,
   .diff-line-num a {
-    color: $t-gray-a-24;
+    color: $gl-color-alpha-dark-24;
   }
 
   // Code itself
   pre.code,
   .diff-line-num {
-    border-color: $gray-50;
+    border-color: $gl-color-neutral-50;
   }
 
   &,
   pre.code,
   .line_holder .line_content:not(.hll) {
-    background-color: $white;
-    color: $gl-text-color;
+    background-color: $gl-color-neutral-0;
+    color: $gl-color-neutral-800;
   }
 
   .diff-line-expand-button {
-    @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
+    @include diff-expansion($gl-color-neutral-100, $gl-color-neutral-700, $gl-color-neutral-200, $gl-color-neutral-800);
   }
 
 
@@ -75,11 +77,11 @@ $none-code-mark: #d3e3f4;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gray-100};
+      --diff-expansion-background-color: #{$gl-color-neutral-100};
     }
 
     .line-coverage {
-      @include line-coverage-border-color($green-500, $orange-500);
+      @include line-coverage-border-color($gl-color-green-500, $gl-color-orange-500);
     }
 
     .line-coverage:not(.hll),
@@ -88,7 +90,7 @@ $none-code-mark: #d3e3f4;
       &.new,
       &.new-nomappinginraw,
       &.old-nomappinginraw {
-        background-color: $gray-50;
+        background-color: $gl-color-neutral-50;
       }
     }
 
@@ -139,27 +141,27 @@ $none-code-mark: #d3e3f4;
 
     .line_content {
       &.old, &.old-nomappinginraw {
-        background-color: $gray-50;
+        background-color: $gl-color-neutral-50;
 
         &::before {
-          color: $gl-text-color;
+          color: $gl-color-neutral-800;
         }
 
         span.idiff {
-          background-color: $gray-50;
+          background-color: $gl-color-neutral-50;
           text-decoration: underline;
         }
       }
 
       &.new, &.new-nomappinginraw {
-        background-color: $gray-50;
+        background-color: $gl-color-neutral-50;
 
         &::before {
-          color: $gl-text-color;
+          color: $gl-color-neutral-800;
         }
 
         span.idiff {
-          background-color: $gray-50;
+          background-color: $gl-color-neutral-50;
           text-decoration: underline;
         }
       }
@@ -169,26 +171,26 @@ $none-code-mark: #d3e3f4;
       }
 
       &.hll {
-        --highlight-border-color: #{$orange-200};
-        background-color: $orange-50;
+        --highlight-border-color: #{$gl-color-orange-200};
+        background-color: $gl-color-orange-50;
       }
     }
   }
 
   // Search result highlight
   span.highlight_word {
-    background-color: $gray-50;
+    background-color: $gl-color-neutral-50;
   }
 
   // Links to URLs, emails, or dependencies
   .line a {
-    color: $gl-text-color;
+    color: $gl-color-neutral-800;
     text-decoration: underline;
   }
 
   .hll {
-    --highlight-border-color: #{$orange-200};
-    background-color: $orange-50;
+    --highlight-border-color: #{$gl-color-orange-200};
+    background-color: $gl-color-orange-50;
   }
 
   // mark lines via mark_multiple_lines
@@ -198,106 +200,106 @@ $none-code-mark: #d3e3f4;
     }
 
     .inline-section-marker {
-      background: $gray-100;
+      background: $gl-color-neutral-100;
     }
   }
 
   .file-holder div.code.none {
     .selected-inline-number-mark {
-      color: $gray-600;
+      color: $gl-color-neutral-600;
     }
 
     .unselected-inline-number-mark {
-      color: $gray-200;
+      color: $gl-color-neutral-200;
     }
   }
 
   .gd {
-    color: $gl-text-color;
-    background-color: $white;
+    color: $gl-color-neutral-800;
+    background-color: $gl-color-neutral-0;
 
     .x {
-      color: $gl-text-color;
-      background-color: $white;
+      color: $gl-color-neutral-800;
+      background-color: $gl-color-neutral-0;
     }
   }
 
   .gi {
-    color: $gl-text-color;
-    background-color: $white;
+    color: $gl-color-neutral-800;
+    background-color: $gl-color-neutral-0;
 
     .x {
-      color: $gl-text-color;
-      background-color: $white;
+      color: $gl-color-neutral-800;
+      background-color: $gl-color-neutral-0;
     }
   }
 
-  .c { color: $gl-text-color; } /* Comment */
-  .err { color: $gl-text-color; } /* Error */
-  .g { color: $gl-text-color; } /* Generic */
-  .k { color: $gl-text-color; } /* Keyword */
-  .l { color: $gl-text-color; } /* Literal */
-  .n { color: $gl-text-color; } /* Name */
-  .o { color: $gl-text-color; } /* Operator */
-  .x { color: $gl-text-color; } /* Other */
-  .p { color: $gl-text-color; } /* Punctuation */
-  .cm { color: $gl-text-color; } /* Comment.Multiline */
-  .cp { color: $gl-text-color; } /* Comment.Preproc */
-  .c1 { color: $gl-text-color; } /* Comment.Single */
-  .cs { color: $gl-text-color; } /* Comment.Special */
-  .cd { color: $gl-text-color; } /* Comment.Doc */
-  .ge { color: $gl-text-color; } /* Generic.Emph */
-  .gr { color: $gl-text-color; } /* Generic.Error */
-  .gh { color: $gl-text-color; } /* Generic.Heading */
-  .go { color: $gl-text-color; } /* Generic.Output */
-  .gp { color: $gl-text-color; } /* Generic.Prompt */
-  .gs { color: $gl-text-color; } /* Generic.Strong */
-  .gu { color: $gl-text-color; } /* Generic.Subheading */
-  .gt { color: $gl-text-color; } /* Generic.Traceback */
-  .kc { color: $gl-text-color; } /* Keyword.Constant */
-  .kd { color: $gl-text-color; } /* Keyword.Declaration */
-  .kn { color: $gl-text-color; } /* Keyword.Namespace */
-  .kp { color: $gl-text-color; } /* Keyword.Pseudo */
-  .kr { color: $gl-text-color; } /* Keyword.Reserved */
-  .kt { color: $gl-text-color; } /* Keyword.Type */
-  .ld { color: $gl-text-color; } /* Literal.Date */
-  .m { color: $gl-text-color; } /* Literal.Number */
-  .s { color: $gl-text-color; } /* Literal.String */
-  .na { color: $gl-text-color; } /* Name.Attribute */
-  .nb { color: $gl-text-color; } /* Name.Builtin */
-  .nc { color: $gl-text-color; } /* Name.Class */
-  .no { color: $gl-text-color; } /* Name.Constant */
-  .nd { color: $gl-text-color; } /* Name.Decorator */
-  .ni { color: $gl-text-color; } /* Name.Entity */
-  .ne { color: $gl-text-color; } /* Name.Exception */
-  .nf { color: $gl-text-color; } /* Name.Function */
-  .nl { color: $gl-text-color; } /* Name.Label */
-  .nn { color: $gl-text-color; } /* Name.Namespace */
-  .nx { color: $gl-text-color; } /* Name.Other */
-  .py { color: $gl-text-color; } /* Name.Property */
-  .nt { color: $gl-text-color; } /* Name.Tag */
-  .nv { color: $gl-text-color; } /* Name.Variable */
-  .ow { color: $gl-text-color; } /* Operator.Word */
-  .w { color: $gl-text-color; } /* Text.Whitespace */
-  .mf { color: $gl-text-color; } /* Literal.Number.Float */
-  .mh { color: $gl-text-color; } /* Literal.Number.Hex */
-  .mi { color: $gl-text-color; } /* Literal.Number.Integer */
-  .mo { color: $gl-text-color; } /* Literal.Number.Oct */
-  .sb { color: $gl-text-color; } /* Literal.String.Backtick */
-  .sc { color: $gl-text-color; } /* Literal.String.Char */
-  .sd { color: $gl-text-color; } /* Literal.String.Doc */
-  .s2 { color: $gl-text-color; } /* Literal.String.Double */
-  .se { color: $gl-text-color; } /* Literal.String.Escape */
-  .sh { color: $gl-text-color; } /* Literal.String.Heredoc */
-  .si { color: $gl-text-color; } /* Literal.String.Interpol */
-  .sx { color: $gl-text-color; } /* Literal.String.Other */
-  .sr { color: $gl-text-color; } /* Literal.String.Regex */
-  .s1 { color: $gl-text-color; } /* Literal.String.Single */
-  .ss { color: $gl-text-color; } /* Literal.String.Symbol */
-  .bp { color: $gl-text-color; } /* Name.Builtin.Pseudo */
-  .vc { color: $gl-text-color; } /* Name.Variable.Class */
-  .vg { color: $gl-text-color; } /* Name.Variable.Global */
-  .vi { color: $gl-text-color; } /* Name.Variable.Instance */
-  .il { color: $gl-text-color; } /* Literal.Number.Integer.Long */
+  .c { color: $gl-color-neutral-800; } /* Comment */
+  .err { color: $gl-color-neutral-800; } /* Error */
+  .g { color: $gl-color-neutral-800; } /* Generic */
+  .k { color: $gl-color-neutral-800; } /* Keyword */
+  .l { color: $gl-color-neutral-800; } /* Literal */
+  .n { color: $gl-color-neutral-800; } /* Name */
+  .o { color: $gl-color-neutral-800; } /* Operator */
+  .x { color: $gl-color-neutral-800; } /* Other */
+  .p { color: $gl-color-neutral-800; } /* Punctuation */
+  .cm { color: $gl-color-neutral-800; } /* Comment.Multiline */
+  .cp { color: $gl-color-neutral-800; } /* Comment.Preproc */
+  .c1 { color: $gl-color-neutral-800; } /* Comment.Single */
+  .cs { color: $gl-color-neutral-800; } /* Comment.Special */
+  .cd { color: $gl-color-neutral-800; } /* Comment.Doc */
+  .ge { color: $gl-color-neutral-800; } /* Generic.Emph */
+  .gr { color: $gl-color-neutral-800; } /* Generic.Error */
+  .gh { color: $gl-color-neutral-800; } /* Generic.Heading */
+  .go { color: $gl-color-neutral-800; } /* Generic.Output */
+  .gp { color: $gl-color-neutral-800; } /* Generic.Prompt */
+  .gs { color: $gl-color-neutral-800; } /* Generic.Strong */
+  .gu { color: $gl-color-neutral-800; } /* Generic.Subheading */
+  .gt { color: $gl-color-neutral-800; } /* Generic.Traceback */
+  .kc { color: $gl-color-neutral-800; } /* Keyword.Constant */
+  .kd { color: $gl-color-neutral-800; } /* Keyword.Declaration */
+  .kn { color: $gl-color-neutral-800; } /* Keyword.Namespace */
+  .kp { color: $gl-color-neutral-800; } /* Keyword.Pseudo */
+  .kr { color: $gl-color-neutral-800; } /* Keyword.Reserved */
+  .kt { color: $gl-color-neutral-800; } /* Keyword.Type */
+  .ld { color: $gl-color-neutral-800; } /* Literal.Date */
+  .m { color: $gl-color-neutral-800; } /* Literal.Number */
+  .s { color: $gl-color-neutral-800; } /* Literal.String */
+  .na { color: $gl-color-neutral-800; } /* Name.Attribute */
+  .nb { color: $gl-color-neutral-800; } /* Name.Builtin */
+  .nc { color: $gl-color-neutral-800; } /* Name.Class */
+  .no { color: $gl-color-neutral-800; } /* Name.Constant */
+  .nd { color: $gl-color-neutral-800; } /* Name.Decorator */
+  .ni { color: $gl-color-neutral-800; } /* Name.Entity */
+  .ne { color: $gl-color-neutral-800; } /* Name.Exception */
+  .nf { color: $gl-color-neutral-800; } /* Name.Function */
+  .nl { color: $gl-color-neutral-800; } /* Name.Label */
+  .nn { color: $gl-color-neutral-800; } /* Name.Namespace */
+  .nx { color: $gl-color-neutral-800; } /* Name.Other */
+  .py { color: $gl-color-neutral-800; } /* Name.Property */
+  .nt { color: $gl-color-neutral-800; } /* Name.Tag */
+  .nv { color: $gl-color-neutral-800; } /* Name.Variable */
+  .ow { color: $gl-color-neutral-800; } /* Operator.Word */
+  .w { color: $gl-color-neutral-800; } /* Text.Whitespace */
+  .mf { color: $gl-color-neutral-800; } /* Literal.Number.Float */
+  .mh { color: $gl-color-neutral-800; } /* Literal.Number.Hex */
+  .mi { color: $gl-color-neutral-800; } /* Literal.Number.Integer */
+  .mo { color: $gl-color-neutral-800; } /* Literal.Number.Oct */
+  .sb { color: $gl-color-neutral-800; } /* Literal.String.Backtick */
+  .sc { color: $gl-color-neutral-800; } /* Literal.String.Char */
+  .sd { color: $gl-color-neutral-800; } /* Literal.String.Doc */
+  .s2 { color: $gl-color-neutral-800; } /* Literal.String.Double */
+  .se { color: $gl-color-neutral-800; } /* Literal.String.Escape */
+  .sh { color: $gl-color-neutral-800; } /* Literal.String.Heredoc */
+  .si { color: $gl-color-neutral-800; } /* Literal.String.Interpol */
+  .sx { color: $gl-color-neutral-800; } /* Literal.String.Other */
+  .sr { color: $gl-color-neutral-800; } /* Literal.String.Regex */
+  .s1 { color: $gl-color-neutral-800; } /* Literal.String.Single */
+  .ss { color: $gl-color-neutral-800; } /* Literal.String.Symbol */
+  .bp { color: $gl-color-neutral-800; } /* Name.Builtin.Pseudo */
+  .vc { color: $gl-color-neutral-800; } /* Name.Variable.Class */
+  .vg { color: $gl-color-neutral-800; } /* Name.Variable.Global */
+  .vi { color: $gl-color-neutral-800; } /* Name.Variable.Instance */
+  .il { color: $gl-color-neutral-800; } /* Literal.Number.Integer.Long */
 
 }

@@ -12,7 +12,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   let(:noteable)      { create(:issue, project: project) }
   let(:issue)         { noteable }
 
-  let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
+  let(:service) { described_class.new(noteable: noteable, container: project, author: author) }
 
   describe '#relate_issuable' do
     let_it_be(:issue1) { create(:issue, project: project) }
@@ -965,7 +965,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
     let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
     let_it_be_with_reload(:task) { create(:work_item, :task, project: project) }
 
-    let(:service) { described_class.new(noteable: work_item, project: project, author: author) }
+    let(:service) { described_class.new(noteable: work_item, container: project, author: author) }
 
     subject { service.hierarchy_changed(task, hierarchy_change_action) }
 

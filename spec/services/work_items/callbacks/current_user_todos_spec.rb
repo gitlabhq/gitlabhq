@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Callbacks::CurrentUserTodos, feature_category: :team_planning do
+RSpec.describe WorkItems::Callbacks::CurrentUserTodos, feature_category: :notifications do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :private, reporters: reporter) }
   let_it_be(:current_user) { reporter }

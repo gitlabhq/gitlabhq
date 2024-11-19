@@ -5,9 +5,15 @@ require 'spec_helper'
 RSpec.describe Group, feature_category: :groups_and_projects do
   include ReloadHelpers
   include StubGitlabCalls
+  include AdminModeHelper
   using RSpec::Parameterized::TableSyntax
 
   let!(:group) { create(:group) }
+
+  let(:developer_access) { Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+  let(:maintainer_access) { Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
+  let(:admin_access) { Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS }
+  let(:no_one_access) { Gitlab::Access::NO_ONE_PROJECT_ACCESS }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -141,7 +147,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#namespace_members_and_requesters' do
-      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:requester) { create(:user) }
       let_it_be(:developer) { create(:user) }
       let_it_be(:invited_member) { create(:group_member, :invited, :owner, group: group) }
@@ -1207,8 +1213,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       subject { described_class.excluding_restricted_visibility_levels_for_user(user1) }
 
       context 'with table syntax' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:restricted_visibility_levels, :expected_groups) do
           nil                                     | lazy { [private_group, internal_group, group] }
           []                                      | lazy { [private_group, internal_group, group] }
@@ -1241,32 +1245,39 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
-      let_it_be(:group_4) { create(:group, project_creation_level: nil) }
+      let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS) }
+      let_it_be(:group_5) { create(:group, project_creation_level: nil) } # `nil` inherits `default_project_creation`
+      let_it_be(:all_groups) { described_class.id_in([group_1, group_2, group_3, group_4, group_5]) }
 
-      it 'only includes groups where project creation is allowed' do
-        expect(described_class).to receive(:excluding_restricted_visibility_levels_for_user).and_call_original
-
-        result = described_class.project_creation_allowed(user1)
-
-        expect(result).to include(group_2, group_3, group_4)
-        expect(result).not_to include(group_1)
+      where(:admin_user?, :admin_mode, :default_project_creation, :expected_groups) do
+        false | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3] }
+        false | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_5] }
+        false | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_5] }
+        false | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3] }
+        true  | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3] }
+        true  | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_5] }
+        true  | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_5] }
+        true  | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3] }
+        true  | true  | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
+        true  | true  | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_5] }
+        true  | true  | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_5] }
+        true  | true  | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4, group_5] }
       end
 
-      context 'when the application_setting is set to `NO_ONE_PROJECT_ACCESS`' do
+      with_them do
+        let(:user) { admin_user? ? create(:admin) : create(:user) }
+
         before do
-          stub_application_setting(default_project_creation: Gitlab::Access::NO_ONE_PROJECT_ACCESS)
+          enable_admin_mode!(user) if admin_mode
+          stub_application_setting(default_project_creation: default_project_creation)
         end
 
-        it 'only includes groups where project creation is allowed' do
+        it 'returns expected groups' do
           expect(described_class).to receive(:excluding_restricted_visibility_levels_for_user).and_call_original
 
-          result = described_class.project_creation_allowed(user1)
+          result = all_groups.project_creation_allowed(user)
 
-          expect(result).to include(group_2, group_3)
-
-          # group_4 won't be included because it has `project_creation_level: nil`,
-          # and that means it behaves like the value of the application_setting will inherited.
-          expect(result).not_to include(group_1, group_4)
+          expect(result).to match_array(expected_groups)
         end
       end
     end
@@ -1440,6 +1451,65 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       context 'when parent group is present and there are no shared groups' do
         it { is_expected.to match_array([subgroup, subsubgroup]) }
       end
+    end
+  end
+
+  describe '.project_creation_levels_for_user' do
+    where(:admin_user?, :admin_mode, :default_project_creation, :expected_levels) do
+      false | false | no_one_access     | lazy { [developer_access, maintainer_access] }
+      false | false | admin_access      | lazy { [developer_access, maintainer_access] }
+      false | false | maintainer_access | lazy { [developer_access, maintainer_access, nil] }
+      false | false | developer_access  | lazy { [developer_access, maintainer_access, nil] }
+      true  | false | no_one_access     | lazy { [developer_access, maintainer_access] }
+      true  | false | admin_access      | lazy { [developer_access, maintainer_access] }
+      true  | false | maintainer_access | lazy { [developer_access, maintainer_access, nil] }
+      true  | false | developer_access  | lazy { [developer_access, maintainer_access, nil] }
+      true  | true  | no_one_access     | lazy { [developer_access, maintainer_access, admin_access] }
+      true  | true  | admin_access      | lazy { [developer_access, maintainer_access, admin_access, nil] }
+      true  | true  | maintainer_access | lazy { [developer_access, maintainer_access, admin_access, nil] }
+      true  | true  | developer_access  | lazy { [developer_access, maintainer_access, admin_access, nil] }
+    end
+
+    with_them do
+      let(:user) { admin_user? ? create(:admin) : create(:user) }
+
+      before do
+        stub_application_setting(default_project_creation: default_project_creation)
+        enable_admin_mode!(user) if admin_mode
+      end
+
+      it 'returns correct project creation levels' do
+        expect(described_class.project_creation_levels_for_user(user)).to match_array(expected_levels)
+      end
+    end
+  end
+
+  describe '.prevent_project_creation?' do
+    where(:admin_user?, :admin_mode, :project_creation_setting, :expected_result) do
+      false | false | lazy { no_one_access }     | true
+      false | false | lazy { admin_access }      | true
+      false | false | lazy { maintainer_access } | false
+      false | false | lazy { developer_access }  | false
+      true  | false | lazy { no_one_access }     | true
+      true  | false | lazy { admin_access }      | true
+      true  | false | lazy { maintainer_access } | false
+      true  | false | lazy { developer_access }  | false
+      true  | true  | lazy { no_one_access }     | true
+      true  | true  | lazy { admin_access }      | false
+      true  | true  | lazy { maintainer_access } | false
+      true  | true  | lazy { developer_access }  | false
+    end
+
+    with_them do
+      let(:user) { admin_user? ? create(:admin) : create(:user) }
+
+      before do
+        enable_admin_mode!(user) if admin_mode
+      end
+
+      subject { described_class.prevent_project_creation?(user, project_creation_setting) }
+
+      it { is_expected.to be(expected_result) }
     end
   end
 
@@ -3849,6 +3919,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#wiki_comments_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :wiki_comments }
+      let(:feature_flag_method) { :wiki_comments_feature_flag_enabled? }
+    end
+  end
+
   describe '#supports_lock_on_merge?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }
@@ -4023,6 +4100,35 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'returns the root group if no groups in the hierarchy have a source_group_id' do
         expect(child_group.crm_group).to eq(root_group)
+      end
+    end
+  end
+
+  describe '#has_issues_with_contacts?' do
+    context 'when group has no issues with contacts' do
+      it 'returns false' do
+        expect(group.has_issues_with_contacts?).to be_falsey
+      end
+    end
+
+    context 'when group has issues with contacts' do
+      let!(:issue) { create(:issue, project: create(:project, group: group)) }
+      let!(:contact) { create(:contact, group: group) }
+      let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+
+      it 'returns true' do
+        expect(group.has_issues_with_contacts?).to be_truthy
+      end
+    end
+
+    context 'when a subgroup has issues with contacts' do
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:issue) { create(:issue, project: create(:project, group: subgroup)) }
+      let!(:contact) { create(:contact, group: group) }
+      let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+
+      it 'returns true' do
+        expect(group.has_issues_with_contacts?).to be_truthy
       end
     end
   end

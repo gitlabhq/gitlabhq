@@ -1,0 +1,13 @@
+---
+description: Tracks when the security training link is loaded in the application.
+action: security_training_link_loaded
+product_group: tenant_scale
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158282
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

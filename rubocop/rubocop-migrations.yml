@@ -1,6 +1,54 @@
 # Make sure to update the docs if this file moves. Docs URL: https://docs.gitlab.com/ee/development/migration_style_guide.html#when-to-use-the-helper-method
 Migration/UpdateLargeTable:
   Enabled: true
+  LargeTables: # all tables classified as large, or over_limit
+    - :approval_merge_request_rules_users
+    - :audit_events
+    - :ci_build_needs
+    - :ci_build_report_results
+    - :ci_build_trace_metadata
+    - :ci_builds
+    - :ci_builds_metadata
+    - :ci_job_artifacts
+    - :ci_job_variables
+    - :ci_pipeline_messages
+    - :ci_pipeline_variables
+    - :ci_pipelines
+    - :ci_pipelines_config
+    - :ci_stages
+    - :deployments
+    - :description_versions
+    - :events
+    - :issues
+    - :merge_request_diff_commits
+    - :merge_request_diff_commits_b5377a7a34
+    - :merge_request_diff_files
+    - :merge_request_diff_files_99208b8fac
+    - :merge_request_diffs
+    - :merge_request_metrics
+    - :merge_requests
+    - :note_diff_files
+    - :notes
+    - :oauth_access_tokens
+    - :packages_package_files
+    - :personal_access_tokens
+    - :project_authorizations
+    - :projects
+    - :push_event_payloads
+    - :resource_label_events
+    - :sbom_occurrences
+    - :security_findings
+    - :security_scans
+    - :sent_notifications
+    - :system_note_metadata
+    - :taggings
+    - :todos
+    - :vulnerabilities
+    - :vulnerability_finding_links
+    - :vulnerability_occurrence_pipelines
+    - :vulnerability_occurrences
+    - :vulnerability_reads
+    - :web_hook_logs
   HighTrafficTables: &high_traffic_tables # size in GB (>= 10 GB on GitLab.com as of 06/2022) and/or number of records
     - :alert_management_alerts
     - :approvals
@@ -79,7 +127,6 @@ Migration/UpdateLargeTable:
     - :vulnerabilities
     - :vulnerability_finding_links
     - :vulnerability_occurrence_identifiers
-    - :vulnerability_occurrence_pipelines
     - :vulnerability_occurrences
     - :vulnerability_reads
     - :web_hook_logs

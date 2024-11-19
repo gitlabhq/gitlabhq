@@ -13,12 +13,9 @@ module API
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       expose :release, using: Entities::TagRelease, if: ->(*) { can_read_release? } do |repo_tag, options|
         options[:releases]&.find { |r| r.tag == repo_tag.name }
       end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       expose :protected, documentation: { type: 'boolean', example: true } do |repo_tag, options|
         ::ProtectedTag.protected?(options[:project], repo_tag.name)
       end

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Arkose Protect
 
-DISCLAIMER:
+WARNING:
 Arkose Protect is used on GitLab.com and is not supported for self-managed GitLab
 instances. The following documents the internal requirements for maintaining
 Arkose Protect on GitLab.com. While this feature is theoretically usable in self-managed instances, it

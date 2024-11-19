@@ -413,7 +413,7 @@ Use `webpackChunkName` when generating dynamic imports as
 it provides a deterministic filename for the chunk which can then be cached
 in the browser across GitLab versions.
 
-More information is available in [webpack's code splitting documentation](https://webpack.js.org/guides/code-splitting/#dynamic-imports) and [vue's dynamic component documentation](https://v2.vuejs.org/v2/guide/components-dynamic-async.html).
+More information is available in the [webpack code splitting documentation](https://webpack.js.org/guides/code-splitting/#dynamic-imports) and the [Vue dynamic component documentation](https://v2.vuejs.org/v2/guide/components-dynamic-async.html).
 
 ### Minimizing page size
 

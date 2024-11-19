@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MergeWorker # rubocop:disable Scalability/IdempotentWorker
+class MergeWorker
   include ApplicationWorker
 
   data_consistency :always

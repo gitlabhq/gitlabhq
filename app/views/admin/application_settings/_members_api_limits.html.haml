@@ -12,7 +12,7 @@
         .form-group
           = f.label :members_delete_limit, _('Maximum requests per minute per group / project'), class: 'label-bold'
           = f.number_field :members_delete_limit, min: 0, class: 'form-control gl-form-input'
-          .form-text.gl-text-gray-600
+          .form-text.gl-text-subtle
             = _("Set to 0 to disable the limit.")
 
       = f.submit _('Save changes'), pajamas_button: true

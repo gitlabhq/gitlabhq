@@ -120,7 +120,7 @@ This feature uses the [`fuzzaldrin-plus`](https://github.com/jeancroy/fuzz-aldri
 ## Change how Git handles a file
 
 To change the default handling of a file or file type, create a
-[`.gitattributes` file](../../git_attributes.md). Use `.gitattributes` files to:
+[`.gitattributes` file](git_attributes.md). Use `.gitattributes` files to:
 
 - Configure file display in diffs, such as [syntax highlighting](highlighting.md)
   or [collapsing generated files](../../merge_requests/changes.md#collapse-generated-files).
@@ -130,6 +130,7 @@ To change the default handling of a file or file type, create a
 ## Related topics
 
 - [Repository files API](../../../../api/repository_files.md)
+- [File management with Git](../../../../topics/git/file_management.md)
 
 ## Troubleshooting
 

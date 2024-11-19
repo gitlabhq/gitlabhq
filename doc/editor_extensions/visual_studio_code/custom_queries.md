@@ -1,20 +1,22 @@
 ---
 stage: Create
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Custom queries in the VS Code extension
 
-This extension adds a **GitLab Workflow**
+The **GitLab Workflow** extension adds a
 [sidebar](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/tree/main?ref_type=heads#sidebar-details)
-to VS Code. This sidebar shows default search queries for each of your projects:
+to VS Code. This sidebar displays default search queries for each of your projects:
 
 - Issues assigned to me
 - Issues created by me
 - Merge requests assigned to me
 - Merge requests created by me
 - Merge requests I'm reviewing
+
+In addition to the default queries, you can [create custom queries](#create-a-custom-query).
 
 ## View search query results in VS Code
 

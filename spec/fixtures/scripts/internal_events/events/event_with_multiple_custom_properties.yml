@@ -1,0 +1,31 @@
+---
+description: Engineer uses Internal Event CLI to define a new event
+internal_events: true
+action: internal_events_cli_used
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: TODO
+  property:
+    description: TODO
+  custom_key1:
+    description: The extra custom property name 1
+  custom_key2:
+    description: The extra custom property name 2
+  custom_key3:
+    description: The extra custom property name 3
+  custom_key4:
+    description: The extra custom property name 3
+product_group: analytics_instrumentation
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

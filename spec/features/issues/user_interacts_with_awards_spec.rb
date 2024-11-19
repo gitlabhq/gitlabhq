@@ -283,7 +283,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
 
         context 'click the thumbsdown emoji' do
           it 'increments the thumbsdown emoji', :js do
-            find('[data-name="thumbsdown"]').click
+            find(%([data-name="#{AwardEmoji::THUMBS_DOWN}"])).click
             wait_for_requests
             expect(thumbsdown_emoji).to have_text("1")
           end

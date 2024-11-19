@@ -1,0 +1,19 @@
+---
+description: Tracks when the Terraform state is read through the API
+action: terraform_state_api_request
+identifiers:
+- project
+- namespace
+- user
+product_group: environments
+milestone: '15.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Always `redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly`

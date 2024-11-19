@@ -6,7 +6,7 @@
     = s_('ProjectSettings|The commit message used when applying merge request suggestions.')
   .mb-2
     = form.text_area :suggestion_commit_message, class: 'form-control gl-form-input', rows: 4, placeholder: Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
-    %p.form-text.text-muted
+    %p.form-text.gl-text-subtle
       = s_('ProjectSettings|Leave empty to use default template.')
       = sprintf(s_('ProjectSettings|Maximum %{maxLength} characters.'), { maxLength: Project::MAX_SUGGESTIONS_TEMPLATE_LENGTH })
       - link = link_to('', help_page_path('user/project/merge_requests/reviews/suggestions.md', anchor: 'configure-the-commit-message-for-applied-suggestions'), target: '_blank', rel: 'noopener noreferrer')

@@ -15,7 +15,7 @@
 module QA
   module Tools
     class DeleteTestUsers < DeleteResourceBase
-      EXCLUDE_USERS = %w[gitlab-qa gitlab-qa-user-for-ai].freeze
+      EXCLUDE_USERS = %w[gitlab-qa gitlab-qa-user-for-ai gitlab-qa-user-for-jetbrains glab-test-bot].freeze
 
       def initialize(dry_run: false, exclude_users: nil)
         super(dry_run: dry_run)

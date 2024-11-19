@@ -42,7 +42,7 @@ RSpec.describe "Help Dropdown", :js, feature_category: :shared do
           expect(page).to have_text('Your GitLab version')
           expect(page).to have_text("#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}")
 
-          within page.find_link(href: help_page_path('update/index')) do
+          within page.find_link(href: help_page_path('update/index.md')) do
             expect(page).to have_selector(".badge-#{severity}", text: ui_text)
           end
         end

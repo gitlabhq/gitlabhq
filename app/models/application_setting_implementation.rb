@@ -74,7 +74,7 @@ module ApplicationSettingImplementation
         disabled_direct_code_suggestions: false,
         disabled_oauth_sign_in_sources: [],
         disable_password_authentication_for_users_with_sso_identities: false,
-        dns_rebinding_protection_enabled: true,
+        dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
         dsa_key_restriction: default_min_key_size(:dsa),
         ecdsa_key_restriction: default_min_key_size(:ecdsa),
@@ -168,6 +168,7 @@ module ApplicationSettingImplementation
         repository_storages_weighted: { 'default' => 100 },
         require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
+        resource_token_expiry_inherited_members: true,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: default_min_key_size(:rsa),
         session_expire_delay: Settings.gitlab['session_expire_delay'],
@@ -299,7 +300,8 @@ module ApplicationSettingImplementation
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,
         pages_extra_deployments_default_expiry_seconds: 86400,
-        scan_execution_policies_action_limit: 10
+        scan_execution_policies_action_limit: 10,
+        seat_control: 0
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end
@@ -536,7 +538,9 @@ module ApplicationSettingImplementation
   def usage_ping_features_enabled
     return false unless usage_ping_enabled? && super
 
-    return include_optional_metrics_in_service_ping if Gitlab.ee? && respond_to?(:include_optional_metrics_in_service_ping)
+    if Gitlab.ee? && respond_to?(:include_optional_metrics_in_service_ping)
+      return include_optional_metrics_in_service_ping
+    end
 
     true
   end
@@ -698,14 +702,20 @@ module ApplicationSettingImplementation
     repository_storages_weighted.each do |key, val|
       next unless val.present?
 
-      errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key }) unless val.is_a?(Integer)
-      errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key }) unless val.between?(0, 100)
+      unless val.is_a?(Integer)
+        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key })
+      end
+
+      unless val.between?(0, 100)
+        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key })
+      end
     end
   end
 
   def check_valid_runner_registrars
-    valid = valid_runner_registrar_combinations.include?(valid_runner_registrars)
-    errors.add(:valid_runner_registrars, _("%{value} is not included in the list") % { value: valid_runner_registrars }) unless valid
+    return if valid_runner_registrar_combinations.include?(valid_runner_registrars)
+
+    errors.add(:valid_runner_registrars, _("%{value} is not included in the list") % { value: valid_runner_registrars })
   end
 
   def valid_runner_registrar_combinations

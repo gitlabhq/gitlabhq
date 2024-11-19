@@ -10,17 +10,17 @@ import (
 func TestRangesRead(t *testing.T) {
 	r := setup(t)
 
-	firstRange := Range{Line: 1, Character: 2, ResultSetID: 4}
+	firstRange := Range{ID: 1, Start: Position{Line: 1, Character: 2}, End: Position{Line: 0, Character: 0}, ResultSetID: 4}
 	rg, err := r.getRange(1)
 	require.NoError(t, err)
 	require.Equal(t, &firstRange, rg)
 
-	secondRange := Range{Line: 5, Character: 4, ResultSetID: 4}
+	secondRange := Range{ID: 2, Start: Position{Line: 5, Character: 4}, End: Position{Line: 6, Character: 2}, ResultSetID: 4}
 	rg, err = r.getRange(2)
 	require.NoError(t, err)
 	require.Equal(t, &secondRange, rg)
 
-	thirdRange := Range{Line: 7, Character: 4, ResultSetID: 4}
+	thirdRange := Range{ID: 3, Start: Position{Line: 7, Character: 4}, End: Position{Line: 0, Character: 0}, ResultSetID: 4}
 	rg, err = r.getRange(3)
 	require.NoError(t, err)
 	require.Equal(t, &thirdRange, rg)
@@ -33,7 +33,7 @@ func TestSerialize(t *testing.T) {
 
 	var buf bytes.Buffer
 	err := r.Serialize(&buf, []ID{1}, docs)
-	want := `[{"start_line":1,"start_char":2,"definition_path":"def-path#L2","hover":null,"references":[{"path":"ref-path#L6"},{"path":"ref-path#L8"}]}` + "\n]"
+	want := `[{"start_line":1,"start_char":2,"end_line":0,"end_char":0,"definition_path":"def-path#L2","hover":null,"references":[{"path":"ref-path#L6"},{"path":"ref-path#L8"}]}` + "\n]"
 
 	require.NoError(t, err)
 	require.Equal(t, want, buf.String())
@@ -44,7 +44,7 @@ func setup(t *testing.T) *Ranges {
 	require.NoError(t, err)
 
 	require.NoError(t, r.Read("range", []byte(`{"id":1,"label":"range","start":{"line":1,"character":2}}`)))
-	require.NoError(t, r.Read("range", []byte(`{"id":"2","label":"range","start":{"line":5,"character":4}}`)))
+	require.NoError(t, r.Read("range", []byte(`{"id":"2","label":"range","start":{"line":5,"character":4},"end":{"line":6,"character":2}}`)))
 	require.NoError(t, r.Read("range", []byte(`{"id":"3","label":"range","start":{"line":7,"character":4}}`)))
 
 	require.NoError(t, r.Read("resultSet", []byte(`{"id":"4","label":"resultSet"}`)))

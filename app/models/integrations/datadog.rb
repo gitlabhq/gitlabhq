@@ -19,7 +19,7 @@ module Integrations
       placeholder: DEFAULT_DOMAIN,
       help: -> do
         ERB::Util.html_escape(
-          s_('DatadogIntegration|The Datadog site to send data to. To send data to the EU site, use %{codeOpen}datadoghq.eu%{codeClose}.')
+          s_('DatadogIntegration|Datadog site to send data to. To send data to the EU site, use %{codeOpen}datadoghq.eu%{codeClose}.')
         ) % {
           codeOpen: '<code>'.html_safe,
           codeClose: '</code>'.html_safe
@@ -29,7 +29,7 @@ module Integrations
     field :api_url,
       exposes_secrets: true,
       title: -> { s_('DatadogIntegration|API URL') },
-      help: -> { s_('DatadogIntegration|(Advanced) The full URL for your Datadog site.') }
+      help: -> { s_('DatadogIntegration|Full URL of your Datadog site.') }
 
     field :api_key,
       type: :password,
@@ -54,11 +54,12 @@ module Integrations
     field :datadog_service,
       title: -> { s_('DatadogIntegration|Service') },
       placeholder: 'gitlab-ci',
-      help: -> { s_('DatadogIntegration|Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments.') }
+      help: -> { s_('DatadogIntegration|GitLab instance to tag all data from in Datadog. Can be used when managing several self-managed deployments.') }
 
     field :datadog_env,
       title: -> { s_('DatadogIntegration|Environment') },
       placeholder: 'ci',
+      description: -> { _('For self-managed deployments, `env` tag for all the data sent to Datadog.') },
       help: -> do
         ERB::Util.html_escape(
           s_('DatadogIntegration|For self-managed deployments, set the %{codeOpen}env%{codeClose} tag for all the data sent to Datadog. %{linkOpen}How do I use tags?%{linkClose}')
@@ -74,6 +75,7 @@ module Integrations
       type: :textarea,
       title: -> { s_('DatadogIntegration|Tags') },
       placeholder: "tag:value\nanother_tag:value",
+      description: -> { _('Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`.') },
       help: -> do
         ERB::Util.html_escape(
           s_('DatadogIntegration|Custom tags in Datadog. Enter one tag per line in the %{codeOpen}key:value%{codeClose} format. %{linkOpen}How do I use tags?%{linkClose}')

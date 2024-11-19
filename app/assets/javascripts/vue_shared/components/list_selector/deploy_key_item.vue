@@ -41,7 +41,7 @@ export default {
     <gl-icon class="gl-min-w-6" name="key" />
     <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
       <span class="gl-truncate gl-font-bold">{{ title }}</span>
-      <span class="gl-text-gray-600">@{{ username }}</span>
+      <span class="gl-text-subtle">@{{ username }}</span>
     </span>
 
     <gl-button

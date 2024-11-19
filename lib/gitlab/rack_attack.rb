@@ -21,39 +21,33 @@ module Gitlab
 
       rack_attack.cache.store = Gitlab::RackAttack::Store.new
 
-      # Configure the throttles
       configure_throttles(rack_attack)
-
       configure_user_allowlist
     end
 
-    # Rate Limit HTTP headers are not standardized anywhere. This is the latest
-    # draft submitted to IETF:
+    # Rate Limit HTTP headers are not standardized anywhere. This is the latest draft submitted to IETF:
     # https://github.com/ietf-wg-httpapi/ratelimit-headers/blob/main/draft-ietf-httpapi-ratelimit-headers.md
     #
-    # This method implement the most viable parts of the headers. Those headers
-    # will be sent back to the client when it gets throttled.
+    # This method implement the most viable parts of the headers.
+    # Those headers will be sent back to the client when it gets throttled.
     #
-    # - RateLimit-Limit: indicates the request quota associated to the client
-    # in 60 seconds. The time window for the quota here is supposed to be
-    # mirrored to throttle_*_period_in_seconds application settings.  However,
-    # our HAProxy as well as some ecosystem libraries are using a fixed
-    # 60-second window. Therefore, the returned limit is approximately rounded
-    # up to fit into that window.
+    #   - RateLimit-Limit: indicates the request quota associated to the client in 60 seconds.
+    #     The time window for the quota here is supposed to be mirrored to throttle_*_period_in_seconds application settings.
+    #     However, our HAProxy as well as some ecosystem libraries are using a fixed 60-second window.
+    #     Therefore, the returned limit is approximately rounded up to fit into that window.
     #
-    # - RateLimit-Observed: indicates the current request amount associated to
-    # the client within the time window.
+    #   - RateLimit-Observed: indicates the current request amount associated to the client within the time window.
     #
-    # - RateLimit-Remaining: indicates the remaining quota within the time
-    # window. It is the result of RateLimit-Limit - RateLimit-Remaining
+    #   - RateLimit-Remaining: indicates the remaining quota within the time window.
+    #     It is the result of RateLimit-Limit - RateLimit-Remaining
     #
-    # - Retry-After: the remaining duration in seconds until the quota is
-    # reset. This is a standardized HTTP header:
-    # https://www.rfc-editor.org/rfc/rfc7231#page-69
+    #   - Retry-After: the remaining duration in seconds until the quota is reset.
+    #     This is a standardized HTTP header: https://www.rfc-editor.org/rfc/rfc7231#page-69
     #
-    # - RateLimit-Reset: the point of time that the request quota is reset, in Unix time
+    #   - RateLimit-Reset: the point of time that the request quota is reset, in Unix time
     #
-    # - RateLimit-ResetTime: the point of time that the request quota is reset, in HTTP date format
+    #   - RateLimit-ResetTime: the point of time that the request quota is reset, in HTTP date format
+    #
     def self.throttled_response_headers(matched, match_data)
       # Match data example:
       # {:discriminator=>"127.0.0.1", :count=>12, :period=>60 seconds, :limit=>1, :epoch_time=>1609833930}
@@ -82,6 +76,7 @@ module Gitlab
     end
 
     ThrottleDefinition = Struct.new(:options, :request_identifier)
+
     def self.throttle_definitions
       {
         'throttle_unauthenticated_web' => ThrottleDefinition.new(
@@ -203,4 +198,5 @@ module Gitlab
     end
   end
 end
+
 ::Gitlab::RackAttack.prepend_mod_with('Gitlab::RackAttack')

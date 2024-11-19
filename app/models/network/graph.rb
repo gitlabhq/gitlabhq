@@ -28,7 +28,9 @@ module Network
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         # Decorate with app/model/network/commit.rb
         if Feature.enabled?(:use_list_commits_rpc_network_graph, @project, type: :gitlab_com_derisk)
-          list_commits.map { |commit| Network::Commit.new(commit) }
+          list_commits(count_to_display_commit_in_center).map do |commit|
+            Network::Commit.new(commit)
+          end
         else
           find_commits(count_to_display_commit_in_center).map do |commit|
             Network::Commit.new(commit)
@@ -74,7 +76,11 @@ module Network
       offset = -1
       skip = 0
       while offset == -1
-        tmp_commits = find_commits(skip)
+        tmp_commits = if Feature.enabled?(:use_list_commits_rpc_network_graph, @project, type: :gitlab_com_derisk)
+                        list_commits(skip)
+                      else
+                        find_commits(skip)
+                      end
 
         if tmp_commits.present?
           index = tmp_commits.index do |c|
@@ -115,13 +121,14 @@ module Network
       end
     end
 
-    def list_commits
-      Gitlab::SafeRequestStore.fetch([@project, :network_graph_commits, @commit.id]) do
+    def list_commits(skip = 0)
+      Gitlab::SafeRequestStore.fetch([@project, :network_graph_commits, skip]) do
         opts = {
           revisions: %w[--tags --branches],
           pagination_params: { limit: self.class.max_count },
           reverse: false,
-          order: :date
+          order: :date,
+          skip: skip
         }
 
         if @filter_ref

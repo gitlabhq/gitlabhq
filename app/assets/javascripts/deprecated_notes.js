@@ -429,12 +429,12 @@ export default class Notes {
     }
 
     if (!noteEntity.valid) {
-      if (noteEntity.errors && noteEntity.errors.commands_only) {
+      if (noteEntity?.quick_actions_status?.messages) {
         if (noteEntity.commands_changes && Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
         this.addAlert({
-          message: noteEntity.errors.commands_only,
+          message: noteEntity.quick_actions_status.messages,
           variant: VARIANT_INFO,
           parent: this.parentTimeline.get(0),
         });
@@ -546,6 +546,10 @@ export default class Notes {
 
         renderGFM(discussionElement);
         const $discussion = $(discussionElement).unwrap();
+
+        if (noteEntity.on_image) {
+          discussionElement.classList.add('discussion-notes', 'gl-block');
+        }
 
         if (!this.isParallelView() || row.hasClass('js-temp-notes-holder') || noteEntity.on_image) {
           // insert the note and the reply button after the temp row

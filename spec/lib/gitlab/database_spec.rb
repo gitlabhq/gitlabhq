@@ -211,11 +211,11 @@ RSpec.describe Gitlab::Database, feature_category: :database do
       it 'returns primary db config even if ambiguous queries default to replica' do
         Gitlab::Database.database_base_models_using_load_balancing.each_value do |database_base_model|
           connection = database_base_model.connection
-          Gitlab::Database::LoadBalancing::Session.current.use_primary!
+          Gitlab::Database::LoadBalancing::SessionMap.with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary!
           primary_config = described_class.db_config_for_connection(connection)
 
-          Gitlab::Database::LoadBalancing::Session.clear_session
-          Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
+          Gitlab::Database::LoadBalancing::SessionMap.clear_session
+          Gitlab::Database::LoadBalancing::SessionMap.with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).fallback_to_replicas_for_ambiguous_queries do
             expect(described_class.db_config_for_connection(connection)).to eq(primary_config)
           end
         end
@@ -440,6 +440,20 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.application_record_for_connection' do
+    it 'returns ApplicationRecord for main database connection' do
+      connection = ApplicationRecord.retrieve_connection
+      expect(described_class.application_record_for_connection(connection)).to eq(ApplicationRecord)
+    end
+
+    it 'returns Ci::ApplicationRecord for ci database connection' do
+      skip_if_multiple_databases_not_setup(:ci)
+
+      connection = Ci::ApplicationRecord.retrieve_connection
+      expect(described_class.application_record_for_connection(connection)).to eq(Ci::ApplicationRecord)
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"
@@ -482,6 +496,11 @@ RSpec.describe Gitlab::Database, feature_category: :database do
 
           yield
         end
+
+        def self.load_balancer
+          lb = Struct.new(:name)
+          lb.new(:main)
+        end
       end
     end
 
@@ -497,7 +516,8 @@ RSpec.describe Gitlab::Database, feature_category: :database do
       expect(model1.instance_variable_get(:@uncached)).to be_nil
       expect(model2.instance_variable_get(:@uncached)).to be_nil
 
-      expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary).and_yield
+      expect(Gitlab::Database::LoadBalancing::SessionMap.current(::ApplicationRecord.load_balancer))
+        .to receive(:use_primary).twice.and_yield
 
       expect(model2).to receive(:uncached).and_call_original
       expect(model1).to receive(:uncached).and_call_original

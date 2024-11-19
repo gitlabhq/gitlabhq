@@ -30,10 +30,6 @@ module QA
           parent_group.add_member(parent_group_user)
         end
 
-        after do
-          parent_group_user.remove_via_api!
-        end
-
         it(
           'is allowed to push code to sub-group project via the CLI',
           :blocking,
@@ -107,10 +103,6 @@ module QA
 
         before do
           sub_group.add_member(sub_group_user)
-        end
-
-        after do
-          sub_group_user.remove_via_api!
         end
 
         it(

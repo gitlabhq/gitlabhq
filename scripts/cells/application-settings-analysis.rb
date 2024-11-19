@@ -145,8 +145,10 @@ class ApplicationSettingsAnalysis
       help_page_support_url
       help_page_text
       home_page_url
+      identity_verification_settings
       import_sources
       importers
+      integrations
       invisible_captcha_enabled
       issues_create_limit
       jira_connect_application_key
@@ -217,6 +219,7 @@ class ApplicationSettingsAnalysis
       shared_runners_minutes
       shared_runners_text
       sidekiq_job_limiter_limit_bytes
+      sign_in_restrictions
       signup_enabled
       silent_admin_exports_enabled
       slack_app_enabled

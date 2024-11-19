@@ -35,15 +35,15 @@ RSpec.describe MergeRequests::ProcessScheduledMergeWorker, :sidekiq_inline, feat
       end
     end
 
-    it 'schedules AutoMergeProcessWorker for each batch with increasing delay' do
+    it 'schedules AutoMergeProcessWorker for each batch with increasing delay', :aggregate_failures do
       expect(AutoMergeProcessWorker)
         .to receive(:bulk_perform_in)
-        .with(1.second, [[scheduled_mr.id]])
+        .with(1.second, [[{ 'merge_request_id' => scheduled_mr.id }]])
         .and_call_original
 
       expect(AutoMergeProcessWorker)
         .to receive(:bulk_perform_in)
-        .with(7.seconds, [[other_scheduled_mr.id]])
+        .with(7.seconds, [[{ 'merge_request_id' => other_scheduled_mr.id }]])
         .and_call_original
 
       perform

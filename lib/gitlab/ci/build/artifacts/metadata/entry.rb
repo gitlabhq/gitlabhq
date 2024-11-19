@@ -98,14 +98,12 @@ module Gitlab
               blank_node? || @entries.include?(@path.to_s)
             end
 
-            # rubocop: disable CodeReuse/ActiveRecord
             def total_size
               descendant_pattern = /^#{Regexp.escape(@path.to_s)}/
               entries.sum do |path, entry|
                 (entry[:size] if descendant_pattern.match?(path)).to_i
               end
             end
-            # rubocop: enable CodeReuse/ActiveRecord
 
             def path
               @path.to_s

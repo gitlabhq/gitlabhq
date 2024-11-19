@@ -545,6 +545,22 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
+      context 'Job token permissions' do
+        it 'allows admin to set allowlist enforcement' do
+          visit ci_cd_admin_application_settings_path
+
+          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(false)
+
+          within_testid('job-token-permissions-settings') do
+            find('input[type="checkbox"]').click
+            click_button 'Save changes'
+          end
+
+          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(true)
+          expect(page).to have_content 'Application settings saved successfully'
+        end
+      end
+
       context 'Container Registry' do
         let(:client_support) { true }
         let(:settings_titles) do

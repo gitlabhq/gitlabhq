@@ -1,15 +1,19 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { __ } from '~/locale';
 
+const STATUS_LAST = 'last';
+const STATUS_CREATING = 'creating';
+const STATUS_OUT_OF_DATE = 'out_of_date';
+const STATUS_FAILED = 'failed';
+
 export default {
-  creatingEnvironment: 'creating',
   components: {
     CiIcon,
-    GlSprintf,
     GlLink,
+    GlSprintf,
   },
   props: {
     deploymentStatus: {
@@ -28,18 +32,14 @@ export default {
   },
   computed: {
     environment() {
-      switch (this.deploymentStatus.status) {
-        case 'last':
-          return this.lastEnvironmentMessage();
-        case 'out_of_date':
-          return this.outOfDateEnvironmentMessage();
-        case 'failed':
-          return this.failedEnvironmentMessage();
-        case this.$options.creatingEnvironment:
-          return this.creatingEnvironmentMessage();
-        default:
-          return '';
-      }
+      const statusMessages = {
+        [STATUS_LAST]: this.lastEnvironmentMessage,
+        [STATUS_OUT_OF_DATE]: this.outOfDateEnvironmentMessage,
+        [STATUS_FAILED]: this.failedEnvironmentMessage,
+        [STATUS_CREATING]: this.creatingEnvironmentMessage,
+      };
+
+      return statusMessages[this.deploymentStatus.status] || '';
     },
     environmentLink() {
       if (this.hasEnvironment) {
@@ -86,15 +86,10 @@ export default {
       return {
         path: this.lastDeploymentPath,
         name:
-          this.deploymentStatus.status === this.$options.creatingEnvironment
+          this.deploymentStatus.status === STATUS_CREATING
             ? __('latest deployment')
             : __('most recent deployment'),
       };
-    },
-  },
-  methods: {
-    failedEnvironmentMessage() {
-      return __('The deployment of this job to %{environmentLink} did not succeed.');
     },
     lastEnvironmentMessage() {
       if (this.hasCluster) {
@@ -175,14 +170,20 @@ export default {
       // not a cluster deployment
       return __('This job is creating a deployment to %{environmentLink}.');
     },
+    failedEnvironmentMessage() {
+      return __('The deployment of this job to %{environmentLink} did not succeed.');
+    },
   },
 };
 </script>
 <template>
-  <div class="js-environment-container gl-mb-3 gl-mt-3">
-    <div class="environment-information">
+  <div class="gl-my-4" data-testid="jobs-environment-container">
+    <div
+      class="gl-border gl-flex gl-gap-3 gl-rounded-base gl-bg-subtle gl-p-4"
+      data-testid="jobs-environment-info"
+    >
       <ci-icon :status="iconStatus" />
-      <p class="gl-mb-0 gl-inline-block">
+      <p class="gl-mb-0 gl-inline-block gl-self-center">
         <gl-sprintf :message="environment">
           <template #environmentLink>
             <gl-link

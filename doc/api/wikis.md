@@ -206,7 +206,7 @@ Example response:
   "branch" : "main",
   "link" : {
     "url" : "uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png",
-    "markdown" : "![dk](uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png)"
+    "markdown" : "![A description of the attachment](uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png)"
   }
 }
 ```

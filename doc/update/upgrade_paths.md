@@ -21,7 +21,7 @@ later versions. When moving through an upgrade path:
 1. Allow the background migrations for the upgrade to finish.
 1. Upgrade to the next required upgrade stop.
 
-From GitLab 17.5, required upgrade stops consistently land on minor versions X.2, X.5, X.8, and X.11. This schedule provides a predictable upgrade schedule for instance administrators.
+To provide a predictable upgrade schedule for instance administrators, from GitLab 17.5, required upgrade stops will occur at versions `x.2.z`, `x.5.z`, `x.8.z`, and `x.11.z`.
 
 To determine your upgrade path:
 
@@ -43,7 +43,9 @@ To determine your upgrade path:
      - [`16.11.z`](https://gitlab.com/gitlab-org/gitlab/-/releases). The latest GitLab 16.11 release.
    - GitLab 17 includes the following required upgrade stops:
      - [`17.3.z`](versions/gitlab_17_changes.md#1730). The latest GitLab 17.3 release.
-     - [`17.y.z`](versions/gitlab_17_changes.md). The latest GitLab 17 release.
+     - [`17.5.z`](versions/gitlab_17_changes.md#1750). The latest GitLab 17.5 release.
+     - `17.8.z`. Not yet released.
+     - `17.11.z`. Not yet released.
 
 1. Consult the version-specific upgrade instructions:
    - [GitLab 17 changes](versions/gitlab_17_changes.md)

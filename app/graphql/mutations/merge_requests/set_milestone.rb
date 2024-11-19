@@ -17,8 +17,11 @@ module Mutations
         merge_request = authorized_find!(project_path: project_path, iid: iid)
         project = merge_request.project
 
-        ::MergeRequests::UpdateService.new(project: project, current_user: current_user, params: { milestone_id: milestone&.id })
-          .execute(merge_request)
+        ::MergeRequests::UpdateService.new(
+          project: project,
+          current_user: current_user,
+          params: { milestone_id: milestone&.id }
+        ).execute(merge_request)
 
         {
           merge_request: merge_request,

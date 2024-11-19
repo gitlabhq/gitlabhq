@@ -7,8 +7,7 @@ import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
 import getPipelineFailedJobs from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs.query.graphql';
 import { sortJobsByStatus } from './utils';
 import FailedJobDetails from './failed_job_details.vue';
-
-const POLL_INTERVAL = 10000;
+import { POLL_INTERVAL } from './constants';
 
 const JOB_ID_HEADER = __('ID');
 const JOB_NAME_HEADER = __('Name');
@@ -24,15 +23,7 @@ export default {
   },
   inject: ['graphqlPath'],
   props: {
-    failedJobsCount: {
-      required: true,
-      type: Number,
-    },
     isMaximumJobLimitReached: {
-      required: true,
-      type: Boolean,
-    },
-    isPipelineActive: {
       required: true,
       type: Boolean,
     },
@@ -52,8 +43,8 @@ export default {
   data() {
     return {
       failedJobs: [],
-      isActive: false,
       isLoadingMore: false,
+      canTroubleshootJob: false,
     };
   },
   apollo: {
@@ -75,11 +66,7 @@ export default {
       },
       result({ data }) {
         const pipeline = data?.project?.pipeline;
-
-        if (pipeline?.jobs?.count) {
-          this.$emit('failed-jobs-count', pipeline.jobs.count);
-          this.isActive = pipeline.active;
-        }
+        this.canTroubleshootJob = pipeline?.troubleshootJobWithAi || false;
       },
       error(e) {
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
@@ -97,42 +84,11 @@ export default {
       return this.$apollo.queries.failedJobs.loading;
     },
   },
-  watch: {
-    isPipelineActive(flag) {
-      // Turn polling on and off based on REST actions
-      // By refetching jobs, we will get the graphql `active`
-      // field to update properly and cascade the polling changes
-      this.refetchJobs();
-      this.handlePolling(flag);
-    },
-    isActive(flag) {
-      this.handlePolling(flag);
-    },
-    failedJobsCount(count) {
-      // If the REST data is updated first, we force a refetch
-      // to keep them in sync
-      if (this.failedJobs.length !== count) {
-        this.$apollo.queries.failedJobs.refetch();
-      }
-    },
-  },
-  mounted() {
-    if (!this.isActive && !this.isPipelineActive) {
-      this.handlePolling(false);
-    }
-  },
   methods: {
-    handlePolling(isActive) {
-      // If the pipeline status has changed and the widget is not expanded,
-      // We start polling.
-      if (isActive) {
-        this.$apollo.queries.failedJobs.startPolling(POLL_INTERVAL);
-      } else {
-        this.$apollo.queries.failedJobs.stopPolling();
-      }
-    },
     async retryJob(jobName) {
       await this.refetchJobs();
+
+      this.$emit('job-retried');
 
       this.$toast.show(sprintf(this.$options.i18n.retriedJobsSuccess, { jobName }));
     },
@@ -142,7 +98,7 @@ export default {
       try {
         await this.$apollo.queries.failedJobs.refetch();
       } catch {
-        createAlert(this.$options.i18n.fetchError);
+        createAlert({ message: this.$options.i18n.fetchError });
       } finally {
         this.isLoadingMore = false;
       }
@@ -150,8 +106,8 @@ export default {
   },
   columns: [
     { text: JOB_NAME_HEADER, class: 'col-4' },
-    { text: STAGE_HEADER, class: 'col-3' },
-    { text: JOB_ID_HEADER, class: 'col-3' },
+    { text: STAGE_HEADER, class: 'col-2' },
+    { text: JOB_ID_HEADER, class: 'col-2' },
   ],
   i18n: {
     maximumJobLimitAlert: {
@@ -200,6 +156,7 @@ export default {
       v-for="job in failedJobs"
       :key="job.id"
       :job="job"
+      :can-troubleshoot-job="canTroubleshootJob"
       @job-retried="retryJob"
     />
   </div>

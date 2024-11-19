@@ -7,8 +7,7 @@ module Mutations
         class Update < ::Mutations::BaseMutation
           graphql_name 'UpdatePackagesProtectionRule'
           description 'Updates a package protection rule to restrict access to project packages. ' \
-            'You can prevent users without certain permissions from altering packages. ' \
-            'Available only when feature flag `packages_protected_packages` is enabled.'
+            'You can prevent users without certain permissions from altering packages.'
 
           authorize :admin_package
 
@@ -21,7 +20,7 @@ module Mutations
             GraphQL::Types::String,
             required: false,
             validates: { allow_blank: false },
-            alpha: { milestone: '16.6' },
+            experiment: { milestone: '16.6' },
             description:
             'Package name protected by the protection rule. For example, `@my-scope/my-package-*`. ' \
               'Wildcard character `*` allowed.'
@@ -30,28 +29,24 @@ module Mutations
             Types::Packages::Protection::RulePackageTypeEnum,
             required: false,
             validates: { allow_blank: false },
-            alpha: { milestone: '16.6' },
+            experiment: { milestone: '16.6' },
             description: 'Package type protected by the protection rule. For example, `NPM`.'
 
           argument :minimum_access_level_for_push,
             Types::Packages::Protection::RuleAccessLevelEnum,
             required: false,
             validates: { allow_blank: false },
-            alpha: { milestone: '16.6' },
+            experiment: { milestone: '16.6' },
             description: copy_field_description(Types::Packages::Protection::RuleType, :minimum_access_level_for_push)
 
           field :package_protection_rule,
             Types::Packages::Protection::RuleType,
             null: true,
-            alpha: { milestone: '16.6' },
+            experiment: { milestone: '16.6' },
             description: 'Packages protection rule after mutation.'
 
           def resolve(id:, **kwargs)
             package_protection_rule = authorized_find!(id: id)
-
-            if Feature.disabled?(:packages_protected_packages, package_protection_rule.project)
-              raise_resource_not_available_error!("'packages_protected_packages' feature flag is disabled")
-            end
 
             response = ::Packages::Protection::UpdateRuleService.new(package_protection_rule,
               current_user: current_user, params: kwargs).execute

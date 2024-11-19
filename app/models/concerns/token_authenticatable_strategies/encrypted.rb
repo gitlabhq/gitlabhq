@@ -9,21 +9,20 @@ module TokenAuthenticatableStrategies
     def find_token_authenticatable(token, unscoped = false)
       return if token.blank?
 
-      instance = if required?
-                   find_by_encrypted_token(token, unscoped)
-                 elsif optional?
-                   find_by_encrypted_token(token, unscoped) ||
-                     find_by_plaintext_token(token, unscoped)
-                 elsif migrating?
-                   find_by_plaintext_token(token, unscoped)
-                 else
-                   raise ArgumentError, _("Unknown encryption strategy: %{encrypted_strategy}!") % { encrypted_strategy: encrypted_strategy }
-                 end
+      token_owner_record =
+        if required?
+          find_by_encrypted_token(token, unscoped)
+        elsif optional?
+          find_by_encrypted_token(token, unscoped) ||
+            find_by_plaintext_token(token, unscoped)
+        elsif migrating?
+          find_by_plaintext_token(token, unscoped)
+        end
 
-      instance if instance && matches_prefix?(instance, token)
+      token_owner_record if token_owner_record && matches_prefix?(token_owner_record, token)
     end
 
-    def ensure_token(instance)
+    def ensure_token(token_owner_record)
       # TODO, tech debt, because some specs are testing migrations, but are still
       # using factory bot to create resources, it might happen that a database
       # schema does not have "#{token_name}_encrypted" field yet, however a bunch
@@ -35,27 +34,27 @@ module TokenAuthenticatableStrategies
       # Another use case is when we are caching resources / columns, like we do
       # in case of ApplicationSetting.
 
-      return super if instance.has_attribute?(encrypted_field)
+      return super if token_owner_record.has_attribute?(encrypted_field)
 
       if required?
         raise ArgumentError, _('Using required encryption strategy when encrypted field is missing!')
       else
-        insecure_strategy.ensure_token(instance)
+        insecure_strategy.ensure_token(token_owner_record)
       end
     end
 
-    def get_token(instance)
-      return insecure_strategy.get_token(instance) if migrating?
+    def get_token(token_owner_record)
+      return insecure_strategy.get_token(token_owner_record) if migrating?
 
-      get_encrypted_token(instance)
+      get_encrypted_token(token_owner_record)
     end
 
-    def set_token(instance, token)
+    def set_token(token_owner_record, token)
       raise ArgumentError unless token.present?
 
-      instance[encrypted_field] = EncryptionHelper.encrypt_token(token)
-      instance[token_field] = token if migrating?
-      instance[token_field] = nil if optional?
+      token_owner_record[encrypted_field] = EncryptionHelper.encrypt_token(token)
+      token_owner_record[token_field] = token if migrating?
+      token_owner_record[token_field] = nil if optional?
       token
     end
 
@@ -73,10 +72,10 @@ module TokenAuthenticatableStrategies
 
     protected
 
-    def get_encrypted_token(instance)
-      encrypted_token = instance.read_attribute(encrypted_field)
+    def get_encrypted_token(token_owner_record)
+      encrypted_token = token_owner_record.read_attribute(encrypted_field)
       token = EncryptionHelper.decrypt_token(encrypted_token)
-      token || (insecure_strategy.get_token(instance) if optional?)
+      token || (insecure_strategy.get_token(token_owner_record) if optional?)
     end
 
     def encrypted_strategy
@@ -105,18 +104,18 @@ module TokenAuthenticatableStrategies
         .new(klass, token_field, options)
     end
 
-    def matches_prefix?(instance, token)
-      !options[:require_prefix_for_validation] || token.start_with?(prefix_for(instance))
+    def matches_prefix?(token_owner_record, token)
+      !options[:require_prefix_for_validation] || token.start_with?(prefix_for(token_owner_record))
     end
 
-    def token_set?(instance)
-      token = get_encrypted_token(instance)
+    def token_set?(token_owner_record)
+      token = get_encrypted_token(token_owner_record)
 
       unless required?
-        token ||= insecure_strategy.get_token(instance)
+        token ||= insecure_strategy.get_token(token_owner_record)
       end
 
-      token.present? && matches_prefix?(instance, token)
+      token.present? && matches_prefix?(token_owner_record, token)
     end
 
     def encrypted_field

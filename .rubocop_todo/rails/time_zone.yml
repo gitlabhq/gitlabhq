@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Rails/TimeZone:
   Exclude:
-    - 'ee/lib/delay.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'ee/lib/gitlab/geo/event_gap_tracking.rb'
     - 'ee/lib/gitlab/geo/log_cursor/logger.rb'
@@ -51,7 +50,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/database_spec.rb'
     - 'spec/lib/gitlab/discussions_diff/file_collection_spec.rb'
     - 'spec/lib/gitlab/external_authorization/access_spec.rb'
-    - 'spec/lib/gitlab/external_authorization/cache_spec.rb'
     - 'spec/lib/gitlab/external_authorization/logger_spec.rb'
     - 'spec/lib/gitlab/fogbugz_import/importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/issue_importer_spec.rb'

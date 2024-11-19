@@ -2,27 +2,22 @@
 - @hide_search_settings = true
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section.gl-mt-3
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-
-  %h5.gl-text-lg.gl-mt-0
-    = sprintf(_('Active chat names (%{count})'), { count: @chat_names.size })
-
-  - if @chat_names.present?
-    .table-responsive
-      %table.table.gl-table
-        %thead
-          %tr
-            %th= _('Team domain')
-            %th= _('Nickname')
-            %th= _('Last used')
-            %th
-        %tbody
-          = render @chat_names
-
-  - else
-    .gl-text-secondary.settings-message
-      = _("You don't have any active chat names.")
+= render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+  - c.with_body do
+    = render ::Layouts::CrudComponent.new(_('Active chat names'),
+      count: @chat_names.size,
+      icon: 'comment') do |c|
+      - c.with_body do
+        - if @chat_names.present?
+          .table-responsive
+            %table.table.gl-table
+              %thead
+                %tr
+                  %th= _('Team domain')
+                  %th= _('Nickname')
+                  %th= _('Last used')
+                  %th
+              %tbody
+                = render @chat_names
+        - else
+          .gl-text-subtle= _("You don't have any active chat names.")

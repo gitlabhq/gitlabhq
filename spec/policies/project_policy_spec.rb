@@ -330,6 +330,30 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'manage_trigger' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :allowed) do
+      :owner      | true
+      :maintainer | true
+      :developer  | false
+      :reporter   | false
+      :guest      | false
+    end
+
+    with_them do
+      let(:current_user) { public_send(role) }
+
+      it 'grants manage_trigger permission based on admin_build permission' do
+        if allowed
+          expect_allowed(:manage_trigger)
+        else
+          expect_disallowed(:manage_trigger)
+        end
+      end
+    end
+  end
+
   context 'builds feature' do
     context 'when builds are disabled' do
       let(:current_user) { owner }
@@ -3597,42 +3621,124 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'read_model_registry' do
-    using RSpec::Parameterized::TableSyntax
+    context 'for public projects' do
+      using RSpec::Parameterized::TableSyntax
 
-    where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
-      false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:anonymous)  | Featurable::ENABLED  | true
-      true  | ref(:anonymous)  | Featurable::PRIVATE  | false
-      true  | ref(:anonymous)  | Featurable::DISABLED | false
-      true  | ref(:non_member) | Featurable::ENABLED  | true
-      true  | ref(:non_member) | Featurable::PRIVATE  | false
-      true  | ref(:non_member) | Featurable::DISABLED | false
-      true  | ref(:guest)      | Featurable::ENABLED  | true
-      true  | ref(:guest)      | Featurable::PRIVATE  | false
-      true  | ref(:guest)      | Featurable::DISABLED | false
-      true  | ref(:reporter)   | Featurable::ENABLED  | true
-      true  | ref(:reporter)   | Featurable::PRIVATE  | true
-      true  | ref(:reporter)   | Featurable::DISABLED | false
-      true  | ref(:developer)  | Featurable::ENABLED  | true
-      true  | ref(:developer)  | Featurable::PRIVATE  | true
-      true  | ref(:developer)  | Featurable::DISABLED | false
-      true  | ref(:maintainer) | Featurable::ENABLED  | true
-      true  | ref(:maintainer) | Featurable::PRIVATE  | true
-      true  | ref(:maintainer) | Featurable::DISABLED | false
-      true  | ref(:owner)      | Featurable::ENABLED  | true
-      true  | ref(:owner)      | Featurable::PRIVATE  | true
-      true  | ref(:owner)      | Featurable::DISABLED | false
-    end
-    with_them do
-      before do
-        stub_feature_flags(model_registry: feature_flag_enabled)
-        project.project_feature.update!(model_registry_access_level: access_level)
+      where(:access_level, :current_user, :allowed) do
+        Featurable::DISABLED | ref(:anonymous)  | false
+        Featurable::DISABLED | ref(:non_member) | false
+        Featurable::DISABLED | ref(:guest)      | false
+        Featurable::DISABLED | ref(:reporter)   | false
+        Featurable::DISABLED | ref(:developer)  | false
+        Featurable::DISABLED | ref(:maintainer) | false
+        Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | true
+        Featurable::ENABLED  | ref(:non_member) | true
+        Featurable::ENABLED  | ref(:guest)      | true
+        Featurable::ENABLED  | ref(:reporter)   | true
+        Featurable::ENABLED  | ref(:developer)  | true
+        Featurable::ENABLED  | ref(:maintainer) | true
+        Featurable::ENABLED  | ref(:owner)      | true
+        Featurable::PRIVATE  | ref(:anonymous)  | false
+        Featurable::PRIVATE  | ref(:non_member) | false
+        Featurable::PRIVATE  | ref(:guest)      | true
+        Featurable::PRIVATE  | ref(:reporter)   | true
+        Featurable::PRIVATE  | ref(:developer)  | true
+        Featurable::PRIVATE  | ref(:maintainer) | true
+        Featurable::PRIVATE  | ref(:owner)      | true
       end
+      with_them do
+        before do
+          project.project_feature.update!(model_registry_access_level: access_level)
+        end
 
-      if params[:allowed]
-        it { expect_allowed(:read_model_registry) }
-      else
-        it { expect_disallowed(:read_model_registry) }
+        if params[:allowed]
+          it { expect_allowed(:read_model_registry) }
+        else
+          it { expect_disallowed(:read_model_registry) }
+        end
+      end
+    end
+
+    context 'for private projects' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project) { private_project }
+
+      where(:access_level, :current_user, :allowed) do
+        Featurable::DISABLED | ref(:anonymous)  | false
+        Featurable::DISABLED | ref(:non_member) | false
+        Featurable::DISABLED | ref(:guest)      | false
+        Featurable::DISABLED | ref(:reporter)   | false
+        Featurable::DISABLED | ref(:developer)  | false
+        Featurable::DISABLED | ref(:maintainer) | false
+        Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | false
+        Featurable::ENABLED  | ref(:non_member) | false
+        Featurable::ENABLED  | ref(:guest)      | true
+        Featurable::ENABLED  | ref(:reporter)   | true
+        Featurable::ENABLED  | ref(:developer)  | true
+        Featurable::ENABLED  | ref(:maintainer) | true
+        Featurable::ENABLED  | ref(:owner)      | true
+        Featurable::PRIVATE  | ref(:anonymous)  | false
+        Featurable::PRIVATE  | ref(:non_member) | false
+        Featurable::PRIVATE  | ref(:guest)      | true
+        Featurable::PRIVATE  | ref(:reporter)   | true
+        Featurable::PRIVATE  | ref(:developer)  | true
+        Featurable::PRIVATE  | ref(:maintainer) | true
+        Featurable::PRIVATE  | ref(:owner)      | true
+      end
+      with_them do
+        before do
+          project.project_feature.update!(model_registry_access_level: access_level)
+        end
+
+        if params[:allowed]
+          it { expect_allowed(:read_model_registry) }
+        else
+          it { expect_disallowed(:read_model_registry) }
+        end
+      end
+    end
+
+    context 'for internal projects' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project) { internal_project }
+
+      where(:access_level, :current_user, :allowed) do
+        Featurable::DISABLED | ref(:anonymous)  | false
+        Featurable::DISABLED | ref(:non_member) | false
+        Featurable::DISABLED | ref(:guest)      | false
+        Featurable::DISABLED | ref(:reporter)   | false
+        Featurable::DISABLED | ref(:developer)  | false
+        Featurable::DISABLED | ref(:maintainer) | false
+        Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | false
+        Featurable::ENABLED  | ref(:non_member) | false
+        Featurable::ENABLED  | ref(:guest)      | true
+        Featurable::ENABLED  | ref(:reporter)   | true
+        Featurable::ENABLED  | ref(:developer)  | true
+        Featurable::ENABLED  | ref(:maintainer) | true
+        Featurable::ENABLED  | ref(:owner)      | true
+        Featurable::PRIVATE  | ref(:anonymous)  | false
+        Featurable::PRIVATE  | ref(:non_member) | false
+        Featurable::PRIVATE  | ref(:guest)      | true
+        Featurable::PRIVATE  | ref(:reporter)   | true
+        Featurable::PRIVATE  | ref(:developer)  | true
+        Featurable::PRIVATE  | ref(:maintainer) | true
+        Featurable::PRIVATE  | ref(:owner)      | true
+      end
+      with_them do
+        before do
+          project.project_feature.update!(model_registry_access_level: access_level)
+        end
+
+        if params[:allowed]
+          it { expect_allowed(:read_model_registry) }
+        else
+          it { expect_disallowed(:read_model_registry) }
+        end
       end
     end
   end
@@ -3640,33 +3746,31 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'write_model_registry' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
-      false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:anonymous)  | Featurable::ENABLED  | false
-      true  | ref(:anonymous)  | Featurable::PRIVATE  | false
-      true  | ref(:anonymous)  | Featurable::DISABLED | false
-      true  | ref(:non_member) | Featurable::ENABLED  | false
-      true  | ref(:non_member) | Featurable::PRIVATE  | false
-      true  | ref(:non_member) | Featurable::DISABLED | false
-      true  | ref(:guest)      | Featurable::ENABLED  | false
-      true  | ref(:guest)      | Featurable::PRIVATE  | false
-      true  | ref(:guest)      | Featurable::DISABLED | false
-      true  | ref(:reporter)   | Featurable::ENABLED  | false
-      true  | ref(:reporter)   | Featurable::PRIVATE  | false
-      true  | ref(:reporter)   | Featurable::DISABLED | false
-      true  | ref(:developer)  | Featurable::ENABLED  | true
-      true  | ref(:developer)  | Featurable::PRIVATE  | true
-      true  | ref(:developer)  | Featurable::DISABLED | false
-      true  | ref(:maintainer) | Featurable::ENABLED  | true
-      true  | ref(:maintainer) | Featurable::PRIVATE  | true
-      true  | ref(:maintainer) | Featurable::DISABLED | false
-      true  | ref(:owner)      | Featurable::ENABLED  | true
-      true  | ref(:owner)      | Featurable::PRIVATE  | true
-      true  | ref(:owner)      | Featurable::DISABLED | false
+    where(:current_user, :access_level, :allowed) do
+      ref(:anonymous)  | Featurable::ENABLED  | false
+      ref(:anonymous)  | Featurable::PRIVATE  | false
+      ref(:anonymous)  | Featurable::DISABLED | false
+      ref(:non_member) | Featurable::ENABLED  | false
+      ref(:non_member) | Featurable::PRIVATE  | false
+      ref(:non_member) | Featurable::DISABLED | false
+      ref(:guest)      | Featurable::ENABLED  | false
+      ref(:guest)      | Featurable::PRIVATE  | false
+      ref(:guest)      | Featurable::DISABLED | false
+      ref(:reporter)   | Featurable::ENABLED  | false
+      ref(:reporter)   | Featurable::PRIVATE  | false
+      ref(:reporter)   | Featurable::DISABLED | false
+      ref(:developer)  | Featurable::ENABLED  | true
+      ref(:developer)  | Featurable::PRIVATE  | true
+      ref(:developer)  | Featurable::DISABLED | false
+      ref(:maintainer) | Featurable::ENABLED  | true
+      ref(:maintainer) | Featurable::PRIVATE  | true
+      ref(:maintainer) | Featurable::DISABLED | false
+      ref(:owner)      | Featurable::ENABLED  | true
+      ref(:owner)      | Featurable::PRIVATE  | true
+      ref(:owner)      | Featurable::DISABLED | false
     end
     with_them do
       before do
-        stub_feature_flags(model_registry: feature_flag_enabled)
         project.project_feature.update!(model_registry_access_level: access_level)
       end
 
@@ -3679,42 +3783,124 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe ':read_model_experiments' do
-    using RSpec::Parameterized::TableSyntax
+    context 'for public projects' do
+      using RSpec::Parameterized::TableSyntax
 
-    where(:ff_ml_experiment_tracking, :current_user, :access_level, :allowed) do
-      false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:anonymous)  | Featurable::ENABLED  | true
-      true  | ref(:anonymous)  | Featurable::PRIVATE  | false
-      true  | ref(:anonymous)  | Featurable::DISABLED | false
-      true  | ref(:non_member) | Featurable::ENABLED  | true
-      true  | ref(:non_member) | Featurable::PRIVATE  | false
-      true  | ref(:non_member) | Featurable::DISABLED | false
-      true  | ref(:guest)      | Featurable::ENABLED  | true
-      true  | ref(:guest)      | Featurable::PRIVATE  | false
-      true  | ref(:guest)      | Featurable::DISABLED | false
-      true  | ref(:reporter)   | Featurable::ENABLED  | true
-      true  | ref(:reporter)   | Featurable::PRIVATE  | true
-      true  | ref(:reporter)   | Featurable::DISABLED | false
-      true  | ref(:developer)  | Featurable::ENABLED  | true
-      true  | ref(:developer)  | Featurable::PRIVATE  | true
-      true  | ref(:developer)  | Featurable::DISABLED | false
-      true  | ref(:maintainer) | Featurable::ENABLED  | true
-      true  | ref(:maintainer) | Featurable::PRIVATE  | true
-      true  | ref(:maintainer) | Featurable::DISABLED | false
-      true  | ref(:owner)      | Featurable::ENABLED  | true
-      true  | ref(:owner)      | Featurable::PRIVATE  | true
-      true  | ref(:owner)      | Featurable::DISABLED | false
-    end
-    with_them do
-      before do
-        stub_feature_flags(ml_experiment_tracking: ff_ml_experiment_tracking)
-        project.project_feature.update!(model_experiments_access_level: access_level)
+      where(:access_level, :current_user, :allowed) do
+        Featurable::DISABLED | ref(:anonymous)  | false
+        Featurable::DISABLED | ref(:non_member) | false
+        Featurable::DISABLED | ref(:guest)      | false
+        Featurable::DISABLED | ref(:reporter)   | false
+        Featurable::DISABLED | ref(:developer)  | false
+        Featurable::DISABLED | ref(:maintainer) | false
+        Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | true
+        Featurable::ENABLED  | ref(:non_member) | true
+        Featurable::ENABLED  | ref(:guest)      | true
+        Featurable::ENABLED  | ref(:reporter)   | true
+        Featurable::ENABLED  | ref(:developer)  | true
+        Featurable::ENABLED  | ref(:maintainer) | true
+        Featurable::ENABLED  | ref(:owner)      | true
+        Featurable::PRIVATE  | ref(:anonymous)  | false
+        Featurable::PRIVATE  | ref(:non_member) | false
+        Featurable::PRIVATE  | ref(:guest)      | true
+        Featurable::PRIVATE  | ref(:reporter)   | true
+        Featurable::PRIVATE  | ref(:developer)  | true
+        Featurable::PRIVATE  | ref(:maintainer) | true
+        Featurable::PRIVATE  | ref(:owner)      | true
       end
+      with_them do
+        before do
+          project.project_feature.update!(model_experiments_access_level: access_level)
+        end
 
-      if params[:allowed]
-        it { is_expected.to be_allowed(:read_model_experiments) }
-      else
-        it { is_expected.not_to be_allowed(:read_model_experiments) }
+        if params[:allowed]
+          it { expect_allowed(:read_model_experiments) }
+        else
+          it { expect_disallowed(:read_model_experiments) }
+        end
+      end
+    end
+
+    context 'for private projects' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project) { private_project }
+
+      where(:access_level, :current_user, :allowed) do
+        Featurable::DISABLED | ref(:anonymous)  | false
+        Featurable::DISABLED | ref(:non_member) | false
+        Featurable::DISABLED | ref(:guest)      | false
+        Featurable::DISABLED | ref(:reporter)   | false
+        Featurable::DISABLED | ref(:developer)  | false
+        Featurable::DISABLED | ref(:maintainer) | false
+        Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | false
+        Featurable::ENABLED  | ref(:non_member) | false
+        Featurable::ENABLED  | ref(:guest)      | true
+        Featurable::ENABLED  | ref(:reporter)   | true
+        Featurable::ENABLED  | ref(:developer)  | true
+        Featurable::ENABLED  | ref(:maintainer) | true
+        Featurable::ENABLED  | ref(:owner)      | true
+        Featurable::PRIVATE  | ref(:anonymous)  | false
+        Featurable::PRIVATE  | ref(:non_member) | false
+        Featurable::PRIVATE  | ref(:guest)      | true
+        Featurable::PRIVATE  | ref(:reporter)   | true
+        Featurable::PRIVATE  | ref(:developer)  | true
+        Featurable::PRIVATE  | ref(:maintainer) | true
+        Featurable::PRIVATE  | ref(:owner)      | true
+      end
+      with_them do
+        before do
+          project.project_feature.update!(model_experiments_access_level: access_level)
+        end
+
+        if params[:allowed]
+          it { expect_allowed(:read_model_experiments) }
+        else
+          it { expect_disallowed(:read_model_experiments) }
+        end
+      end
+    end
+
+    context 'for internal projects' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project) { internal_project }
+
+      where(:access_level, :current_user, :allowed) do
+        Featurable::DISABLED | ref(:anonymous)  | false
+        Featurable::DISABLED | ref(:non_member) | false
+        Featurable::DISABLED | ref(:guest)      | false
+        Featurable::DISABLED | ref(:reporter)   | false
+        Featurable::DISABLED | ref(:developer)  | false
+        Featurable::DISABLED | ref(:maintainer) | false
+        Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | false
+        Featurable::ENABLED  | ref(:non_member) | false
+        Featurable::ENABLED  | ref(:guest)      | true
+        Featurable::ENABLED  | ref(:reporter)   | true
+        Featurable::ENABLED  | ref(:developer)  | true
+        Featurable::ENABLED  | ref(:maintainer) | true
+        Featurable::ENABLED  | ref(:owner)      | true
+        Featurable::PRIVATE  | ref(:anonymous)  | false
+        Featurable::PRIVATE  | ref(:non_member) | false
+        Featurable::PRIVATE  | ref(:guest)      | true
+        Featurable::PRIVATE  | ref(:reporter)   | true
+        Featurable::PRIVATE  | ref(:developer)  | true
+        Featurable::PRIVATE  | ref(:maintainer) | true
+        Featurable::PRIVATE  | ref(:owner)      | true
+      end
+      with_them do
+        before do
+          project.project_feature.update!(model_experiments_access_level: access_level)
+        end
+
+        if params[:allowed]
+          it { expect_allowed(:read_model_experiments) }
+        else
+          it { expect_disallowed(:read_model_experiments) }
+        end
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
+RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
   include Features::AutocompleteHelpers
 
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
@@ -384,16 +384,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       end
 
       it_behaves_like 'searching issue autocomplete'
-
-      context 'when issue_autocomplete_backend_filtering is disabled' do
-        before do
-          stub_feature_flags(issue_autocomplete_backend_filtering: false)
-
-          visit project_issue_path(project, issue)
-        end
-
-        it_behaves_like 'searching issue autocomplete'
-      end
     end
 
     context 'merge requests' do

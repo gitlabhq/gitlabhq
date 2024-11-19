@@ -5,10 +5,6 @@ module QA
     describe 'Project access tokens', :smoke, :health_check, product_group: :authentication do
       let(:project_access_token) { QA::Resource::ProjectAccessToken.fabricate_via_browser_ui! }
 
-      after do
-        project_access_token.project.remove_via_api!
-      end
-
       it(
         'can be created and revoked via the UI',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347688'

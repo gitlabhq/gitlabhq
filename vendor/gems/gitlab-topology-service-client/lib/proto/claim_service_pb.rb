@@ -4,49 +4,50 @@
 require 'google/protobuf'
 
 require 'proto/cell_info_pb'
+
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("proto/claim_service.proto", :syntax => :proto3) do
     add_message "gitlab.cells.topology_service.ClaimRecord" do
-      optional :bucket, :enum, 1, "gitlab.cells.topology_service.ClaimRecord.Bucket"
-      optional :value, :string, 2
+      optional :bucket, :enum, 1, "gitlab.cells.topology_service.ClaimRecord.Bucket", json_name: "bucket"
+      optional :value, :string, 2, json_name: "value"
     end
     add_enum "gitlab.cells.topology_service.ClaimRecord.Bucket" do
-      value :Unknown, 0
-      value :Routes, 1
+      value :UNSPECIFIED, 0
+      value :ROUTES, 1
     end
     add_message "gitlab.cells.topology_service.ParentRecord" do
-      optional :model, :enum, 1, "gitlab.cells.topology_service.ParentRecord.ApplicationModel"
-      optional :id, :int64, 2
+      optional :model, :enum, 1, "gitlab.cells.topology_service.ParentRecord.ApplicationModel", json_name: "model"
+      optional :id, :int64, 2, json_name: "id"
     end
     add_enum "gitlab.cells.topology_service.ParentRecord.ApplicationModel" do
-      value :Unknown, 0
-      value :Group, 1
-      value :Project, 2
-      value :UserNamespace, 3
+      value :UNSPECIFIED, 0
+      value :GROUP, 1
+      value :PROJECT, 2
+      value :USER_NAMESPACE, 3
     end
     add_message "gitlab.cells.topology_service.OwnerRecord" do
-      optional :table, :enum, 1, "gitlab.cells.topology_service.OwnerRecord.Table"
-      optional :id, :int64, 2
+      optional :table, :enum, 1, "gitlab.cells.topology_service.OwnerRecord.Table", json_name: "table"
+      optional :id, :int64, 2, json_name: "id"
     end
     add_enum "gitlab.cells.topology_service.OwnerRecord.Table" do
-      value :Unknown, 0
-      value :routes, 1
+      value :UNSPECIFIED, 0
+      value :ROUTES, 1
     end
     add_message "gitlab.cells.topology_service.ClaimDetails" do
-      optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimRecord"
-      optional :parent, :message, 2, "gitlab.cells.topology_service.ParentRecord"
-      optional :owner, :message, 3, "gitlab.cells.topology_service.OwnerRecord"
+      optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimRecord", json_name: "claim"
+      optional :parent, :message, 2, "gitlab.cells.topology_service.ParentRecord", json_name: "parent"
+      optional :owner, :message, 3, "gitlab.cells.topology_service.OwnerRecord", json_name: "owner"
     end
     add_message "gitlab.cells.topology_service.ClaimInfo" do
-      optional :id, :int64, 1
-      optional :details, :message, 2, "gitlab.cells.topology_service.ClaimDetails"
-      proto3_optional :cell_info, :message, 3, "gitlab.cells.topology_service.CellInfo"
+      optional :id, :int64, 1, json_name: "id"
+      optional :details, :message, 2, "gitlab.cells.topology_service.ClaimDetails", json_name: "details"
+      proto3_optional :cell_info, :message, 3, "gitlab.cells.topology_service.CellInfo", json_name: "cellInfo"
     end
     add_message "gitlab.cells.topology_service.CreateClaimRequest" do
-      optional :details, :message, 1, "gitlab.cells.topology_service.ClaimDetails"
+      optional :details, :message, 1, "gitlab.cells.topology_service.ClaimDetails", json_name: "details"
     end
     add_message "gitlab.cells.topology_service.CreateClaimResponse" do
-      optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimInfo"
+      optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimInfo", json_name: "claim"
     end
   end
 end

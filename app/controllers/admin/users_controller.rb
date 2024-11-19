@@ -210,13 +210,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def create
-    opts = {
-      reset_password: true,
-      skip_confirmation: true,
-      organization_id: Current.organization&.id
-    }
+    opts = user_params.merge(reset_password: true, skip_confirmation: true)
+    opts[:organization_id] ||= Current.organization&.id
 
-    @user = Users::CreateService.new(current_user, user_params.merge(opts)).execute
+    @user = Users::CreateService.new(current_user, opts).execute
 
     respond_to do |format|
       if @user.persisted?
@@ -383,6 +380,8 @@ class Admin::UsersController < Admin::ApplicationController
       :mastodon,
       :name,
       :note,
+      :organization_id,
+      :organization_access_level,
       :password_expires_at,
       :private_profile,
       :projects_limit,

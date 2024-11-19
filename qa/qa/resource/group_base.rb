@@ -9,11 +9,12 @@ module QA
 
       MAX_NAME_LENGTH = 255
 
-      attr_accessor :path, :avatar
+      attr_accessor :avatar
 
       attributes :id,
         :runners_token,
         :name,
+        :path,
         :full_path,
         # Add visibility to enable create private group
         :visibility
@@ -149,6 +150,22 @@ module QA
       # @return [String]
       def api_runners_path
         "#{api_get_path}/runners"
+      end
+
+      # Get group audit events
+      #
+      # @return [Array]
+      def audit_events
+        api_get_from("#{api_get_path}/audit_events")
+      end
+
+      # Set IP restriction for group
+      #
+      # @param ip_ranges [String] Comma-separated list of IP addresses or subnet masks to restrict group access
+      # @return [void]
+      def set_ip_restriction_range(ip_ranges)
+        put_body = { ip_restriction_ranges: ip_ranges }
+        api_put_to(api_put_path, put_body)
       end
 
       # Object comparison

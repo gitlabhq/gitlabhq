@@ -31,12 +31,12 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.0.8.4)
-      activesupport (= 7.0.8.4)
-    activerecord (7.0.8.4)
-      activemodel (= 7.0.8.4)
-      activesupport (= 7.0.8.4)
-    activesupport (7.0.8.4)
+    activemodel (7.0.8.6)
+      activesupport (= 7.0.8.6)
+    activerecord (7.0.8.6)
+      activemodel (= 7.0.8.6)
+      activesupport (= 7.0.8.6)
+    activesupport (7.0.8.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -129,11 +129,11 @@ GEM
       method_source (~> 1.0)
     public_suffix (6.0.1)
     racc (1.8.1)
-    rack (2.2.9)
+    rack (2.2.10)
     rainbow (3.1.1)
     rake (13.2.1)
     regexp_parser (2.9.2)
-    rexml (3.3.7)
+    rexml (3.3.9)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -209,4 +209,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.27.1)
 
 BUNDLED WITH
-   2.5.18
+   2.5.22

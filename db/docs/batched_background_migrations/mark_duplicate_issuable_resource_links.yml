@@ -1,0 +1,10 @@
+---
+migration_job_name: MarkDuplicateIssuableResourceLinks
+description: We iterate over all records that need to be de-duplicated. We mark the first record created is_unique=true and all others as is_unique=false.
+feature_category: database
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144327
+milestone: '17.6'
+queued_migration_version: 20240908225334
+# Replace with the approximate date you think it's best to ensure the completion of this BBM.
+finalize_after: '2024-09-16'
+finalized_by: # version of the migration that finalized this BBM

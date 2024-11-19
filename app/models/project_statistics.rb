@@ -2,7 +2,6 @@
 
 class ProjectStatistics < ApplicationRecord
   include CounterAttribute
-  include IgnorableColumns
 
   belongs_to :project
   belongs_to :namespace

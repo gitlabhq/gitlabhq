@@ -572,7 +572,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
           context 'with valid service desk settings' do
             let_it_be(:user) { create(:user) }
-            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+            let_it_be(:credentials) do
+              build(:service_desk_custom_email_credential, project: project).save!(validate: false)
+            end
 
             let_it_be_with_reload(:verification) do
               create(:service_desk_custom_email_verification, project: project, token: 'ZROT4ZZXA-Y6', triggerer: user)
@@ -655,7 +657,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
           context 'with valid service desk settings' do
             let_it_be(:user) { create(:user) }
-            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+            let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
 
             let_it_be_with_reload(:verification) do
               create(:service_desk_custom_email_verification, project: project, token: 'ZROT4ZZXA-Y6', triggerer: user)

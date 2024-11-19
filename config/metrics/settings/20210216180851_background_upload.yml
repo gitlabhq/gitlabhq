@@ -12,7 +12,7 @@ data_source: system
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

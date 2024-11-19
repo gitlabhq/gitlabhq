@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::QueueBackfillAutocancelPartitionIdOnCiPipelines,
-  feature_category: :ci_scaling,
+  :suppress_partitioning_routing_analyzer,
+  feature_category: :continuous_integration,
   migration: :gitlab_ci,
   schema: 20240704155541 do
   let(:ci_pipelines_table) { table(:ci_pipelines, primary_key: :id, database: :ci) }

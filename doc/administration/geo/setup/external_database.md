@@ -12,7 +12,7 @@ DETAILS:
 
 This document is relevant if you are using a PostgreSQL instance that is not
 managed by the Linux package. This includes
-[cloud-managed instances](../../reference_architectures/index.md#recommendation-notes-for-the-database-services),
+[cloud-managed instances](../../reference_architectures/index.md#best-practices-for-the-database-services),
 or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that

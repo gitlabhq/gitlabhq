@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
@@ -16,7 +16,7 @@ With group access tokens, you can use a single token to:
 
 You can use a group access token to authenticate:
 
-- With the [GitLab API](../../../api/rest/index.md#personalprojectgroup-access-tokens).
+- With the [GitLab API](../../../api/rest/authentication.md#personalprojectgroup-access-tokens).
 - Authenticate with Git over HTTPS.
   Use:
 
@@ -45,6 +45,11 @@ configured for personal access tokens.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 > - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+FLAG:
+The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+For more information, see the history.
 
 WARNING:
 The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on expiry dates added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
@@ -58,7 +63,8 @@ To create a group access token:
 1. Enter an expiry date for the token:
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date.
+   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
+
    - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).
@@ -116,8 +122,6 @@ If you are an administrator, you can create group access tokens in the Rails con
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 
-You can use either the UI or the Rails console to revoke a group access token.
-
 In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
 feature flag, you can view both active and inactive revoked group access tokens
 on the access tokens page. If you do not enable the feature flag, you can only view
@@ -140,21 +144,6 @@ To revoke a group access token:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access tokens**.
 1. Next to the group access token to revoke, select **Revoke** (**{remove}**).
-
-### Use the Rails console
-
-Prerequisites:
-
-- You must be an administrator.
-
-To revoke a group access token, run the following command in a
-[Rails console](../../../administration/operations/rails_console.md):
-
-```ruby
-bot = User.find_by(username: 'group_109_bot') # the owner of the token you want to revoke
-token = bot.personal_access_tokens.last # the token you want to revoke
-token.revoke!
-```
 
 ## Scopes for a group access token
 
@@ -221,6 +210,18 @@ automatically applied:
 - 17.0.5
 - 17.1.3
 - 17.2.1
+
+### Group access token expiry emails
+
+> - Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+
+FLAG:
+The availability of the sixty and thirty day expiry notification emails is controlled by a feature flag. For more information, see the history.
+
+GitLab runs a check every day at 1:00 AM UTC to identify group access tokens that are expiring in the near future. Direct members of the group with the Owner role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+
+- In GitLab 17.6 and later, group Owners are notified by email when the check identifies their group access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their group access tokens as expiring in the next thirty days.
+- Group Owners are notified by email when the check identifies their group access tokens as expiring in the next seven days.
 
 ## Bot users for groups
 

@@ -35,7 +35,7 @@ You might receive notifications for one of the following reasons:
   or edit, or someone mentions <sup>1</sup> you.
 - You've [enabled notifications in an issue, merge request, or epic](#notifications-on-issues-merge-requests-and-epics).
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
-- You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/index.md).
+- You're subscribed to group or project pipeline notifications through the pipeline emails [integration](../project/integrations/index.md).
 
 1. GitLab doesn't send a notification when
    [a comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
@@ -330,7 +330,42 @@ If you no longer wish to receive any email notifications:
 
 On self-managed installations, even after doing this, your instance administrator
 [can still email you](../../administration/email_from_gitlab.md).
-To unsubscribe, select the unsubscribe link in one of these emails.
+
+## Unsubscribe from notification emails
+
+You can unsubscribe from notification emails from GitLab on a per-resource basis (for example a specific issue).
+
+### Using the unsubscribe link
+
+Every notification email from GitLab contains an unsubscribe link at the bottom.
+
+To unsubscribe:
+
+1. Select the unsubscribe link in the email.
+1. If you are signed in to GitLab in your browser, you are unsubscribed immediately.
+1. If you are not signed in, you need to confirm the action.
+
+### Using an email client or other software
+
+Your email client might show an **Unsubscribe** button when you view an email from GitLab.
+To unsubscribe, select this button.
+
+Notification emails from GitLab contain special headers.
+These headers allow supported email clients and other software
+to unsubscribe users automatically. Here's an example:
+
+```plaintext
+List-Unsubscribe: <https://gitlab.com/-/sent_notifications/[REDACTED]/unsubscribe>,<mailto:incoming+[REDACTED]-unsubscribe@incoming.gitlab.com>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+```
+
+The `List-Unsubscribe` header has two entries:
+
+- A link for software to send a `POST` request.
+  This action directly unsubscribes the user from the resource.
+  Sending a `GET` request to this link shows a confirmation dialog instead of unsubscribing.
+- An email address for software to send an unsubscribe email.
+  The content of the email is ignored.
 
 ## Email headers you can use to filter email
 
@@ -338,7 +373,7 @@ Notification email messages include GitLab-specific headers. To better manage yo
 you can filter the notification emails based on the content of these headers.
 
 For example, you could filter all emails from a specific project where you are being assigned a
-a merge request or an issue.
+merge request or an issue.
 
 The following table lists all GitLab-specific email headers:
 

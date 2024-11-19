@@ -21,7 +21,7 @@
         .input-group-prepend
           %input.label-color-preview.gl-w-7.gl-h-full.gl-border-1.gl-border-solid.gl-border-gray-500.gl-border-r-0.gl-rounded-tr-none.gl-rounded-br-none{ type: "color", placeholder: _('Select color') }
         = f.text_field :color, class: "gl-form-input form-control", data: { testid: 'label-color-field' }
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Select a color from the color picker or from the presets below.')
       = render_suggested_colors
   - if show_lock_on_merge

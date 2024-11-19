@@ -24,12 +24,12 @@ module MergeRequests
           end
         else
           # This check can only fail in EE
-          if check_results.payload[:failed_check] == :not_approved &&
+          if check_results.payload[:unsuccessful_check] == :not_approved &&
               merge_request.temporarily_unapproved?
             return :approvals_syncing
           end
 
-          check_results.payload[:failed_check]
+          check_results.payload[:unsuccessful_check]
         end
       end
 

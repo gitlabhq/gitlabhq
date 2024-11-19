@@ -1,9 +1,0 @@
----
-name: batched_redis_updates_for_kubernetes_agent_events
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497665
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168192
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498416
-milestone: '17.5'
-group: group::analytics instrumentation
-type: beta
-default_enabled: false

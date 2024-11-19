@@ -43,11 +43,13 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
   describe '.write_to_file' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:ci, :suite_failed, :file_path) do
-      true  | true  | 'root/tmp/failed-test-resources-random.json'
-      true  | false | 'root/tmp/test-resources-random.json'
-      false | true  | 'root/tmp/failed-test-resources.json'
-      false | false | 'root/tmp/test-resources.json'
+    where(:ci, :suite_failed, :retry_failed_specs, :rspec_retried, :file_path) do
+      true  | true  | false | false | 'root/tmp/failed-test-resources-random.json'
+      true  | false | false | false | 'root/tmp/test-resources-random.json'
+      false | true  | false | false | 'root/tmp/failed-test-resources.json'
+      false | false | false | false | 'root/tmp/test-resources.json'
+      false | true  | true  | false | 'root/tmp/test-resources.json'
+      false | true  | true  | true  | 'root/tmp/failed-test-resources.json'
     end
 
     with_them do
@@ -55,8 +57,10 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
 
       before do
         allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(ci)
-        allow(File).to receive(:write)
+        allow(QA::Runtime::Env).to receive(:rspec_retried?).and_return(rspec_retried)
         allow(QA::Runtime::Path).to receive(:qa_root).and_return('root')
+        allow(::Gitlab::QA::Runtime::Env).to receive(:retry_failed_specs?).and_return(retry_failed_specs)
+        allow(File).to receive(:write)
         allow(SecureRandom).to receive(:hex).with(any_args).and_return('random')
       end
 

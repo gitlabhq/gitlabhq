@@ -20,7 +20,7 @@ DETAILS:
 
 Use this API to retrieve instance audit events.
 
-To retrieve audit events using the API, you must [authenticate yourself](rest/index.md#authentication) as an Administrator.
+To retrieve audit events using the API, you must [authenticate yourself](rest/authentication.md) as an Administrator.
 
 ### Retrieve all instance audit events
 

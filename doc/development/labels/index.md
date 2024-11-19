@@ -39,7 +39,7 @@ labels, you can _always_ add the type, stage, group, and often the category/feat
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one and only one.
 
-The SSOT for type and subtype labels is [available in the handbook](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification).
+The SSOT for type and subtype labels is [available in the handbook](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification).
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.

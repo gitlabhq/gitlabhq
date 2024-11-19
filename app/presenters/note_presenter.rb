@@ -17,6 +17,16 @@ class NotePresenter < Gitlab::View::Presenter::Delegated # rubocop:disable Gitla
     obfuscate_participants_emails_in_system_note(text)
   end
 
+  def external_author
+    return unless object.note_metadata&.external_author
+
+    if can?(current_user, :read_external_emails, object)
+      object.note_metadata.external_author
+    else
+      Gitlab::Utils::Email.obfuscated_email(object.note_metadata.external_author, deform: true)
+    end
+  end
+
   private
 
   def obfuscate_participants_emails_in_system_note(text)

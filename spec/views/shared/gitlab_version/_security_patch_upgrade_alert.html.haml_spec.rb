@@ -18,6 +18,7 @@ RSpec.describe 'shared/gitlab_version/_security_patch_upgrade_alert' do
     before do
       allow(view).to receive(:current_user).and_return(user)
       allow(user).to receive(:can_admin_all_resources?).and_return(true)
+
       render
     end
 

@@ -143,8 +143,8 @@ const mixins = {
       }
 
       return this.isOpen
-        ? 'issue-token-state-icon-open gl-text-green-500'
-        : 'issue-token-state-icon-closed gl-text-blue-500';
+        ? 'issue-token-state-icon-open gl-fill-icon-success'
+        : 'issue-token-state-icon-closed gl-fill-icon-info';
     },
     computedLinkElementType() {
       return this.path.length > 0 ? 'a' : 'span';

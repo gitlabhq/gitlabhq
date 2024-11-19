@@ -1,0 +1,17 @@
+---
+description: Users can setup Google as an OAuth 2.0 authentication provider to login to GitLab with their Google credentials
+action: google_auth2_sso
+identifiers:
+- user
+product_group: authentication
+milestone: '15.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170427
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Optional registration type. Can be `invite_registration`, `subscription_registration`, `trial_registration`, `free_registration` etc

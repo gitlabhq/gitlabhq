@@ -12,18 +12,6 @@ import {
 import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 import CheckboxFilter from '~/search/sidebar/components/language_filter/checkbox_filter.vue';
 
-import {
-  TRACKING_LABEL_SHOW_MORE,
-  TRACKING_PROPERTY_MAX,
-  TRACKING_LABEL_MAX,
-  TRACKING_LABEL_FILTERS,
-  TRACKING_ACTION_SHOW,
-  TRACKING_ACTION_CLICK,
-  TRACKING_LABEL_ALL,
-} from '~/search/sidebar/components/language_filter/tracking';
-
-import { MAX_ITEM_LENGTH } from '~/search/sidebar/components/language_filter/data';
-
 Vue.use(Vuex);
 
 describe('GlobalSearchSidebarLanguageFilter', () => {
@@ -104,23 +92,23 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       unmockTracking();
     });
 
-    it(`renders ${MAX_ITEM_LENGTH} amount of items`, async () => {
+    it(`renders 100 items`, async () => {
       findShowMoreButton().vm.$emit('click');
 
       await nextTick();
 
-      expect(findAllCheckboxes()).toHaveLength(MAX_ITEM_LENGTH);
+      expect(findAllCheckboxes()).toHaveLength(100);
     });
 
     it('sends tracking information when show more clicked', () => {
       findShowMoreButton().vm.$emit('click');
 
-      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_CLICK, TRACKING_LABEL_SHOW_MORE, {
-        label: TRACKING_LABEL_ALL,
+      expect(trackingSpy).toHaveBeenCalledWith('search:agreggations:language:click', 'Show More', {
+        label: 'All Filters',
       });
     });
 
-    it(`renders more then ${MAX_ITEM_LENGTH} text`, async () => {
+    it(`renders more then 10 text`, async () => {
       findShowMoreButton().vm.$emit('click');
       await nextTick();
       expect(findHasOverMax().exists()).toBe(true);
@@ -129,9 +117,9 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
     it('sends tracking information when show more clicked and max item reached', () => {
       findShowMoreButton().vm.$emit('click');
 
-      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_SHOW, TRACKING_LABEL_FILTERS, {
-        label: TRACKING_LABEL_MAX,
-        property: TRACKING_PROPERTY_MAX,
+      expect(trackingSpy).toHaveBeenCalledWith('search:agreggations:language:show', 'Filters', {
+        label: 'Max Shown',
+        property: `More than 10 filters to show`,
       });
     });
 

@@ -3,6 +3,5 @@
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @project.name, _("Projects")
 
-%h1.page-title.gl-text-size-h-display= _('Edit project: %{project_name}') % { project_name: @project.name }
-%hr
+= render ::Layouts::PageHeadingComponent.new(_('Edit project: %{project_name}') % { project_name: @project.name })
 = render 'form'

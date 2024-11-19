@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     excluded = create(
       :postgres_index_bloat_estimate,
       index: create(:postgres_index, ondisk_size_bytes: 10.gigabytes),
-      bloat_size_bytes: 1.9.gigabyte  # 19% relative index bloat
+      bloat_size_bytes: 1.9.gigabyte # 19% relative index bloat
     )
 
     expect(subject).not_to include(excluded.index)

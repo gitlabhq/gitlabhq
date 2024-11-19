@@ -4,9 +4,9 @@ module Mutations
   module Timelogs
     class Base < Mutations::BaseMutation
       field :timelog,
-            Types::TimelogType,
-            null: true,
-            description: 'Timelog.'
+        Types::TimelogType,
+        null: true,
+        description: 'Timelog.'
 
       private
 

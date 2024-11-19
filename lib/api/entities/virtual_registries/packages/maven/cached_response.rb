@@ -10,8 +10,19 @@ module API
               Base64.urlsafe_encode64(cached_response.relative_path)
             end
 
-            expose :group_id, :upstream_id, :upstream_checked_at, :file, :size, :downloaded_at,
-              :downloads_count, :relative_path, :upstream_etag, :content_type, :created_at, :updated_at
+            expose :group_id,
+              :upstream_id,
+              :upstream_checked_at,
+              :file,
+              :file_md5,
+              :file_sha1,
+              :size,
+              :downloaded_at,
+              :relative_path,
+              :upstream_etag,
+              :content_type,
+              :created_at,
+              :updated_at
           end
         end
       end

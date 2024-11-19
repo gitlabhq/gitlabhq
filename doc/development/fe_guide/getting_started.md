@@ -10,7 +10,7 @@ This page will guide you through the Frontend development process and show you w
 
 There are a lot of things to consider for a first merge request and it can feel overwhelming. The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
 
-## Development life cycle
+## Development lifecycle
 
 ### Step 1: Preparing the issue
 

@@ -176,11 +176,15 @@ module API
         produces ['application/yaml']
         tags %w[usage_data metrics]
       end
+      params do
+        optional :include_paths, type: Boolean, desc: 'Include file paths in the metric definitions',
+          documentation: { example: true, default: false }
+      end
       get 'metric_definitions', urgency: :low do
         content_type 'application/yaml'
         env['api.format'] = :binary
 
-        Gitlab::Usage::MetricDefinition.dump_metrics_yaml
+        Gitlab::Usage::MetricDefinition.dump_metrics_yaml(include_paths: !!params[:include_paths])
       end
     end
   end

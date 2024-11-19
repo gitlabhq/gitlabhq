@@ -63,7 +63,6 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :cloud_
   let(:configuration) { Gitlab::Memory::Watchdog::Configuration.new }
 
   # In tests, the Puma constant does not exist so we cannot use a verified double.
-  # rubocop: disable RSpec/VerifiedDoubles
   describe '.configure_for_puma' do
     let(:logger) { Gitlab::AppLogger }
     let(:puma) do
@@ -189,7 +188,6 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :cloud_
       end
     end
   end
-  # rubocop: enable RSpec/VerifiedDoubles
 
   describe '.configure_for_sidekiq' do
     let(:logger) { ::Sidekiq.logger }

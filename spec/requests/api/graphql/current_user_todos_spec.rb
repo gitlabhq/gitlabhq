@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'A Todoable that implements the CurrentUserTodos interface',
-  feature_category: :team_planning do
+  feature_category: :notifications do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

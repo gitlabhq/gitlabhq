@@ -9,20 +9,6 @@ module Gitlab
       # has been completed. Sessions can be used to keep track of what hosts
       # should be used for queries.
       class Session
-        CACHE_KEY = :gitlab_load_balancer_session
-
-        def self.current
-          RequestStore[CACHE_KEY] ||= new
-        end
-
-        def self.clear_session
-          RequestStore.delete(CACHE_KEY)
-        end
-
-        def self.without_sticky_writes(&block)
-          current.ignore_writes(&block)
-        end
-
         def initialize
           @use_primary = false
           @performed_write = false
@@ -41,7 +27,7 @@ module Gitlab
           @use_primary = true
         end
 
-        def use_primary(&blk)
+        def use_primary
           used_primary = @use_primary
           @use_primary = true
           yield
@@ -49,13 +35,14 @@ module Gitlab
           @use_primary = used_primary || @performed_write
         end
 
-        def ignore_writes(&block)
+        def ignore_writes
           @ignore_writes = true
 
           yield
         ensure
           @ignore_writes = false
         end
+        alias_method :without_sticky_writes, :ignore_writes
 
         # Indicates that the read SQL statements from anywhere inside this
         # blocks should use a replica, regardless of the current primary
@@ -66,7 +53,7 @@ module Gitlab
         #
         # Write and ambiguous queries inside this block are still handled by
         # the primary.
-        def use_replicas_for_read_queries(&blk)
+        def use_replicas_for_read_queries
           previous_flag = @use_replicas_for_read_queries
           @use_replicas_for_read_queries = true
           yield
@@ -89,7 +76,7 @@ module Gitlab
         # - If the queries are about to write
         # - The current session already performed writes
         # - It prefers to use primary, aka, use_primary or use_primary! were called
-        def fallback_to_replicas_for_ambiguous_queries(&blk)
+        def fallback_to_replicas_for_ambiguous_queries
           previous_flag = @fallback_to_replicas_for_ambiguous_queries
           @fallback_to_replicas_for_ambiguous_queries = true
           yield

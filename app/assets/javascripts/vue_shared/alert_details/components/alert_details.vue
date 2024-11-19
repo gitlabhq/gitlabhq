@@ -252,21 +252,9 @@ export default {
       class="alert-management-details gl-relative"
       :class="{ 'pr-sm-8': sidebarStatus }"
     >
-      <div
-        class="py-3 py-md-4 gl-flex gl-flex-col gl-items-center gl-justify-between gl-border-b-1 gl-border-b-gray-100 gl-px-1 gl-border-b-solid sm:gl-flex-row"
-      >
-        <div data-testid="alert-header">
-          <gl-badge class="gl-mr-3">
-            <strong>{{ s__('AlertManagement|Alert') }}</strong>
-          </gl-badge>
-          <span>
-            <gl-sprintf :message="reportedAtMessage">
-              <template #when>
-                <time-ago-tooltip :time="alert.createdAt" />
-              </template>
-              <template #tool>{{ alert.monitoringTool }}</template>
-            </gl-sprintf>
-          </span>
+      <div class="gl-mt-5 gl-justify-between gl-gap-4 sm:!gl-flex">
+        <div v-if="alert">
+          <h2 data-testid="title" class="gl-m-0">{{ alert.title }}</h2>
         </div>
         <gl-button
           v-if="alert.issue"
@@ -299,10 +287,26 @@ export default {
           @click="toggleSidebar"
         />
       </div>
-      <div v-if="alert" class="gl-flex gl-items-center gl-justify-between">
-        <h2 data-testid="title">{{ alert.title }}</h2>
+
+      <div data-testid="alert-header" class="gl-mt-2">
+        <gl-badge class="gl-mr-2">
+          <strong>{{ s__('AlertManagement|Alert') }}</strong>
+        </gl-badge>
+        <span>
+          <gl-sprintf :message="reportedAtMessage">
+            <template #when>
+              <time-ago-tooltip :time="alert.createdAt" />
+            </template>
+            <template #tool>{{ alert.monitoringTool }}</template>
+          </gl-sprintf>
+        </span>
       </div>
-      <gl-tabs v-if="alert" v-model="currentTabIndex" data-testid="alertDetailsTabs">
+      <gl-tabs
+        v-if="alert"
+        v-model="currentTabIndex"
+        data-testid="alertDetailsTabs"
+        class="gl-mt-4"
+      >
         <gl-tab :data-testid="$options.tabsConfig[0].id" :title="$options.tabsConfig[0].title">
           <alert-summary-row v-if="alert.severity" :label="`${s__('AlertManagement|Severity')}:`">
             <span data-testid="severity">

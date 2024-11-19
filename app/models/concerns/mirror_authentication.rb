@@ -62,7 +62,7 @@ module MirrorAuthentication
   end
 
   def ssh_known_hosts_verified_by
-    @ssh_known_hosts_verified_by ||= ::User.find_by(id: ssh_known_hosts_verified_by_id)
+    @ssh_known_hosts_verified_by ||= user_by_ssh_known_hosts_verified_by_id
   end
 
   def ssh_known_hosts_fingerprints
@@ -84,5 +84,13 @@ module MirrorAuthentication
 
   def generate_ssh_private_key!
     self.ssh_private_key = SSHData::PrivateKey::RSA.generate(4096).openssl.to_pem
+  end
+
+  private
+
+  def user_by_ssh_known_hosts_verified_by_id
+    return unless ssh_known_hosts_verified_by_id
+
+    ::User.find_by(id: ssh_known_hosts_verified_by_id)
   end
 end

@@ -144,7 +144,7 @@ these layout presets:
 
 ### Quarters
 
-![roadmap date range in quarters](img/roadmap_timeline_quarters.png)
+![roadmap date range in quarters](img/roadmap_timeline_quarters_v11_10.png)
 
 In the **Quarters** preset, roadmap shows epics and milestones which have start or due dates
 **falling within** currently selected date range preset,
@@ -154,7 +154,7 @@ the timeline header represent the month of the quarter.
 
 ### Months
 
-![roadmap date range in months](img/roadmap_timeline_months.png)
+![roadmap date range in months](img/roadmap_timeline_months_v11_10.png)
 
 In the **Months** preset, roadmap shows epics and milestones which have start or
 due dates **falling within** or **going through** currently selected date range
@@ -164,7 +164,7 @@ on the start day (Sunday) of the week. This preset is selected by default.
 
 ### Weeks
 
-![roadmap date range in weeks](img/roadmap_timeline_weeks.png)
+![roadmap date range in weeks](img/roadmap_timeline_weeks_v11_11.png)
 
 In the **Weeks** preset, roadmap shows epics and milestones which have start or due dates **falling
 within** or **going through** currently selected date range preset, where **today**

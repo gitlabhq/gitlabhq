@@ -1,10 +1,7 @@
 <script>
 import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import {
-  REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
-  REPORT_TYPE_SAST_IAC,
-} from '~/vue_shared/security_reports/constants';
+import { REPORT_TYPE_SAST_IAC } from '~/vue_shared/security_reports/constants';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import FeatureCardBadge from './feature_card_badge.vue';
 
@@ -54,7 +51,10 @@ export default {
       return ManageViaMr.canRender(this.feature);
     },
     cardClasses() {
-      return { 'gl-bg-gray-10': !this.available };
+      return { 'gl-bg-strong': !this.available };
+    },
+    textClasses() {
+      return { 'gl-text-subtle': !this.available };
     },
     statusClasses() {
       const { enabled, hasBadge } = this;
@@ -62,8 +62,8 @@ export default {
       return {
         'gl-ml-auto': true,
         'gl-shrink-0': true,
-        'gl-text-gray-500': !enabled,
-        'gl-text-green-500': enabled,
+        'gl-text-disabled': !enabled,
+        'gl-text-success': enabled,
         'gl-w-full': hasBadge,
         'gl-justify-between': hasBadge,
         'gl-flex': hasBadge,
@@ -84,10 +84,7 @@ export default {
       return Boolean(shouldDisplay && this.feature.badge?.text);
     },
     hasEnabledStatus() {
-      return (
-        this.isNotSastIACTemporaryHack &&
-        this.feature.type !== REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION
-      );
+      return this.isNotSastIACTemporaryHack;
     },
     showSecondaryConfigurationHelpPath() {
       return Boolean(this.available && this.feature.secondary?.configurationHelpPath);
@@ -115,47 +112,50 @@ export default {
 
 <template>
   <gl-card :class="cardClasses">
-    <div class="gl-flex gl-items-baseline" :class="{ 'gl-flex-col-reverse': hasBadge }">
-      <h3 class="gl-m-0 gl-mr-3 gl-text-lg">{{ feature.name }}</h3>
+    <template #header>
+      <div class="gl-flex gl-items-baseline" :class="{ 'gl-flex-col-reverse': hasBadge }">
+        <h3 class="gl-m-0 gl-mr-3 gl-text-base" :class="textClasses">
+          {{ feature.name }}
+        </h3>
+        <div
+          v-if="isNotSastIACTemporaryHack"
+          :class="statusClasses"
+          data-testid="feature-status"
+          :data-qa-feature="`${feature.type}_${enabled}_status`"
+        >
+          <feature-card-badge
+            v-if="hasBadge"
+            :badge="feature.badge"
+            :badge-href="feature.badge.badgeHref"
+          />
 
-      <div
-        v-if="isNotSastIACTemporaryHack"
-        :class="statusClasses"
-        data-testid="feature-status"
-        :data-qa-feature="`${feature.type}_${enabled}_status`"
-      >
-        <feature-card-badge
-          v-if="hasBadge"
-          :badge="feature.badge"
-          :badge-href="feature.badge.badgeHref"
-        />
+          <template v-if="hasEnabledStatus">
+            <template v-if="enabled">
+              <span>
+                <gl-icon name="check-circle-filled" />
+                <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
+              </span>
+            </template>
 
-        <template v-if="hasEnabledStatus">
-          <template v-if="enabled">
-            <span>
-              <gl-icon name="check-circle-filled" />
-              <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
-            </span>
+            <template v-else-if="available">
+              <span>{{ $options.i18n.notEnabled }}</span>
+            </template>
+
+            <template v-else>
+              {{ $options.i18n.availableWith }}
+            </template>
           </template>
 
-          <template v-else-if="available">
-            <span>{{ $options.i18n.notEnabled }}</span>
+          <template v-else-if="!available">
+            <span>{{ $options.i18n.availableWith }}</span>
           </template>
-
-          <template v-else>
-            {{ $options.i18n.availableWith }}
-          </template>
-        </template>
-
-        <template v-else-if="!available">
-          <span>{{ $options.i18n.availableWith }}</span>
-        </template>
+        </div>
       </div>
-    </div>
+    </template>
 
-    <p class="gl-mb-0 gl-mt-5">
+    <p class="gl-mb-0" :class="textClasses">
       {{ feature.description }}
-      <gl-link :href="feature.helpPath">{{ $options.i18n.learnMore }}</gl-link>
+      <gl-link :href="feature.helpPath">{{ $options.i18n.learnMore }}.</gl-link>
     </p>
 
     <template v-if="available && isNotSastIACTemporaryHack">
@@ -191,9 +191,11 @@ export default {
     </template>
 
     <div v-if="hasSecondary" data-testid="secondary-feature">
-      <h4 class="gl-m-0 gl-mt-6 gl-text-base">{{ feature.secondary.name }}</h4>
+      <h4 class="gl-m-0 gl-mt-6 gl-text-base" :class="textClasses">
+        {{ feature.secondary.name }}
+      </h4>
 
-      <p class="gl-mb-0 gl-mt-5">{{ feature.secondary.description }}</p>
+      <p class="gl-mb-0 gl-mt-5" :class="textClasses">{{ feature.secondary.description }}</p>
 
       <gl-button
         v-if="available && feature.secondary.configurationPath"

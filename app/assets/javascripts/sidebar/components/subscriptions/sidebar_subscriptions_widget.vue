@@ -283,7 +283,7 @@ export default {
         <gl-loading-icon v-if="isLoading" size="sm" class="sidebar-item-icon is-active" />
         <gl-icon v-else :name="notificationIcon" :size="16" class="sidebar-item-icon is-active" />
       </span>
-      <div v-show="emailsDisabled" class="hide-collapsed gl-mt-3 gl-text-gray-500">
+      <div v-show="emailsDisabled" class="hide-collapsed gl-mt-3 gl-text-subtle">
         {{ subscribeDisabledDescription }}
       </div>
     </template>

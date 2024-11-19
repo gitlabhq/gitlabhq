@@ -9,7 +9,7 @@ module Types
       MAX_SIZE_B = MAX_SIZE_KB * 1024
 
       field :html_summary, GraphQL::Types::String, null: false,
-        alpha: { milestone: '15.11' },
+        experiment: { milestone: '15.11' },
         description: 'HTML summary that contains the tail lines of the trace. ' \
           "Returns at most #{MAX_SIZE_KB}KB of raw bytes from the trace. " \
           'The returned string might start with an unexpected invalid UTF-8 code point due to truncation.' do

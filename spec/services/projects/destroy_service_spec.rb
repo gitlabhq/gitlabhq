@@ -139,6 +139,20 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  context 'when the deleting user does not have access' do
+    before do
+      project.update!(pending_delete: true)
+    end
+
+    it 'unsets the pending_delete on project' do
+      expect(destroy_project(project, create(:user))).to be(false)
+
+      project.reload
+
+      expect(project.pending_delete).to be_falsey
+    end
+  end
+
   context "deleting a project with merge requests" do
     let!(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -643,6 +657,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       it_behaves_like 'handles errors thrown during async destroy', /Failed to remove webhooks/
     end
+  end
+
+  it 'builds the project webhook payload' do
+    expect(Gitlab::HookData::ProjectBuilder).to receive(:new).with(project).and_call_original
+
+    destroy_project(project, user)
   end
 
   context 'when project has project bots' do

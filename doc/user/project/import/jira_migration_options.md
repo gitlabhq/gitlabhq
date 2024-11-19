@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira migration options
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 You have several options to migrate your Jira projects to GitLab. Before you decide on a migration strategy,
 first decide if you even need to move your Jira issues to GitLab. In many cases, the Jira issue data is no longer
 relevant or actionable. By starting fresh in GitLab, you can focus on setting up your processes and workflows to
@@ -24,7 +28,7 @@ If you opt to migrate your Jira issues, you can choose from several migration op
 
 GitLab has a built-in tool to import your Jira issue data. To use the GitLab Jira importer:
 
-1. [Configure the GitLab Jira integration in your target project](../../../integration/jira/configure.md#configure-the-integration)
+1. [Configure the GitLab Jira issues integration in your target project](../../../integration/jira/configure.md#configure-the-integration)
 1. [Import your Jira project issues to GitLab](../import/jira.md)
 
 Alternatively, you can watch a complete demo of the process: <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Import Jira project issues to GitLab](https://www.youtube.com/watch?v=OTJdJWmODFA)

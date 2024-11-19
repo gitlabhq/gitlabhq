@@ -56,7 +56,9 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     it 'writes without sticking to primary' do
       subject
 
-      expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).to be false
+      Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+        expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).to be false
+      end
     end
   end
 
@@ -140,7 +142,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
 
     it_behaves_like 'a non-unsubscribable notification', 'personal snippet' do
-      let(:noteable) { create(:personal_snippet, project: project) }
+      let(:noteable) { create(:personal_snippet) }
     end
 
     it_behaves_like 'a non-unsubscribable notification', 'project snippet' do
@@ -179,7 +181,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
 
     it_behaves_like 'a non-commit notification', 'personal snippet' do
-      let(:noteable) { create(:personal_snippet, project: project) }
+      let(:noteable) { create(:personal_snippet) }
     end
 
     it_behaves_like 'a non-commit notification', 'project snippet' do
@@ -218,7 +220,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
 
     it_behaves_like 'a snippet notification', 'personal snippet' do
-      let(:noteable) { create(:personal_snippet, project: project) }
+      let(:noteable) { create(:personal_snippet) }
     end
 
     it_behaves_like 'a snippet notification', 'project snippet' do

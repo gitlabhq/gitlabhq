@@ -7,6 +7,6 @@ module ProtectedTagAccess
   included do
     belongs_to :protected_tag
 
-    delegate :project, to: :protected_tag, allow_nil: true
+    delegate :project, to: :protected_tag, allow_nil: true, prefix: :protected_ref
   end
 end

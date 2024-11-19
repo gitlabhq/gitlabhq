@@ -1,46 +1,5 @@
-.broadcast-message {
-  padding: $gl-padding-8;
-
-  div,
-  p {
-    display: inline;
-    margin: 0;
-
-    a {
-      color: inherit;
-      text-decoration: underline;
-    }
-  }
-}
-
-.broadcast-banner-message {
-  p {
-    margin-bottom: 0;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: underline;
-  }
-}
-
 .broadcast-notification-message {
-  position: fixed;
-  bottom: $gl-padding;
-  right: $gl-padding;
+  @apply gl-fixed gl-right-5 gl-bottom-5 gl-w-auto gl-bg-default gl-border gl-shadow-sm gl-rounded-base;
   max-width: 300px;
-  width: auto;
-  background: var(--gl-background-color-default);
-  border: 1px solid var(--gl-border-color-default);
-  box-shadow: 0 1px 2px 0 var(--gl-shadow-color-default);
-  border-radius: $gl-border-radius-base;
   z-index: 999;
-
-  .gl-broadcast-message.banner {
-    color: $gl-text-color;
-  }
-}
-
-.gl-broadcast-message-content p:last-child {
-  margin: 0;
 }

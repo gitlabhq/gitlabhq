@@ -129,10 +129,13 @@ export default class AutocompleteHelper {
       ? dataSourceUrls
       : gl.GfmAutoComplete?.dataSources || {};
 
-    this.getDataSource = memoize(this.#getDataSource, (referenceType) => referenceType);
+    this.getDataSource = memoize(this.#getDataSource, (referenceType, { command } = {}) => {
+      if (referenceType === 'command') return referenceType;
+      return referenceType + (command ? `_${command}` : '');
+    });
   }
 
-  #getDataSource = (referenceType, config = {}) => {
+  #getDataSource = (referenceType, { command } = {}) => {
     const sources = {
       user: this.dataSourceUrls.members,
       issue: this.dataSourceUrls.issues,
@@ -163,8 +166,8 @@ export default class AutocompleteHelper {
     const filters = {
       label: (items) =>
         items.filter((item) => {
-          if (config.command === COMMANDS.UNLABEL) return item.set;
-          if (config.command === COMMANDS.LABEL) return !item.set;
+          if (command === COMMANDS.UNLABEL) return item.set;
+          if (command === COMMANDS.LABEL) return !item.set;
 
           return true;
         }),
@@ -177,10 +180,10 @@ export default class AutocompleteHelper {
             (reviewer) => reviewer.username === item.username,
           );
 
-          if (config.command === COMMANDS.ASSIGN) return !assigned;
-          if (config.command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;
-          if (config.command === COMMANDS.UNASSIGN) return assigned;
-          if (config.command === COMMANDS.UNASSIGN_REVIEWER) return assignedReviewer;
+          if (command === COMMANDS.ASSIGN) return !assigned;
+          if (command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;
+          if (command === COMMANDS.UNASSIGN) return assigned;
+          if (command === COMMANDS.UNASSIGN_REVIEWER) return assignedReviewer;
 
           return true;
         }),
@@ -208,7 +211,7 @@ export default class AutocompleteHelper {
       mapper: mappers[referenceType] || mappers.default,
       sorter: sorters[referenceType] || sorters.default,
       filter: filters[referenceType],
-      ...config,
+      command,
     });
   };
 }

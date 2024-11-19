@@ -1,0 +1,19 @@
+---
+description: Changes to the sorting of the ToDo List
+internal_events: true
+action: sort_todo_list
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Sort direction chosen by the user
+product_group: personal_productivity
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

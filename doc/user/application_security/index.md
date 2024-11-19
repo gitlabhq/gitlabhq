@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -15,9 +15,6 @@ GitLab can check your application for security vulnerabilities including:
 - Unauthorized access.
 - Data leaks.
 - Denial of Service (DoS) attacks.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).
 
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
@@ -115,7 +112,7 @@ The following vulnerability scanners and their databases are regularly updated:
 |:----------------------------------------------------------------|:---------------------------------|
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). |
-| [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST proxy-based](dast/browser/index.md) and [browser-based](dast/browser/index.md) engines are updated on a periodic basis. [DAST proxy-based](dast/browser/index.md) analyzer downloads the scanning rules at scan runtime. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L27). [DAST browser-based](dast/browser/index.md) rules run [different vulnerability checks](dast/browser/checks/index.md). |
+| [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST](dast/browser/index.md) analyzer is updated on a periodic basis. |
 | [Secret Detection](secret_detection/pipeline/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/index.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
@@ -168,7 +165,7 @@ To enable Dynamic Application Security Testing (DAST) scanning, add the followin
 
 ```yaml
 include:
-  - template: Security/DAST.gitlab-ci.yml
+  - template: Jobs/DAST.gitlab-ci.yml
 
 variables:
   DAST_WEBSITE: https://staging.example.com
@@ -381,35 +378,6 @@ security issues:
 
 - A security vulnerability. For more details, read [Merge request approval policies](policies/merge_request_approval_policies.md).
 
-## Using private Maven repositories
-
-If you have a private Apache Maven repository that requires login credentials,
-you can use the `MAVEN_CLI_OPTS` CI/CD variable
-to pass a username and password. You can set it under your project's settings
-so that your credentials aren't exposed in `.gitlab-ci.yml`.
-
-If the username is `myuser` and the password is `verysecret` then you would
-[set the following variable](../../ci/variables/index.md#for-a-project)
-under your project's settings:
-
-| Type     | Key              | Value |
-| -------- | ---------------- | ----- |
-| Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
-
-```xml
-<!-- mysettings.xml -->
-<settings>
-    ...
-    <servers>
-        <server>
-            <id>private_server</id>
-            <username>${private.username}</username>
-            <password>${private.password}</password>
-        </server>
-    </servers>
-</settings>
-```
-
 ## Using a custom scanning stage
 
 When security scanning is enabled by including CI/CD templates as described in the
@@ -438,7 +406,7 @@ The above `.gitlab-ci.yml` causes a linting error:
 
 ```plaintext
 Unable to create pipeline
-- dependency_scanning job: chosen stage does not exist; available stages are .pre
+- dependency_scanning job: chosen stage test does not exist; available stages are .pre
 - unit-tests
 - .post
 ```

@@ -20,31 +20,31 @@
         .form-group
           = f.label :external_authorization_service_url, s_('ExternalAuthorization|Service URL'), class: 'label-bold'
           = f.text_field :external_authorization_service_url, class: 'form-control gl-form-input'
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = external_authorization_url_help_text
         .form-group
           = f.label :external_authorization_service_timeout, s_('ExternalAuthorization|External authorization request timeout (seconds)'), class: 'label-bold'
           = f.number_field :external_authorization_service_timeout, class: 'form-control gl-form-input', min: 0.001, max: 10, step: 0.001
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = external_authorization_timeout_help_text
         .form-group
           = f.label :external_auth_client_cert, s_('ExternalAuthorization|Client authorization certificate'), class: 'label-bold'
           = f.text_area :external_auth_client_cert, class: 'form-control gl-form-input'
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = external_authorization_client_certificate_help_text
         .form-group
           = f.label :external_auth_client_key, s_('ExternalAuthorization|Client authorization key'), class: 'label-bold'
           = f.text_area :external_auth_client_key, class: 'form-control gl-form-input'
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = external_authorization_client_key_help_text
         .form-group
           = f.label :external_auth_client_key_pass, s_('ExternalAuthorization|Client authorization key password (optional)'), class: 'label-bold'
           = f.password_field :external_auth_client_key_pass, class: 'form-control gl-form-input'
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = external_authorization_client_pass_help_text
         .form-group
           = f.label :external_authorization_service_default_label, s_('ExternalAuthorization|Default classification label'), class: 'label-bold'
           = f.text_field :external_authorization_service_default_label, class: 'form-control gl-form-input'
-          %span.form-text.text-muted
+          %span.form-text.gl-text-subtle
             = external_authorization_client_url_help_text
       = f.submit _('Save changes'), pajamas_button: true

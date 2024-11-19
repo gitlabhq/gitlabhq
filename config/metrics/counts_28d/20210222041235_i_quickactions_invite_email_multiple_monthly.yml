@@ -15,7 +15,7 @@ options:
     - i_quickactions_invite_email_multiple
 distribution:
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

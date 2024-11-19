@@ -3,7 +3,8 @@ table_name: user_namespace_callouts
 classes: []
 feature_categories:
 - navigation
-description: Contains records of which users have dismissed a callout, grouped by namespace.
+description: Contains records of which users have dismissed a callout, grouped by
+  namespace.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91092
 milestone: '15.2'
 gitlab_schema: gitlab_main_cell

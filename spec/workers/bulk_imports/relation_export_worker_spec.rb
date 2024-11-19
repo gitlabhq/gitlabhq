@@ -98,7 +98,7 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
 
   describe '.sidekiq_retries_exhausted' do
     let(:job) { { 'args' => job_args } }
-    let!(:export) { create(:bulk_import_export, group: group, relation: relation) }
+    let!(:export) { create(:bulk_import_export, group: group, relation: relation, user_id: user.id) }
 
     it 'sets export status to failed and tracks the exception' do
       expect(Gitlab::ErrorTracking)
@@ -109,6 +109,18 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
 
       expect(export.reload.failed?).to eq(true)
       expect(export.error.size).to eq(255)
+    end
+  end
+
+  describe '.sidekiq_interruptions_exhausted' do
+    let!(:export) { create(:bulk_import_export, group: group, relation: relation, user_id: user.id) }
+
+    it 'sets export status to failed' do
+      job = { 'args' => job_args }
+
+      described_class.interruptions_exhausted_block.call(job)
+      expect(export.reload).to be_failed
+      expect(export.error).to eq('Export process reached the maximum number of interruptions')
     end
   end
 end

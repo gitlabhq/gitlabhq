@@ -355,7 +355,7 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
             user.confirm
           end
 
-          it 'returns a verified signature if email does match', :ggregate_failures do
+          it 'returns a verified signature if email does match', :aggregate_failures do
             expect(signature.x509_certificate).to have_attributes(certificate_attributes)
             expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
             expect(signature.verified_signature).to be_falsey # TODO sigstore support pending

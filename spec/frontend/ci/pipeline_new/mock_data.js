@@ -27,7 +27,7 @@ export const mockPostParams = {
 
 export const mockError = {
   errors: [
-    'test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post',
+    'test job: chosen stage test does not exist; available stages are .pre, build, test, deploy, .post',
   ],
   warnings: [
     `jobs:build1 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings`,
@@ -35,12 +35,6 @@ export const mockError = {
     `jobs:build3 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings`,
   ],
   total_warnings: 7,
-};
-
-export const mockCreditCardValidationRequiredError = {
-  errors: ['Credit card required to be on file in order to run CI jobs'],
-  warnings: [],
-  total_warnings: 0,
 };
 
 export const mockIdentityVerificationRequiredError = {

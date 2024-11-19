@@ -77,7 +77,11 @@ module Ci
       end
 
       def max_size(type)
-        Ci::JobArtifact.max_artifact_size(type: type, project: project)
+        if Feature.enabled?(:increase_lsif_artifacts_limit, project) && lsif?(type)
+          200.megabytes.to_i
+        else
+          Ci::JobArtifact.max_artifact_size(type: type, project: project)
+        end
       end
 
       def too_large_error

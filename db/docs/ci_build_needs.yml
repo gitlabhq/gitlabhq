@@ -19,3 +19,4 @@ desired_sharding_key:
         belongs_to: build
         foreign_key_name: fk_rails_3cf221d4ed_p
 desired_sharding_key_migration_job_name: BackfillCiBuildNeedsProjectId
+table_size: over_limit

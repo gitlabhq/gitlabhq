@@ -1,0 +1,9 @@
+---
+name: autocomplete_projects_use_search_service
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472011
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169425
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499540
+milestone: '17.6'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

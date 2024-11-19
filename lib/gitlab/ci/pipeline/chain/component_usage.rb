@@ -25,7 +25,7 @@ module Gitlab
               user: current_user,
               additional_properties: {
                 label: component.id.to_s,
-                value: component.resource_type_before_type_cast
+                value: component.component_type_before_type_cast
               }
             )
 

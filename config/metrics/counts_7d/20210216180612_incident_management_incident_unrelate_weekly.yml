@@ -3,7 +3,7 @@ data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly
 description: Count of unique users removing issue that are related to an incident
   per week
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 7d
@@ -15,7 +15,7 @@ options:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

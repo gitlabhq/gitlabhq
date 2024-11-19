@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillDependencyProxyManifestStatesGroupId
+description: Backfills sharding key `dependency_proxy_manifest_states.group_id` from `dependency_proxy_manifests`.
+feature_category: geo_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169239
+milestone: '17.6'
+queued_migration_version: 20241015080747
+finalized_by: # version of the migration that finalized this BBM

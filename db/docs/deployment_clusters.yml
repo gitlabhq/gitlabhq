@@ -10,4 +10,5 @@ milestone: '12.8'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-exempt_from_sharding: true # Table is scheduled for removal
+exempt_from_sharding: true
+notes: Exempted because Table is scheduled for removal

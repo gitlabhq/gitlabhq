@@ -140,8 +140,22 @@ export default {
       return list.filter((item) => !item.hidden);
     },
   },
+  watch: {
+    currentDiffFileId(hash) {
+      if (hash) {
+        this.scrollVirtualScrollerToFileHash(hash);
+      }
+    },
+  },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList']),
+
+    scrollVirtualScrollerToFileHash(hash) {
+      const index = this.treeList.findIndex((f) => f.fileHash === hash);
+      if (index !== -1) {
+        this.$refs.scroller.scrollToItem(index);
+      }
+    },
   },
   searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)'), {
     MODIFIER_KEY,
@@ -190,6 +204,7 @@ export default {
         <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
           <recycle-scroller
             v-if="treeList.length"
+            ref="scroller"
             :style="{ height: `${scrollerHeight}px` }"
             :items="treeList"
             :item-size="rowHeight"

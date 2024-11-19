@@ -55,7 +55,7 @@ the type of manual job can affect the trigger job's status while the pipeline ru
 
 To run a manual job, you must have permission to merge to the assigned branch:
 
-1. Go to the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
+1. Go to the pipeline, job, [environment](../environments/deployments.md#configure-manual-deployments),
    or deployment view.
 1. Next to the manual job, select **Run** (**{play}**).
 

@@ -83,6 +83,7 @@ module API
         optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
         optional :state, type: String, values: %w[opened closed all], default: 'all',
           desc: 'Return opened, closed, or all issues'
+        optional :closed_by_id, type: Integer, desc: 'Return issues which were closed by the user with the given ID.'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',
           desc: 'Return issues ordered by `created_at`, `due_date`, `label_priority`, `milestone_due`, `popularity`, `priority`, `relative_position`, `title`, or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',

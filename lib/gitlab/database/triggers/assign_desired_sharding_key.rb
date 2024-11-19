@@ -12,11 +12,12 @@ module Gitlab
 
         def initialize(
           table:, sharding_key:, parent_table:, parent_sharding_key:,
-          foreign_key:, connection:, trigger_name: nil
+          foreign_key:, connection:, parent_table_primary_key: nil, trigger_name: nil
         )
           @table = table
           @sharding_key = sharding_key
           @parent_table = parent_table
+          @parent_table_primary_key = parent_table_primary_key
           @parent_sharding_key = parent_sharding_key
           @foreign_key = foreign_key
           @name = trigger_name || generated_name
@@ -28,7 +29,7 @@ module Gitlab
           quoted_parent_table = quote_table_name(parent_table)
           quoted_sharding_key = quote_column_name(sharding_key)
           quoted_parent_sharding_key = quote_column_name(parent_sharding_key)
-          quoted_primary_key = quote_column_name('id')
+          quoted_primary_key = quote_column_name(parent_table_primary_key || 'id')
           quoted_foreign_key = quote_column_name(foreign_key)
 
           create_trigger_function(name) do
@@ -59,7 +60,8 @@ module Gitlab
 
         private
 
-        attr_reader :table, :sharding_key, :parent_table, :parent_sharding_key, :foreign_key, :connection
+        attr_reader :table, :sharding_key, :parent_table, :parent_table_primary_key, :parent_sharding_key,
+          :foreign_key, :connection
 
         def generated_name
           identifier = "#{table}_assign_#{sharding_key}"

@@ -612,47 +612,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
   end
 
-  describe 'GET dag' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-
-    it_behaves_like 'the show page', 'dag'
-  end
-
-  describe 'GET dag.json' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
-    let(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
-
-    before do
-      create_build(build_stage, 1, 'build')
-      create_build(test_stage, 2, 'test', scheduling_type: 'dag').tap do |job|
-        create(:ci_build_need, build: job, name: 'build')
-      end
-    end
-
-    it 'returns the pipeline with DAG serialization' do
-      get :dag, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :json
-
-      expect(response).to have_gitlab_http_status(:ok)
-
-      expect(json_response.fetch('stages')).not_to be_empty
-
-      build_stage = json_response['stages'].first
-      expect(build_stage.fetch('name')).to eq 'build'
-      expect(build_stage.fetch('groups').first.fetch('jobs'))
-        .to eq [{ 'name' => 'build', 'scheduling_type' => 'stage' }]
-
-      test_stage = json_response['stages'].last
-      expect(test_stage.fetch('name')).to eq 'test'
-      expect(test_stage.fetch('groups').first.fetch('jobs'))
-        .to eq [{ 'name' => 'test', 'scheduling_type' => 'dag', 'needs' => ['build'] }]
-    end
-
-    def create_build(stage, stage_idx, name, params = {})
-      create(:ci_build, pipeline: pipeline, ci_stage: stage, stage_idx: stage_idx, name: name, **params)
-    end
-  end
-
   describe 'GET builds' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -935,7 +894,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['errors']).to eq([
-          'test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post'
+          'test job: chosen stage invalid does not exist; available stages are .pre, build, test, deploy, .post'
         ])
         expect(json_response['warnings'][0]).to include(
           'jobs:build may allow multiple pipelines to run for a single action due to `rules:when`'

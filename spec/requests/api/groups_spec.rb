@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Groups, feature_category: :groups_and_projects do
+RSpec.describe API::Groups, :with_current_organization, feature_category: :groups_and_projects do
   include GroupAPIHelpers
   include UploadHelpers
   include WorkhorseHelpers
 
-  let_it_be(:user1) { create(:user, can_create_group: false) }
-  let_it_be(:user2) { create(:user) }
-  let_it_be(:user3) { create(:user) }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1) }
-  let_it_be(:group2) { create(:group, :private, owners: user2) }
+  let_it_be(:user1) { create(:user, can_create_group: false, organizations: [current_organization]) }
+  let_it_be(:user2) { create(:user, organizations: [current_organization]) }
+  let_it_be(:user3) { create(:user, organizations: [current_organization]) }
+  let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
+  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
+  let_it_be(:group2) { create(:group, :private, owners: user2, organization: current_organization) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
@@ -2713,25 +2713,12 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
 
         context 'and organization_id is not passed' do
-          context 'and current_organization is set', :with_current_organization do
-            before_all do
-              create(:organization_user, user: user3, organization: current_organization)
-            end
-
+          context 'and current_organization is set' do
             it 'uses current_organization' do
               post api('/groups', user3), params: attributes_for_group_api
 
               expect(response).to have_gitlab_http_status(:created)
               expect(json_response['organization_id']).to eq(current_organization.id)
-            end
-          end
-
-          context 'and current organization is not set' do
-            it 'uses database default value' do
-              post api('/groups', user3), params: attributes_for_group_api
-
-              expect(response).to have_gitlab_http_status(:created)
-              expect(json_response['organization_id']).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
             end
           end
         end
@@ -2810,7 +2797,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it "creates a nested group", :aggregate_failures do
-        parent = create(:group)
+        parent = create(:group, organization: current_organization)
         parent.add_owner(user3)
         group = attributes_for_group_api parent_id: parent.id
 
@@ -2877,7 +2864,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       context 'when creating a nested group with `default_branch_protection_defaults` attribute' do
-        let_it_be(:parent) { create(:group) }
+        let_it_be(:parent) { create(:group, organization: current_organization) }
         let_it_be(:params) do
           attributes_for_group_api(
             default_branch_protection_defaults: {

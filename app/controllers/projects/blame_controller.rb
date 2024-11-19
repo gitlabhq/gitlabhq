@@ -45,13 +45,18 @@ class Projects::BlameController < Projects::ApplicationController
   def require_non_binary_blob
     return unless @blob.binary?
 
-    redirect_to project_blob_path(@project, File.join(@ref, @path)), notice: _('Blame for binary files is not supported.')
+    redirect_to project_blob_path(@project, File.join(@ref, @path)),
+      notice: _('Blame for binary files is not supported.')
   end
 
   def load_environment
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     environment_params[:find_latest] = true
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
+    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(
+      @project,
+      current_user,
+      environment_params
+    ).execute.last
   end
 
   def load_blame
@@ -59,7 +64,12 @@ class Projects::BlameController < Projects::ApplicationController
     @blame_pagination = Gitlab::Git::BlamePagination.new(@blob, @blame_mode, blame_params)
 
     blame = Gitlab::Blame.new(@blob, @commit, range: @blame_pagination.blame_range)
-    @blame = Gitlab::View::Presenter::Factory.new(blame, project: @project, path: @path, page: @blame_pagination.page).fabricate!
+    @blame = Gitlab::View::Presenter::Factory.new(
+      blame,
+      project: @project,
+      path: @path,
+      page: @blame_pagination.page
+    ).fabricate!
   end
 
   def blame_params

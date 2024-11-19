@@ -81,8 +81,8 @@ To deploy your site, GitLab uses its built-in tool called [GitLab CI/CD](../../.
 to build your site and publish it to the GitLab Pages server. The sequence of
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
 `.gitlab-ci.yml`, which you can [create and modify](getting_started/pages_from_scratch.md).
-A specific `job` called `pages` in the configuration file makes GitLab aware that you're deploying a
-GitLab Pages website.
+A user-defined `job` with `pages: true` property in the configuration file makes
+GitLab aware that you're deploying a GitLab Pages website.
 
 You can either use the GitLab [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you
@@ -125,7 +125,7 @@ If you are running a self-managed instance of GitLab,
 
 ### Configure GitLab Pages in a Helm Chart (Kubernetes) instance
 
-To configure GitLab Pages on instances deployed via Helm chart (Kubernetes), use either:
+To configure GitLab Pages on instances deployed with Helm chart (Kubernetes), use either:
 
 - [The `gitlab-pages` subchart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/).
 - [An external GitLab Pages instance](https://docs.gitlab.com/charts/advanced/external-gitlab-pages/).
@@ -190,11 +190,11 @@ You can configure your Pages deployments to be automatically deleted after
 a period of time has passed by specifying a duration at `pages.expire_in`:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   script:
     - ...
-  pages:
+  pages:  # specifies that this is a Pages job
     expire_in: 1 week
   artifacts:
     paths:
@@ -212,6 +212,8 @@ runs every 10 minutes. To recover it, follow the steps described in
 A stopped or deleted deployment is no longer available on the web. Users will
 see a 404 Not found error page at its URL, until another deployment is created
 with the same URL configuration.
+
+The previous YAML example uses [user-defined job names](#user-defined-job-names).
 
 ### Recover a stopped deployment
 
@@ -327,13 +329,13 @@ Mixing [CI/CD variables](../../../ci/variables/index.md) with other strings can 
 possibility. For example:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
   variables:
     PAGES_PREFIX: "" # No prefix by default (master)
-  pages:
+  pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   artifacts:
     paths:
@@ -355,19 +357,21 @@ Some other examples of mixing [variables](../../../ci/variables/index.md) with s
 - `pages.path_prefix: '_${CI_MERGE_REQUEST_IID}_'`: Merge request number
   prefixed ans suffixed with `_`, like `_123_`.
 
+The previous YAML example uses [user-defined job names](#user-defined-job-names).
+
 ### Use parallel deployments to create Pages environments
 
 You can use parallel GitLab Pages deployments to create a new [environment](../../../ci/environments/index.md).
 For example:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
   variables:
     PAGES_PREFIX: "" # no prefix by default (master)
-  pages:
+  pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   environment:
     name: "Pages ${PAGES_PREFIX}"
@@ -391,6 +395,8 @@ listed on the project environment list.
 
 You can also [group similar environments](../../../ci/environments/index.md#group-similar-environments) together.
 
+The previous YAML example uses [user-defined job names](#user-defined-job-names).
+
 ### Delete a Deployment
 
 To delete a deployment:
@@ -412,36 +418,35 @@ To restore a stopped deployment that has not been deleted yet, see
 Parallel Pages deployments, created by a merge request with a `path_prefix`, are automatically deleted when the
 merge request is closed or merged.
 
-## User defined job names
+## User-defined job names
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232505) in GitLab 17.5 with a flag `customizable_pages_job_name`, disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169095) in GitLab 17.6. Feature flag `customizable_pages_job_name` removed.
 
-Historically, the pages deploy job needed to be named `pages` in order to
-trigger a pages deployment. With the `pages` setting, this is no longer
-necessary.
+To trigger a Pages deployment from any job, include the `pages` property in the
+job definition. It can either be a Boolean set to `true` or a hash.
 
-To trigger a pages deployment from any job, include the `pages` property in the
-job definition. It can either be a hash or simply a boolean set to `true`
+For example, using `true`:
 
 ```yaml
 deploy-my-pages-site:
   stage: deploy
   script:
     - npm run build
-  pages: true
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
-    - public
+      - public
 ```
 
-This also works:
+For example, using a hash:
 
 ```yaml
 deploy-pages-review-app:
   stage: deploy
   script:
     - npm run build
-  pages:
+  pages:  # specifies that this is a Pages job
     path_prefix: '/_staging'
   artifacts:
     paths:
@@ -449,7 +454,7 @@ deploy-pages-review-app:
 ```
 
 If the `pages` property of a job named `pages` is set to `false`, no
-deployment will be triggered.
+deployment is triggered:
 
 ```yaml
 pages:

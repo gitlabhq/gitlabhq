@@ -168,15 +168,6 @@ RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects
         it_behaves_like 'page has active sub tab', _('Pipelines')
       end
 
-      context 'Needs tab' do
-        before do
-          visit dag_project_pipeline_path(project, pipeline)
-        end
-
-        it_behaves_like 'page has active tab', _('Build')
-        it_behaves_like 'page has active sub tab', _('Pipelines')
-      end
-
       context 'Builds tab' do
         before do
           visit builds_project_pipeline_path(project, pipeline)

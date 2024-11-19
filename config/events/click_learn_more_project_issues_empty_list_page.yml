@@ -1,0 +1,16 @@
+---
+description: Tracks clicks on the "Learn More" link in the empty state of the project issues list.
+action: click_learn_more_project_issues_empty_list_page
+product_group: activation
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156693
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value learn_more_project_issues_empty_list

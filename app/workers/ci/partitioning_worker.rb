@@ -6,7 +6,7 @@ module Ci
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext -- No metadata necessary
 
     feature_category :ci_scaling
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- cron job
+    data_consistency :always
     deduplicate :until_executed
     idempotent!
 

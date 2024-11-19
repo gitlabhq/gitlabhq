@@ -4,8 +4,11 @@ classes:
 - Elastic::IndexSetting
 feature_categories:
 - global_search
-description: Describes the settings (such as number of shards and replicas) for each Elasticsearch or Opensearch index
+description: Describes the settings (such as number of shards and replicas) for each
+  Elasticsearch or Opensearch index
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56344
 milestone: '13.11'
 gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true  # data is specific to each cell's Elasticsearch cluster, no customer data
+exempt_from_sharding: true
+notes: Exempted because data is specific to each cell's Elasticsearch cluster, no
+  customer data

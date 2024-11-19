@@ -40,8 +40,10 @@ export default {
   <gl-badge
     v-if="approvalCount"
     v-gl-tooltip.viewport.top="tooltipTitle"
+    :aria-label="tooltipTitle"
     icon="check-circle"
     variant="success"
+    data-testid="mr-appovals"
   >
     {{ approvalCount }}
   </gl-badge>

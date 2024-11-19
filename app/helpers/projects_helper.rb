@@ -13,7 +13,9 @@ module ProjectsHelper
   end
 
   def link_to_project(project)
-    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link gl-truncate' do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project),
+      title: h(project.name),
+      class: 'gl-link' do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -90,7 +92,13 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: inject_classes, data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body' }).html_safe
+      link_to(
+        author_html,
+        user_path(author),
+        class: inject_classes,
+        title: title,
+        data: { container: 'body' }
+      ).html_safe
     end
   end
 
@@ -105,21 +113,33 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    _("You are going to delete %{project_full_name}. Deleted projects CANNOT be restored! Are you ABSOLUTELY sure?") %
-      { project_full_name: project.full_name }
+    _(
+      "You are going to delete %{project_full_name}. Deleted projects " \
+        "CANNOT be restored! Are you ABSOLUTELY sure?"
+    ) % { project_full_name: project.full_name }
   end
 
   def link_to_namespace_change_doc
-    link_to _('project\'s path'), help_page_path('user/group/manage.html', anchor: 'change-a-groups-path'), target: '_blank', rel: 'noopener'
+    link_to _('project\'s path'),
+      help_page_path('user/group/manage.md', anchor: 'change-a-groups-path'),
+      target: '_blank',
+      rel: 'noopener'
   end
 
   def link_to_data_loss_doc
-    link_to _('data loss'), help_page_path('user/project/repository/index.html', anchor: 'what-happens-when-a-repository-path-changes'), target: '_blank', rel: 'noopener'
+    link_to _('data loss'), help_page_path('user/project/repository/index.md', anchor: 'repository-path-changes'),
+      target: '_blank', rel: 'noopener'
   end
 
   def transfer_project_message(project)
-    _("You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}.") %
-      { project_full_name: project.full_name, code_start: '<code>', code_end: '</code>', link_to_namespace_change_doc: link_to_namespace_change_doc, link_to_data_loss_doc: link_to_data_loss_doc }
+    _("You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action " \
+      "changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}.") % {
+        project_full_name: project.full_name,
+        code_start: '<code>',
+        code_end: '</code>',
+        link_to_namespace_change_doc: link_to_namespace_change_doc,
+        link_to_data_loss_doc: link_to_data_loss_doc
+      }
   end
 
   def transfer_project_confirm_button
@@ -130,8 +150,9 @@ module ProjectsHelper
     source = visible_fork_source(project)
 
     if source
-      msg = _('This will remove the fork relationship between this project and %{fork_source}.') %
-        { fork_source: link_to(source.full_name, project_path(source)) }
+      msg = _('This will remove the fork relationship between this project and %{fork_source}.') % {
+        fork_source: link_to(source.full_name, project_path(source))
+      }
 
       msg.html_safe
     else
@@ -169,8 +190,9 @@ module ProjectsHelper
   end
 
   def remove_fork_project_warning_message(project)
-    _("You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?") %
-      { project_full_name: project.full_name }
+    _("You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?") % {
+      project_full_name: project.full_name
+    }
   end
 
   def remove_fork_project_confirm_json(project, remove_form_id)
@@ -207,12 +229,20 @@ module ProjectsHelper
   end
 
   def link_to_autodeploy_doc
-    link_to _('About auto deploy'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener'
+    link_to _('About auto deploy'),
+      help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'),
+      target: '_blank',
+      rel: 'noopener'
   end
 
   def autodeploy_flash_notice(branch_name)
-    ERB::Util.html_escape(_("Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}")) %
-      { branch_name: tag.strong(truncate(sanitize(branch_name))), link_to_autodeploy_doc: link_to_autodeploy_doc }
+    ERB::Util.html_escape(
+      _("Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI " \
+        "Yaml template and commit your changes. %{link_to_autodeploy_doc}")
+    ) % {
+      branch_name: tag.strong(truncate(sanitize(branch_name))),
+      link_to_autodeploy_doc: link_to_autodeploy_doc
+    }
   end
 
   def load_pipeline_status(projects)
@@ -272,9 +302,17 @@ module ProjectsHelper
     set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: user_settings_personal_access_tokens_path }
 
     message = if current_user.require_password_creation_for_git?
-                _('Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password.')
+                _(
+                  'Your account is authenticated with SSO or SAML. To push and pull over %{protocol} ' \
+                    'with Git using this account, you must %{set_password_link_start}set a password%{link_end} ' \
+                    'or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password.'
+                )
               else
-                _('Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password.')
+                _(
+                  'Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using ' \
+                    'this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use ' \
+                    'instead of a password.'
+                )
               end
 
     ERB::Util.html_escape(message) % {
@@ -321,7 +359,8 @@ module ProjectsHelper
         Gitlab.config.gitlab_shell.ssh_path_prefix + user.username
       end
 
-    "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)"
+    "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git " \
+      "$(git rev-parse --abbrev-ref HEAD)"
   end
 
   def show_xcode_link?(project = @project)
@@ -425,11 +464,12 @@ module ProjectsHelper
       lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('topics/git/lfs/index.md'),
       lfsObjectsExist: project.lfs_objects.exists?,
-      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index.md', anchor: 'removing-objects-from-lfs'),
+      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index.md',
+        anchor: 'delete-a-git-lfs-file-from-repository-history'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction.md', anchor: 'gitlab-pages-access-control'),
+      pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
       issuesHelpPath: help_page_path('user/project/issues/index.md'),
       membersPagePath: project_project_members_path(project),
       environmentsHelpPath: help_page_path('ci/environments/index.md'),
@@ -567,9 +607,19 @@ module ProjectsHelper
 
   def clusters_deprecation_alert_message
     if has_active_license?
-      s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}, or contact GitLab support.')
+      s_(
+        'ClusterIntegration|The certificate-based Kubernetes integration is deprecated and ' \
+          'will be removed in the future. You should %{linkStart}migrate to the GitLab agent ' \
+          'for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}' \
+          'deprecation epic%{deprecationLinkEnd}, or contact GitLab support.'
+      )
     else
-      s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}.')
+      s_(
+        'ClusterIntegration|The certificate-based Kubernetes integration is deprecated and ' \
+          'will be removed in the future. You should %{linkStart}migrate to the GitLab agent ' \
+          'for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}' \
+          'deprecation epic%{deprecationLinkEnd}.'
+      )
     end
   end
 
@@ -663,8 +713,21 @@ module ProjectsHelper
   def dashboard_projects_app_data
     {
       initial_sort: project_list_sort_by,
-      programming_languages: programming_languages
+      programming_languages: programming_languages,
+      empty_state_projects_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
+      empty_state_search_svg_path: image_path('illustrations/empty-state/empty-search-md.svg')
     }.to_json
+  end
+
+  def show_dashboard_projects_welcome_page?
+    dashboard_projects_landing_paths = [
+      root_path,
+      root_dashboard_path,
+      dashboard_projects_path,
+      contributed_dashboard_projects_path
+    ]
+
+    dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.present?
   end
 
   private
@@ -717,9 +780,11 @@ module ProjectsHelper
 
   def configure_oauth_import_message(provider, help_url)
     str = if current_user.can_admin_all_resources?
-            'ImportProjects|To enable importing projects from %{provider}, as administrator you need to configure %{link_start}OAuth integration%{link_end}'
+            'ImportProjects|To enable importing projects from %{provider}, as administrator you need to ' \
+              'configure %{link_start}OAuth integration%{link_end}'
           else
-            'ImportProjects|To enable importing projects from %{provider}, ask your GitLab administrator to configure %{link_start}OAuth integration%{link_end}'
+            'ImportProjects|To enable importing projects from %{provider}, ask your GitLab administrator to ' \
+              'configure %{link_start}OAuth integration%{link_end}'
           end
 
     link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
@@ -914,15 +979,27 @@ module ProjectsHelper
     message = _("You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end}.")
 
     if project.group
-      message = _("You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end} in %{strong_start}%{group_name}%{strong_end}.")
+      message = _(
+        "You're about to reduce the visibility of the project " \
+          "%{strong_start}%{project_name}%{strong_end} in %{strong_start}%{group_name}%{strong_end}."
+      )
     end
 
-    ERB::Util.html_escape(message) % { strong_start: strong_start, strong_end: strong_end, project_name: project.name, group_name: project.group ? project.group.name : nil }
+    ERB::Util.html_escape(message) % {
+      strong_start: strong_start,
+      strong_end: strong_end,
+      project_name: project.name,
+      group_name: project.group ? project.group.name : nil
+    }
   end
 
   def project_permissions_data(project, target_form_id = nil)
     data = visibility_confirm_modal_data(project, target_form_id)
-    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
+    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(
+      :duo_features_enabled,
+      project,
+      method(:edit_group_path)
+    ).to_json
     data.merge!(
       {
         cascading_settings_data: cascading_settings_data
@@ -949,7 +1026,15 @@ module ProjectsHelper
     push_to_schema_breadcrumb(project_name, project_path(project), project.try(:avatar_url))
 
     link_to project_path(project), class: '!gl-inline-flex' do
-      icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?
+      if project.avatar_url && !Rails.env.test?
+        icon = render Pajamas::AvatarComponent.new(
+          project,
+          alt: project.name,
+          size: 16,
+          class: 'avatar-tile'
+        )
+      end
+
       [icon, content_tag("span", project_name, class: "js-breadcrumb-item-text")].join.html_safe
     end
   end

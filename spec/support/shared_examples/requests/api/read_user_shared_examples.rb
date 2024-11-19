@@ -55,7 +55,9 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
 
     context 'when the requesting token has the "api" scope' do
-      let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api" }
+      let!(:token) do
+        Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api", organization_id: user.namespace.organization.id
+      end
 
       it 'returns a "200" response on get request' do
         get api_call.call(path, user, oauth_access_token: token)
@@ -71,7 +73,7 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     end
 
     context 'when the requesting token has the "read_user" scope' do
-      let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "read_user" }
+      let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "read_user", organization_id: user.namespace.organization.id }
 
       it 'returns a "200" response on get request' do
         get api_call.call(path, user, oauth_access_token: token)
@@ -87,7 +89,7 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     end
 
     context 'when the requesting token does not have any required scope' do
-      let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "invalid" }
+      let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "invalid", organization_id: user.namespace.organization.id }
 
       it 'returns a "403" response' do
         get api_call.call(path, user, oauth_access_token: token)

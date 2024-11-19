@@ -60,8 +60,10 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Update, feature_cate
       end
     end
 
-    context 'when the organization user is the last owner' do
+    context 'when updating access level of last owner' do
       let_it_be(:organization_user) { organization_owner }
+
+      let(:access_level) { 'DEFAULT' }
 
       it 'returns an error' do
         update_organization_user

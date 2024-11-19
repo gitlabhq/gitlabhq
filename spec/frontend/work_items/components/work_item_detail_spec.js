@@ -32,11 +32,13 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
+import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
 
 import {
   mockParent,
   workItemByIidResponseFactory,
   workItemQueryResponse,
+  workItemLinkedItemsResponse,
   objectiveType,
   epicType,
   mockWorkItemCommentNote,
@@ -97,6 +99,10 @@ describe('WorkItemDetail component', () => {
     .fn()
     .mockResolvedValue(mockUploadErrorDesignMutationResponse);
 
+  const workItemLinkedItemsSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(workItemLinkedItemsResponse);
+
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findWorkItemLoading = () => wrapper.findComponent(WorkItemLoading);
@@ -139,6 +145,7 @@ describe('WorkItemDetail component', () => {
     modalIsGroup = null,
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
+    hasLinkedItemsEpicsFeature = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -149,6 +156,7 @@ describe('WorkItemDetail component', () => {
         [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
         [workspacePermissionsQuery, workspacePermissionsHandler],
         [uploadDesignMutation, uploadDesignMutationHandler],
+        [workItemLinkedItemsQuery, workItemLinkedItemsSuccessHandler],
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -173,6 +181,7 @@ describe('WorkItemDetail component', () => {
         fullPath: 'group/project',
         groupPath: 'group',
         reportAbusePath: '/report/abuse/path',
+        hasLinkedItemsEpicsFeature,
       },
       stubs: {
         WorkItemAncestors: true,
@@ -435,6 +444,21 @@ describe('WorkItemDetail component', () => {
       });
     });
 
+    describe('`linked_items_epics` is unavailable', () => {
+      it('does not show linked items widget', async () => {
+        const epicWorkItem = workItemByIidResponseFactory({
+          workItemType: epicType,
+        });
+        const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
+
+        createComponent({ hasLinkedItemsEpicsFeature: false, handler: epicHandler });
+
+        await waitForPromises();
+
+        expect(findWorkItemRelationships().exists()).toBe(false);
+      });
+    });
+
     describe('with parent', () => {
       beforeEach(async () => {
         const parentResponse = workItemByIidResponseFactory(mockParent);
@@ -683,6 +707,20 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemRelationships().exists()).toBe(false);
+    });
+
+    it('re-fetches workItem query when `WorkItemActions` emits `workItemCreated` event', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(1);
+
+      findWorkItemActions().vm.$emit('workItemCreated');
+
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(2);
     });
 
     describe('work item has children', () => {

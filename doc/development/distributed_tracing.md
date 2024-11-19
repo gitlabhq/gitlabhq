@@ -14,7 +14,7 @@ According to [Open Tracing](https://opentracing.io/docs/overview/what-is-tracing
 > monitor applications, especially those built using a microservices architecture. Distributed
 > tracing helps to pinpoint where failures occur and what causes poor performance.
 
-Distributed tracing is especially helpful in understanding the life cycle of a request as it passes
+Distributed tracing is especially helpful in understanding the lifecycle of a request as it passes
 through the different components of the GitLab application. At present, Workhorse, Rails, Sidekiq,
 and Gitaly support tracing instrumentation.
 
@@ -143,7 +143,7 @@ The Jaeger search UI returns a query for the `Correlation-ID` of the current req
 This search should return a single trace result. Selecting this result shows the detail of the
 trace in a hierarchical time-line.
 
-![Jaeger Search UI](img/distributed_tracing_jaeger_ui.png)
+![Jaeger Search UI](img/distributed_tracing_jaeger_ui_v11_9.png)
 
 ## Using Jaeger without the GitLab Developer Kit
 

@@ -4,6 +4,8 @@ class StageEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :name
+  # This is temporary and will be removed with the migration of pipelines tables to GraphQL: https://gitlab.com/gitlab-org/gitlab/-/issues/461917
+  expose :id
 
   expose :title do |stage|
     "#{stage.name}: #{detailed_status.label}"

@@ -1,82 +1,94 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Get started with Self-Hosted AI Models.
+description: Get started with self-hosted AI models.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy a self-hosted large language model
+# GitLab Duo Self-Hosted Models
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** Self-managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+To maintain full control over your data privacy, security, and the deployment of large language models (LLMs) in your own infrastructure, use GitLab Duo Self-Hosted Models.
 
-When you deploy a self-hosted model, you can:
+By deploying self-hosted models, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay within your enterprise network and avoiding external dependencies.
 
-- Manage the end-to-end transmission of requests to enterprise-hosted large
-  language model (LLM) backends for GitLab Duo features.
-- Keep all of these requests within that enterprise network, ensuring no calls
-  to external architecture.
-- Isolate the GitLab instance, AI Gateway, and self-hosted model within their own
-  environment, ensuring complete privacy and high security for using AI features, with
-  no reliance on public services.
+## Why use self-hosted models
 
-When you use self-hosted models, you:
+With self-hosted models, you can:
 
-- Can choose any GitLab-approved LLM.
-- Can keep all data and request/response logs in your own domain.
-- Can select specific GitLab Duo features for your users.
-- Do not have to rely on the GitLab shared AI Gateway.
+- Choose any GitLab-approved LLM.
+- Retain full control over data by keeping all request/response logs within your domain, ensuring complete privacy and security with no external API calls.
+- Isolate the GitLab instance, AI Gateway, and models within your own environment.
+- Select specific GitLab Duo features tailored to your users.
+- Eliminate reliance on the shared GitLab AI Gateway.
 
-You can connect supported models to LLM features. Model-specific prompts
-and GitLab Duo feature support is provided by the GitLab Duo Self-Hosted Models
-feature. For more information about this offering, see
-[subscriptions](../../subscriptions/self_managed/index.md) and the
-[Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
+This setup ensures enterprise-level privacy and flexibility, allowing seamless integration of your LLMs with GitLab Duo features.
 
-## Prerequisites
+### Prerequisites
 
-- You must be able to manage your own LLM infrastructure.
-- You must have [GitLab Enterprise Edition](../../administration/license.md).
+Before setting up a self-hosted model infrastructure, you must have:
 
-## Deploy a self-hosted model
+- A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
+- A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
+- A locally hosted or GitLab.com AI Gateway.
+- GitLab Ultimate + [Duo Enterprise license](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
 
-To deploy a self-hosted large language model:
+## Choose a configuration type
 
-1. [Set up your self-hosted model infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
-1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group settings.
+There are two configuration options for self-managed customers:
 
-## Self-hosted models compared to the default GitLab AI vendor architecture
+- GitLab.com AI gateway with default GitLab external vendor LLMs
+- Self-hosted AI gateway and LLMs
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-sequenceDiagram
-    actor User
-    participant GitLab
-    participant AIGateway as AI Gateway
-    participant SelfHostedModel as Self Hosted Model
-    participant CloudConnector as Cloud Connector
-    participant GitLabAIVendor as GitLab AI Vendor
+Before setting up a self-hosted model infrastructure, you must decide which
+configuration type to implement.
 
-    User ->> GitLab: Send request
-    GitLab ->> GitLab: Check if self-hosted model is configured
-    alt Self-hosted model configured
-        GitLab ->> AIGateway: Create prompt and send request
-        AIGateway ->> SelfHostedModel: Perform API request to AI model
-        SelfHostedModel -->> AIGateway: Respond to the prompt
-        AIGateway -->> GitLab: Forward AI response
-    else
-        GitLab ->> CloudConnector: Create prompt and send request
-        CloudConnector ->> GitLabAIVendor: Perform API request to AI model
-        GitLabAIVendor -->> CloudConnector: Respond to the prompt
-        CloudConnector -->> GitLab: Forward AI response
-    end
-    GitLab -->> User: Forward AI response
-```
+### GitLab.com AI gateway with default GitLab external vendor LLMs
+
+This is the default Enterprise offering and is not fully self-hosted. In this configuration, you connect your self-managed GitLab instance to the GitLab-hosted AI gateway, which integrates with external vendor LLM providers (such as Google Vertex or Anthropic).
+
+These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/index.md), offering a ready-to-use AI solution without the need for on-premise infrastructure.
+
+For licensing, you must have a GitLab Premium or Ultimate subscription and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial).
+
+For more information, see the [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
+
+### Self-hosted AI gateway and LLMs
+
+In this configuration, you deploy your own AI gateway and LLMs within your infrastructure, without relying on external public services. This gives you full control over your data and security.
+
+For licensing, you must have a valid GitLab license. You can request a license through the [Customers Portal](../../subscriptions/customers_portal.md).
+
+For more information, see the [self-hosted AI gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
+
+## Set up a self-hosted infrastructure
+
+To set up a fully isolated self-hosted model infrastructure:
+
+1. **Install a Large Language Model (LLM) Serving Infrastructure**
+
+   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](supported_llm_serving_platforms.md) for more information on each platform's features.
+
+   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
+
+1. **Install the GitLab AI Gateway**
+   [Install the AI Gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
+
+1. **Configure GitLab Duo features**
+   See the [Configure GitLab Duo features documentation](configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
+
+1. **Enable logging**
+   You can find configuration details for enabling logging within your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](logging.md).
+
+## Related topics
+
+- [Import custom models into Amazon Bedrock](https://www.youtube.com/watch?v=CA2AXfWWdpA)
+- [Troubleshooting](troubleshooting.md)

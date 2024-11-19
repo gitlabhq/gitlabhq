@@ -21,6 +21,35 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       expect { build(:organization_user, access_level: '_invalid_') }.to raise_error(ArgumentError)
     end
 
+    context 'when changing access level of owner' do
+      let_it_be(:organization_user) { create(:organization_owner) }
+
+      context 'when user is the last owner' do
+        context 'when assigning lower access level' do
+          it 'raises validation error' do
+            error_message = _('Validation failed: You cannot change the access of the last owner from the organization')
+
+            expect { organization_user.update!(access_level: 'default') }
+              .to raise_error(ActiveRecord::RecordInvalid, error_message)
+          end
+        end
+
+        context 'when assigning access to same level' do
+          it 'does not raise validation error' do
+            expect { organization_user.update!(access_level: 'owner') }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when organization has multiple owners' do
+        let_it_be(:other_owner) { create(:organization_owner, organization: organization_user.organization) }
+
+        it 'does not raise validation error' do
+          expect { organization_user.update!(access_level: 'default') }.not_to raise_error
+        end
+      end
+    end
+
     context 'on destroy' do
       let(:user) { create(:user, :without_default_org) }
 
@@ -42,16 +71,13 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         end
       end
 
-      context 'when user is not available' do
-        before do
+      context 'when user is destroyed' do
+        it 'destroys the organization_user record' do
+          organization_user_id = organization_user.id
+
           user.destroy!
-        end
 
-        it 'does not prevent deletion' do
-          organization_user.reload
-
-          expect { organization_user.destroy! }.not_to raise_error
-          expect(organization_user).to be_destroyed
+          expect(described_class.exists?(organization_user_id)).to be_falsy
         end
       end
     end
@@ -61,13 +87,6 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:organization) }
       let_it_be(:model) { create(:organization_user, organization: parent) }
-    end
-  end
-
-  context 'with loose foreign key on organization_users.user_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:user) }
-      let_it_be(:model) { create(:organization_user, user: parent) }
     end
   end
 

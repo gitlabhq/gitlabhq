@@ -114,7 +114,7 @@ Furthermore, each execution of a backup creation or restoration operation may se
 sudo gitlab-rake gitlab:backup:restore BACKUP=<backup_id> [env-overrides]
 ```
 
-Once a user has run the backup creation task successfully at some prior time, they will have access to an archive tarball file that may be used to restore the application data state to roughly that point in time. These archive files will be stored either on the local system in a specific directory, or in a cloud object storage bucket, depending on the system configuration. But once an adminstrator is sure that backups have been captured, they can request restoration of a particular backup using the `gitlab-rake` command shown above, where `<backup_id>` indicates the base file name of the backup tarball.
+Once a user has run the backup creation task successfully at some prior time, they will have access to an archive tarball file that may be used to restore the application data state to roughly that point in time. These archive files will be stored either on the local system in a specific directory, or in a cloud object storage bucket, depending on the system configuration. But once an administrator is sure that backups have been captured, they can request restoration of a particular backup using the `gitlab-rake` command shown above, where `<backup_id>` indicates the base file name of the backup tarball.
 
 Running a restore operation will obliterate the current state of application data. Thus, the Rake task will pause to confirm the destructive action with the user before proceeding.
 

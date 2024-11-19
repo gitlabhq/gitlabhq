@@ -115,7 +115,7 @@ export default {
       :item="listItem"
     >
       <template #list-item>
-        <gl-icon name="remove" class="gl-mr-2 gl-text-red-500" />
+        <gl-icon name="remove" class="gl-mr-2" variant="danger" />
         {{ listItem.text }}
       </template>
     </gl-disclosure-dropdown-item>

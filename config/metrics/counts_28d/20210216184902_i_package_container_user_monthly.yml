@@ -1,8 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_container_user_monthly
-description: A monthly count of users that have published a container image to the
-  registry
+description: Count of distinct users that have interacted with container repositories in the container registry in the last 28 days
 product_group: container_registry
 value_type: number
 status: removed
@@ -15,7 +14,7 @@ options:
 distribution:
 - ee
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

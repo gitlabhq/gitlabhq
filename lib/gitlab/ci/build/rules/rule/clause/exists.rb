@@ -18,13 +18,13 @@ module Gitlab
           @ref = clause[:ref]
         end
 
-        def satisfied_by?(_pipeline, context)
+        def satisfied_by?(pipeline, context)
           # Return early to avoid redundant Gitaly calls
           return false unless @globs.any?
 
-          context = change_context(context) if @project_path
+          context = change_context(context, pipeline) if @project_path
 
-          expanded_globs = expand_globs(context)
+          expanded_globs = expand_globs(context, pipeline)
           top_level_only = expanded_globs.all?(&method(:top_level_glob?))
 
           paths = worktree_paths(context, top_level_only)
@@ -42,9 +42,15 @@ module Gitlab
           grouped.values_at(:exact, :extension, :pattern).map { |globs| Array(globs) }
         end
 
-        def expand_globs(context)
-          @globs.map do |glob|
-            expand_value(glob, context)
+        def expand_globs(context, pipeline)
+          if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes, pipeline&.project)
+            @globs.map do |glob|
+              expand_value_nested(glob, context)
+            end
+          else
+            @globs.map do |glob|
+              expand_value(glob, context)
+            end
           end
         end
 
@@ -121,10 +127,10 @@ module Gitlab
           glob.delete_prefix(WILDCARD_NESTED_PATTERN)
         end
 
-        def change_context(old_context)
+        def change_context(old_context, pipeline)
           user = find_context_user(old_context)
-          new_project = find_context_project(user, old_context)
-          new_sha = find_context_sha(new_project, old_context)
+          new_project = find_context_project(user, old_context, pipeline)
+          new_sha = find_context_sha(new_project, old_context, pipeline)
 
           Gitlab::Ci::Config::External::Context.new(
             project: new_project,
@@ -138,8 +144,13 @@ module Gitlab
           context.is_a?(Gitlab::Ci::Config::External::Context) ? context.user : context.pipeline.user
         end
 
-        def find_context_project(user, context)
-          full_path = expand_value(@project_path, context)
+        def find_context_project(user, context, pipeline)
+          full_path = if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes, pipeline.project)
+                        expand_value_nested(@project_path, context)
+                      else
+                        expand_value(@project_path, context)
+                      end
+
           project = Project.find_by_full_path(full_path)
 
           unless project
@@ -156,10 +167,16 @@ module Gitlab
           project
         end
 
-        def find_context_sha(project, context)
+        def find_context_sha(project, context, pipeline)
           return project.commit&.sha unless @ref
 
-          ref = expand_value(@ref, context)
+          ref = if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes,
+            pipeline.project)
+                  expand_value_nested(@ref, context)
+                else
+                  expand_value(@ref, context)
+                end
+
           commit = project.commit(ref)
 
           unless commit
@@ -183,6 +200,10 @@ module Gitlab
 
         def expand_value(value, context)
           ExpandVariables.expand_existing(value, -> { context.variables_hash })
+        end
+
+        def expand_value_nested(value, context)
+          ExpandVariables.expand_existing(value, -> { context.variables_hash_expanded })
         end
       end
     end

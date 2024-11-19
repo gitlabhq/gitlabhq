@@ -424,13 +424,14 @@ POST /projects/:id/merge_requests/:merge_request_iid/notes
 
 Parameters:
 
-| Attribute           | Type           | Required | Description                                                                                                                  |
-|---------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------------------|
-| `id`                    | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                              |
-| `merge_request_iid`     | integer        | yes      | The IID of a project merge request                                                                                           |
-| `body`                  | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
-| `created_at`            | string         | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
-| `merge_request_diff_head_sha`| string         | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
+| Attribute                     | Type              | Required | Description |
+|-------------------------------|-------------------|----------|-------------|
+| `body`                        | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `merge_request_iid`           | integer           | yes      | The IID of a project merge request |
+| `created_at`                  | string            | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
+| `internal`                    | boolean           | no       | The internal flag of a note. Default is false. |
+| `merge_request_diff_head_sha` | string            | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
 ### Modify existing merge request note
 
@@ -484,7 +485,7 @@ WARNING:
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead.
+[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](../api/graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
 ### List all epic notes

@@ -168,12 +168,12 @@ RSpec.shared_examples 'graphql issue list request spec' do
       using RSpec::Parameterized::TableSyntax
 
       where(:value, :issue_list) do
-        'thumbsup'   | lazy { voted_issues }
-        'ANY'        | lazy { voted_issues }
-        'any'        | lazy { voted_issues }
-        'AnY'        | lazy { voted_issues }
-        'NONE'       | lazy { no_award_issues }
-        'thumbsdown' | lazy { [] }
+        AwardEmoji::THUMBS_UP   | lazy { voted_issues }
+        'ANY'                   | lazy { voted_issues }
+        'any'                   | lazy { voted_issues }
+        'AnY'                   | lazy { voted_issues }
+        'NONE'                  | lazy { no_award_issues }
+        AwardEmoji::THUMBS_DOWN | lazy { [] }
       end
 
       with_them do
@@ -458,8 +458,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       let(:requested_fields) { 'upvotes downvotes' }
 
       before do
-        create_list(:award_emoji, 2, name: 'thumbsup', awardable: issue_a)
-        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: issue_b)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_UP, awardable: issue_a)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_DOWN, awardable: issue_b)
       end
 
       include_examples 'N+1 query check'
@@ -719,13 +719,13 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     def response_label_ids(response_data)
-      response_data.map do |node|
+      response_data.flat_map do |node|
         node['labels']['nodes'].pluck('id')
-      end.flatten
+      end
     end
 
     def labels_as_global_ids(issues)
-      issues.map(&:labels).flatten.map(&:to_global_id).map(&:to_s)
+      issues.flat_map { |issue| issue.labels.map { |label| label.to_global_id.to_s } }
     end
 
     it 'avoids N+1 queries', :aggregate_failures do
@@ -768,13 +768,13 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     def response_assignee_ids(response_data)
-      response_data.map do |node|
+      response_data.flat_map do |node|
         node['assignees']['nodes'].pluck('id')
-      end.flatten
+      end
     end
 
     def assignees_as_global_ids(issues)
-      issues.map(&:assignees).flatten.map(&:to_global_id).map(&:to_s)
+      issues.flat_map(&:assignees).map(&:to_global_id).map(&:to_s)
     end
 
     it 'avoids N+1 queries', :aggregate_failures do

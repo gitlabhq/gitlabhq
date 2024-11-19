@@ -6,7 +6,7 @@
     = f.label :otp_attempt, _('Enter verification code')
     -# Note: we use inputmode="numeric", because TOTP. However, recovery codes are alphanumeric.
     = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', inputmode: 'numeric', title: _('This field is required.'), data: { testid: 'two-fa-code-field' }
-    %p.form-text.text-muted.hint
+    %p.form-text.gl-text-subtle.hint
       = _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
 
     - if render_remember_me

@@ -27,7 +27,8 @@ module QA
         end
       end
 
-      it 'download archives of each user project then check they are different', :blocking,
+      # TODO: refactor/fix - gitlab-org/quality/quality-engineering/team-tasks#3153
+      it 'download archives of each user project then check they are different', :blocking, :skip_live_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347748' do
         archive_checksums = {}
 

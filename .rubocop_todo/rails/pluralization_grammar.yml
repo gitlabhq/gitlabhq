@@ -1,0 +1,23 @@
+---
+# Cop supports --autocorrect.
+Rails/PluralizationGrammar:
+  Exclude:
+    - 'app/models/application_setting.rb'
+    - 'app/models/application_setting_implementation.rb'
+    - 'app/services/packages/helm/extract_file_metadata_service.rb'
+    - 'app/services/projects/lfs_pointers/lfs_download_service.rb'
+    - 'app/services/web_hook_service.rb'
+    - 'db/post_migrate/20240726054350_update_ci_max_total_yaml_size_bytes_default.rb'
+    - 'ee/app/models/security/finding.rb'
+    - 'ee/spec/lib/ee/gitlab/git_access_project_spec.rb'
+    - 'ee/spec/lib/ee/gitlab/pages/deployment_validations_spec.rb'
+    - 'ee/spec/requests/api/graphql/namespace/projects_spec.rb'
+    - 'ee/spec/services/search/rake_task_executor_service_spec.rb'
+    - 'spec/controllers/admin/plan_limits_controller_spec.rb'
+    - 'spec/factories/gitlab/database/reindexing/reindex_action.rb'
+    - 'spec/lib/gitlab/ci/artifact_file_reader_spec.rb'
+    - 'spec/lib/gitlab/database/reindexing/index_selection_spec.rb'
+    - 'spec/lib/gitlab/pages/deployment_validations_spec.rb'
+    - 'spec/lib/gitlab/repository_size_checker_spec.rb'
+    - 'spec/lib/object_storage/direct_upload_spec.rb'
+    - 'spec/models/environment_spec.rb'

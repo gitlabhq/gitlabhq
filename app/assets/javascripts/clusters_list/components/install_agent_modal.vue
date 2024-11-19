@@ -2,6 +2,8 @@
 import { GlAlert, GlButton, GlFormGroup, GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 import {
   INSTALL_AGENT_MODAL_ID,
   I18N_AGENT_MODAL,
@@ -32,10 +34,15 @@ export default {
   registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'register-the-agent-with-gitlab',
   }),
+  bootstrapAgentWithFluxHelpPath: helpPagePath('user/clusters/agent/install/index', {
+    anchor: 'bootstrap-the-agent-with-flux-support-recommended',
+  }),
   terraformDocsLink:
     'https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs/resources/cluster_agent_token',
   minAgentsForTerraform: 10,
   maxAgents: 100,
+  commandLanguage: 'shell',
+  glabCommand: 'glab cluster agent bootstrap <agent-name>',
   components: {
     AvailableAgentsDropdown,
     AgentToken,
@@ -45,6 +52,8 @@ export default {
     GlLink,
     GlModal,
     GlSprintf,
+    ModalCopyButton,
+    CodeBlockHighlighted,
   },
   mixins: [trackingMixin],
   inject: ['projectPath', 'emptyStateImage'],
@@ -238,6 +247,36 @@ export default {
   >
     <template v-if="!kasDisabled">
       <template v-if="!registered">
+        <p class="gl-mb-2 gl-font-bold">{{ $options.i18n.bootstrapWithFluxTitle }}</p>
+        <p class="gl-mb-3">{{ $options.i18n.bootstrapWithFluxDescription }}</p>
+        <p class="gl-mb-3 gl-flex gl-items-start">
+          <code-block-highlighted
+            :language="$options.commandLanguage"
+            class="gl-border gl-mb-0 gl-mr-3 gl-w-full gl-px-3 gl-py-2"
+            :code="$options.glabCommand"
+          />
+          <modal-copy-button
+            :text="$options.glabCommand"
+            :modal-id="$options.modalId"
+            category="tertiary"
+          />
+        </p>
+        <gl-sprintf :message="$options.i18n.bootstrapWithFluxOptions">
+          <template #code="{ content }">
+            <code>{{ content }}</code>
+          </template>
+        </gl-sprintf>
+        <p class="gl-mb-5">
+          <gl-sprintf :message="$options.i18n.bootstrapWithFluxDocs">
+            <template #link="{ content }">
+              <gl-link :href="$options.bootstrapAgentWithFluxHelpPath" target="_blank">{{
+                content
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </p>
+
+        <p class="gl-mb-2 gl-font-bold">{{ $options.i18n.registerWithUITitle }}</p>
         <p class="gl-mb-0">
           <gl-sprintf :message="$options.i18n.modalBody">
             <template #link="{ content }">

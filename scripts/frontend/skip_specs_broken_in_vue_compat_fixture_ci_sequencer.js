@@ -1,25 +1,18 @@
 const { relative } = require('node:path');
 const { setTimeout: setTimeoutPromise } = require('node:timers/promises');
 const axios = require('axios');
+const { parse, getLocalQuarantinedFiles } = require('./jest_vue3_quarantine_utils');
 const FixtureCISequencer = require('./fixture_ci_sequencer');
 
-const url = 'https://gitlab-org.gitlab.io/frontend/playground/jest-speed-reporter/vue3.json';
+const url =
+  'https://gitlab-org.gitlab.io/frontend/playground/fast-jest-vue-3-quarantine/gitlab.txt';
 
-// These fail due to template compilation errors, so aren't recorded in the
-// JUnit report that the Jest Speed Reporter project consumes. We must explicitly
-// exclude them until this is solved.
-// See https://gitlab.com/gitlab-org/gitlab/-/issues/478773.
-const SPECS_THAT_FAIL_TO_COMPILE = [
-  'spec/frontend/boards/components/board_app_spec.js',
-  'ee/spec/frontend/boards/components/board_app_spec.js',
-  'spec/frontend/boards/components/board_content_spec.js',
-  'ee/spec/frontend/boards/components/board_content_spec.js',
-];
-
-async function getFailedFilesAsAbsolutePaths(n = 0, maxRetries = 3) {
+// See https://gitlab.com/gitlab-org/frontend/playground/fast-jest-vue-3-quarantine for details
+// about how to fast quarantine files.
+async function getFastQuarantinedFiles(n = 0, maxRetries = 3) {
   try {
     const { data } = await axios.get(url, { timeout: 10_000 });
-    return new Set([...data.failedFiles, ...SPECS_THAT_FAIL_TO_COMPILE]);
+    return parse(data);
   } catch (error) {
     console.error('\nFailed to fetch list of specs failing with @vue/compat: %s', error.message);
 
@@ -27,24 +20,32 @@ async function getFailedFilesAsAbsolutePaths(n = 0, maxRetries = 3) {
       const waitMs = 5_000 * 2 ** n;
       console.error(`Waiting ${waitMs}ms to retry (${maxRetries - n} remaining)`);
       await setTimeoutPromise(waitMs);
-      return getFailedFilesAsAbsolutePaths(n + 1);
+      return getFastQuarantinedFiles(n + 1);
     }
 
     throw error;
   }
 }
 
+async function getQuarantinedFiles() {
+  const results = await Promise.all([getFastQuarantinedFiles(), getLocalQuarantinedFiles()]);
+  return new Set(results.flat());
+}
+
 class SkipSpecsBrokenInVueCompatFixtureCISequencer extends FixtureCISequencer {
-  #failedSpecFilesPromise = getFailedFilesAsAbsolutePaths();
+  #quarantinedFiles = getQuarantinedFiles();
 
   async shard(tests, options) {
-    const failedSpecFiles = await this.#failedSpecFilesPromise;
-
-    const testsExcludingOnesThatFailInVueCompat = tests.filter(
-      (test) => !failedSpecFiles.has(relative(test.context.config.rootDir, test.path)),
+    const quarantinedFiles = await this.#quarantinedFiles;
+    console.warn(
+      `Skipping ${quarantinedFiles.size} quarantined specs:\n${[...quarantinedFiles].join('\n')}`,
     );
 
-    return super.shard(testsExcludingOnesThatFailInVueCompat, options);
+    const testsExcludingQuarantined = tests.filter(
+      (test) => !quarantinedFiles.has(relative(test.context.config.rootDir, test.path)),
+    );
+
+    return super.shard(testsExcludingQuarantined, options);
   }
 }
 

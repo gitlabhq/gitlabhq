@@ -147,9 +147,7 @@ class Commit
       # Commit in turn expects Time-like instances upon input, so we have to
       # manually parse these values.
       hash.each do |key, value|
-        if key.to_s.end_with?(date_suffix) && value.is_a?(String)
-          hash[key] = Time.zone.parse(value)
-        end
+        hash[key] = Time.zone.parse(value) if key.to_s.end_with?(date_suffix) && value.is_a?(String)
       end
 
       from_hash(hash, project)
@@ -293,9 +291,7 @@ class Commit
       }
     }
 
-    if with_changed_files
-      data.merge!(repo_changes)
-    end
+    data.merge!(repo_changes) if with_changed_files
 
     data
   end
@@ -603,6 +599,12 @@ class Commit
 
   def valid_full_sha
     id.match(Gitlab::Git::Commit::FULL_SHA_PATTERN).to_s
+  end
+
+  def first_diffs_slice(limit, diff_options = {})
+    diff_options[:max_files] = limit
+
+    diffs(diff_options)
   end
 
   private

@@ -7,5 +7,9 @@ class PersonalAccessTokenEntity < AccessTokenEntityBase
   expose :revoke_path do |token, options|
     revoke_user_settings_personal_access_token_path(token)
   end
+
+  expose :rotate_path do |token, options|
+    rotate_user_settings_personal_access_token_path(token)
+  end
 end
 # rubocop: enable Gitlab/NamespacedClass

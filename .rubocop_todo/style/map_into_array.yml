@@ -1,0 +1,15 @@
+---
+# Cop supports --autocorrect.
+Style/MapIntoArray:
+  Exclude:
+    - 'app/finders/projects/members/effective_access_level_finder.rb'
+    - 'app/services/packages/nuget/extract_metadata_content_service.rb'
+    - 'config/settings.rb'
+    - 'ee/spec/lib/search/elastic/references/embedding_spec.rb'
+    - 'lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/node.rb'
+    - 'lib/gitlab/git/blame.rb'
+    - 'lib/gitlab/grape_logging/loggers/exception_logger.rb'
+    - 'lib/google_api/cloud_platform/client.rb'
+    - 'qa/qa/tools/delete_user_projects.rb'
+    - 'spec/lib/gitlab/color_schemes_spec.rb'
+    - 'spec/lib/gitlab/themes_spec.rb'

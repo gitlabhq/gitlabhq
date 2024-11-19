@@ -34,7 +34,7 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
 
 1. Create an issue for removing the metric if none exists yet. The issue needs to outline why the metric should be removed. You can use this issue to document the removal process.
 
-   - **If the metric has at least one `performance_indicator_type` of the `[x]mau` kind**:
+   - **If the metric has at least one `performance_indicator_type` of the `[x]mau` or `customer_health_score` kind**:
      Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning the groups in a comment in the issue. Unexpected changes to these metric could break reporting.
    - **If the metric is owned by a different group than the one doing the removal**:
      Tag the PM and EM of the owning group according to the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
@@ -76,5 +76,7 @@ Updated files:
 ```
 
 After running the script, you must commit all the modified files to Git and create a merge request.
+
+The script is part of GDK and a frontend or backend developer can run the script and prepare the merge request.
 
 If a group is split into multiple groups, you need to manually update the product_group.

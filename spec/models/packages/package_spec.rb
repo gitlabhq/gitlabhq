@@ -17,13 +17,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
-    it { is_expected.to have_many(:installable_nuget_package_files).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
-    it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
-    it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
   end
 
   describe '.sort_by_attribute' do
@@ -112,21 +107,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
-      context 'nuget package' do
-        subject { build_stubbed(:nuget_package) }
-
-        it { is_expected.to allow_value('My.Package').for(:name) }
-        it { is_expected.to allow_value('My.Package.Mvc').for(:name) }
-        it { is_expected.to allow_value('MyPackage').for(:name) }
-        it { is_expected.to allow_value('My.23.Package').for(:name) }
-        it { is_expected.to allow_value('My23Package').for(:name) }
-        it { is_expected.to allow_value('runtime.my-test64.runtime.package.Mvc').for(:name) }
-        it { is_expected.to allow_value('my_package').for(:name) }
-        it { is_expected.not_to allow_value('My/package').for(:name) }
-        it { is_expected.not_to allow_value('../../../my_package').for(:name) }
-        it { is_expected.not_to allow_value('%2e%2e%2fmy_package').for(:name) }
-      end
-
       context 'npm package' do
         subject { build_stubbed(:npm_package) }
 
@@ -137,19 +117,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { is_expected.not_to allow_value("@scope/../../package").for(:name) }
         it { is_expected.not_to allow_value("@scope%2e%2e%fpackage").for(:name) }
         it { is_expected.not_to allow_value("@scope/sub/package").for(:name) }
-      end
-
-      context 'terraform module package' do
-        subject { build_stubbed(:terraform_module_package) }
-
-        it { is_expected.to allow_value('my-module/my-system').for(:name) }
-        it { is_expected.to allow_value('my/module').for(:name) }
-        it { is_expected.not_to allow_value('my-module').for(:name) }
-        it { is_expected.not_to allow_value('My-Module').for(:name) }
-        it { is_expected.not_to allow_value('my_module').for(:name) }
-        it { is_expected.not_to allow_value('my.module').for(:name) }
-        it { is_expected.not_to allow_value('../../../my-module').for(:name) }
-        it { is_expected.not_to allow_value('%2e%2e%2fmy-module').for(:name) }
       end
     end
 
@@ -183,21 +150,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
-      it_behaves_like 'validating version to be SemVer compliant for', :terraform_module_package
-
-      context 'nuget package' do
-        subject { build_stubbed(:nuget_package) }
-
-        it { is_expected.to allow_value('1.2').for(:version) }
-        it { is_expected.to allow_value('1.2.3').for(:version) }
-        it { is_expected.to allow_value('1.2.3.4').for(:version) }
-        it { is_expected.to allow_value('1.2.3-beta').for(:version) }
-        it { is_expected.to allow_value('1.2.3-alpha.3').for(:version) }
-        it { is_expected.not_to allow_value('1').for(:version) }
-        it { is_expected.not_to allow_value('1./2.3').for(:version) }
-        it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-      end
     end
 
     describe '#npm_package_already_taken' do
@@ -500,17 +452,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to contain_exactly(package1) }
   end
 
-  describe '.without_nuget_temporary_name' do
-    let!(:package1) { create(:nuget_package) }
-    let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
-
-    subject { described_class.without_nuget_temporary_name }
-
-    it 'does not include nuget temporary packages' do
-      expect(subject).to eq([package1])
-    end
-  end
-
   describe '.limit_recent' do
     let!(:package1) { create(:nuget_package) }
     let!(:package2) { create(:nuget_package) }
@@ -589,27 +530,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       subject { described_class.with_case_insensitive_name('testpackage') }
 
       it { is_expected.to match_array([nuget_package]) }
-    end
-
-    describe '.with_nuget_version_or_normalized_version' do
-      let_it_be(:nuget_package) { create(:nuget_package, :with_metadatum, version: '1.0.7+r3456') }
-
-      before do
-        nuget_package.nuget_metadatum.update_column(:normalized_version, '1.0.7')
-      end
-
-      subject { described_class.with_nuget_version_or_normalized_version(version, with_normalized: with_normalized) }
-
-      where(:version, :with_normalized, :expected) do
-        '1.0.7'       | true  | [ref(:nuget_package)]
-        '1.0.7'       | false | []
-        '1.0.7+r3456' | true  | [ref(:nuget_package)]
-        '1.0.7+r3456' | false | [ref(:nuget_package)]
-      end
-
-      with_them do
-        it { is_expected.to match_array(expected) }
-      end
     end
 
     context 'status scopes' do
@@ -776,26 +696,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
-  describe '#matching_package_protection_rules' do
-    let_it_be(:package) do
-      create(:npm_package, name: 'npm-package')
-    end
-
-    let_it_be(:package_protection_rule) do
-      create(:package_protection_rule, project: package.project, package_name_pattern: package.name, package_type: :npm,
-        minimum_access_level_for_push: :maintainer)
-    end
-
-    let_it_be(:package_protection_rule_no_match) do
-      create(:package_protection_rule, project: package.project, package_name_pattern: "other-#{package.name}", package_type: :npm,
-        minimum_access_level_for_push: :maintainer)
-    end
-
-    subject { package.matching_package_protection_rules }
-
-    it { is_expected.to eq [package_protection_rule] }
-  end
-
   describe '#tag_names' do
     let_it_be(:package) { create(:nuget_package) }
 
@@ -811,26 +711,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it { is_expected.to contain_exactly(*tags) }
-    end
-  end
-
-  describe '#infrastructure_package?' do
-    let(:package) { create(:package) }
-
-    subject { package.infrastructure_package? }
-
-    it { is_expected.to eq(false) }
-
-    context 'with generic package' do
-      let(:package) { create(:generic_package) }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with terraform module package' do
-      let(:package) { create(:terraform_module_package) }
-
-      it { is_expected.to eq(true) }
     end
   end
 
@@ -1024,19 +904,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { expect(new_package).to be_valid }
       end
     end
-  end
-
-  describe '#normalized_nuget_version' do
-    let_it_be(:package) { create(:nuget_package, :with_metadatum, version: '1.0') }
-    let(:normalized_version) { '1.0.0' }
-
-    subject { package.normalized_nuget_version }
-
-    before do
-      package.nuget_metadatum.update_column(:normalized_version, normalized_version)
-    end
-
-    it { is_expected.to eq(normalized_version) }
   end
 
   describe '#publish_creation_event' do

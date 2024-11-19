@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -28,7 +28,9 @@ By default, they inherit permissions from the user who created them.
 You can use the personal access tokens API to programmatically take action,
 such as [rotating a personal access token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
-You receive an email when tokens are seven days or less from expiration.
+You
+[receive an email](../../user/profile/personal_access_tokens.md#personal-access-token-expiry-emails)
+when your personal access tokens are expiring soon.
 
 ## OAuth 2.0 tokens
 
@@ -39,7 +41,7 @@ You can limit the scope and lifetime of your OAuth 2.0 tokens.
 
 ## Impersonation tokens
 
-An [impersonation token](../../api/rest/index.md#impersonation-tokens)
+An [impersonation token](../../api/rest/authentication.md#impersonation-tokens)
 is a special type of personal access token. It can be created only by
 an administrator for a specific user. Impersonation tokens can help
 you build applications or scripts that authenticate with the GitLab
@@ -67,9 +69,9 @@ licensed seats.
 You can use the [project access tokens API](../../api/project_access_tokens.md) to programmatically take
 action, such as [rotating a project access token](../../api/project_access_tokens.md#rotate-a-project-access-token).
 
-Direct members of a project with at least the Maintainer role receive
-an email when project access tokens are seven days or less from
-expiration. Inherited members do not receive an email.
+Direct members of a project with at least the Maintainer role
+[receive an email](../../user/project/settings/project_access_tokens.md#project-access-token-expiry-emails)
+when project access tokens are nearly expired. Inherited members do not receive an email.
 
 ## Group access tokens
 
@@ -89,9 +91,9 @@ Bot users for groups are service accounts and do not count as licensed seats.
 You can use the [group access tokens API](../../api/group_access_tokens.md) to programmatically take
 action, such as [rotating a group access token](../../api/group_access_tokens.md#rotate-a-group-access-token).
 
-Direct members of a group with the Owner role receive an email when
-group access tokens are seven days or less from expiration. Inherited
-members do not receive an email.
+Direct members of a group with the Owner role
+[receive an email](../../user/group/settings/group_access_tokens.md#group-access-token-expiry-emails)
+when group access tokens are nearly expired. Inherited members do not receive an email.
 
 ## Deploy tokens
 
@@ -174,7 +176,7 @@ the duration of a job. It gives a CI/CD job access to a limited number of API en
 API authentication uses the job token by using the authorization of the user triggering the job.
 
 The job token is secured by its short lifetime and limited scope. This token could be leaked if
-multiple jobs run on the same machine (for example, with the [shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)).
+multiple jobs run on the same machine (for example, with the [shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)). You can use the [project allow list](../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to further limit what the job token can access.
 On Docker Machine runners, you should configure
 [`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section)
 to ensure runner machines run only one build
@@ -317,7 +319,7 @@ To keep your tokens secure:
   After the demo is finished, revoke all the secrets created during the demo.
 - Adding access tokens to URLs is a security risk, especially when cloning or adding a remote, because Git writes URLs to its `.git/config` file in plaintext. URLs are
   also often logged by proxies and application servers, which leaks those credentials to system administrators. Instead, pass an access token to an API call with
-  a header like [`Private-Token`](../../api/rest/index.md#personalprojectgroup-access-tokens).
+  a header like [`Private-Token`](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
 - You can store tokens using [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 - Review all active access tokens of all types on a regular basis and revoke any you don't need.
 

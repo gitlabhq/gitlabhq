@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Changelog::Committer do
+RSpec.describe Gitlab::Changelog::Committer, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
   let(:committer) { described_class.new(project, user) }
@@ -49,6 +49,42 @@ RSpec.describe Gitlab::Changelog::Committer do
 
         expect(content).to eq(<<~MARKDOWN)
           ## 1.0.0 (2020-01-01)
+
+          No changes.
+        MARKDOWN
+      end
+    end
+
+    context 'when the pre-release is already in the changelog' do
+      it "commits changes" do
+        pre_release = Gitlab::Changelog::Release
+          .new(version: '1.0.0-rc1', date: Time.utc(2020, 1, 1), config: config)
+
+        committer.commit(
+          release: pre_release,
+          file: 'CHANGELOG.md',
+          branch: 'master',
+          message: 'Test commit'
+        )
+
+        release = Gitlab::Changelog::Release
+          .new(version: '1.0.0', date: Time.utc(2020, 1, 1), config: config)
+
+        committer.commit(
+          release: release,
+          file: 'CHANGELOG.md',
+          branch: 'master',
+          message: 'Test commit'
+        )
+
+        content = project.repository.blob_at('master', 'CHANGELOG.md').data
+
+        expect(content).to eq(<<~MARKDOWN)
+          ## 1.0.0 (2020-01-01)
+
+          No changes.
+
+          ## 1.0.0-rc1 (2020-01-01)
 
           No changes.
         MARKDOWN

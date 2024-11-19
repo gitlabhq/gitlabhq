@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -87,7 +87,7 @@ You can create multiple authentication paths in Vault, which enable you to trans
 
 Roles are bound to a specific authentication path so you need to add new roles for each job.
 The `bound_audiences` parameter for the role is mandatory if the JWT contains an
-audience and must match at least one of the JWT's associated `aud` claims.
+audience and must match at least one of the associated `aud` claims of the JWT.
 
 1. Recreate the role for staging named `myproject-staging`:
 

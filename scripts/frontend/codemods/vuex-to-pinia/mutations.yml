@@ -1,0 +1,15 @@
+id: method-definition
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern:
+        selector: method_definition
+        context: export default { [$$$FUNC]($STATE, $$$ARGS) { $$$BODY } }
+    - pattern:
+        selector: method_definition
+        context: export default { [$$$FUNC]($STATE) { $$$BODY } }
+fix: |-
+  [$$$FUNC]($$$ARGS) {
+    $$$BODY
+  }

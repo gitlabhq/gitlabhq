@@ -21,7 +21,7 @@ describe('transformAstToDisplayFields', () => {
     const result = transformAstToDisplayFields(input);
     expect(result).toEqual([
       { key: 'title', label: 'Title', name: 'title' },
-      { key: 'description', label: 'Description', name: 'description' },
+      { key: 'descriptionHtml', label: 'Description', name: 'descriptionHtml' },
       { key: 'createdAt', label: 'Created at', name: 'createdAt' },
     ]);
   });
@@ -71,7 +71,7 @@ describe('transformAstToDisplayFields', () => {
         name: expect.any(String),
         transform: expect.any(Function),
       },
-      { key: 'description', label: 'Description', name: 'description' },
+      { key: 'descriptionHtml', label: 'Description', name: 'descriptionHtml' },
     ]);
   });
 

@@ -6,8 +6,8 @@ module QA
       module Overview
         module Groups
           class Index < QA::Page::Base
-            view 'app/views/admin/groups/index.html.haml' do
-              element 'group-search-field', required: true
+            view 'app/assets/javascripts/admin/groups/components/filtered_search_and_sort.vue' do
+              element 'admin-groups-filtered-search-and-sort', required: true
             end
 
             view 'app/views/admin/groups/_group.html.haml' do
@@ -16,7 +16,9 @@ module QA
             end
 
             def search_group(group_name)
-              find_element('group-search-field').set(group_name).send_keys(:return)
+              within_element('admin-groups-filtered-search-and-sort') do
+                find_element('filtered-search-term-input').set(group_name).send_keys(:return)
+              end
             end
 
             def click_group(group_name)

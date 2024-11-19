@@ -752,8 +752,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.order_id_desc' do
     subject(:pipelines_ordered_by_id) { described_class.order_id_desc }
 
-    let(:older_pipeline) { create(:ci_pipeline, id: 99, project: project) }
-    let(:newest_pipeline) { create(:ci_pipeline, id: 100, project: project) }
+    let_it_be(:older_pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:newest_pipeline) { create(:ci_pipeline, project: project) }
+
+    it 'only returns the pipelines ordered by id' do
+      expect(newest_pipeline.id).to be > older_pipeline.id
+      expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
+    end
 
     it 'only returns the pipelines ordered by id' do
       expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
@@ -1830,9 +1835,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         %w[succeed! drop! cancel! skip!].each do |action|
           context "when the pipeline received #{action} event" do
             it 'performs AutoMergeProcessWorker' do
-              expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
+              expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
 
               pipeline.public_send(action)
+            end
+
+            context 'with auto_merge_process_worker_pipeline disabled' do
+              before do
+                stub_feature_flags(auto_merge_process_worker_pipeline: false)
+              end
+
+              it 'performs AutoMergeProcessWorker by passing only the merge request' do
+                expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
+
+                pipeline.succeed!
+              end
             end
           end
         end
@@ -1841,8 +1858,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'when auto merge is not enabled in the merge request' do
         let(:merge_request) { create(:merge_request) }
 
+        # We enqueue the job here because the check for whether or not to
+        # automatically merge happens in the worker itself.
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167095
         it 'performs AutoMergeProcessWorker' do
-          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+          expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
 
           pipeline.succeed!
         end
@@ -2807,16 +2827,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:refs) { %w[first_ref second_ref third_ref] }
 
         before do
-          create(:ci_empty_pipeline, id: 1001, status: :success, ref: 'first_ref', sha: 'sha')
-          create(:ci_empty_pipeline, id: 1002, status: :success, ref: 'second_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
 
         let!(:latest_successful_pipeline_for_first_ref) do
-          create(:ci_empty_pipeline, id: 2001, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
         end
 
         let!(:latest_successful_pipeline_for_second_ref) do
-          create(:ci_empty_pipeline, id: 2002, status: :success, ref: 'second_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
 
         it 'returns the latest successful pipeline for both refs' do
@@ -2997,7 +3017,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       before do
         allow(build).to receive(:with_resource_group?) { true }
         allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async)
-        allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2).to receive(:perform_async)
 
         build.enqueue
       end
@@ -3978,7 +3997,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'enqueues PipelineNotificationWorker' do
         expect(PipelineNotificationWorker)
-          .to receive(:perform_async).with(pipeline.id, ref_status: :success)
+          .to receive(:perform_async).with(pipeline.id, 'ref_status' => 'success')
 
         pipeline.succeed
       end
@@ -3990,7 +4009,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'does not pass ref_status' do
           expect(PipelineNotificationWorker)
-            .to receive(:perform_async).with(pipeline.id, ref_status: nil)
+            .to receive(:perform_async).with(pipeline.id, 'ref_status' => nil)
 
           pipeline.succeed!
         end
@@ -4023,7 +4042,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'enqueues PipelineNotificationWorker' do
         expect(PipelineNotificationWorker)
-          .to receive(:perform_async).with(pipeline.id, ref_status: :failed)
+          .to receive(:perform_async).with(pipeline.id, 'ref_status' => 'failed')
 
         pipeline.drop
       end
@@ -5816,52 +5835,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.current_partition_value' do
     subject { described_class.current_partition_value }
 
-    context 'when not using ci partitioning automation' do
+    context 'when current ci_partition exists' do
       before do
-        stub_feature_flags(ci_partitioning_automation: false)
+        create(:ci_partition, :current, id: 1000)
       end
 
-      it { is_expected.to eq(102) }
-
-      it 'accepts an optional argument' do
-        expect(described_class.current_partition_value(build_stubbed(:project))).to eq(102)
-      end
-
-      it 'returns 100 when the flags are disabled' do
-        stub_feature_flags(ci_current_partition_value_101: false)
-        stub_feature_flags(ci_current_partition_value_102: false)
-
-        is_expected.to eq(100)
-      end
-
-      it 'returns 101 when the 102 flag is disabled' do
-        stub_feature_flags(ci_current_partition_value_102: false)
-
-        is_expected.to eq(101)
-      end
-
-      it 'returns 102 when the 101 flag is disabled' do
-        stub_feature_flags(ci_current_partition_value_101: false)
-
-        is_expected.to eq(102)
+      it 'return the current partition value' do
+        expect(subject).to eq(1000)
       end
     end
 
-    context 'when using ci partitioning automation' do
-      context 'when current ci_partition exists' do
-        before do
-          create(:ci_partition, :current)
-        end
-
-        it 'return the current partition value' do
-          expect(subject).to eq(Ci::Partition.current.id)
-        end
-      end
-
-      context 'when current ci_partition does not exist' do
-        it 'return the default initial value' do
-          expect(subject).to eq(102)
-        end
+    context 'when current ci_partition does not exist' do
+      it 'return the default initial value' do
+        expect(subject).to eq(100)
       end
     end
   end

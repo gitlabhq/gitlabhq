@@ -50,7 +50,7 @@ This content has been moved to [Troubleshooting Repository mirroring](../../user
 
 ## CI
 
-This content has been moved to [Troubleshooting CI/CD](../cicd/index.md#cicd-troubleshooting-rails-console-commands).
+This content has been moved to [CI/CD maintenance](../cicd/maintenance.md).
 
 ## License
 
@@ -74,25 +74,25 @@ This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_trou
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
 
 ### Repository verification failures
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization.md#find-repository-verification-failures).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#find-repository-verification-failures).
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
 
-Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization.md#resync-project-and-project-wiki-repositories).
+Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-project-and-project-wiki-repositories).
 
 ### Blob types
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
 
 ## Generate Service Ping
 

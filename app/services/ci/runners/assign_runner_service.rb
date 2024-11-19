@@ -45,7 +45,7 @@ module Ci
             reason: :not_authorized_to_add_runner_in_project)
         end
 
-        if runner.owner_project && project.organization_id != runner.owner_project.organization_id
+        if runner.owner && project.organization_id != runner.owner.organization_id
           return ServiceResponse.error(message: _('runner can only be assigned to projects in the same organization'),
             reason: :project_not_in_same_organization)
         end

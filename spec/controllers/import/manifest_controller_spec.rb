@@ -35,9 +35,9 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
     context 'with an invalid manifest' do
       it 'displays an error' do
         post :upload, params: {
-               group_id: group.id,
-               manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
-             }
+          group_id: group.id,
+          manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
+        }
 
         expect(assigns(:errors)).to be_present
       end

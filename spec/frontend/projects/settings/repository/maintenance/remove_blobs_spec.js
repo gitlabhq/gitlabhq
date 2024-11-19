@@ -32,19 +32,13 @@ describe('Remove blobs', () => {
     return createMockApollo([[removeBlobsMutation, resolverMock]]);
   };
 
-  const createComponent = (
-    mutationResponse = REMOVE_MUTATION_SUCCESS,
-    features = { asyncRewriteHistory: true },
-  ) => {
+  const createComponent = (mutationResponse = REMOVE_MUTATION_SUCCESS) => {
     mutationMock = jest.fn().mockResolvedValue(mutationResponse);
     getContentWrapperHeight.mockReturnValue(TEST_HEADER_HEIGHT);
     wrapper = shallowMountExtended(RemoveBlobs, {
       apolloProvider: createMockApolloProvider(mutationMock),
       provide: {
         projectPath: TEST_PROJECT_PATH,
-        glFeatures: {
-          ...features,
-        },
       },
     });
   };
@@ -201,21 +195,6 @@ describe('Remove blobs', () => {
             });
           });
         });
-      });
-    });
-  });
-
-  describe('when async_rewrite_history is off', () => {
-    it('generates a housekeeping alert', async () => {
-      createComponent(REMOVE_MUTATION_SUCCESS, { features: { asyncRewriteHistory: false } });
-      findModal().vm.$emit('primary');
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'Run housekeeping to remove old versions from repository.',
-        primaryButton: { clickHandler: expect.any(Function), text: 'Go to housekeeping' },
-        title: 'Blobs removed',
-        variant: VARIANT_WARNING,
       });
     });
   });

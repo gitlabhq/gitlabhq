@@ -136,9 +136,15 @@ module SearchHelper
     # - group
     # - group: nil, project: nil
     if project
-      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
-        project: link_to(project.full_name, project_path(project), target: '_blank', rel: 'noopener noreferrer').html_safe
-      )
+      ERB::Util.html_escape(
+        _("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
+          project: link_to(
+            project.full_name,
+            project_path(project),
+            target: '_blank',
+            rel: 'noopener noreferrer'
+          ).html_safe
+        )
     elsif group
       ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
         group: link_to(group.full_name, group_path(group), target: '_blank', rel: 'noopener noreferrer').html_safe
@@ -215,13 +221,19 @@ module SearchHelper
     {}.tap do |hash|
       if search_has_group?
         hash[:group] = { id: search_group.id, name: search_group.name, full_name: search_group.full_name }
-        hash[:group_metadata] = { issues_path: issues_group_path(search_group), mr_path: merge_requests_group_path(search_group) }
+        hash[:group_metadata] = {
+          issues_path: issues_group_path(search_group),
+          mr_path: merge_requests_group_path(search_group)
+        }
       end
 
       if search_has_project?
         hash[:project] = { id: @project.id, name: @project.name }
         hash[:project_metadata] = { mr_path: project_merge_requests_path(@project) }
-        hash[:project_metadata][:issues_path] = project_issues_path(@project) if @project.feature_available?(:issues, current_user)
+        if @project.feature_available?(:issues, current_user)
+          hash[:project_metadata][:issues_path] =
+            project_issues_path(@project)
+        end
 
         hash[:code_search] = search_scope.nil?
         hash[:ref] = @ref if @ref && can?(current_user, :read_code, @project)
@@ -249,8 +261,7 @@ module SearchHelper
   end
 
   def should_show_work_items_as_epics_in_results?
-    ::Feature.enabled?(:search_epics_uses_work_items_index, current_user) &&
-      ::Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items)
+    ::Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items)
   end
 
   def should_show_zoekt_results?(_scope, _search_type)
@@ -258,6 +269,12 @@ module SearchHelper
   end
 
   private
+
+  def formatted_count(scope)
+    return "0" if @timeout
+
+    @search_results&.formatted_count(scope) || "0"
+  end
 
   # Autocomplete results for various settings pages
   def default_autocomplete
@@ -284,8 +301,16 @@ module SearchHelper
       { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
       { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index.md") },
       { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh.md") },
-      { category: "Help", label: s_("Webhooks|System hooks help"),  url: help_page_path("administration/system_hooks.md") },
-      { category: "Help", label: _("Webhooks Help"),                url: help_page_path("user/project/integrations/webhooks.md") }
+      {
+        category: "Help",
+        label: s_("Webhooks|System hooks help"),
+        url: help_page_path("administration/system_hooks.md")
+      },
+      {
+        category: "Help",
+        label: _("Webhooks Help"),
+        url: help_page_path("user/project/integrations/webhooks.md")
+      }
     ]
   end
 
@@ -330,9 +355,12 @@ module SearchHelper
   end
 
   # Autocomplete results for the current user's groups
-  # rubocop: disable CodeReuse/ActiveRecord
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.order_id_desc.search(term, use_minimum_char_limit: false).limit(limit).map do |group|
+    current_user
+      .search_on_authorized_groups(term, use_minimum_char_limit: false)
+      .order_id_desc
+      .limit(limit)
+      .map do |group|
       {
         category: "Groups",
         id: group.id,
@@ -343,7 +371,6 @@ module SearchHelper
       }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def issue_autocomplete(term)
     return [] unless @project.present? && current_user && term =~ /\A#{Issue.reference_prefix}\d+\z/
@@ -365,8 +392,17 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
-      .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
+    projects = if Feature.enabled?(:autocomplete_projects_use_search_service, current_user)
+                 search_using_search_service(current_user, 'projects', term, limit)
+               else
+                 current_user.authorized_projects.order_id_desc.search(
+                   term,
+                   include_namespace: true,
+                   use_minimum_char_limit: false
+                 ).sorted_by_stars_desc.non_archived.limit(limit)
+               end
+
+    projects.map do |p|
       {
         category: "Projects",
         id: p.id,
@@ -385,10 +421,7 @@ module SearchHelper
       return []
     end
 
-    ::SearchService
-      .new(current_user, { scope: 'users', per_page: limit, search: term })
-      .search_objects
-      .map do |user|
+    search_using_search_service(current_user, 'users', term, limit).map do |user|
       {
         category: "Users",
         id: user.id,
@@ -444,7 +477,7 @@ module SearchHelper
 
     if @scope == scope
       li_class = 'active'
-      count = @timeout ? 0 : @search_results.formatted_count(scope)
+      count = formatted_count(scope)
     else
       badge_class = 'js-search-count hidden'
       badge_data = { url: search_count_path(search_params) }
@@ -467,7 +500,7 @@ module SearchHelper
     result = { label: label, scope: scope_name, data: data, link: search_path(search_params), active: active_scope }
 
     if active_scope
-      result[:count] = !@timeout ? @search_results.formatted_count(scope_name) : "0"
+      result[:count] = formatted_count(scope_name)
     end
 
     result[:count_link] = search_count_path(search_params) unless active_scope
@@ -482,7 +515,12 @@ module SearchHelper
   end
 
   def search_navigation_json
-    search_navigation = Search::Navigation.new(user: current_user, project: @project, group: @group, options: nav_options)
+    search_navigation = Search::Navigation.new(
+      user: current_user,
+      project: @project,
+      group: @group,
+      options: nav_options
+    )
     sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
 
     sorted_navigation.each_with_object({}) do |(key, value), hash|
@@ -602,6 +640,14 @@ module SearchHelper
 
   def wiki_blob_link(wiki_blob)
     project_wiki_path(wiki_blob.project, wiki_blob.basename)
+  end
+
+  def search_using_search_service(user, scope, term, limit, additional_params = {})
+    params = { scope: scope, search: term }.merge(additional_params)
+    ::SearchService
+      .new(user, params)
+      .search_objects
+      .first(limit)
   end
 end
 

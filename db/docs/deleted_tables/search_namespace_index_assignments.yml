@@ -1,0 +1,14 @@
+---
+table_name: search_namespace_index_assignments
+classes:
+- Search::NamespaceIndexAssignment
+feature_categories:
+- global_search
+description: Joins a Namespace to a Search::Index
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113612
+milestone: '15.11'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id_non_nullable: namespaces
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170242
+removed_in_milestone: '17.6'

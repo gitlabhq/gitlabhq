@@ -71,7 +71,7 @@ The following information is displayed:
 
 ## Renew GitLab.com subscription
 
-30 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
+15 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
 
 Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
 
@@ -83,11 +83,16 @@ You can view and [manage renewal invoice](../self_managed/index.md#manage-renewa
 
 ### Renew for fewer seats
 
-You can renew your subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal.
-If you want to renew for fewer seats, you can do either of the following:
+Subscription renewals with fewer seats must have or exceed the current number of billable users.
+Before you renew your subscription, [reduce the number of billable users](#remove-users-from-subscription)
+if it exceeds the number of seats you want to renew for.
 
-- [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of subscription renewal date, and **specify the desired seat quantity** on the renewal page. To reduce billable user quantity, [remove users from your subscription](#remove-users-from-subscription).
-- Disable automatic subscription renewal and work with the Sales team to renew it for the number of seats you want.
+To manually renew your subscription for fewer seats, you can either:
+
+- [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of the
+subscription renewal date. Ensure that you specify the seat quantity when you renew.
+- [Disable automatic renewal of your subscription](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal),
+and contact the GitLab Sales team to renew it for the number of seats you want.
 
 ### Automatic subscription renewal
 
@@ -153,23 +158,24 @@ Billable users count toward the number of subscription seats purchased in your s
 A user is not counted as a billable user if:
 
 - They are pending approval.
-- They have the [Guest role on an Ultimate subscription](#free-guest-users).
+- They have only the [Guest role on an Ultimate subscription](#free-guest-users).
+- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) for any GitLab.com subscriptions.
 - They are a [banned member](../../user/group/moderate_users.md#ban-a-user).
 - They are a [blocked user](../../administration/moderate_users.md#block-a-user).
 - The account is a GitLab-created service account:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
-  - Bots such as:
+  - Bots:
     - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
 Seat usage is reviewed [quarterly or annually](../quarterly_reconciliation.md).
 
-If a user goes to a different top-level group (one they have created themselves, for example)
-and that group does not have a paid subscription, they would not see any of the paid features.
+If a user views or selects a different top-level group (one they have created themselves, for example)
+and that group does not have a paid subscription, the user does not see any of the paid features.
 
-It is also possible for users to belong to two different top-level groups with different subscriptions.
-In this case, they would see only the features available to that subscription.
+A user can belong to two different top-level groups with different subscriptions.
+In this case, the user sees only the features available to that subscription.
 
 ### Free Guest users
 
@@ -180,11 +186,11 @@ DETAILS:
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab.com.
 
-- If your project is private or internal, a user with the Guest role has
-  [a set of permissions](../../user/permissions.md#project-members-permissions).
-- If your project is public, all users, including those with the Guest role
-  can access your project.
-- For GitLab.com, if a user with the Guest role creates a project in their personal namespace, it does not consume a seat. The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
+- If your project is:
+  - Private or internal, a user with the Guest role has [a set of permissions](../../user/permissions.md#project-members-permissions).
+  - Public, all users, including those with the Guest role, can access your project.
+- For GitLab.com, if a user with the Guest role creates a project in their personal namespace, the user does not consume a seat.
+The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
 
 ### Seats owed
 
@@ -210,7 +216,7 @@ This setting restricts groups from adding new billable users when there are no s
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
 
-If you have the Owner role of the top-level group, an alert notifies you
+If you have the Owner role for the top-level group, an alert notifies you
 of your total seat usage.
 
 The alert displays on group, subgroup, and project
@@ -235,15 +241,17 @@ To view a list of seats being used:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-1. On the **Seats** tab, view usage information.
+1. Select the **Seats** tab.
 
 For each user, a list shows groups and projects where the user is a direct member.
 
-- **Group invite** indicates the user is a member of a [group shared with a group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
-- **Project invite** indicates the user is a member of a [group shared with a project](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
+- **Group invite** indicates the user is a member of a [group invited to a group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
+- **Project invite** indicates the user is a member of a [group invited to a project](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
 
 The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
 The counts for **Max seats used** and **Seats owed** are updated once per day.
+
+### View billing information
 
 To view your subscription information and a summary of seat counts:
 
@@ -257,14 +265,13 @@ To view your subscription information and a summary of seat counts:
 
 ## Search seat usage
 
-To search billable users:
+To search seat usage:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-1. On the **Seats tab**, enter a string in the search field. A minimum of 3
-characters are required.
+1. On the **Seats tab**, enter a string in the search field. A minimum of 3 characters are required.
 
-The search returns those users whose first name, last name, or username contain the search string.
+The search returns users whose first name, last name, or username contain the search string.
 
 For example:
 
@@ -299,8 +306,11 @@ and is not affected by the current search.
 ## Add seats to subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
-Even if you reach the number of seats in your subscription, you can continue to add users.
-GitLab [bills you for the overage](../quarterly_reconciliation.md).
+
+- If [restricted access](../../administration/settings/sign_up_restrictions.md#turn-on-restricted-access)
+  is turned on, when there are no seats left in your subscription you must purchase more seats for groups to add new billable users.
+- If restricted access is turned off, when there are no seats left in your subscription groups can continue to add billable
+  users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
 To add seats to a subscription:
 
@@ -313,10 +323,7 @@ To add seats to a subscription:
 1. Check the **I accept the Privacy Statement and Terms of Service** checkbox.
 1. Select **Purchase seats**.
 
-The following is emailed to you:
-
-- A payment receipt. You can also access this information in the Customers Portal under
-  [**Invoices**](https://customers.gitlab.com/invoices).
+You receive the payment receipt by email. You can also access the receipt in the Customers Portal under [**Invoices**](https://customers.gitlab.com/invoices).
 
 ## Remove users from subscription
 
@@ -330,8 +337,8 @@ To remove a billable user from your GitLab.com subscription:
 
 If you add a member to a group by using the [share a group with another group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) feature, you can't remove the member by using this method. Instead, you can either:
 
-- Remove the member from the shared group. You must be a group owner to do this.
-- From the group's membership page, remove access from the entire shared group.
+- [Remove the member from the shared group](../../user/group/index.md#remove-a-member-from-the-group).
+- [Remove the invited group](../../user/project/members/sharing_projects_groups.md#remove-an-invited-group).
 
 To remove a user from your self-managed instance, see [Deactivate a user](../../administration/moderate_users.md#deactivate-a-user).
 
@@ -408,7 +415,7 @@ You can [disable automatic subscription renewal](../self_managed/index.md#enable
 
 1. Sign in to GitLab.com.
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
-1. Select **Storage** tab.
+1. Select the **Storage** tab.
 1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
 1. Select **Buy storage**. You are taken to the Customers Portal.
@@ -433,7 +440,7 @@ To purchase additional storage for your group on GitLab.com:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-1. Select **Storage** tab.
+1. Select the **Storage** tab.
 1. Select **Buy storage**. You are taken to the Customers Portal.
 1. In the **Subscription details** section, enter the desired quantity of storage packs.
 1. In the **Customer information** section, verify your address.
@@ -443,8 +450,7 @@ To purchase additional storage for your group on GitLab.com:
 
 After your payment is processed, the extra storage is available for your group namespace.
 
-To confirm the available storage, go to your group, and then select
-**Settings > Usage Quotas** and select the **Storage** tab.
+To confirm the available storage, follow the first three steps listed above.
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.

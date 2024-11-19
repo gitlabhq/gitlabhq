@@ -6,7 +6,7 @@ identifiers:
   - project
   - user
   - namespace
-product_group: static_analysis
+product_group: composition_analysis
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150952
 distributions:

@@ -16,6 +16,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
         item_id: :project_issue_list,
         active_routes: { path: %w[projects/issues#index projects/issues#show projects/issues#new] },
         pill_count: menu.pill_count,
+        pill_count_field: menu.pill_count_field,
         has_pill: menu.has_pill?,
         super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::PlanMenu
       }
@@ -55,6 +56,10 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
   end
 
   describe '#pill_count' do
+    before do
+      stub_feature_flags(async_sidebar_counts: false)
+    end
+
     it 'returns zero when there are no open issues' do
       expect(subject.pill_count).to eq '0'
     end
@@ -82,6 +87,32 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
       it 'returns truncated digits for count value over 1000' do
         allow(project).to receive(:open_issues_count).and_return 1001
         expect(subject.pill_count).to eq('1k')
+      end
+    end
+
+    context 'when async_sidebar_counts feature flag is enabled' do
+      before do
+        stub_feature_flags(async_sidebar_counts: true)
+      end
+
+      it 'returns nil' do
+        expect(subject.pill_count).to be_nil
+      end
+    end
+  end
+
+  describe '#pill_count_field' do
+    it 'returns the correct GraphQL field name' do
+      expect(subject.pill_count_field).to eq('openIssuesCount')
+    end
+
+    context 'when async_sidebar_counts feature flag is disabled' do
+      before do
+        stub_feature_flags(async_sidebar_counts: false)
+      end
+
+      it 'returns nil' do
+        expect(subject.pill_count_field).to be_nil
       end
     end
   end

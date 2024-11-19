@@ -1,0 +1,9 @@
+---
+name: vue_merge_request_list
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/10827
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145168
+rollout_issue_url:
+milestone: '16.10'
+group: group::code review
+type: beta
+default_enabled: false

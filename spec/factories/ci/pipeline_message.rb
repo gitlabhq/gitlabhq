@@ -5,5 +5,6 @@ FactoryBot.define do
     pipeline factory: :ci_pipeline
     content { 'warning' }
     severity { 1 }
+    project_id { pipeline.project_id }
   end
 end

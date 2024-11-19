@@ -85,9 +85,7 @@ module QA
     "registry_with_cdn" => "RegistryWithCDN",
     "fips" => "FIPS",
     "ci_cd_settings" => "CICDSettings",
-    "cli" => "CLI",
-    "webgoat" => "Webgoat",
-    "securityandcompliance" => "Securityandcompliance"
+    "cli" => "CLI"
   )
 
   loader.setup

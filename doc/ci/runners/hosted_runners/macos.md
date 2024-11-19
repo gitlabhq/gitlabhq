@@ -34,10 +34,11 @@ GitLab provides a set of VM images for macOS.
 You can execute your build in one of the following images, which you specify
 in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and Xcode.
 
-| VM image                   | Status |              |
-|----------------------------|--------|--------------|
-| `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-13-xcode-14/) |
-| `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-14-xcode-15/) |
+| VM image                   | Status       |              |
+|----------------------------|--------------|--------------|
+| `macos-13-xcode-14`        | `deprecated` | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-13-xcode-14/) |
+| `macos-14-xcode-15`        | `GA`         | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-14-xcode-15/) |
+| `macos-15-xcode-16`        | `beta`       | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-15-xcode-16/) |
 
 If no image is specified, the macOS runner uses `macos-14-xcode-15`.
 
@@ -45,7 +46,7 @@ If no image is specified, the macOS runner uses `macos-14-xcode-15`.
 
 The images and installed components are updated with each GitLab release, to keep the preinstalled software up-to-date. GitLab typically supports multiple versions of preinstalled software. For more information, see the [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
 
-Major and minor releases of macOS and Xcode, are made available within two weeks of Apple's release.
+Major and minor releases of macOS and Xcode are made available in the milestone subsequent to the Apple release.
 
 A new major release image is initially made available as beta, and becomes generally available (GA) with the release of the first minor release.
 Because only two GA images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).

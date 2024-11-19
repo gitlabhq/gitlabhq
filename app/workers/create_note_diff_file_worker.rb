@@ -12,7 +12,7 @@ class CreateNoteDiffFileWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(diff_note_id)
     return unless diff_note_id.present?
 
-    diff_note = DiffNote.find_by_id(diff_note_id) # rubocop: disable CodeReuse/ActiveRecord
+    diff_note = DiffNote.find_by_id(diff_note_id)
 
     diff_note&.create_diff_file
   end

@@ -59,7 +59,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
     it { is_expected.to be_disallowed(:admin_organization) }
     it { is_expected.to be_allowed(:create_group) }
     it { is_expected.to be_allowed(:read_organization) }
-    it { is_expected.to be_allowed(:read_organization_user) }
+    it { is_expected.to be_disallowed(:read_organization_user) }
   end
 
   context 'when the user is an owner of the organization' do

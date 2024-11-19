@@ -3,7 +3,7 @@
 .form-group
   = form.label :url, _('URL'), class: 'label-bold'
   = form.text_field :url, class: 'form-control gl-form-input'
-  %p.form-text.text-muted= _('URL must be percent-encoded if necessary.')
+  %p.form-text.gl-text-subtle= _('URL must be percent-encoded if necessary.')
 .form-group
   = form.label :name, s_('Webhooks|Name (optional)'), class: 'label-bold'
   = form.text_field :name, value: hook.name, class: 'form-control gl-form-input gl-form-input-xl'
@@ -13,7 +13,7 @@
 .form-group
   = form.label :token, _('Secret token'), class: 'label-bold'
   = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input gl-max-w-48'
-  %p.form-text.text-muted= _('Use this token to validate received payloads.')
+  %p.form-text.gl-text-subtle= _('Use this token to validate received payloads.')
 .form-group
   = form.label :url, _('Trigger'), class: 'label-bold gl-mb-0'
   .form-text.text-secondary.gl-mb-5= _('System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events.')

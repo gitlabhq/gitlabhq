@@ -15,5 +15,8 @@ distribution:
 tier:
 - premium
 - ultimate
+tiers:
+- premium
+- ultimate
 events:
 - name: internal_events_cli_used

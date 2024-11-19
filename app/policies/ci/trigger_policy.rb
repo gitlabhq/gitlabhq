@@ -10,6 +10,6 @@ module Ci
     condition(:is_owner) { @user && @subject.owner_id == @user.id }
 
     rule { ~can?(:manage_trigger) }.prevent :admin_trigger
-    rule { is_owner }.enable :admin_trigger
+    rule { admin | is_owner }.enable :admin_trigger
   end
 end

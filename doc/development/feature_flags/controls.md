@@ -437,7 +437,7 @@ After turning on the feature flag, you need to [monitor the relevant graphs](htt
 
 In this illustration, you can see that the Apdex score started to decline after the feature flag was enabled at `09:46`. The feature flag was then deactivated at `10:31`, and the service returned to the original value:
 
-![Feature flag metrics](../img/feature-flag-metrics.png)
+![Feature flag metrics](../img/feature-flag-metrics_v15_8.png)
 
 Certain features necessitate extensive monitoring over multiple days, particularly those that are high-risk and critical to business operations. In contrast, other features may only require a 24-hour monitoring period before continuing with the rollout.
 
@@ -477,7 +477,7 @@ and reduces confidence in our testing suite covering all possible combinations.
 Additionally, a feature flag overwritten in some of the environments can result
 in undefined and untested system behavior.
 
-`development` type feature flags should have a short life-cycle because their purpose
+`development` type feature flags should have a short lifecycle because their purpose
 is for rolling out a persistent change. `development` feature flags that are older
 than 2 milestones are reported to engineering managers. The
 [report tool](https://gitlab.com/gitlab-org/gitlab-feature-flag-alert) runs on a

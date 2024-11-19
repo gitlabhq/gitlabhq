@@ -9,8 +9,8 @@ const createWrapper = () => {
   wrapper = shallowMount(EmptyState, {
     provide: { mlflowTrackingUrl: 'path/to/mlflow' },
     propsData: {
-      modalId: 'modal-id',
       primaryText: 'primary-text',
+      primaryLink: 'primary/link',
       title: 'title',
       description: 'description',
     },
@@ -39,7 +39,7 @@ describe('ml/model_registry/components/model_list_empty_state.vue', () => {
 
   it('creates button to open model creation', () => {
     expect(findCreateButton().text()).toBe('primary-text');
-    expect(getBinding(findCreateButton().element, 'gl-modal').value).toBe('modal-id');
+    expect(findCreateButton().attributes('href')).toBe('primary/link');
   });
 
   it('creates button to docs', () => {

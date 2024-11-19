@@ -25,10 +25,7 @@ module Types
       field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
       field :protection_rule_exists, GraphQL::Types::Boolean,
         null: false,
-        alpha: { milestone: '17.0' },
-        description:
-        'Whether any matching package protection rule exists for this package. ' \
-        'Available only when feature flag `packages_protected_packages` is enabled.'
+        description: 'Whether any matching package protection rule exists for the package.'
       field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
       field :status_message, GraphQL::Types::String, null: true, description: 'Status message.'
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
@@ -40,8 +37,6 @@ module Types
       end
 
       def protection_rule_exists
-        return false if Feature.disabled?(:packages_protected_packages, object.project)
-
         object_package_type_value = ::Packages::Package.package_types[object.package_type]
 
         BatchLoader::GraphQL.for([object.name, object_package_type_value]).batch do |inputs, loader|

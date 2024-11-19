@@ -13,10 +13,11 @@ import {
   LINKED_CATEGORIES_MAP,
   i18n,
 } from '../constants';
-import { findLinkedItemsWidget } from '../utils';
+import { findHierarchyWidgets, findLinkedItemsWidget } from '../utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemLinkedItemsQuery from '../graphql/work_item_linked_items.query.graphql';
+import workItemOpenChildCountQuery from '../graphql/open_child_count.query.graphql';
 
 export default {
   components: {
@@ -63,6 +64,7 @@ export default {
     return {
       updateInProgress: false,
       blockerItems: [],
+      openChildItemsCount: 0,
     };
   },
   apollo: {
@@ -101,7 +103,7 @@ export default {
       update({ workspace }) {
         if (!workspace?.workItem) return [];
 
-        const linkedWorkItems = findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
+        const linkedWorkItems = findLinkedItemsWidget(workspace.workItem)?.linkedItems?.nodes || [];
 
         return linkedWorkItems.filter((item) => {
           return item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY;
@@ -111,6 +113,32 @@ export default {
         const msg = e.message || i18n.fetchError;
         this.$emit('error', msg);
         Sentry.captureException(new Error(msg));
+      },
+    },
+    openChildItemsCount: {
+      query: workItemOpenChildCountQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
+      },
+      skip() {
+        return !this.workItemIid;
+      },
+      update({ namespace }) {
+        if (!namespace?.workItem) return 0;
+
+        /** @type {Array<{countsByState: { opened : number }}> } */
+        const countsByType = findHierarchyWidgets(namespace.workItem.widgets)?.rolledUpCountsByType;
+
+        if (!countsByType) {
+          return 0;
+        }
+
+        const total = countsByType.reduce((acc, curr) => acc + curr.countsByState.opened, 0);
+
+        return total;
       },
     },
   },
@@ -146,21 +174,43 @@ export default {
     isBlocked() {
       return this.blockerItems.length > 0;
     },
+    hasOpenChildren() {
+      return this.openChildItemsCount > 0;
+    },
     action() {
-      if (this.isBlocked && this.isWorkItemOpen) {
-        return () => this.$refs.blockedByIssuesModal.show();
+      if (this.isWorkItemOpen) {
+        if (this.isBlocked) {
+          return () => this.$refs.blockedByIssuesModal.show();
+        }
+        if (this.hasOpenChildren) {
+          return () => this.$refs.openChildrenWarningModal.show();
+        }
       }
       return this.updateWorkItem;
     },
-    modalTitle() {
+    blockedByModalTitle() {
       return sprintfWorkItem(
         s__('WorkItem|Are you sure you want to close this blocked %{workItemType}?'),
         this.workItemType,
       );
     },
-    modalBody() {
+    blockedByModalBody() {
       return sprintfWorkItem(
         s__('WorkItem|This %{workItemType} is currently blocked by the following items:'),
+        this.workItemType,
+      );
+    },
+    openChildrenModalTitle() {
+      return sprintfWorkItem(
+        s__('WorkItem|Are you sure you want to close this %{workItemType}?'),
+        this.workItemType,
+      );
+    },
+    openChildrenModalBody() {
+      return sprintfWorkItem(
+        s__(
+          'WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open.',
+        ),
         this.workItemType,
       );
     },
@@ -235,17 +285,30 @@ export default {
     <gl-modal
       ref="blockedByIssuesModal"
       modal-id="blocked-by-issues-modal"
+      data-testid="blocked-by-issues-modal"
       :action-cancel="modalActionCancel"
       :action-primary="modalActionPrimary"
-      :title="modalTitle"
+      :title="blockedByModalTitle"
       @primary="updateWorkItem"
     >
-      <p>{{ modalBody }}</p>
+      <p>{{ blockedByModalBody }}</p>
       <ul>
         <li v-for="issue in blockerItems" :key="issue.workItem.iid">
           <gl-link :href="issue.workItem.webUrl">#{{ issue.workItem.iid }}</gl-link>
         </li>
       </ul>
+    </gl-modal>
+
+    <gl-modal
+      ref="openChildrenWarningModal"
+      modal-id="open-children-warning-modal"
+      data-testid="open-children-warning-modal"
+      :action-cancel="modalActionCancel"
+      :action-primary="modalActionPrimary"
+      :title="openChildrenModalTitle"
+      @primary="updateWorkItem"
+    >
+      <p>{{ openChildrenModalBody }}</p>
     </gl-modal>
   </span>
 </template>

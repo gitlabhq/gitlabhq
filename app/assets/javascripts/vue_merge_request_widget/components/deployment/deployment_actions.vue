@@ -151,7 +151,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-inline-flex">
+  <div class="gl-inline-flex gl-gap-3">
     <deployment-action-button
       v-if="canBeManuallyDeployed"
       :action-in-progress="actionInProgress"

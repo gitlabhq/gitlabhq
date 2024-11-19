@@ -55,6 +55,17 @@ RSpec.describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_c
           expect(described_class.new(project, user).cache_key_name).to eq('public_open_issues_count')
         end
       end
+
+      context 'when there are hidden issues' do
+        let(:banned_user) { create(:user, :banned) }
+
+        it 'does not include hidden issues in the count' do
+          create(:issue, :opened, project: project)
+          create(:issue, :opened, project: project, author: banned_user)
+
+          expect(described_class.new(project, user).count).to eq(1)
+        end
+      end
     end
 
     describe '#refresh_cache' do

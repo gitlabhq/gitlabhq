@@ -49,9 +49,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:comment_tooltips, current_user)
     push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
-    push_frontend_feature_flag(:issue_autocomplete_backend_filtering, project)
   end
 
   before_action only: [:index, :show] do
@@ -223,7 +221,6 @@ class Projects::IssuesController < Projects::ApplicationController
     @related_branches = ::Issues::RelatedBranchesService
       .new(container: project, current_user: current_user)
       .execute(issue)
-      .map { |branch| branch.merge(link: branch_link(branch)) }
 
     respond_to do |format|
       format.json do
@@ -442,10 +439,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     options
-  end
-
-  def branch_link(branch)
-    project_compare_path(project, from: project.default_branch, to: branch[:name])
   end
 
   def service_desk?

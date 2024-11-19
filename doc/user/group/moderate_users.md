@@ -6,9 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Moderate users
 
-This section describes how to moderate users at the group level. For self-managed instances, see the [administration documentation](../../administration/moderate_users.md).
+If you are assigned the Owner role for a group, you can [approve](manage.md#user-cap-for-groups), ban, or automatically remove dormant members.
 
-If you have the Owner role for the group, to moderate user access you can [approve](manage.md#user-cap-for-groups), ban, or automatically remove dormant members.
+NOTE:
+This topic is specifically related to user moderation in groups. For information related to a GitLab self-managed instance, see the [administration documentation](../../administration/moderate_users.md).
 
 ## Ban and unban users
 
@@ -27,6 +28,23 @@ A banned user:
 - Cannot use [slash commands](../project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a [seat](../free_user_limit.md).
 
+### Ban a user
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo on banning a user at the group level, see [Namespace level ban - Banning a user](https://youtu.be/1rbi1uEJmOI).
+
+Prerequisites:
+
+- In the top-level group, you must have the Owner role.
+- In the top-level group, if the user you want to ban has the Owner role, you must [demote the user](manage.md#change-the-owner-of-a-group).
+
+To manually ban a user:
+
+1. Go to the top-level group.
+1. On the left sidebar, select **Manage > Members**.
+1. Next to the member you want to ban, select the vertical ellipsis (**{ellipsis_v}**).
+1. From the dropdown list, select **Ban member**.
+
 ### Unban a user
 
 To unban a user with the GraphQL API, see [`Mutation.namespaceBanDestroy`](../../api/graphql/reference/index.md#mutationnamespacebandestroy).
@@ -44,23 +62,6 @@ To unban a user:
 1. On the left sidebar, select **Manage > Members**.
 1. Select the **Banned** tab.
 1. For the account you want to unban, select **Unban**.
-
-### Ban a user
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo on banning a user at the group level, see [Namespace level ban - Banning a user](https://youtu.be/1rbi1uEJmOI).
-
-Prerequisites:
-
-- In the top-level group, you must have the Owner role.
-- In the top-level group, if the user you want to ban has the Owner role, you must [demote the user](manage.md#change-the-owner-of-a-group).
-
-To manually ban a user:
-
-1. Go to the top-level group.
-1. On the left sidebar, select **Manage > Members**.
-1. Next to the member you want to ban, select the vertical ellipsis (**{ellipsis_v}**).
-1. From the dropdown list, select **Ban member**.
 
 ## Automatically remove dormant members
 

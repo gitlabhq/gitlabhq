@@ -19,6 +19,14 @@
     "registration_type": {
       "description": "Current type of registration for an onboarding user",
       "type": "string"
+    },
+    "glm_content": {
+      "description": "GitLab link management value for content on the link the user clicks to start onboarding",
+      "type": "string"
+    },
+    "glm_source": {
+      "description": "GitLab link management value for source on the link the user clicks to start onboarding",
+      "type": "string"
     }
   },
   "additionalProperties": false

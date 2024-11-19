@@ -16,7 +16,7 @@ module QA
             project.group = group
             project.github_personal_access_token = Runtime::Env.github_access_token
             project.github_repository_path = github_repo
-            project.api_client = api_client
+            project.api_client = admin_api_client
           end
         end
 
@@ -24,7 +24,7 @@ module QA
           build(:issue,
             project: imported_project,
             iid: imported_project.issues.first[:iid],
-            api_client: api_client).reload!
+            api_client: admin_api_client).reload!
         end
 
         let(:imported_issue_events) do

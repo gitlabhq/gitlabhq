@@ -16,14 +16,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     skip_default_enabled_yaml_check
 
     replication_lag!(false)
-    Gitlab::Database::LoadBalancing::Session.clear_session
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
 
     stub_const("#{described_class.name}::REPLICA_WAIT_SLEEP_SECONDS", 0.02)
     stub_const("#{described_class.name}::URGENT_REPLICA_WAIT_SLEEP_SECONDS", 0.01)
   end
 
   after do
-    Gitlab::Database::LoadBalancing::Session.clear_session
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
   end
 
   describe '#call' do
@@ -59,7 +59,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     shared_examples_for 'stick to the primary' do |expected_strategy|
       it 'sticks to the primary' do
         run_middleware do
-          expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).to be_truthy
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).to be_truthy
+          end
         end
       end
 
@@ -74,7 +76,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           .and_return(any_caught_up)
 
         run_middleware do
-          expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).not_to be_truthy
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).not_to be_truthy
+          end
         end
       end
 
@@ -317,6 +321,80 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         end
 
         include_examples 'stick to the primary', 'primary'
+      end
+    end
+
+    context 'when mixed data consistency' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:consistency, :overrides, :ci_use_primary, :main_use_primary, :multi_db) do
+        :always  | { ci: :always }  | true  | true | true
+        :always  | { ci: :sticky }  | false | true | true
+        :always  | { ci: :delayed } | false | true | true
+        :delayed | { ci: :always }  | true  | false | true
+        :delayed | { ci: :delayed } | false | false | true
+        :delayed | { ci: :sticky }  | false | false | true
+        :sticky  | { ci: :always }  | true  | false | true
+        :sticky  | { ci: :delayed } | false | false | true
+        :sticky  | { ci: :sticky }  | false | false | true
+
+        # when using single db, we ignore the overrides
+        :always  | { ci: :always }  | true  | true | false
+        :always  | { ci: :sticky }  | true  | true | false
+        :always  | { ci: :delayed } | true  | true | false
+        :delayed | { ci: :always }  | false | false | false
+        :delayed | { ci: :delayed } | false | false | false
+        :delayed | { ci: :sticky }  | false | false | false
+        :sticky  | { ci: :always }  | false | false | false
+        :sticky  | { ci: :delayed } | false | false | false
+        :sticky  | { ci: :sticky }  | false | false | false
+
+        # override works for main too
+        :always  | { main: :always }  | true | true  | true
+        :always  | { main: :sticky }  | true | false | true
+        :always  | { main: :delayed } | true | false | true
+        :always  | { main: :always }  | true | true  | false
+        :always  | { main: :sticky }  | true | true  | false
+        :always  | { main: :delayed } | true | true  | false
+      end
+
+      with_them do
+        let(:worker_class) do
+          Class.new do
+            def self.name
+              'TestMixedDataConsistencyWorker'
+            end
+
+            include ApplicationWorker
+
+            def perform(*args); end
+          end
+        end
+
+        before do
+          if multi_db
+            skip_if_shared_database(:ci)
+          else
+            skip_if_database_exists(:ci)
+          end
+
+          stub_const('TestMixedDataConsistencyWorker', worker_class)
+
+          if TestMixedDataConsistencyWorker.instance_variable_defined?(:@class_attributes)
+            TestMixedDataConsistencyWorker.remove_instance_variable(:@class_attributes)
+          end
+
+          TestMixedDataConsistencyWorker.data_consistency(
+            consistency, overrides: overrides, feature_flag: :load_balancing_for_test_data_consistency_worker
+          )
+        end
+
+        it 'uses the primary db for the appropriate load-balancers' do
+          run_middleware do
+            expect(Gitlab::Database::LoadBalancing::SessionMap.current(::Ci::ApplicationRecord.load_balancer).use_primary?).to eq(ci_use_primary)
+            expect(Gitlab::Database::LoadBalancing::SessionMap.current(::ApplicationRecord.load_balancer).use_primary?).to eq(main_use_primary)
+          end
+        end
       end
     end
   end

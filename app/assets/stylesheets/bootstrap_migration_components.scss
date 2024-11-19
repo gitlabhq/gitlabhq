@@ -47,7 +47,7 @@ input[type='file'] {
 .text-secondary {
   // Override Bootstrap's light secondary color
   // We have to use !important because bootstrap has that set as well
-  color: $gl-text-color-secondary !important;
+  @apply gl-text-subtle #{!important};
 }
 
 .bg-success,
@@ -112,14 +112,12 @@ input[type='file'] {
 }
 
 .info-well {
-  background: $gray-10;
-  color: $gl-text-color;
-  border: 1px solid $border-color;
-  border-radius: 4px;
+  @apply gl-bg-subtle gl-text-default gl-border gl-border-section gl-rounded-base;
+
   margin-bottom: 16px;
 
   .ref-list {
-    border-color: $gray-100;
+    border-color: var(--gl-border-color-section);
   }
 
   .well-segment {
@@ -133,7 +131,7 @@ input[type='file'] {
     }
 
     &:not(:first-of-type) {
-      border-top: 1px solid $gray-100;
+      @apply gl-border-t gl-border-t-section;
     }
 
     p,

@@ -14,7 +14,8 @@ RSpec.shared_examples 'rich text editor - diagrams' do
       type_in_content_editor ['graph TD;', :enter, '  JohnDoe12 --> HelloWorld34']
     end
 
-    it 'renders and updates the diagram correctly in a sandboxed iframe' do
+    it 'renders and updates the diagram correctly in a sandboxed iframe',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480101' do
       iframe = find(content_editor_testid).find('iframe')
       expect(iframe['src']).to include('/-/sandbox/mermaid')
 

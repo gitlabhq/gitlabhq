@@ -136,7 +136,7 @@ export default {
         :messages="visibleMessages"
         @delete-message="deleteMessage"
       />
-      <div v-else-if="!showAddForm" class="gl-text-secondary">
+      <div v-else-if="!showAddForm" class="gl-text-subtle">
         {{ $options.i18n.emptyMessage }}
       </div>
 

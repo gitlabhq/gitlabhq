@@ -8,7 +8,7 @@ module Ci
       feature_category :secrets_management
 
       urgency :low
-      data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- this worker only performs upserts
+      data_consistency :always
       idempotent!
       deduplicate :until_executed, including_scheduled: true, if_deduplicated: :reschedule_once
 

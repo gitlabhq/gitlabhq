@@ -2,9 +2,10 @@ export const MINIMUM_SEARCH_LENGTH = 3;
 
 export const TYPENAME_BOARD = 'Board';
 export const TYPENAME_CI_BUILD = 'Ci::Build';
-export const TYPENAME_CI_TRIGGER = 'Ci::Trigger';
-export const TYPENAME_CI_PIPELINE = 'Ci::Pipeline';
 export const TYPENAME_CI_RUNNER = 'Ci::Runner';
+export const TYPENAME_CI_PIPELINE = 'Ci::Pipeline';
+export const TYPENAME_CI_STAGE = 'Ci::Stage';
+export const TYPENAME_CI_TRIGGER = 'Ci::Trigger';
 export const TYPENAME_CI_VARIABLE = 'Ci::Variable';
 export const TYPENAME_COMMIT_STATUS = 'CommitStatus';
 export const TYPENAME_CONTAINER_REPOSITORY = 'ContainerRepository';

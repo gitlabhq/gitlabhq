@@ -9,7 +9,7 @@ module Namespaces
       def root_ancestor
         if persisted? && !parent_id.nil?
           strong_memoize(:root_ancestor) do
-            recursive_ancestors.reorder(nil).find_by(parent_id: nil)
+            recursive_ancestors.reorder(nil).find_top_level
           end
         elsif parent.nil?
           self
@@ -73,13 +73,13 @@ module Namespaces
       end
       alias_method :recursive_descendants, :descendants
 
-      def self_and_descendants
-        object_hierarchy(self.class.where(id: id)).base_and_descendants
+      def self_and_descendants(skope: self.class)
+        object_hierarchy(skope.where(id: id)).base_and_descendants
       end
       alias_method :recursive_self_and_descendants, :self_and_descendants
 
-      def self_and_descendant_ids
-        object_hierarchy(self.class.where(id: id)).base_and_descendant_ids
+      def self_and_descendant_ids(skope: self.class)
+        object_hierarchy(skope.where(id: id)).base_and_descendant_ids
       end
       alias_method :recursive_self_and_descendant_ids, :self_and_descendant_ids
 

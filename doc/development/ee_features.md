@@ -169,6 +169,12 @@ version of the product:
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
    1. Select **Save changes**.
 
+Here's a [📺 video](https://youtu.be/DHkaqXw_Tmc) demonstrating how to do the steps above.
+
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/DHkaqXw_Tmc" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 ## Implement a new EE feature
 
 If you're developing a GitLab Premium or GitLab Ultimate licensed feature, use these steps to
@@ -320,6 +326,7 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/workers/foo_worker.rb`
 - `ee/app/views/foo.html.haml`
 - `ee/app/views/foo/_bar.html.haml`
+- `ee/config/initializers/foo_bar.rb`
 
 This works because for every path in the CE `eager-load/auto-load`
 path, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
@@ -588,6 +595,24 @@ def internal?
 end
 ```
 
+### Code in `config/initializers`
+
+Rails initialization code is located in
+
+- `config/initializers` for CE-only features
+- `ee/config/initializers` for EE features
+
+Use `Gitlab.ee { ... }`/`Gitlab.ee?` in `config/initializers` only when
+splitting is not possible. For example:
+
+```ruby
+SomeGem.configure do |config|
+  config.base = 'https://example.com'
+
+  config.encryption = true if Gitlab.ee?
+end
+```
+
 ### Code in `config/routes`
 
 When we add `draw :admin` in `config/routes.rb`, the application tries to
@@ -596,7 +621,7 @@ file located in `ee/config/routes/admin.rb`.
 
 In EE, it should at least load one file, at most two files. If it cannot find
 any files, an error is raised. In CE, since we don't know if an
-an EE route exists, it doesn't raise any errors even if it cannot find anything.
+EE route exists, it doesn't raise any errors even if it cannot find anything.
 
 This means if we want to extend a particular CE route file, just add the same
 file located in `ee/config/routes`. If we want to add an EE only route, we

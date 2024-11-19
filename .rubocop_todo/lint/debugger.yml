@@ -1,0 +1,4 @@
+---
+Lint/Debugger:
+  Exclude:
+    - 'spec/support/helpers/docs_screenshot_helpers.rb'

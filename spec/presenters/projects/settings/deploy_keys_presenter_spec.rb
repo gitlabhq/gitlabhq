@@ -93,6 +93,8 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
 
   context 'prevent N + 1 queries' do
     before do
+      allow(Ability).to receive(:allowed?).and_return(true)
+
       create_records
 
       project.add_maintainer(user)
@@ -107,8 +109,8 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
       create(:deploy_key, public: true)
     end
 
-    def execute_with_query_count
-      ActiveRecord::QueryRecorder.new { execute_presenter }.count
+    def execute_with_query_recorder
+      ActiveRecord::QueryRecorder.new { execute_presenter }
     end
 
     def execute_presenter
@@ -126,13 +128,11 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
     it 'does not increase the query count' do
       execute_presenter # make sure everything is cached
 
-      count_before = execute_with_query_count
+      control = execute_with_query_recorder
 
       3.times { create_records }
 
-      count_after = execute_with_query_count
-
-      expect(count_after).to eq(count_before)
+      expect { execute_presenter }.to issue_same_number_of_queries_as(control)
 
       result = execute_presenter
       expect(result[:enabled_keys].size).to eq(4)

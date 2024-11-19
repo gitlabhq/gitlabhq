@@ -1,4 +1,4 @@
-- button_options = { class: local_assigns[:classes], data: data }
+- button_options = { class: local_assigns[:classes], data: data, form: { class: 'js-omniauth-form' } }
 
 = render Pajamas::ButtonComponent.new(href: href, method: :post, form: true, block: true, button_options: button_options) do
   - if provider_has_icon?(provider)

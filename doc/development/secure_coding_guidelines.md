@@ -13,29 +13,22 @@ goal of reducing the number of vulnerabilities released over time.
 
 ## SAST coverage
 
-For each of the guidelines listed in this document, AppSec aims to have a SAST rule either in the form of a semgrep rule (or a RuboCop rule) that runs in the CI pipeline. Below is a table of all existing guidelines and their coverage status:
+For each of the vulnerabilities listed in this document, AppSec aims to have a SAST rule either in the form of a semgrep rule (or a RuboCop rule) that runs in the CI pipeline. Below is a table of all existing guidelines and their coverage status:
 
 | Guideline | Rule | Status |
 |---|---|---|
-| [Regular Expressions](#regular-expressions-guidelines)  | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/13) | ⏳ In progress |
-| [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | Pending  | ❌ |
+| [Regular Expressions](#regular-expressions-guidelines)  | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_regex.yml)  | ✅ |
+| [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_2.yml)  | ✅ |
 | [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
-| [XSS](#xss-guidelines) | Pending  | ❌ |
-| [Path traversal](#path-traversal-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_path_traversal.yml?ref_type=heads) | ✅ |
-| [Path traversal](#path-traversal-guidelines) (Go) | Pending  | ❌ |
-| [OS command injection](#os-command-injection-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_command_injection.yml?ref_type=heads) | ✅ |
-| [OS command injection](#os-command-injection-guidelines) (Go) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_dangerous_exec_command.yml?ref_type=heads) | ✅ |
-| [Insecure TLS ciphers](#tls-minimum-recommended-version) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_ciphers.yml?ref_type=heads)  | ✅ |
-| [Archive operations](#working-with-archive-files) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_archive_operations.yml?ref_type=heads)  | ✅ |
-| [Archive operations](#working-with-archive-files) (Go) | Pending  | ❌ |
-| [URL spoofing](#url-spoofing) | Pending  | ❌ |
-| [GitLab internal authorization](#gitlab-internal-authorization) | N/A  | N/A |
-| [Insecure metaprogramming](#insecure-metaprogramming-example) | N/A  | N/A |
-| [Time of check time of use](#time-of-check-to-time-of-use-bugs) | N/A  | N/A |
-| [Handling credentials](#handling-credentials) | N/A  | N/A |
-| [Local storage](#local-storage) | N/A  | N/A |
-| [Logging](#logging) | N/A  | N/A |
-| [Artifical Intelligence feature](#artificial-intelligence-ai-features) | N/A  | N/A |
+| [XSS](#xss-guidelines) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml)  | ✅ |
+| [Path traversal](#path-traversal-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_path_traversal.yml?ref_type=heads) | ✅ |
+| [Path traversal](#path-traversal-guidelines) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/39)  | ✅ |
+| [OS command injection](#os-command-injection-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_command_injection.yml?ref_type=heads) | ✅ |
+| [OS command injection](#os-command-injection-guidelines) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_dangerous_exec_command.yml?ref_type=heads) | ✅ |
+| [Insecure TLS ciphers](#tls-minimum-recommended-version) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_ciphers.yml?ref_type=heads)  | ✅ |
+| [Archive operations](#working-with-archive-files) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_archive_operations.yml?ref_type=heads)  | ✅ |
+| [Archive operations](#working-with-archive-files) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_insecure_archive_operations.yml)  | ✅ |
+| [URL spoofing](#url-spoofing) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_url_spoofing.yml)  | ✅ |
 | [Request Parameter Typing](#request-parameter-typing) | `StrongParams` RuboCop | ✅ |
 
 ## Process for creating new guidelines and accompanying rules
@@ -106,6 +99,12 @@ Some example of well implemented access controls and tests:
 1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
 **NB:** any input from development team is welcome, for example, about RuboCop rules.
+
+## CI/CD development
+
+When developing features that interact with or trigger pipelines, it's essential to consider the broader implications these actions have on the system's security and operational integrity.
+
+The [CI/CD development guidelines](../development/cicd/index.md) are essential reading material. No SAST or RuboCop rules enforce these guidelines.
 
 ## Regular Expressions guidelines
 
@@ -1388,7 +1387,7 @@ Add the new prefix to:
 - [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
 - The [GitLab Secret Detection gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-secret_detection)
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
-- [Tokinator](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
+- [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
 - [Token Overview](../security/token_overview.md) documentation
 
 ### Examples

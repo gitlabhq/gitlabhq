@@ -50,11 +50,11 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       allow(pipeline).to receive(:set_source_objects_counter)
       allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
       allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
-
-      pipeline.run
     end
 
     it 'imports issue into destination project' do
+      pipeline.run
+
       expect(project.issues.count).to eq(1)
 
       imported_issue = project.issues.last
@@ -69,10 +69,25 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       end
     end
 
+    context 'when an issue with the same IID exists' do
+      let!(:existing_issue) { create(:issue, project: project, iid: issue['iid'], description: 'old description') }
+
+      it 'deletes the existing record and imports a new record' do
+        expect { pipeline.run }.to change { Issue.exists?(existing_issue.id) }.from(true).to(false)
+
+        new_record = project.issues.last
+        expect(project.issues.count).to eq(1)
+        expect(new_record.iid).to eq(issue['iid'])
+        expect(new_record.description).to eq(issue['description'])
+      end
+    end
+
     context 'zoom meetings' do
       let(:issue_attributes) { { 'zoom_meetings' => [{ 'url' => 'https://zoom.us/j/123456789' }] } }
 
       it 'restores zoom meetings' do
+        pipeline.run
+
         expect(project.issues.last.zoom_meetings.first.url).to eq('https://zoom.us/j/123456789')
       end
     end
@@ -81,6 +96,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       let(:issue_attributes) { { 'sentry_issue' => { 'sentry_issue_identifier' => '1234567891' } } }
 
       it 'restores sentry issue information' do
+        pipeline.run
+
         expect(project.issues.last.sentry_issue.sentry_issue_identifier).to eq(1234567891)
       end
     end
@@ -89,6 +106,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       let(:issue_attributes) { { 'award_emoji' => [{ 'name' => 'musical_keyboard', 'user_id' => 22 }] } }
 
       it 'has award emoji on an issue' do
+        pipeline.run
+
         award_emoji = project.issues.last.award_emoji.first
 
         expect(award_emoji.name).to eq('musical_keyboard')
@@ -100,6 +119,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       let(:issue_attributes) { { 'state' => 'closed' } }
 
       it 'restores issue state' do
+        pipeline.run
+
         expect(project.issues.last.state).to eq('closed')
       end
     end
@@ -115,6 +136,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       end
 
       it 'restores issue labels' do
+        pipeline.run
+
         expect(project.issues.last.labels.pluck(:title)).to contain_exactly('imported label 1', 'imported label 2')
       end
     end
@@ -123,6 +146,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       let(:issue_attributes) { { 'milestone' => { 'title' => 'imported milestone' } } }
 
       it 'restores issue milestone' do
+        pipeline.run
+
         expect(project.issues.last.milestone.title).to eq('imported milestone')
       end
     end
@@ -131,6 +156,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       let(:issue_attributes) { { 'timelogs' => [{ 'time_spent' => 72000, 'spent_at' => '2019-12-27T00:00:00.000Z', 'user_id' => 22 }] } }
 
       it 'restores issue timelogs' do
+        pipeline.run
+
         timelog = project.issues.last.timelogs.first
 
         aggregate_failures do
@@ -163,6 +190,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       end
 
       it 'restores issue notes and their award emoji' do
+        pipeline.run
+
         note = project.issues.last.notes.first
 
         aggregate_failures do
@@ -186,7 +215,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
             ],
             'award_emoji' => [
               {
-                'name' => 'thumbsup',
+                'name' => AwardEmoji::THUMBS_UP,
                 'user_id' => 22
               }
             ]
@@ -194,13 +223,15 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
         end
 
         it 'saves properly' do
+          pipeline.run
+
           issue = project.issues.last
           notes = issue.notes
 
           aggregate_failures do
             expect(notes.count).to eq 1
             expect(notes[0].note).to include("Description changed")
-            expect(issue.award_emoji.first.name).to eq "thumbsup"
+            expect(issue.award_emoji.first.name).to eq AwardEmoji::THUMBS_UP
           end
         end
       end
@@ -210,6 +241,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       let(:issue_attributes) { { 'issue_assignees' => [{ 'user_id' => user.id }] } }
 
       it 'restores issue assignees' do
+        pipeline.run
+
         expect(project.issues.last.assignees).to contain_exactly(user)
       end
     end
@@ -254,6 +287,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       end
 
       it 'imports issues and maps user references to placeholder users', :aggregate_failures do
+        pipeline.run
+
         issue = project.issues.last
         event = issue.events.first
         note = issue.notes.first

@@ -17,7 +17,7 @@ and validate a GitLab Runner fleet hosted on Google Kubernetes Engine (GKE).
 The following diagram illustrates the path of your runner fleet implementation journey.
 The guide follows these steps:
 
-![Runner Fleet Steps Diagram](img/runner_fleet_steps_diagram.png)
+![Runner Fleet Steps Diagram](img/runner_fleet_steps_diagram_v17_5.png)
 
 You can use this framework to plan a runner deployment for a single group or a GitLab instance that serves your entire organization.
 
@@ -47,7 +47,7 @@ To assess expected CI/CD workloads:
 The CPU and RAM resource requirements vary depending on factors like the type of programming language or the type of CI/CD job (build, integration tests, unit tests, security scans). The following section describes a method to gather CI/CD job CPU and resource requirements. You can adopt and build on this approach for your own needs.
 
 For example, to run a CI/CD job similar to the one defined in the FastAPI project fork: [ra-group / fastapi · GitLab](https://gitlab.com/ra-group2/fastapi).
-The job in this example uses a Python image, downloads the project's requirements, and runs the existing unit tests. 
+The job in this example uses a Python image, downloads the project's requirements, and runs the existing unit tests.
 The `.gitlab-ci.yml` for the job is as follows:
 
 ```yaml
@@ -118,7 +118,7 @@ Complete the following steps to identify the compute and RAM resources needed:
    NOTE:
    In the example, the CI/CD job is short-lived, so the sleep between each container poll is set to one second. Adjust this value to better suit your needs.
 
-1. Analyze the `metrics.log` file to identify the peak usage of the test container. 
+1. Analyze the `metrics.log` file to identify the peak usage of the test container.
 
    In the example, the maximum CPU usage is `107.50%` and the maximum memory usage is `303.1Mi`.
 
@@ -146,7 +146,7 @@ Complete the following steps to identify the compute and RAM resources needed:
 
 ### Analyzing the metrics collected
 
-Based on the metrics collected, for this job profile, you can limit the Kubernetes executor job to 
+Based on the metrics collected, for this job profile, you can limit the Kubernetes executor job to
 `1 CPU` and `~304 Mi of Memory`. Even if this conclusion is accurate, it might not be practical for all use cases.
 
 If you use a cluster with a node pool of three `e2-standard-4` nodes to run jobs, the `1 CPU` limit allows only **12 jobs** to run simultaneously (an `e2-standard-4`  node has **4 vCPU** and **16 GB** of memory). Additional jobs wait for the running jobs to complete and free up the resources before starting.
@@ -198,7 +198,7 @@ In the runner fleet configuration example, there are a total of three runner con
 
 With the Kubernetes executor, you can use the Kubernetes scheduler and overwrite container resources.
 In theory, you can deploy a single GitLab Runner on a Kubernetes cluster with adequate resources. You
-can then overwrite container resources to select the appropriate compute type for each CI/CD job. 
+can then overwrite container resources to select the appropriate compute type for each CI/CD job.
 Implementing this pattern reduces the number of separate runner configurations you need to deploy and operate.
 
 ### Best practices
@@ -225,7 +225,7 @@ The following example uses GRIT to deploy the Google Kubernetes cluster and GitL
 
 To have the cluster and GitLab Runner well configured, consider the following information:
 
-- **How many job types do I need to cover?** This information comes from the access phase. The access phase aggregates metrics and identifies the number of resulting groups, considering organizational constraints. A **job type** is a collection of categorized jobs identified during the access phase. This categorization is based on the maximum resources needed by the job.
+- **How many job types do I need to cover?** This information comes from the assess phase. The assess phase aggregates metrics and identifies the number of resulting groups, considering organizational constraints. A **job type** is a collection of categorized jobs identified during the access phase. This categorization is based on the maximum resources needed by the job.
 - **How many GitLab Runner Managers do I need to run?** This information comes from the plan phase. If the organization manages projects separately, apply this framework to each project individually. This approach is relevant only when multiple job profiles are identified (for the entire organization or for a specific project), and they are all handled by an individual or a fleet of GitLab Runners. A basic configuration typically uses one GitLab Runner Manager per GKE cluster.
 - **What is the estimated max concurrent CI/CD jobs?** This information represents an estimate of the maximum number of concurrent CI/CD jobs that are run at any point in time. This information is needed when configuring the GitLab Runner Manager by providing how long it waits during the `Prepare` stage: job pod scheduling on a node with limited available resources.
 
@@ -299,7 +299,7 @@ In the configuration above:
 
 Here is an illustration of this configuration:
 
-![Illustration configuration Cluster](img/nodepool_illustration_example.png)
+![Illustration configuration Cluster](img/nodepool_illustration_example_v17_5.png)
 
 #### GitLab Runner GRIT configuration
 

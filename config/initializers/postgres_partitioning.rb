@@ -18,12 +18,14 @@ Gitlab::Database::Partitioning.register_models(
     Ci::BuildExecutionConfig,
     Ci::BuildName,
     Ci::BuildTag,
+    Ci::BuildTraceMetadata,
     Ci::BuildSource,
     Ci::Catalog::Resources::Components::Usage,
     Ci::Catalog::Resources::SyncEvent,
     Ci::FinishedPipelineChSyncEvent,
     Ci::JobAnnotation,
     Ci::JobArtifact,
+    Ci::Pipeline,
     Ci::PipelineConfig,
     Ci::PipelineVariable,
     Ci::RunnerManagerBuild,
@@ -99,23 +101,6 @@ Gitlab::Database::Partitioning.register_tables(
       limit_connection_names: %i[main],
       table_name: 'merge_request_diff_files_99208b8fac',
       partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
-    }
-  ]
-)
-
-Gitlab::Database::Partitioning.register_tables(
-  [
-    {
-      limit_connection_names: %i[ci],
-      table_name: 'p_ci_build_trace_metadata',
-      partitioned_column: :partition_id,
-      strategy: :ci_sliding_list,
-      next_partition_if: ->(latest_partition) {
-                           ::Feature.enabled?(:partition_ci_build_trace_metadata, :instance) &&
-                            latest_partition &&
-                            [100, 101].include?(latest_partition.values.max)
-                         },
-      detach_partition_if: proc { false }
     }
   ]
 )

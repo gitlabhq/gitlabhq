@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink, GlFormCheckbox, GlFormSelect, GlToggle } from '@gitlab/ui';
+import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/components/secret_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
@@ -113,12 +114,13 @@ export default {
     ProjectSettingRow,
     CascadingLockIcon,
     GlButton,
-    GlIcon,
     GlSprintf,
     GlLink,
     GlFormCheckbox,
+    GlFormSelect,
     GlToggle,
     ConfirmDanger,
+    SecretManagerSettings,
     OtherProjectSettings: () =>
       import(
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
@@ -133,6 +135,11 @@ export default {
       default: false,
     },
     canAddCatalogResource: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canManageSecretManager: {
       type: Boolean,
       required: false,
       default: false,
@@ -627,39 +634,31 @@ export default {
         "
       >
         <div class="project-feature-controls gl-mx-0 gl-my-3 gl-flex gl-items-center">
-          <div class="select-wrapper gl-grow">
-            <select
-              v-model="visibilityLevel"
-              :disabled="!canChangeVisibilityLevel"
-              name="project[visibility_level]"
-              class="form-control select-control"
-              data-testid="project-visibility-dropdown"
+          <gl-form-select
+            v-model="visibilityLevel"
+            :disabled="!canChangeVisibilityLevel"
+            name="project[visibility_level]"
+            data-testid="project-visibility-dropdown"
+          >
+            <option
+              :value="$options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
+              :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_PRIVATE_INTEGER)"
             >
-              <option
-                :value="$options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
-                :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_PRIVATE_INTEGER)"
-              >
-                {{ s__('ProjectSettings|Private') }}
-              </option>
-              <option
-                :value="$options.VISIBILITY_LEVEL_INTERNAL_INTEGER"
-                :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_INTERNAL_INTEGER)"
-              >
-                {{ s__('ProjectSettings|Internal') }}
-              </option>
-              <option
-                :value="$options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
-                :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_PUBLIC_INTEGER)"
-              >
-                {{ s__('ProjectSettings|Public') }}
-              </option>
-            </select>
-            <gl-icon
-              name="chevron-down"
-              data-hidden="true"
-              class="gl-absolute gl-right-3 gl-top-3 gl-text-gray-500"
-            />
-          </div>
+              {{ s__('ProjectSettings|Private') }}
+            </option>
+            <option
+              :value="$options.VISIBILITY_LEVEL_INTERNAL_INTEGER"
+              :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_INTERNAL_INTEGER)"
+            >
+              {{ s__('ProjectSettings|Internal') }}
+            </option>
+            <option
+              :value="$options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
+              :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_PUBLIC_INTEGER)"
+            >
+              {{ s__('ProjectSettings|Public') }}
+            </option>
+          </gl-form-select>
         </div>
         <span
           v-if="!visibilityAllowed(visibilityLevel)"
@@ -710,7 +709,7 @@ export default {
       </project-setting-row>
     </div>
     <div
-      class="gl-mb-5 gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-3"
+      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="issues-settings"
@@ -730,6 +729,7 @@ export default {
         />
         <project-setting-row
           v-if="requestCveAvailable"
+          class="gl-mt-4 gl-pl-5 md:gl-pl-7"
           :help-path="cveIdRequestHelpPath"
           :help-text="$options.i18n.cve_request_toggle_label"
         >
@@ -756,7 +756,7 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-5 md:gl-pl-7">
+      <div class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7">
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"
@@ -845,7 +845,7 @@ export default {
           s__('ProjectSettings|Every project can have its own space to store its Docker images')
         "
       >
-        <div v-if="showContainerRegistryPublicNote" class="text-muted">
+        <div v-if="showContainerRegistryPublicNote" class="gl-text-subtle">
           <gl-sprintf
             :message="
               s__(
@@ -1170,6 +1170,11 @@ export default {
     </project-setting-row>
     <ci-catalog-settings
       v-if="canAddCatalogResource"
+      class="gl-mb-5"
+      :full-path="confirmationPhrase"
+    />
+    <secret-manager-settings
+      v-if="canManageSecretManager"
       class="gl-mb-5"
       :full-path="confirmationPhrase"
     />

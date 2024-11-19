@@ -51,8 +51,8 @@ A user is not counted as a billable user if:
 - They are [deactivated](../../administration/moderate_users.md#deactivate-a-user) or
   [blocked](../../administration/moderate_users.md#block-a-user).
 - They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
-- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
-- They have only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
+- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions.
+- They have only the [Guest role on an Ultimate subscription](#free-guest-users).
 - They do not have project or group memberships on an Ultimate subscription.
 - The account is a GitLab-created account:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
@@ -222,6 +222,8 @@ If your subscription was activated with an activation code, the additional seats
 your instance immediately. If you're using a license file, you receive an updated file.
 To add the seats, [add the license file](../../administration/license_file.md)
 to your instance.
+
+If you purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces), contact the reseller to add more seats.
 
 ## Subscription data synchronization
 
@@ -412,6 +414,8 @@ you want to either:
 
 Before your subscription renewal date, you should review your account.
 
+Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need help accessing the Customers Portal, changing the contact person who manages your subscription, or renewing your subscription.
+
 ### Review your account
 
 You should regularly review your billing account settings and purchasing information.
@@ -437,10 +441,6 @@ For more information, see the documentation on:
 - [User statistics](../../administration/admin_area.md#users-statistics).
 - [Managing users and subscription seats](#manage-users-and-subscription-seats).
 
-Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-if you need assistance accessing the Customers Portal or if you need to change
-the contact person who manages your subscription.
-
 ### Renew for fewer seats
 
 If you want to renew with fewer seats, you can do either of the following:
@@ -452,7 +452,7 @@ If you want to renew with fewer seats, you can do either of the following:
 
 ### Renew subscription manually
 
-30 days before a subscription expires, a banner with the subscription expiry date displays for
+15 days before a subscription expires, a banner with the subscription expiry date displays for
 administrators in the GitLab user interface.
 
 You cannot manually renew your subscription more than 15 days before the subscription
@@ -539,10 +539,6 @@ You can use the Customers Portal to enable or disable automatic subscription ren
      1. Optional: In **Would you like to add anything?**, enter any relevant information.
      1. Select **Cancel subscription**.
 
-If you have difficulty during the renewal process, contact the
-[Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-for assistance.
-
 ### Manage renewal invoice
 
 An invoice is generated for your renewal. To view or download this renewal invoice,
@@ -553,10 +549,6 @@ the card is charged for the invoice amount.
 
 If we are unable to process a payment or the auto-renewal fails for any other reason,
 you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
-
-If you have difficulty during the renewal process, contact our
-[support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-for help.
 
 ## Upgrade your subscription tier
 

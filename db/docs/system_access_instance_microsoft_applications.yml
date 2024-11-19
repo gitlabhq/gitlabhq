@@ -1,3 +1,4 @@
+---
 table_name: system_access_instance_microsoft_applications
 classes:
 - SystemAccess::InstanceMicrosoftApplication

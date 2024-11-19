@@ -1,7 +1,9 @@
-import { mount } from '@vue/test-utils';
 import { pipelines } from 'test_fixtures/pipelines/pipelines.json';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import DownstreamPipelines from '~/ci/pipeline_mini_graph/downstream_pipelines.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import PipelineStages from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_stages.vue';
+import PipelineStages from '~/ci/pipeline_mini_graph/pipeline_stages.vue';
 import mockLinkedPipelines from '../legacy_linked_pipelines_mock_data';
 
 const mockStages = pipelines[0].details.stages;
@@ -10,17 +12,15 @@ describe('Legacy Pipeline Mini Graph', () => {
   let wrapper;
 
   const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
+  const findDownstream = () => wrapper.findComponent(DownstreamPipelines);
   const findPipelineStages = () => wrapper.findComponent(PipelineStages);
+  const findUpstream = () => wrapper.findComponent(CiIcon);
 
-  const findLinkedPipelineUpstream = () =>
-    wrapper.findComponent('[data-testid="pipeline-mini-graph-upstream"]');
-  const findLinkedPipelineDownstream = () =>
-    wrapper.findComponent('[data-testid="pipeline-mini-graph-downstream"]');
   const findDownstreamArrowIcon = () => wrapper.find('[data-testid="downstream-arrow-icon"]');
   const findUpstreamArrowIcon = () => wrapper.find('[data-testid="upstream-arrow-icon"]');
 
   const createComponent = (props = {}) => {
-    wrapper = mount(LegacyPipelineMiniGraph, {
+    wrapper = shallowMountExtended(LegacyPipelineMiniGraph, {
       propsData: {
         stages: mockStages,
         ...props,
@@ -43,14 +43,13 @@ describe('Legacy Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        updateDropdown: false,
         upstreamPipeline: undefined,
       });
     });
 
     it('should have no linked pipelines', () => {
-      expect(findLinkedPipelineDownstream().exists()).toBe(false);
-      expect(findLinkedPipelineUpstream().exists()).toBe(false);
+      expect(findDownstream().exists()).toBe(false);
+      expect(findUpstream().exists()).toBe(false);
     });
 
     it('should not render arrow icons', () => {
@@ -72,14 +71,13 @@ describe('Legacy Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        updateDropdown: false,
         upstreamPipeline: expect.any(Object),
       });
     });
 
     it('should render the upstream linked pipelines mini list only', () => {
-      expect(findLinkedPipelineUpstream().exists()).toBe(true);
-      expect(findLinkedPipelineDownstream().exists()).toBe(false);
+      expect(findUpstream().exists()).toBe(true);
+      expect(findDownstream().exists()).toBe(false);
     });
 
     it('should render an upstream arrow icon only', () => {
@@ -103,14 +101,13 @@ describe('Legacy Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: 'my/pipeline/path',
         stages: expect.any(Array),
-        updateDropdown: false,
         upstreamPipeline: undefined,
       });
     });
 
     it('should render the downstream linked pipelines mini list only', () => {
-      expect(findLinkedPipelineDownstream().exists()).toBe(true);
-      expect(findLinkedPipelineUpstream().exists()).toBe(false);
+      expect(findDownstream().exists()).toBe(true);
+      expect(findUpstream().exists()).toBe(false);
     });
 
     it('should render a downstream arrow icon only', () => {

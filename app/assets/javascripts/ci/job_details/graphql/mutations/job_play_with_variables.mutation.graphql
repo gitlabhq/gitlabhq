@@ -1,6 +1,6 @@
 #import "~/ci/job_details/graphql/fragments/ci_job.fragment.graphql"
 
-mutation playJobWithVariables($id: CiBuildID!, $variables: [CiVariableInput!]) {
+mutation playJobWithVariables($id: CiProcessableID!, $variables: [CiVariableInput!]) {
   jobPlay(input: { id: $id, variables: $variables }) {
     job {
       ...BaseCiJob

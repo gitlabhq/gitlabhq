@@ -23,7 +23,7 @@ import {
   INVALID_FEEDBACK_MESSAGE_DEFAULT,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
-import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import ContentTransition from '~/invite_members/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
@@ -874,6 +874,27 @@ describe('InviteMembersModal', () => {
         await waitForPromises();
 
         expect(findSeatOveragesAlert().exists()).toBe(false);
+      });
+
+      describe('when hasBsoEnabled is true', () => {
+        beforeEach(() => {
+          createInviteMembersToGroupWrapper(
+            {},
+            {},
+            {},
+            { addSeatsHref: 'url_to_add_seats', hasBsoEnabled: true },
+          );
+        });
+
+        it('shows the seat limit reached label for the primary button', async () => {
+          await triggerMembersTokenSelect([user1]);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.ERROR_SEAT_LIMIT_REACHED);
+          clickInviteButton();
+          await waitForPromises();
+
+          expect(findSeatOveragesAlert().exists()).toBe(true);
+          expect(findSeatOveragesAlert().props('primaryButtonText')).toBe('Learn how to add seats');
+        });
       });
     });
   });

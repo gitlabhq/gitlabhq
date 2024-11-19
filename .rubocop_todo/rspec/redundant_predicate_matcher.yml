@@ -1,0 +1,25 @@
+---
+# Cop supports --autocorrect.
+RSpec/RedundantPredicateMatcher:
+  Exclude:
+    - 'ee/spec/lib/gitlab/ci/templates/api_fuzzing_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/api_fuzzing_latest_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/api_security_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/api_security_latest_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/dast_api_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/dast_api_latest_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/dast_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/templates/dast_latest_gitlab_ci_yaml_spec.rb'
+    - 'ee/spec/mailers/emails/epics_spec.rb'
+    - 'ee/spec/services/geo/container_repository_registry_removal_service_spec.rb'
+    - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'
+    - 'spec/initializers/8_devise_spec.rb'
+    - 'spec/lib/gitlab/auth/saml/config_spec.rb'
+    - 'spec/lib/gitlab/config/entry/configurable_spec.rb'
+    - 'spec/lib/gitlab/external_authorization/config_spec.rb'
+    - 'spec/lib/gitlab/safe_device_detector_spec.rb'
+    - 'spec/lib/gitlab/url_blockers/domain_allowlist_entry_spec.rb'
+    - 'spec/lib/gitlab/url_blockers/ip_allowlist_entry_spec.rb'
+    - 'spec/mailers/emails/admin_notification_spec.rb'
+    - 'spec/mailers/emails/issues_spec.rb'
+    - 'spec/models/integrations/field_spec.rb'

@@ -75,14 +75,4 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
       it { subject.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
     end
   end
-
-  context "when feature flag ':packages_protected_packages' disabled" do
-    before do
-      stub_feature_flags(packages_protected_packages: false)
-    end
-
-    it_behaves_like 'an erroneous response'
-
-    it { subject.tap { expect_graphql_errors_to_include(/'packages_protected_packages' feature flag is disabled/) } }
-  end
 end

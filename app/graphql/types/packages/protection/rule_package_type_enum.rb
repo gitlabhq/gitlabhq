@@ -7,12 +7,21 @@ module Types
         graphql_name 'PackagesProtectionRulePackageType'
         description 'Package type of a package protection rule resource'
 
-        ::Packages::Protection::Rule.package_types.each_key do |package_type|
-          value package_type.upcase,
-            value: package_type,
-            alpha: { milestone: '16.5' },
-            description: "Packages of the #{package_type} format"
-        end
+        value 'CONAN',
+          value: 'conan',
+          experiment: { milestone: '17.6' },
+          description: 'Packages of the Conan format. ' \
+            'Available only when feature flag `packages_protected_packages_conan` is enabled.'
+
+        value 'NPM',
+          value: 'npm',
+          description: 'Packages of the npm format.'
+
+        value 'PYPI',
+          value: 'pypi',
+          experiment: { milestone: '17.6' },
+          description: 'Packages of the PyPI format. ' \
+            'Available only when feature flag `packages_protected_packages_pypi` is enabled.'
       end
     end
   end

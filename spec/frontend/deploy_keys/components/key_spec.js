@@ -57,7 +57,7 @@ describe('Deploy keys key', () => {
     it('renders the keys title', async () => {
       await createComponent({ deployKey });
 
-      expect(findTextAndTrim('.title')).toContain('My title');
+      expect(findTextAndTrim('.title')).toContain(deployKey.title);
     });
 
     it('renders human friendly formatted created date', async () => {

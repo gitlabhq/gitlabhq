@@ -2,7 +2,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
-import TextPresenter from '~/glql/components/presenters/text.vue';
+import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import Presenter from '~/glql/core/presenter';
 import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
@@ -35,8 +35,8 @@ describe('ListPresenter', () => {
     const userPresenter2 = listItem2.findComponent(UserPresenter);
     const statePresenter1 = listItem1.findComponent(StatePresenter);
     const statePresenter2 = listItem2.findComponent(StatePresenter);
-    const textPresenter1 = listItem1.findComponent(TextPresenter);
-    const textPresenter2 = listItem2.findComponent(TextPresenter);
+    const htmlPresenter1 = listItem1.findComponent(HtmlPresenter);
+    const htmlPresenter2 = listItem2.findComponent(HtmlPresenter);
 
     expect(issuePresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0]);
     expect(issuePresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1]);
@@ -44,15 +44,15 @@ describe('ListPresenter', () => {
     expect(userPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].author);
     expect(statePresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].state);
     expect(statePresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].state);
-    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
-    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
+    expect(htmlPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
+    expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
-    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
+    expect(htmlPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
+    expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(listItem1.text()).toEqual('Issue 1 (#1) - @foobar -  Open - This is a description');
+    expect(listItem1.text()).toEqual('Issue 1 (#1) · @foobar ·  Open · This is a description');
     expect(listItem2.text()).toEqual(
-      'Issue 2 (#2 - closed) - @janedoe -  Closed - This is another description',
+      'Issue 2 (#2 - closed) · @janedoe ·  Closed · This is another description',
     );
   });
 

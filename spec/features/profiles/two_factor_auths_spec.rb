@@ -97,6 +97,22 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
           stub_application_setting(require_two_factor_authentication: true)
         end
 
+        context 'when a grace period is set' do
+          before do
+            stub_application_setting(two_factor_grace_period: 24.hours)
+          end
+
+          it 'allows the user to skip enabling within the grace period' do
+            visit root_path
+
+            expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
+
+            click_link _('Configure it later')
+
+            expect(page).to have_current_path(root_path)
+          end
+        end
+
         context 'when invalid pin is provided' do
           let_it_be(:user) { create(:omniauth_user) }
 

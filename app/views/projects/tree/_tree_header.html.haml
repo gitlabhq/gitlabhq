@@ -1,5 +1,3 @@
-- add_page_specific_style 'page_bundles/projects'
-
 .tree-ref-container.gl-flex.gl-flex-wrap.gl-gap-2.mb-2.mb-md-0
   .tree-ref-holder.gl-max-w-26{ data: { testid: 'ref-dropdown-container' } }
     #js-tree-ref-switcher{ data: { project_id: @project.id, ref_type: @ref_type.to_s, project_root_path: project_path(@project) } }
@@ -12,7 +10,8 @@
     = render_if_exists 'projects/tree/lock_link'
     = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
 
-    #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
+    .gl-block.sm:gl-hidden.gl-w-full
+      #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil, css_classes: 'gl-w-full sm:gl-w-auto'

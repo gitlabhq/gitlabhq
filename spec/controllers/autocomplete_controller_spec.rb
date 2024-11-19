@@ -344,8 +344,8 @@ RSpec.describe AutocompleteController do
 
   context 'GET award_emojis', feature_category: :team_planning do
     let(:user2) { create(:user) }
-    let!(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: 'thumbsup') }
-    let!(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: 'thumbsdown') }
+    let!(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: AwardEmoji::THUMBS_UP) }
+    let!(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: AwardEmoji::THUMBS_DOWN) }
     let!(:award_emoji3) { create_list(:award_emoji, 3, user: user, name: 'star') }
     let!(:award_emoji4) { create_list(:award_emoji, 1, user: user, name: 'tea') }
 
@@ -373,9 +373,9 @@ RSpec.describe AutocompleteController do
 
         expect(json_response.count).to eq 4
         expect(json_response[0]).to match('name' => 'star')
-        expect(json_response[1]).to match('name' => 'thumbsup')
+        expect(json_response[1]).to match('name' => AwardEmoji::THUMBS_UP)
         expect(json_response[2]).to match('name' => 'tea')
-        expect(json_response[3]).to match('name' => 'thumbsdown')
+        expect(json_response[3]).to match('name' => AwardEmoji::THUMBS_DOWN)
       end
     end
   end

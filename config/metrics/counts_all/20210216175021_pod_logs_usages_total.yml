@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.pod_logs_usages_total
 description: Count the total number of log views
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: removed
 milestone_removed: '14.0'
@@ -11,7 +11,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

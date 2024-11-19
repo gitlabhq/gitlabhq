@@ -76,6 +76,7 @@ input ImportRequestInput {
   targetNamespace: String!
   newName: String!
   migrateProjects: Boolean!
+  migrateMemberships: Boolean!
 }
 
 extend type Mutation {

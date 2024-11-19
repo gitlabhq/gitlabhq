@@ -32,8 +32,9 @@ module AccessTokensActions
 
     if token_response.success?
       @resource_access_token = token_response.payload[:access_token]
+      tokens, size = active_access_tokens
       render json: { new_token: @resource_access_token.token,
-                     active_access_tokens: active_access_tokens }, status: :ok
+                     active_access_tokens: tokens, total: size }, status: :ok
     else
       render json: { errors: token_response.errors }, status: :unprocessable_entity
     end
@@ -72,7 +73,7 @@ module AccessTokensActions
     resource.members.load
 
     @scopes = Gitlab::Auth.available_scopes_for(resource)
-    @active_access_tokens = active_access_tokens
+    @active_access_tokens, @active_access_tokens_size = active_access_tokens
     if Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor) # rubocop:disable Style/GuardClause
       @inactive_access_tokens = inactive_access_tokens
     end

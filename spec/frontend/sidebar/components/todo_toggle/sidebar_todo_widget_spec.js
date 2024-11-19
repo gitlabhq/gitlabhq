@@ -103,10 +103,10 @@ describe('Sidebar Todo Widget', () => {
     });
 
     it('sets default tooltip title', () => {
-      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Add a to do');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Add a to-do item');
     });
 
-    it('when user has a to do', async () => {
+    it('when user has a to-do item', async () => {
       createComponent({
         todosQueryHandler: jest.fn().mockResolvedValue(todosResponse),
       });
@@ -159,59 +159,32 @@ describe('Sidebar Todo Widget', () => {
         mergeRequestTodoSubscription,
         subscriptionHandler,
       );
-    });
 
-    describe('realtimeIssuableTodo feature flag is enabled', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            glFeatures: { realtimeIssuableTodo: true },
-          },
-          propsData: { issuableType: 'merge_request' },
-          apolloProvider,
-        });
-
-        return nextTick();
+      createComponent({
+        propsData: { issuableType: 'merge_request' },
+        apolloProvider,
       });
 
-      it('updates todo button to have a new todo when subscription receives data', async () => {
-        mockSubscription.next({
-          data: {
-            issuableTodoUpdated: {
-              __typename: 'MergeRequest',
-              id: 'gid://gitlab/MergeRequest/1',
-              currentUserTodos: {
-                nodes: [{ id: 1 }],
-              },
+      return nextTick();
+    });
+
+    it('updates todo button to have a new todo when subscription receives data', async () => {
+      mockSubscription.next({
+        data: {
+          issuableTodoUpdated: {
+            __typename: 'MergeRequest',
+            id: 'gid://gitlab/MergeRequest/1',
+            currentUserTodos: {
+              nodes: [{ id: 1 }],
             },
           },
-        });
-
-        await nextTick();
-
-        expect(subscriptionHandler).toHaveBeenCalled();
-        expect(findTodoButton().props('isTodo')).toBe(true);
-      });
-    });
-
-    describe('realtimeIssuableTodo feature flag is disabled', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            glFeatures: { realtimeIssuableTodo: false },
-          },
-          propsData: { issuableType: 'merge_request' },
-          apolloProvider,
-        });
-
-        return nextTick();
+        },
       });
 
-      it('does not subscribe to more', async () => {
-        await nextTick();
+      await nextTick();
 
-        expect(subscriptionHandler).not.toHaveBeenCalled();
-      });
+      expect(subscriptionHandler).toHaveBeenCalled();
+      expect(findTodoButton().props('isTodo')).toBe(true);
     });
   });
 });

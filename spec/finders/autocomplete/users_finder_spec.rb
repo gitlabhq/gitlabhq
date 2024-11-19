@@ -9,6 +9,8 @@ RSpec.describe Autocomplete::UsersFinder do
   describe '#execute' do
     let_it_be(:user1) { create(:user, name: 'zzzzzname', username: 'johndoe') }
     let_it_be(:blocked_user) { create(:user, :blocked, username: 'blocked_user') }
+    let_it_be(:import_user) { create(:user, :import_user, username: 'import_user') }
+    let_it_be(:placeholder_user) { create(:user, :placeholder, username: 'placeholder_user') }
     let_it_be(:banned_user) { create(:user, :banned, username: 'banned_user') }
     let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
@@ -47,6 +49,18 @@ RSpec.describe Autocomplete::UsersFinder do
 
         context 'and author is banned' do
           let(:params) { { author_id: banned_user.id } }
+
+          it { is_expected.to match_array([project.first_owner]) }
+        end
+
+        context 'and author is a placeholder user' do
+          let(:params) { { author_id: placeholder_user.id } }
+
+          it { is_expected.to match_array([project.first_owner]) }
+        end
+
+        context 'and author is a import_user' do
+          let(:params) { { author_id: import_user.id } }
 
           it { is_expected.to match_array([project.first_owner]) }
         end

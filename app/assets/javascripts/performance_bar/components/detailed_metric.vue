@@ -187,7 +187,7 @@ export default {
                 <div
                   v-for="(key, keyIndex) in keys"
                   :key="key"
-                  class="text-break-word"
+                  class="gl-break-all"
                   :class="{ 'mb-3 gl-font-semibold': keyIndex == 0 }"
                 >
                   {{ item[key] }}

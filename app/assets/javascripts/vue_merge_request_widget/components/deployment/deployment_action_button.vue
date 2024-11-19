@@ -66,7 +66,7 @@ export default {
     :aria-label="buttonTitle"
     :loading="isLoading"
     :disabled="isActionInProgress"
-    :class="`gl-ml-3 ${containerClasses}`"
+    :class="containerClasses"
     :icon="icon"
     @click="$emit('click')"
   >
@@ -81,7 +81,7 @@ export default {
     :aria-label="buttonTitle"
     :loading="isLoading"
     :disabled="isActionInProgress"
-    :class="`gl-ml-3 ${containerClasses}`"
+    :class="containerClasses"
     :icon="icon"
     @click="$emit('click')"
   >

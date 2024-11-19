@@ -4,9 +4,9 @@
 
 = render ::Layouts::PageHeadingComponent.new(_('Projects')) do |c|
   - c.with_actions do
-    = link_to _("Explore projects"), starred_explore_projects_path
+    = render Pajamas::ButtonComponent.new(href: starred_explore_projects_path, variant: :link, button_options: { class: 'gl-mr-2' }) do
+      = _("Explore projects")
+
     - if current_user.can_create_project?
       = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { testid: 'new-project-button' } }) do
         = _("New project")
-
-= render 'dashboard/projects_nav'

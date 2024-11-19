@@ -19,7 +19,32 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
     project.add_maintainer(user)
   end
 
-  context 'when there is active pipeline for merge request' do
+  shared_examples 'Set to auto-merge activator' do
+    it 'activates auto-merge feature' do
+      visit project_merge_request_path(project, merge_request)
+
+      expect(page).to have_content 'Set to auto-merge'
+      click_button "Set to auto-merge"
+      wait_for_requests
+
+      expect(page).to have_content "Set by #{user.name} to be merged automatically when all merge checks pass"
+      expect(page).to have_content "Source branch will not be deleted"
+      expect(page).to have_selector ".js-cancel-auto-merge"
+      expect(page).to have_content(/enabled an automatic merge when all merge checks for \h{8} pass/i)
+    end
+  end
+
+  shared_examples 'immediate merge' do
+    it 'can be merged' do
+      visit project_merge_request_path(project, merge_request)
+
+      wait_for_requests
+      expect(page).not_to have_content 'Set to auto-merge'
+      expect(page).to have_button 'Merge'
+    end
+  end
+
+  context 'when there is an active pipeline' do
     before do
       create(:ci_build, pipeline: pipeline)
 
@@ -49,47 +74,107 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
       expect(page).to have_content "Source branch will be deleted"
     end
 
-    describe 'setting to auto-merge true' do
-      shared_examples 'Set to auto-merge activator' do
-        it 'activates auto-merge feature' do
-          expect(page).to have_content 'Set to auto-merge'
-          click_button "Set to auto-merge"
-          wait_for_requests
+    context 'when it allows enabling after it was previously canceled' do
+      before do
+        click_button "Set to auto-merge"
 
-          expect(page).to have_content "Set by #{user.name} to be merged automatically when all merge checks pass"
-          expect(page).to have_content "Source branch will not be deleted"
-          expect(page).to have_selector ".js-cancel-auto-merge"
-          expect(page).to have_content(/enabled an automatic merge when all merge checks for \h{8} pass/i)
-        end
+        wait_for_requests
+
+        click_button "Cancel auto-merge"
+
+        wait_for_requests
       end
 
-      context "when enabled immediately" do
-        it_behaves_like 'Set to auto-merge activator'
+      it_behaves_like 'Set to auto-merge activator'
+    end
+
+    context 'when pipeline must succeed setting is true' do
+      before do
+        project.update!(only_allow_merge_if_pipeline_succeeds: true)
       end
 
-      context 'when enabled after it was previously canceled' do
+      it_behaves_like 'Set to auto-merge activator'
+    end
+
+    context 'when pipeline must succeed setting is false' do
+      before do
+        project.update!(only_allow_merge_if_pipeline_succeeds: false)
+      end
+
+      it_behaves_like 'Set to auto-merge activator'
+    end
+  end
+
+  context 'when there is a skipped pipeline' do
+    let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :skipped, merge_request: merge_request) }
+
+    before do
+      create(:ci_build, :skipped, pipeline: pipeline)
+      merge_request.update_head_pipeline
+
+      sign_in(user)
+    end
+
+    context 'when skipped pipeline is considered success' do
+      before do
+        project.update!(allow_merge_on_skipped_pipeline: true)
+      end
+
+      it_behaves_like 'immediate merge'
+    end
+
+    context 'when skipped pipeline is not considered success' do
+      before do
+        project.update!(allow_merge_on_skipped_pipeline: false)
+      end
+
+      context 'when pipeline must succeed setting is true' do
         before do
-          click_button "Set to auto-merge"
-
-          wait_for_requests
-
-          click_button "Cancel auto-merge"
-
-          wait_for_requests
+          project.update!(only_allow_merge_if_pipeline_succeeds: true)
         end
 
         it_behaves_like 'Set to auto-merge activator'
+      end
+
+      context 'when pipeline must succeed setting is false' do
+        before do
+          project.update!(only_allow_merge_if_pipeline_succeeds: false)
+        end
+
+        it_behaves_like 'immediate merge'
       end
     end
   end
 
-  context 'when there is no active pipeline' do
+  context 'when the pipeline is success' do
+    let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :success, merge_request: merge_request) }
+
     before do
-      sign_in user
-      visit project_merge_request_path(project, merge_request.reload)
+      create(:ci_build, :success, pipeline: pipeline)
+      merge_request.update_head_pipeline
+
+      sign_in(user)
     end
 
-    it 'does not allow to set to auto-merge' do
+    context 'when other checks pass' do
+      it_behaves_like 'immediate merge'
+    end
+
+    context 'when other checks do not pass' do
+      before do
+        merge_request.update!(title: "Draft: 111")
+      end
+
+      it_behaves_like 'Set to auto-merge activator'
+    end
+  end
+
+  context 'when there is no pipeline' do
+    before do
+      sign_in user
+    end
+
+    it 'allows setting to auto merge' do
       expect(page).not_to have_link 'Set to auto-merge'
     end
   end

@@ -461,18 +461,16 @@ The following code snippet is a good example of an icon with a tooltip.
 
 - It is automatically focusable, as it is a button.
 - It is given an accessible name with `aria-label`, as it is a button with no text.
-- We can use the `gl-hover-bg-transparent!` class if we don't want the button's background to become gray on hover.
-- We can use the `gl-p-0!` class to remove the button padding, if needed.
 
 ```html
-<gl-button
+<button
   v-gl-tooltip
-  class="gl-hover-bg-transparent! gl-p-0!"
-  icon="warning"
-  category="tertiary"
+  class="gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0"
   :title="tooltipText"
   :aria-label="__('Warning')"
-/>
+>
+  <gl-icon name="warning" />
+</button>
 ```
 
 ## Hiding elements

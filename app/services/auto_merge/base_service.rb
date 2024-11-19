@@ -12,7 +12,7 @@ module AutoMerge
       end
 
       notify(merge_request)
-      AutoMergeProcessWorker.perform_async(merge_request.id)
+      AutoMergeProcessWorker.perform_async({ 'merge_request_id' => merge_request.id })
 
       strategy.to_sym
     rescue StandardError => e

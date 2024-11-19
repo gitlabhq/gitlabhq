@@ -7,7 +7,9 @@ class AddIndexToCiBuildTraceMetadata < Gitlab::Database::Migration[2.2]
   TABLE_NAME = :ci_build_trace_metadata
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index(TABLE_NAME, [:trace_artifact_id, :partition_id], name: INDEX_NAME)
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

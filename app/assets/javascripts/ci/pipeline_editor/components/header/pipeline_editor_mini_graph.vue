@@ -65,11 +65,12 @@ export default {
       }
 
       return stages.map(({ node }) => {
-        const { name, detailedStatus } = node;
+        const { id, detailedStatus, name } = node;
         return {
           // TODO: fetch dropdown_path from graphql when available
           // see https://gitlab.com/gitlab-org/gitlab/-/issues/342585
           dropdown_path: `${this.pipelinePath}/stage.json?stage=${name}`,
+          id,
           name,
           path: `${this.pipelinePath}#${name}`,
           status: {

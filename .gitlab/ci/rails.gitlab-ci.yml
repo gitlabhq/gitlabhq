@@ -47,6 +47,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/repositories/
       - ${TMP_TEST_FOLDER}/second_storage/
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
+      - ${TMP_TEST_FOLDER}/openbao/bin/
       - log/*.log
     when: always
 
@@ -194,6 +195,13 @@ rspec unit pg14 single-db-ci-connection:
     - .rspec-unit-parallel
     - .rails:rules:single-db-ci-connection
 
+rspec unit pg14 single-db-sec-connection:
+  extends:
+    - rspec unit pg14
+    - .single-db-sec-connection-rspec
+    - .rspec-unit-parallel
+    - .rails:rules:single-db-sec-connection
+
 rspec unit pg14 praefect:
   extends:
     - rspec unit pg14
@@ -227,6 +235,13 @@ rspec integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-integration-parallel
     - .rails:rules:single-db-ci-connection
+
+rspec integration pg14 single-db-sec-connection:
+  extends:
+    - rspec integration pg14
+    - .single-db-sec-connection-rspec
+    - .rspec-integration-parallel
+    - .rails:rules:single-db-sec-connection
 
 rspec integration pg14 praefect:
   extends:
@@ -263,6 +278,15 @@ rspec system pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-system-parallel
     - .rails:rules:single-db-ci-connection
+
+    - .rails:rules:single-db
+
+rspec system pg14 single-db-sec-connection:
+  extends:
+    - rspec system pg14
+    - .single-db-sec-connection-rspec
+    - .rspec-system-parallel
+    - .rails:rules:single-db-sec-connection
 
 rspec system pg14 praefect:
   extends:
@@ -424,7 +448,7 @@ rspec:artifact-collector part-a:
   needs:
     - job: rspec system pg14  # 32 jobs
       optional: true
-    - job: rspec background_migration pg14  # 10 jobs
+    - job: rspec background_migration pg14  # 17 jobs
       optional: true
 
 rspec:artifact-collector part-b:
@@ -817,6 +841,18 @@ rspec-ee background_migration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection-ee
 
+rspec-ee migration pg14 single-db-sec-connection:
+  extends:
+    - rspec-ee migration pg14
+    - .single-db-sec-connection-rspec
+    - .rails:rules:single-db-sec-connection-ee
+
+rspec-ee background_migration pg14 single-db-sec-connection:
+  extends:
+    - rspec-ee background_migration pg14
+    - .single-db-sec-connection-rspec
+    - .rails:rules:single-db-sec-connection-ee
+
 rspec-ee migration pg14 praefect:
   extends:
     - rspec migration pg14
@@ -863,6 +899,13 @@ rspec-ee unit pg14 single-db-ci-connection:
     - .rspec-ee-unit-parallel
     - .rails:rules:single-db-ci-connection-ee
 
+rspec-ee unit pg14 single-db-sec-connection:
+  extends:
+    - rspec-ee unit pg14
+    - .single-db-sec-connection-rspec
+    - .rspec-ee-unit-parallel
+    - .rails:rules:single-db-sec-connection-ee
+
 rspec-ee integration pg14:
   extends:
     - .rspec-ee-base-pg14
@@ -894,6 +937,13 @@ rspec-ee integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-ci-connection-ee
+
+rspec-ee integration pg14 single-db-sec-connection:
+  extends:
+    - rspec-ee integration pg14
+    - .single-db-sec-connection-rspec
+    - .rspec-ee-integration-parallel
+    - .rails:rules:single-db-sec-connection-ee
 
 .custom-models-variables:
   variables:
@@ -941,6 +991,13 @@ rspec-ee system pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-ee-system-parallel
     - .rails:rules:single-db-ci-connection-ee
+
+rspec-ee system pg14 single-db-sec-connection:
+  extends:
+    - rspec-ee system pg14
+    - .single-db-sec-connection-rspec
+    - .rspec-ee-system-parallel
+    - .rails:rules:single-db-sec-connection-ee
 
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################

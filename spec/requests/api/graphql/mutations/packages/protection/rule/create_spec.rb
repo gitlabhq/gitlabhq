@@ -160,16 +160,4 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
       end
     end
   end
-
-  context "when feature flag ':packages_protected_packages' disabled" do
-    before do
-      stub_feature_flags(packages_protected_packages: false)
-    end
-
-    it_behaves_like 'an erroneous response'
-
-    it 'returns error of disabled feature flag' do
-      subject.tap { expect_graphql_errors_to_include(/'packages_protected_packages' feature flag is disabled/) }
-    end
-  end
 end

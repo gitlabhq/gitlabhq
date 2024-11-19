@@ -83,6 +83,8 @@ When you do not configure custom rules, the
 
 ### Define a regex pattern
 
+> - Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
+
 You can use a regular expression (regex) to match Jira issue keys.
 The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
 
@@ -90,7 +92,7 @@ To define a regex pattern for Jira issue keys:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
-1. Select **Jira**.
+1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.
 1. In the **Jira issue regex** text box, enter a regex pattern.
 1. Select **Save changes**.
@@ -100,6 +102,8 @@ For more information, see the
 
 ### Define a prefix
 
+> - Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
+
 You can use a prefix to match Jira issue keys.
 For example, if your Jira issue key is `ALPHA-1` and you define a `JIRA#` prefix,
 GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
@@ -108,7 +112,7 @@ To define a prefix for Jira issue keys:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
-1. Select **Jira**.
+1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.
 1. In the **Jira issue prefix** text box, enter a prefix.
 1. Select **Save changes**.

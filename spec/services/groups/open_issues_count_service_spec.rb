@@ -59,6 +59,16 @@ RSpec.describe Groups::OpenIssuesCountService, :use_clean_rails_memory_store_cac
 
       it_behaves_like 'a counter caching service with threshold'
     end
+
+    context 'when fast_timeout is enabled' do
+      subject { described_class.new(group, fast_timeout: true) }
+
+      it 'executes the query with a fast timeout' do
+        expect(ApplicationRecord).to receive(:with_fast_read_statement_timeout).and_call_original
+
+        expect(subject.count).to eq(1)
+      end
+    end
   end
 
   describe '#clear_all_cache_keys' do

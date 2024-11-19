@@ -19,7 +19,7 @@ export default {
 
 <template>
   <span>
-    <gl-icon id="timeline-events-tag-question" name="question-o" class="gl-text-blue-600" />
+    <gl-icon id="timeline-events-tag-question" name="question-o" variant="info" />
 
     <gl-popover
       target="timeline-events-tag-question"

@@ -56,7 +56,7 @@ export default {
       />
       <span class="gl-flex gl-flex-col">
         <span class="gl-font-bold">{{ fullName }}</span>
-        <span class="gl-text-gray-600">@{{ name }}</span>
+        <span class="gl-text-subtle">@{{ name }}</span>
       </span>
     </div>
 
@@ -66,6 +66,7 @@ export default {
       icon="remove"
       :aria-label="deleteButtonLabel"
       category="tertiary"
+      data-testid="delete-group-btn"
       @click="$emit('delete', data.id)"
     />
   </div>

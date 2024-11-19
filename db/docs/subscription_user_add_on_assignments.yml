@@ -8,13 +8,5 @@ feature_categories:
 classes:
 - GitlabSubscriptions::UserAddOnAssignment
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: add_on_purchase_id
-        table: subscription_add_on_purchases
-        sharding_key: organization_id
-        belongs_to: add_on_purchase
-desired_sharding_key_migration_job_name: BackfillSubscriptionUserAddOnAssignmentsOrganizationId
+sharding_key:
+  organization_id: organizations

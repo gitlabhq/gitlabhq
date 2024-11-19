@@ -180,15 +180,18 @@ module QA
       end
 
       def create_diff_note(iid, file_count, line_count, head_sha, start_sha, base_sha, line_type)
-        post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions").url,
-          "" "body=\"Let us discuss\"&
+        url = Runtime::API::Request.new(@api_client,
+          "/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions").url
+        post url, <<~PARAMS
+          body="Let us discuss"&
           position[position_type]=text&
           position[new_path]=hello#{file_count}.txt&
           position[old_path]=hello#{file_count}.txt&
           position[#{line_type}]=#{line_count * 100}&
           position[head_sha]=#{head_sha}&
           position[start_sha]=#{start_sha}&
-          position[base_sha]=#{base_sha}" ""
+          position[base_sha]=#{base_sha}
+        PARAMS
       end
 
       def create_mr_with_many_commits

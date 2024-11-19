@@ -45,18 +45,17 @@ module Gitlab
 
         # Determine if we need to stick after handling a request.
         def stick_if_necessary(env)
-          return unless ::Gitlab::Database::LoadBalancing::Session.current.performed_write?
-
           namespaces_and_ids = sticking_namespaces(env)
 
           namespaces_and_ids.each do |sticking, namespace, id|
-            sticking.stick(namespace, id)
+            lb = sticking.load_balancer
+            sticking.stick(namespace, id) if ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).performed_write?
           end
         end
 
         def clear
           ::Gitlab::Database::LoadBalancing.release_hosts
-          ::Gitlab::Database::LoadBalancing::Session.clear_session
+          ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
         end
 
         # Determines the sticking namespace and identifier based on the Rack

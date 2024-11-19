@@ -94,14 +94,6 @@ module CachedIntrospectionQuery
                     ofType {
                       kind
                       name
-                      ofType {
-                        kind
-                        name
-                        ofType {
-                          kind
-                          name
-                        }
-                      }
                     }
                   }
                 }

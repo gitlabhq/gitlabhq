@@ -13,9 +13,13 @@ module Sidebars
 
       # In this method we will need to provide the query
       # to retrieve the elements count
-      def pill_count
-        raise NotImplementedError
-      end
+      def pill_count; end
+
+      # The GraphQL field name from `SidebarType` that will be used
+      # as the pill count for this menu item.
+      # This is used when the count is expensive and we want to fetch it separately
+      # from GraphQL.
+      def pill_count_field; end
 
       def pill_html_options
         {}

@@ -51,7 +51,7 @@ Benefits of the aggregated VSA backend:
 
 ### Example configuration
 
-![VSA object hierarchy example](img/object_hierarchy_example_V14_10.png)
+![VSA object hierarchy example](img/object_hierarchy_v14_10.png)
 
 In this example, two independent value streams are set up for two teams that are using
 different development workflows within the `Test Group` (top-level namespace).

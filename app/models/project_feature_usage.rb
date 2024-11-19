@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectFeatureUsage < ApplicationRecord
-  include IgnorableColumns
   ignore_column :jira_dvcs_cloud_last_sync_at, remove_with: '16.9', remove_after: '2024-01-21'
 
   self.primary_key = :project_id

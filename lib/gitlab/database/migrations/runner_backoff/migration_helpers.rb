@@ -9,7 +9,7 @@ module Gitlab
 
           class_methods do
             def enable_runner_backoff!
-              @enable_runner_backoff = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
+              @enable_runner_backoff = true
             end
 
             def enable_runner_backoff?

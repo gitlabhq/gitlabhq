@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.wiki_pages_update
 description: Count of all Wiki page updates
 product_group: knowledge
+product_categories:
+- wiki
 value_type: number
 status: active
 time_frame: all
@@ -12,7 +14,7 @@ events:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

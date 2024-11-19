@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -17,23 +17,25 @@ DETAILS:
 > - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
 > - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
 
-Use scan execution policies to enforce security scans, either as part of the pipeline or on a
-specified schedule. The security scans run with multiple project pipelines if you define the policy
-at a group or subgroup level.
+Use scan execution policies to enforce GitLab security scans based on the default or latest [security CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs), either as part of the pipeline or on a
+specified schedule.
 
-Scan execution policies are enforced for all applicable projects. For projects without a
+Scan execution policies are enforced across all projects that are linked to the security policy project and are within the scope of the policy. For projects without a
 `.gitlab-ci.yml` file, or where AutoDevOps is disabled, security policies create the
 `.gitlab-ci.yml` file implicitly. This ensures policies enabling execution of secret detection,
 static analysis, or other scanners that do not require a build in the project, are still able to
 run and be enforced.
 
-This feature has some overlap with [compliance pipelines](../../group/compliance_pipelines.md),
-as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
-For details on the similarities and differences between these features, see
-[Enforce scan execution](../index.md#enforce-scan-execution).
+Scan execution policies, compared to pipeline execution policies, provide a faster path to configure GitLab security scans across multiple projects to manage security and compliance.
+
+If any of the following cases are true, use [pipeline execution policies](pipeline_execution_policies.md) instead:
+
+- You require advanced configuration settings.
+- You want to enforce custom CI/CD jobs or scripts.
+- You want to enable third-party security scans through an enforced CI/CD job.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Learn more about [enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
 ## Restrictions
 
@@ -50,7 +52,7 @@ the beginning of the pipeline. DAST scans always run in the `dast` stage. If thi
 exist, then a `dast` stage is injected at the end of the pipeline.
 
 To avoid job name conflicts, a hyphen and a number is appended to the job name. The number is unique
-per policy action.
+per policy action. For example `secret-detection` becomes `secret-detection-1`.
 
 ## Scan execution policy editor
 
@@ -58,21 +60,21 @@ Use the scan execution policy editor to create or edit a scan execution policy.
 
 Prerequisites:
 
-- Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
-  to select Security Policy Project.
+- By default, only group, subgroup, or project Owners have the [permissions](../../permissions.md#application-security)
+  required to create or assign a security policy project. Alternatively, you can create a custom role with the permission to [manage security policy links](../../custom_roles/abilities.md#security-policy-management).
 
 Once your policy is complete, save it by selecting **Configure with a merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
 configured security policy project. If one does not link to your project, a security
 policy project is automatically created. Existing policies can also be
 removed from the editor interface by selecting **Delete policy**
-at the bottom of the editor.
+at the bottom of the editor to introduce a merge request to remove the policy from your `policy.yml` file.
 
 Most policy changes take effect as soon as the merge request is merged. Any changes that
 do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
 before the policy changes take effect.
 
-![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_11.png)
+![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v17_5.png)
 
 NOTE:
 Selection of site and scanner profiles using the rule mode editor for DAST execution policies differs based on
@@ -98,19 +100,20 @@ the following sections and tables provide an alternative.
 
 ## Scan execution policy schema
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
+> - Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+The availability of the actions per policy limit is controlled by a feature flag.
 For more information, see the history.
 
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
-| `description` (optional) | `string` | true |  | Description of the policy. |
-| `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
-| `rules` | `array` of rules | true |  | List of rules that the policy applies. |
-| `actions` | `array` of actions | true |  | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
+| Field          | Type                                         | Required | Description |
+|----------------|----------------------------------------------|----------|-------------|
+| `name`         | `string`                                     | true     | Name of the policy. Maximum of 255 characters. |
+| `description`  | `string`                                     | false    | Description of the policy. |
+| `enabled`      | `boolean`                                    | true     | Flag to enable (`true`) or disable (`false`) the policy. |
+| `rules`        | `array` of rules                             | true     | List of rules that the policy applies. |
+| `actions`      | `array` of actions                           | true     | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
+| `policy_scope` | `object` of [`policy_scope`](index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 
 ## `pipeline` rule type
 
@@ -122,7 +125,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `pipeline` | The rule's type. |
-| `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). For compatibility with merge request approval policies, you should target all branches to include the scans in the feature branch and default branch |
 | `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist |  `default`, `protected` or `all` | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 
@@ -130,8 +133,13 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 ## `schedule` rule type
 
-> - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) the `branch_type` field in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) the `branch_exceptions` field in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) a new `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines in GitLab 16.11 [with a flag](../../../administration/feature_flags.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.1. The concurrency limit applies when both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` are enabled.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named  `scan_execution_pipeline_concurrency_control`.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) the `scan_execution_pipeline_concurrency_control` feature flag on GitLab.com in GitLab 17.6.
 
 WARNING:
 In GitLab 16.1 and earlier, you should **not** use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
@@ -153,7 +161,7 @@ A scheduled pipeline:
 | `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `cadence`  | `string` | true | Cron expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
+| `cadence`  | `string` | true | Cron expression with limited options. For example, `0 0 * * *` creates a schedule to run every day at midnight (12:00 AM). | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
@@ -227,6 +235,36 @@ The keys for a schedule rule are:
 - `agents:<agent-name>` (required): The name of the agent to use for scanning.
 - `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned.
 
+### Concurrency control
+
+If both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` feature flags are enabled, concurrency control is applied.
+Concurrency control limits the number of pipeline jobs created by the scan execution policy that can be active for each top-level group on an instance. For GitLab.com, the limit is managed by GitLab administrators.
+The active pipeline job statuses are: 
+
+- `preparing`
+- `pending`
+- `running`
+- `waiting_for_callback`
+- `waiting_for_resource`
+- `canceling`
+- `created`
+
+If the number of active pipeline jobs exceeds the value of the `max_scheduled_scans_concurrency` application setting, pipeline creation is postponed until more capacity is available.
+Due to the concurrency execution of the background jobs responsible for creating the scheduled scans pipeline jobs, the concurrency limit can take some time be enforced.
+
+#### Set the maximum top-level group concurrency for security policy scheduled scans
+
+For GitLab.com, this limit is managed by GitLab administrators. The current limit is 100.
+
+For self-managed instances, the limit has a default value of 10,000 can be changed in the **Admin** area.
+
+To update the **Security policy scheduled scans maximum top-level group concurrency** setting:
+
+1. Go to **Admin** > **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set the **Security policy scheduled scans maximum top-level group concurrency**.
+1. Select **Save changes**.
+
 ## `scan` action type
 
 > - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
@@ -245,7 +283,7 @@ rule in the defined policy are met.
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
-| `template` | `string` | `default`, `latest` | CI/CD template edition to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) edition may introduce breaking changes. |
+| `template` | `string` | `default`, `latest` | CI/CD template version to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) version may introduce breaking changes. See the `stable` and `latest` [security templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 NOTE:
@@ -314,6 +352,7 @@ SAST_EXCLUDED_PATHS: spec, test, tests, tmp
 SECRET_DETECTION_EXCLUDED_PATHS: ''
 SECRET_DETECTION_HISTORIC_SCAN: false
 SAST_EXCLUDED_ANALYZERS: ''
+DEFAULT_SAST_EXCLUDED_PATHS: spec, test, tests, tmp
 DS_EXCLUDED_ANALYZERS: ''
 ```
 
@@ -324,90 +363,11 @@ In GitLab 16.9 and earlier:
 - If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
   ignored, regardless of where they were defined: policy, group, or project.
 
-## Scope security policies
+## Policy scope schema
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
-> - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
-
-Security policy enforcement depends first on establishing a link between:
-
-- The group, subgroup, or project on which you want to enforce policies
-- The security policy project that contains the policies.
-
-For example, if you are linking policies to a group, a group owner must create the link to
-the security policy project. Then, all policies in the security policy project are inherited by all
-projects in the group.
-
-You scope security policies by setting the scopes in the `policy.yml` file to:
-
-- _Include_ only projects with an applied [compliance framework](../../group/compliance_frameworks.md) by using
-  the compliance framework's ID. To include projects, use `policy_scope.compliance_frameworks.id` to specify IDs of
-  compliance frameworks that are applied to the projects.
-- _Include_ or _exclude_ selected projects from enforcement by using the project's ID.
-- _Include_ selected groups. Optionally use this with the `projects` object to exclude selected projects.
-
-### Policy scope schema
-
-A policy scope must conform to this schema.
-
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects`, `groups` | Scopes the policy based on compliance framework labels, projects, or groups you define. |
-
-#### `policy_scope` scope type
-
-Policy scopes are one of two types.
-
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
-| `groups` | `object` | `including` | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. |
-
-#### Example `policy.yml` with security policy scopes
-
-In this example, the security policy:
-
-- Includes any project with compliance frameworks with an ID of either `2` or `11` applied to them.
-- Excludes projects with an ID of either `24` or `27`.
-
-```yaml
----
-scan_execution_policy:
-- name: Enforce DAST in every release pipeline
-  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
-  enabled: true
-  rules:
-  - type: pipeline
-    branches:
-    - release/*
-  actions:
-  - scan: dast
-    scanner_profile: Scanner Profile A
-    site_profile: Site Profile B
-  policy_scope:
-    compliance_frameworks:
-      - id: 2
-      - id: 11
-- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
-  enabled: true
-  rules:
-  - type: pipeline
-    branches:
-    - main
-  actions:
-  - scan: secret_detection
-  - scan: sast
-    variables:
-      SAST_EXCLUDED_ANALYZERS: brakeman
-  policy_scope:
-    projects:
-      excluding:
-        - id: 24
-        - id: 27
-```
+To customize policy enforcement, you can define a policy's scope to either include, or exclude,
+specified projects, groups, or compliance framework labels. For more details, see
+[Scope](index.md#scope).
 
 ## Example security policy project
 
@@ -493,15 +453,16 @@ Scan execution policies can cause the same type of scanner to run more than once
 developer may want to try running a SAST scan with different variables than the one enforced by the security and compliance team. In
 this case, two SAST jobs run in the pipeline, one with the developer's variables and one with the security and compliance team's variables.
 
-If you want to avoid running duplicate scans, you can either remove the scans from the project's `.gitlab-ci.yml` file or disable your
-local jobs by setting `SAST_DISABLED: "true"`. Disabling jobs this way does not prevent the security jobs defined by scan execution
+If you want to avoid running duplicate scans, you can either remove the scans from the project's `.gitlab-ci.yml` file or skip your
+local jobs with variables. Skipping jobs does not prevent any security jobs defined by scan execution
 policies from running.
 
-## Experimental features
+To skip scan jobs with variables, you can use:
 
-DETAILS:
-**Status:** Experiment has ended
+- `SAST_DISABLED: "true"` to skip SAST jobs.
+- `DAST_DISABLED: "true"` to skip DAST jobs.
+- `CONTAINER_SCANNING_DISABLED: "true"` to skip container scanning jobs.
+- `SECRET_DETECTION_DISABLED: "true"` to skip secret detection jobs.
+- `DEPENDENCY_SCANNING_DISABLED: "true"` to skip dependency scanning jobs.
 
-This experiment has concluded and will not continue. After receiving feedback within this experiment, we will be focusing our efforts on a new policy type for enforcement of custom CI. The experiment will be removed in 17.3.
-
-Learn more about the [pipeline execution policy](pipeline_execution_policies.md).
+For an overview of all variables that can skip jobs, see [CI/CD variables documentation](../../../topics/autodevops/cicd_variables.md#job-skipping-variables)

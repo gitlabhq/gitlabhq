@@ -98,57 +98,15 @@ To update your fork from the GitLab UI:
 
 ### From the command line
 
-To update your fork from the command line, first ensure that you have configured
-an `upstream` remote repository for your fork:
+You can also choose to update your fork from the command line.
 
-1. Clone your fork locally, if you have not already done so. For more information, see
-   [Cloning Git repositories](../../../topics/git/clone.md).
-1. View the remotes configured for your fork:
+Prerequisites:
 
-   ```shell
-   git remote -v
-   ```
+- You must [download and install the Git client](../../../topics/git/how_to_install_git/index.md) on your local machine.
+- You must [create a fork](#create-a-fork) of the repository you want to update.
 
-1. If your fork does not have a remote pointing to the original repository,
-   use one of these examples to configure a remote called `upstream`:
-
-   ```shell
-   # Use this line to set any repository as your upstream after editing <upstream_url>
-   git remote add upstream <upstream_url>
-
-   # Use this line to set the main GitLab repository as your upstream
-   git remote add upstream https://gitlab.com/gitlab-org/gitlab.git
-   ```
-
-   After ensuring your local copy has the extra remote configured, you are ready to update your fork.
-
-1. In your local copy, ensure you have checked out the [default branch](branches/default.md),
-   replacing `main` with the name of your default branch:
-
-   ```shell
-   git checkout main
-   ```
-
-   If Git identifies unstaged changes, commit or stash them before continuing.
-
-1. Fetch the changes to the upstream repository:
-
-   ```shell
-   git fetch upstream
-   ```
-
-1. Pull the changes into your fork, replacing `main` with the name of the branch
-   you are updating:
-
-   ```shell
-   git pull upstream main
-   ```
-
-1. Push the changes to your fork repository on the server (GitLab.com or self-managed):
-
-   ```shell
-   git push origin main
-   ```
+To update your fork from the command line, follow the instruction in
+[use Git to update a fork](../../../topics/git/forks.md#update-a-fork).
 
 ### With repository mirroring
 

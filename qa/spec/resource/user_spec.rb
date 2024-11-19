@@ -153,9 +153,9 @@ RSpec.describe QA::Resource::User do
       [false, true,  :fabricate!, :fabricate_via_api!],
       [true,  true,  :fabricate!, :fabricate_via_api!]
     ].each do |signup_disabled, personal_access_tokens_disabled, method_used, method_not_used|
-      it "when signup_disabled is #{signup_disabled}, "\
-         "personal_access_tokens_disabled is #{personal_access_tokens_disabled}, "\
-         "calls #{method_used}, does not call #{method_not_used}" do
+      it "when signup_disabled is #{signup_disabled}, " \
+        "personal_access_tokens_disabled is #{personal_access_tokens_disabled}, " \
+        "calls #{method_used}, does not call #{method_not_used}" do
         allow(QA::Runtime::Env).to receive(:signup_disabled?).and_return(signup_disabled)
         allow(QA::Runtime::Env).to receive(:personal_access_tokens_disabled?)
           .and_return(personal_access_tokens_disabled)

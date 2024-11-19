@@ -40,7 +40,11 @@ module Mutations
           group = authorized_find!(id: args[:group_id])
 
           set_organization!(args)
-          result = ::CustomerRelations::Contacts::CreateService.new(group: group, current_user: current_user, params: args).execute
+          result = ::CustomerRelations::Contacts::CreateService.new(
+            group: group,
+            current_user: current_user,
+            params: args
+          ).execute
           { contact: result.payload, errors: result.errors }
         end
       end

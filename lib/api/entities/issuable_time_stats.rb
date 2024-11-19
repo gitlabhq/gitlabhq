@@ -15,12 +15,10 @@ module API
         expose :total_time_spent, as: :human_total_time_spent, documentation: { type: 'string', example: '1h' }
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def total_time_spent
         # Avoids an N+1 query since timelogs are preloaded
         object.timelogs.sum(&:time_spent)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

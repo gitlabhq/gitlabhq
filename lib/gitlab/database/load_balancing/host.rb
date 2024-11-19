@@ -328,7 +328,7 @@ module Gitlab
         end
 
         def low_timeout_for_host_queries?
-          Feature.enabled?(:load_balancer_low_statement_timeout)
+          Feature.enabled?(:load_balancer_low_statement_timeout, Feature.current_pod)
         end
       end
     end

@@ -5,17 +5,17 @@
     .form-group
       = f.label :sidekiq_job_limiter_mode, _('Limiting mode'), class: 'label-bold'
       = f.select :sidekiq_job_limiter_mode, sidekiq_job_limiter_modes_for_select, {}, class: 'form-control'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = sidekiq_job_limiter_mode_help_text
     .form-group
       = f.label :sidekiq_job_limiter_compression_threshold_bytes, _('Sidekiq job compression threshold (bytes)'), class: 'label-bold'
       = f.number_field :sidekiq_job_limiter_compression_threshold_bytes, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Threshold in bytes at which to compress Sidekiq job arguments.')
     .form-group
       = f.label :sidekiq_job_limiter_limit_bytes, _('Sidekiq job size limit (bytes)'), class: 'label-bold'
       = f.number_field :sidekiq_job_limiter_limit_bytes, class: 'form-control gl-form-input'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs.")
 
   = f.submit _('Save changes'), pajamas_button: true

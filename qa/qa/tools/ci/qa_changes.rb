@@ -45,7 +45,7 @@ module QA
         #
         # @return [String]
         def fetch_list_of_specs_or_directories
-          if QA::Runtime::Env.selective_execution_improved_enabled? && non_qa_changes?
+          if QA::Runtime::Env.selective_execution_improved_enabled? && non_qa_changes? && !targeting_stable_branch?
             tests = selective_tests_from_code_paths_mapping
             logger.info("Selected tests from mapping: '#{tests}'")
             tests.nil? || tests.empty? ? nil : tests.join(" ")
@@ -65,6 +65,10 @@ module QA
             # TODO: expand pattern to other non spec paths that shouldn't trigger full suite
             .select { |file_path| file_path.match?(QA_PATTERN) && !file_path.match?(SPEC_PATTERN) }
             .any?
+        end
+
+        def targeting_stable_branch?
+          /^[\d-]+-stable(-ee|-jh)?$/.match?(ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'])
         end
 
         def quarantine_changes?

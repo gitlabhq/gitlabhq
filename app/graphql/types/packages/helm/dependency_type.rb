@@ -9,10 +9,15 @@ module Types
         description 'Represents a Helm dependency'
 
         # Need to be synced with app/validators/json_schemas/helm_metadata.json#dependencies
-        field :alias, GraphQL::Types::String, null: true, description: 'Alias of the dependency.', resolver_method: :resolve_alias
+        field :alias,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Alias of the dependency.',
+          resolver_method: :resolve_alias
         field :condition, GraphQL::Types::String, null: true, description: 'Condition of the dependency.'
         field :enabled, GraphQL::Types::Boolean, null: true, description: 'Indicates the dependency is enabled.'
-        field :import_values, [GraphQL::Types::JSON], null: true, description: 'Import-values of the dependency.', hash_key: :'import-values' # rubocop:disable Graphql/JSONType
+        field :import_values, [GraphQL::Types::JSON], null: true, description: 'Import-values of the dependency.',
+          hash_key: :'import-values'
         field :name, GraphQL::Types::String, null: true, description: 'Name of the dependency.'
         field :repository, GraphQL::Types::String, null: true, description: 'Repository of the dependency.'
         field :tags, [GraphQL::Types::String], null: true, description: 'Tags of the dependency.'

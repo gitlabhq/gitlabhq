@@ -165,5 +165,8 @@ Use code intelligence to see all uses of an object:
    - Enter the `/~` keyboard shortcut to open the file finder, and enter the file's name.
    - In the upper right, select **Find file**.
 1. Point to the object, then select it.
-1. In the dialog, select **References** to view a list of the
-   files that use this object.
+1. In the dialog, select:
+   - **Definition** to see a definition of this object.
+   - **References** to view a list of the files that use this object.
+
+   ![This variable is referenced twice in this project.](img/code_intelligence_refs_v17_6.png)

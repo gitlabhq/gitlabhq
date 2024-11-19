@@ -215,7 +215,7 @@ export default {
         <ul class="list-unstyled">
           <li v-if="allowLabelCreate">
             <gl-link
-              class="flex-row text-break-word label-item gl-flex gl-w-full"
+              class="flex-row label-item gl-flex gl-w-full gl-break-all"
               data-testid="create-label-link"
               @click="handleCreateLabelClick"
             >
@@ -223,7 +223,7 @@ export default {
             </gl-link>
           </li>
           <li v-if="labelsManagePath">
-            <gl-link :href="labelsManagePath" class="flex-row text-break-word label-item gl-flex">
+            <gl-link :href="labelsManagePath" class="flex-row label-item gl-flex gl-break-all">
               {{ footerManageLabelTitle }}
             </gl-link>
           </li>

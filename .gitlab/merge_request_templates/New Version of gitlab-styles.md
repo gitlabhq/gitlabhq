@@ -10,16 +10,16 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
 
 - [ ] Verify upcoming release of `gitlab-styles`
   - [ ] Point to "Release" MR of `gitlab-styles` in `Gemfile`
-    - For example, `gem 'gitlab-styles', '~> 9.1.0', require: false, git: 'https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles.git', ref: 'ddieulivol-upgrade_to_9.1.0'`
-  - [ ] Update [bundler's checksum file](https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file) via `bundle exec bundler-checksum init`
+    - For example, `gem 'gitlab-styles', '~> 9.1.0', require: false, git: 'https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles.git', ref: 'ddieulivol-upgrade_to_9.1.0' # rubocop:disable Cop/GemFetcher`
+  - [ ] Update [bundler's checksum file](https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file) via `bundle install && bundle exec bundler-checksum init`
+  - [ ] Update `Gemfile.next` via `bundle install --gemfile Gemfile.next && cp Gemfile.lock Gemfile.next.lock && BUNDLE_GEMFILE=Gemfile.next bundle lock && BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init`
   - [ ] `rubocop` job
     - [ ] Inspect any warnings/errors
     - [ ] (Optional) [Generate TODOs](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#resolving-rubocop-exceptions) for pending offenses
       - [ ] Put :new: cop rules (or if configuration is changed) in "grace period". See [docs](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#enabling-a-new-cop).
       - [ ] (Optional) Remove any offenses for disabled cops
       - Use `grep --perl-regexp -o ":\d+\d+: \w: \[\S+\] ([\w/]+)" raw_job_output.log | awk '{print $4}' | sort | uniq -c` to get a list of cop rules with offenses. Where `raw_job_output.log` is the raw output of the `rubocop` job
-      - [ ] Ignore offenses related to temporary changes in `Gemfile`
-    - [ ] (Optional) Autocorrect offenses 
+    - [ ] (Optional) Autocorrect offenses (only if the changeset is small)
     - [ ] Compare the total runtime of `rubocop --parallel` scan with previous runs
   - [ ] Make sure CI passes :green_heart: 
   - [ ] Don't merge this MR yet!
@@ -29,7 +29,8 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
   - [ ] Rephrase the title and MR description to match final upgrade
   - [ ] Point to released version in `Gemfile`
     - [ ] `gem 'gitlab-styles', '~> 9.1.0', require: false`
-    - [ ] Update [bundler's checksum file](https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file) via `bundle exec bundler-checksum init`
+    - [ ] Update [bundler's checksum file](https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file) via `bundle install && bundle exec bundler-checksum init`
+    - [ ] Update `Gemfile.next` via `bundle install --gemfile Gemfile.next && cp Gemfile.lock Gemfile.next.lock && BUNDLE_GEMFILE=Gemfile.next bundle lock && BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init`
   - [ ] (Optional) Regenerate TODOs for new/changed cop rules
   - [ ] Make sure CI passes :green_heart: 
   - [ ] Let the MR being reviewed again and merged

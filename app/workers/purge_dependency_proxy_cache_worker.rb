@@ -4,7 +4,7 @@ class PurgeDependencyProxyCacheWorker
   include ApplicationWorker
   include DependencyProxy::Expireable
 
-  data_consistency :always
+  data_consistency :delayed
 
   sidekiq_options retry: 3
   include Gitlab::Allowable

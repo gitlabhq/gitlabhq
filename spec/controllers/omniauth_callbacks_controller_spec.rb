@@ -92,6 +92,32 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
     end
   end
 
+  shared_examples 'when user has dismissed broadcast messages' do
+    let_it_be(:message_banner) { create(:broadcast_message, broadcast_type: :banner) }
+    let_it_be(:message_notification) { create(:broadcast_message, broadcast_type: :notification) }
+    let_it_be(:other_message) { create(:broadcast_message, broadcast_type: :banner) }
+
+    before do
+      create(:broadcast_message_dismissal, broadcast_message: message_banner, user: user)
+      create(:broadcast_message_dismissal, broadcast_message: message_notification, user: user)
+      create(:broadcast_message_dismissal, broadcast_message: other_message)
+
+      sign_in user
+    end
+
+    it 'creates dismissed cookies based on db records' do
+      expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be_nil
+      expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be_nil
+      expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
+
+      post_action
+
+      expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be(true)
+      expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be(true)
+      expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
+    end
+  end
+
   describe 'omniauth', :with_current_organization do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
     let(:omniauth_email) { user.email }
@@ -125,6 +151,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       context 'with signed-in user' do
         before do
           sign_in user
+        end
+
+        it_behaves_like 'when user has dismissed broadcast messages' do
+          let(:post_action) { post provider }
         end
 
         it 'increments Prometheus counter' do
@@ -613,6 +643,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
     it_behaves_like 'omniauth sign in that remembers user with two factor disabled'
 
+    it_behaves_like 'when user has dismissed broadcast messages' do
+      let(:post_action) { post provider }
+    end
+
     it 'allows sign in' do
       post provider
 
@@ -651,6 +685,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
     it_behaves_like 'known sign in' do
       let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+      let(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
+    end
+
+    it_behaves_like 'when user has dismissed broadcast messages' do
       let(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
     end
 

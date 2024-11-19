@@ -44,7 +44,7 @@ To locate a relevant request and view its correlation ID:
 
 See the following example:
 
-![Firefox Network Monitor showing an request ID header](img/network_monitor_xid_v13_6.png)
+![Firefox browsers' developer tools' Network Monitor section showing a request ID header for a particular request.](img/network_monitor_xid_v13_6.png)
 
 ### Getting the correlation ID from your logs
 
@@ -198,9 +198,9 @@ You can then view the database details for this request:
    <!-- vale gitlab_base.Substitutions = NO -->
 1. Select the `pg` link in the Progress Bar to view the database queries executed by the API request:
 
-   ![View pg database details](img/view-pg-details_v14_3.png)
+   ![GitLab API database details: 29ms / 34 queries](img/view-pg-details_v14_3.png)
    <!-- vale gitlab_base.Substitutions = YES -->
 
    The database query dialog is displayed:
 
-   ![Database query dialog](img/database-query-dialog_v14_3.png)
+   ![Database query dialog with 34 SQL queries, 29ms duration, 34 replicas, 4 cached, and sorting options](img/database-query-dialog_v14_3.png)

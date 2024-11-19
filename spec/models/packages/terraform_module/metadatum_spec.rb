@@ -47,11 +47,21 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
     end
 
     describe '#terraform_module_package_type' do
-      let_it_be(:metadatum) { build(:terraform_module_metadatum, package: build(:npm_package)) }
+      subject(:metadatum) { build(:terraform_module_metadatum) }
 
-      it 'disallows a package with a different package_type' do
-        expect(metadatum).not_to be_valid
-        expect(metadatum.errors.to_a).to include('Package type must be Terraform Module')
+      it 'builds a valid metadatum' do
+        expect { metadatum }.not_to raise_error
+        expect(metadatum).to be_valid
+      end
+
+      context 'with a different package type' do
+        let(:package) { build(:package) }
+
+        it 'raises the error' do
+          expect do
+            build(:terraform_module_metadatum, package: package)
+          end.to raise_error(ActiveRecord::AssociationTypeMismatch)
+        end
       end
     end
 

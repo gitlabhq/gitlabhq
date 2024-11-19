@@ -1,5 +1,5 @@
 - if visible?
-  %td{ id: id, data: { legacy_id: legacy_id } }
-    = link_to line_number, "##{id}", { data: { line_number: line_number } }
+  %td.rd-line-number{ id: id, class: border_class, data: { legacy_id: legacy_id, change: change_type } }
+    = link_to '', "##{id}", { class: 'rd-line-link', data: { line_number: line_number }, aria: { label: s_('Line number %{number}').html_safe % { number: line_number } } }
 - else
-  %td
+  %td.rd-line-number{ class: border_class, data: { change: change_type } }

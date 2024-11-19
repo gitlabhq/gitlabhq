@@ -46,18 +46,6 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
     end
   end
 
-  context "when access_token_pagination feature flag is disabled" do
-    before do
-      stub_feature_flags(access_token_pagination: false)
-      create(:personal_access_token, user: access_token_user)
-    end
-
-    it "returns all tokens in system" do
-      get_access_tokens_with_page
-      expect(assigns(:active_access_tokens).count).to eq(2)
-    end
-  end
-
   context "when active tokens returned are ordered" do
     let(:expires_1_day_from_now) { 1.day.from_now.to_date }
     let(:expires_2_day_from_now) { 2.days.from_now.to_date }
@@ -132,6 +120,8 @@ RSpec.shared_examples 'POST resource access tokens available' do
 
     parsed_body = Gitlab::Json.parse(response.body)
     expect(parsed_body['new_token']).not_to be_blank
+    expect(parsed_body['active_access_tokens'].length).to be > 0
+    expect(parsed_body['total']).to be > 0
     expect(parsed_body['errors']).to be_blank
     expect(response).to have_gitlab_http_status(:success)
   end

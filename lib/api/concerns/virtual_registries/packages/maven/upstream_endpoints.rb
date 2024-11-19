@@ -48,6 +48,7 @@ module API
                 requires :url, type: String, desc: 'The URL of the maven virtual registry upstream', allow_blank: false
                 optional :username, type: String, desc: 'The username of the maven virtual registry upstream'
                 optional :password, type: String, desc: 'The password of the maven virtual registry upstream'
+                optional :cache_validity_hours, type: Integer, desc: 'The cache validity in hours. Defaults to 24'
                 all_or_none_of :username, :password
               end
               post do
@@ -55,7 +56,7 @@ module API
 
                 conflict!(_('Upstream already exists')) if upstream
 
-                registry.build_upstream(declared_params.merge(group: group))
+                registry.build_upstream(declared_params(include_missing: false).merge(group: group))
                 registry_upstream.group = group
 
                 ApplicationRecord.transaction do
@@ -106,13 +107,14 @@ module API
                   hidden true
                 end
                 params do
-                  optional :url, type: String, desc: 'The URL of the maven virtual registry upstream',
-                    allow_blank: false
-                  optional :username, type: String, desc: 'The username of the maven virtual registry upstream',
-                    allow_blank: false
-                  optional :password, type: String, desc: 'The password of the maven virtual registry upstream',
-                    allow_blank: false
-                  at_least_one_of :url, :username, :password
+                  with(allow_blank: false) do
+                    optional :url, type: String, desc: 'The URL of the maven virtual registry upstream'
+                    optional :username, type: String, desc: 'The username of the maven virtual registry upstream'
+                    optional :password, type: String, desc: 'The password of the maven virtual registry upstream'
+                    optional :cache_validity_hours, type: Integer, desc: 'The validity of the cache in hours'
+                  end
+
+                  at_least_one_of :url, :username, :password, :cache_validity_hours
                 end
                 patch do
                   authorize! :update_virtual_registry, registry

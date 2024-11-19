@@ -28,10 +28,6 @@ module QA
           parent_group.add_member(parent_group_user)
         end
 
-        after do
-          parent_group_user.remove_via_api!
-        end
-
         it(
           'is allowed to edit the sub-group project files', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363467'
@@ -64,10 +60,6 @@ module QA
 
         before do
           sub_group.add_member(sub_group_user)
-        end
-
-        after do
-          sub_group_user.remove_via_api!
         end
 
         it(

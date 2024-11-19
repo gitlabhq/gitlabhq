@@ -15,22 +15,18 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
     end
 
     shared_examples 'has an expanded nav sidebar' do
-      it 'has an expanded nav sidebar on load' do
+      it 'has an expanded nav sidebar on load that can be collapsed' do
         expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :visible)
-      end
 
-      it 'can collapse the nav sidebar' do
         find_by_testid('super-sidebar-collapse-button').click
         expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :hidden)
       end
     end
 
     shared_examples 'has a collapsed nav sidebar' do
-      it 'has a collapsed nav sidebar on load' do
+      it 'has a collapsed nav sidebar on load that can be expanded' do
         expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :hidden)
-      end
 
-      it 'can expand the nav sidebar' do
         page.find('.js-super-sidebar-toggle-expand').click
         expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :visible)
       end

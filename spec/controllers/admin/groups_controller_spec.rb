@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects do
+RSpec.describe Admin::GroupsController, :with_current_organization, feature_category: :groups_and_projects do
   let_it_be_with_reload(:group) { create(:group, :allow_runner_registration_token) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:admin) { create(:admin) }
@@ -23,37 +23,6 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
       expect(assigns(:groups)).to match_array([group, group_2, group_3])
-    end
-
-    it 'renders a correct list of sort by options' do
-      get :index
-
-      html_rendered = Nokogiri::HTML(response.body)
-      sort_options = Gitlab::Json.parse(html_rendered.css('[data-items]')[0]['data-items'])
-
-      expect(response).to render_template('shared/groups/_dropdown')
-
-      expect(sort_options.size).to eq(7)
-      expect(sort_options[0]['value']).to eq('name_asc')
-      expect(sort_options[0]['text']).to eq(s_('SortOptions|Name'))
-
-      expect(sort_options[1]['value']).to eq('name_desc')
-      expect(sort_options[1]['text']).to eq(s_('SortOptions|Name, descending'))
-
-      expect(sort_options[2]['value']).to eq('created_desc')
-      expect(sort_options[2]['text']).to eq(s_('SortOptions|Last created'))
-
-      expect(sort_options[3]['value']).to eq('created_asc')
-      expect(sort_options[3]['text']).to eq(s_('SortOptions|Oldest created'))
-
-      expect(sort_options[4]['value']).to eq('latest_activity_desc')
-      expect(sort_options[4]['text']).to eq(_('Updated date'))
-
-      expect(sort_options[5]['value']).to eq('latest_activity_asc')
-      expect(sort_options[5]['text']).to eq(s_('SortOptions|Oldest updated'))
-
-      expect(sort_options[6]['value']).to eq('storage_size_desc')
-      expect(sort_options[6]['text']).to eq(s_('SortOptions|Largest group'))
     end
 
     context 'when a sort param is present' do
@@ -119,19 +88,19 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
   describe 'POST #create' do
     it 'creates group' do
       expect do
-        post :create, params: { group: {  path: 'test', name: 'test' } }
+        post :create, params: { group: { path: 'test', name: 'test' } }
       end.to change { Group.count }.by(1)
     end
 
     it 'creates namespace_settings for group' do
       expect do
-        post :create, params: { group: {  path: 'test', name: 'test' } }
+        post :create, params: { group: { path: 'test', name: 'test' } }
       end.to change { NamespaceSetting.count }.by(1)
     end
 
     it 'creates admin_note for group' do
       expect do
-        post :create, params: { group: {  path: 'test', name: 'test', admin_note_attributes: { note: 'test' } } }
+        post :create, params: { group: { path: 'test', name: 'test', admin_note_attributes: { note: 'test' } } }
       end.to change { Namespace::AdminNote.count }.by(1)
     end
 
@@ -143,7 +112,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
       post :create, params: { group: { path: 'test', name: 'test' } }
     end
 
-    context 'when organization_id is not in params', :with_current_organization do
+    context 'when organization_id is not in params' do
       it 'assigns Current.organization to newly created group' do
         post :create, params: { group: { path: 'test', name: 'test' } }
 

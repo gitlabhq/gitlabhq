@@ -9,7 +9,7 @@ module Mutations
           ::Types::Organizations::OrganizationUserType,
           null: true,
           description: 'Organization user after mutation.',
-          alpha: { milestone: '17.5' }
+          experiment: { milestone: '17.5' }
 
         argument :access_level,
           ::Types::Organizations::OrganizationUserAccessLevelEnum,

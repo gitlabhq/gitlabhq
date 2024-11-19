@@ -28,16 +28,16 @@ To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
 receive an email back confirming receipt:
 
-![Service Desk enabled](img/service_desk_confirmation_email.png)
+![Service Desk enabled](img/service_desk_confirmation_email_v9_1.png)
 
 This also gives the end user an option to unsubscribe.
 
 If they don't choose to unsubscribe, then any new comments added to the issue
 are sent as emails:
 
-![Service Desk reply email](img/service_desk_reply.png)
+![Service Desk reply email](img/service_desk_reply_v9_1.png)
 
-Any responses they send via email are displayed in the issue itself.
+Any responses they send by email are displayed in the issue itself.
 
 For additional information see [External participants](external_participants.md) and the
 [headers used for treating email](../../../administration/incoming_email.md#accepted-headers).
@@ -56,7 +56,7 @@ To create a Service Desk ticket from the UI:
 1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a walkthrough, see [Create Service Desk tickets via the UI and API (GitLab 16.10)](https://youtu.be/ibUGNc2wifQ).
+For a walkthrough, see [Create Service Desk tickets in the UI and API (GitLab 16.10)](https://www.youtube.com/watch?v=ibUGNc2wifQ).
 <!-- Video published on 2024-03-05 -->
 
 ## As a responder to the issue
@@ -65,13 +65,13 @@ For responders to the issue, everything works just like other GitLab issues.
 GitLab displays a familiar-looking issue tracker where responders can see
 issues created through customer support requests, and filter or interact with them.
 
-![Service Desk Issue tracker](img/service_desk_issue_tracker.png)
+![Service Desk Issue tracker](img/service_desk_issue_tracker_v16_10.png)
 
 Messages from the end user are shown as coming from the special
 [Support Bot user](../../../subscriptions/self_managed/index.md#billable-users).
 You can read and write comments as you usually do in GitLab:
 
-![Service Desk issue thread](img/service_desk_thread.png)
+![Service Desk issue thread](img/service_desk_thread_v9_1.png)
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.

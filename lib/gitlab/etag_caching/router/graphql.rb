@@ -14,6 +14,11 @@ module Gitlab
             'continuous_integration'
           ],
           [
+            %r{\Aprojects/.+/.+/jobs\z},
+            'jobs_table',
+            'continuous_integration'
+          ],
+          [
             %r(\Apipelines/sha/\w{#{Gitlab::Git::Commit::MIN_SHA_LENGTH},#{Gitlab::Git::Commit::MAX_SHA_LENGTH}}\z)o,
             'ci_editor',
             'pipeline_composition'

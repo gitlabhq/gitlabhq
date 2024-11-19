@@ -21,7 +21,7 @@ and you can maintain your snippets with the [snippets API](../api/snippets.md).
 You can create and manage your snippets with:
 
 - The GitLab user interface.
-- The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md).
+- The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md#create-a-snippet).
 - The [`glab` CLI](../editor_extensions/gitlab_cli/index.md).
 
 ![Example of a snippet](img/snippet_sample_v16_6.png)
@@ -266,7 +266,7 @@ Because versioned snippets are considered as part of the [namespace storage size
 it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,
-see the documentation on [reducing repository size](../user/project/repository/repository_size.md#reduce-repository-size).
+see the documentation on [reducing repository size](../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ### Cannot enter text into the snippet text box
 

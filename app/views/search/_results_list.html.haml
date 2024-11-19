@@ -1,7 +1,9 @@
 .advanced-search-promote
   = render_if_exists 'shared/promotions/promote_advanced_search'
 
-- if @timeout
+- if should_show_zoekt_results?(@scope, @search_type)
+  %ul#js-search-zoekt-blob-results
+- elsif @timeout
   = render partial: "search/results/timeout"
 - elsif @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
   = render partial: "search/results/error"
@@ -13,8 +15,6 @@
       %ul.content-list.commit-list
         - @search_objects.each_with_index do |commit, index|
           = render partial: "search/results/commit", locals: { commit: commit, index: index }
-    - elsif should_show_zoekt_results?(@scope, @search_type)
-      %ul#js-search-zoekt-blob-results
     - else
       .search-results.js-search-results
         - if @scope == 'projects'

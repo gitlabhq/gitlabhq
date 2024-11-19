@@ -1,0 +1,17 @@
+query getOrganizationUsersIsLastOwner(
+  $id: OrganizationsOrganizationID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
+  organization(id: $id) {
+    id
+    organizationUsers(first: $first, last: $last, before: $before, after: $after) {
+      nodes {
+        id
+        isLastOwner
+      }
+    }
+  }
+}

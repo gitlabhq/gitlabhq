@@ -28,9 +28,11 @@ module VirtualRegistries
               upstream_checked_at: now,
               file: file,
               size: file.size,
+              file_sha1: file.sha1,
               downloaded_at: now,
               content_type: content_type
             }
+            updates[:file_md5] = file.md5 unless Gitlab::FIPS.enabled?
 
             cr = ::VirtualRegistries::Packages::Maven::CachedResponse.create_or_update_by!(
               group_id: upstream.group_id,

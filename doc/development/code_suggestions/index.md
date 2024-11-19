@@ -99,6 +99,16 @@ with the deployed staging AI Gateway. To do this:
 1. Inside your GDK, navigate to **Admin area** > **GitLab Duo Pro**, go to `/admin/code_suggestions`
 1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user.
 
+### Bulk assign users to Duo Pro/Duo Enterprise add-on
+
+After purchasing the Duo add-on, existing eligible users can be assigned/un-assigned to the Duo `add_on_purchase` in bulk. There are a few ways to perform this action, that apply for both SaaS and Self-managed instances,
+
+1. [Duo users management UI](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
+1. [GraphQL endpoint](../../api/graphql/assign_gitlab_duo_seats.md#assign-gitlab-duo-seats-by-using-graphql)
+1. [Rake task](../../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro)
+
+The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_assign_service.rb)/[BulkUnassignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_unassign_service.rb), which evaluates eligibility criteria preliminarily before assigning/un-assigning the passed users in a single SQL operation.
+
 ### Setup instructions to use the Duo Pro add-on with a **staging** GitLab.com account
 
 1. Have your account ready at <https://staging.gitlab.com>.

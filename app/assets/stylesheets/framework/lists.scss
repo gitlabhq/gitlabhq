@@ -84,9 +84,9 @@ ul.content-list {
   padding: 0;
 
   li {
-    border-color: $gray-50;
+    @apply gl-border-default;
     font-size: $gl-font-size;
-    color: $gl-text-color;
+    @apply gl-text-default;
     word-break: break-word;
 
     .title {
@@ -162,7 +162,7 @@ ul.content-list {
   }
 
   .badge-secondary {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
   }
 }
 

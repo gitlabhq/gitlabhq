@@ -26,11 +26,11 @@ describe('Project Setting Row', () => {
     expect(wrapper.find('label').exists()).toBe(false);
   });
 
-  it('should apply gl-text-gray-400 class to label when locked', async () => {
+  it('should apply gl-text-disabled class to label when locked', async () => {
     wrapper = createComponent({ label: 'Test label', locked: true });
 
     await nextTick();
-    expect(wrapper.find('label').classes()).toContain('gl-text-gray-400');
+    expect(wrapper.find('label').classes()).toContain('gl-text-disabled');
   });
 
   it('should render default slot content', () => {

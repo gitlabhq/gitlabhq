@@ -25,6 +25,7 @@ export const TODO_ACTION_TYPE_REVIEW_SUBMITTED = 'review_submitted';
 export const TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED = 'okr_checkin_requested';
 export const TODO_ACTION_TYPE_ADDED_APPROVER = 'added_approver';
 export const TODO_ACTION_TYPE_SSH_KEY_EXPIRED = 'ssh_key_expired';
+export const TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON = 'ssh_key_expiring_soon';
 
 export const TODO_EMPTY_TITLE_POOL = [
   s__("Todos|Good job! Looks like you don't have anything left on your To-Do List"),
@@ -33,3 +34,18 @@ export const TODO_EMPTY_TITLE_POOL = [
   s__('Todos|Nothing left to do. High five!'),
   s__('Todos|Henceforth, you shall be known as "To-Do Destroyer"'),
 ];
+
+export const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
+export const TAB_PENDING = 0;
+export const TAB_DONE = 1;
+export const TAB_ALL = 2;
+
+/**
+ * Instrumentation
+ */
+export const INSTRUMENT_TODO_ITEM_CLICK = 'click_todo_item_action';
+export const INSTRUMENT_TODO_ITEM_FOLLOW = 'follow_todo_link';
+export const INSTRUMENT_TODO_SORT_CHANGE = 'sort_todo_list';
+export const INSTRUMENT_TODO_FILTER_CHANGE = 'filter_todo_list';
+
+export const INSTRUMENT_TAB_LABELS = ['status_pending', 'status_done', 'status_all'];

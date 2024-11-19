@@ -1,3 +1,4 @@
+import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import BoolPresenter from '../components/presenters/bool.vue';
 import CollectionPresenter from '../components/presenters/collection.vue';
 import HealthPresenter from '../components/presenters/health.vue';
@@ -7,6 +8,7 @@ import LinkPresenter from '../components/presenters/link.vue';
 import ListPresenter from '../components/presenters/list.vue';
 import MilestonePresenter from '../components/presenters/milestone.vue';
 import NullPresenter from '../components/presenters/null.vue';
+import HtmlPresenter from '../components/presenters/html.vue';
 import StatePresenter from '../components/presenters/state.vue';
 import TablePresenter from '../components/presenters/table.vue';
 import TextPresenter from '../components/presenters/text.vue';
@@ -19,11 +21,14 @@ const presentersByObjectType = {
   Milestone: MilestonePresenter,
   UserCore: UserPresenter,
   Label: LabelPresenter,
+  Iteration: IterationPresenter,
 };
 
 const presentersByFieldName = {
   healthStatus: HealthPresenter,
   state: StatePresenter,
+  description: HtmlPresenter,
+  descriptionHtml: HtmlPresenter,
 };
 
 const presentersByDisplayType = {

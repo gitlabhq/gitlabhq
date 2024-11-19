@@ -31,8 +31,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'typhoeus', '~> 1.0', '>= 1.0.1'
 
   s.add_development_dependency 'rspec', '~> 3.12'
-  s.add_development_dependency 'rubocop', '~> 1.50'
-  s.add_development_dependency 'gitlab-styles', '~> 12.0.1'
+  s.add_development_dependency 'gitlab-styles', '~> 13.0.1'
 
   s.files         = Dir['lib/**/*.rb']
   s.test_files    = Dir['spec/**/*']

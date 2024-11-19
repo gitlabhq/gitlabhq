@@ -36,7 +36,7 @@ Throughout the year, the number of users fluctuated between 95 and 120.
 
 The following chart illustrates the number of users during the year, per month and quarter.
 
-![Bar chart with number of users per month and quarter](img/quarterly_reconciliation.png)
+![Bar chart with number of users per month and quarter](img/quarterly_reconciliation_v14_7.png)
 
 If you are billed annually:
 

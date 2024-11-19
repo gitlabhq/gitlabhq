@@ -75,6 +75,19 @@ RSpec.describe EachBatch do
       expect(ids).to eq(ids.sort.reverse)
     end
 
+    it 'does not reset order if requested' do
+      model.update_all(color_scheme_id: 2)
+      create(:user, color_scheme_id: 1)
+      batch = []
+
+      model.order(:color_scheme_id).each_batch(reset_order: false) { |rel| batch = rel.to_a }
+
+      expected = batch.sort_by { |u| [u.color_scheme_id, u.id] }.map(&:id)
+      actual = batch.map(&:id)
+
+      expect(actual).to eq(expected)
+    end
+
     shared_examples 'preloaded batch' do |method|
       it 'respects preloading without N+1 queries' do
         one, two = User.first(2)

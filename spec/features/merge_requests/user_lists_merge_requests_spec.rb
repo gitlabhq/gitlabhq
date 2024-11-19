@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge requests > User lists merge requests', feature_category: :code_review_workflow do
+RSpec.describe 'Merge requests > User lists merge requests', :js, feature_category: :code_review_workflow do
   include MergeRequestHelpers
   include SortingHelper
 
@@ -65,7 +65,7 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
 
   context 'merge request reviewers' do
     before do
-      visit_merge_requests(project, reviewer_id: user.id)
+      visit_merge_requests(project, reviewer_username: user.username)
     end
 
     it 'has reviewers in MR list' do
@@ -85,7 +85,7 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
   end
 
   it 'filters on no assignee' do
-    visit_merge_requests(project, assignee_id: IssuableFinder::Params::FILTER_NONE)
+    visit_merge_requests(project, assignee_id: 'None')
 
     expect(page).to have_current_path(project_merge_requests_path(project), ignore_query: true)
     expect(page).to have_content 'merge-test'
@@ -95,7 +95,7 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
   end
 
   it 'filters on a specific assignee' do
-    visit_merge_requests(project, assignee_id: user.id)
+    visit_merge_requests(project, assignee_username: user.username)
 
     expect(page).not_to have_content 'merge-test'
     expect(page).to have_content 'fix'
@@ -150,7 +150,7 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
 
   context 'when viewing merged merge requests' do
     it 'sorts by merged at' do
-      visit_merge_requests(project, state: 'merged', sort: sort_value_merged_date)
+      visit_merge_requests(project, state: 'merged', sort: sort_value_merged_earlier)
 
       expect(first_merge_request).to include('markdown')
       expect(count_merge_requests).to eq(2)
@@ -198,6 +198,6 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
   end
 
   def count_merge_requests
-    page.all('ul.mr-list > li').count
+    page.all('ul.issuable-list > li').count
   end
 end

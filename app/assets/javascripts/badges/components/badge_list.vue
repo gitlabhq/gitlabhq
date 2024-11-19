@@ -11,12 +11,10 @@ import {
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { __, s__ } from '~/locale';
-import { GROUP_BADGE, PROJECT_BADGE, INITIAL_PAGE, PAGE_SIZE } from '../constants';
+import { GROUP_BADGE, PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
 export default {
-  PAGE_SIZE,
-  INITIAL_PAGE,
   name: 'BadgeList',
   components: {
     Badge,
@@ -36,21 +34,13 @@ export default {
     emptyGroupMessage: s__('Badges|This group has no badges. Add an existing badge or create one.'),
     emptyProjectMessage: s__('Badges|This project has no badges. Start by adding a new badge.'),
   },
-  data() {
-    return {
-      currentPage: INITIAL_PAGE,
-    };
-  },
   computed: {
-    ...mapState(['badges', 'isLoading', 'kind']),
-    hasNoBadges() {
-      return !this.isLoading && (!this.badges || !this.badges.length);
-    },
+    ...mapState(['badges', 'pagination', 'isLoading', 'kind']),
     isGroupBadge() {
       return this.kind === GROUP_BADGE;
     },
     showPagination() {
-      return this.badges.length > PAGE_SIZE;
+      return Boolean(this.pagination.nextPage) || Boolean(this.pagination.previousPage);
     },
     emptyMessage() {
       return this.isGroupBadge
@@ -84,7 +74,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['editBadge', 'updateBadgeInModal']),
+    ...mapActions(['editBadge', 'updateBadgeInModal', 'loadBadges']),
     badgeKindText(item) {
       if (item.kind === PROJECT_BADGE) {
         return s__('Badges|Project Badge');
@@ -95,86 +85,91 @@ export default {
     canEditBadge(item) {
       return item.kind === this.kind;
     },
+    onPageChange(page) {
+      // GlPagination still emits events on click when buttons are disabled
+      if (!page || page > this.pagination.totalPages) {
+        return;
+      }
+
+      this.loadBadges({ page });
+    },
   },
 };
 </script>
 
 <template>
-  <div>
-    <gl-loading-icon v-show="isLoading" size="md" />
-    <div data-testid="badge-list-content">
-      <gl-table
-        :empty-text="emptyMessage"
-        :fields="fields"
-        :items="badges"
-        :per-page="$options.PAGE_SIZE"
-        :current-page="currentPage"
-        stacked="md"
-        show-empty
-        class="b-table-fixed"
-        data-testid="badge-list"
-      >
-        <template #cell(name)="{ item }">
-          <label v-gl-tooltip class="label-bold str-truncated mb-0" :title="item.name">{{
-            item.name
-          }}</label>
-          <gl-badge>{{ badgeKindText(item) }}</gl-badge>
-        </template>
+  <div data-testid="badge-list-content">
+    <gl-table
+      :empty-text="emptyMessage"
+      :fields="fields"
+      :items="badges"
+      stacked="md"
+      show-empty
+      class="b-table-fixed"
+      data-testid="badge-list"
+    >
+      <template #cell(name)="{ item }">
+        <label v-gl-tooltip class="label-bold str-truncated mb-0" :title="item.name">{{
+          item.name
+        }}</label>
+        <gl-badge>{{ badgeKindText(item) }}</gl-badge>
+      </template>
 
-        <template #cell(badge)="{ item }">
-          <div class="overflow-hidden">
-            <badge :image-url="item.renderedImageUrl" :link-url="item.renderedLinkUrl" />
-          </div>
-        </template>
+      <template #cell(badge)="{ item }">
+        <div class="overflow-hidden">
+          <badge :image-url="item.renderedImageUrl" :link-url="item.renderedLinkUrl" />
+        </div>
+      </template>
 
-        <template #cell(url)="{ item }">
-          <span v-gl-tooltip :title="item.linkUrl" class="str-truncated">
-            {{ item.linkUrl }}
-          </span>
-        </template>
+      <template #cell(url)="{ item }">
+        <span v-gl-tooltip :title="item.linkUrl" class="str-truncated">
+          {{ item.linkUrl }}
+        </span>
+      </template>
 
-        <template #cell(actions)="{ item }">
-          <div
-            v-if="canEditBadge(item)"
-            class="table-action-buttons gl-flex gl-justify-end gl-gap-2"
-            data-testid="badge-actions"
-          >
-            <gl-button
-              v-gl-tooltip
-              :disabled="item.isDeleting"
-              category="tertiary"
-              icon="pencil"
-              size="medium"
-              :title="$options.i18n.edit"
-              :aria-label="$options.i18n.edit"
-              data-testid="edit-badge-button"
-              @click="editBadge(item)"
-            />
-            <gl-button
-              v-gl-tooltip
-              v-gl-modal.delete-badge-modal
-              :disabled="item.isDeleting"
-              category="tertiary"
-              icon="remove"
-              size="medium"
-              :title="$options.i18n.delete"
-              :aria-label="$options.i18n.delete"
-              data-testid="delete-badge"
-              @click="updateBadgeInModal(item)"
-            />
-            <gl-loading-icon v-show="item.isDeleting" size="sm" :inline="true" />
-          </div>
-        </template>
-      </gl-table>
+      <template #cell(actions)="{ item }">
+        <div
+          v-if="canEditBadge(item)"
+          class="table-action-buttons gl-flex gl-justify-end gl-gap-2"
+          data-testid="badge-actions"
+        >
+          <gl-button
+            v-gl-tooltip
+            :disabled="item.isDeleting"
+            category="tertiary"
+            icon="pencil"
+            size="medium"
+            :title="$options.i18n.edit"
+            :aria-label="$options.i18n.edit"
+            data-testid="edit-badge-button"
+            @click="editBadge(item)"
+          />
+          <gl-button
+            v-gl-tooltip
+            v-gl-modal.delete-badge-modal
+            :disabled="item.isDeleting"
+            category="tertiary"
+            icon="remove"
+            size="medium"
+            :title="$options.i18n.delete"
+            :aria-label="$options.i18n.delete"
+            data-testid="delete-badge"
+            @click="updateBadgeInModal(item)"
+          />
+          <gl-loading-icon v-show="item.isDeleting" size="sm" :inline="true" />
+        </div>
+      </template>
+    </gl-table>
 
-      <gl-pagination
-        v-if="showPagination"
-        v-model="currentPage"
-        :per-page="$options.PAGE_SIZE"
-        :total-items="badges.length"
-        align="center"
-        class="gl-mt-5"
-      />
-    </div>
+    <gl-loading-icon v-if="isLoading" size="md" class="gl-pb-5" />
+    <gl-pagination
+      v-if="!isLoading && showPagination"
+      :value="pagination.page"
+      :per-page="pagination.perPage"
+      :total-items="pagination.total"
+      align="center"
+      class="gl-mt-5"
+      @input="onPageChange"
+    />
   </div>
 </template>

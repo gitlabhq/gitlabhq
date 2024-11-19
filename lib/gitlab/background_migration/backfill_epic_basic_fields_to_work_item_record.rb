@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Metrics/ClassLength -- exceeds the 100 lines limit by 4 lines
 module Gitlab
   module BackgroundMigration
     class BackfillEpicBasicFieldsToWorkItemRecord < BatchedMigrationJob
@@ -167,4 +166,3 @@ module Gitlab
     end
   end
 end
-# rubocop: enable Metrics/ClassLength

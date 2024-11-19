@@ -7,7 +7,7 @@ module AuthorizedProjectUpdate
     sidekiq_options retry: 3
     feature_category :permissions
     urgency :low
-    data_consistency :always
+    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- will change to sticky with feature-flag
     queue_namespace :authorized_project_update
 
     idempotent!
@@ -30,7 +30,9 @@ module AuthorizedProjectUpdate
     # does not allow us to deduplicate these jobs.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/325291
     def use_replica_if_available(&block)
-      ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&block)
+      ::Gitlab::Database::LoadBalancing::SessionMap
+        .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord])
+        .use_replicas_for_read_queries(&block)
     end
 
     def project_authorizations_needs_refresh?(user)

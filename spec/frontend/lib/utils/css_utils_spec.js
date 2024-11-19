@@ -3,6 +3,9 @@ import {
   getSystemColorScheme,
   listenSystemColorSchemeChange,
   removeListenerSystemColorSchemeChange,
+  isNarrowScreenAddListener,
+  isNarrowScreenRemoveListener,
+  isNarrowScreen,
 } from '~/lib/utils/css_utils';
 
 describe('getCssClassDimensions', () => {
@@ -100,6 +103,43 @@ describe('listenSystemColorSchemeChange', () => {
     listenSystemColorSchemeChange(callback);
     removeListenerSystemColorSchemeChange(callback);
 
+    expect(mockMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+  });
+});
+
+describe('listenNarrowScreen', () => {
+  let mockMedia;
+
+  beforeEach(() => {
+    mockMedia = {
+      matches: false,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    };
+    window.matchMedia = jest.fn().mockReturnValue(mockMedia);
+    window.getComputedStyle = jest.fn().mockReturnValue({
+      getPropertyValue: jest.fn().mockReturnValue('1200px'),
+    });
+  });
+
+  it('checks for screen size', () => {
+    mockMedia.matches = true;
+    expect(isNarrowScreen()).toBe(true);
+    mockMedia.matches = false;
+    expect(isNarrowScreen()).toBe(false);
+  });
+
+  it('adds event listener for screen size changes', () => {
+    const callback = jest.fn();
+    isNarrowScreenAddListener(callback);
+    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 1199px)');
+    expect(mockMedia.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+  });
+
+  it('removes event listener for screen size changes', () => {
+    const callback = jest.fn();
+    isNarrowScreenAddListener(callback);
+    isNarrowScreenRemoveListener(callback);
     expect(mockMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
   });
 });

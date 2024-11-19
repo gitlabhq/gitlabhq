@@ -114,7 +114,7 @@ If you want to make a proposal to enforce a new cop or change existing cop confi
 or the
 [`gitlab` merge request template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/New%20Static%20Analysis%20Check.md)
 depending on where you want to add this rule. Using this template encourages
-all maintainers to provide feedback on our preferred style as well as providing
+all maintainers to provide feedback on our preferred style and provides
 a structured way of communicating the consequences of the new rule.
 
 ## Enabling a new cop

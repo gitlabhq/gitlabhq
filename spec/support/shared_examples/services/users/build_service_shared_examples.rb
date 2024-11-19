@@ -1,22 +1,41 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'organization user creation and validation in service' do
+  it 'creates organization_user on the organization', :aggregate_failures do
+    organization_ids = user.organization_users.map(&:organization_id)
+
+    expect(organization_ids).to contain_exactly(organization_params[:organization_id])
+  end
+
+  context 'when organization_params is blank' do
+    let(:params) { base_params.except(*organization_params.keys) }
+
+    it 'does not create organization_user record' do
+      expect(user.organization_users).to be_empty
+    end
+  end
+
+  context 'when organization param is invalid' do
+    let(:params) { base_params.merge(organization_id: non_existing_record_id) }
+
+    it 'adds invalid organization user error', :aggregate_failures do
+      expect(user.valid?).to be(false)
+      expect(user.errors.full_messages).to include('Organization users is invalid')
+    end
+  end
+end
+
 RSpec.shared_examples 'common user build items' do
+  it_behaves_like 'organization user creation and validation in service'
+
   it { is_expected.to be_valid }
 
   it 'sets the created_by_id' do
     expect(user.created_by_id).to eq(current_user&.id)
   end
 
-  it 'calls UpdateCanonicalEmailService' do
-    expect(Users::UpdateCanonicalEmailService).to receive(:new).and_call_original
-
-    user
-  end
-
-  context 'when organization_id is in the params' do
-    it 'creates personal namespace in specified organization' do
-      expect(user.namespace.organization).to eq(organization)
-    end
+  it 'creates personal namespace in specified organization' do
+    expect(user.namespace.organization).to eq(organization)
   end
 
   context 'when organization_id is not in the params' do
@@ -47,6 +66,18 @@ RSpec.shared_examples 'common user build items' do
 end
 
 RSpec.shared_examples_for 'current user not admin build items' do
+  it_behaves_like 'organization user creation and validation in service'
+
+  context 'with organization_access_level params' do
+    let(:params) { base_params.merge(organization_access_level: 'owner') }
+
+    it 'ignores parameter and use default access level' do
+      organization_user_data = user.organization_users.first
+
+      expect(organization_user_data.access_level).to eq('default')
+    end
+  end
+
   context 'when "email_confirmation_setting" application setting is set to `hard`' do
     before do
       stub_application_setting_enum('email_confirmation_setting', 'hard')

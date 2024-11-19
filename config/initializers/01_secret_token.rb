@@ -105,6 +105,12 @@ class SecretsInitializer
     secrets_from_file[rails_env.to_s] ||= {}
     secrets_from_file[rails_env.to_s].merge!(missing_secrets)
 
+    backup_file = "#{secrets_file_path}.orig.#{Time.now.to_i}"
+    if File.exist?(secrets_file_path)
+      warn "Creating a backup of secrets file: #{secrets_file_path}: #{backup_file}"
+      FileUtils.mv(secrets_file_path, backup_file)
+    end
+
     File.write(
       secrets_file_path,
       YAML.dump(secrets_from_file),

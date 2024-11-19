@@ -1,0 +1,163 @@
+@use 'highlight/common';
+
+.rd-text-view-root {
+  font-family: $monospace-font;
+  line-height: $code-line-height;
+  font-size: $code-font-size;
+}
+
+.rd-text-view-root,
+.rd-text-view-content {
+  display: block;
+}
+
+.rd-hunk-header,
+.rd-hunk-lines {
+  display: grid;
+}
+
+.rd-hunk-lines:last-child > :first-child {
+  border-bottom-left-radius: var(--rd-diff-file-border-radius);
+}
+
+.rd-hunk-lines:last-child > :last-child {
+  border-bottom-right-radius: var(--rd-diff-file-border-radius);
+}
+
+.rd-hunk-header {
+  border-top: 1px solid var(--rd-hunk-header-border-color, $gray-100);
+  border-bottom: 1px solid var(--rd-hunk-header-border-color, $gray-100);
+  background-color: var(--rd-hunk-header-background-color, $gray-50);
+  color: var(--rd-hunk-header-color, $gray-400);
+
+  &:first-child {
+    border-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.rd-hunk-header-parallel,
+.rd-hunk-lines-parallel, {
+  grid-template-columns: 50px 1fr 50px 1fr;
+}
+
+.rd-hunk-header-inline {
+  grid-template-columns: 100px 1fr;
+}
+
+.rd-hunk-lines-inline {
+  grid-template-columns: 50px 50px 1fr;
+}
+
+.rd-hunk-header-buttons {
+  display: grid;
+  grid-auto-flow: row;
+  padding: 0;
+}
+
+.rd-expand-lines-button {
+  @include common.diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
+
+  display: block;
+  border: 0;
+
+  background-color: var(--rd-expand-lines-button-background-color, $gray-100);
+  color: var(--rd-expand-lines-button-color, $gray-700);
+
+  &:hover,
+  &:focus {
+    background-color: var(--rd-expand-lines-button-hover-background-color, $gray-200);
+    color: var(--rd-expand-lines-button-hover-color, $gray-800);
+  }
+}
+
+.rd-line-number {
+  padding: 0 10px 0 5px;
+  text-align: right;
+  background-color: var(--rd-line-number-background-color, $white);
+
+  &:hover:not(:empty) {
+    @include common.line-number-hover;
+  }
+
+  // override content border
+  &:first-child {
+    margin-left: -1px;
+    border-left: 1px solid var(--rd-line-number-adjacent-border-color, rgba(0, 0, 0, 0.125));
+  }
+}
+
+.rd-line-number:where([data-change=removed]) {
+  background-color: var(--rd-line-number-removed-background-color, $line-number-old);
+}
+
+.rd-line-number:where([data-change=added]) {
+  background-color: var(--rd-line-number-added-background-color, $line-number-new);
+}
+
+.rd-line-number-border-right,
+.rd-line-number-border-both {
+  border-right: 1px solid var(--rd-line-number-adjacent-border-color, rgba(0, 0, 0, 0.125));
+}
+
+.rd-line-number-border-both {
+  border-left: 1px solid var(--rd-line-number-adjacent-border-color, rgba(0, 0, 0, 0.125));
+}
+
+.rd-line-link {
+  display: block;
+
+  &, &:hover {
+    color: var(--rd-line-link-color, $gray-400);
+  }
+
+  &::before {
+    content: attr(data-line-number);
+  }
+}
+
+.rd-line-content,
+.rd-hunk-header-content {
+  padding: 0 1.5em;
+  word-break: break-all;
+}
+
+.rd-hunk-header-content {
+  align-self: center;
+}
+
+.rd-line-content {
+  white-space: break-spaces;
+
+  &::before {
+    position: absolute;
+    margin-left: -14px;
+  }
+}
+
+.rd-line-content:where([data-change=removed]) {
+  background-color: var(--rd-line-content-removed-background-color, $line-removed);
+
+  &::before {
+    content: "-";
+    color: var(--rd-line-content-removed-pseudo-color, scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%));
+  }
+}
+
+.rd-line-content:where([data-change=added]) {
+  background-color: var(--rd-line-content-added-background-color, $line-added);
+
+  &::before {
+    content: "+";
+    color: var(--rd-line-content-added-pseudo-color, scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
+  }
+}
+
+// Select text only within one side of the parallel diff
+.rd-diff-file:has([data-position=new]:where(:active, :focus)) [data-position=old],
+.rd-diff-file:has([data-position=old]:where(:active, :focus)) [data-position=new] {
+  user-select: none;
+}

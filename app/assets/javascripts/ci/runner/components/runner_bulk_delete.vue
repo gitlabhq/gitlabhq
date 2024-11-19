@@ -177,12 +177,15 @@ export default {
           </gl-sprintf>
         </div>
         <div class="gl-ml-auto">
-          <gl-button variant="default" @click="onClearChecked">{{
+          <gl-button data-testid="clear-selection" variant="default" @click="onClearChecked">{{
             s__('Runners|Clear selection')
           }}</gl-button>
-          <gl-button v-gl-modal="$options.BULK_DELETE_MODAL_ID" variant="danger">{{
-            s__('Runners|Delete selected')
-          }}</gl-button>
+          <gl-button
+            v-gl-modal="$options.BULK_DELETE_MODAL_ID"
+            variant="danger"
+            data-testid="delete-selected"
+            >{{ s__('Runners|Delete selected') }}</gl-button
+          >
         </div>
       </div>
     </div>

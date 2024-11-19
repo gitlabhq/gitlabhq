@@ -300,5 +300,26 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
         expect(subject[:coverage]).to eq('35.00')
       end
     end
+
+    context 'when pipeline has a schedule' do
+      let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule, project: project) }
+
+      it 'exposes the schedule' do
+        expect(subject[:pipeline_schedule]).to eq({
+          id: pipeline_schedule.id,
+          description: pipeline_schedule.description,
+          path: pipeline_schedules_path(pipeline_schedule.project)
+        })
+      end
+    end
+
+    context 'when pipeline has no schedule' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it 'is nil' do
+        expect(subject[:pipeline_schedule]).to be_nil
+      end
+    end
   end
 end

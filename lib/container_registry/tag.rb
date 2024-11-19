@@ -135,7 +135,6 @@ module ContainerRegistry
       repository.client.put_tag(repository.path, name, digests)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def total_size
       return @total_size if @total_size
 
@@ -143,7 +142,6 @@ module ContainerRegistry
 
       layers.sum(&:size) if v2?
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Deletes the image associated with this tag
     # Note this will delete the image and all tags associated with it.

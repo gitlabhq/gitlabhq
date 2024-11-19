@@ -82,7 +82,7 @@ content specific to the Service Desk ticket or your GitLab instance.
 | `%{ISSUE_PATH}`        | **{check-circle}** Yes               | **{check-circle}** Yes | Project path appended with the ticket IID. |
 | `%{ISSUE_URL}`         | **{check-circle}** Yes               | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
 | `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes               | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
-| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes               | **{check-circle}** Yes | Unsubscribe URL. |
+| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes               | **{check-circle}** Yes | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
 | `%{NOTE_TEXT}`         | **{dotted-circle}** No               | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
 
 ### Thank you email
@@ -316,7 +316,7 @@ notification email with the verification result.
 If the verification failed, the email also contains details of the reason.
 
 If the verification was successful, the custom email address is ready to be used.
-You can now enable sending Service Desk emails via the custom email address.
+You can now enable sending Service Desk emails with the custom email address.
 
 #### Troubleshooting your configuration
 
@@ -371,7 +371,7 @@ To troubleshoot this:
 
 ### Enable or disable the custom email address
 
-After the custom email address has been verified, administrators can enable or disable sending Service Desk emails via the custom email address.
+After the custom email address has been verified, administrators can enable or disable sending Service Desk emails with the custom email address.
 
 To **enable** the custom email address:
 
@@ -1006,7 +1006,7 @@ or completely separately.
 
 1. GitLab offers two methods to transport emails from `mail_room` to the GitLab
    application. You can configure the `delivery_method` for each email setting individually:
-   1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload via an API POST request to your GitLab
+   1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload with an API POST request to your GitLab
       application. It uses a shared token to authenticate. If you choose this method,
       make sure the `mail_room` process can access the API endpoint and distribute the shared
       token across all application nodes.
@@ -1019,7 +1019,7 @@ or completely separately.
       gitlab_rails['incoming_email_delivery_method'] = "webhook"
 
       # The URL that mail_room can contact. You can also use an internal URL or IP,
-      # just make sure mail_room can access the GitLab API via that address.
+      # just make sure mail_room can access the GitLab API with that address.
       # Do not end with "/".
       gitlab_rails['incoming_email_gitlab_url'] = "https://gitlab.example.com"
 
@@ -1033,7 +1033,7 @@ or completely separately.
       gitlab_rails['service_desk_email_delivery_method'] = "webhook"
 
       # The URL that mail_room can contact. You can also use an internal URL or IP,
-      # just make sure mail_room can access the GitLab API via that address.
+      # just make sure mail_room can access the GitLab API with that address.
       # Do not end with "/".
 
       gitlab_rails['service_desk_email_gitlab_url'] = "https://gitlab.example.com"
@@ -1044,7 +1044,7 @@ or completely separately.
 
       ::EndTabs
 
-   1. [Deprecated in GitLab 16.0 and planned for removal in 17.0)](../../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
+   1. [Deprecated in GitLab 16.0 and planned for removal in 18.0)](../../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
       If you experience issues with the `webhook` setup, use `sidekiq` to deliver the email payload directly to GitLab Sidekiq using Redis.
 
       ::Tabs

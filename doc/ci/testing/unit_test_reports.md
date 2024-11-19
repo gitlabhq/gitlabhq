@@ -65,7 +65,7 @@ Each entry in the **Test summary** panel shows the test name and result type.
 Select the test name to open a modal window with details of its execution time and
 the error output.
 
-![Test Reports Widget](img/junit_test_report.png)
+![Test Reports Widget](img/junit_test_report_v13_9.png)
 
 #### Copy failed test names
 

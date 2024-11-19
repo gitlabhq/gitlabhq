@@ -4,7 +4,8 @@ classes:
 - Analytics::DashboardsPointer
 feature_categories:
 - devops_reports
-description: Stores project link with configuration files for Analytics Dashboards group feature.
+description: Stores project link with configuration files for Analytics Dashboards
+  group feature.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107673
 milestone: '15.8'
 gitlab_schema: gitlab_main_cell

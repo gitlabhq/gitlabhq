@@ -1,4 +1,4 @@
-import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/mount_markdown_editor';
+import { initMarkdownEditor } from 'ee_else_ce/pages/projects/merge_requests/init_markdown_editor';
 
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -6,7 +6,6 @@ import { __ } from '~/locale';
 import { GitLabDropdown } from '~/deprecated_jquery_dropdown/gl_dropdown';
 
 import initMergeRequest from '~/pages/projects/merge_requests/init_merge_request';
-import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 import initCheckFormState from './check_form_state';
 import initFormUpdate from './update_form';
 
@@ -74,5 +73,4 @@ initMergeRequest();
 initFormUpdate();
 initCheckFormState();
 initTargetBranchSelector();
-// eslint-disable-next-line no-new
-new IssuableTemplateSelectors({ warnTemplateOverride: true, editor: mountMarkdownEditor() });
+initMarkdownEditor();

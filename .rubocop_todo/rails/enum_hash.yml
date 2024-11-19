@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+Rails/EnumHash:
+  Exclude:
+    - 'app/models/activity_pub/releases_subscription.rb'

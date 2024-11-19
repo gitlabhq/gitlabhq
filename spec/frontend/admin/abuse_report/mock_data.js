@@ -80,7 +80,7 @@ export const mockAbuseReport = {
 };
 
 export const mockLabel1 = {
-  id: 'gid://gitlab/Admin::AbuseReportLabel/1',
+  id: 'gid://gitlab/AntiAbuse::Reports::Label/1',
   title: 'Uno',
   color: '#F0AD4E',
   textColor: '#FFFFFF',
@@ -88,7 +88,7 @@ export const mockLabel1 = {
 };
 
 export const mockLabel2 = {
-  id: 'gid://gitlab/Admin::AbuseReportLabel/2',
+  id: 'gid://gitlab/AntiAbuse::Reports::Label/2',
   title: 'Dos',
   color: '#F0AD4E',
   textColor: '#FFFFFF',
@@ -124,7 +124,7 @@ export const mockCreateLabelResponse = {
   data: {
     labelCreate: {
       label: {
-        id: 'gid://gitlab/Admin::AbuseReportLabel/1',
+        id: 'gid://gitlab/AntiAbuse::Reports::Label/1',
         color: '#ed9121',
         description: null,
         title: 'abuse report label',
@@ -564,7 +564,7 @@ export const createAbuseReportNoteResponse = {
 
 export const editAbuseReportNoteResponse = {
   data: {
-    updateNote: {
+    updateAbuseReportNote: {
       errors: [],
       note: {
         id: 'gid://gitlab/Note/1',
@@ -590,6 +590,15 @@ export const editAbuseReportNoteResponse = {
           __typename: 'NotePermissions',
         },
       },
+    },
+  },
+};
+
+export const editAbuseReportNoteResponseWithErrors = {
+  data: {
+    updateAbuseReportNote: {
+      errors: ['foo', 'bar'],
+      note: null,
     },
   },
 };

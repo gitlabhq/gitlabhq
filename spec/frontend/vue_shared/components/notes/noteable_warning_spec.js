@@ -1,5 +1,5 @@
 import { GlIcon, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 
@@ -12,8 +12,8 @@ describe('Issue Warning Component', () => {
   const findLockedAndConfidentialBlock = (w = wrapper) =>
     w.findComponent({ ref: 'lockedAndConfidential' });
 
-  const createComponent = (props) =>
-    shallowMount(NoteableWarning, {
+  const createComponent = (props, mountFn = shallowMount) =>
+    mountFn(NoteableWarning, {
       propsData: {
         ...props,
       },
@@ -111,18 +111,27 @@ describe('Issue Warning Component', () => {
     let wrapperLockedAndConfidential;
 
     beforeEach(() => {
-      wrapperLocked = createComponent({
-        isLocked: true,
-        isConfidential: false,
-      });
-      wrapperConfidential = createComponent({
-        isLocked: false,
-        isConfidential: true,
-      });
-      wrapperLockedAndConfidential = createComponent({
-        isLocked: true,
-        isConfidential: true,
-      });
+      wrapperLocked = createComponent(
+        {
+          isLocked: true,
+          isConfidential: false,
+        },
+        mount,
+      );
+      wrapperConfidential = createComponent(
+        {
+          isLocked: false,
+          isConfidential: true,
+        },
+        mount,
+      );
+      wrapperLockedAndConfidential = createComponent(
+        {
+          isLocked: true,
+          isConfidential: true,
+        },
+        mount,
+      );
     });
 
     it('renders confidential & locked messages with noteable "issue"', () => {
@@ -149,6 +158,7 @@ describe('Issue Warning Component', () => {
       });
 
       await nextTick();
+
       expect(findLockedBlock(wrapperLocked).text()).toContain(
         'The discussion in this epic is locked.',
       );

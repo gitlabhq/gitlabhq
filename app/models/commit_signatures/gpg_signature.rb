@@ -13,7 +13,12 @@ module CommitSignatures
     validates :gpg_key_primary_keyid, presence: true
 
     def signed_by_user
-      gpg_key&.user
+      return gpg_key.user if gpg_key
+
+      # system signed gpg keys may not have a gpg key in rails.
+      # instead take the user from the gpg signature.
+      User.find_by_any_email(gpg_key_user_email) if verified_system? && Feature.enabled?(
+        :check_for_mailmapped_commit_emails, project)
     end
 
     def type

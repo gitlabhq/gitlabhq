@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :bulk_import_export, class: 'BulkImports::Export', traits: %i[started] do
-    group
+    group { association(:group) if project.nil? }
     relation { 'labels' }
 
     trait :started do

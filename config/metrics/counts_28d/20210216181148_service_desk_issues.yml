@@ -2,7 +2,7 @@
 data_category: operational
 key_path: usage_activity_by_stage_monthly.plan.service_desk_issues
 description: Count of service desk issues
-product_group: respond
+product_group: project_management
 value_type: number
 status: active
 time_frame: 28d
@@ -10,7 +10,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

@@ -42,12 +42,12 @@ module Packages
         # and https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
         subquery_name = :partition_subquery
         arel_table = Arel::Table.new(subquery_name)
-        column_names = Packages::Package.column_names.map do |cn|
+        column_names = packages_class.column_names.map do |cn|
           "#{subquery_name}.#{quote_column_name(cn)}"
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
-        pkgs = Packages::Package
+        pkgs = packages_class.unscope(where: :package_type)
         pkgs = pkgs.with(project_ids_cte.to_arel) if use_project_ids_cte?
         pkgs = pkgs.select(column_names.join(','))
                    .from(package_names_partition, subquery_name)
@@ -62,7 +62,7 @@ module Packages
 
       def package_names_partition
         # rubocop: disable CodeReuse/ActiveRecord
-        table_name = quote_table_name(Packages::Package.table_name)
+        table_name = quote_table_name(packages_class.table_name)
         name_column = "#{table_name}.#{quote_column_name('name')}"
         created_at_column = "#{table_name}.#{quote_column_name('created_at')}"
         select_sql = "ROW_NUMBER() OVER (PARTITION BY #{name_column} ORDER BY #{created_at_column} DESC) AS row_number, #{table_name}.*"
@@ -101,9 +101,7 @@ module Packages
       strong_memoize_attr :base_matching_package_names
 
       def nuget_packages
-        Packages::Package.nuget
-                         .installable
-                         .has_version
+        ::Packages::Nuget::Package.installable.has_version
       end
 
       def project_ids_cte
@@ -148,6 +146,10 @@ module Packages
 
       def per_page
         [@options[:per_page], MAX_PER_PAGE].min
+      end
+
+      def packages_class
+        ::Packages::Nuget::Package
       end
 
       class Result

@@ -74,7 +74,7 @@ module API
         def head_request_on_aws_file?(file, supports_direct_download)
           Gitlab.config.packages.object_store.enabled &&
             supports_direct_download &&
-            file.class.direct_download_enabled? &&
+            file.direct_download_enabled? &&
             request.head? &&
             file.fog_credentials[:provider] == 'AWS'
         end

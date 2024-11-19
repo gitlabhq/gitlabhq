@@ -23,16 +23,16 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   end
 
   describe '.known_events' do
-    let(:ce_event) { { name: "ce_event" } }
-    let(:ce_event2) { { name: "ce_event2" } }
-    let(:removed_ce_event) { { name: "removed_ce_event" } }
+    let(:ce_event) { "ce_event" }
+    let(:ce_event2) { "ce_event2" }
+    let(:removed_ce_event) { "removed_ce_event" }
     let(:metric_definition) do
       Gitlab::Usage::MetricDefinition.new('ce_metric',
         {
           key_path: 'ce_metric_weekly',
           status: 'active',
           options: {
-            events: [ce_event[:name]]
+            events: [ce_event]
           }
         })
     end
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         {
           key_path: 'ce_metric_weekly2',
           status: 'active',
-          events: [ce_event2.merge(unique: 'user')]
+          events: [{ name: ce_event2, unique: 'user' }]
         })
     end
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           key_path: 'removed_ce_metric_weekly',
           status: 'removed',
           options: {
-            events: [removed_ce_event[:name]]
+            events: [removed_ce_event]
           }
         })
     end
@@ -95,14 +95,14 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
     let(:known_events) do
       [
-        { name: weekly_event },
-        { name: daily_event },
-        { name: category_productivity_event },
-        { name: compliance_slot_event },
-        { name: no_slot },
-        { name: different_aggregation },
-        { name: event_overridden_for_user }
-      ].map(&:with_indifferent_access)
+        weekly_event,
+        daily_event,
+        category_productivity_event,
+        compliance_slot_event,
+        no_slot,
+        different_aggregation,
+        event_overridden_for_user
+      ].to_set
     end
 
     before do
@@ -251,7 +251,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
             it "raises an error with an instructive message" do
               expect do
                 described_class.track_event('g_analytics_productivity', values: entity1, property_name: 'project')
-              end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
+              end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.md/)
             end
           end
 
@@ -383,7 +383,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           it "raises an error with an instructive message" do
             expect do
               described_class.unique_events(event_names: 'g_analytics_productivity', property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
-            end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
+            end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.md/)
           end
         end
 
@@ -420,7 +420,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     using RSpec::Parameterized::TableSyntax
 
     let(:weekly_event) { 'i_search_total' }
-    let(:redis_event) { described_class.send(:event_for, weekly_event) }
+    let(:redis_event) { { name: weekly_event } }
     let(:week_one) { "{#{described_class::REDIS_SLOT}}_i_search_total-2020-52" }
     let(:week_two) { "{#{described_class::REDIS_SLOT}}_i_search_total-2020-53" }
     let(:week_three) { "{#{described_class::REDIS_SLOT}}_i_search_total-2021-01" }

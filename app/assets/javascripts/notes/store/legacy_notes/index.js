@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { ASC, MR_FILTER_OPTIONS } from '~/notes/constants';
-// import * as actions from './actions';
-// import mutations from './mutations';
-// import * as getters from './getters';
+import * as actions from './actions';
+import mutations from './mutations';
+import * as getters from './getters';
 
 export const useNotes = defineStore('legacyNotes', {
   state() {
@@ -57,15 +57,10 @@ export const useNotes = defineStore('legacyNotes', {
     };
   },
   actions: {
-    // ...mutations,
-    // ...actions,
-    saveNote() {},
-    updateDiscussion() {},
-    updateResolvableDiscussionsCounts() {},
+    ...mutations,
+    ...actions,
   },
   getters: {
-    // ...getters,
-    notesById() {},
-    getDiscussion() {},
+    ...getters,
   },
 });

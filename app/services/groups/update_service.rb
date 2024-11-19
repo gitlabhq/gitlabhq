@@ -23,20 +23,16 @@ module Groups
       end
 
       return false unless valid_visibility_level_change?(group, group.visibility_attribute_value(params))
-
       return false unless valid_share_with_group_lock_change?
-
       return false unless valid_path_change?
-
       return false unless update_shared_runners
 
       handle_changes
-
       handle_namespace_settings
-
       handle_hierarchy_cache_update
-
       group.assign_attributes(params)
+
+      return false if group.errors.present?
 
       begin
         success = group.save
@@ -157,7 +153,7 @@ module Groups
 
     def handle_changes
       handle_settings_update
-      handle_crm_settings_update unless params[:crm_enabled].nil?
+      handle_crm_settings_update
     end
 
     def handle_settings_update
@@ -169,11 +165,21 @@ module Groups
     end
 
     def handle_crm_settings_update
+      return if params[:crm_enabled].nil? && params[:crm_source_group_id].nil?
+
       crm_enabled = params.delete(:crm_enabled)
-      return if group.crm_enabled? == crm_enabled
+      crm_enabled = true if crm_enabled.nil?
+      crm_source_group_id = params.delete(:crm_source_group_id)
+      return if group.crm_enabled? == crm_enabled && group.crm_settings&.source_group_id == crm_source_group_id
+
+      if group.crm_settings&.source_group_id != crm_source_group_id && group.has_issues_with_contacts?
+        group.errors.add(:base, s_('GroupSettings|Contact source cannot be changed when issues already have contacts assigned from a different source.'))
+        return
+      end
 
       crm_settings = group.crm_settings || group.build_crm_settings
       crm_settings.enabled = crm_enabled
+      crm_settings.source_group_id = crm_source_group_id.presence
       crm_settings.save
     end
 

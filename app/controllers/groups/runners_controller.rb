@@ -28,7 +28,7 @@ class Groups::RunnersController < Groups::ApplicationController
   def edit; end
 
   def update
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
+    if Ci::Runners::UpdateRunnerService.new(current_user, @runner).execute(runner_params).success?
       redirect_to group_runner_path(@group, @runner), notice: _('Runner was successfully updated.')
     else
       render 'edit'

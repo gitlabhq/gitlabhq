@@ -1,7 +1,7 @@
 ---
 table_name: compliance_requirements
 classes:
-  - ComplianceManagement::ComplianceFramework::ComplianceRequirement
+- ComplianceManagement::ComplianceFramework::ComplianceRequirement
 feature_categories:
 - compliance_management
 description: Stores the compliance requirements for a compliance management framework

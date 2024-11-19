@@ -209,10 +209,10 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     context 'when given a malformed schema version' do
       let(:security_report_failure) { 'using_unsupported_schema_version' }
 
-      [ # rubocop: disable Performance/CollectionLiteralInLoop -- test case
-        '../../../../../../../../../spec/fixtures/security_reports/master/gl-secret-detection-report.json',
-        './fixtures/gl-secret-detection.json',
-        '%2e%2e%2f1.2.3'
+      %w[
+        ../../../../../../../../../spec/fixtures/security_reports/master/gl-secret-detection-report.json
+        ./fixtures/gl-secret-detection.json
+        %2e%2e%2f1.2.3
       ].each do |version|
         context version do
           let(:report_version) { version }

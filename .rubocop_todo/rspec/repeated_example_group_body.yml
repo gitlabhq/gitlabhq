@@ -27,7 +27,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/lib/api/entities/application_setting_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_range_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'
-    - 'spec/lib/bitbucket_server/representation/comment_spec.rb'
     - 'spec/lib/gitlab/blob_helper_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/release_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'

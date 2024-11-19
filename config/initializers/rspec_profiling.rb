@@ -103,10 +103,14 @@ RspecProfiling.configure do |config|
     RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
     RspecProfiling::Run.prepend(RspecProfilingExt::Run)
     RspecProfiling::Example.prepend(RspecProfilingExt::Example)
+    rspec_profiling_dir = ENV['RSPEC_PROFILING_FOLDER_PATH'] ||
+      'rspec/profiling'
+    FileUtils.mkdir_p(rspec_profiling_dir)
+
     config.collector = RspecProfilingExt::Collectors::CSVWithTimestamps
     config.csv_path = -> do
       prefix = "#{ENV['CI_JOB_NAME']}-".gsub(%r{[ /]}, '-') if ENV['CI_JOB_NAME']
-      "#{ENV['RSPEC_PROFILING_FOLDER_PATH']}/#{prefix}#{Time.now.to_i}-#{SecureRandom.hex(8)}-rspec-data.csv"
+      "#{rspec_profiling_dir}/#{prefix}#{Time.now.to_i}-#{SecureRandom.hex(8)}-rspec-data.csv"
     end
   end
 end

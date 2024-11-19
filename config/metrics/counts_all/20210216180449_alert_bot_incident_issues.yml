@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.alert_bot_incident_issues
 description: Count of issues created by the alert bot automatically
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all
@@ -10,7 +10,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

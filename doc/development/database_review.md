@@ -80,7 +80,7 @@ A database **reviewer**'s role is to:
 - Perform a first-pass review on the MR and suggest improvements to the author.
 - Once satisfied, relabel the MR with ~"database::reviewed", approve it, and
   request a review from the database **maintainer** suggested by Reviewer
-  Roulette. Remove yourself as a reviewer once this has been done.
+  Roulette.
 
 A database **maintainer**'s role is to:
 
@@ -90,7 +90,6 @@ A database **maintainer**'s role is to:
 - Finally approve the MR and relabel the MR with ~"database::approved"
 - Merge the MR if no other approvals are pending or pass it on to
   other maintainers as required (frontend, backend, documentation).
-  - If not merging, remove yourself as a reviewer.
 
 ### Distributing review workload
 

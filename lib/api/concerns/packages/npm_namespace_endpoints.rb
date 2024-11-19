@@ -19,8 +19,8 @@ module API
               return unless group_or_namespace
 
               finder = ::Packages::Npm::PackageFinder.new(
-                params[:package_name],
-                namespace: group_or_namespace
+                namespace: group_or_namespace,
+                params: { package_name: params[:package_name] }
               )
 
               finder.last&.project_id
@@ -63,9 +63,11 @@ module API
             package_name = declared_params[:package_name]
             packages =
               if Feature.enabled?(:npm_allow_packages_in_multiple_projects, group_or_namespace)
-                ::Packages::Npm::PackageFinder.new(package_name, namespace: group_or_namespace).execute
+                ::Packages::Npm::PackageFinder.new(namespace: group_or_namespace,
+                  params: { package_name: package_name }).execute
               else
-                ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil).execute
+                ::Packages::Npm::PackageFinder.new(project: project_or_nil,
+                  params: { package_name: package_name }).execute
               end
 
             # In order to redirect a request, packages should not exist (without taking the user into account).

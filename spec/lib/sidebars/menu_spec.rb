@@ -52,37 +52,26 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
       expect(menu.serialize_for_super_sidebar).to eq(
         {
           title: "Title",
-          icon: nil,
           id: 'menu',
-          avatar: nil,
           avatar_shape: 'rect',
-          entity_id: nil,
           link: "foo2",
           is_active: true,
-          pill_count: nil,
           separated: false,
           items: [
             {
               id: 'id1',
               title: "Is active",
-              icon: nil,
               avatar: '/avatar.png',
               entity_id: 123,
               link: "foo2",
-              is_active: true,
-              pill_count: nil,
-              link_classes: nil
+              is_active: true
             },
             {
               id: 'id2',
               title: "Not active",
-              icon: nil,
-              avatar: nil,
-              entity_id: nil,
               link: "foo3",
               is_active: false,
-              pill_count: 10,
-              link_classes: nil
+              pill_count: 10
             }
           ]
         })
@@ -94,14 +83,25 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
       expect(menu.serialize_for_super_sidebar).to eq(
         {
           title: "Title",
-          icon: nil,
           id: 'menu',
-          avatar: nil,
           avatar_shape: 'rect',
-          entity_id: nil,
-          link: nil,
           is_active: false,
           pill_count: 'foo',
+          separated: false,
+          items: []
+        })
+    end
+
+    it 'returns pill_count_field if defined' do
+      allow(menu).to receive(:has_pill?).and_return(true)
+      allow(menu).to receive(:pill_count_field).and_return('foo')
+      expect(menu.serialize_for_super_sidebar).to eq(
+        {
+          title: "Title",
+          id: 'menu',
+          avatar_shape: 'rect',
+          is_active: false,
+          pill_count_field: 'foo',
           separated: false,
           items: []
         })

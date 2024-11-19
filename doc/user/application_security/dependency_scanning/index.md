@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -55,7 +55,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-Dependency Scanning can run in the development phase of your application's life cycle. Every time a
+Dependency Scanning can run in the development phase of your application's lifecycle. Every time a
 pipeline runs, vulnerabilities are identified and compared between the source and target branches.
 Vulnerabilities and their severity are listed in the merge request, enabling you to proactively
 address the risk to your application, before the code change is committed.
@@ -856,7 +856,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
 | `GOPRIVATE`                          | `gemnasium`        |                              | A list of glob patterns and prefixes to be fetched from source. For more information, see the Go private modules [documentation](https://go.dev/ref/mod#private-modules). |
 | `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21`. |
-| `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
+| `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](#authenticate-with-a-private-maven-repository). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `GRADLE_PLUGIN_INIT_PATH`            | `gemnasium-maven`  | `"gemnasium-init.gradle"`    | Specifies the path to the Gradle initialization script. The init script must include `allprojects { apply plugin: 'project-report' }` to ensure compatibility. |
 | `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Controls Gradle dependency resolution strictness. Accepts `"none"` to allow partial results, or `"failed"` to fail the scan when any dependencies fail to resolve. |
@@ -928,12 +928,42 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-### Using private Maven repositories
+### Authenticate with a private Maven repository
 
-If your private Maven repository requires login credentials,
-you can use the `MAVEN_CLI_OPTS` CI/CD variable.
+To use a private Maven repository that requires authentication, you should store your credentials in
+a CI/CD variable and reference them in your Maven settings file. Do not add the credentials to your
+`.gitlab-ci.yml` file.
 
-Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
+To authenticate with a private Maven repository:
+
+1. Add the `MAVEN_CLI_OPTS` CI/CD variable to your
+   [project's settings](../../../ci/variables/index.md#for-a-project), setting the value to include
+   your credentials.
+
+   For example, if your username is `myuser` and the password is `verysecret`:
+
+   | Type     | Key              | Value |
+   |----------|------------------|-------|
+   | Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
+
+1. Create a Maven settings file with your server configuration.
+
+   For example, add the following to the settings file `mysettings.xml`. This file is referenced in
+   the `MAVEN_CLI_OPTS` CI/CD variable.
+
+   ```xml
+   <!-- mysettings.xml -->
+   <settings>
+       ...
+       <servers>
+           <server>
+               <id>private_server</id>
+               <username>${private.username}</username>
+               <password>${private.password}</password>
+           </server>
+       </servers>
+   </settings>
+   ```
 
 ### FIPS-enabled images
 
@@ -1095,7 +1125,7 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
 
    ```yaml
    include:
-     - template: Security/Dependency-Scanning.gitlab-ci.yml
+     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
    variables:
      SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"

@@ -9,15 +9,15 @@ description: Learn how to contribute to GitLab Documentation.
 
 For testing:
 
-- Documentation links to other documentation, we use [Lychee](https://lychee.cli.rs/installation/) and sometimes `nanoc`.
-- Links to documentation from the GitLab UI, we use `haml-lint` and `eslint` .
+- Relative links between documentation files, we use [Lychee](https://lychee.cli.rs/installation/).
+- Links to documentation from the GitLab UI, we use [`haml-lint`, `eslint`, and `rubocop`](#run-ui-link-tests-locally).
 
-## Run documentation link tests locally
+## Run the relative link test locally
 
-To run documentation link tests locally, you can either:
+To run the relative link test locally, you can either:
 
-- Run a link check for a single project that contains documentation.
-- Run a link check across entire local copy of the [GitLab documentation site](https://docs.gitlab.com).
+- Run the link check for a single project that contains documentation.
+- Run the link check across entire local copy of the [GitLab documentation site](https://docs.gitlab.com).
 
 ### Check a single project
 
@@ -41,7 +41,11 @@ To check links on the entire [GitLab documentation site](https://docs.gitlab.com
 
 ## Run UI link tests locally
 
-To test documentation links in the GitLab UI locally, you need to run both `haml-lint` and `eslint`.
+To test documentation links from GitLab code files locally, you can run
+
+- `haml-lint`: For `.haml` files.
+- `eslint`: For frontend (`.js` and `.vue`) files.
+- `rubocop`: For `.rb` files.
 
 ### Run `haml-lint` tests
 
@@ -84,3 +88,19 @@ and you should make sure your version matches the version used by GitLab.
 
 If you receive an error the first time you run this test, run `yarn install`, which
 installs the dependencies for GitLab, and try again.
+
+### Run `rubocop` tests
+
+1. [Install RuboCop](https://github.com/rubocop/rubocop#installation)
+1. Open the `gitlab` directory in a terminal window.
+1. To run the check on all Ruby files:
+
+   ```shell
+   rubocop --only Gitlab/DocumentationLinks/Link
+   ```
+
+   To run the check on a single Ruby file:
+
+   ```shell
+   rubocop --only Gitlab/DocumentationLinks/Link path/to/ruby/file.rb
+   ```

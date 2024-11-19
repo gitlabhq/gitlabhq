@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.issues_created_from_gitlab_error_tracking_ui
 description: Count of issues manually created from the GitLab UI on Sentry errors
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all
@@ -10,7 +10,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

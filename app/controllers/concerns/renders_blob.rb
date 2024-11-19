@@ -3,18 +3,15 @@
 module RendersBlob
   extend ActiveSupport::Concern
 
-  def blob_json(blob)
-    viewer =
-      case params[:viewer]
-      when 'rich'
-        blob.rich_viewer
-      when 'auxiliary'
-        blob.auxiliary_viewer
-      else
-        blob.simple_viewer
-      end
+  def blob_viewer_json(blob)
+    viewer = case params[:viewer]
+             when 'rich' then blob.rich_viewer
+             when 'auxiliary' then blob.auxiliary_viewer
+             when 'none' then nil
+             else blob.simple_viewer
+             end
 
-    return unless viewer
+    return {} unless viewer
 
     {
       html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false)
@@ -22,8 +19,8 @@ module RendersBlob
   end
 
   def render_blob_json(blob)
-    json = blob_json(blob)
-    return render_404 unless json
+    json = blob_viewer_json(blob)
+    return render_404 unless json.present?
 
     render json: json
   end

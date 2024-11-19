@@ -7,19 +7,20 @@
 #     search: string
 module Projects
   class TopicsFinder
-    def initialize(params: {})
+    def initialize(organization_id:, params: {})
       @params = params
+      @organization_id = organization_id
     end
 
     def execute
-      topics = Projects::Topic.order_by_non_private_projects_count
+      topics = Projects::Topic.for_organization(organization_id).order_by_non_private_projects_count
       topics = by_without_projects(topics)
       by_search(topics)
     end
 
     private
 
-    attr_reader :current_user, :params
+    attr_reader :current_user, :params, :organization_id
 
     def by_search(topics)
       return topics unless params[:search].present?

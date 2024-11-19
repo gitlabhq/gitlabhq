@@ -15,6 +15,7 @@ export const initGroupSelects = () => {
       parentId: parentGroupID,
       groupsFilter,
       label,
+      description,
       inputName,
       inputId,
       selected: initialSelection,
@@ -31,6 +32,7 @@ export const initGroupSelects = () => {
         return createElement(GroupSelect, {
           props: {
             label,
+            description,
             inputName,
             initialSelection,
             parentGroupID,

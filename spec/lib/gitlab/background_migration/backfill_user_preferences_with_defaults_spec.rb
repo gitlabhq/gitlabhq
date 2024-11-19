@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillUserPreferencesWithDefaults,
-  schema: 20230818085219,
+  schema: 20230721095222,
   feature_category: :user_profile do
   let(:user_preferences) { table(:user_preferences) }
   let(:users) { table(:users) }

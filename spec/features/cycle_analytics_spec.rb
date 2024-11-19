@@ -82,7 +82,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       before_all do
-        travel_to(5.days.ago) do
+        travel_to(5.days.ago.beginning_of_day) do
           create_cycle(user, project, issue, mr, milestone, pipeline)
           create_list(:issue, max_items_per_page, project: project, created_at: 2.weeks.ago, milestone: milestone)
           deploy_master(user, project)
@@ -118,7 +118,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         end
       end
 
-      it 'shows data on each stage', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
+      it 'shows data on each stage' do
         expect_issue_to_be_present
 
         click_stage('Plan')

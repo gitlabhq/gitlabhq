@@ -17,7 +17,7 @@ RSpec.describe 'User views merged merge request from deleted fork', feature_cate
   before do
     sign_in user
 
-    fork_owner = source_project.namespace.all_owner_members.non_invite.first.user
+    fork_owner = source_project.namespace.non_invite_owner_members.first.user
     # Place the source_project in the weird in between state
     source_project.update_attribute(:pending_delete, true)
     Projects::DestroyService.new(source_project, fork_owner, {}).__send__(:trash_project_repositories!)

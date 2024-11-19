@@ -10,6 +10,7 @@ module Ci
     belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :pipeline_config
     validates :pipeline, presence: true
     validates :content, presence: true
+    validates :project_id, presence: true
 
     partitionable scope: :pipeline, partitioned: true
   end

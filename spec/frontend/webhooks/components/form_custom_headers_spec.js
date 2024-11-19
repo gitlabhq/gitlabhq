@@ -3,8 +3,8 @@ import { nextTick } from 'vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import FormCustomHeaders from '~/webhooks/components/form_custom_headers.vue';
 import FormCustomHeaderItem from '~/webhooks/components/form_custom_header_item.vue';
-
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/lib/utils/common_utils');
@@ -24,8 +24,11 @@ describe('FormCustomHeaders', () => {
   });
 
   const createComponent = ({ props } = {}) => {
-    wrapper = mountExtended(FormCustomHeaders, {
+    wrapper = shallowMountExtended(FormCustomHeaders, {
       propsData: props,
+      stubs: {
+        CrudComponent,
+      },
     });
   };
 
@@ -49,7 +52,7 @@ describe('FormCustomHeaders', () => {
 
         expect(findAllCustomHeaderItems()).toHaveLength(3);
 
-        const lastItem = findAllCustomHeaderItems().at(-1);
+        const lastItem = findAllCustomHeaderItems().at(2);
         expect(lastItem.props()).toMatchObject({
           headerKey: '',
           headerValue: '',

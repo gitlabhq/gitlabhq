@@ -12,9 +12,8 @@ module QA
       let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
       let!(:runner) { create(:project_runner, project: project, name: "runner-for-#{project.name}", tags: ["runner-for-#{project.name}"]) }
 
-      after do |example|
+      after do
         runner.remove_via_api!
-        project.remove_via_api! unless example.exception
       end
 
       it 'sets merge when pipeline succeeds', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843' do

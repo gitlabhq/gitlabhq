@@ -107,4 +107,39 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
       end
     end
   end
+
+  describe '.preload_origin_project' do
+    before do
+      create_list(:ci_job_token_authorization, 5)
+    end
+
+    it 'does not perform N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new do
+        described_class.preload_origin_project.map { |a| a.origin_project.full_path }
+      end
+
+      create(:ci_job_token_authorization)
+
+      expect do
+        described_class.preload_origin_project.map { |a| a.origin_project.full_path }
+      end.not_to exceed_query_limit(control)
+    end
+  end
+
+  describe '.for_project scope' do
+    let(:project) { create(:project) }
+
+    let!(:current_authorizations) do
+      create_list(:ci_job_token_authorization, 2, accessed_project: project)
+    end
+
+    let!(:other_authorization) { create(:ci_job_token_authorization) }
+
+    it 'contains only the authorizations targeting the project' do
+      authorizations = described_class.for_project(project)
+      expect(authorizations).to eq(current_authorizations)
+
+      expect(authorizations).not_to include(other_authorization)
+    end
+  end
 end

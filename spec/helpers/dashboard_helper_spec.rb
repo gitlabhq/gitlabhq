@@ -12,22 +12,22 @@ RSpec.describe DashboardHelper do
 
   describe '#feature_entry' do
     shared_examples "a feature is enabled" do
-      it { is_expected.to include('<p aria-label="Demo: status on">') }
+      it { is_expected.to include('<p aria-label="Demo: enabled" class="gl-py-4 gl-m-0 gl-border-b">') }
     end
 
     shared_examples "a feature is disabled" do
-      it { is_expected.to include('<p aria-label="Demo: status off">') }
+      it { is_expected.to include('<p aria-label="Demo: not enabled" class="gl-py-4 gl-m-0 gl-border-b">') }
     end
 
     shared_examples "a feature without link" do
       it do
-        is_expected.not_to have_link('Demo')
+        is_expected.not_to have_link('Configure')
         is_expected.not_to have_link('Documentation')
       end
     end
 
     shared_examples "a feature with configuration" do
-      it { is_expected.to have_link('Demo', href: 'demo.link') }
+      it { is_expected.to have_link('Configure', href: 'demo.link') }
     end
 
     shared_examples "a feature with documentation" do
@@ -66,7 +66,7 @@ RSpec.describe DashboardHelper do
       subject { feature_entry('Demo', href: 'demo.link', enabled: false) }
 
       it_behaves_like 'a feature is disabled'
-      it_behaves_like 'a feature without link'
+      it_behaves_like 'a feature with configuration'
     end
   end
 

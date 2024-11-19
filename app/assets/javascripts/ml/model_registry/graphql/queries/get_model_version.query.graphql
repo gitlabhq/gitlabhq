@@ -4,10 +4,18 @@ query getModelVersion($modelId: MlModelID!, $modelVersionId: MlModelVersionID!) 
     name
     version(modelVersionId: $modelVersionId) {
       id
+      createdAt
+      author {
+        id
+        name
+        avatarUrl
+        webUrl
+      }
       version
       packageId
       description
       descriptionHtml
+      artifactsCount
       candidate {
         id
         name

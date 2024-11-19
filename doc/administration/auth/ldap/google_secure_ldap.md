@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -31,7 +31,7 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
    values are acceptable. For example, the name could be `GitLab` and the
    description could be `GitLab LDAP Client`. Select **Continue**.
 
-   ![Google Workspace window with client details for adding LDAP client.](img/google_secure_ldap_add_step_1.png)
+   ![Google Workspace window with client details for adding LDAP client.](img/google_secure_ldap_add_step_1_v11_9.png)
 
 1. Set **Access Permission** according to your needs. You must choose either
    `Entire domain (GitLab)` or `Selected organizational units` for both **Verify user
@@ -41,7 +41,7 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
    If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync)
    , turn on `Read group information`.
 
-   ![Google Workspace window with access permissions for adding LDAP client.](img/google_secure_ldap_add_step_2.png)
+   ![Google Workspace window with access permissions for adding LDAP client.](img/google_secure_ldap_add_step_2_v11_9.png)
 
 1. Download the generated certificate. This is required for GitLab to
    communicate with the Google Secure LDAP service. Save the downloaded certificates
@@ -58,7 +58,7 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
 Now the Google Secure LDAP Client configuration is finished. The screenshot below
 shows an example of the final settings. Continue on to configure GitLab.
 
-![Google Workspace Admin window with configured LDAP settings for GitLab.](img/google_secure_ldap_client_settings.png)
+![Google Workspace Admin window with configured LDAP settings for GitLab.](img/google_secure_ldap_client_settings_v11_9.png)
 
 ## Configuring GitLab
 

@@ -47,7 +47,7 @@ namespace :gitlab do
 
     def add_merge_request_shas(project, csv)
       logger.info "Checking merge request shas..."
-      merge_requests = MergeRequest.from_and_to_forks(project).select(:id, :merge_commit_sha)
+      merge_requests = MergeRequest.of_projects(project).select(:id, :merge_commit_sha)
       merge_requests.find_each do |merge_request|
         add_match(csv, merge_request.merge_commit_sha)
       end
@@ -55,12 +55,12 @@ namespace :gitlab do
 
     def add_merge_request_diff_shas(project, csv)
       logger.info "Checking merge request diff shas..."
-      merge_requests = MergeRequest.from_and_to_forks(project)
       merge_request_diffs = MergeRequestDiff
-        .joins(:merge_request).merge(merge_requests)
-        .select(:id, :start_commit_sha, :head_commit_sha)
+        .joins(:merge_request).merge(MergeRequest.of_projects([project, project.forked_from_project].compact))
+        .select(:id, :start_commit_sha, :head_commit_sha, :diff_type)
+      merge_request_diffs.find_each do |diff|
+        next if diff.merge_head?
 
-      merge_request_diffs.where.not(diff_type: :merge_head).find_each do |diff|
         add_match(csv, diff.start_commit_sha)
         add_match(csv, diff.head_commit_sha)
       end

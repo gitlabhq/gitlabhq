@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Organizations::UserOrganizationsFinder, '#execute', feature_category: :cell do
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:organization_user) { create(:organization_user) }
+  let_it_be(:another_user) { create(:user) }
+
+  let_it_be_with_reload(:organization_user) { create(:organization_user) }
+
   let_it_be(:organization) { organization_user.organization }
   let_it_be(:another_organization) { create(:organization) }
   let_it_be(:default_organization) { create(:organization, :default) }
-  let_it_be(:another_user) { create(:user) }
 
   let(:current_user) { organization_user.user }
   let(:target_user) { organization_user.user }
@@ -78,5 +80,15 @@ RSpec.describe Organizations::UserOrganizationsFinder, '#execute', feature_categ
 
       it { is_expected.to contain_exactly(*expected_organizations) }
     end
+  end
+
+  context 'when solo_owned parameter is true' do
+    let_it_be(:organization_owner) { create(:user) }
+
+    let(:current_user) { organization_owner }
+    let(:target_user) { organization_owner }
+    let(:params) { { solo_owned: true } }
+
+    it_behaves_like 'resolves user solo-owned organizations'
   end
 end

@@ -65,10 +65,14 @@ Group items that are migrated to the destination GitLab instance include:
 
 ### Excluded items
 
-Some group items are excluded from migration because they either:
+Some group items are excluded from migration because they:
 
-- May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
-- Are not supported: push rules.
+- Might contain sensitive information:
+  - CI/CD variables
+  - Deploy tokens
+  - Webhooks
+- Are not supported:
+  - Push rules
 
 ## Migrated project items
 
@@ -166,26 +170,17 @@ Merge request-related project items that are migrated to the destination GitLab 
 
 <!-- vale gitlab_base.OutdatedVersions = NO -->
 
-| Merge request-related project item      | Introduced in                                                       |
-|:----------------------------------------|:--------------------------------------------------------------------|
+| Merge request-related project item      | Introduced in |
+|:----------------------------------------|:--------------|
 | Multiple merge request assignees        | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
 | Merge request reviewers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
-| Merge request approvers<sup>1</sup>     | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
+| Merge request approvers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
 | Merge request resource state events     | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
 | Merge request resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
 | Issue URL references                    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) |
 | Time tracking                           | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
-
-**Footnotes:**
-
-1. Includes the list of approvers for specific merge requests and includes systems notes that mention the approvals.
-   Also includes the following items that are related to merge request approvals:
-
-   - [Approvals for protected branches](../../project/merge_requests/approvals/rules.md#approvals-for-protected-branches).
-   - The list of [users that can approve merge requests](../../project/merge_requests/approvals/rules.md#add-an-approval-rule)
-     except in cases where a group was added as an approver.
 
 ### Setting-related items
 
@@ -204,22 +199,26 @@ Setting-related project items that are migrated to the destination GitLab instan
 
 ### Excluded items
 
-Some project items are excluded from migration because they either:
+Some project items are excluded from migration because they:
 
-- May contain sensitive information:
+- Might contain sensitive information:
   - CI/CD variables
+  - CI/CD job logs
+  - Container registry images
   - Deploy keys
   - Deploy tokens
+  - Encrypted tokens
+  - Job artifacts
   - Pipeline schedule variables
   - Pipeline triggers
   - Webhooks
 - Are not supported:
   - Agents
-  - Approval rules, except for those [mentioned above](#merge-request-related-items).
-  - Container Registry
+  - Approval rules
+  - Container registry
   - Environments
   - Feature flags
-  - Infrastructure Registry
+  - Infrastructure registry
   - Package registry
   - Pages domains
   - Remote mirrors

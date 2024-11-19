@@ -31,7 +31,7 @@ If an application is successfully deployed to an
 
 NOTE:
 When the pipeline fails in a merge request but it can still merge,
-GitLab shows the **Merge** button in red.
+GitLab shows **Merge** in red.
 
 ## Post-merge pipeline status
 
@@ -52,7 +52,7 @@ For more information, [read about pipelines](../../../ci/pipelines/index.md).
 ## Set auto-merge
 
 Set a merge request that looks ready to merge to
-[merge automatically when CI pipeline succeeds](merge_when_pipeline_succeeds.md).
+[merge automatically when CI pipeline succeeds](auto_merge.md).
 
 ## Live preview with review apps
 

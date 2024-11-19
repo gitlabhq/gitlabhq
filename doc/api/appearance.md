@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -61,7 +61,7 @@ PUT /application/appearance
 ```
 
 | Attribute                         | Type    | Required | Description |
-| --------------------------------- | ------- | -------- | ----------- |
+|-----------------------------------|---------|----------|-------------|
 | `title`                           | string  | no       | Instance title on the sign in / sign up page |
 | `description`                     | string  | no       | Markdown text shown on the sign in / sign up page |
 | `pwa_name`                        | string  | no       | Full name of the Progressive Web App. Used for the attribute `name` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
@@ -123,10 +123,10 @@ preceded by `@`.
 PUT /application/appearance
 ```
 
-| Attribute   | Type   | Required | Description    |
-| ---------   | ------ | -------- | -------------- |
-| `logo`      | mixed  | Yes      | File to upload |
-| `pwa_icon`  | mixed  | Yes      | File to upload. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| Attribute  | Type  | Required | Description |
+|------------|-------|----------|-------------|
+| `logo`     | mixed | Yes      | File to upload |
+| `pwa_icon` | mixed | Yes      | File to upload. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
 
 Example request:
 
@@ -141,6 +141,6 @@ Example response:
 
 ```json
 {
-   "logo":"/uploads/-/system/appearance/logo/1/logo.png"
+  "logo":"/uploads/-/system/appearance/logo/1/logo.png"
 }
 ```

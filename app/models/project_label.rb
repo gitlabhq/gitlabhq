@@ -21,8 +21,8 @@ class ProjectLabel < Label
     'project_id'
   end
 
-  def to_reference(target_project = nil, format: :id, full: false)
-    super(project, target_project: target_project, format: format, full: full)
+  def to_reference(target_container = nil, format: :id, full: false)
+    super(project, target_container: target_container, format: format, full: full)
   end
 
   def preloaded_parent_container

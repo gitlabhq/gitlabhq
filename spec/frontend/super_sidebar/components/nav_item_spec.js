@@ -1,6 +1,6 @@
+import { nextTick } from 'vue';
 import { GlBadge, GlButton, GlAvatar } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import NavItemRouterLink from '~/super_sidebar/components/nav_item_router_link.vue';
@@ -47,7 +47,7 @@ describe('NavItem component', () => {
   };
 
   describe('pills', () => {
-    it.each([0, 5, 3.4, 'foo', '10%'])('item with pill_data `%p` renders a pill', (pillCount) => {
+    it.each([0, 5, 3.4, 'foo', '10%'])('item with pill_count `%p` renders a pill', (pillCount) => {
       createWrapper({ item: { title: 'Foo', pill_count: pillCount } });
 
       expect(findPill().text()).toBe(pillCount.toString());
@@ -100,6 +100,42 @@ describe('NavItem component', () => {
         // https://gitlab.com/gitlab-org/gitlab/-/issues/428246
         // This is testing specific async behaviour that was before missed
         await wrapper.setProps({ item: { title: 'Foo', pill_count: 10 } });
+        expect(findPill().text()).toBe('10');
+      });
+    });
+
+    describe('if `pill_count_field` exists, use it to get async count', () => {
+      it.each`
+        pillCountField              | asyncCountValue | result
+        ${'openIssuesCount'}        | ${0}            | ${0}
+        ${'openIssuesCount'}        | ${10}           | ${10}
+        ${'openIssuesCount'}        | ${100234}       | ${'100.2k'}
+        ${'openMergeRequestsCount'} | ${0}            | ${0}
+        ${'openMergeRequestsCount'} | ${10}           | ${10}
+        ${'openMergeRequestsCount'} | ${100234}       | ${'100.2k'}
+      `(
+        'returns `$result` when nav item `pill_count_field` is `$pillCountField` and count is `$asyncCountValue`',
+        ({ pillCountField, asyncCountValue, result }) => {
+          createWrapper({
+            item: {
+              pill_count: 0,
+              pill_count_field: pillCountField,
+            },
+            props: {
+              asyncCount: {
+                [pillCountField]: asyncCountValue,
+              },
+            },
+          });
+          expect(findPill().text()).toBe(`${result}`);
+        },
+      );
+    });
+
+    describe('if `pill_count_field` does not exist, use `pill_count` value`', () => {
+      it('renders `pill_count_field` value based on item type', () => {
+        createWrapper({ item: { title: 'Foo', pill_count: 10, pill_count_field: null } });
+
         expect(findPill().text()).toBe('10');
       });
     });
@@ -174,6 +210,15 @@ describe('NavItem component', () => {
         expect(pinButton.classes()).toContain('gl-pointer-events-none');
       });
     });
+  });
+
+  it('applies correct aria-label', () => {
+    const titleString = 'Hello, world!';
+    createWrapper({
+      item: { title: titleString },
+    });
+
+    expect(findLink().attributes('aria-label')).toEqual(titleString);
   });
 
   it('applies custom link classes', () => {

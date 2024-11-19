@@ -1,0 +1,15 @@
+---
+RSpec/MissingExpectationTargetMethod:
+  Exclude:
+    - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb'
+    - 'spec/config/object_store_settings_spec.rb'
+    - 'spec/features/merge_request/user_resolves_diff_notes_and_discussions_resolve_spec.rb'
+    - 'spec/features/projects/settings/project_settings_spec.rb'
+    - 'spec/finders/design_management/versions_finder_spec.rb'
+    - 'spec/graphql/resolvers/container_repository_tags_resolver_spec.rb'
+    - 'spec/models/merge_request_spec.rb'
+    - 'spec/requests/api/graphql/mutations/container_registry/protection/rule/delete_spec.rb'
+    - 'spec/requests/api/graphql/mutations/container_registry/protection/rule/update_spec.rb'
+    - 'spec/requests/api/graphql/mutations/packages/protection/rule/delete_spec.rb'
+    - 'spec/requests/api/graphql/mutations/packages/protection/rule/update_spec.rb'
+    - 'spec/support/helpers/after_next_helpers.rb'

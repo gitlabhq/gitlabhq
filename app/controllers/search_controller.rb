@@ -28,11 +28,9 @@ class SearchController < ApplicationController
 
   around_action :allow_gitaly_ref_name_caching
 
-  before_action :block_all_anonymous_searches,
-    :block_anonymous_global_searches,
-    :check_scope_global_search_enabled,
-    except: :opensearch
-  skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!, unless: :authenticate?
+
+  before_action :check_scope_global_search_enabled, except: :opensearch
 
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -65,35 +63,10 @@ class SearchController < ApplicationController
 
     @search_level = @search_service_presenter.level
     @search_type = search_type
+    @scope = @search_service_presenter.scope
 
-    @global_search_duration_s = Benchmark.realtime do
-      @scope = @search_service_presenter.scope
-      @search_results = @search_service_presenter.search_results
-      @search_objects = @search_service_presenter.search_objects
-      @search_highlight = @search_service_presenter.search_highlight
-    end
-
-    return if @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
-
-    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
-      elapsed: @global_search_duration_s,
-      search_type: @search_type,
-      search_level: @search_level,
-      search_scope: @scope
-    )
-
-    increment_search_counters
-  ensure
-    if @search_type
-      # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
-      # with a 200 status code, but an empty @global_search_duration_s.
-      Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-        error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
-        search_type: @search_type,
-        search_level: @search_level,
-        search_scope: @scope
-      )
-    end
+    # separate following lines to method that is conditionally triggered when not zoekt multi-result search
+    haml_search_results unless multi_match?(scope: @scope, search_type: search_type)
   end
 
   def count
@@ -155,6 +128,49 @@ class SearchController < ApplicationController
   def opensearch; end
 
   private
+
+  def authenticate?
+    return false if action_name == 'opensearch'
+    return true if public_visibility_restricted?
+    return true if search_service.global_search? && ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
+    return true if ::Feature.disabled?(:allow_anonymous_searches, type: :ops)
+
+    false
+  end
+
+  def multi_match?(search_type:, scope:) # rubocop: disable Lint/UnusedMethodArgument -- This is being overridden in EE
+    false
+  end
+
+  def haml_search_results
+    @global_search_duration_s = Benchmark.realtime do
+      @search_results = @search_service_presenter.search_results
+      @search_objects = @search_service_presenter.search_objects
+      @search_highlight = @search_service_presenter.search_highlight
+    end
+
+    return if @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
+
+    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
+      elapsed: @global_search_duration_s,
+      search_type: @search_type,
+      search_level: @search_level,
+      search_scope: @scope
+    )
+
+    increment_search_counters
+  ensure
+    if @search_type
+      # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
+      # with a 200 status code, but an empty @global_search_duration_s.
+      Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
+        error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
+        search_type: @search_type,
+        search_level: @search_level,
+        search_scope: @scope
+      )
+    end
+  end
 
   def update_scope_for_code_search
     return if params[:scope] == 'blobs'
@@ -251,24 +267,6 @@ class SearchController < ApplicationController
       metadata['meta.search.level'] = @search_level if @search_level.present?
       metadata[:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
     end
-  end
-
-  def block_anonymous_global_searches
-    return unless search_service.global_search?
-    return if current_user
-    return unless ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
-
-    store_location_for(:user, request.fullpath)
-
-    redirect_to new_user_session_path, alert: _('You must be logged in to search across all of GitLab')
-  end
-
-  def block_all_anonymous_searches
-    return if current_user || ::Feature.enabled?(:allow_anonymous_searches, type: :ops)
-
-    store_location_for(:user, request.fullpath)
-
-    redirect_to new_user_session_path, alert: _('You must be logged in to search')
   end
 
   def check_scope_global_search_enabled

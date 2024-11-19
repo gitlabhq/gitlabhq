@@ -24,13 +24,13 @@ module Database
           Gitlab::CurrentSettings.database_max_running_batched_background_migrations
         end
 
-        # We have to overirde this one, as we want
+        # We have to override this one, as we want
         # arguments passed as is, and not duplicated
         def perform_with_capacity(args)
           worker = new
           worker.remove_failed_jobs
 
-          bulk_perform_async(args) # rubocop:disable Scalability/BulkPerformWithContext
+          bulk_perform_async(args)
         end
       end
 

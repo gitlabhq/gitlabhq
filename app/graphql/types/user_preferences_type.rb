@@ -29,13 +29,13 @@ module Types
       Types::Organizations::GroupsProjectsSortEnum,
       description: 'Sort order for organization groups and projects.',
       null: true,
-      alpha: { milestone: '17.2' }
+      experiment: { milestone: '17.2' }
 
     field :organization_groups_projects_display,
       Types::Organizations::GroupsProjectsDisplayEnum,
       null: false,
       description: 'Default list view for organization groups and projects.',
-      alpha: { milestone: '17.2' }
+      experiment: { milestone: '17.2' }
     # rubocop:enable GraphQL/ExtractType
 
     def issues_sort

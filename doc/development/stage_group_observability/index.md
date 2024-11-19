@@ -110,7 +110,7 @@ The row below the error budget row is collapsed by default. Expanding
 it shows which component and violation type had the most offending
 operations in the past 28 days.
 
-![Error attribution](img/stage_group_dashboards_error_attribution.png)
+![Error attribution](img/stage_group_dashboards_error_attribution_v14_1.png)
 
 The first panel on the left shows a table with the number of errors per
 component. Digging into the first row in that table has
@@ -140,7 +140,7 @@ component means.
 
 For example, see the `server` component of the `web-pages` service:
 
-![web-pages-server-component SLI](img/stage_group_dashboards_service_sli_detail.png)
+![web-pages-server-component SLI](img/stage_group_dashboards_service_sli_detail_v14_1.png)
 
 To add more SLIs tailored to specific features, you can use an [Application SLI](../application_slis/index.md).
 

@@ -8,8 +8,10 @@ classes:
 - Packages::Go::Package
 - Packages::Helm::Package
 - Packages::MlModel::Package
+- Packages::Nuget::Package
 - Packages::Package
 - Packages::Pypi::Package
+- Packages::TerraformModule::Package
 - Packages::Rpm::Package
 - Packages::Rubygems::Package
 feature_categories:
@@ -22,3 +24,4 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: medium

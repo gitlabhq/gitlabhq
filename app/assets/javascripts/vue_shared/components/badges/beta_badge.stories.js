@@ -2,7 +2,7 @@ import BetaBadge from './beta_badge.vue';
 
 export default {
   component: BetaBadge,
-  title: 'vue_shared/beta-badge',
+  title: 'vue_shared/badges/beta-badge',
 };
 
 const template = `

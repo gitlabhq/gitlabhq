@@ -8,7 +8,6 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { escapeRegExp } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_OPEN, STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -20,8 +19,13 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
-import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
-import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
+import { STATE_OPEN, STATE_CLOSED, LINKED_CATEGORIES_MAP } from '~/work_items/constants';
+import {
+  isAssigneesWidget,
+  isLabelsWidget,
+  findLinkedItemsWidget,
+  canRouterNav,
+} from '~/work_items/utils';
 
 export default {
   components: {
@@ -34,6 +38,8 @@ export default {
     IssuableAssignees,
     WorkItemTypeIcon,
     WorkItemPrefetch,
+    WorkItemRelationshipIcons: () =>
+      import('~/work_items/components/shared/work_item_relationship_icons.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -145,11 +151,17 @@ export default {
         []
       );
     },
+    filteredLinkedItems() {
+      const linkedItems = findLinkedItemsWidget(this.issuable)?.linkedItems?.nodes || [];
+      return linkedItems.filter((item) => {
+        return item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO;
+      });
+    },
     createdAt() {
       return this.timeFormatted(this.issuable.createdAt);
     },
-    isNotOpen() {
-      return ![STATUS_OPEN, STATE_OPEN].includes(this.issuable.state);
+    isOpen() {
+      return [STATUS_OPEN, STATE_OPEN].includes(this.issuable.state);
     },
     isClosed() {
       return [STATUS_CLOSED, STATE_CLOSED].includes(this.issuable.state);
@@ -230,6 +242,13 @@ export default {
         gon.current_user_use_work_items_view
       );
     },
+    hiddenIssuableTitle() {
+      if (this.isMergeRequest) {
+        return __('This merge request is hidden because its author has been banned.');
+      }
+
+      return __('This issue is hidden because its author has been banned.');
+    },
   },
   methods: {
     hasSlotContents(slotName) {
@@ -281,12 +300,14 @@ export default {
       if (!this.fullPath) {
         visitUrl(this.issuableLinkHref);
       }
-      const escapedFullPath = escapeRegExp(this.fullPath);
-      // eslint-disable-next-line no-useless-escape
-      const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
-      const isWorkItemPath = regex.test(this.issuableLinkHref);
+      const shouldRouterNav = canRouterNav({
+        fullPath: this.fullPath,
+        webUrl: this.issuableLinkHref,
+        isGroup: this.isGroup,
+        issueAsWorkItem: this.issueAsWorkItem,
+      });
 
-      if (isWorkItemPath || this.issueAsWorkItem) {
+      if (shouldRouterNav) {
         this.$router.push({
           name: 'workItem',
           params: {
@@ -351,7 +372,7 @@ export default {
           v-if="issuable.hidden"
           v-gl-tooltip
           name="spam"
-          :title="__('This issue is hidden because its author has been banned.')"
+          :title="hiddenIssuableTitle"
           :aria-label="__('Hidden')"
         />
         <work-item-prefetch
@@ -428,7 +449,7 @@ export default {
                   :data-avatar-url="author.avatarUrl"
                   :href="author.webPath"
                   data-testid="issuable-author"
-                  class="author-link js-user-link gl-text-sm !gl-text-gray-500"
+                  class="author-link js-user-link gl-text-sm !gl-text-subtle"
                   @click.stop
                 >
                   <span class="author">{{ author.name }}</span>
@@ -473,7 +494,7 @@ export default {
       <ul v-if="showIssuableMeta" class="controls gl-gap-3">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
-          <gl-badge v-if="isNotOpen" :variant="statusBadgeVariant">
+          <gl-badge v-if="!isOpen" :variant="statusBadgeVariant">
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>
@@ -504,10 +525,18 @@ export default {
           </div>
         </li>
         <slot name="statistics"></slot>
+        <work-item-relationship-icons
+          v-if="isOpen && filteredLinkedItems.length > 0"
+          :work-item-type="type"
+          :linked-work-items="filteredLinkedItems"
+          :work-item-full-path="workItemFullPath"
+          :work-item-iid="issuableIid"
+          :work-item-web-url="issuableLinkHref"
+        />
       </ul>
       <div
         v-gl-tooltip.bottom
-        class="gl-hidden gl-text-gray-500 sm:gl-inline-block"
+        class="gl-hidden gl-text-subtle sm:gl-inline-block"
         :title="tooltipTitle(timestamp)"
         data-testid="issuable-timestamp"
       >

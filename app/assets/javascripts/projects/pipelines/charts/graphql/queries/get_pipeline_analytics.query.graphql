@@ -1,0 +1,15 @@
+query getPipelineAnalytics($fullPath: ID!, $fromTime: Time!, $toTime: Time!) {
+  project(fullPath: $fullPath) {
+    id
+    pipelineAnalytics(fromTime: $fromTime, toTime: $toTime) {
+      aggregate {
+        count
+        successCount: count(status: SUCCESS)
+        failedCount: count(status: FAILED)
+        durationStatistics {
+          p50
+        }
+      }
+    }
+  }
+}

@@ -6,7 +6,19 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
   let(:component_type) { 'library' }
   let(:name) { 'component-name' }
   let(:purl_type) { 'npm' }
-  let(:purl) { Sbom::PackageUrl.new(type: purl_type, name: name, version: version) }
+  let(:purl) do
+    Sbom::PackageUrl.new(
+      type: purl_type,
+      namespace: 'gitlab.com/component',
+      name: name,
+      version: version,
+      qualifiers: {
+        "channel" => "stable"
+      }
+    )
+  end
+
+  let(:namespaced_name) { 'gitlab.com/component/component-name' }
   let(:version) { 'v0.0.1' }
   let(:source_package_name) { 'source-component' }
   let(:ref) { 'ref' }
@@ -25,7 +37,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
   it 'has correct attributes' do
     expect(component).to have_attributes(
       component_type: component_type,
-      name: name,
+      name: namespaced_name,
       purl: an_object_having_attributes(type: purl_type),
       version: version,
       source_package_name: source_package_name
@@ -35,14 +47,14 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
   describe '#name' do
     subject { component.name }
 
-    it { is_expected.to eq(name) }
+    it { is_expected.to eq(namespaced_name) }
 
-    context 'with namespace' do
+    context 'without namespace' do
       let(:purl) do
-        Sbom::PackageUrl.new(type: 'maven', namespace: 'org.NameSpace', name: 'Name', version: 'v0.0.1')
+        Sbom::PackageUrl.new(type: 'deb', name: 'ignored-name')
       end
 
-      it { is_expected.to eq('org.NameSpace/Name') }
+      it { is_expected.to eq(name) }
     end
   end
 

@@ -1,6 +1,6 @@
 import { memoize } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 /**
  * @param {object} command
@@ -171,6 +171,13 @@ export const OUTDENT_LINE = {
   id: 'editing.outdentLine',
   description: __('Outdent line'),
   defaultKeys: ['mod+['], // eslint-disable-line @gitlab/require-i18n-strings
+  customizable: false,
+};
+
+export const FIND_AND_REPLACE = {
+  id: 'editing.findAndReplace',
+  description: s__('MarkdownEditor|Find and replace'),
+  defaultKeys: ['mod+f'],
   customizable: false,
 };
 
@@ -549,7 +556,7 @@ const WEB_IDE_GO_TO_FILE = {
 
 /**
  * Legacy Web IDE uses @keydown.ctrl.enter and @keydown.meta.enter events here:
- * https://gitlab.com/gitlab-org/gitlab/-/blob/f3e807cdff5cf25765894163b4e92f8b2bcf8a68/app/assets/javascripts/ide/components/shared/commit_message_field.vue#L131-132
+ * https://gitlab.com/gitlab-org/gitlab/-/blob/f3e807cdff5cf25765894163b4e92f8b2bcf8a68/app/assets/javascripts/ide/components/commit_sidebar/message_field.vue#L122-123
  */
 const WEB_IDE_COMMIT = {
   id: 'webIDE.commit',
@@ -557,7 +564,6 @@ const WEB_IDE_COMMIT = {
   defaultKeys: ['mod+enter'],
   customizable: false,
 };
-
 // All keybinding groups
 const GLOBAL_SHORTCUTS_GROUP = {
   id: 'globalShortcuts',
@@ -590,6 +596,7 @@ export const EDITING_SHORTCUTS_GROUP = {
     STRIKETHROUGH_TEXT,
     LINK_TEXT,
     TOGGLE_MARKDOWN_PREVIEW,
+    FIND_AND_REPLACE,
     EDIT_RECENT_COMMENT,
     SAVE_CHANGES,
   ],

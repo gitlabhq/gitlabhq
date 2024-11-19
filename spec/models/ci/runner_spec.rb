@@ -246,54 +246,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#ensure_shading_key_id' do
-    context 'with instance runner' do
-      let(:runner) { create(:ci_runner, :instance) }
-
-      it { expect(runner).to be_valid }
-
-      context 'when sharding_key_id points to an invalid record ID' do
-        before do
-          runner.sharding_key_id = non_existing_record_id
-        end
-
-        it 'updates the sharding_key_id before saving' do
-          expect { runner.save! }.to change { runner.sharding_key_id }.to(nil)
-        end
-      end
-    end
-
-    context 'with group runner' do
-      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
-
-      it { expect(runner).to be_valid }
-
-      context 'when sharding_key_id is not present' do
-        before do
-          runner.sharding_key_id = nil
-        end
-
-        it 'updates the sharding_key_id before saving' do
-          expect { runner.save! }.to change { runner.sharding_key_id }.to(group.id)
-        end
-      end
-    end
-
-    context 'with project runner' do
-      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-      context 'when sharding_key_id is not present' do
-        before do
-          runner.sharding_key_id = nil
-        end
-
-        it 'updates the sharding_key_id before saving' do
-          expect { runner.save! }.to change { runner.sharding_key_id }.to(project.id)
-        end
-      end
-    end
-  end
-
   describe 'constraints' do
     it '.UPDATE_CONTACT_COLUMN_EVERY' do
       expect(described_class::UPDATE_CONTACT_COLUMN_EVERY.max)
@@ -322,6 +274,23 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       it "raises an error" do
         expect { build(:ci_runner, access_level: :this_is_not_defined) }.to raise_error(ArgumentError)
       end
+    end
+  end
+
+  describe '#owner' do
+    subject(:owner) { runner.owner }
+
+    context 'when runner does not have creator_id' do
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when runner has creator' do
+      let_it_be(:creator) { create(:user) }
+      let_it_be(:runner) { create(:ci_runner, :instance, creator: creator) }
+
+      it { is_expected.to eq creator }
     end
   end
 
@@ -1035,7 +1004,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let!(:last_update) { runner.ensure_runner_queue_value }
 
       before do
-        Ci::Runners::UpdateRunnerService.new(runner).execute(description: 'new runner')
+        Ci::Runners::UpdateRunnerService.new(nil, runner).execute(description: 'new runner')
       end
 
       it 'sets a new last_update value' do
@@ -1173,8 +1142,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
 
-    describe '#owner_project' do
-      subject(:owner_project) { project_runner.owner_project }
+    describe '#owner' do
+      subject(:owner) { project_runner.owner }
 
       context 'with project1 as first project associated with runner' do
         let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
@@ -1684,6 +1653,22 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
             other_top_level_group_project_runner
           )
         end
+      end
+    end
+
+    describe '#owner' do
+      subject(:owner) { runner.owner }
+
+      context 'with runner assigned to child_group' do
+        let(:runner) { child_group_runner }
+
+        it { is_expected.to eq child_group }
+      end
+
+      context 'with runner assigned to top_level_group_runner' do
+        let(:runner) { top_level_group_runner }
+
+        it { is_expected.to eq top_level_group }
       end
     end
   end

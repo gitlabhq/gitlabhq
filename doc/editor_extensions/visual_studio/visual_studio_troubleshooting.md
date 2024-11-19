@@ -37,6 +37,23 @@ More logs are available in the **GitLab Extension Output** window:
    14:48:21:346 LS(55096): time="2023-07-17T14:48:21-05:00" level=info msg="update context"
    ```
 
+## Extension not loaded on startup
+
+After restarting, the following error is displayed:
+
+```plaintext
+SetSite failed for package [VisualStudioPackage]Source: 'Microsoft.VisualStudio.Composition' Description: Expected 1 export(s) with contract name "Microsoft.VisualStudio.Language.Suggestions.SuggestionServiceBase" but found 0 after applying applicable constraints.
+Microsoft.VisualStudio.Composition.CompositionFailedException: Expected 1 export(s) with contract name "Microsoft.VisualStudio.Language.Suggestions.SuggestionServiceBase" but found 0 after applying applicable constraints.
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExports(ImportDefinition importDefinition)
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExports[T,TMetadataView](String contractName, ImportCardinality cardinality)
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExport[T,TMetadataView](String contractName)
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExportedValue[T]()
+  at Microsoft.VisualStudio.ComponentModelHost.ComponentModel.GetService[T]()
+[...]
+```
+
+To fix this issue, install the IntelliCode component for Visual Studio.
+
 ## Error: unable to find last release
 
 If you receive this error message, your commits are likely on the main branch of

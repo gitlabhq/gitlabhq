@@ -7,11 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Explain code in a file
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 15.11 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 If you spend a lot of time trying to understand code that others have created, or
 you struggle to understand code written in a language you are not familiar with,

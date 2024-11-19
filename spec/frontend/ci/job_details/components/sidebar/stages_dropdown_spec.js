@@ -1,8 +1,8 @@
 import { GlDisclosureDropdown, GlLink, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { Mousetrap } from '~/lib/mousetrap';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import StagesDropdown from '~/ci/job_details/components/sidebar/stages_dropdown.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import * as copyToClipboard from '~/behaviors/copy_to_clipboard';
 import {
@@ -21,27 +21,28 @@ describe('Stages Dropdown', () => {
 
   const findPipelineInfoText = () => wrapper.findByTestId('pipeline-info').text();
 
-  const createComponent = (props) => {
-    wrapper = extendedWrapper(
-      shallowMount(StagesDropdown, {
-        propsData: {
-          stages: [],
-          selectedStage: 'deploy',
-          ...props,
-        },
-        stubs: {
-          GlSprintf,
-          GlLink,
-        },
-      }),
-    );
+  const createComponent = ({ props = {}, stubs = {} } = {}) => {
+    wrapper = shallowMountExtended(StagesDropdown, {
+      propsData: {
+        stages: [],
+        selectedStage: 'deploy',
+        ...props,
+      },
+      stubs: {
+        GlSprintf,
+        GlLink,
+        ...stubs,
+      },
+    });
   };
 
   describe('without a merge request pipeline', () => {
     beforeEach(() => {
       createComponent({
-        pipeline: mockPipelineWithoutMR,
-        stages: [{ name: 'build' }, { name: 'test' }],
+        props: {
+          pipeline: mockPipelineWithoutMR,
+          stages: [{ name: 'build' }, { name: 'test' }],
+        },
       });
     });
 
@@ -144,7 +145,9 @@ describe('Stages Dropdown', () => {
     ])('%s', (_, { pipeline, text, foundElements }) => {
       beforeEach(() => {
         createComponent({
-          pipeline,
+          props: {
+            pipeline,
+          },
         });
       });
 
@@ -180,7 +183,10 @@ describe('Stages Dropdown', () => {
       'calls clickCopyToClipboardButton with `%s` button when `b` is pressed',
       (button, pipeline) => {
         const copyToClipboardMock = jest.spyOn(copyToClipboard, 'clickCopyToClipboardButton');
-        createComponent({ pipeline });
+        createComponent({
+          props: { pipeline },
+          stubs: { ClipboardButton },
+        });
 
         Mousetrap.trigger('b');
 

@@ -18,7 +18,6 @@ class Namespace < ApplicationRecord
   include Ci::NamespaceSettings
   include Referable
   include CrossDatabaseIgnoredTables
-  include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
 
@@ -114,6 +113,9 @@ class Namespace < ApplicationRecord
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', foreign_key: :namespace_id, inverse_of: :namespace
   has_one :import_user, class_name: 'User', through: :namespace_import_user, foreign_key: :user_id
 
+  has_many :bot_user_details, class_name: 'UserDetail', foreign_key: 'bot_namespace_id', inverse_of: :bot_namespace
+  has_many :bot_users, through: :bot_user_details, source: :user
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :organization, presence: true, if: :require_organization?
   validates :name,
@@ -158,6 +160,12 @@ class Namespace < ApplicationRecord
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
   validate :parent_organization_match, if: :require_organization?
 
+  attribute :organization_id, :integer, default: -> do
+    return 1 if Feature.enabled?(:namespace_model_default_org, Feature.current_request)
+
+    columns_hash['organization_id'].default
+  end
+
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
   delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,
@@ -168,6 +176,7 @@ class Namespace < ApplicationRecord
     to: :namespace_settings
   delegate :emails_enabled, :emails_enabled=,
     to: :namespace_settings, allow_nil: true
+  delegate :token_expiry_notify_inherited, :token_expiry_notify_inherited=, to: :namespace_settings
   delegate :allow_runner_registration_token,
     :allow_runner_registration_token=,
     to: :namespace_settings
@@ -182,7 +191,7 @@ class Namespace < ApplicationRecord
   delegate :math_rendering_limits_enabled?,
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
-  delegate :add_creator, :pending_delete, :pending_delete=,
+  delegate :add_creator, :pending_delete, :pending_delete=, :deleted_at, :deleted_at=,
     to: :namespace_details
 
   before_create :sync_share_with_group_lock_with_parent
@@ -201,7 +210,7 @@ class Namespace < ApplicationRecord
       saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
   }
 
-  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { pending_delete: false }) }
+  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
@@ -214,6 +223,7 @@ class Namespace < ApplicationRecord
   scope :in_organization, ->(organization) { where(organization: organization) }
   scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
   scope :ordered_by_name, -> { order(:name) }
+  scope :top_level, -> { by_parent(nil) }
 
   scope :with_statistics, -> do
     namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }
@@ -271,6 +281,10 @@ class Namespace < ApplicationRecord
     # Case insensitive search for namespace by path or name
     def find_by_path_or_name(path)
       find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
+    end
+
+    def find_top_level
+      top_level.take
     end
 
     # Searches for namespaces matching the given query.
@@ -340,10 +354,6 @@ class Namespace < ApplicationRecord
       value.scan(Gitlab::Regex.group_name_regex_chars).join(' ')
     end
 
-    def top_most
-      by_parent(nil)
-    end
-
     def reference_prefix
       User.reference_prefix
     end
@@ -360,7 +370,7 @@ class Namespace < ApplicationRecord
     end
 
     def username_reserved?(username)
-      without_project_namespaces.where(parent_id: nil).find_by_path_or_name(username).present?
+      without_project_namespaces.top_level.find_by_path_or_name(username).present?
     end
   end
 
@@ -613,6 +623,14 @@ class Namespace < ApplicationRecord
       .try(name)
   end
 
+  def can_modify_token_expiry_notify_inherited?
+    ancestors.all?(&:token_expiry_notify_inherited)
+  end
+
+  def token_expiry_notify_inherited?
+    self_and_ancestors.all?(&:token_expiry_notify_inherited)
+  end
+
   def actual_plan
     Plan.default
   end
@@ -732,7 +750,17 @@ class Namespace < ApplicationRecord
     nil
   end
 
+  def deleted?
+    !!deleted_at
+  end
+
   private
+
+  def require_organization?
+    return false unless Feature.enabled?(:require_organization, Feature.current_request)
+
+    Gitlab::SafeRequestStore.fetch(:require_organization) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
+  end
 
   def parent_organization_match
     return unless parent

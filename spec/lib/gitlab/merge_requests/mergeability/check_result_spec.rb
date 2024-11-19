@@ -63,6 +63,28 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
     end
   end
 
+  describe '.checking' do
+    subject(:checking) { check_result.checking(payload: payload) }
+
+    let(:payload) { {} }
+
+    it 'creates a checking result' do
+      expect(checking.status).to eq described_class::CHECKING_STATUS
+    end
+
+    it 'uses the default payload' do
+      expect(checking.payload).to eq described_class.default_payload
+    end
+
+    context 'when given a payload' do
+      let(:payload) { { last_run_at: time + 1.day, test: 'test' } }
+
+      it 'uses the payload passed' do
+        expect(checking.payload).to eq payload
+      end
+    end
+  end
+
   describe '.inactive' do
     subject(:inactive) { check_result.inactive(payload: payload) }
 
@@ -156,6 +178,54 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
 
       it 'returns true' do
         expect(success).to eq true
+      end
+    end
+  end
+
+  describe '#checking?' do
+    subject(:checking) { described_class.new(status: status).checking? }
+
+    context 'when it has failed' do
+      let(:status) { described_class::FAILED_STATUS }
+
+      it 'returns false' do
+        expect(checking).to eq false
+      end
+    end
+
+    context 'when it is checking' do
+      let(:status) { described_class::CHECKING_STATUS }
+
+      it 'returns true' do
+        expect(checking).to eq true
+      end
+    end
+  end
+
+  describe '#unsuccessful?' do
+    subject(:unsuccessful) { described_class.new(status: status).unsuccessful? }
+
+    context 'when it has failed' do
+      let(:status) { described_class::FAILED_STATUS }
+
+      it 'returns true' do
+        expect(unsuccessful).to eq true
+      end
+    end
+
+    context 'when it has checking' do
+      let(:status) { described_class::CHECKING_STATUS }
+
+      it 'returns true' do
+        expect(unsuccessful).to eq true
+      end
+    end
+
+    context 'when it has succeeded' do
+      let(:status) { described_class::SUCCESS_STATUS }
+
+      it 'returns false' do
+        expect(unsuccessful).to eq false
       end
     end
   end

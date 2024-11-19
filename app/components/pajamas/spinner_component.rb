@@ -20,7 +20,9 @@ module Pajamas
     private
 
     def spinner_class
+      # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
       ["gl-spinner", "gl-spinner-#{@size}", "gl-spinner-#{@color} !gl-align-text-bottom"]
+      # rubocop:enable Tailwind/StringInterpolation
     end
 
     def html_options

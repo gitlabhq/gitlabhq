@@ -90,7 +90,30 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
           result = execute
 
           expect(result.success?).to eq(false)
-          expect(execute.payload[:failed_check]).to eq(:failed)
+          expect(execute.payload[:unsuccessful_check]).to eq(:failed)
+        end
+
+        it_behaves_like 'checks are all executed' do
+          let(:success?) { false }
+          let(:expected_count) { checks.count - 1 }
+        end
+      end
+
+      context 'when one check is checking' do
+        let(:checking_result) { Gitlab::MergeRequests::Mergeability::CheckResult.checking(payload: { identifier: 'checking' }) }
+
+        before do
+          allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
+            allow(service).to receive(:skip?).and_return(false)
+            allow(service).to receive(:execute).and_return(checking_result)
+          end
+        end
+
+        it 'returns the checking check' do
+          result = execute
+
+          expect(result.success?).to eq(false)
+          expect(execute.payload[:unsuccessful_check]).to eq(:checking)
         end
 
         it_behaves_like 'checks are all executed' do

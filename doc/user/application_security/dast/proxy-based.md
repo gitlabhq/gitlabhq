@@ -1,8 +1,8 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-remove_date: '2024-11-15'
+remove_date: '2025-02-15'
 redirect_to: 'proxy_based_to_browser_based_migration_guide.md'
 ---
 

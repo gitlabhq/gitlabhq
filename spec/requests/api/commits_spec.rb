@@ -166,6 +166,38 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             it_behaves_like 'project commits'
           end
 
+          context 'with a range of refs' do
+            let(:route) { "/projects/#{project_id}/repository/commits?ref_name=#{Gitlab::Git::SHA1_EMPTY_TREE_ID}..HEAD" }
+
+            it_behaves_like 'project commits'
+          end
+
+          context 'with HEAD' do
+            let(:route) { "/projects/#{project_id}/repository/commits?ref_name=HEAD" }
+
+            it_behaves_like 'project commits'
+          end
+
+          context 'with incorrect ref_name parameter' do
+            context 'when starts with -' do
+              let(:route) { "/projects/#{project_id}/repository/commits?ref_name=-main" }
+
+              it_behaves_like '400 response' do
+                let(:request) { get api(route, user) }
+                let(:message) { 'ref_name is invalid' }
+              end
+            end
+
+            context 'when includes a whitespace' do
+              let(:route) { "/projects/#{project_id}/repository/commits?ref_name=main branch" }
+
+              it_behaves_like '400 response' do
+                let(:request) { get api(route, user) }
+                let(:message) { 'ref_name is invalid' }
+              end
+            end
+          end
+
           context 'with author parameter' do
             let(:params) { { author: 'Zaporozhets' } }
 

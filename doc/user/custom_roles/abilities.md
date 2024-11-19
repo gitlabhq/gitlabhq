@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
@@ -22,6 +22,12 @@ to a base role to create a custom role.
 Some permissions require having other permissions enabled first. For example, administration of vulnerabilities (`admin_vulnerability`) can only be enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
 
 These requirements are documented in the `Required permission` column in the following table.
+
+## Admin
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`read_admin_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171581) |  | Read-only access to admin dashboard | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/501549) |  |  |
 
 ## Code review workflow
 
@@ -47,7 +53,7 @@ These requirements are documented in the `Required permission` column in the fol
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) |  | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) | `admin_group_member` | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136247) |
 | [`archive_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) |  | Allows archiving of projects. | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) | `archive_project` | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139260) |
-| [`remove_group`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145166) |  | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/425962) |  |  |
+| [`remove_group`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145166) |  | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/425962) |  |  |
 | [`remove_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) |  | Allows deletion of projects. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) |  |  |
 
 ## Infrastructure as code

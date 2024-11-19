@@ -27,6 +27,8 @@ class WebHookService
     end
   end
 
+  CustomWebHookTemplateError = Class.new(StandardError)
+
   REQUEST_BODY_SIZE_LIMIT = 25.megabytes
   # Response body is for UI display only. It does not make much sense to save
   # whatever the receivers throw back at us
@@ -92,13 +94,13 @@ class WebHookService
     )
 
     ServiceResponse.success(message: response.body, payload: { http_status: response.code })
-  rescue *Gitlab::HTTP::HTTP_ERRORS, JSON::ParserError, Zlib::DataError,
+  rescue *Gitlab::HTTP::HTTP_ERRORS, CustomWebHookTemplateError, Zlib::DataError,
     Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
     execution_duration = ::Gitlab::Metrics::System.monotonic_time - start_time
     error_message = e.to_s
 
     # An exception raised while rendering the custom template prevents us from calling `#request_payload`
-    request_data = e.instance_of?(JSON::ParserError) ? {} : request_payload
+    request_data = e.instance_of?(CustomWebHookTemplateError) ? {} : request_payload
 
     log_execution(
       response: InternalErrorResponse.new,
@@ -234,13 +236,11 @@ class WebHookService
   # Make response headers more stylish
   # Net::HTTPHeader has downcased hash with arrays: { 'content-type' => ['text/html; charset=utf-8'] }
   # This method format response to capitalized hash with strings: { 'Content-Type' => 'text/html; charset=utf-8' }
-  # rubocop:disable Style/HashTransformValues
   def safe_response_headers(response)
     response.headers.each_capitalized.first(RESPONSE_HEADERS_COUNT_LIMIT).to_h do |header_key, header_value|
       [enforce_utf8(header_key), string_size_limit(enforce_utf8(header_value), RESPONSE_HEADERS_SIZE_LIMIT)]
     end
   end
-  # rubocop:enable Style/HashTransformValues
 
   def safe_response_body(response)
     return '' unless response.body
@@ -305,11 +305,17 @@ class WebHookService
     )
     Gitlab::Json.parse(rendered_template)
   rescue JSON::ParserError => e
-    raise JSON::ParserError, "Error while parsing rendered custom webhook template: #{e.message}"
+    raise_custom_webhook_template_error!(e.message)
+  rescue TypeError
+    raise_custom_webhook_template_error!('You may be trying to access an array value, which is not supported.')
   end
   strong_memoize_attr :request_payload
 
   def render_custom_template(template, params)
     template.gsub(CUSTOM_TEMPLATE_INTERPOLATION_REGEX) { params.dig(*Regexp.last_match(1).split('.')) }
+  end
+
+  def raise_custom_webhook_template_error!(message)
+    raise CustomWebHookTemplateError, "Error while parsing rendered custom webhook template: #{message}"
   end
 end

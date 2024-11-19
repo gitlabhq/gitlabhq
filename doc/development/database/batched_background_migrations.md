@@ -142,46 +142,11 @@ The optimization underlying mechanic is based on the concept of time efficiency.
 the exponential moving average of time efficiencies for the last N jobs and updates the batch
 size of the batched background migration to its optimal value.
 
-#### For GitLab SAAS
+This mechanism, however, makes it hard for us to provide an accurate estimation for total
+execution time of the migration when using the [database migration pipeline](database_migration_pipeline.md).
 
-When updating a large dataset specify different batch sizes for GitLab SAAS.
-
-```ruby
-# frozen_string_literal: true
-
-class BatchedMigration < Gitlab::Database::Migration[2.2]
-  BATCH_SIZE = 1000
-  SUB_BATCH_SIZE = 100
-  GITLAB_OPTIMIZED_BATCH_SIZE = 75_000
-  GITLAB_OPTIMIZED_SUB_BATCH_SIZE = 250
-
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      TABLE_NAME,
-      COLUMN_NAME,
-      job_interval: DELAY_INTERVAL,
-      **batch_sizes
-    )
-  end
-
-  private
-
-  def batch_sizes
-    if Gitlab.com_except_jh?
-      {
-        batch_size: GITLAB_OPTIMIZED_BATCH_SIZE,
-        sub_batch_size: GITLAB_OPTIMIZED_SUB_BATCH_SIZE
-      }
-    else
-      {
-        batch_size: BATCH_SIZE,
-        sub_batch_size: SUB_BATCH_SIZE
-      }
-    end
-  end
-end
-```
+We are discussing the ways to fix this problem in
+[this issue](https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/issues/162)
 
 ### Job retry mechanism
 
@@ -333,173 +298,27 @@ the migration that was used to enqueue it. Pay careful attention to:
 When finalizing a batched background migration you also need to update the
 `finalized_by` in the corresponding `db/docs/batched_background_migrations`
 file. The value should be the timestamp/version of the migration you added to
-finalize it.
+finalize it. The [schema version of the RSpec tests](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
+associated with the migration should also be set to this version to avoid having the tests fail due
+to future schema changes.
 
 See the below [Examples](#examples) for specific details on what the actual
 migration code should be.
 
-### Use job arguments
+### Deleting batched background migration code
 
-`BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.
+Once a batched background migration has completed, is finalized and has not been [re-queued](#re-queue-batched-background-migrations),
+the migration code in `lib/gitlab/background_migration/` and its associated tests can be deleted after the next required stop following
+the finalization.
 
-Batched migrations scheduled with `queue_batched_background_migration` **must** use the helper to define the job arguments:
+Here is an example scenario:
 
-```ruby
-queue_batched_background_migration(
-  'CopyColumnUsingBackgroundMigrationJob',
-  TABLE_NAME,
-  'name', 'name_convert_to_text',
-  job_interval: DELAY_INTERVAL
-)
-```
+- 17.2 and 17.5 are required stops.
+- In 17.0 the batched background migration is queued.
+- In 17.3 the migration may be finalized, provided that it's completed in GitLab.com.
+- In 17.6 the code related to the migration may be deleted.
 
-NOTE:
-If the number of defined job arguments does not match the number of job arguments provided when
-scheduling the migration, `queue_batched_background_migration` raises an error.
-
-In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert_to_text`:
-
-```ruby
-class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
-  job_arguments :copy_from, :copy_to
-  operation_name :update_all
-
-  def perform
-    from_column = connection.quote_column_name(copy_from)
-    to_column = connection.quote_column_name(copy_to)
-
-    assignment_clause = "#{to_column} = #{from_column}"
-
-    each_sub_batch do |relation|
-      relation.update_all(assignment_clause)
-    end
-  end
-end
-```
-
-### Use filters
-
-By default, when creating background jobs to perform the migration, batched background migrations
-iterate over the full specified table. This iteration is done using the
-[`PrimaryKeyBatchingStrategy`](https://gitlab.com/gitlab-org/gitlab/-/blob/c9dabd1f4b8058eece6d8cb4af95e9560da9a2ee/lib/gitlab/database/migrations/batched_background_migration_helpers.rb#L17). If the table has 1000 records
-and the batch size is 100, the work is batched into 10 jobs. For illustrative purposes,
-`EachBatch` is used like this:
-
-```ruby
-# PrimaryKeyBatchingStrategy
-Namespace.each_batch(of: 100) do |relation|
-  relation.where(type: nil).update_all(type: 'User') # this happens in each background job
-end
-```
-
-In some cases, only a subset of records must be examined. If only 10% of the 1000 records
-need examination, apply a filter to the initial relation when the jobs are created:
-
-```ruby
-Namespace.where(type: nil).each_batch(of: 100) do |relation|
-  relation.update_all(type: 'User')
-end
-```
-
-In the first example, we don't know how many records will be updated in each batch.
-In the second (filtered) example, we know exactly 100 will be updated with each batch.
-
-`BatchedMigrationJob` provides a `scope_to` helper method to apply additional filters and achieve this:
-
-1. Create a new migration job class that inherits from `BatchedMigrationJob` and defines the additional filter:
-
-   ```ruby
-   class BackfillNamespaceType < BatchedMigrationJob
-     scope_to ->(relation) { relation.where(type: nil) }
-     operation_name :update_all
-     feature_category :source_code_management
-
-     def perform
-       each_sub_batch do |sub_batch|
-         sub_batch.update_all(type: 'User')
-       end
-     end
-   end
-   ```
-
-   NOTE:
-   For EE migrations that define `scope_to`, ensure the module extends `ActiveSupport::Concern`.
-   Otherwise, records are processed without taking the scope into consideration.
-
-1. In the post-deployment migration, enqueue the batched background migration:
-
-   ```ruby
-   class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
-     MIGRATION = 'BackfillNamespaceType'
-     DELAY_INTERVAL = 2.minutes
-
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
-
-     def up
-       queue_batched_background_migration(
-         MIGRATION,
-         :namespaces,
-         :id,
-         job_interval: DELAY_INTERVAL
-       )
-     end
-
-     def down
-       delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
-     end
-   end
-   ```
-
-NOTE:
-When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
-In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
-
-### Access data for multiple databases
-
-Background migration contrary to regular migrations does have access to multiple databases
-and can be used to efficiently access and update data across them. To properly indicate
-a database to be used it is desired to create ActiveRecord model inline the migration code.
-Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)
-depending on which database the table is located. As such usage of `ActiveRecord::Base`
-is disallowed as it does not describe a explicitly database to be used to access given table.
-
-```ruby
-# good
-class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
-  class Project < ::ApplicationRecord
-    self.table_name = 'projects'
-  end
-
-  class Build < ::Ci::ApplicationRecord
-    self.table_name = 'ci_builds'
-  end
-end
-
-# bad
-class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
-  class Project < ActiveRecord::Base
-    self.table_name = 'projects'
-  end
-
-  class Build < ActiveRecord::Base
-    self.table_name = 'ci_builds'
-  end
-end
-```
-
-Similarly the usage of `ActiveRecord::Base.connection` is disallowed and needs to be
-replaced preferably with the usage of model connection.
-
-```ruby
-# good
-Project.connection.execute("SELECT * FROM projects")
-
-# acceptable
-ApplicationRecord.connection.execute("SELECT * FROM projects")
-
-# bad
-ActiveRecord::Base.connection.execute("SELECT * FROM projects")
-```
+Batched background migration code is routinely deleted when migrations are squashed.
 
 ### Re-queue batched background migrations
 
@@ -586,7 +405,7 @@ end
 
 **Batched migration dictionary:**
 
-The `milestone` and `queued_migration_version` should be the ones of requeued migration (in this eg: RequeueResolveVulnerabilitiesForRemovedAnalyzers).
+The `milestone` and `queued_migration_version` should be the ones of requeued migration (in this example: RequeueResolveVulnerabilitiesForRemovedAnalyzers).
 
 ```markdown
 ---
@@ -597,6 +416,228 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
 milestone: '17.4'
 queued_migration_version: 20240814085540
 finalized_by: # version of the migration that finalized this BBM
+```
+
+### Stop and remove batched background migrations
+
+A batched background migration in running state can be stopped and removed for several reasons:
+
+- When the migration is no longer relevant or required as the product use case changed.
+- The migration has to be superseded with another migration with a different logic.
+
+To stop and remove an inprogress batched background migration, you must:
+
+- In Release N, No-op the contents of the `#up` and `#down` methods of the scheduling database migration.
+
+```ruby
+class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
+  # Reason why we don't need the BBM anymore. E.G: This BBM is no longer needed because it will be superseded by another BBM with different logic.
+  def up; end
+
+  def down; end
+end
+```
+
+- In Release N, add a regular migration, to delete the existing batched migration. Delete the existing batched background migration using the `delete_batched_background_migration` method at the start of the `#up` method to ensure that any existing runs are cleaned up.
+
+```ruby
+class CleanupBackfillNamespaceType < Gitlab::Database::Migration[2.1]
+  MIGRATION = "MyMigrationClass"
+  DELAY_INTERVAL = 2.minutes
+  BATCH_SIZE = 50_000
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  def up
+    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
+  end
+
+  def down
+    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
+  end
+end
+```
+
+- In Release N, also delete the migration class file (`lib/gitlab/background_migration/my_batched_migration.rb`) and its specs.
+
+All the above steps can be implemented in a single MR.
+
+### Use job arguments
+
+`BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.
+
+Batched migrations scheduled with `queue_batched_background_migration` **must** use the helper to define the job arguments:
+
+```ruby
+queue_batched_background_migration(
+  'CopyColumnUsingBackgroundMigrationJob',
+  TABLE_NAME,
+  'name', 'name_convert_to_text',
+  job_interval: DELAY_INTERVAL
+)
+```
+
+NOTE:
+If the number of defined job arguments does not match the number of job arguments provided when
+scheduling the migration, `queue_batched_background_migration` raises an error.
+
+In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert_to_text`:
+
+```ruby
+class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
+  job_arguments :copy_from, :copy_to
+  operation_name :update_all
+
+  def perform
+    from_column = connection.quote_column_name(copy_from)
+    to_column = connection.quote_column_name(copy_to)
+
+    assignment_clause = "#{to_column} = #{from_column}"
+
+    each_sub_batch do |relation|
+      relation.update_all(assignment_clause)
+    end
+  end
+end
+```
+
+### Use filters
+
+By default, when creating background jobs to perform the migration, batched background migrations
+iterate over the full specified table. This iteration is done using the
+[`PrimaryKeyBatchingStrategy`](https://gitlab.com/gitlab-org/gitlab/-/blob/c9dabd1f4b8058eece6d8cb4af95e9560da9a2ee/lib/gitlab/database/migrations/batched_background_migration_helpers.rb#L17). If the table has 1000 records
+and the batch size is 100, the work is batched into 10 jobs. For illustrative purposes,
+`EachBatch` is used like this:
+
+```ruby
+# PrimaryKeyBatchingStrategy
+Namespace.each_batch(of: 100) do |relation|
+  relation.where(type: nil).update_all(type: 'User') # this happens in each background job
+end
+```
+
+#### Using a composite or partial index to iterate a subset of the table
+
+When applying additional filters, it is important to ensure they are properly
+[covered by an index](iterating_tables_in_batches.md#example-2-iteration-with-filters)
+to optimize `EachBatch` performance.
+In the below examples we need an index on `(type, id)` or `id WHERE type IS NULL`
+to support the filters. See
+the [`EachBatch` documentation](iterating_tables_in_batches.md) for more information.
+
+If you have a suitable index and you want to iterate only a subset of the table
+you can apply a `where` clause before the `each_batch` like:
+
+```ruby
+# Works well if there is an index like either of:
+#  - `id WHERE type IS NULL`
+#  - `(type, id)`
+# Does not work well otherwise.
+Namespace.where(type: nil).each_batch(of: 100) do |relation|
+  relation.update_all(type: 'User')
+end
+```
+
+An advantage of this approach is that you get consistent batch sizes. But it is
+only suitable where there is an index that matches the `where` clauses as well
+as the batching strategy.
+
+`BatchedMigrationJob` provides a `scope_to` helper method to apply additional filters and achieve this:
+
+1. Create a new migration job class that inherits from `BatchedMigrationJob` and defines the additional filter:
+
+   ```ruby
+   class BackfillNamespaceType < BatchedMigrationJob
+
+     # Works well if there is an index like either of:
+     #  - `id WHERE type IS NULL`
+     #  - `(type, id)`
+     # Does not work well otherwise.
+     scope_to ->(relation) { relation.where(type: nil) }
+     operation_name :update_all
+     feature_category :source_code_management
+
+     def perform
+       each_sub_batch do |sub_batch|
+         sub_batch.update_all(type: 'User')
+       end
+     end
+   end
+   ```
+
+   NOTE:
+   For EE migrations that define `scope_to`, ensure the module extends `ActiveSupport::Concern`.
+   Otherwise, records are processed without taking the scope into consideration.
+
+1. In the post-deployment migration, enqueue the batched background migration:
+
+   ```ruby
+   class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
+     MIGRATION = 'BackfillNamespaceType'
+     DELAY_INTERVAL = 2.minutes
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+     def up
+       queue_batched_background_migration(
+         MIGRATION,
+         :namespaces,
+         :id,
+         job_interval: DELAY_INTERVAL
+       )
+     end
+
+     def down
+       delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
+     end
+   end
+   ```
+
+### Access data for multiple databases
+
+Background migration contrary to regular migrations does have access to multiple databases
+and can be used to efficiently access and update data across them. To properly indicate
+a database to be used it is desired to create ActiveRecord model inline the migration code.
+Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)
+depending on which database the table is located. As such usage of `ActiveRecord::Base`
+is disallowed as it does not describe a explicitly database to be used to access given table.
+
+```ruby
+# good
+class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
+  class Project < ::ApplicationRecord
+    self.table_name = 'projects'
+  end
+
+  class Build < ::Ci::ApplicationRecord
+    self.table_name = 'ci_builds'
+  end
+end
+
+# bad
+class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
+  class Project < ActiveRecord::Base
+    self.table_name = 'projects'
+  end
+
+  class Build < ActiveRecord::Base
+    self.table_name = 'ci_builds'
+  end
+end
+```
+
+Similarly the usage of `ActiveRecord::Base.connection` is disallowed and needs to be
+replaced preferably with the usage of model connection.
+
+```ruby
+# good
+Project.connection.execute("SELECT * FROM projects")
+
+# acceptable
+ApplicationRecord.connection.execute("SELECT * FROM projects")
+
+# bad
+ActiveRecord::Base.connection.execute("SELECT * FROM projects")
 ```
 
 ### Batch over non-distinct columns

@@ -10,8 +10,12 @@ GitLab Duo Chat can be turned on and off, and availability changed.
 
 ## For GitLab.com
 
-For a limited time, GitLab Duo Chat is automatically available for all GitLab.com users
-who are members of at least one group with a Premium or Ultimate subscription.
+In GitLab 16.11 and later, GitLab Duo Chat is:
+
+- Generally available.
+- Available to any user with an assigned GitLab Duo seat.
+
+If you [turn on or turn off GitLab Duo](../gitlab_duo/turn_on_off.md), you turn on or turn off Duo Chat as well.
 
 ## For self-managed
 
@@ -31,10 +35,10 @@ Then, depending on the version of GitLab you have, you can enable GitLab Duo Cha
 
 ### In GitLab 16.11 and later
 
-In GitLab 16.11 and later, GitLab Duo Chat is generally available
-and automatically enabled for all users who have a subscription to the Premium or Ultimate tier.
+In GitLab 16.11 and later, GitLab Duo Chat is:
 
-You do not need to do anything to enable GitLab Duo Chat if you have GitLab 16.11 or later.
+- Generally available.
+- Available to any user with an assigned GitLab Duo seat.
 
 ### In earlier GitLab versions
 

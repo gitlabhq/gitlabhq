@@ -12,9 +12,6 @@ unless Gem::Version.new(Sprockets::VERSION) == Gem::Version.new('3.7.2')
   raise 'New version of Sprockets detected. This patch can likely be removed.'
 end
 
-# rubocop:disable Style/CombinableLoops -- Keep the format consistent with upstream project
-# rubocop:disable Cop/LineBreakAroundConditionalBlock -- Keep the format consistent with upstream project
-# rubocop:disable Style/IfUnlessModifier -- Keep the format consistent with upstream project
 # rubocop:disable Style/SoleNestedConditional -- Keep the format consistent with upstream project
 module Sprockets
   module Utils
@@ -57,7 +54,4 @@ module Sprockets
     end
   end
 end
-# rubocop:enable Style/CombinableLoops
-# rubocop:enable Cop/LineBreakAroundConditionalBlock
-# rubocop:enable Style/IfUnlessModifier
 # rubocop:enable Style/SoleNestedConditional

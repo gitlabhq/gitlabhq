@@ -6,7 +6,7 @@ require 'gitlab/rspec/next_instance_of'
 require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
 
-RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_settings_source: true do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::SidekiqCluster::CLI, :stub_settings_source, feature_category: :gitlab_cli do # rubocop:disable RSpec/SpecFilePathFormat
   include NextInstanceOf
 
   let(:cli) { described_class.new('/dev/null') }

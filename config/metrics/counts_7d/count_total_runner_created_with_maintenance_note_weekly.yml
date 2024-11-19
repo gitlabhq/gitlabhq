@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_set_runner_maintenance_note_weekly
+description: Weekly count of assignments of maintenance notes to runners
+product_group: runner
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170483
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: set_runner_maintenance_note

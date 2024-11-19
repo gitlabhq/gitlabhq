@@ -7,7 +7,7 @@ class ProtectedBranch < ApplicationRecord
   include EachBatch
   include Presentable
 
-  belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
+  belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches, optional: true
 
   validate :validate_either_project_or_top_group
   validates :name, uniqueness: { scope: [:project_id, :namespace_id] }, if: :name_changed?
@@ -18,6 +18,7 @@ class ProtectedBranch < ApplicationRecord
   scope :sorted_by_namespace_and_name, -> { order(:namespace_id, :name) }
 
   scope :for_group, ->(group) { where(group: group) }
+  scope :preload_access_levels, -> { preload(:push_access_levels, :merge_access_levels) }
 
   protected_ref_access_levels :merge, :push
 

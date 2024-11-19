@@ -45,6 +45,40 @@ module Gitlab
           end
         end
 
+        describe '#uses_keyword?' do
+          subject { result.uses_keyword?(keyword) }
+
+          let(:keyword) { :run }
+
+          context 'when the :run keyword is present in a job' do
+            let(:config_content) do
+              <<~YAML
+                job1:
+                  script: echo 'hello'
+                job2:
+                  run:
+                    - name: 'Test run'
+                      script: echo run step
+              YAML
+            end
+
+            it { is_expected.to be_truthy }
+          end
+
+          context 'when the :run keyword is not present in any job' do
+            let(:config_content) do
+              <<~YAML
+                job1:
+                  script: echo 'hello'
+                job2:
+                  script: echo 'world'
+              YAML
+            end
+
+            it { is_expected.to be_falsy }
+          end
+        end
+
         describe '#config_metadata' do
           subject(:config_metadata) { result.config_metadata }
 

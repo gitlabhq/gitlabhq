@@ -124,26 +124,6 @@ class CustomerRelations::Contact < ApplicationRecord
     exists?(group: group)
   end
 
-  def self.move_to_root_group(group)
-    update_query = <<~SQL
-      UPDATE #{CustomerRelations::IssueContact.table_name}
-      SET contact_id = new_contacts.id
-      FROM #{table_name} AS existing_contacts
-      JOIN #{table_name} AS new_contacts ON new_contacts.group_id = :old_group_id AND LOWER(new_contacts.email) = LOWER(existing_contacts.email)
-      WHERE existing_contacts.group_id = :new_group_id AND contact_id = existing_contacts.id
-    SQL
-    connection.execute(sanitize_sql([update_query, { old_group_id: group.root_ancestor.id, new_group_id: group.id }]))
-
-    dupes_query = <<~SQL
-      DELETE FROM #{table_name} AS existing_contacts
-      USING #{table_name} AS new_contacts
-      WHERE existing_contacts.group_id = :new_group_id AND new_contacts.group_id = :old_group_id AND LOWER(new_contacts.email) = LOWER(existing_contacts.email)
-    SQL
-    connection.execute(sanitize_sql([dupes_query, { old_group_id: group.root_ancestor.id, new_group_id: group.id }]))
-
-    where(group: group).update_all(group_id: group.root_ancestor.id)
-  end
-
   def self.counts_by_state
     group(:state).count
   end

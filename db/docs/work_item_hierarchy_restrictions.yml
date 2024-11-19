@@ -8,5 +8,4 @@ description: Restrictions applied to parent/child relationships. Currently one o
   a predefined set but in future will support custom types.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103796
 milestone: '15.7'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+gitlab_schema: gitlab_main_clusterwide

@@ -97,7 +97,7 @@ Requests that exceed predefined limits display a warning **{warning}** icon and
 explanation next to the metric. In this example, the Gitaly call duration
 exceeded the threshold.
 
-![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold.png)
+![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold_v12_4.png)
 
 ## Enable the performance bar for non-administrators
 

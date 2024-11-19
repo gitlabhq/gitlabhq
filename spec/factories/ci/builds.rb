@@ -232,7 +232,7 @@ FactoryBot.define do
     end
 
     trait :triggered do
-      trigger_request factory: :ci_trigger_request
+      trigger_request { association :ci_trigger_request, project_id: pipeline.project_id }
     end
 
     trait :tag do

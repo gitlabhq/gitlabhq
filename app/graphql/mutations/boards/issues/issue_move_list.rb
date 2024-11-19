@@ -40,7 +40,7 @@ module Mutations
 
         argument :position_in_list, GraphQL::Types::Int,
           required: false,
-          description: "Position of issue within the board list. Positions start at 0. "\
+          description: "Position of issue within the board list. Positions start at 0. " \
             "Use #{::Boards::Issues::MoveService::LIST_END_POSITION} to move to the end of the list."
 
         def ready?(**args)

@@ -272,7 +272,7 @@ changing Git remotes and API URLs.
    ```
 
    NOTE:
-   Changing `external_url` does not prevent access via the old secondary URL, as
+   Changing `external_url` does not prevent access through the old secondary URL, as
    long as the secondary DNS records are still intact.
 
 1. Update the **secondary**'s SSL certificate:

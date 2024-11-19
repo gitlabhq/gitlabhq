@@ -10,8 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Publish PyPI packages in your project's package registry. Then install the
-packages whenever you need to use them as a dependency.
+The Python Package Index (PyPI) is the official third-party software repository for Python.
+Use the GitLab PyPI package registry to publish and share Python packages in your GitLab projects,
+groups, and organizations. This integration enables you to manage your Python dependencies alongside
+your code, providing a seamless workflow for Python development within GitLab.
 
 The package registry works with:
 
@@ -23,9 +25,9 @@ clients use, see the [PyPI API documentation](../../../api/packages/pypi.md).
 
 Learn how to [build a PyPI package](../workflows/build_packages.md#pypi).
 
-## Authenticate with the package registry
+## Authenticate with the GitLab package registry
 
-Before you can publish to the package registry, you must authenticate.
+Before you can publish to the GitLab package registry, you must authenticate.
 
 To do this, you can use:
 
@@ -33,80 +35,61 @@ To do this, you can use:
   with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
-- A [CI job token](#authenticate-with-a-ci-job-token).
+- A [CI job token](../../../ci/jobs/ci_job_token.md).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
+The `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables are used to authenticate with a GitLab token.
+
 ### Authenticate with a personal access token
 
-To authenticate with a personal access token, edit the `~/.pypirc` file and add:
-
-```ini
-[distutils]
-index-servers =
-    gitlab
-
-[gitlab]
-repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
-username = <your_personal_access_token_name>
-password = <your_personal_access_token>
-```
-
-The `<project_id>` is either the project's
-[URL-encoded](../../../api/rest/index.md#namespaced-paths)
-path (for example, `group%2Fproject`), or the project's ID (for example `42`).
-
-### Authenticate with a deploy token
-
-To authenticate with a deploy token, edit your `~/.pypirc` file and add:
-
-```ini
-[distutils]
-index-servers =
-    gitlab
-
-[gitlab]
-repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
-username = <deploy token username>
-password = <deploy token>
-```
-
-The `<project_id>` is either the project's
-[URL-encoded](../../../api/rest/index.md#namespaced-paths)
-path (for example, `group%2Fproject`), or the project's ID (for example `42`).
-
-### Authenticate with a CI job token
-
-To authenticate with [GitLab CI/CD](../../../ci/index.md),
-you must authenticate with a personal access token,
-deploy token, or a `CI_JOB_TOKEN`.
-You only need one authentication method to use PyPI commands in
-a CI/CD job.
-
-For example:
+To authenticate with a personal access token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
 ```yaml
 image: python:latest
 
 run:
+  variables:
+    TWINE_USERNAME: <your_personal_access_token_name>
+    TWINE_PASSWORD: <your_personal_access_token>
   script:
     - pip install build twine
     - python -m build
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
-You can also use `CI_JOB_TOKEN` in a `~/.pypirc` file that you check in to
-GitLab:
+### Authenticate with a deploy token
 
-```ini
-[distutils]
-index-servers =
-    gitlab
+To authenticate with a deploy token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
-[gitlab]
-repository = https://gitlab.example.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/pypi
-username = gitlab-ci-token
-password = ${env.CI_JOB_TOKEN}
+```yaml
+image: python:latest
+
+run:
+  variables:
+    TWINE_USERNAME: <deploy token username>
+    TWINE_PASSWORD: <deploy token>
+  script:
+    - pip install build twine
+    - python -m build
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+```
+
+### Authenticate with a CI job token
+
+To authenticate with a CI job token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
+
+```yaml
+image: python:latest
+
+run:
+  variables:
+    TWINE_USERNAME: gitlab-ci-token
+    TWINE_PASSWORD: $CI_JOB_TOKEN
+  script:
+    - pip install build twine
+    - python -m build
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
 ### Authenticate to access packages within a group
@@ -121,8 +104,8 @@ https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi
 
 Prerequisites:
 
-- You must [authenticate with the package registry](#authenticate-with-the-package-registry).
-- Your [version string must be valid](#ensure-your-version-string-is-valid).
+- You must [authenticate with the package registry](#authenticate-with-the-gitlab-package-registry).
+- Your [version string must be valid](#use-valid-version-strings).
 - The maximum allowed package size is 5 GB.
 - The maximum length of the `description` field is 4000 characters. Longer `description` strings are truncated.
 - You can't upload the same version of a package multiple times. If you try,
@@ -133,29 +116,18 @@ Prerequisites:
 
 You can then [publish a package by using twine](#publish-a-pypi-package-by-using-twine).
 
-### Ensure your version string is valid
-
-If your version string (for example, `0.0.1`) isn't valid, it gets rejected.
-GitLab uses the following regex to validate the version string.
-
-```ruby
-\A(?:
-    v?
-    (?:([0-9]+)!)?                                                 (?# epoch)
-    ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
-    ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
-    ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
-    ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
-    (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
-)\z}xi
-```
-
-You can experiment with the regex and try your version strings by using this
-[regular expression editor](https://rubular.com/r/FKM6d07ouoDaFV).
-
-For more details about the regex, review this [documentation](https://www.python.org/dev/peps/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions).
-
 ### Publish a PyPI package by using twine
+
+Define your repository source, edit the `~/.pypirc` file and add:
+
+```ini
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
+```
 
 To publish a PyPI package, run a command like:
 
@@ -180,7 +152,7 @@ If you didn't use a `.pypirc` file to define your repository source, you can
 publish to the repository with the authentication inline:
 
 ```shell
-TWINE_PASSWORD=<personal_access_token or deploy_token> TWINE_USERNAME=<username or deploy_token_username> python3 -m twine upload --repository-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi dist/*
+TWINE_PASSWORD=<personal_access_token or deploy_token or $CI_JOB_TOKEN> TWINE_USERNAME=<username or deploy_token_username or gitlab-ci-token> python3 -m twine upload --repository-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi dist/*
 ```
 
 If you didn't follow the steps on this page, ensure your package was properly
@@ -193,7 +165,7 @@ python -m twine upload --repository <source_name> dist/<package_file>
 ```
 
 - `<package_file>` is your package filename, ending in `.tar.gz` or `.whl`.
-- `<source_name>` is the [source name used during setup](#authenticate-with-the-package-registry).
+- `<source_name>` is the [source name used during setup](#authenticate-with-the-gitlab-package-registry).
 
 ### Publishing packages with the same name or version
 
@@ -227,13 +199,7 @@ pip install --index-url https://<personal_access_token_name>:<personal_access_to
 - `<project_id>` is either the project's [URL-encoded](../../../api/rest/index.md#namespaced-paths)
   path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
-In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using
-`--extra-index-url` makes you vulnerable to dependency confusion attacks because it checks the PyPi
-repository for the package before it checks the custom repository. `--extra-index-url` adds the
-provided URL as an additional registry which the client checks if the package is present.
-`--index-url` tells the client to check for the package on the provided URL only.
-
-If you were following the guide and want to install the
+In these commands, you can use `--extra-index-url` instead of `--index-url`. If you were following the guide and want to install the
 `MyPyPiPackage` package, you can run:
 
 ```shell
@@ -249,6 +215,19 @@ Collecting mypypipackage
 Installing collected packages: mypypipackage
 Successfully installed mypypipackage-0.0.1
 ```
+
+#### Security implications
+
+The security implications of using `--extra-index-url` versus `--index-url` when installing PyPI
+packages are significant and worth understanding in detail. If you use:
+
+- `--index-url`: This option replaces the default [PyPI index](https://pypi.org)
+  with the specified URL. It's more secure because it only checks the specified index for packages.
+  Use this option when you want to ensure packages are only installed from a trusted, private source
+  (like the GitLab PyPI registry).
+- `--extra-index-url`: This option adds an additional index to search, alongside the default PyPI index.
+  It's less secure and more open to dependency confusion attacks, because it checks both the default PyPI
+  and the additional index for packages.
 
 ### Install from the group level
 
@@ -312,6 +291,45 @@ machine gitlab.example.com
 login __token__
 password <your_personal_token>
 ```
+
+## Versioning PyPI packages
+
+Proper versioning is important for managing PyPI packages effectively. Follow these best practices to ensure your packages are versioned correctly.
+
+### Use semantic versioning (SemVer)
+
+Adopt semantic versioning for your packages. The version number should be in the format `MAJOR.MINOR.PATCH`:
+
+- Increment `MAJOR` version for incompatible API changes.
+- Increment `MINOR` version for backwards-compatible new features.
+- Increment `PATCH` version for backwards-compatible bug fixes.
+
+For example: 1.0.0, 1.1.0, 1.1.1.
+
+#### Start with 0.1.0
+
+For new projects, start with version 0.1.0. This indicates an initial development phase where the API is not yet stable.
+
+### Use valid version strings
+
+Ensure your version string is valid according to PyPI standards. GitLab uses a specific regex to validate version strings:
+
+```ruby
+\A(?:
+    v?
+    (?:([0-9]+)!)?                                                 (?# epoch)
+    ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
+    ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
+    ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
+    ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
+    (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
+)\z}xi
+```
+
+You can experiment with the regex and try your version strings by using this
+[regular expression editor](https://rubular.com/r/FKM6d07ouoDaFV).
+
+For more details about the regex, see the [Python documentation](https://www.python.org/dev/peps/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions).
 
 ## Troubleshooting
 

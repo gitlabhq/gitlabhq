@@ -66,7 +66,7 @@ export default {
         </div>
         <p
           v-if="branchFilterStrategyData === 'wildcard'"
-          class="form-text text-muted custom-control"
+          class="form-text custom-control gl-text-subtle"
         >
           <gl-sprintf :message="$options.descriptionText.wildcard">
             <template #WILDCARD_CODE_STABLE>
@@ -97,7 +97,10 @@ export default {
           />
         </div>
 
-        <p v-if="branchFilterStrategyData === 'regex'" class="form-text text-muted custom-control">
+        <p
+          v-if="branchFilterStrategyData === 'regex'"
+          class="form-text custom-control gl-text-subtle"
+        >
           <gl-sprintf :message="$options.descriptionText.regex">
             <template #REGEX_CODE>
               <code>{{ $options.REGEX_CODE }}</code>

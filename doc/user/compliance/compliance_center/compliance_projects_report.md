@@ -22,15 +22,15 @@ Each row of the report shows:
 
 The default framework for the group has a **default** badge.
 
-## View the compliance projects report for a group
+## View the compliance projects report
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Owner role for the project or group.
 
 To view the compliance projects report:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 

@@ -76,28 +76,41 @@ For example, you can use code similar to the following to add the test coverage 
 ![coverage](https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?job=coverage)
 ```
 
-### Test coverage report badge colors and limits
+### Test coverage limits and badge colors
 
-The default colors and limits for the badge are as follows:
+The following table shows the default test coverage limits and badge colors:
 
-- 95 up to and including 100% - good (`#4c1`)
-- 90 up to 95% - acceptable (`#a3c51c`)
-- 75 up to 90% - medium (`#dfb317`)
-- 0 up to 75% - low (`#e05d44`)
-- no coverage - unknown (`#9f9f9f`)
+| Test coverage | Percentage limits | Badge color |
+|---|---|---|
+| Good | 95 up to and including 100% | <span style="color: #4c1">■</span> `#4c1` |
+| Acceptable | 90 up to 95% | <span style="color:#a3c51c"> ■</span> `#a3c51c` |
+| Medium | 75 up to 90% | <span style="color: #dfb317">■</span> `#dfb317` |
+| Low | 0 up to 75%  | <span style="color: #e05d44">■</span> `#e05d44` |
+| Unknown | No coverage | <span style="color: #9f9f9f">■</span> `#9f9f9f` |
 
 NOTE:
 *Up to* means up to, but not including, the upper bound.
 
-You can overwrite the limits by using the following additional parameters:
+### Change the default limits
 
-- `min_good` (default 95, can use any value between 3 and 100)
-- `min_acceptable` (default 90, can use any value between 2 and min_good-1)
-- `min_medium` (default 75, can use any value between 1 and min_acceptable-1)
+You can override the default limits by passing the following query parameters in the coverage report badge URL:
 
-If an invalid boundary is set, GitLab automatically adjusts it to be valid. For example,
-if `min_good` is set `80`, and `min_acceptable` is set to `85` (too high), GitLab automatically
-sets `min_acceptable` to `79` (`min_good` - `1`).
+| Query parameter | Acceptable values | Default |
+|---|---|---|
+| `min_good` | Any value between 3 and 100 | 95 |
+| `min_acceptable` | Any value between 2 and `min_good`−1 | 90 |
+| `min_medium` | Any value between 1 and `min_acceptable`−1 | 75 |
+
+For example:
+
+```plaintext
+https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?min_good=98&min_acceptable=75
+```
+
+If you set an invalid boundary, GitLab automatically adjusts it to be valid. For example,
+if you set `min_good` to `80` and `min_acceptable` to `85`, GitLab sets `min_acceptable`
+to `79` (`min_good - 1`) because the minimum acceptable value cannot be higher than
+the minimum good value.
 
 ## Latest release badges
 
@@ -297,7 +310,7 @@ The following placeholders are available:
 - `%{project_namespace}`: Project namespace of a project
 - `%{group_name}`: Group of a project
 - `%{gitlab_server}`: Server of a project
-- `%{gitlab_pages_domain}`: Domain of a project
+- `%{gitlab_pages_domain}`: Domain hosting GitLab Pages
 - `%{default_branch}`: Default branch name configured for a project's repository
 - `%{commit_sha}`: ID of the most recent commit to the default branch of a
   project's repository

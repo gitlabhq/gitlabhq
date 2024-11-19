@@ -7,7 +7,7 @@ RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
   let_it_be(:awardable) { create(:note) }
   let_it_be(:project) { awardable.project }
 
-  let(:name) { 'thumbsup' }
+  let(:name) { AwardEmoji::THUMBS_UP }
   let!(:award_from_other_user) do
     create(:award_emoji, name: name, awardable: awardable, user: create(:user))
   end
@@ -56,7 +56,7 @@ RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
         let!(:award_from_user) { create(:award_emoji, name: name, user: user) }
 
         it_behaves_like 'a service that does not authorize the user',
-          error: 'User has not awarded emoji of type thumbsup on the awardable'
+          error: "User has not awarded emoji of type #{AwardEmoji::THUMBS_UP} on the awardable"
       end
 
       context 'when user has awarded an emoji to the awardable' do

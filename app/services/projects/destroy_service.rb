@@ -15,7 +15,10 @@ module Projects
     end
 
     def execute
-      return false unless can?(current_user, :remove_project, project)
+      unless can?(current_user, :remove_project, project)
+        project.update_attribute(:pending_delete, false) if project.pending_delete?
+        return false
+      end
 
       project.update_attribute(:pending_delete, true)
 
@@ -38,7 +41,7 @@ module Projects
 
       attempt_destroy(project)
 
-      system_hook_service.execute_hooks_for(project, :destroy)
+      execute_hooks(project)
       log_info("Project \"#{project.full_path}\" was deleted")
 
       publish_project_deleted_event_for(project)
@@ -149,6 +152,10 @@ module Projects
 
       project.leave_pool_repository
       destroy_project_related_records(project)
+    end
+
+    def execute_hooks(project)
+      system_hook_service.execute_hooks_for(project, :destroy)
     end
 
     def destroy_project_related_records(project)

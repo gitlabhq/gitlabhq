@@ -233,17 +233,12 @@ describe('issue_note_form component', () => {
         });
       });
 
-      describe('when discussion is confidential', () => {
+      describe('when discussion is internal', () => {
         beforeEach(() => {
-          createComponentWrapper({
-            discussion: {
-              ...discussionMock,
-              confidential: true,
-            },
-          });
+          createComponentWrapper({ note: { internal: true } });
         });
 
-        it('passes correct confidentiality to CommentFieldLayout', () => {
+        it('passes correct internal note information to CommentFieldLayout', () => {
           expect(wrapper.findComponent(CommentFieldLayout).props('isInternalNote')).toBe(true);
         });
       });

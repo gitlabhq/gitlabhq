@@ -1,9 +1,0 @@
----
-name: ai_gateway_agents
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465858
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157986
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/469606
-milestone: '17.2'
-group: group::ai framework
-type: beta
-default_enabled: false

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::User, aggregate_failures: true, feature_category: :system_access do
+RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category: :system_access do
   include LdapHelpers
 
   let_it_be(:organization) { create(:organization) }

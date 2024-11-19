@@ -16,7 +16,7 @@ module QA
         Page::File::Show.perform do |file|
           file.click_delete
           file.add_commit_message(commit_message_for_delete)
-          file.click_delete_file
+          file.click_commit_changes
         end
 
         Page::Project::Show.perform do |project|

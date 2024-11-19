@@ -1,0 +1,9 @@
+---
+name: enable_add_on_users_pagesize_selection
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442149
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169940
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500069
+milestone: '17.6'
+type: beta
+group: group::provision
+default_enabled: true

@@ -1,0 +1,10 @@
+---
+table_name: abuse_report_label_links
+classes:
+- AntiAbuse::Reports::LabelLink
+feature_categories:
+- insider_threat
+description: Links between abuse report labels and abuse reports
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168186
+milestone: '17.6'
+gitlab_schema: gitlab_main_clusterwide

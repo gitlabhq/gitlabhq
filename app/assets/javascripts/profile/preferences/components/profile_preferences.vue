@@ -151,6 +151,7 @@ export default {
           :message="view.message"
           :message-url="view.message_url"
           :config="$options.integrationViewConfigs[view.name]"
+          :title="view.title"
         />
       </div>
     </div>

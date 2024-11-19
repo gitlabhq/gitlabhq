@@ -1,0 +1,12 @@
+---
+table_name: ci_build_trace_metadata
+classes:
+- Ci::BuildTraceMetadata
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68171
+milestone: '14.2'
+gitlab_schema: gitlab_ci
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169702
+removed_in_milestone: '17.6'

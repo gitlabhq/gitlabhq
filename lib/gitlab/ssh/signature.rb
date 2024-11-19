@@ -11,12 +11,13 @@ module Gitlab
 
       GIT_NAMESPACE = 'git'
 
-      def initialize(signature_text, signed_text, signer, commit)
+      def initialize(signature_text, signed_text, signer, commit, author_email)
         @signature_text = signature_text
         @signed_text = signed_text
         @signer = signer
         @commit = commit
         @committer_email = commit.committer_email
+        @author_email = author_email
       end
 
       def verification_status
@@ -47,9 +48,18 @@ module Gitlab
         end
       end
 
+      def user_id
+        if verification_status == :verified_system && Feature.enabled?(:check_for_mailmapped_commit_emails,
+          @commit.project)
+          return User.find_by_any_email(author_email)&.id
+        end
+
+        signed_by_key&.user_id
+      end
+
       private
 
-      attr_reader :commit, :committer_email
+      attr_reader :commit, :committer_email, :author_email
 
       def all_attributes_present?
         # Signing an empty string is valid, but signature_text and committer_email

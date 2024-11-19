@@ -1,0 +1,2 @@
+export const BUCKETING_INTERVAL_ALL = 'ALL';
+export const BUCKETING_INTERVAL_MONTHLY = 'MONTHLY';

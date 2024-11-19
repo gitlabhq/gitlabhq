@@ -10,6 +10,7 @@ module Gitlab
 
     LOG_KEY = Labkit::Context::LOG_KEY
     KNOWN_KEYS = [
+      :organization_id,
       :user,
       :user_id,
       :project,
@@ -45,6 +46,7 @@ module Gitlab
     private_constant :WEB_ONLY_KEYS
 
     APPLICATION_ATTRIBUTES = [
+      Attribute.new(:organization, Organizations::Organization),
       Attribute.new(:project, Project),
       Attribute.new(:namespace, Namespace),
       Attribute.new(:user, User),
@@ -119,9 +121,10 @@ module Gitlab
       set_attr_readers
     end
 
-    # rubocop: disable Metrics/CyclomaticComplexity
-    # rubocop: disable Metrics/PerceivedComplexity
     # rubocop: disable Metrics/AbcSize
+    # rubocop: disable Metrics/CyclomaticComplexity -- inherently leads to higher cyclomatic due to
+    #   all the conditional assignments, the added complexity from adding more abstractions like
+    #   `assign_hash_if_value` is not worth the tradeoff.
     def to_lazy_hash
       {}.tap do |hash|
         assign_hash_if_value(hash, :caller_id)
@@ -139,20 +142,20 @@ module Gitlab
         assign_hash_if_value(hash, :auth_fail_token_id)
         assign_hash_if_value(hash, :http_router_rule_action)
         assign_hash_if_value(hash, :http_router_rule_type)
+        assign_hash_if_value(hash, :bulk_import_entity_id)
 
         hash[:user] = -> { username } if include_user?
         hash[:user_id] = -> { user_id } if include_user?
         hash[:project] = -> { project_path } if include_project?
+        hash[:organization_id] = -> { organization&.id } if set_values.include?(:organization)
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
         hash[:client_id] = -> { client } if include_client?
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
         hash[:artifact_size] = -> { artifact&.size } if set_values.include?(:artifact)
-        hash[:bulk_import_entity_id] = -> { bulk_import_entity_id } if set_values.include?(:bulk_import_entity_id)
       end
     end
     # rubocop: enable Metrics/CyclomaticComplexity
-    # rubocop: enable Metrics/PerceivedComplexity
     # rubocop: enable Metrics/AbcSize
 
     def use

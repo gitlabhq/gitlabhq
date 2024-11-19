@@ -56,8 +56,8 @@ class Note < ApplicationRecord
   # Attribute used to store the attributes that have been changed by quick actions.
   attr_writer :commands_changes
 
-  # Attribute used to store the quick action command names.
-  attr_accessor :command_names
+  # Attribute used to store the status of quick actions.
+  attr_accessor :quick_actions_status
 
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
@@ -484,6 +484,8 @@ class Note < ApplicationRecord
       'alert_management_alert'
     elsif for_vulnerability?
       'security_resource'
+    elsif for_wiki_page?
+      'wiki_page'
     else
       noteable_type.demodulize.underscore
     end
@@ -542,31 +544,25 @@ class Note < ApplicationRecord
   # overkill for just updating the timestamps. To work around this we manually
   # touch the data so we can SELECT only the columns we need.
   def touch_noteable
-    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-      %w[
-        vulnerabilities
-        notes
-      ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/486472'
-    ) do
-      # Commits are not stored in the DB so we can't touch them.
-      return if for_commit? # rubocop:disable Cop/AvoidReturnFromBlocks -- Temporary for cross join allowance
+    # Commits are not stored in the DB so we can't touch them.
+    # Vulnerabilities should not be touched as they are tracked in the same manner as other issuable types
+    return if for_vulnerability? || for_commit?
 
-      assoc = association(:noteable)
+    assoc = association(:noteable)
 
-      noteable_object =
-        if assoc.loaded?
-          noteable
-        else
-          # If the object is not loaded (e.g. when notes are loaded async) we
-          # _only_ want the data we actually need.
-          assoc.scope.select(:id, :updated_at).take
-        end
+    noteable_object =
+      if assoc.loaded?
+        noteable
+      else
+        # If the object is not loaded (e.g. when notes are loaded async) we
+        # _only_ want the data we actually need.
+        assoc.scope.select(:id, :updated_at).take
+      end
 
-      noteable_object&.touch
+    noteable_object&.touch
 
-      # We return the noteable object so we can re-use it in EE for Elasticsearch.
-      noteable_object
-    end
+    # We return the noteable object so we can re-use it in EE for Elasticsearch.
+    noteable_object
   end
 
   def notify_after_create
@@ -750,7 +746,7 @@ class Note < ApplicationRecord
   end
 
   def keep_around_commit
-    project.repository.keep_around(self.commit_id, source: self.class.name)
+    project.repository.keep_around(self.commit_id, source: "#{noteable_type}/#{self.class.name}")
   end
 
   def ensure_namespace_id

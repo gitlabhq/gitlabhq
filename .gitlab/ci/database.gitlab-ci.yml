@@ -31,12 +31,42 @@ db:backup_and_restore single-db-ci-connection:
     - .single-db-ci-connection
     - .rails:rules:db-backup
 
+db:rollback single-db-sec-connection:
+  extends:
+    - db:rollback
+    - .single-db-sec-connection
+    - .rails:rules:single-db-sec-connection
+
+db:migrate:reset single-db-sec-connection:
+  extends:
+    - db:migrate:reset
+    - .single-db-sec-connection
+    - .rails:rules:single-db-sec-connection
+
+db:check-schema-single-db-sec-connection:
+  extends:
+    - db:check-schema
+    - .single-db-sec-connection
+    - .rails:rules:single-db-sec-connection
+
+db:post_deployment_migrations_validator-single-db-sec-connection:
+  extends:
+    - db:post_deployment_migrations_validator
+    - .single-db-sec-connection
+    - .rails:rules:db:check-migrations-single-db-sec-connection
+
+db:backup_and_restore single-db-sec-connection:
+  extends:
+    - db:backup_and_restore
+    - .single-db-sec-connection
+    - .rails:rules:db-backup
+
 db:rollback:
   extends:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20230728020644  # 16.4 First migration
+    - bundle exec rake db:migrate VERSION=20230721095222 # First 16-4-stable-ee migration
     - bundle exec rake db:migrate
 
 db:rollback single-db:
@@ -81,7 +111,7 @@ db:migrate:reset single-db:
 db:check-schema:
   extends:
     - .db-job-base
-    - .rails:rules:ee-mr-and-default-branch-only
+    - .rails:rules:db:check-schema
   script:
     - run_timed_command "bundle exec rake db:drop db:create db:migrate"
 

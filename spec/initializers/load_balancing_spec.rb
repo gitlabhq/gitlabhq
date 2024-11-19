@@ -73,7 +73,7 @@ RSpec.describe 'load_balancing', :delete, :reestablished_active_record_base, fea
 
       it 'makes a read query successfully' do
         # Clear any previous sticky writes
-        ::Gitlab::Database::LoadBalancing::Session.clear_session
+        ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
 
         initialize_load_balancer
 

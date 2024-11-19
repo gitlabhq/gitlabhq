@@ -5,5 +5,5 @@ feature_category: mlops
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165214
 milestone: '17.5'
 queued_migration_version: 20241003061916
-finalize_after: '2024-11-25'
-finalized_by:
+finalize_after: '2024-10-22'
+finalized_by: 20241022155022

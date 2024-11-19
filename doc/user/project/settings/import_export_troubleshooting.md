@@ -6,6 +6,10 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Troubleshooting file export project migrations
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
 ## Troubleshooting commands
@@ -46,8 +50,6 @@ If there are too many users for manual configuration to be feasible,
 you can set all user profiles to use a public email address using the
 [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-<!-- vale gitlab_base.CurrentStatus  = NO -->
-
 ```ruby
 User.where("public_email IS NULL OR public_email = '' ").find_each do |u|
   next if u.bot?
@@ -57,8 +59,6 @@ User.where("public_email IS NULL OR public_email = '' ").find_each do |u|
   u.save!
 end
 ```
-
-<!-- vale gitlab_base.CurrentStatus  = YES -->
 
 ## Import workarounds for large repositories
 
@@ -89,8 +89,8 @@ reduce the repository size for another import attempt:
    ```
 
 1. To reduce the repository size, work on this `smaller-tmp-main` branch:
-   [identify and remove large files](../repository/repository_size.md#reduce-repository-size)
-   or [interactively rebase and fixup](../../../topics/git/git_rebase.md#rebase-interactively-by-using-git)
+   [identify and remove large files](../repository/repository_size.md#methods-to-reduce-repository-size)
+   or [interactively rebase and fixup](../../../topics/git/git_rebase.md#interactive-rebase)
    to reduce the number of commits.
 
    ```shell
@@ -173,6 +173,39 @@ Rather than attempting to push all changes at once, this workaround:
    git push -u origin --all
    git push -u origin --tags
    ```
+
+## Sidekiq process fails to export a project
+
+Occasionally the Sidekiq process can fail to export a project, for example if
+it is terminated during execution.
+
+GitLab.com users should [contact Support](https://about.gitlab.com/support/#contact-support) to resolve this issue.
+
+Self-managed users can use the Rails console to bypass the Sidekiq process and
+manually trigger the project export:
+
+```ruby
+project = Project.find(1)
+current_user = User.find_by(username: 'my-user-name')
+RequestStore.begin!
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+params = {}
+
+::Projects::ImportExport::ExportService.new(project, current_user, params).execute(nil)
+```
+
+This makes the export available through the UI, but does not trigger an email to the user.
+To manually trigger the project export and send an email:
+
+```ruby
+project = Project.find(1)
+current_user = User.find_by(username: 'my-user-name')
+RequestStore.begin!
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+params = {}
+
+ProjectExportWorker.new.perform(current_user.id, project.id)
+```
 
 ## Manually execute export steps
 

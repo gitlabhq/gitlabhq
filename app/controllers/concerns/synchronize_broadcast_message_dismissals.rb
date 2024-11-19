@@ -3,8 +3,8 @@
 module SynchronizeBroadcastMessageDismissals
   extend ActiveSupport::Concern
 
-  def synchronize_broadcast_message_dismissals
-    Users::BroadcastMessageDismissalFinder.new(current_user).execute
+  def synchronize_broadcast_message_dismissals(user)
+    Users::BroadcastMessageDismissalFinder.new(user).execute
       .find_each do |dismissal|
       create_dismissal_cookie(dismissal) if cookies[dismissal.cookie_key].blank?
     end

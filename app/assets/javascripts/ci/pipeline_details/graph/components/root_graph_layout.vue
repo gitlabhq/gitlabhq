@@ -22,8 +22,8 @@ export default {
 <template>
   <div>
     <gl-card
-      class="gl-rounded-lg"
-      header-class="gl-rounded-lg gl-px-0 gl-py-0 gl-bg-default gl-border-b-0"
+      class="gl-rounded-lg gl-bg-section"
+      header-class="gl-rounded-lg gl-px-0 gl-py-0 gl-bg-section gl-border-b-0"
       body-class="gl-pt-2 gl-pb-0 gl-px-2"
     >
       <template #header>

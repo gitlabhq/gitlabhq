@@ -28,14 +28,8 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2, feat
     end
 
     context 'when resource group exists' do
-      it 'executes AssignResourceFromResourceGroupService' do
-        expect_next_instance_of(
-          Ci::ResourceGroups::AssignResourceFromResourceGroupService,
-          resource_group.project,
-          nil
-        ) do |service|
-          expect(service).to receive(:execute).with(resource_group)
-        end
+      it 'does not execute AssignResourceFromResourceGroupService' do
+        expect(Ci::ResourceGroups::AssignResourceFromResourceGroupService).not_to receive(:new)
 
         perform
       end

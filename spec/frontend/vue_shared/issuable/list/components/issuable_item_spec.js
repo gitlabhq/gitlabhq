@@ -3,11 +3,14 @@ import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
 import { mockIssuable, mockRegularLabel } from '../mock_data';
 
 const createComponent = ({
@@ -34,6 +37,12 @@ const createComponent = ({
     slots,
     stubs: {
       GlSprintf,
+      WorkItemRelationshipIcons,
+    },
+    mocks: {
+      $apollo: {
+        queries: { childItemLinkedItems: { loading: false } },
+      },
     },
   });
 
@@ -52,6 +61,7 @@ describe('IssuableItem', () => {
   const findIssuableItemWrapper = () => wrapper.findByTestId('issuable-item-wrapper');
   const findIssuablePrefetchTrigger = () => wrapper.findByTestId('issuable-prefetch-trigger');
   const findStatusEl = () => wrapper.findByTestId('issuable-status');
+  const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
 
   describe('computed', () => {
     describe('author', () => {
@@ -574,6 +584,14 @@ describe('IssuableItem', () => {
         iconSize: 16,
         maxVisible: 4,
       });
+    });
+
+    it('renders relationship icons if linked item widget is available', async () => {
+      const issuableWithLinkedItems = { ...mockIssuable, widgets: [mockLinkedItems] };
+      wrapper = createComponent({ issuable: issuableWithLinkedItems });
+      await waitForPromises();
+
+      expect(findRelationshipIcons().exists()).toBe(true);
     });
 
     it('renders issuable updatedAt info', () => {

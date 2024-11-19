@@ -52,18 +52,16 @@ module Avatarable
 
   def avatar_type
     unless self.avatar.image?
-      errors.add :avatar, "file format is not supported. Please try one of the following supported formats: #{AvatarUploader::SAFE_IMAGE_EXT.join(', ')}"
+      errors.add :avatar,
+        "file format is not supported. " \
+          "Please try one of the following supported formats: #{AvatarUploader::SAFE_IMAGE_EXT.join(', ')}"
     end
   end
 
   def avatar_path(only_path: true, size: nil)
-    unless self.try(:id)
-      return uncached_avatar_path(only_path: only_path, size: size)
-    end
+    return uncached_avatar_path(only_path: only_path, size: size) unless self.try(:id)
 
-    if self.try(:should_use_security_policy_bot_avatar?)
-      return self.security_policy_bot_static_avatar_path(size)
-    end
+    return self.security_policy_bot_static_avatar_path(size) if self.try(:should_use_security_policy_bot_avatar?)
 
     # Cache this avatar path only within the request because avatars in
     # object storage may be generated with time-limited, signed URLs.

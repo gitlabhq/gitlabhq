@@ -70,7 +70,7 @@ class SwapCiPipelinesPkWithBigintPCiBuildsPCiStages < Gitlab::Database::Migratio
       name: :idx_ci_pipelines_on_user_id_and_id_and_cancelable_status_bigint,
       old_name: :index_ci_pipelines_on_user_id_and_id_and_cancelable_status,
       columns: [:user_id, :id_convert_to_bigint],
-      options: { where: "((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]))" } # rubocop:disable Layout/LineLength -- Just too long
+      options: { where: "((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]))" }
     },
     {
       name: :idx_ci_pipelines_on_user_id_and_user_not_verified_bigint,
@@ -235,7 +235,7 @@ class SwapCiPipelinesPkWithBigintPCiBuildsPCiStages < Gitlab::Database::Migratio
             )
 
             if fk_metadata[:partitioned]
-              rename_partitioned_foreign_key(fk_metadata[:source_table], tmp_name(fk_metadata), fk_metadata[:name]) # rubocop:disable Migration/WithLockRetriesDisallowedMethod -- needed here
+              rename_partitioned_foreign_key(fk_metadata[:source_table], tmp_name(fk_metadata), fk_metadata[:name])
             else
               rename_constraint(fk_metadata[:source_table], tmp_name(fk_metadata), fk_metadata[:name])
             end

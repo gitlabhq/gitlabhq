@@ -59,6 +59,15 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       }
     end
 
+    let(:approved_note) do
+      {
+        id: 1698248524,
+        body: "approved this merge request",
+        author: { "id" => 1234 },
+        system: true
+      }
+    end
+
     let(:irrelevant_note1) do
       {
         id: 1698248523,
@@ -175,15 +184,23 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
     context 'when all important things change' do
       let(:notes) do
         [not_a_system_note, updated_title_note, updated_description_note, added_commit_note, added_reviewer_note,
-          added_assignee_note]
+          added_assignee_note, approved_note]
       end
 
       let(:resource_label_events) do
         [removed_label_event]
       end
 
-      it 'returns :title, :description, :code, :labels, :assignees, :reviewers' do
-        expect(non_housekeeper_changes).to match_array([:title, :description, :code, :labels, :assignees, :reviewers])
+      it 'returns :title, :description, :code, :labels, :assignees, :reviewers, :approvals' do
+        expect(non_housekeeper_changes).to match_array([
+          :title,
+          :description,
+          :code,
+          :labels,
+          :assignees,
+          :reviewers,
+          :approvals
+        ])
       end
     end
 
@@ -238,6 +255,16 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
 
       it 'returns :assignees' do
         expect(non_housekeeper_changes).to match_array([:assignees])
+      end
+    end
+
+    context 'when approvals change' do
+      let(:notes) do
+        [not_a_system_note, approved_note]
+      end
+
+      it 'returns :approvals' do
+        expect(non_housekeeper_changes).to match_array([:approvals])
       end
     end
 

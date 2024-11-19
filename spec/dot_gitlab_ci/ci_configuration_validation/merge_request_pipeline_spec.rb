@@ -32,6 +32,15 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge train pipeline'
   end
 
+  context "when unlabeled MR is changing docs only" do
+    let(:changed_files) { ['doc/tutorials/index.md'] }
+    let(:expected_job_name) { 'eslint-docs' }
+
+    it_behaves_like 'merge request pipeline'
+
+    it_behaves_like 'merge train pipeline'
+  end
+
   context 'when MR is created from "release-tools/update-gitaly" source branch' do
     let(:source_branch) { 'release-tools/update-gitaly' }
     let(:changed_files) { ['GITALY_SERVER_VERSION'] }

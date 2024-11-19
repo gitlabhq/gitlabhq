@@ -179,7 +179,7 @@ information required to create your GitLab Dedicated instance.
      This can be the same as the primary or secondary region, or different.
    - Desired maintenance window: A weekly four-hour time slot that GitLab uses to perform routine
      maintenance and upgrade operations on all tenant instances. For more information, see
-     [maintenance windows](../../administration/dedicated/create_instance.md#maintenance-window).
+     [maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows).
 1. Optional. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
    for encrypted AWS services. If you choose not to provide KMS keys, encryption keys are generated
    for your instance when it is created. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
@@ -205,55 +205,3 @@ Also plan ahead if you need the following features:
 - [Outbound Private Link](../../administration/dedicated/configure_instance.md#outbound-private-link)
 - [SAML SSO](../../administration/dedicated/configure_instance.md#saml)
 - [Bring your own domain](../../administration/dedicated/configure_instance.md#bring-your-own-domain-byod)
-
-## Things to know
-
-### Maintenance window
-
-Available scheduled maintenance windows, performed outside standard working hours:
-
-- APAC: Wednesday 1 PM - 5 PM UTC
-- EMEA: Tuesday 1 AM - 5 AM UTC
-- AMER Option 1: Tuesday 7 AM - 11 AM UTC
-- AMER Option 2: Sunday 9 PM - Monday 1 AM UTC
-
-Consider the following notes:
-
-- The Dedicated instance is not expected to be down the entire duration of the maintenance window. Occasionally, a small period of downtime (on the order of a few tens of seconds) can occur while compute resources restart after they are upgraded. If it occurs, this small period of downtime typically happens during the first half of the maintenance window. Long-running connections may be interrupted during this period. To mitigate this, clients should implement strategies like automatic recovery and retry. Longer periods of downtime during the maintenance window are rare, and GitLab provides notice if longer downtime is anticipated.
-- In case of a performance degradation or downtime during the scheduled maintenance window,
-  the impact to [the system SLA](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) is not counted.
-- The weekly scheduled maintenance window can be postponed into another window within the same week.
-  This option needs to be agreed with the assigned Customer Success Manager at least one week in advance.
-- The scheduled weekly maintenance window is different from
-  [emergency maintenance](#emergency-maintenance).
-
-#### GitLab release rollout schedule
-
-GitLab Dedicated tenant instances are [upgraded](../../subscriptions/gitlab_dedicated/maintenance.md#upgrades-and-patches) to the minor GitLab release within [the pre-selected window](#maintenance-window) using the schedule described below.
-
-Where **T** is the date of a [minor GitLab release](../../policy/maintenance.md) `N`. GitLab Dedicated instances are upgraded to the `N-1` release as follows:
-
-1. At T+5 calendar days: Tenant instances in the `EMEA` and `AMER Option 1` maintenance window are upgraded.
-1. At T+6 calendar days: Tenant instances in the `APAC` maintenance window are upgraded.
-1. At T+10 calendar days: Tenant instances in the `AMER Option 2` maintenance window are upgraded.
-
-For example, GitLab 16.9 released on 2024-02-15. Therefore, tenant instances in the `EMEA` and `AMER Option 1` maintenance window are upgraded to 16.8 on 2024-02-20.
-
-#### Emergency maintenance
-
-In an event of a platform outage, degradation or a security event requiring urgent action,
-emergency maintenance will be carried out per
-[the emergency change processes](https://handbook.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
-
-The emergency maintenance is initiated when urgent actions need to be executed by GitLab on a
-Dedicated tenant instance. Communication with the customer will be provided on best effort basis
-prior to commencing the maintenance, and full communication will follow after the immediate action
-is carried out. The GitLab Support Team will create a new ticket and send a message to the email
-addresses of the users listed in Switchboard during [onboarding](../../administration/dedicated/create_instance.md#step-1-get-access-to-switchboard).
-
-For example, when a critical security process is initiated to address an S1 vulnerability in GitLab,
-emergency maintenance is carried out to upgrade GitLab to the non-vulnerable version and that
-can occur outside of a scheduled maintenance window.
-Postponing emergency maintenance is not possible, because the same process must be applied to all
-existing Dedicated customers, and the primary concern is to ensure safety and availability of
-Dedicated tenant instances.

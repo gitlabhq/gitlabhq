@@ -23,19 +23,19 @@
         %span.issuable-reference.gl-inline-block
           #{issuable_reference(merge_request)}
         %span.gl-hidden.sm:gl-inline
-          %span.issuable-authored.gl-inline-block{ class: '!gl-text-gray-500' }
+          %span.issuable-authored.gl-inline-block{ class: '!gl-text-subtle' }
             &middot;
-            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: '!gl-text-gray-500') }}
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: '!gl-text-subtle') }}
           - if merge_request.milestone
             %span.issuable-milestone.gl-inline-block
               &nbsp;
-              = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: '!gl-text-gray-500', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
+              = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: '!gl-text-subtle', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
                 = sprite_icon('milestone', size: 12, css_class: 'gl-align-text-bottom')
                 = merge_request.milestone.title
           - if merge_request.target_project.default_branch != merge_request.target_branch
             %span.project-ref-path.has-tooltip.gl-inline-block.gl-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: merge_request.target_branch} }
               &nbsp;
-              = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name !gl-text-gray-500' do
+              = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name !gl-text-subtle' do
                 = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
                 = merge_request.target_branch
           - if merge_request.labels.any?
@@ -68,6 +68,6 @@
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
 
       - if merge_request.updated_at != merge_request.created_at
-        .issuable-updated-at.gl-self-end.gl-hidden.sm:gl-inline-block.gl-text-gray-500
+        .issuable-updated-at.gl-self-end.gl-hidden.sm:gl-inline-block.gl-text-subtle
           %span
             = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

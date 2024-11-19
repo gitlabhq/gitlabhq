@@ -2,11 +2,14 @@
 import { GlLink } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
+import { newWorkItemId } from '~/work_items/utils';
 import { s__, __ } from '~/locale';
 import { MILESTONE_STATE } from '~/sidebar/constants';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
+import groupMilestonesQuery from '~/sidebar/queries/group_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
@@ -35,6 +38,10 @@ export default {
     },
     workItemId: {
       type: String,
+      required: true,
+    },
+    isGroup: {
+      type: Boolean,
       required: true,
     },
     workItemMilestone: {
@@ -103,7 +110,9 @@ export default {
   },
   apollo: {
     milestones: {
-      query: projectMilestonesQuery,
+      query() {
+        return this.isGroup ? groupMilestonesQuery : projectMilestonesQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -146,6 +155,35 @@ export default {
 
       this.track('updated_milestone');
       this.updateInProgress = true;
+
+      if (this.workItemId === newWorkItemId(this.workItemType)) {
+        this.$apollo
+          .mutate({
+            mutation: updateNewWorkItemMutation,
+            variables: {
+              input: {
+                fullPath: this.fullPath,
+                milestone: this.localMilestone
+                  ? {
+                      ...this.localMilestone,
+                      webPath: this.localMilestone.webUrl,
+                      startDate: '',
+                    }
+                  : null,
+                workItemType: this.workItemType,
+              },
+            },
+          })
+          .catch((error) => {
+            Sentry.captureException(error);
+          })
+          .finally(() => {
+            this.updateInProgress = false;
+            this.searchTerm = '';
+            this.shouldFetch = false;
+          });
+        return;
+      }
 
       this.$apollo
         .mutate({

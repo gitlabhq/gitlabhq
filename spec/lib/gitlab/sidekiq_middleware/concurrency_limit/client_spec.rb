@@ -53,6 +53,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client, :clean_gitla
 
         expect(TestConcurrencyLimitWorker.jobs.size).to eq(0)
       end
+
+      it 'does not defer scheduled jobs' do
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+        TestConcurrencyLimitWorker.perform_in(10, 'foo')
+      end
     end
   end
 end

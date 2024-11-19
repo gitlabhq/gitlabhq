@@ -1,4 +1,4 @@
-import { GlEmptyState, GlModal, GlTabs, GlTab, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlModal, GlTabs, GlTab, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -22,6 +22,7 @@ import {
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   PACKAGE_TYPE_COMPOSER,
   DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
+  PACKAGE_DEPRECATED_STATUS,
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_CONAN,
@@ -105,6 +106,7 @@ describe('PackagesApp', () => {
     });
   }
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findPackageTitle = () => wrapper.findComponent(PackageTitle);
   const findPackageHistory = () => wrapper.findComponent(PackageHistory);
@@ -281,6 +283,44 @@ describe('PackagesApp', () => {
         }
       },
     );
+  });
+
+  describe('deprecation alert', () => {
+    it('is not rendered by default', async () => {
+      createComponent({
+        stubs: {
+          PackageFiles: stubComponent(PackageFiles),
+          PackageVersionsList: stubComponent(PackageVersionsList),
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findAlert().exists()).toBe(false);
+    });
+
+    describe('when package has deprecated status', () => {
+      beforeEach(async () => {
+        createComponent({
+          resolver: jest
+            .fn()
+            .mockResolvedValue(
+              packageDetailsQuery({ extendPackage: { status: PACKAGE_DEPRECATED_STATUS } }),
+            ),
+        });
+
+        await waitForPromises();
+      });
+
+      it('renders alert', () => {
+        expect(findAlert().props('variant')).toBe('warning');
+        expect(findAlert().props('dismissible')).toBe(false);
+      });
+
+      it('renders alert with the deprecated text', () => {
+        expect(findAlert().text()).toBe('This package version has been deprecated.');
+      });
+    });
   });
 
   it('renders installation commands and has the right props', async () => {

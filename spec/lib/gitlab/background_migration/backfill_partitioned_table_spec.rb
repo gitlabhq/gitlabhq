@@ -25,7 +25,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedTable, feature_ca
   describe '#perform' do
     context 'without the destination table' do
       let(:expected_error_message) do
-        "exiting backfill migration because partitioned table #{destination_table} does not exist. " \
+        "exiting backfill migration because partitioned table '#{destination_table}' does not exist. " \
           "This could be due to rollback of the migration which created the partitioned table."
       end
 
@@ -125,8 +125,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedTable, feature_ca
 
       it 'breaks the assigned batch into smaller sub batches' do
         expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BulkCopy) do |bulk_copy|
-          expect(bulk_copy).to receive(:copy_between).with(source1.id, source2.id)
-          expect(bulk_copy).to receive(:copy_between).with(source3.id, source3.id)
+          expect(bulk_copy).to receive(:copy_relation) do |from_record, to_record|
+            expect(from_record.id).to eq(source1.id)
+            expect(to_record.id).to eq(source2.id)
+          end
+
+          expect(bulk_copy).to receive(:copy_relation) do |from_record, to_record|
+            expect(from_record.id).to eq(source3.id)
+            expect(to_record).to be_nil
+          end
         end
 
         backfill_job.perform

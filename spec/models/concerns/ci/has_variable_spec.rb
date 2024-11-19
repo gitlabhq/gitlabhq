@@ -57,7 +57,7 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
       expect(subject.encrypted_value_salt).not_to be_nil
     end
 
-    it 'fails to decrypt if iv is incorrect', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448374' do
+    it 'fails to decrypt if iv is incorrect' do
       # attr_encrypted expects the IV to be 16 bytes and base64-encoded
       subject.encrypted_value_iv = [SecureRandom.hex(8)].pack('m')
       subject.instance_variable_set(:@value, nil)

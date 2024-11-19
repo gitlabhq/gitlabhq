@@ -22,8 +22,7 @@ module QA
           scopes: %w[read_registry write_registry])
       end
 
-      let(:personal_access_token) { Runtime::Env.personal_access_token }
-
+      let(:personal_access_token) { Runtime::UserStore.default_api_client.personal_access_token }
       let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
       let(:dependency_proxy_url) { "#{gitlab_host_with_port}/#{project.group.full_path}/dependency_proxy/containers" }
       let(:image_sha) { 'alpine@sha256:c3d45491770c51da4ef58318e3714da686bc7165338b7ab5ac758e75c7455efb' }

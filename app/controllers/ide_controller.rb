@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class IdeController < ApplicationController
+  include Gitlab::Utils::StrongMemoize
   include WebIdeCSP
   include StaticObjectExternalStorageCSP
-  include Gitlab::Utils::StrongMemoize
   include ProductAnalyticsTracking
 
   before_action :authorize_read_project!, only: [:index]
@@ -63,12 +63,11 @@ class IdeController < ApplicationController
   end
 
   def project
-    strong_memoize(:project) do
-      next unless params[:project_id].present?
+    return unless params[:project_id].present?
 
-      Project.find_by_full_path(params[:project_id])
-    end
+    Project.find_by_full_path(params[:project_id])
   end
+  strong_memoize_attr :project
 
   def tracking_namespace_source
     project.namespace

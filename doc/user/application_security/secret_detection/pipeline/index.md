@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -33,20 +33,20 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 ## Detected secrets
 
-GitLab maintains the detection rules used in pipeline secret detection. The default ruleset contains
-more than 100 patterns.
+Pipeline secret detection scans the repository's content for specific patterns. Each pattern matches
+a specific type of secret and is specified in a rule by using a TOML syntax. The default set of
+rules is maintained by GitLab. In the Ultimate tier, you can customize the default ruleset to suit
+your needs. For details, see [Customize analyzer rulesets](#customize-analyzer-rulesets). To confirm
+which secrets are detected by pipeline secret detection, see
+[Detected secrets](../detected_secrets.md). To provide reliable, high-confidence results, pipeline
+secret detection only looks for passwords or other unstructured secrets in specific contexts like
+URLs.
 
-Most pipeline secret detection patterns search for specific types of secrets.
-Many services add prefixes or other structural details to their secrets so they can be identified if they're leaked.
-For example, GitLab [adds a `glpat-` prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and personal access tokens by default.
-
-To provide more reliable, high-confidence results, pipeline secret detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
-
-A detected secret remains in the vulnerability report as "Still
-detected" even after the secret is removed from the scanned file. This
-is because the secret remains in the Git repository's history. To
-address a detected secret, remediate the leak, then triage the
-vulnerability.
+When a secret is detected a vulnerability is created for it. The vulnerability remains as "Still
+detected" even if the secret is removed from the scanned file and pipeline secret detection has been
+run again. This is because the secret remains in the Git repository's history. To remove a secret
+from the Git repository's history, see
+[Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
 
 ## Coverage
 
@@ -137,8 +137,8 @@ For more information, see:
 Prerequisites:
 
 - Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
-  shared runners on GitLab.com, this is enabled by default.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using
+  hosted runners for GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
@@ -229,7 +229,7 @@ including a large number of false positives.
 
 To search for other types of secrets in your repositories, you can [customize analyzer rulesets](#customize-analyzer-rulesets).
 
-To propose a new detection rule for all users of pipeline secret detection, create a merge request against the [file containing the default rules](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml).
+To propose a new detection rule for all users of pipeline secret detection, [see our single source of truth for our rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md) and follow the guidance to create a merge request.
 
 If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about our [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
 
@@ -843,7 +843,7 @@ Prerequisites:
    [local Docker container registry](../../../packages/container_registry/index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/secrets:4
+   registry.gitlab.com/security-products/secrets:6
    ```
 
    The pipeline secret detection analyzer's image is [periodically updated](../../index.md#vulnerability-scanner-maintenance)

@@ -1,0 +1,11 @@
+mutation organizationUserUpdate($input: OrganizationUserUpdateInput!) {
+  organizationUserUpdate(input: $input) {
+    organizationUser {
+      id
+      accessLevel {
+        stringValue
+      }
+    }
+    errors
+  }
+}

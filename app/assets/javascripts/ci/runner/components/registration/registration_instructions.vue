@@ -17,10 +17,12 @@ import {
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   I18N_FETCH_ERROR,
   GOOGLE_CLOUD_PLATFORM,
+  GOOGLE_KUBERNETES_ENGINE,
 } from '../../constants';
 import { captureException } from '../../sentry_utils';
 
 import GoogleCloudRegistrationInstructions from './google_cloud_registration_instructions.vue';
+import GkeRegistrationInstructions from './gke_registration_instructions.vue';
 import PlatformsDrawer from './platforms_drawer.vue';
 import CliCommand from './cli_command.vue';
 import { commandPrompt, registerCommand, runCommand } from './utils';
@@ -35,6 +37,7 @@ export default {
     ClipboardButton,
     CliCommand,
     GoogleCloudRegistrationInstructions,
+    GkeRegistrationInstructions,
     PlatformsDrawer,
     RunnerPlatformsRadioGroup,
     RunnerGoogleCloudOption,
@@ -146,6 +149,9 @@ export default {
     showGoogleCloudRegistration() {
       return this.platform === GOOGLE_CLOUD_PLATFORM;
     },
+    showGKERegistration() {
+      return this.platform === GOOGLE_KUBERNETES_ENGINE;
+    },
   },
   watch: {
     isRunnerOnline(newVal, oldVal) {
@@ -197,12 +203,21 @@ export default {
     </runner-platforms-radio-group>
     <hr aria-hidden="true" />
 
-    <template v-if="showGoogleCloudRegistration">
-      <google-cloud-registration-instructions
-        :token="token"
-        :group-path="groupPath"
-        :project-path="projectPath"
-      />
+    <template v-if="showGoogleCloudRegistration || showGKERegistration">
+      <template v-if="showGoogleCloudRegistration">
+        <google-cloud-registration-instructions
+          :token="token"
+          :group-path="groupPath"
+          :project-path="projectPath"
+        />
+      </template>
+      <template v-if="showGKERegistration">
+        <gke-registration-instructions
+          :token="token"
+          :group-path="groupPath"
+          :project-path="projectPath"
+        />
+      </template>
     </template>
     <template v-else>
       <p>
@@ -214,7 +229,9 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link @click="onToggleDrawer()">{{ content }}</gl-link>
+            <gl-link data-testid="how-to-install-btn" @click="onToggleDrawer()">{{
+              content
+            }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
@@ -232,7 +249,7 @@ export default {
         <template v-else>
           <cli-command :prompt="commandPrompt" :command="registerCommand" />
           <p>
-            <gl-icon name="information-o" class="!gl-text-blue-600" />
+            <gl-icon name="information-o" variant="info" />
             <gl-sprintf :message="tokenMessage">
               <template #token>
                 <code data-testid="runner-token">{{ token }}</code>

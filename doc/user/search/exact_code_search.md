@@ -33,6 +33,9 @@ and is used by default in groups where the feature is enabled.
   [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
+In user preferences, you can [disable exact code search](../profile/preferences.md#disable-exact-code-search)
+to use [advanced search](advanced_search.md) instead.
+
 ## Zoekt search API
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143666) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `zoekt_search_api`. Enabled by default.

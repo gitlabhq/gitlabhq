@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FileStoreMounter, :aggregate_failures do
+RSpec.describe FileStoreMounter, :aggregate_failures, feature_category: :shared do
   let(:uploader_class) do
     Class.new do
       def object_store
@@ -73,9 +73,20 @@ RSpec.describe FileStoreMounter, :aggregate_failures do
 
       it 'calls update column' do
         expect(instance).to receive(:file).and_return(uploader_instance)
+        expect(instance).to receive(:[]).with('file_store').and_return(nil)
         expect(instance).to receive(:update_column).with('file_store', :object_store)
 
         update_file_store
+      end
+
+      context 'when the model file store is set to the same value' do
+        it 'does not call update column' do
+          expect(instance).to receive(:file).and_return(uploader_instance)
+          expect(instance).to receive(:[]).with('file_store').and_return(:object_store)
+          expect(instance).not_to receive(:update_column)
+
+          update_file_store
+        end
       end
     end
 

@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -44,7 +44,7 @@ The principal is used to authorize access to the Secret Manager resources:
    1. Select **Default audience**, or select **Allowed audiences** for a custom audience, which is used in the `aud` for the GitLab CI/CD ID token.
 1. Under **Attribute Mapping**, create the following mappings, where:
 
-   - `attribute.X` is the name of the attribute you want to be present on Google's claims.
+   - `attribute.X` is the name of the attribute to include as a claim in the Google token.
    - `assertion.X` is the value to extract from the [GitLab claim](../cloud_services/index.md#how-it-works).
 
    | Attribute (on Google)         | Assertion (from GitLab) |

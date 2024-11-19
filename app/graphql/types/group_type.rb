@@ -16,7 +16,7 @@ module Types
     field :organization_edit_path, GraphQL::Types::String,
       null: true,
       description: 'Path for editing group at the organization level.',
-      alpha: { milestone: '17.1' }
+      experiment: { milestone: '17.1' }
 
     field :avatar_url,
       type: GraphQL::Types::String,
@@ -302,19 +302,19 @@ module Types
     field :work_items,
       null: true,
       description: 'Work items that belong to the namespace.',
-      alpha: { milestone: '16.3' },
+      experiment: { milestone: '16.3' },
       resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
     field :work_item, Types::WorkItemType,
       resolver: Resolvers::Namespaces::WorkItemResolver,
-      alpha: { milestone: '16.4' },
+      experiment: { milestone: '16.4' },
       description: 'Find a work item by IID directly associated with the group. Returns `null` if the ' \
         '`namespace_level_work_items` feature flag is disabled.'
 
     field :work_item_state_counts,
       Types::WorkItemStateCountsType,
       null: true,
-      alpha: { milestone: '16.7' },
+      experiment: { milestone: '16.7' },
       description: 'Counts of work items by state for the namespace. Returns `null` if the ' \
         '`namespace_level_work_items` feature flag is disabled.',
       resolver: Resolvers::Namespaces::WorkItemStateCountsResolver

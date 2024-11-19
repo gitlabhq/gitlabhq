@@ -1,0 +1,13 @@
+---
+description: Tracks the addition of comments to work items.
+action: add_work_item_comment
+product_group: project_management
+milestone: '15.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105751
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

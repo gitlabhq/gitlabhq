@@ -154,7 +154,7 @@ module Gitlab
             tags = runner.tags.offset(2).sample(Random.rand(1..5)) # rubocop: disable CodeReuse/ActiveRecord
 
             build_attrs = {
-              name: "Fake job #{index}",
+              name: "Mock job #{index}",
               scheduling_type: 'dag',
               ref: 'main',
               status: job_status,
@@ -169,11 +169,14 @@ module Gitlab
             }
             logger.info(message: 'Creating build', **build_attrs)
 
+            build = nil
+
             ::Ci::Build.transaction do
               build = ::Ci::Build.new(importing: true, **build_attrs).tap(&:save!)
-
               ::Ci::RunningBuild.upsert_build!(build) if build.running?
             end
+
+            build&.trace&.set("Mock log...\nMock log... DONE!")
           end
 
           def random_pipeline_status

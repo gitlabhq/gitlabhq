@@ -368,6 +368,7 @@ RSpec.describe TodosHelper do
       Todo::MERGE_TRAIN_REMOVED | true  | s_("Todos|Removed from Merge Train")
       Todo::REVIEW_SUBMITTED    | false | s_('Todos|reviewed your merge request')
       Todo::SSH_KEY_EXPIRED     | true  | s_('Todos|Your SSH key has expired')
+      Todo::SSH_KEY_EXPIRING_SOON | true | s_('Todos|Your SSH key is expiring soon')
     end
 
     with_them do

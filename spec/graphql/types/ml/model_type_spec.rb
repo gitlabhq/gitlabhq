@@ -25,6 +25,13 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
         query {
           mlModel(id: "#{model_id}") {
             id
+            createdAt
+            author {
+              id
+              username
+              webUrl
+              avatarUrl
+            }
             description
             descriptionHtml
             name
@@ -49,6 +56,13 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
         query {
           mlModel(id: "#{model_id_markdown}") {
             id
+            createdAt
+            author {
+              id
+              username
+              webUrl
+              avatarUrl
+            }
             description
             descriptionHtml
             name
@@ -78,17 +92,24 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
 
   it 'includes all the fields' do
     expected_fields = %w[id name versions candidates version_count _links created_at latest_version description
-      candidate_count description version description_html]
+      candidate_count description version description_html author]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
   it 'computes the correct properties' do
     model_data = data.dig('data', 'mlModel')
-
+    user = model.user
     expect(model_data).to eq({
       'id' => model_id,
       'name' => model.name,
+      'createdAt' => model.created_at.iso8601(0),
+      'author' => {
+        'id' => user.to_global_id.to_s,
+        'username' => user.username,
+        'webUrl' => "http://localhost/#{user.username}",
+        'avatarUrl' => user.avatar_url
+      },
       'description' => 'A description',
       'descriptionHtml' =>
         '<p data-sourcepos="1:1-1:13" dir="auto">A description</p>',
@@ -108,10 +129,17 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
 
   it 'computes the correct properties with markdown' do
     model_data = data_markdown.dig('data', 'mlModel')
-
+    user = model_markdown.user
     expect(model_data).to eq({
       'id' => model_id_markdown,
       'name' => model_markdown.name,
+      'createdAt' => model_markdown.created_at.iso8601(0),
+      'author' => {
+        'id' => user.to_global_id.to_s,
+        'username' => user.username,
+        'webUrl' => "http://localhost/#{user.username}",
+        'avatarUrl' => user.avatar_url
+      },
       'description' => model_markdown.description,
       'descriptionHtml' =>
         '<p data-sourcepos="1:1-1:17" dir="auto">A <strong data-sourcepos="1:3-1:17">description</strong></p>',

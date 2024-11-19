@@ -5,9 +5,14 @@
   removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
   announcement_milestone: "16.4"  # (required) The milestone when this feature was first announced as deprecated.
   breaking_change: true  # (required) Change to false if this is not a breaking change.
+  window: 3
   reporter: jocelynjane  # (required) GitLab username of the person reporting the change
-  stage: verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  stage: govern  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423091  # (required) Link to the deprecation issue in GitLab
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Do not modify this line, instead modify the lines below.
     GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/ee/api/projects.html), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/ee/api/project_job_token_scopes.html) instead.
 #

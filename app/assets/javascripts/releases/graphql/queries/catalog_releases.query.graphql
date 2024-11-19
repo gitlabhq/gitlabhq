@@ -1,0 +1,11 @@
+query catalogReleases($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
+    id
+    versions {
+      nodes {
+        id
+        path
+      }
+    }
+  }
+}

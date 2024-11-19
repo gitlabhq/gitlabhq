@@ -21,9 +21,7 @@ Enterprise Edition in a single Virtual Machine (VM).
 You need an account on Azure. Use of the following methods to obtain an account:
 
 - If you or your company already have an account with a subscription, use that account.
-  If not, you can [open your own Azure account for free](https://azure.microsoft.com/en-us/free/).
-  Azure's free trial gives you $200 credit to explore Azure for 30 days.
-  [Read more in Azure's comprehensive FAQ](https://azure.microsoft.com/en-us/free/free-account-faq/).
+  If not, you can [create a free account](https://azure.microsoft.com/en-us/free/), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
 - If you have an MSDN subscription, you can activate your Azure subscriber benefits. Your MSDN
   subscription gives you recurring Azure credits every month, so you can use
   those credits and try out GitLab.
@@ -162,7 +160,7 @@ to assign a descriptive DNS name to the VM:
 
 Eventually, most users want to use their own domain name. For you to do this, you need to add a DNS `A` record
 with your domain registrar that points to the public IP address of your Azure VM.
-You can use [Azure's DNS](https://learn.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
+You can use the [Azure DNS](https://learn.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
 or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns.html).
 
 ### Change the GitLab external URL

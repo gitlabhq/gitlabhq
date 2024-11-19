@@ -83,14 +83,26 @@ difficult, but several tools exist including:
 ## User contribution and membership mapping
 
 DETAILS:
-**Status:** Experiment
+**Offering:** GitLab.com, Self-managed
 
-> - [Introduced to migration by using direct transfer](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) to direct transfer migrations for self-managed instances in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+> - [Introduced to Gitea project import](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
 For more information, see the history.
-This feature is available for internal testing only, it is not ready for production use.
+
+NOTE:
+To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
+
+This method of user contributions and membership mapping is available for
+[direct transfer migrations](../../group/import/index.md) on:
+
+- GitLab.com
+- GitLab self-managed when two feature flags are enabled
+
+For information on the other method available for GitLab self-managed without enabled feature flags,
+see [User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
 
 With user contribution and membership mapping, you can assign imported contributions and memberships to users on the
 destination instance after import has completed. Unlike the previous method of user contribution and membership mapping,
@@ -99,20 +111,11 @@ no preparation is needed before the import.
 The process doesn't rely on email addresses, so you can map contributions for users who have different emails on source
 and destination instances.
 
-NOTE:
-This new method of user contribution and membership method is only supported for
-[migrations by using direct transfer](../../group/import/index.md). For information on the other method of user
-contribution and membership mapping for direct transfer migrations, see
-[User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
-
 Each user on the destination instance that is assigned a mapping can:
 
 - [Explicitly accept](#accept-contribution-reassignment) the assignment before any imported contributions are
   attributed to them.
 - Reject the assignment.
-
-This feature is an [experiment](../../../policy/experiment-beta-support.md). If you find a bug, open an issue in
-[epic 12378](https://gitlab.com/groups/gitlab-org/-/epics/12378).
 
 ### Requirements
 
@@ -129,6 +132,15 @@ to existing users on the destination instance.
 
 Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
 do not display in member lists.
+
+#### Exceptions
+
+A placeholder user is created for each user on the source instance, except in the following scenarios:
+
+- You are importing a project from [Gitea](gitea.md) and the user has been deleted on Gitea before the import.
+  Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
+- You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
+  mapped to a single import user.
 
 #### Placeholder user attributes
 
@@ -235,8 +247,7 @@ they stay associated with placeholder users.
 
 #### Security considerations
 
-Once this contribution and membership reassignment is complete, it cannot be undone so check all everything before
-starting.
+Contribution and membership reassignment cannot be undone, so check everything carefully before you start.
 
 Reassigning contributions and membership to an incorrect user poses a security threat, because the user becomes a member
 of your group. They can, therefore, view information they should not be able to see.
@@ -263,7 +274,7 @@ This results in their membership for the imported group or project being higher 
 
 Prerequisites:
 
-- You must have the Owner role of the group.
+- You must have the Owner role for the group.
 
 To request a user accept reassignment of contributions and memberships:
 
@@ -443,6 +454,73 @@ file with a URL host (`lfs.url`) different from the repository URL host, LFS fil
 If you prefer, you can engage GitLab Professional Services to migrate groups and projects to GitLab instead of doing it
 yourself. For more information, see the [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
 
+## Sidekiq configuration
+
+Importers rely heavily on Sidekiq jobs to handle the import and export of groups and projects.
+Some of these jobs might consume significant resources (CPU and memory) and
+take a long time to complete, which might affect the execution of other jobs.
+To resolve this issue, you should route importer jobs to a dedicated Sidekiq queue and
+assign a dedicated Sidekiq process to handle that queue.
+
+For example, you can use the following configuration:
+
+```conf
+sidekiq['concurrency'] = 20
+
+sidekiq['routing_rules'] = [
+  # Route import and export jobs to the importer queue
+  ['feature_category=importers', 'importers'],
+
+  # Route all other jobs to the default queue by using wildcard matching
+  ['*', 'default']
+]
+
+sidekiq['queue_groups'] = [
+  # Run a dedicated process for the importer queue
+  'importers',
+
+  # Run a separate process for the default and mailer queues
+  'default,mailers'
+]
+```
+
+In this setup:
+
+- A dedicated Sidekiq process handles import and export jobs through the importer queue.
+- Another Sidekiq process handles all other jobs (the default and mailer queues).
+- Both Sidekiq processes are configured to run with 20 concurrent threads by default.
+  For memory-constrained environments, you might want to reduce this number.
+
+If your instance has enough resources to support more concurrent jobs,
+you can configure additional Sidekiq processes to speed up migrations.
+For example:
+
+```conf
+sidekiq['queue_groups'] = [
+  # Run three processes for importer jobs
+  'importers',
+  'importers',
+  'importers',
+
+  # Run a separate process for the default and mailer queues
+  'default,mailers'
+]
+```
+
+With this setup, multiple Sidekiq processes handle import and export jobs concurrently,
+which speeds up migration as long as the instance has sufficient resources.
+
+For the maximum number of Sidekiq processes, keep the following in mind:
+
+- The number of processes should not exceed the number of available CPU cores.
+- Each process can use up to 2 GB of memory, so ensure the instance
+  has enough memory for any additional processes.
+- Each process adds one database connection per thread
+  as defined in `sidekiq['concurrency']`.
+
+For more information, see [running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md)
+and [processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).
+
 ## Troubleshooting
 
 ### Imported repository is missing branches
@@ -459,3 +537,55 @@ If an imported repository does not contain all branches of the source repository
 The error occurs if you attempt to import a `tar.gz` file download of a repository's source code.
 
 Imports require a [GitLab export](../settings/import_export.md#export-a-project-and-its-data) file, not just a repository download file.
+
+### Diagnosing prolonged or failed imports
+
+If you're experiencing prolonged delays or failures with file-based imports, especially those using S3, the following may help identify the root cause of the problem:
+
+- [Check import steps](#check-import-status)
+- [Review logs](#review-logs)
+- [Identify common issues](#identify-common-issues)
+
+#### Check import status
+
+Check the import status:
+
+1. Use the GitLab API to check the [import status](../../../api/project_import_export.md#import-status) of the affected project.
+1. Review the response for any error messages or status information, especially the `status` and `import_error` values.
+1. Make note of the `correlation_id` in the response, as it's crucial for further troubleshooting.
+
+#### Review logs
+
+Search logs for relevant information:
+
+For self-managed instances:
+
+1. Check the [Sidekiq logs](../../../administration/logs/index.md#sidekiqlog) and [`exceptions_json` logs](../../../administration/logs/index.md#exceptions_jsonlog).
+1. Search for entries related to `RepositoryImportWorker` and the correlation ID from [Check import status](#check-import-status).
+1. Look for fields such as `job_status`, `interrupted_count`, and `exception`.
+
+For GitLab.com (GitLab team members only):
+
+1. Use [Kibana](https://log.gprd.gitlab.net/) to search the Sidekiq logs with queries like:
+
+   Target: `pubsub-sidekiq-inf-gprd*`
+
+   ```plaintext
+   json.class: "RepositoryImportWorker" AND json.correlation_id.keyword: "<CORRELATION_ID>"
+   ```
+
+   or
+
+   ```plaintext
+   json.class: "RepositoryImportWorker" AND json.meta.project: "<project.full_path>"
+   ```
+
+1. Look for the same fields as mentioned for self-managed instances.
+
+#### Identify common issues
+
+Check the information gathered in [Review logs](#review-logs) against the following common issues:
+
+- **Interrupted jobs**: If you see a high `interrupted_count` or `job_status` indicating failure, the import job may have been interrupted multiple times and placed in a dead queue.
+- **S3 connectivity**: For imports using S3, check for any S3-related error messages in the logs.
+- **Large repository**: If the repository is very large, the import might time out. Consider using [Direct transfer](../../group/import/index.md) in this case.

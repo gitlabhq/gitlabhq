@@ -74,7 +74,6 @@ module Database
       fetch_next_start_id || random_start_id
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def min_id
       @min_id ||= source_model.minimum(source_sort_column)
     end
@@ -82,7 +81,6 @@ module Database
     def max_id
       @max_id ||= source_model.maximum(source_sort_column)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def fetch_next_start_id
       Gitlab::Redis::SharedState.with { |redis| redis.get(cursor_redis_shared_state_key)&.to_i }

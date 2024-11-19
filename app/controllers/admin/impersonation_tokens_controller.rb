@@ -17,8 +17,9 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @impersonation_token.organization = Current.organization
 
     if @impersonation_token.save
+      active_access_tokens = active_impersonation_tokens
       render json: { new_token: @impersonation_token.token,
-                     active_access_tokens: active_impersonation_tokens }, status: :ok
+                     active_access_tokens: active_access_tokens, total: active_access_tokens.length }, status: :ok
     else
       render json: { errors: @impersonation_token.errors.full_messages }, status: :unprocessable_entity
     end

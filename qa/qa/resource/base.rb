@@ -31,6 +31,7 @@ module QA
           instance(api_client).all(**kwargs)
         end
 
+        # TODO: remove, this method is redundant because normal fabricate! performs exactly the same check
         def fabricate_via_api_unless_fips!
           if Runtime::Env.personal_access_tokens_disabled?
             fabricate!
@@ -40,6 +41,7 @@ module QA
         end
 
         def fabricate!(*args, &prepare_block)
+          # TODO: move this check in to `api_support?` method to disable api support if tokens are disabled
           if Runtime::Env.personal_access_tokens_disabled?
             fabricate_via_browser_ui!(*args, &prepare_block)
           else
@@ -88,6 +90,16 @@ module QA
         end
 
         private
+
+        # Override api client definition to use admin api client
+        #
+        # @return [void]
+        def uses_admin_api_client
+          define_method(:api_client) do
+            @api_client ||= Runtime::UserStore.admin_api_client
+          end
+          private :api_client
+        end
 
         def instance(api_client)
           init { |resource| resource.api_client = api_client || QA::Runtime::API::Client.as_admin }
@@ -160,9 +172,9 @@ module QA
           attr_writer(name)
 
           define_method(name) do
-            return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
+            return instance_variable_get(:"@#{name}") if instance_variable_defined?(:"@#{name}")
 
-            instance_variable_set("@#{name}", attribute_value(name, block))
+            instance_variable_set(:"@#{name}", attribute_value(name, block))
           end
         end
 
@@ -191,7 +203,9 @@ module QA
         return self unless api_resource
 
         all_attributes.each do |attribute_name|
-          instance_variable_set("@#{attribute_name}", api_resource[attribute_name]) if api_resource.key?(attribute_name)
+          if api_resource.key?(attribute_name)
+            instance_variable_set(:"@#{attribute_name}", api_resource[attribute_name])
+          end
         end
 
         self

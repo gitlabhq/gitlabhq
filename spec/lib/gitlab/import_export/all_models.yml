@@ -5,10 +5,12 @@ issues:
 - own_award_emoji
 - author
 - assignees
+- assignees_by_name_and_id
 - updated_by
 - milestone
 - iteration
 - work_item_type
+- correct_work_item_type
 - notes
 - resource_label_events
 - resource_weight_events
@@ -85,7 +87,6 @@ issues:
 work_item_type:
 - issues
 - namespace
-- work_items
 - widget_definitions
 - enabled_widget_definitions
 - child_restrictions
@@ -277,7 +278,7 @@ merge_requests:
 - scan_result_policy_reads_through_violations
 - scan_result_policy_reads_through_approval_rules
 - running_scan_result_policy_violations
-- completed_scan_result_policy_violations
+- failed_scan_result_policy_violations
 external_pull_requests:
 - project
 merge_request_diff:
@@ -349,7 +350,6 @@ ci_pipelines:
 - parent_pipeline
 - downstream_bridges
 - job_artifacts
-- vulnerabilities_finding_pipelines
 - vulnerability_findings
 - pipeline_config
 - security_scans
@@ -564,6 +564,7 @@ project:
 - catalog_resource_versions
 - ci_components
 - ci_component_usages
+- ci_component_last_usages
 - external_status_checks
 - base_tags
 - project_topics
@@ -883,7 +884,7 @@ project:
 - dora_performance_scores
 - xray_reports
 - member_approvals
-- zoekt_repository
+- zoekt_repositories
 - security_policy_management_project_linked_configurations
 - security_policy_project_linked_projects
 - security_policy_project_linked_namespaces
@@ -964,6 +965,7 @@ epic_issues:
 - issue
 - epic
 - work_item
+- work_item_parent_link
 feature_flag_issues:
 - issue
 - feature_flag
@@ -1073,10 +1075,12 @@ epic:
 - epic_board_positions
 - work_item
 - own_subscriptions
+- work_item_parent_link
 epic_issue:
 - epic
 - issue
 - work_item
+- work_item_parent_link
 system_note_metadata:
 - note
 - description_version

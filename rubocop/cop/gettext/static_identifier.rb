@@ -76,7 +76,7 @@ module RuboCop
         def allowed_method_call?(node)
           return false unless node.send_type?
 
-          !DENIED_METHOD_CALLS.include?(node.method_name) # rubocop:disable Rails/NegateInclude
+          !DENIED_METHOD_CALLS.include?(node.method_name)
         end
       end
     end

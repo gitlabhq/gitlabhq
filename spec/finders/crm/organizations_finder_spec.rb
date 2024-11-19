@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Crm::OrganizationsFinder do
+RSpec.describe Crm::OrganizationsFinder, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   describe '#execute' do
@@ -180,6 +180,22 @@ RSpec.describe Crm::OrganizationsFinder do
         finder = described_class.new(user, group: group, sort: { field: 'default_rate', direction: :asc })
 
         expect(finder.execute).to eq([sort_test_b, sort_test_c, sort_test_a])
+      end
+    end
+
+    context 'when a contact source, but not a root group' do
+      let_it_be(:root_group) { create(:group, owners: user) }
+      let_it_be(:group) do
+        create(:group, parent: root_group).tap do |group|
+          Group::CrmSettings.find_or_create_by!(group: group, source_group: group)
+        end
+      end
+
+      let_it_be(:crm_organization_1) { create(:crm_organization, group: root_group) }
+      let_it_be(:crm_organization_2) { create(:crm_organization, group: group) }
+
+      it 'pulls organizations from the correct group' do
+        expect(subject).to contain_exactly(crm_organization_2)
       end
     end
   end

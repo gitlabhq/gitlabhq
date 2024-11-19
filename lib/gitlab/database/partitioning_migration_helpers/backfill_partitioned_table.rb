@@ -16,7 +16,7 @@ module Gitlab
           end
 
           unless table_exists?(partitioned_table)
-            logger.warn "exiting backfill migration because partitioned table #{partitioned_table} does not exist. " \
+            logger.warn "exiting backfill migration because partitioned table '#{partitioned_table}' does not exist. " \
               "This could be due to the migration being rolled back after migration jobs were enqueued in sidekiq"
             return
           end

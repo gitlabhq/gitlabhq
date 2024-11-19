@@ -43,7 +43,7 @@ module PagesDomains
           save_certificate(acme_order.private_key, api_order)
           acme_order.destroy!
         when 'invalid'
-          save_order_error(acme_order, get_challenge_error(api_order))
+          save_order_error(acme_order, api_order.challenge_error)
         end
       rescue Acme::Client::Error => e
         save_order_error(acme_order, e.message)
@@ -75,14 +75,6 @@ module PagesDomains
         project_id: pages_domain.project_id,
         pages_domain: pages_domain.domain
       )
-    end
-
-    def get_challenge_error(api_order)
-      api_order.challenge_error
-    rescue StandardError => e
-      # getting authorizations is an additional network request which can raise errors
-      Gitlab::ErrorTracking.track_exception(e)
-      e.message
     end
   end
 end

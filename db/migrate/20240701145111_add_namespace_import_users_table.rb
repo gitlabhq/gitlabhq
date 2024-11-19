@@ -4,7 +4,7 @@ class AddNamespaceImportUsersTable < Gitlab::Database::Migration[2.2]
   milestone '17.2'
 
   def up
-    create_table :namespace_import_users do |t| # rubocop:disable Migration/EnsureFactoryForTable -- False Positive
+    create_table :namespace_import_users do |t|
       t.bigint :user_id, null: false
       t.bigint :namespace_id, null: false
 

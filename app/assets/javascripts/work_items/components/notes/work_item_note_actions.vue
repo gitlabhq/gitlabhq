@@ -4,6 +4,7 @@ import {
   GlTooltipDirective,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, sprintf } from '~/locale';
@@ -28,6 +29,7 @@ export default {
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+    GlDisclosureDropdownGroup,
     ReplyButton,
     UserAccessRoleBadge,
   },
@@ -278,15 +280,6 @@ export default {
       no-caret
     >
       <gl-disclosure-dropdown-item
-        v-if="canReportAbuse"
-        data-testid="abuse-note-action"
-        @action="emitEvent('reportAbuse')"
-      >
-        <template #list-item>
-          {{ $options.i18n.reportAbuseText }}
-        </template>
-      </gl-disclosure-dropdown-item>
-      <gl-disclosure-dropdown-item
         data-testid="copy-link-action"
         :data-clipboard-text="noteUrl"
         @action="emitEvent('notifyCopyDone')"
@@ -304,15 +297,26 @@ export default {
           {{ assignUserActionText }}
         </template>
       </gl-disclosure-dropdown-item>
-      <gl-disclosure-dropdown-item
-        v-if="showEdit"
-        data-testid="delete-note-action"
-        @action="emitEvent('deleteNote')"
-      >
-        <template #list-item>
-          <span class="gl-text-red-500">{{ $options.i18n.deleteNoteText }}</span>
-        </template>
-      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-group v-if="canReportAbuse || showEdit" bordered>
+        <gl-disclosure-dropdown-item
+          v-if="canReportAbuse"
+          data-testid="abuse-note-action"
+          @action="emitEvent('reportAbuse')"
+        >
+          <template #list-item>
+            {{ $options.i18n.reportAbuseText }}
+          </template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          v-if="showEdit"
+          data-testid="delete-note-action"
+          @action="emitEvent('deleteNote')"
+        >
+          <template #list-item>
+            <span class="gl-text-red-500">{{ $options.i18n.deleteNoteText }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
   </div>
 </template>

@@ -1,8 +1,8 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_tag_user_weekly
-description: A weekly count of users that have published a package with a tag to the
-  registry
+description: A weekly count of users that have interacted with a package with a tag to the
+  package registry
 product_group: package_registry
 value_type: number
 status: removed
@@ -15,7 +15,7 @@ options:
 distribution:
 - ee
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

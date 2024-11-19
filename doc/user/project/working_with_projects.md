@@ -58,7 +58,7 @@ For example, if in your personal namespace `alex` you have a project `my-project
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
 NOTE:
-From GitLab 17.5, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
+In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
 
 You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/index.md).
 
@@ -75,10 +75,10 @@ To view all projects for the GitLab instance:
 1. On the left sidebar, select **Search or go to**.
 1. Select **Explore**.
 
-On the left sidebar, **Projects** is selected. On the right, the list shows
-all projects for the instance.
+On the left sidebar, **Projects** is selected.
+A list of all projects for the instance is displayed.
 
-If you are not authenticated, then the list shows public projects only.
+If you are not authenticated, the list shows public projects only.
 
 ## View projects you are a member of
 
@@ -121,7 +121,7 @@ Or
 1. On the left sidebar, select your avatar and then your username.
 1. On the left sidebar, select **Starred projects**.
 
-## Edit project name, description, and avatar
+## Edit project name and description
 
 Use the project general settings to edit your project details.
 
@@ -134,14 +134,59 @@ Prerequisites:
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
 Components published in the CI/CD catalog require a project description.
-1. Optional. Under **Project avatar**, to change your project avatar, select **Choose file**. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
+1. Select **Save changes**.
+
+## Add a project avatar
+
+Add a project avatar to help visually identify your project. If you do not add an avatar, GitLab displays the first letter of your project name as the default project avatar.
+
+To add a project avatar, use one of the following methods:
+
+- [Add a logo](#add-a-logo-to-your-repository) to your repository.
+- [Upload an avatar](#upload-an-avatar-in-project-settings) in your project settings.
+
+### Add a logo to your repository
+
+If you haven't uploaded an avatar to your project settings, GitLab looks for a file named `logo` in your repository to use as the default project avatar.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The file must be named `logo` with the extension `.png`, `.jpg`, or `.gif`. For example, `logo.gif`.
+
+To add a logo file to use as your project avatar:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In the root of your project repository, upload the logo file.
+
+### Upload an avatar in project settings
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The image must be one of the following file types:
+  - `.bmp`
+  - `.gif`
+  - `.ico`
+  - `.jpeg`
+  - `.png`
+  - `.tiff`
+
+To upload an avatar in your project settings:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. In the **Project avatar** section, select **Choose file**.
+1. Select your avatar file.
 1. Select **Save changes**.
 
 ## Star a project
 
-You can add a star to projects you use frequently to make them easier to find.
+You can star projects you use frequently to make them easier to find.
 
-To add a star to a project:
+To star a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner of the page, select **Star**.
@@ -197,6 +242,12 @@ You can [view projects that are pending deletion](#view-projects-pending-deletio
 and use the Rails console to
 [find projects that are pending deletion](troubleshooting.md#find-projects-that-are-pending-deletion).
 
+If the user who scheduled the project deletion loses access to the project (for example, by leaving the project, having their role downgraded, or being banned from the project) before the deletion occurs,
+the deletion job will instead restore and unarchive the project, so the project will no longer be scheduled for deletion.
+
+   WARNING:
+   If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
+
 ### Delete a project immediately
 
 DETAILS:
@@ -205,15 +256,15 @@ DETAILS:
 
 > - Option to delete projects immediately from the **Admin** area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-Prerequisites:
-
-- You must have the Owner role for the project.
-- The project must be [marked for deletion](#delete-a-project).
-
 If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
 
 In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
 If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be [marked for deletion](#delete-a-project).
 
 To immediately delete a project marked for deletion:
 

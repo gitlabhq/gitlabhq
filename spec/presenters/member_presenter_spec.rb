@@ -21,6 +21,14 @@ RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#member_role_description' do
+    it 'returns the correct role description' do
+      description = Gitlab::Access.option_descriptions[Gitlab::Access::REPORTER]
+
+      expect(presenter.member_role_description).to eq(description)
+    end
+  end
+
   describe '#role_type' do
     it "returns 'default'" do
       expect(presenter.role_type).to eq('default')

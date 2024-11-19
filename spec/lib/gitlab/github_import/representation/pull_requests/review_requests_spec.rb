@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::PullRequests::ReviewRequests do
+RSpec.describe Gitlab::GithubImport::Representation::PullRequests::ReviewRequests, feature_category: :importers do
   shared_examples 'Review requests' do
     it 'returns an instance of Review Request' do
       expect(review_requests).to be_an_instance_of(described_class)

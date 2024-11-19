@@ -23,7 +23,6 @@ CrystalballEnv.start!
 
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
-ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true'
 
 require_relative '../config/environment'
 
@@ -91,8 +90,12 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
+  config.define_derived_metadata(file_path: %r{(ee)?/spec/presenters/(ee)?}) do |metadata|
+    metadata[:type] = :presenter
+  end
+
   # Add :full_backtrace tag to an example if full_backtrace output is desired
-  config.before(:each, full_backtrace: true) do |example|
+  config.before(:each, :full_backtrace) do |example|
     config.full_backtrace = true
   end
 
@@ -145,6 +148,9 @@ RSpec.configure do |config|
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
     metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)
+
+    # The worker specs get Sidekiq context
+    metadata[:with_sidekiq_context] = true if %r{(ee)?/spec/workers/}.match?(location)
   end
 
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_docs\.rb\z}) do |metadata|
@@ -186,7 +192,6 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include ApiHelpers, :api
   config.include CookieHelper, :js
-  config.include InputHelper, :js
   config.include SelectionHelper, :js
   config.include InspectRequests, :js
   config.include LiveDebugger, :js
@@ -194,6 +199,7 @@ RSpec.configure do |config|
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
   config.include Rails.application.routes.url_helpers, type: :component
+  config.include Rails.application.routes.url_helpers, type: :presenter
   config.include PolicyHelpers, type: :policy
   config.include ExpectRequestWithStatus, type: :request
   config.include IdempotentWorkerHelper, type: :worker
@@ -330,13 +336,6 @@ RSpec.configure do |config|
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
 
-      # The Vue version of the merge request list app is missing a lot of information
-      # disabling this for now whilst we work on it across multiple merge requests
-      stub_feature_flags(vue_merge_request_list: false)
-
-      # Work in progress reviewer sidebar that does not have most of the features yet
-      stub_feature_flags(reviewer_assign_drawer: false)
-
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)
 
@@ -348,10 +347,6 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/457283
       stub_feature_flags(duo_chat_requires_licensed_seat_sm: false)
 
-      # This flag is for [Selectively disable by actor](https://docs.gitlab.com/ee/development/feature_flags/controls.html#selectively-disable-by-actor).
-      # Hence, it should not enable by default in test.
-      stub_feature_flags(v2_chat_agent_integration_override: false) if Gitlab.ee?
-
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
 
@@ -361,6 +356,10 @@ RSpec.configure do |config|
 
       # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
       stub_feature_flags(allow_self_hosted_features_for_com: false)
+
+      # Our test suite is setup to test plain text editor by default with separate tests just
+      # for the rich text editor. Switch the flag off to continue testing the same way as before
+      stub_feature_flags(rich_text_editor_as_default: false)
     else
       unstub_all_feature_flags
     end
@@ -422,7 +421,7 @@ RSpec.configure do |config|
     ::Gitlab::SafeRequestStore.ensure_request_store { example.run }
   end
 
-  config.around(:example, :ci_config_feature_flag_correctness) do |example|
+  config.around do |example|
     ::Gitlab::Ci::Config::FeatureFlags.ensure_correct_usage do
       example.run
     end

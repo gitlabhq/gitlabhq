@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting importing a project from GitHub to GitLab
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 When importing a project from GitHub to GitLab, you might encounter the following issues.
 
 ## Manually continue a previously failed import process

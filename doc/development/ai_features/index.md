@@ -32,7 +32,7 @@ all GitLab Duo features.
 
 **How:**
 
-Follow [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
+Follow [the process to obtain an EE license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
 for your local instance and [upload the license](../../administration/license_file.md).
 
 To verify that the license is applied, go to **Admin area** > **Subscription**
@@ -152,7 +152,7 @@ correctly reach to AI Gateway:
    Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'documentation_search').text_embeddings(content: "How can I create an issue?")
 
    # Test `/v1/chat/agent` endpoint
-   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request(prompt: [{role: "user", content: "Hi, how are you?"}])
+   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request({prompt: [{role: "user", content: "Hi, how are you?"}]})
    ```
 
 NOTE:
@@ -268,10 +268,19 @@ If you clean up the flag in GitLab-Rails repository at first, the feature flag i
 
 **IMPORTANT:** Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, Self-managed GitLab, and Dedicated.
 
-Technical details: When `push_feature_flag` runs on an enabled feature flag, the name of flag is cached in the current context,
-which is later attached to `x-gitlab-enabled-feature-flags` HTTP header when GitLab-Sidekiq/Rails requests to AI Gateway.
+**Technical details:**
 
-As a simialr concept, we also have [`push_frontend_feature_flag`](../feature_flags/index.md) to push feature flags to frontend.
+- When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
+  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI Gateway.
+- When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](../cloud_connector/architecture.md#ai-gateway) (UJWT)
+  for direct AI Gateway communication, GitLab returns:
+
+  - Public headers (including `x-gitlab-enabled-feature-flags`).
+  - The generated UJWT (1-hour expiration).
+
+Frontend clients must regenerate UJWT upon expiration. Backend changes such as feature flag updates through [ChatOps](../feature_flags/controls.md) render the header values to become stale. These header values are refreshed at the next UJWT generation.
+
+Similarly, we also have [`push_frontend_feature_flag`](../feature_flags/index.md) to push feature flags to frontend.
 
 ### GraphQL API
 
@@ -379,14 +388,16 @@ J --> K[::GitlabSchema.subscriptions.trigger]
 
 ## How to implement a new action
 
-Implementing a new AI action will require changes in the GitLab monolith as well as in the AI Gateway.
+Implementing a new AI action will require changes across different components.
 We'll use the example of wanting to implement an action that allows users to rewrite issue descriptions according to
 a given prompt.
 
 ### 1. Add your action to the Cloud Connector feature list
 
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
-For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
+If there's still not an entry for your feature, you'll need to add one in two places:
+
+- In the GitLab monolith:
 
 ```yaml
 # ee/config/cloud_connector/access_data.yml
@@ -401,15 +412,32 @@ services:
           - rewrite_issue_description
 ```
 
-### 2. Create an Agent definition in the AI Gateway
+- In [`customers-gitlab-com`](https://gitlab.com/gitlab-org/customers-gitlab-com):
+
+```yaml
+# config/cloud_connector.yml
+
+services:
+  # ...
+  rewrite_description:
+    backend: 'gitlab-ai-gateway'
+    bundled_with:
+      duo_enterprise:
+        unit_primitives:
+          - rewrite_issue_description
+```
+
+For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
+
+### 2. Create a prompt definition in the AI Gateway
 
 In [the AI Gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
-new agent definition under `ai_gateway/agents/definitions`. Create a new subfolder corresponding to the name of your
-AI action, and a new YAML file for your agent. Specify the model and provider you wish to use, and the prompts that
+new prompt definition under `ai_gateway/prompts/definitions`. Create a new subfolder corresponding to the name of your
+AI action, and a new YAML file for your prompt. Specify the model and provider you wish to use, and the prompts that
 will be fed to the model. You can specify inputs to be plugged into the prompt by using `{}`.
 
 ```yaml
-# ai_gateway/agents/definitions/rewrite_description/base.yml
+# ai_gateway/prompts/definitions/rewrite_description/base.yml
 
 name: Description rewriter
 model:
@@ -428,7 +456,7 @@ prompt_template:
 If your AI action is part of a broader feature, the definitions can be organized in a tree structure:
 
 ```yaml
-# ai_gateway/agents/definitions/code_suggestions/generations/base.yml
+# ai_gateway/prompts/definitions/code_suggestions/generations/base.yml
 
 name: Code generations
 model:
@@ -441,7 +469,7 @@ model:
 To specify prompts for multiple models, use the name of the model as the filename for the definition:
 
 ```yaml
-# ai_gateway/agents/definitions/code_suggestions/generations/mistral.yml
+# ai_gateway/prompts/definitions/code_suggestions/generations/mistral.yml
 
 name: Code generations
 model:
@@ -464,10 +492,6 @@ module Gitlab
     module AiGateway
       module Completions
         class RewriteDescription < Base
-          def agent_name
-            'base' # Must match the name of the agent you defined on the AI Gateway
-          end
-
           def inputs
             { description: resource.description, prompt: prompt_message.content }
           end
@@ -527,6 +551,19 @@ class AiFeaturesCatalogue
   }.freeze
 ```
 
+## Reuse the existing AI components for multiple models
+
+We thrive optimizing AI components, such as prompt, input/output parser, tools/function-calling, for each LLM,
+however, diverging the components for each model could increase the maintenance overhead.
+Hence, it's generally advised to reuse the existing components for multiple models as long as it doesn't degrade a feature quality.
+Here are the rules of thumbs:
+
+1. Iterate on the existing prompt template for multiple models. Do _NOT_ introduce a new one unless it causes a quality degredation for a particular model.
+1. Iterate on the existing input/output parsers and tools/functions-calling for multiple models. Do _NOT_ introduce a new one unless it causes a quality degredation for a particular model.
+1. If a quality degredation is detected for a particular model, the shared component should be diverged for the particular model.
+
+An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/713) of this case is that we can apply Claude specific CoT optimization to the other models such as Mixtral as long as it doesn't cause a quality degredation.
+
 ## How to migrate an existing action to the AI Gateway
 
 AI actions were initially implemented inside the GitLab monolith. As part of our
@@ -556,7 +593,9 @@ class AiFeaturesCatalogue
   }.freeze
 ```
 
-When the feature flag `ai_gateway_agents` is enabled, the `aigw_service_class` will be used to process the AI action.
+1. Create `prompt_migration_#{feature_name}` feature flag (e.g `prompt_migration_generate_description`)
+
+When the feature flag is enabled, the `aigw_service_class` will be used to process the AI action.
 Once you've validated the correct functioning of your action, you can remove the `aigw_service_class` key and replace
 the `service_class` with the new `AiGateway::Completions` class to make it the permanent provider.
 
@@ -779,3 +818,187 @@ to make sure we are not logging user input and LLM-generated output.
 ## Security
 
 Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines.md#artificial-intelligence-ai-features).
+
+## Model Migration Process
+
+### Introduction
+
+LLM models are constantly evolving, and GitLab needs to regularly update our AI features to support newer models. This guide provides a structured approach for migrating AI features to new models while maintaining stability and reliability.
+
+### Purpose
+
+Provide a comprehensive guide for migrating AI models within GitLab.
+
+#### Expected Duration
+
+Model migrations typically follow these general timelines:
+
+- **Simple Model Updates (Same Provider):** 2-3 weeks
+  - Example: Upgrading from Claude Sonnet 3.5 to 3.6
+  - Involves model validation, testing, and staged rollout
+  - Primary focus on maintaining stability and performance
+  - Can sometimes be expedited when urgent, but 2 weeks is standard
+
+- **Complex Migrations:** 1-2 months (full milestone or longer)
+  - Example: Adding support for a new provider like AWS Bedrock
+  - Example: Major version upgrades with breaking changes (e.g., Claude 2 to 3)
+  - Requires significant API integration work
+  - May need infrastructure changes
+  - Extensive testing and validation required
+
+#### Timeline Factors
+
+Several factors can impact migration timelines:
+
+- Current system stability and recent incidents
+- Resource availability and competing priorities
+- Complexity of behavioral changes in new model
+- Scale of testing required
+- Feature flag rollout strategy
+
+#### Best Practices
+
+- Always err on the side of caution with initial timeline estimates
+- Use feature flags for gradual rollouts to minimize risk
+- Plan for buffer time to handle unexpected issues
+- Communicate conservative timelines externally while working to deliver faster
+- Prioritize system stability over speed of deployment
+
+NOTE:
+While some migrations can technically be completed quickly, we typically plan for longer timelines to ensure proper testing and staged rollouts. This approach helps maintain system stability and reliability.
+
+### Scope
+
+Applicable to all AI model-related teams at GitLab. We currently only support using Anthropic and Google Vertex models, with plans to support AWS Bedrock models in the [future](https://gitlab.com/gitlab-org/gitlab/-/issues/498119).
+
+### Prerequisites
+
+Before starting a model migration:
+
+- Create an issue under the [AI Model Version Migration Initiative epic](https://gitlab.com/groups/gitlab-org/-/epics/15650) with the following:
+  - Label with `group::ai framework`
+  - Document any known behavioral changes or improvements in the new model
+  - Include any breaking changes or compatibility issues
+  - Reference any model provider documentation about the changes
+
+- Verify the new model is supported in our current AI-Gateway API specification by:
+  
+  - Check model definitions in AI Gateway:
+    - For LiteLLM models: `ai_gateway/models/v2/container.py`
+    - For Anthropic models: `ai_gateway/models/anthropic.py`
+    - For new providers: Create a new model definition file in `ai_gateway/models/`
+  - Verify model configurations:
+    - Model enum definitions
+    - Stop tokens
+    - Timeout settings
+    - Completion type (text or chat)
+    - Max token limits
+  - Testing the model locally in AI Gateway:
+    - Set up the [AI Gateway development environment](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
+    - Configure the necessary API keys in your `.env` file
+    - Test the model using the Swagger UI at `http://localhost:5052/docs`
+  - If the model isn't supported, create an issue in the [AI Gateway repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) to add support
+  - Review the provider's API documentation for any breaking changes:
+    - [Anthropic API Documentation](https://docs.anthropic.com/claude/reference/versions)
+    - [Google Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs/reference)
+
+- Ensure you have access to testing environments and monitoring tools
+- Complete model evaluation using the [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md)
+
+NOTE:
+Documentation of model changes is crucial for tracking the impact of migrations and helping with future troubleshooting. Always create an issue to track these changes before beginning the migration process.
+
+### Migration Tasks
+
+#### Migration Tasks for Anthropic Model
+
+- **Optional** - Investigate if the new model is supported within our current AI-Gateway API specification. This step can usually be skipped. However, sometimes to support a newer model, we may need to accommodate a new API format.
+- Add the new model to our [available models list](https://gitlab.com/gitlab-org/gitlab/-/blob/32fa9eaa3c8589ee7f448ae683710ec7bd82f36c/ee/lib/gitlab/llm/concerns/available_models.rb#L5-10).
+- Change the default model in our [AI-Gateway client](https://gitlab.com/gitlab-org/gitlab/-/blob/41361629b302f2c55e35701d2c0a73cff32f9013/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L63-67). Please place the change around a feature flag. We may need to quickly rollback the change.
+- Update the model definitions in AI Gateway following the [prompt definition guidelines](#2-create-a-prompt-definition-in-the-ai-gateway)
+Note: While we're moving toward AI Gateway holding the prompts, feature flag implementation still requires a GitLab release.
+
+#### Migration Tasks for Vertex Models
+
+**Work in Progress**
+
+### Feature Flag Process
+
+#### Implementation Steps
+
+For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/index.md).
+
+NOTE:
+Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
+
+#### Model Selection Implementation
+
+The model selection logic should be implemented in:
+
+- AI Gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
+- Model definitions in AI Gateway
+- Any custom implementations in specific features that override the default model
+
+#### Rollout Strategy
+
+- Enable the feature flag for a small percentage of users/groups initially
+- Monitor performance metrics and error rates using:
+  - [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview) for error ratios and response latency
+  - [AI Gateway metrics dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1) for gateway-specific metrics
+  - [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel) for detailed error investigation
+  - [Feature usage dashboard](https://log.gprd.gitlab.net/app/r/s/egybF) for adoption metrics
+  - [Periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features) for token usage and feature statistics
+- Gradually increase the rollout percentage
+- If issues arise, quickly disable the feature flag to rollback to the previous model
+- Once stability is confirmed, remove the feature flag and make the migration permanent
+
+For more details on monitoring during migrations, see the [Monitoring and Metrics](#monitoring-and-metrics) section below.
+
+### Scope of Work
+
+#### AI Features to Migrate
+
+- **Duo Chat Tools:**
+  - `ci_editor_assistant/prompts/anthropic.rb` - CI Editor
+  - `gitlab_documentation/executor.rb` - GitLab Documentation
+  - `epic_reader/prompts/anthropic.rb` - Epic Reader
+  - `issue_reader/prompts/anthropic.rb` - Issue Reader
+  - `merge_request_reader/prompts/anthropic.rb` - Merge Request Reader
+- **Chat Slash Commands:**
+  - `refactor_code/prompts/anthropic.rb` - Refactor
+  - `write_tests/prompts/anthropic.rb` - Write Tests
+  - `explain_code/prompts/anthropic.rb` - Explain Code
+  - `explain_vulnerability/executor.rb` - Explain Vulnerability
+- **Experimental Tools:**
+  - Summarize Comments Chat
+  - Fill MR Description
+
+### Testing and Validation
+
+#### Model Evaluation
+
+The `ai-model-validation` team created the following library to evaluate the performance of prompt changes as well as model changes. The [Prompt Library README.MD](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md) provides details on how to evaluate the performance of AI features.
+
+> Another use-case for running chat evaluation is during feature development cycle. The purpose is to verify how the changes to the code base and prompts affect the quality of chat responses before the code reaches the production environment.
+
+For evaluation in merge request pipelines, we use:
+
+- One click [Duo Chat evaluation](https://gitlab.com/gitlab-org/gitlab/-/issues/497305)
+- Automated evaluation in [merge request pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/495410)
+
+#### Local Development
+
+A valuable tool for local development to ensure the changes are correct outside of unit tests is to use [LangSmith](duo_chat.md#tracing-with-langsmith) for tracing. The tool allows you to trace LLM calls within Duo Chat to verify the LLM tool is using the correct model.
+
+To prevent regressions, we also have CI jobs to make sure our tools are working correctly. For more details, see the [Duo Chat testing section](duo_chat.md#gitlab-duo-chat-qa-evaluation-test).
+
+### Monitoring and Metrics
+
+Monitor the following during migration:
+
+- **Performance Metrics:**
+  - Error ratio and response latency apdex for each AI action on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview)
+  - Spent tokens, usage of each AI feature and other statistics on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features)
+  - [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)
+  - [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1)
+  - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF)

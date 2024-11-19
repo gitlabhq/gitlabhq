@@ -41,7 +41,7 @@ export default {
   <div class="gl-bg-gray-50 gl-py-13 gl-text-center">
     <gl-link :href="filePath" rel="nofollow" :download="fileName" target="_blank">
       <div>
-        <gl-icon :size="16" name="download" class="gl-text-gray-900" />
+        <gl-icon :size="16" name="download" variant="strong" />
       </div>
       <h4>{{ downloadText }}</h4>
     </gl-link>

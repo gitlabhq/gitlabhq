@@ -5,16 +5,16 @@ module Ci
     class AddProjectService < ::BaseService
       include EditScopeValidations
 
-      def execute(target_project, direction: :inbound)
-        validate_edit!(project, target_project, current_user)
+      def execute(target_project, policies: [], direction: :inbound)
+        validate_source_project_and_target_project_access!(project, target_project, current_user)
 
         link = allowlist(direction)
-          .add!(target_project, user: current_user)
+          .add!(target_project, policies: policies, user: current_user)
 
         ServiceResponse.success(payload: { project_link: link })
 
       rescue ActiveRecord::RecordNotUnique
-        ServiceResponse.error(message: "Target project is already in the job token scope")
+        ServiceResponse.error(message: 'This project is already in the job token allowlist.')
       rescue ActiveRecord::RecordInvalid => e
         ServiceResponse.error(message: e.message)
       rescue EditScopeValidations::ValidationError => e

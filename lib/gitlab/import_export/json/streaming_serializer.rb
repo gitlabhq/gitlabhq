@@ -259,7 +259,9 @@ module Gitlab
         end
 
         def read_from_replica_if_available(&block)
-          ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&block)
+          ::Gitlab::Database::LoadBalancing::SessionMap
+            .with_sessions(Gitlab::Database::LoadBalancing.base_models)
+            .use_replicas_for_read_queries(&block)
         end
 
         def before_read_callback(record)

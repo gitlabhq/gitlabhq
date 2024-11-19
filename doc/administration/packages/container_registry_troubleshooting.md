@@ -463,7 +463,7 @@ docker push s3-testing.myregistry.com:5050/root/docker-test/docker-image
 
 In the example above, we see the following trace on the mitmproxy window:
 
-![mitmproxy output from Docker](img/mitmproxy-docker.png)
+![mitmproxy output from Docker](img/mitmproxy_docker_v8_11.png)
 
 The above image shows:
 

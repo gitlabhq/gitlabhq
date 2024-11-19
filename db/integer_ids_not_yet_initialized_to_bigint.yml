@@ -3,12 +3,6 @@
 # https://gitlab.com/gitlab-org/gitlab/-/issues/438124, but they are still integers for existing instances.
 # On initialize_conversion_of_integer_to_bigint those integer IDs will be removed automatically from here.
 ---
-abuse_reports:
-- assignee_id
-- id
-- reporter_id
-- resolved_by_id
-- user_id
 alert_management_alert_user_mentions:
 - mentioned_groups_ids
 - mentioned_projects_ids

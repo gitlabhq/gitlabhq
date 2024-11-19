@@ -1762,14 +1762,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
     it do
       expect(Gitlab::Database::Triggers::AssignDesiredShardingKey).to receive(:new)
-        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
+        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table, parent_table_primary_key: :project_id,
           parent_sharding_key: :parent_project_id, foreign_key: :foreign_key, connection: connection,
           trigger_name: 'trigger_name').and_return(trigger)
 
       expect(trigger).to receive(:create)
 
-      model.install_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id,
-        parent_table: :parent_table, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
+      model.install_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
+        parent_table_primary_key: :project_id, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
         trigger_name: 'trigger_name')
     end
   end
@@ -1780,14 +1780,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
     it do
       expect(Gitlab::Database::Triggers::AssignDesiredShardingKey).to receive(:new)
-        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
+        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table, parent_table_primary_key: :project_id,
           parent_sharding_key: :parent_project_id, foreign_key: :foreign_key, connection: connection,
           trigger_name: 'trigger_name').and_return(trigger)
 
       expect(trigger).to receive(:drop)
 
-      model.remove_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id,
-        parent_table: :parent_table, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
+      model.remove_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
+        parent_table_primary_key: :project_id, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
         trigger_name: 'trigger_name')
     end
   end

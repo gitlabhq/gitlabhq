@@ -328,7 +328,7 @@ module Tooling
                     "**Deprecated:** #{object[:deprecation_reason]}"
                   end
 
-          buff << original_description if context == :inline && deprecation&.alpha?
+          buff << original_description if context == :inline && deprecation&.experiment?
 
           join(context, buff)
         end

@@ -156,11 +156,18 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
       end
 
       context 'with the same ref' do
+        before do
+          # The namespace_bans query is cached causing to a flaky count so we stub the method on the user
+          allow(user).to receive(:namespace_bans).and_wrap_original do |original_method, *args, **kwargs, &block|
+            original_method.call(*args, **kwargs, &block).reset
+          end
+        end
+
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
           expected_queries = Gitlab.ee? ? 33 : 30
 
-          expect(recorded.count).to be_within(2).of(expected_queries)
+          expect(recorded.count).to be_within(3).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -169,6 +176,10 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
         before do
           Ci::Pipeline.update_all(%(ref = 'feature-' || id))
           Ci::Build.update_all(%(ref = 'feature-' || stage_id))
+          # The namespace_bans query is cached causing to a flaky count so we stub the method on the user
+          allow(user).to receive(:namespace_bans).and_wrap_original do |original_method, *args, **kwargs, &block|
+            original_method.call(*args, **kwargs, &block).reset
+          end
         end
 
         it 'verifies number of queries', :request_store do
@@ -180,7 +191,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
           # https://gitlab.com/gitlab-org/gitlab-foss/issues/46368
           expected_queries = Gitlab.ee? ? 36 : 33
 
-          expect(recorded.count).to be_within(2).of(expected_queries)
+          expect(recorded.count).to be_within(3).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end
       end

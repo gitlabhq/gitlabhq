@@ -7,7 +7,7 @@ RSpec.describe Types::MergeRequests::MergeabilityCheckStatusEnum, feature_catego
 
   it 'exposes all the existing mergeability check statuses' do
     expect(described_class.values.keys).to contain_exactly(
-      *%w[SUCCESS FAILED INACTIVE WARNING]
+      *%w[SUCCESS CHECKING FAILED INACTIVE WARNING]
     )
   end
 end

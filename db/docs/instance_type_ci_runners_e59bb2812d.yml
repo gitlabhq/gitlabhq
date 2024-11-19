@@ -1,0 +1,13 @@
+---
+table_name: instance_type_ci_runners_e59bb2812d
+classes:
+- Ci::Runner
+feature_categories:
+- runner
+- fleet_visibility
+- hosted_runners
+description: Registered CI instance runners
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166308
+milestone: '17.6'
+gitlab_schema: gitlab_ci
+exempt_from_sharding: true

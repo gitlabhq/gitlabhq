@@ -16,10 +16,13 @@ module Analytics
 
       belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ValueStream',
         foreign_key: :group_value_stream_id, inverse_of: :stages
+      has_one :stage_aggregation, class_name: 'Analytics::CycleAnalytics::StageAggregation', inverse_of: :stage
 
       alias_attribute :parent, :namespace
       alias_attribute :parent_id, :group_id
       alias_attribute :value_stream_id, :group_value_stream_id
+
+      after_create :ensure_aggregation_record_presence!
 
       def to_global_id
         return super if persisted?
@@ -63,6 +66,10 @@ module Analytics
         message = format(_('Invalid name %{input} was given for this default stage, allowed names: %{names}'),
           input: name.downcase, names: names)
         errors.add(:name, message)
+      end
+
+      def ensure_aggregation_record_presence!
+        stage_aggregation || create_stage_aggregation!(enabled: true, namespace: namespace)
       end
     end
   end

@@ -10,11 +10,11 @@
         = milestone_date_range(milestone)
       = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { 'aria-label' => _('Toggle sidebar'), class: 'btn-grouped !gl-float-right sm:gl-hidden js-sidebar-toggle' })
 
-  - if can?(current_user, :admin_milestone, @group || @project)
-    - can_promote = @project && can_admin_group_milestones? && milestone.project
-    - can_read_milestone = can?(current_user, :read_milestone, @milestone)
+  - can_admin = can?(current_user, :admin_milestone, @group || @project)
+  - can_promote = @project && can_admin_group_milestones? && milestone.project
 
-    .milestone-buttons.detail-page-header-actions.gl-flex.gl-self-start.gl-gap-3
+  .milestone-buttons.detail-page-header-actions.gl-flex.gl-self-start.gl-gap-3
+    - if can_admin
       - if milestone.active?
         = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :close }), method: :put, button_options: { class: 'btn-close gl-hidden md:gl-inline-block' }) do
           = _('Close milestone')
@@ -22,18 +22,17 @@
         = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :activate }), method: :put, button_options: { class: 'gl-hidden md:gl-inline-block' }) do
           = _('Reopen milestone')
 
-      .js-vue-milestone-actions{ data: { id: @milestone.id,
-        title: milestone.title,
-        is_active: milestone.active?.to_s,
-        show_delete: 'true',
-        is_detail_page: 'true',
-        can_read_milestone: can_read_milestone.to_s,
-        milestone_url: Gitlab::UrlBuilder.build(milestone, only_path: true),
-        edit_url: edit_milestone_path(milestone),
-        close_url: update_milestone_path(milestone, { state_event: :close }),
-        reopen_url: update_milestone_path(milestone, { state_event: :activate }),
-        promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
-        group_name: can_promote && milestone.project_milestone? && milestone.project.group ? milestone.project.group.name : '',
-        issue_count: @milestone.issues.count,
-        merge_request_count: @milestone.merge_requests.count
-      } }
+    .js-vue-milestone-actions{ data: { id: milestone.id,
+      title: milestone.title,
+      is_active: milestone.active?.to_s,
+      show_delete: can_admin.to_s,
+      is_detail_page: 'true',
+      milestone_url: Gitlab::UrlBuilder.build(milestone, only_path: true),
+      edit_url: can_admin ? edit_milestone_path(milestone) : '',
+      close_url: can_admin ? update_milestone_path(milestone, { state_event: :close }) : '',
+      reopen_url: can_admin ? update_milestone_path(milestone, { state_event: :activate }) : '',
+      promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
+      group_name: can_promote && milestone.project_milestone? && milestone.project.group ? milestone.project.group.name : '',
+      issue_count: milestone.issues.count,
+      merge_request_count: milestone.merge_requests.count
+    } }

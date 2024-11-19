@@ -25,6 +25,6 @@
 
   = form.gitlab_ui_radio_component model_method, level,
      "#{visibility_level_icon(level)} #{visibility_level_label(level)} #{disabled_visibility_level_icon_with_popover}".html_safe,
-     help_text: '<span class="option-description text-muted">%{visibility_level_description}</span><span class="option-disabled-reason">%{option_disabled_reason}</span>'.html_safe % { visibility_level_description: visibility_level_description(level, form_model), option_disabled_reason: 'Not allowed by administrators' },
+     help_text: '<span class="option-description gl-text-subtle">%{visibility_level_description}</span><span class="option-disabled-reason">%{option_disabled_reason}</span>'.html_safe % { visibility_level_description: visibility_level_description(level, form_model), option_disabled_reason: 'Not allowed by administrators' },
      radio_options: { checked: (selected_level == level), disabled: disabled_visibility_level?(form_model, level), data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "" } },
      label_options: { class: 'js-visibility-level-radio' }

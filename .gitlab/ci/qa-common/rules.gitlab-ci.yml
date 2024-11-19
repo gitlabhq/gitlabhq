@@ -199,3 +199,10 @@ include:
     - <<: *not-canonical-project
       when: never
     - *process-test-results
+
+.rules:report:upload-knapsack-report:
+  rules:
+    - <<: *not-canonical-project
+      when: never
+    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
+      when: always

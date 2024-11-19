@@ -3,6 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import getCiCatalogResourceReadme from '../../graphql/queries/get_ci_catalog_resource_readme.query.graphql';
 
 export default {
@@ -47,6 +48,15 @@ export default {
       return this.$apollo?.queries.readmeHtml.loading;
     },
   },
+  watch: {
+    readmeHtml(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          renderGFM(this.$refs.readme);
+        });
+      }
+    },
+  },
   i18n: {
     loadingError: __("There was a problem loading this project's readme content."),
   },
@@ -55,6 +65,6 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
-    <div v-else v-safe-html="readmeHtml" class="md"></div>
+    <div v-else ref="readme" v-safe-html="readmeHtml" class="md"></div>
   </div>
 </template>

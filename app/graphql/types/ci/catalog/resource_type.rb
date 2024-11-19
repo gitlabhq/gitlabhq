@@ -19,22 +19,25 @@ module Types
           method: :avatar_path
 
         field :full_path, GraphQL::Types::ID, null: true, description: 'Full project path of the catalog resource.',
-          alpha: { milestone: '16.11' }
+          experiment: { milestone: '16.11' }
 
         field :web_path, GraphQL::Types::String, null: true, description: 'Web path of the catalog resource.',
-          alpha: { milestone: '16.1' }
+          experiment: { milestone: '16.1' }
 
         field :versions, Types::Ci::Catalog::Resources::VersionType.connection_type, null: true,
           description: 'Versions of the catalog resource. This field can only be ' \
             'resolved for one catalog resource in any single request.',
           resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver
 
+        field :visibility_level, Types::VisibilityLevelsEnum, null: true,
+          description: 'Visibility level of the catalog resource.'
+
         field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.'
 
         field :latest_released_at, Types::TimeType, null: true,
           description: "Release date of the catalog resource's latest version.",
-          alpha: { milestone: '16.5' }
+          experiment: { milestone: '16.5' }
 
         field :star_count, GraphQL::Types::Int, null: false,
           description: 'Number of times the catalog resource has been starred.'
@@ -45,7 +48,7 @@ module Types
         field :last_30_day_usage_count, GraphQL::Types::Int, null: false,
           description: 'Number of projects that used a component from this catalog resource in a pipeline, by using ' \
             '`include:component`, in the last 30 days.',
-          alpha: { milestone: '17.0' }
+          experiment: { milestone: '17.0' }
 
         def web_path
           ::Gitlab::Routing.url_helpers.project_path(object.project)

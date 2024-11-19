@@ -40,6 +40,7 @@ import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/uti
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { globalAccessorPlugin } from '~/pinia';
 import { diffMetadata } from '../../mock_data/diff_metadata';
 
 jest.mock('~/alert');
@@ -59,7 +60,9 @@ describe('legacyDiffs actions', () => {
       createCustomGetters(() => ({
         legacyDiffs: getters,
         legacyNotes: notesGetters,
+        batchComments: {},
       })),
+      globalAccessorPlugin,
     ],
   });
 

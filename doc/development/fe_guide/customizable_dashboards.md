@@ -99,7 +99,7 @@ To add a new visualization render type:
 
 1. Create a new Vue component that accepts `data` and `options` properties.
    See [`line_chart.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue) as an example.
-1. Add your component to the list of conditional imports in [`panel_base.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue#L13).
+1. Add your component to the list of conditional imports in [`panel_base.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue#L13).
 1. Add your component to the schema's list of `AnalyticsVisualization` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 
 ##### Migrating existing components to visualizations
@@ -232,8 +232,8 @@ Here is an example component that renders a customizable dashboard:
 
 ```vue
 <script>
-import CustomizableDashboard from 'ee/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
-import PanelsBase from `ee/vue_shared/components/customizable_dashboard/panels_base.vue`;
+import CustomizableDashboard from '~/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
+import PanelsBase from `~/vue_shared/components/customizable_dashboard/panels_base.vue`;
 import { dashboard } from './constants';
 
 export default {
@@ -311,7 +311,7 @@ The dashboard editor is only available when `dashboard.userDefined` is `true`.
 
 ```vue
 <script>
-import CustomizableDashboard from 'ee/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
+import CustomizableDashboard from '~/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
 import { s__ } from '~/locale';
 import { dashboard } from './constants';
 

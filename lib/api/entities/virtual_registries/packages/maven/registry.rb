@@ -6,7 +6,7 @@ module API
       module Packages
         module Maven
           class Registry < Grape::Entity
-            expose :id, :group_id, :cache_validity_hours, :created_at, :updated_at
+            expose :id, :group_id, :created_at, :updated_at
           end
         end
       end

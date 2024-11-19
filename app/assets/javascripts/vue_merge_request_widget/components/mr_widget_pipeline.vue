@@ -232,7 +232,7 @@ export default {
 <template>
   <div class="ci-widget media">
     <template v-if="hasCIError">
-      <gl-icon name="status_failed" class="gl-text-red-500" :size="24" />
+      <gl-icon name="status_failed" :size="24" variant="danger" />
       <p class="gl-mb-0 gl-ml-5 gl-grow" data-testid="ci-error-message">
         <gl-sprintf :message="$options.errorText">
           <template #link="{ content }">
@@ -243,7 +243,7 @@ export default {
     </template>
     <template v-else-if="retargeted">
       <gl-icon name="status_canceled" class="gl-mr-3 gl-self-center" />
-      <p class="text-muted gl-mb-0 gl-ml-3 gl-flex gl-grow" data-testid="retargeted-message">
+      <p class="gl-mb-0 gl-ml-3 gl-flex gl-grow gl-text-subtle" data-testid="retargeted-message">
         {{
           __(
             'You should run a new pipeline, because the target branch has changed for this merge request.',
@@ -326,10 +326,7 @@ export default {
             </div>
 
             <div class="gl-flex gl-flex-wrap gl-items-center">
-              <p
-                class="gl-m-0 gl-text-sm gl-text-gray-500"
-                data-testid="pipeline-details-container"
-              >
+              <p class="gl-m-0 gl-text-sm gl-text-subtle" data-testid="pipeline-details-container">
                 {{ pipeline.details.event_type_name }} {{ pipeline.details.status.label }}
                 <template v-if="hasCommitInfo">
                   {{ s__('Pipeline|for') }}

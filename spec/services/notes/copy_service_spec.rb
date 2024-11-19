@@ -68,13 +68,13 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
         end
 
         it 'copies the award emojis' do
-          create(:award_emoji, awardable: notes.first, name: 'thumbsup')
+          create(:award_emoji, awardable: notes.first, name: AwardEmoji::THUMBS_UP)
 
           execute_service
 
           new_award_emoji = to_noteable.notes.first.award_emoji.first
 
-          expect(new_award_emoji.name).to eq('thumbsup')
+          expect(new_award_emoji.name).to eq(AwardEmoji::THUMBS_UP)
         end
 
         it 'copies system_note_metadata for system note' do
@@ -149,7 +149,7 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
       end
 
       context 'notes with upload' do
-        let(:uploader) { build(:file_uploader, project: from_noteable.project) }
+        let(:uploader) { build(:file_uploader, container: from_noteable.project) }
         let(:text) { "Simple text with image: #{uploader.markdown_link} " }
         let!(:note) { create(:note, noteable: from_noteable, note: text, project: from_noteable.project) }
 

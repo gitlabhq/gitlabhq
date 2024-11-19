@@ -17,7 +17,6 @@ Rails/RequireDependency:
     - 'ee/app/services/vulnerabilities/revert_to_detected_service.rb'
     - 'ee/spec/lib/gitlab/insights/validators/params_validator_spec.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern/regular_expression.rb'
-    - 'lib/gitlab/email/receiver.rb'
     - 'lib/gitlab/omniauth_initializer.rb'
     - 'lib/gitlab/patch/prependable.rb'
     - 'lib/gitlab/untrusted_regexp.rb'

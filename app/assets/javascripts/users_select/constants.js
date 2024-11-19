@@ -8,4 +8,4 @@ export const AJAX_USERS_SELECT_PARAMS_MAP = {
   states: 'states',
 };
 
-export const ACTIVE_AND_BLOCKED_USER_STATES = ['active', 'blocked'];
+export const ACTIVE_AND_BLOCKED_USER_STATES = ['active', 'blocked', 'ldap_blocked'];

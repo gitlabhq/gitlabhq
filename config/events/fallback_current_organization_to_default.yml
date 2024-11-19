@@ -1,0 +1,17 @@
+---
+description: Tracks when the current organization fallbacks to the Default organization.
+internal_events: true
+action: fallback_current_organization_to_default
+additional_properties:
+  label:
+    description: Caller ID containing either the controller action or request path from where the event triggered.
+product_group: tenant_scale
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172017
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -13,11 +13,9 @@ module Gitlab
 
       private
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def all_relation
         ::Ci::SecureFile.all
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def local?(secure_file)
         secure_file.local?

@@ -1,0 +1,15 @@
+---
+description: Tracks when a project release asset file is downloaded
+action: download_release_asset_file
+identifiers:
+- project
+- user
+product_group: environments
+milestone: '15.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate

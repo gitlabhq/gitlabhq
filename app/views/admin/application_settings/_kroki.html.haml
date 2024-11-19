@@ -17,13 +17,13 @@
         .form-group
           = f.label :kroki_url, 'Kroki URL', class: 'label-bold'
           = f.text_field :kroki_url, class: 'form-control gl-form-input', placeholder: 'http://your-kroki-instance:8000'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             - install_link_url = 'https://docs.kroki.io/kroki/setup/install/'
             - install_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: install_link_url }
             = html_escape(_('Use the public cloud instance URL (%{kroki_public_url}) or %{install_link_start}install Kroki%{install_link_end} on your own infrastructure and use your own instance URL.')) % { kroki_public_url: '<code>https://kroki.io</code>'.html_safe, install_link_start: install_link_start, install_link_end: '</a>'.html_safe }
         .form-group
           = f.label :kroki_formats, _('Additional diagram formats'), class: 'label-bold'
-          .form-text.text-muted
+          .form-text.gl-text-subtle
             - container_link_url = 'https://docs.kroki.io/kroki/setup/install/#images'
             - container_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: container_link_url }
             = html_escape(_('To use the additional formats, you must start the required %{container_link_start}companion containers%{container_link_end}.')) % { container_link_start: container_link_start, container_link_end: '</a>'.html_safe }

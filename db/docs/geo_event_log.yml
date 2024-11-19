@@ -9,6 +9,6 @@ description: Log of all events that a Geo secondary can process. Parsed/watched 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cb6c7cbe2a9ee05cea6926e3d8c18f6aa26f4c64
 milestone: '9.3'
 gitlab_schema: gitlab_main_cell
-# This table is a log of all events that occur on a primary Geo node/site,
-# which a secondary might be interested in.
 exempt_from_sharding: true
+notes: This table is a log of all events that occur on a primary Geo node/site, which
+  a secondary might be interested in.

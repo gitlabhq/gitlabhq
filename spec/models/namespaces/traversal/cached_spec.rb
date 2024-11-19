@@ -150,6 +150,16 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
           expect(ids.sort).to eq([group.id, subgroup.id, subsubgroup.id])
         end
       end
+
+      context 'when the scope is specified' do
+        it 'returns uncached values that match the scope' do
+          ids = group.self_and_descendant_ids(skope: Namespace).pluck(:id)
+
+          expect(ids).to contain_exactly(
+            group.id, subgroup.id, subsubgroup.id, project1.project_namespace.id, project2.project_namespace.id
+          )
+        end
+      end
     end
 
     describe '#all_project_ids' do

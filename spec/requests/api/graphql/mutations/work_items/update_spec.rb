@@ -1511,7 +1511,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 'upvotes' => 1,
                 'downvotes' => 0,
                 'awardEmoji' => { 'nodes' => [
-                  { 'name' => 'thumbsup', 'user' => { 'id' => current_user.to_gid.to_s } },
+                  { 'name' => AwardEmoji::THUMBS_UP, 'user' => { 'id' => current_user.to_gid.to_s } },
                   { 'name' => award_name, 'user' => { 'id' => current_user.to_gid.to_s } }
                 ] },
                 'type' => 'AWARD_EMOJI'
@@ -1534,7 +1534,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:award_action) { 'REMOVE' }
 
           context 'when emoji was awarded by current user' do
-            let(:award_name) { 'thumbsup' }
+            let(:award_name) { AwardEmoji::THUMBS_UP }
 
             it_behaves_like 'request that removes emoji'
           end
@@ -1547,7 +1547,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             end
 
             it_behaves_like 'request with error',
-              'User has not awarded emoji of type thumbsdown on the awardable'
+              "User has not awarded emoji of type #{AwardEmoji::THUMBS_DOWN} on the awardable"
           end
         end
 
@@ -1555,7 +1555,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:award_action) { 'TOGGLE' }
 
           context 'when emoji award is present' do
-            let(:award_name) { 'thumbsup' }
+            let(:award_name) { AwardEmoji::THUMBS_UP }
 
             it_behaves_like 'request that removes emoji'
           end

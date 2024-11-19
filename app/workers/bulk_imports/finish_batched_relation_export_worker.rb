@@ -42,7 +42,7 @@ module BulkImports
     end
 
     def export_in_progress?
-      export.batches.any?(&:started?)
+      export.batches.in_progress.any?
     end
 
     def finish_export!

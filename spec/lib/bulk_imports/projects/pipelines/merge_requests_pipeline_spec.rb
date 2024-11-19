@@ -107,11 +107,11 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
       allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
       allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
-
-      pipeline.run
     end
 
     it 'imports a merge request' do
+      pipeline.run
+
       expect(project.merge_requests.count).to eq(1)
       expect(imported_mr.title).to eq(mr['title'])
       expect(imported_mr.description).to eq(mr['description'])
@@ -122,11 +122,28 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       expect(imported_mr.author).to eq(user)
     end
 
+    context 'when a merge_request with the same IID exists' do
+      let!(:existing_mr) do
+        create(:merge_request, target_project: project, source_project: project, iid: mr['iid'],
+          description: 'old description')
+      end
+
+      it 'deletes the existing record and imports the new record' do
+        expect { pipeline.run }.to change { MergeRequest.exists?(existing_mr.id) }.from(true).to(false)
+
+        expect(project.merge_requests.count).to eq(1)
+        expect(imported_mr.iid).to eq(mr['iid'])
+        expect(imported_mr.description).to eq(mr['description'])
+      end
+    end
+
     context 'merge request state' do
       context 'when mr is closed' do
         let(:attributes) { { 'state' => 'closed' } }
 
         it 'imported mr as closed' do
+          pipeline.run
+
           expect(imported_mr.state).to eq(attributes['state'])
         end
       end
@@ -135,6 +152,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         let(:attributes) { { 'state' => 'merged' } }
 
         it 'imported mr as merged' do
+          pipeline.run
+
           expect(imported_mr.state).to eq(attributes['state'])
         end
       end
@@ -142,10 +161,14 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
     context 'source & target project' do
       it 'has the new project as target' do
+        pipeline.run
+
         expect(imported_mr.target_project).to eq(project)
       end
 
       it 'has the new project as source' do
+        pipeline.run
+
         expect(imported_mr.source_project).to eq(project)
       end
 
@@ -153,6 +176,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         let(:attributes) { { 'source_project_id' => 4321 } }
 
         it 'has no source' do
+          pipeline.run
+
           expect(imported_mr.source_project).to be_nil
         end
 
@@ -160,6 +185,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
           let(:attributes) { { 'diff_head_sha' => 'HEAD', 'source_project_id' => 4321 } }
 
           it 'has the new project as source' do
+            pipeline.run
+
             expect(imported_mr.source_project).to eq(project)
           end
         end
@@ -170,6 +197,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       let(:attributes) { { 'resource_label_events' => [{ 'action' => 'add', 'user_id' => 1 }] } }
 
       it 'restores resource label events' do
+        pipeline.run
+
         expect(imported_mr.resource_label_events.first.action).to eq('add')
       end
     end
@@ -178,6 +207,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       let(:attributes) { { 'award_emoji' => [{ 'name' => 'tada', 'user_id' => 22 }] } }
 
       it 'has award emoji' do
+        pipeline.run
+
         expect(imported_mr.award_emoji.first.name).to eq(attributes['award_emoji'].first['name'])
       end
     end
@@ -202,6 +233,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       end
 
       it 'imports mr note' do
+        pipeline.run
+
         expect(note).to be_present
         expect(note.note).to include('By User 22')
         expect(note.note).to include(attributes['notes'].first['note'])
@@ -209,6 +242,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       end
 
       it 'has award emoji' do
+        pipeline.run
+
         emoji = note.award_emoji.first
 
         expect(emoji.name).to eq('clapper')
@@ -216,6 +251,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       end
 
       it 'does not import note_html' do
+        pipeline.run
+
         expect(note.note_html).to match(attributes['notes'].first['note'])
         expect(note.note_html).not_to match(attributes['notes'].first['note_html'])
       end
@@ -239,6 +276,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       end
 
       it 'restores system note metadata' do
+        pipeline.run
+
         note = imported_mr.notes.first
 
         expect(note.system).to eq(true)
@@ -250,25 +289,35 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
     context 'diffs' do
       it 'imports merge request diff' do
+        pipeline.run
+
         expect(imported_mr.merge_request_diff).to be_present
       end
 
       it 'enqueues AfterImportMergeRequestsWorker worker' do
+        pipeline.run
+
         expect(::Projects::ImportExport::AfterImportMergeRequestsWorker)
           .to have_received(:perform_async)
           .with(project.id)
       end
 
       it 'imports diff files' do
+        pipeline.run
+
         expect(imported_mr.merge_request_diff.merge_request_diff_files.count).to eq(1)
       end
 
       context 'diff commits' do
         it 'imports diff commits' do
+          pipeline.run
+
           expect(imported_mr.merge_request_diff.merge_request_diff_commits.count).to eq(1)
         end
 
         it 'assigns committer and author details to diff commits' do
+          pipeline.run
+
           commit = imported_mr.merge_request_diff.merge_request_diff_commits.first
 
           expect(commit.commit_author_id).not_to be_nil
@@ -276,6 +325,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         end
 
         it 'assigns the correct commit users to diff commits' do
+          pipeline.run
+
           commit = MergeRequestDiffCommit.find_by(sha: 'COMMIT1')
 
           expect(commit.commit_author.name).to eq('Commit Author')
@@ -297,6 +348,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       end
 
       it 'imports labels' do
+        pipeline.run
+
         expect(imported_mr.labels.pluck(:title)).to contain_exactly('imported label 1', 'imported label 2')
       end
     end
@@ -305,6 +358,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       let(:attributes) { { 'milestone' => { 'title' => 'imported milestone' } } }
 
       it 'imports milestone' do
+        pipeline.run
+
         expect(imported_mr.milestone.title).to eq(attributes.dig('milestone', 'title'))
       end
     end
@@ -329,6 +384,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         let(:key) { 'merge_request_assignees' }
 
         it 'imports mr assignees' do
+          pipeline.run
+
           assignees = imported_mr.merge_request_assignees
 
           expect(assignees.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
@@ -339,6 +396,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         let(:key) { 'approvals' }
 
         it 'imports mr approvals' do
+          pipeline.run
+
           approvals = imported_mr.approvals
 
           expect(approvals.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
@@ -349,6 +408,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         let(:key) { 'merge_request_reviewers' }
 
         it 'imports mr reviewers' do
+          pipeline.run
+
           reviewers = imported_mr.merge_request_reviewers
 
           expect(reviewers.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
@@ -391,6 +452,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       end
 
       it 'imports merge_requests and maps user references to placeholder users', :aggregate_failures do
+        pipeline.run
+
         merge_request = project.merge_requests.last
         approval = merge_request.approvals.first
         metrics = merge_request.metrics

@@ -16,6 +16,13 @@ RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning 
 
     context 'branches are available' do
       let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project, ref: issue.to_branch_name) }
+      let_it_be(:branch_compare_path) do
+        Gitlab::Routing.url_helpers.project_compare_path(
+          project,
+          from: project.default_branch,
+          to: issue.to_branch_name
+        )
+      end
 
       before_all do
         project.repository.create_branch(issue.to_branch_name, pipeline.sha)
@@ -28,7 +35,11 @@ RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning 
       context 'when user has access to pipelines' do
         it 'selects relevant branches, along with pipeline status' do
           expect(branch_info).to contain_exactly(
-            { name: issue.to_branch_name, pipeline_status: an_instance_of(Gitlab::Ci::Status::Success) }
+            {
+              name: issue.to_branch_name,
+              pipeline_status: an_instance_of(Gitlab::Ci::Status::Success),
+              compare_path: branch_compare_path
+            }
           )
         end
       end
@@ -38,7 +49,7 @@ RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning 
 
         it 'returns branches without pipeline status' do
           expect(branch_info).to contain_exactly(
-            { name: issue.to_branch_name, pipeline_status: nil }
+            { name: issue.to_branch_name, pipeline_status: nil, compare_path: branch_compare_path }
           )
         end
       end

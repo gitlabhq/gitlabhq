@@ -5,7 +5,7 @@ clusterwide: false
 column: shared_runners_minutes
 db_type: integer
 default: '0'
-description: Set the maximum number of compute minutes that a group can use on shared
+description: Set the maximum number of compute minutes that a group can use on instance
   runners per month. Premium and Ultimate only.
 encrypted: false
 gitlab_com_different_than_default: true

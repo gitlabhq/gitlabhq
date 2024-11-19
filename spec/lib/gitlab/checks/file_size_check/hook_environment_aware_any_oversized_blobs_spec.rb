@@ -48,25 +48,37 @@ RSpec.describe Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBl
         context 'when the file is over the limit' do
           let(:file_size_limit) { 0 }
 
-          context 'when the blob does not exist in the repo' do
-            before do
-              allow(repository.gitaly_commit_client).to receive(:object_existence_map).and_return(Hash.new { false })
+          shared_examples 'filters the blobs' do
+            context 'when the blob does not exist in the repo' do
+              before do
+                allow(repository.gitaly_commit_client).to receive(:object_existence_map).and_return(Hash.new { false })
+              end
+
+              it 'returns an array with the blobs that are over the limit' do
+                expect(subject.size).to eq(1)
+                expect(subject.first).to be_kind_of(Gitlab::Git::Blob)
+              end
             end
 
-            it 'returns an array with the blobs that are over the limit' do
-              expect(subject.size).to eq(1)
-              expect(subject.first).to be_kind_of(Gitlab::Git::Blob)
+            context 'when the blob exists in the repo' do
+              before do
+                allow(repository.gitaly_commit_client).to receive(:object_existence_map).and_return(Hash.new { true })
+              end
+
+              it 'filters out the blobs in the repo' do
+                expect(subject).to eq([])
+              end
             end
           end
 
-          context 'when the blob exists in the repo' do
+          it_behaves_like 'filters the blobs'
+
+          context 'when check_oversized_blobs_without_blob_stitcher feature flag is disabled' do
             before do
-              allow(repository.gitaly_commit_client).to receive(:object_existence_map).and_return(Hash.new { true })
+              stub_feature_flags(check_oversized_blobs_without_blob_stitcher: false)
             end
 
-            it 'filters out the blobs in the repo' do
-              expect(subject).to eq([])
-            end
+            it_behaves_like 'filters the blobs'
           end
         end
       end

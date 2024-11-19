@@ -8,6 +8,7 @@
   breaking_change: true
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
+  window: 3
   reporter: jocelynjane
   stage: Govern
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474175

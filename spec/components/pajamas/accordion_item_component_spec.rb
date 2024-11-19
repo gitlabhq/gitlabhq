@@ -5,10 +5,11 @@ require "spec_helper"
 RSpec.describe Pajamas::AccordionItemComponent, type: :component, feature_category: :shared do
   let(:title) { "This is a title" }
   let(:content) { "This is the content" }
+  let(:button_options) { { class: 'my-class' } }
   let(:state) { :opened }
 
   before do
-    render_inline(described_class.new(title: title, state: state)) do |_c|
+    render_inline(described_class.new(title: title, state: state, button_options: button_options)) do |_c|
       content
     end
   end
@@ -54,6 +55,12 @@ RSpec.describe Pajamas::AccordionItemComponent, type: :component, feature_catego
 
     it "renders a button with the correct aria-expanded value" do
       expect(page).to have_selector('button[aria-expanded="false"]')
+    end
+  end
+
+  describe "button_options" do
+    it "correctly passes options to the button" do
+      expect(page).to have_selector('button.my-class')
     end
   end
 end

@@ -39,14 +39,10 @@ module ProtectedRefAccess
   included do
     scope :maintainer, -> { where(access_level: Gitlab::Access::MAINTAINER) }
     scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
-    scope :for_role, -> {
-      if non_role_types.present?
-        where.missing(*non_role_types)
-          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417457")
-      else
-        all
-      end
-    }
+    # If there aren't any `non_role_types`, `all` will be returned. If any
+    # `non_role_types` are present we add them to the query i.e.
+    # => all.where("#{'user'}_id": nil).where("#{'group'}_id": nil)
+    scope :for_role, -> { non_role_types.inject(all) { |scope, type| scope.where("#{type}_id": nil) } }
 
     protected_ref_fk = "#{module_parent.model_name.singular}_id"
     validates :access_level,
@@ -54,10 +50,6 @@ module ProtectedRefAccess
       inclusion: { in: allowed_access_levels },
       uniqueness: { scope: protected_ref_fk, conditions: -> { for_role } },
       if: :role?
-  end
-
-  def humanize
-    self.class.humanize(access_level)
   end
 
   def type
@@ -68,16 +60,30 @@ module ProtectedRefAccess
     type == :role
   end
 
-  def check_access(current_user, current_project = project)
+  def humanize
+    # humanize_role
+    # humanize_user
+    # humanize_group
+    # humanize_deploy_key
+    send(:"humanize_#{type}") # rubocop:disable GitlabSecurity/PublicSend -- Intentional meta programming to direct to correct type
+  end
+
+  def check_access(current_user, current_project = protected_ref_project)
     return false if current_user.nil? || no_access?
     return current_user.admin? if admin_access?
 
-    yield if block_given?
-
-    user_can_access?(current_user, current_project)
+    # role_access_allowed?
+    # user_access_allowed?
+    # group_access_allowed?
+    # deploy_key_access_allowed?
+    send(:"#{type}_access_allowed?", current_user, current_project) # rubocop:disable GitlabSecurity/PublicSend -- Intentional meta programming to direct check to correct type
   end
 
   private
+
+  def humanize_role
+    self.class.humanize(access_level)
+  end
 
   def admin_access?
     role? && access_level == ::Gitlab::Access::ADMIN
@@ -87,12 +93,12 @@ module ProtectedRefAccess
     role? && access_level == Gitlab::Access::NO_ACCESS
   end
 
-  def user_can_access?(current_user, current_project)
+  def role_access_allowed?(current_user, current_project)
     # NOTE: A user could be a group member which would be inherited in
-    # projects, however, the same user can have direct membership to a project
-    # with a higher role. For this reason we need to check group-level rules
-    # against the current project when merging an MR or pushing changes to a
-    # protected branch.
+    # projects, however, the same user can have direct membership to a
+    # project with a higher role. For this reason we need to check group-level
+    # rules against the current project when merging an MR or pushing changes
+    # to a protected branch.
     if current_project
       current_user.can?(:push_code, current_project) &&
         current_project.team.max_member_access(current_user.id) >= access_level

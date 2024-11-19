@@ -62,7 +62,6 @@ class Gitlab::Ci::Build::AutoRetry
   end
 
   def retry_on_exit_code?
-    return false unless Feature.enabled?(:ci_retry_on_exit_codes, Feature.current_request)
     return false unless @build.exit_code
 
     options_retry_exit_codes&.include?(@build.exit_code)

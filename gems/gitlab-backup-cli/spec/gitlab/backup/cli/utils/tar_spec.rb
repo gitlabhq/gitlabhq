@@ -20,9 +20,13 @@ RSpec.describe Gitlab::Backup::Cli::Utils::Tar do
         target_basepath = tempdir
         target = tempdir.join('*')
 
+        result = nil
+
         expect do
-          tar.pack_cmd(archive_file: archive_file, target_directory: target_basepath, target: target)
+          result = tar.pack_cmd(archive_file: archive_file, target_directory: target_basepath, target: target)
         end.not_to raise_exception
+
+        expect(result).to be_a(Gitlab::Backup::Cli::Shell::Command)
       end
     end
 
@@ -80,6 +84,53 @@ RSpec.describe Gitlab::Backup::Cli::Utils::Tar do
           expect(cmd.cmd_args).to include("--exclude=./@pages.tmp")
           expect(cmd.cmd_args).to include("--exclude=./ignorethis")
         end
+      end
+    end
+  end
+
+  describe '#pack_from_stdin_cmd' do
+    it 'delegates parameters to pack_cmd passing archive_files: as -' do
+      tar_tempdir do |tempdir|
+        target_basepath = tempdir
+        target = tempdir.join('*')
+        excludes = ['lost+found']
+
+        expect(tar).to receive(:pack_cmd).with(
+          archive_file: '-',
+          target_directory: target_basepath,
+          target: target,
+          excludes: excludes)
+
+        tar.pack_from_stdin_cmd(target_directory: target_basepath, target: target, excludes: excludes)
+      end
+    end
+  end
+
+  describe '#extract_cmd' do
+    it 'instantiate a Shell::Command with default required params' do
+      tar_tempdir do |tempdir|
+        archive_file = tempdir.join('testarchive.tar')
+        target_basepath = tempdir
+
+        result = nil
+
+        expect do
+          result = tar.extract_cmd(archive_file: archive_file, target_directory: target_basepath)
+        end.not_to raise_exception
+
+        expect(result).to be_a(Gitlab::Backup::Cli::Shell::Command)
+      end
+    end
+  end
+
+  describe 'extract_from_stdin_cmd' do
+    it 'delegates parameters to extract_cmd passing archive_files: as -' do
+      tar_tempdir do |tempdir|
+        target_basepath = tempdir
+
+        expect(tar).to receive(:extract_cmd).with(archive_file: '-', target_directory: target_basepath)
+
+        tar.extract_from_stdin_cmd(target_directory: target_basepath)
       end
     end
   end

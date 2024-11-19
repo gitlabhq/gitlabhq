@@ -223,7 +223,7 @@ try {
 
 ### `addCookieConsent`
 
-`addCookieConsent` is used to allow tracking of user identifiers via cookies. By default `hasCookieConsent` is false, and no user identifiers are passed. To enable tracking of user identifiers, call the `addCookieConsent` method. This step is not needed if you intialized the Browser SDK with `hasCookieConsent` set to true.
+`addCookieConsent` is used to allow tracking of user identifiers via cookies. By default `hasCookieConsent` is false, and no user identifiers are passed. To enable tracking of user identifiers, call the `addCookieConsent` method. This step is not needed if you initialized the Browser SDK with `hasCookieConsent` set to true.
 
 ```javascript
 glClient.addCookieConsent();

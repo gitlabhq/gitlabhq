@@ -50,7 +50,7 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
 1. [Create a standard mode Docker format Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories/create-repos#create).
 
 1. Connect your Artifact Registry repository to your GitLab project by following the
-   instructions in [Set up the Google Artifact Registry registry in a GitLab project](../../user/project/integrations/google_artifact_management.md).
+   instructions in [Set up the Google Artifact Registry in a GitLab project](../../user/project/integrations/google_artifact_management.md).
 
 ## Clone your GitLab repository
 

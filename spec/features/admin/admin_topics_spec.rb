@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Topics', feature_category: :groups_and_projects do
-  let_it_be(:topic) { create :topic }
-  let_it_be(:admin) { create(:admin) }
+RSpec.describe 'Admin Topics', :with_current_organization, feature_category: :groups_and_projects do
+  let_it_be(:topic) { create(:topic, organization: current_organization) }
+  let_it_be(:namespace) { create(:namespace, organization: current_organization) }
+  let_it_be(:admin) { create(:admin, namespace: namespace) }
 
   before do
     sign_in(admin)

@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -25,19 +25,21 @@ the minimum key length for each technology:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General** .
-1. Expand **Visibility and access controls**:
-
-   ![SSH keys restriction **Admin** area settings](img/ssh_keys_restrictions_settings.png)
+1. Expand **Visibility and access controls** and set your desired values for each key type:
+   - **RSA SSH keys**.
+   - **DSA SSH keys**.
+   - **ECDSA SSH keys**.
+   - **ED25519 SSH keys**.
+   - **ECDSA_SK SSH keys**.
+   - **ED25519_SK SSH keys**.
+1. Select **Save changes**.
 
 If a restriction is imposed on any key type, users cannot upload new SSH keys that don't meet the
 requirement. Any existing keys that don't meet it are disabled but not removed and users cannot
 pull or push code using them.
 
-An icon is visible to the user of a restricted key in the SSH keys section of their profile:
-
-![Restricted SSH key icon](img/ssh_keys_restricted_key_icon.png)
-
-Hovering over this icon tells you why the key is restricted.
+If you have a restricted key, a warning icon (**{warning}**) is visible to you in the **SSH keys** section of your profile.
+To learn why that key is restricted, hover over the icon.
 
 ## Default settings
 

@@ -21,16 +21,16 @@ GitLab is being translated into many languages. To select a language to contribu
    - If the language you want is available, proceed to the next step.
    - If the language you want is not available,
      [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization).
-     Notify our Crowdin administrators by including `@gitlab-org/manage/import-and-integrate` in your issue.
+     Notify our Crowdin administrators by including `@gitlab-org/foundations/import-and-integrate` in your issue.
    - After the issue and any merge requests are complete, restart this procedure.
 
 1. View the list of files and folders. Select `gitlab.pot` to open the translation editor.
 
-### Translation editor
+## Translation editor
 
 The online translation editor is the easiest way to contribute translations.
 
-![Crowdin Editor](img/crowdin-editor.png)
+![Crowdin Editor](img/crowdin-editor_v10_1.png)
 
 - Strings for translation are listed in the left panel.
 - Translations are entered into the central panel. Multiple translations are required for strings
@@ -41,6 +41,29 @@ A glossary of common terms is available in the **Terms** tab in the right panel.
 tab, you can add comments to discuss a translation with the community.
 
 Remember to **Save** each translation.
+
+### Context
+
+DETAILS:
+**Status:** Beta
+
+WARNING:
+This feature is in [beta](../../policy/experiment-beta-support.md#beta).
+You might get a string similar to the one you want to translate,
+so be sure to select the correct string and line of code.
+If you cannot find a string with code search, post a comment in Crowdin with that string.
+
+In Crowdin, each string contains a link that shows all instances of the string in the entire GitLab codebase.
+When you translate a string, you can go to the relevant commit or merge request to get more context.
+
+![Crowdin Editor showing a string with a link for more translation context](img/crowdin-editor-string-context.png)
+
+When you select the link, code search results appear for that string.
+You can [view Git blame from code search](../../user/search/index.md#view-git-blame-from-code-search)
+to see the commits that added the string.
+For a list of relevant merge requests, select a commit.
+
+![GitLab code search displaying results for a string](img/gitlab-search-occurrence.png)
 
 ## General Translation Guidelines
 

@@ -11,24 +11,22 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Merge conflicts happen when the two branches in a merge request (the source and target) each have different
-changes. You must decide which change to accept. In a merge request, Git compares
-the two versions of the files line by line. In most cases, GitLab can merge changes
-together. However, if two branches both change the same lines, GitLab blocks the merge,
-and you must choose which change you want to keep:
+Merge conflicts occur when two branches in a merge request, the source and target,
+have different changes to the same lines of code. In most cases, GitLab can merge changes together,
+but when conflicts arise, you must decide which changes to keep.
 
 ![A merge request blocked due to a merge conflict](img/conflicts_v16_7.png)
 
-A merge request with conflicts cannot merge until you either:
+To resolve a merge request with conflicts, you must either:
 
 - Create a merge commit.
 - Resolve the conflict through a rebase.
 
-GitLab resolves conflicts by creating a merge commit in the source branch, but
-does not merge it into the target branch. You can then review and test the
-merge commit. Verify it contains no unintended changes and doesn't break your build.
+GitLab resolves conflicts by creating a merge commit in the source branch without merging it
+into the target branch. You can then review and test the merge commit to verify it contains
+no unintended changes and doesn't break your build.
 
-## Understand the conflict block
+## Understand conflict blocks
 
 When Git detects a conflict that requires a decision on your part, it marks the
 beginning and end of the conflict block with conflict markers:
@@ -39,7 +37,7 @@ beginning and end of the conflict block with conflict markers:
 - The latest changes in the target branch are shown.
 - `>>>>>>>` marks the end of the conflict.
 
-When you resolve a conflict, you delete:
+To resolve a conflict, delete:
 
 1. The version of the conflicted lines you don't want to keep.
 1. The three conflict markers: the beginning, the end, and the `=======` line between
@@ -47,32 +45,30 @@ When you resolve a conflict, you delete:
 
 ## Conflicts you can resolve in the user interface
 
-If your merge conflict meets all of these conditions, you can resolve the
-merge conflict in the GitLab user interface:
+You can resolve merge conflicts in the GitLab UI if the conflicting file:
 
-- The file is text, not binary.
-- The file is in a UTF-8 compatible encoding.
-- The file does not already contain conflict markers.
-- The file, with conflict markers added, is less than 200 KB in size.
-- The file exists under the same path in both branches.
+- Is a non binary text file.
+- Is less than 200 KB in size with conflict markers added.
+- Uses UTF-8 compatible encoding.
+- Doesn't contain conflict markers.
+- Exists under the same path in both branches.
 
-If any file in your merge request contains conflicts, but can't meet all of these
-criteria, you must resolve the conflict manually.
+If a file doesn't meet these criteria, you must resolve the conflict manually.
 
-## Methods of resolving conflicts
+## Conflict resolution methods
 
 GitLab shows [conflicts available for resolution](#conflicts-you-can-resolve-in-the-user-interface)
-in the user interface, and you can also resolve conflicts locally through the command line:
+in the user interface, and you can also resolve conflicts using the following methods:
 
-- **Interactive mode**: UI method best for
-  conflicts that only require you to select which version of a line to keep, without edits.
-- **Inline editor**: UI method best for more complex conflicts that require you to
-  edit lines and manually blend changes together.
-- **Command line**: provides complete control over the most complex conflicts.
+- **Interactive mode**: Best for conflicts where you only need to select which version of a line to keep.
+- **Inline editor**: Suitable for complex conflicts requiring manual edits to blend changes.
+- **Command line**: Provides complete control over complex conflicts. For more information, see [Resolve conflicts from the command line](../../../topics/git/git_rebase.md#resolve-conflicts-from-the-command-line).
 
-### In interactive mode
+### Interactive mode
 
-To resolve less-complex conflicts from the GitLab user interface:
+Interactive mode merges the target branch into the source branch with your chosen changes.
+
+To resolve merge conflicts with interactive mode:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find the merge request.
@@ -89,16 +85,12 @@ To resolve less-complex conflicts from the GitLab user interface:
 1. When you've resolved all the conflicts, enter a **Commit message**.
 1. Select **Commit to source branch**.
 
-Resolving conflicts merges the target branch of the merge request into the
-source branch, using the version of the text you chose. If the source branch is
-`feature` and the target branch is `main`, these actions are like running
-`git switch feature; git merge main` locally.
-
-### In the inline editor
+### Inline editor
 
 Some merge conflicts are more complex, and you must manually edit lines to
-resolve their conflicts. The merge conflict resolution editor helps you resolve
-these complex conflicts in the GitLab interface:
+resolve them.
+
+The merge conflict resolution editor helps you resolve these conflicts in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find the merge request.
@@ -114,67 +106,38 @@ these complex conflicts in the GitLab interface:
 1. After you resolve the conflict, enter a **Commit message**.
 1. Select **Commit to source branch**.
 
-### From the command line
+## Rebase
 
-While you can resolve most conflicts through the GitLab user interface, some are too complex.
-Complex conflicts are best fixed locally, from the command line, to give you the
-most control over each change.
+If your merge request is stuck with a `Checking ability to merge automatically`
+message, you can:
+
+- Use the `/rebase` [quick action](../../../user/project/quick_actions.md#issues-merge-requests-and-epics) in the GitLab UI.
+- [Rebase with Git](../../../topics/git/git_rebase.md#rebase).
+
+To troubleshoot CI/CD pipeline issues, see [Debugging CI/CD pipelines](../../../ci/debugging.md).
+
+### Rebase with a quick action
+
+You can rebase a merge request from the GitLab UI with the `/rebase` [quick action](../../../user/project/quick_actions.md).
 
 Prerequisites:
 
-- You must have permission to force push to branches.
+- No merge conflicts exist.
+- You must have at least the [Developer role](../../../user/permissions.md) for the source project.
+- If the merge request is in a fork, the fork must allow commits
+  [from members of the upstream project](../../../user/project/merge_requests/allow_collaboration.md).
 
-1. Open the terminal and check out your feature branch. For example, `my-feature-branch`:
+To rebase with the quick action:
 
-   ```shell
-   git switch my-feature-branch
-   ```
+1. Go to your merge request.
+1. Type `/rebase` in a comment.
+1. Select **Comment**.
 
-1. [Rebase your branch](../../../topics/git/git_rebase.md#rebase-by-using-git) against the
-   target branch (here, `main`) so Git prompts you with the conflicts:
-
-   ```shell
-   git fetch
-   git rebase origin/main
-   ```
-
-1. Open the conflicting file in your preferred code editor.
-1. Find the conflict block.
-1. Edit the file:
-   1. Choose which version (before or after `=======`) you want to keep.
-   1. Delete the version you don't want to keep.
-   1. Delete the conflict markers.
-1. Save the file.
-1. Repeat the process for each file that contains conflicts.
-1. Stage your changes in Git:
-
-   ```shell
-   git add .
-   ```
-
-1. Commit your changes:
-
-   ```shell
-   git commit -m "Fix merge conflicts"
-   ```
-
-1. Continue the rebase:
-
-   ```shell
-   git rebase --continue
-   ```
-
-   WARNING:
-   Up to this point, you can run `git rebase --abort` to stop the process.
-   Git aborts the rebase and rolls back the branch to the state you had before
-   running `git rebase`.
-   After you run `git rebase --continue`, you cannot abort the rebase.
-
-1. [Force-push](../../../topics/git/git_rebase.md#force-pushing) the changes to your
-   remote branch.
+GitLab schedules and executes a rebase of the branch against the default branch.
 
 ## Related topics
 
+- [Rebase and resolve conflicts](../../../topics/git/git_rebase.md)
 - [Introduction to Git rebase and force-push](../../../topics/git/git_rebase.md)
 - [Git applications for visualizing the Git workflow](https://git-scm.com/downloads/guis)
 - [Automatic conflict resolution with `git rerere`](https://git-scm.com/book/en/v2/Git-Tools-Rerere)

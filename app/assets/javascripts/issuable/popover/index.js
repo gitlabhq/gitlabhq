@@ -29,7 +29,7 @@ function isCommentPopover(target) {
   const targetUrl = new URL(target.href);
   const noteId = targetUrl.hash;
 
-  return window?.gon?.features?.commentTooltips && noteId && noteId.startsWith('#note_');
+  return noteId && noteId.startsWith('#note_');
 }
 
 export function handleCommentPopoverMount({ target, apolloProvider }) {

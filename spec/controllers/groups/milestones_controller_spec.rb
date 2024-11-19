@@ -334,7 +334,7 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response).to include "errors" => [
           format(
-            _("Someone edited this %{model_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."), # rubocop:disable Layout/LineLength
+            _("Someone edited this %{model_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."),
             model_name: _('milestone')
           )
         ]

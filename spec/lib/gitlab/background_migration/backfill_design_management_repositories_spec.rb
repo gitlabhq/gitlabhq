@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe(
   Gitlab::BackgroundMigration::BackfillDesignManagementRepositories,
-  schema: 20230728020644,
+  schema: 20230721095222,
   feature_category: :geo_replication
 ) do
   let!(:namespaces) { table(:namespaces) }

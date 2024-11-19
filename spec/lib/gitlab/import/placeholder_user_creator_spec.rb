@@ -44,6 +44,22 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
                                         }
     end
 
+    it 'logs placeholder user creation' do
+      allow(::Import::Framework::Logger).to receive(:info)
+
+      service.execute
+
+      expect(::Import::Framework::Logger).to have_received(:info).with(
+        hash_including(
+          message: 'Placeholder user created',
+          source_user_id: source_user.id,
+          import_type: source_user.import_type,
+          namespace_id: source_user.namespace_id,
+          user_id: User.last.id
+        )
+      )
+    end
+
     context 'when there are non-unique usernames on the same import source' do
       it 'creates two unique users with different usernames and emails' do
         placeholder_user1 = service.execute
@@ -51,6 +67,18 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
 
         expect(placeholder_user1.username).not_to eq(placeholder_user2.username)
         expect(placeholder_user1.email).not_to eq(placeholder_user2.email)
+      end
+    end
+
+    context 'when an existing namespace conflicts with the placeholder user namespace' do
+      before do
+        create(:group, path: 'aprycontributor_placeholder_user_1')
+      end
+
+      it 'creates a placeholder with a username that avoids the conflict' do
+        placeholder_user1 = service.execute
+
+        expect(placeholder_user1.username).to eq('aprycontributor_placeholder_user_2')
       end
     end
 

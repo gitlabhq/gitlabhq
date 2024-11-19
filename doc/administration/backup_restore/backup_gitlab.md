@@ -1365,7 +1365,7 @@ When considering using file system data transfer or snapshots:
 - Don't use these methods to migrate from one operating system to another. The operating systems of the source and destination should be as similar as possible. For example,
   don't use these methods to migrate from Ubuntu to RHEL.
 - Data consistency is very important. You should stop GitLab (`sudo gitlab-ctl stop`) before
-  doing a file system transfer (with `rsync`, for example) or taking a snapshot.
+  doing a file system transfer (with `rsync`, for example) or taking a snapshot to ensure all data in memory is flushed to disk. GitLab consists of multiple subsystems (Gitaly, database, file storage) that have their own buffers, queues, and storage layers. GitLab transactions can span these subsystems, which results in parts of a transaction taking different paths to disk. On live systems, file system transfers and snapshot runs fail to capture parts of the transaction still in memory.
 
 Example: Amazon Elastic Block Store (EBS)
 

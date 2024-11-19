@@ -90,7 +90,7 @@ module Discussions
           )
         )
       else
-        AutoMergeProcessWorker.perform_async(merge_request.id)
+        AutoMergeProcessWorker.perform_async({ 'merge_request_id' => merge_request.id })
       end
     end
 

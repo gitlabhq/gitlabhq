@@ -31,7 +31,7 @@ GitLab retrieves the user name and email information from the
 [Git configuration](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration)
 of the contributor when the user creates a commit.
 
-## View a file's Git history in the UI
+## View a file's Git history
 
 To see a file's Git history in the UI:
 
@@ -40,34 +40,11 @@ To see a file's Git history in the UI:
 1. Go to your desired file in the repository.
 1. In the upper-right corner, select **History**.
 
-## In the CLI
-
-To see the history of a file from the command line, use the `git log <filename>` command.
-For example, to see `history` information about the `CONTRIBUTING.md` file in the root
-of the `gitlab` repository, run this command:
-
-```shell
-$ git log CONTRIBUTING.md
-
-commit b350bf041666964c27834885e4590d90ad0bfe90
-Author: Nick Malcolm <nmalcolm@gitlab.com>
-Date:   Fri Dec 8 13:43:07 2023 +1300
-
-    Update security contact and vulnerability disclosure info
-
-commit 8e4c7f26317ff4689610bf9d031b4931aef54086
-Author: Brett Walker <bwalker@gitlab.com>
-Date:   Fri Oct 20 17:53:25 2023 +0000
-
-    Fix link to Code of Conduct
-
-    and condense some of the verbiage
-```
-
 ## Related topics
 
 - [Git blame](git_blame.md) for line-by-line information about a file
 - [Common Git commands](../../../../topics/git/commands.md)
+- [File management with Git](../../../../topics/git/file_management.md)
 
 ## Troubleshooting
 

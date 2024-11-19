@@ -1,0 +1,18 @@
+---
+description: Tracks any errors encountered during the payment form process.
+action: error
+product_group: subscription_management
+milestone: '14.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84065
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: status of the submission
+  property:
+    description: Error message from the backend

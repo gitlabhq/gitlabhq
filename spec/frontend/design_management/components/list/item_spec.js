@@ -163,9 +163,9 @@ describe('Design management list item component', () => {
   describe('with associated event', () => {
     it.each`
       event                                | icon                     | className
-      ${DESIGN_VERSION_EVENT.MODIFICATION} | ${'file-modified-solid'} | ${'gl-text-blue-500'}
-      ${DESIGN_VERSION_EVENT.DELETION}     | ${'file-deletion-solid'} | ${'gl-text-red-500'}
-      ${DESIGN_VERSION_EVENT.CREATION}     | ${'file-addition-solid'} | ${'gl-text-green-500'}
+      ${DESIGN_VERSION_EVENT.MODIFICATION} | ${'file-modified-solid'} | ${'gl-fill-icon-info'}
+      ${DESIGN_VERSION_EVENT.DELETION}     | ${'file-deletion-solid'} | ${'gl-fill-icon-danger'}
+      ${DESIGN_VERSION_EVENT.CREATION}     | ${'file-addition-solid'} | ${'gl-fill-icon-success'}
     `('renders item with correct status icon for $event event', ({ event, icon, className }) => {
       createComponent({ event });
       const eventIcon = findEventIcon();

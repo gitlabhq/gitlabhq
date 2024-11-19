@@ -260,7 +260,7 @@ states the following on bitmap scans:
 
 > Bitmap Index Scan delivers a bitmap of potential tuple locations; it does not
 > access the heap itself. The bitmap is used by an ancestor Bitmap Heap Scan
-> node, possibly after passing through intermediate Bitmap And and/or Bitmap Or
+> node, possibly after passing through intermediate Bitmap Or and/or Bitmap And
 > nodes to combine it with the results of other Bitmap Index Scans.
 
 ### Limit

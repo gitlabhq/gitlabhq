@@ -13,7 +13,7 @@ stages:
 
 browser_performance:
   stage: performance
-  image: docker:git
+  image: docker:27.3
   variables:
     URL: ''
     SITESPEED_IMAGE: sitespeedio/sitespeed.io
@@ -21,13 +21,11 @@ browser_performance:
     SITESPEED_OPTIONS: ''
     SITESPEED_DOCKER_OPTIONS: ''
   services:
-    - docker:dind
+    - docker:27.3-dind
   script:
-    - mkdir gitlab-exporter
-    # Busybox wget does not support proxied HTTPS, get the real thing.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/287611.
-    - (env | grep -i _proxy= >/dev/null 2>&1) && apk --no-cache add wget
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
+    - git clone https://gitlab.com/gitlab-org/gl-performance.git gitlab-exporter
+    - apk --no-cache add npm
+    - npm install --prefix gitlab-exporter/
     - mkdir sitespeed-results
     - |
       function propagate_env_vars() {
@@ -49,7 +47,7 @@ browser_performance:
           HTTP_PROXY \
           NO_PROXY \
         ) \
-        $SITESPEED_DOCKER_OPTIONS --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --cpu --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
+        $SITESPEED_DOCKER_OPTIONS --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter/index.js --cpu --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
     - mv sitespeed-results/data/performance.json browser-performance.json
   artifacts:
     paths:

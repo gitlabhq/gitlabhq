@@ -7,6 +7,10 @@ class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
+  # Avoid _simultaneous execution_ of this job for the same MR,
+  # but reschedule the second job just in case the first fails.
+  deduplicate :until_executed, if_deduplicated: :reschedule_once
+
   queue_namespace :auto_merge
   feature_category :continuous_delivery
   worker_resource_boundary :cpu

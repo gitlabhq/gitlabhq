@@ -2,6 +2,7 @@
 - add_page_specific_style 'page_bundles/merge_request_rapid_diffs'
 
 = render 'page'
-= render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: diff_view == :parallel)
-- if @stream_url
-  #js-stream-container{ data: { diffs_stream_url: @stream_url } }
+.code{ class: user_color_scheme }
+  = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: diff_view == :parallel)
+  - if @stream_url
+    #js-stream-container{ data: { diffs_stream_url: @stream_url } }

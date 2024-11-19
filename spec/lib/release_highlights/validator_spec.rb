@@ -80,8 +80,6 @@ RSpec.describe ReleaseHighlights::Validator, feature_category: :activation do
   describe 'when validating all files' do
     # Permit DNS requests to validate all URLs in the YAML files
     it 'they should have no errors', :permit_dns do
-      stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
-
       expect(described_class.validate_all!).to be_truthy, described_class.error_message
     end
   end

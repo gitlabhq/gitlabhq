@@ -5,7 +5,7 @@ module Ci
     class UnlockPreviousPipelinesWorker
       include ApplicationWorker
 
-      data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+      data_consistency :always
 
       sidekiq_options retry: 3
       include PipelineBackgroundQueue

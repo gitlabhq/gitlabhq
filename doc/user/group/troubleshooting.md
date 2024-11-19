@@ -91,7 +91,9 @@ Administrators can find a user's maximum permissions for a group or project.
 
 The following error typically occurs when the user belongs to an external group that has been shared with your [projects](../project/members/sharing_projects_groups.md) or [groups](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group):
 
+<!-- vale gitlab_base.LatinTerms = NO -->
 `Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member.`
+<!-- vale gitlab_base.LatinTerms = YES -->
 
 To remove the user as a billable member, follow one of these options:
 

@@ -3,5 +3,5 @@
     = f.label _('Enabled Git access protocols'), class: 'label-bold'
     = f.select :enabled_git_access_protocol, options_for_select(enabled_git_access_protocol_options_for_group, group.enabled_git_access_protocol), {}, class: 'form-control', disabled: !::Gitlab::CurrentSettings.enabled_git_access_protocol.blank?
     - if !::Gitlab::CurrentSettings.enabled_git_access_protocol.blank?
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _("This setting has been configured at the instance level and cannot be overridden per group")

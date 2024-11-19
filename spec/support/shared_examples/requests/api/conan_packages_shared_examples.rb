@@ -598,7 +598,7 @@ RSpec.shared_examples 'delete package endpoint' do
     end
 
     it 'deletes a package' do
-      expect { subject }.to change { Packages::Package.count }.from(2).to(1)
+      expect { subject }.to change { Packages::Package.count }.by(-1)
     end
   end
 end
@@ -734,6 +734,76 @@ RSpec.shared_examples 'workhorse authorize endpoint' do
   it_behaves_like 'handling empty values for username and channel'
 end
 
+RSpec.shared_examples 'protected package main example' do
+  context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:pat_project_developer) { personal_access_token }
+    let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: [project])) }
+    let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+    let_it_be(:pat_instance_admin) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+
+    let(:package_protection_rule) do
+      create(:package_protection_rule, package_type: :conan, project: project)
+    end
+
+    let(:conan_package_name) { recipe_path_name }
+    let(:conan_package_name_no_match) { "#{conan_package_name}_no_match" }
+
+    before do
+      package_protection_rule.update!(
+        package_name_pattern: package_name_pattern,
+        minimum_access_level_for_push: minimum_access_level_for_push
+      )
+    end
+
+    shared_examples 'protected package' do
+      it_behaves_like 'returning response status', 403
+
+      it 'does not create any conan-related package records' do
+        expect { subject }
+          .to not_change { Packages::Package.count }
+          .and not_change { Packages::Package.conan.count }
+          .and not_change { Packages::PackageFile.count }
+      end
+    end
+
+    where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
+      ref(:conan_package_name)          | :maintainer | ref(:pat_project_developer)  | 'protected package'
+      ref(:conan_package_name)          | :maintainer | ref(:pat_project_owner)      | 'uploads a package file'
+      ref(:conan_package_name)          | :maintainer | ref(:pat_instance_admin)     | 'uploads a package file'
+      ref(:conan_package_name)          | :owner      | ref(:pat_project_maintainer) | 'protected package'
+      ref(:conan_package_name)          | :owner      | ref(:pat_project_owner)      | 'uploads a package file'
+      ref(:conan_package_name)          | :owner      | ref(:pat_instance_admin)     | 'uploads a package file'
+      ref(:conan_package_name)          | :admin      | ref(:pat_project_owner)      | 'protected package'
+      ref(:conan_package_name)          | :admin      | ref(:pat_instance_admin)     | 'uploads a package file'
+      ref(:conan_package_name_no_match) | :maintainer | ref(:pat_project_owner)      | 'uploads a package file'
+      ref(:conan_package_name_no_match) | :admin      | ref(:pat_project_owner)      | 'uploads a package file'
+    end
+
+    with_them do
+      it_behaves_like params[:shared_examples_name]
+    end
+
+    context 'when feature flag :packages_protected_packages_conan is disabled' do
+      before do
+        stub_feature_flags(packages_protected_packages_conan: false)
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
+        ref(:conan_package_name)          | :maintainer | ref(:pat_project_developer) | 'uploads a package file'
+        ref(:conan_package_name)          | :admin      | ref(:pat_project_owner)     | 'uploads a package file'
+        ref(:conan_package_name_no_match) | :maintainer | ref(:pat_project_developer) | 'uploads a package file'
+        ref(:conan_package_name_no_match) | :admin      | ref(:pat_project_owner)     | 'uploads a package file'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'workhorse recipe file upload endpoint' do
   let(:file_name) { 'conanfile.py' }
   let(:params) { { file: temp_file(file_name) } }
@@ -756,6 +826,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do
   it_behaves_like 'creates build_info when there is a job'
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
+  it_behaves_like 'protected package main example'
 end
 
 RSpec.shared_examples 'workhorse package file upload endpoint' do
@@ -779,6 +850,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
   it_behaves_like 'creates build_info when there is a job'
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
+  it_behaves_like 'protected package main example'
 
   context 'tracking the conan_package.tgz upload' do
     let(:file_name) { ::Packages::Conan::FileMetadatum::PACKAGE_BINARY }
@@ -852,10 +924,10 @@ RSpec.shared_examples 'uploads a package file' do
       end
 
       context 'with existing package' do
-        let!(:existing_package) { create(:conan_package, name: 'foo', version: 'bar', project: project) }
+        let!(:existing_package) { create(:conan_package, name: recipe_path_name, version: recipe_path_version, project: project) }
 
         before do
-          existing_package.conan_metadatum.update!(package_username: project.full_path.tr('/', '+'), package_channel: 'baz')
+          existing_package.conan_metadatum.update!(package_username: recipe_path_username, package_channel: recipe_path_channel)
         end
 
         it 'does not create a new package' do

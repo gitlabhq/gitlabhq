@@ -1,7 +1,4 @@
 .tests-metadata-state:
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
-  before_script:
-    - source scripts/utils.sh
   artifacts:
     expire_in: 31d
     paths:
@@ -13,21 +10,26 @@
 retrieve-tests-metadata:
   extends:
     - .tests-metadata-state
+    - .fast-no-clone-job
     - .test-metadata:rules:retrieve-tests-metadata
   # We use a smaller image for this job only (update-tests-metadata compiles some gems)
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: prepare
   needs: []
+  variables:
+    FILES_TO_DOWNLOAD: >
+      scripts/setup/tests-metadata.rb
+  before_script:
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
+    - !reference [".fast-no-clone-job", before_script]
   script:
-    - apt-get update && apt-get install -y curl  # Not present in ruby-slim, so we add it manually
-    - install_gitlab_gem
-    - source ./scripts/rspec_helpers.sh
-    - retrieve_tests_metadata
+    - ruby scripts/setup/tests-metadata.rb retrieve
 
 update-tests-metadata:
   extends:
     - .tests-metadata-state
     - .test-metadata:rules:update-tests-metadata
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   stage: post-test
   needs:
     - job: retrieve-tests-metadata
@@ -42,9 +44,26 @@ update-tests-metadata:
       optional: true
     - job: rspec:artifact-collector ee remainder
       optional: true
+  variables:
+    FLAKY_RSPEC_GENERATE_REPORT: "true"
   script:
-    - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
-    - source ./scripts/rspec_helpers.sh
+    - source scripts/utils.sh
+    - source scripts/rspec_helpers.sh
     - test -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
+    - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - update_tests_metadata
     - update_tests_mapping
+
+verify-tests-metadata:
+  extends:
+    - .default-retry
+    - .test-metadata:rules:update-tests-metadata
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
+  stage: post-test
+  needs:
+    - update-tests-metadata
+  before_script:
+    - source scripts/utils.sh
+    - install_activesupport_gem
+  script:
+    - scripts/setup/tests-metadata.rb verify

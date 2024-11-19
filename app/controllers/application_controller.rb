@@ -49,7 +49,7 @@ class ApplicationController < BaseActionController
   # all other before filters that could have set the user.
   before_action :auth_user
 
-  prepend_around_action :set_current_context
+  around_action :set_current_context
 
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
   around_action :set_locale
@@ -118,7 +118,12 @@ class ApplicationController < BaseActionController
 
   rescue_from Gitlab::Git::ResourceExhaustedError do |e|
     response.headers.merge!(e.headers)
-    render plain: e.message, status: :service_unavailable
+    render_503(e.message)
+  end
+
+  rescue_from Regexp::TimeoutError do |e|
+    log_exception(e)
+    head :service_unavailable
   end
 
   def redirect_back_or_default(default: root_path, options: {})
@@ -137,6 +142,14 @@ class ApplicationController < BaseActionController
 
       redirect_to new_user_session_path, alert: I18n.t('devise.failure.unauthenticated')
     end
+  end
+
+  def handle_unverified_request
+    Gitlab::Auth::Activity
+      .new(controller: self)
+      .user_csrf_token_mismatch!
+
+    super
   end
 
   def render(*args)
@@ -167,14 +180,13 @@ class ApplicationController < BaseActionController
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
   #
   def auth_user
-    strong_memoize(:auth_user) do
-      if user_signed_in?
-        current_user
-      else
-        try(:authenticated_user)
-      end
+    if user_signed_in?
+      current_user
+    else
+      try(:authenticated_user)
     end
   end
+  strong_memoize_attr :auth_user
 
   # Devise defines current_user to be:
   #
@@ -260,6 +272,13 @@ class ApplicationController < BaseActionController
       # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
+    end
+  end
+
+  def render_503(message = nil)
+    respond_to do |format|
+      format.html { render template: "errors/service_unavailable", formats: :html, layout: "errors", status: :service_unavailable, locals: { message: message } }
+      format.any { head :service_unavailable }
     end
   end
 
@@ -541,7 +560,7 @@ class ApplicationController < BaseActionController
   end
 
   def set_current_organization
-    return if ::Current.lock_organization
+    return if ::Current.organization_assigned
 
     ::Current.organization = Gitlab::Current::Organization.new(
       params: params.permit(

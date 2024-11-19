@@ -37,9 +37,9 @@ describe('WorkItemDevelopmentMRItem', () => {
   describe('MR status badge', () => {
     it.each`
       state            | icon                     | mergeRequest          | iconClass
-      ${STATUS_OPEN}   | ${'merge-request'}       | ${openMergeRequest}   | ${'gl-text-green-500'}
-      ${STATUS_MERGED} | ${'merge'}               | ${mergedMergeRequest} | ${'gl-text-blue-500'}
-      ${STATUS_CLOSED} | ${'merge-request-close'} | ${closedMergeRequest} | ${'gl-text-red-500'}
+      ${STATUS_OPEN}   | ${'merge-request'}       | ${openMergeRequest}   | ${'gl-fill-icon-success'}
+      ${STATUS_MERGED} | ${'merge'}               | ${mergedMergeRequest} | ${'gl-fill-icon-info'}
+      ${STATUS_CLOSED} | ${'merge-request-close'} | ${closedMergeRequest} | ${'gl-fill-icon-danger'}
     `(
       'renders icon "$icon" when the state of the MR is "$state"',
       ({ icon, iconClass, mergeRequest }) => {

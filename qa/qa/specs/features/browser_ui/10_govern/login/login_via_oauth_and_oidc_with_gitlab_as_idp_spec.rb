@@ -4,8 +4,9 @@ module QA
   RSpec.describe 'Govern', :skip_live_env, requires_admin: 'creates users and instance OAuth application',
     only: { condition: -> { Runtime::Env.release } },
     product_group: :authentication do
-    let!(:user) { create(:user) }
+    let!(:user) { Runtime::UserStore.test_user }
     let(:consumer_host) { "http://#{consumer_name}.#{Runtime::Env.running_in_ci? ? 'test' : 'bridge'}" }
+
     let(:instance_oauth_app) do
       Resource::InstanceOauthApplication.fabricate! do |application|
         application.redirect_uri = redirect_uri
@@ -63,7 +64,7 @@ module QA
         expect(page.driver.current_url).to include(consumer_host)
 
         Page::Main::Login.perform do |login_page|
-          login_page.public_send("sign_in_with_gitlab_#{app_type}")
+          login_page.public_send(:"sign_in_with_gitlab_#{app_type}")
         end
 
         expect(page.driver.current_url).to include(Runtime::Scenario.gitlab_address)

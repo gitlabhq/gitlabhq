@@ -48,7 +48,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
   const preTag = ({ language, content = 'test' } = {}) => {
     const languageAttr = language ? ` data-canonical-lang="${language}"` : '';
 
-    return `<pre class="js-syntax-highlight"${languageAttr}>${content}</pre>`;
+    return `<pre class="code highlight js-syntax-highlight"${languageAttr}>${content}</pre>`;
   };
 
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);

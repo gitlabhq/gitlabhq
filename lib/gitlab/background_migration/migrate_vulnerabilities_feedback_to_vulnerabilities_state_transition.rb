@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/Documentation -- not needed
 module Gitlab
   module BackgroundMigration
     class MigrateVulnerabilitiesFeedbackToVulnerabilitiesStateTransition < BatchedMigrationJob
@@ -12,4 +11,3 @@ module Gitlab
 end
 
 Gitlab::BackgroundMigration::MigrateVulnerabilitiesFeedbackToVulnerabilitiesStateTransition.prepend_mod
-# rubocop:enable Style/Documentation

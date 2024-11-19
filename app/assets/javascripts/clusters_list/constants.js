@@ -136,6 +136,17 @@ export const I18N_AGENT_MODAL = {
   useTerraformText: s__(
     'ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.',
   ),
+  registerWithUITitle: s__('ClusterAgents|Register agent with the UI'),
+  bootstrapWithFluxTitle: s__('ClusterAgents|Bootstrap the agent with Flux'),
+  bootstrapWithFluxDescription: s__(
+    'ClusterAgents|If Flux is installed in the cluster, you can install and register the agent from the command line:',
+  ),
+  bootstrapWithFluxOptions: s__(
+    'ClusterAgents|You can view a list of options with %{codeStart}--help%{codeEnd}.',
+  ),
+  bootstrapWithFluxDocs: s__(
+    "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog.",
+  ),
 };
 
 export const KAS_DISABLED_ERROR = 'Gitlab::Kas::Client::ConfigurationError';

@@ -2,25 +2,25 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HookData::ProjectBuilder do
+RSpec.describe Gitlab::HookData::ProjectBuilder, feature_category: :webhooks do
   let_it_be(:user) { create(:user, name: 'John', email: 'john@example.com') }
   let_it_be(:user2) { create(:user, name: 'Peter') }
   let_it_be(:user3_non_owner) { create(:user, name: 'Not_Owner') }
+  let(:include_deprecated_owner) { false }
 
   describe '#build' do
-    let(:data) { described_class.new(project).build(event) }
+    let(:data) { described_class.new(project).build(event, include_deprecated_owner: include_deprecated_owner) }
     let(:event_name) { data[:event_name] }
     let(:attributes) do
       [
         :created_at,
         :event_name,
         :name,
-        :owner_email,
-        :owner_name,
         :owners,
         :path,
         :path_with_namespace,
         :project_id,
+        :project_namespace_id,
         :project_visibility,
         :updated_at
       ]
@@ -37,10 +37,23 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
           expect(data[:path]).to eq(project.path)
           expect(data[:path_with_namespace]).to eq(project.full_path)
           expect(data[:project_id]).to eq(project.id)
-          expect(data[:owner_name]).to eq(owner_name)
-          expect(data[:owner_email]).to eq(owner_email)
+          expect(data[:project_namespace_id]).to eq(project.namespace_id)
           expect(data[:owners]).to match_array(owners_data)
           expect(data[:project_visibility]).to eq('internal')
+        end
+
+        it 'does not include deprecated owner attributes' do
+          expect(data).not_to include(:owner_name)
+          expect(data).not_to include(:owner_email)
+        end
+
+        context 'when include_deprecated_owner is true' do
+          let(:include_deprecated_owner) { true }
+
+          it 'includes deprecated owner attributes' do
+            expect(data[:owner_name]).to eq(owner_name)
+            expect(data[:owner_email]).to eq(owner_email)
+          end
         end
       end
 

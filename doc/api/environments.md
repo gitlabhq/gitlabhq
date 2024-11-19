@@ -207,7 +207,7 @@ POST /projects/:id/environments
 | `tier`                 | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
 | `cluster_agent_id`     | integer        | no       | The cluster agent to associate with this environment.                                                               |
 | `kubernetes_namespace` | string         | no       | The Kubernetes namespace to associate with this environment.                                                        |
-| `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment.                                                          |
+| `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.  |
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \

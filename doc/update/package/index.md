@@ -4,53 +4,25 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrade GitLab by using the GitLab package
+# Upgrading Linux package instances
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-You can upgrade GitLab to a new version by using the
-GitLab package.
-
-## Prerequisites
-
-- Create an [upgrade plan](../plan_your_upgrade.md).
-  We recommend upgrading in a test environment first and having a [rollback plan](../plan_your_upgrade.md#rollback-plan)
-  to reduce the risk of unplanned outages and extended downtime.
-- Decide when to upgrade by viewing the [supported upgrade paths](../upgrade_paths.md).
-  You can't directly skip major versions (for example, go from 10.3 to 12.7 in one step).
-- If you are upgrading from a non-package installation to a GitLab package installation, see
-  [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
-- Ensure that any
-  [background migrations](../background_migrations.md)
-  are fully completed. Upgrading
-  before background migrations have finished can lead to data corruption.
-  We recommend performing upgrades between major and minor releases no more than once per
-  week, to allow time for background migrations to finish.
-- Gitaly servers must be upgraded to the newer version prior to upgrading the application server.
-  This prevents the gRPC client on the application server from sending RPCs that the old Gitaly version
-  does not support.
+Upgrading Linux package instances to a later version of GitLab requires several steps, many specific to Linux package
+installations.
 
 ## Downtime
 
 - For single node installations, GitLab is not available to users while an
-  upgrade is in progress. The user's web browser shows a `Deploy in progress` message or a `502` error.
+  upgrade is in progress. The user's web browser shows a **Deploy in progress** message or a `502` error.
 - For multi-node installations, see how to perform
   [zero-downtime upgrades](../zero_downtime.md).
 - Upgrades to multi-node installations can also be performed
   [with downtime](../with_downtime.md).
 
-## Version-specific changes
-
-Upgrading versions might need some manual intervention. For more information,
-check the version you are upgrading to:
-
-- [GitLab 17](../versions/gitlab_17_changes.md)
-- [GitLab 16](../versions/gitlab_16_changes.md)
-- [GitLab 15](../versions/gitlab_15_changes.md)
-
-### Earlier GitLab versions
+## Earlier GitLab versions
 
 For version-specific information for earlier GitLab versions, see the [documentation archives](https://archives.docs.gitlab.com).
 The versions of the documentation in the archives contain version-specific information for even earlier versions of GitLab.
@@ -58,7 +30,7 @@ The versions of the documentation in the archives contain version-specific infor
 For example, the [documentation for GitLab 15.11](https://archives.docs.gitlab.com/15.11/ee/update/package/#version-specific-changes)
 contains information on versions back to GitLab 11.
 
-## Back up before upgrading
+## Skip automatic database backups
 
 The GitLab database is backed up before installing a newer GitLab version. You
 may skip this automatic database backup by creating an empty file
@@ -68,10 +40,23 @@ at `/etc/gitlab/skip-auto-backup`:
 sudo touch /etc/gitlab/skip-auto-backup
 ```
 
-Nevertheless, it is highly recommended to maintain a full up-to-date
+Nevertheless, you should maintain a full up-to-date
 [backup](../../administration/backup_restore/index.md) on your own.
 
-## Upgrade using the official repositories
+## Upgrade a Linux package instance
+
+To upgrade a Linux package instance:
+
+1. [Complete the initial steps](../index.md#upgrade-gitlab) in the main GitLab upgrade documentation.
+1. If you are upgrading from a non-package installation to a GitLab package installation, follow the steps in
+   [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
+1. Continue the upgrade by following the sections below.
+
+### Required services
+
+You can perform upgrades with the GitLab instance online. When you execute the upgrade command, PostgreSQL, Redis, and Gitaly must be running.
+
+### By using the official repositories (recommended)
 
 All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/gitlab/).
 Six repositories are maintained:
@@ -90,10 +75,10 @@ If you have installed GitLab [Community Edition](https://about.gitlab.com/instal
 or [Enterprise Edition](https://about.gitlab.com/install/), then the
 official GitLab repository should have already been set up for you.
 
-### Upgrade to the latest version using the official repositories
+#### Upgrade to the latest version
 
-If you upgrade GitLab regularly, for example once a month, you can upgrade to
-the latest version by using your package manager.
+If you upgrade GitLab regularly (for example, every month), you can upgrade to
+the latest version by using the package manager for your Linux distribution.
 
 To upgrade to the latest GitLab version:
 
@@ -115,7 +100,7 @@ NOTE:
 For the GitLab Community Edition, replace `gitlab-ee` with
 `gitlab-ce`.
 
-### Upgrade to a specific version using the official repositories
+#### Upgrade to a specific version
 
 Linux package managers default to installing the latest available version of a
 package for installation and upgrades. Upgrading directly to the latest major
@@ -171,21 +156,17 @@ NOTE:
 For the GitLab Community Edition, replace `ee` with
 `ce`.
 
-## Download a package manually
+### By using a downloaded package
 
-NOTE:
-The [package repository](#upgrade-using-the-official-repositories) is recommended over
-a manual installation.
-
-If for some reason you don't use the official repositories, you can
+If you don't want to use the official repositories, you can
 download the package and install it manually. This method can be used to either
 install GitLab for the first time or upgrade it.
 
 To download and install or upgrade GitLab:
 
-1. Visit the [official repository](#upgrade-using-the-official-repositories) of your package.
-1. Filter the list by searching for the version you want to install (for example 14.1.8).
-   Multiple packages may exist for a single version, one for each supported distribution
+1. Go to the [official repository](#by-using-the-official-repositories-recommended) of your package.
+1. Filter the list by searching for the version you want to install. For example, `14.1.8`.
+   Multiple packages might exist for a single version, one for each supported distribution
    and architecture. Next to the filename is a label indicating the distribution,
    as the filenames may be the same.
 1. Find the package version you wish to install, and select the filename from the list.
@@ -209,12 +190,11 @@ To download and install or upgrade GitLab:
    ```
 
 NOTE:
-For the GitLab Community Edition, replace `gitlab-ee` with
-`gitlab-ce`.
+For the GitLab Community Edition, replace `gitlab-ee` with `gitlab-ce`.
 
-## Upgrade the product documentation
+## Upgrade the product documentation (optional)
 
-This is an optional step. If you [installed the product documentation](../../administration/docs_self_host.md),
+If you [installed the product documentation](../../administration/docs_self_host.md),
 see how to [upgrade to a later version](../../administration/docs_self_host.md#upgrade-using-docker).
 
 ## Troubleshooting

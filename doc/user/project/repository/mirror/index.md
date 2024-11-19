@@ -129,7 +129,7 @@ Prerequisites:
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
 1. Select **Update now** (**{retry}**):
-   ![Repository mirroring force update user interface](img/repository_mirroring_force_update.png)
+   ![Repository mirroring force update user interface](img/repository_mirroring_force_update_v11_5.png)
 
 ## Authentication methods for mirrors
 

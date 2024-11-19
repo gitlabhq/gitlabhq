@@ -247,6 +247,23 @@ module Sidekiq
         message: %(Reliable Fetcher: adding dead #{msg['class']} job #{msg['jid']} to interrupted queue)
       )
 
+      begin
+        job_class = Object.const_get(msg['class'])
+        if job_class.respond_to?(:sidekiq_interruptions_exhausted)
+          job_class.interruptions_exhausted_block.call(msg)
+        end
+      rescue => e
+        Sidekiq.logger.error(
+          message: 'Failed to call sidekiq_interruption_exhausted',
+          class: msg['class'],
+          jid: msg['jid'],
+          exception: {
+            class: e.class.name,
+            message: e.message
+          }
+        )
+      end
+
       job = Sidekiq.dump_json(msg)
       @interrupted_set.put(job, connection: multi_connection)
     end

@@ -8,10 +8,11 @@ description: "Repository X-Ray gives Code Suggestions more insight into your pro
 # Repository X-Ray
 
 DETAILS:
-**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing)
-**Offering:** GitLab.com, Self-managed
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Repository X-Ray automatically enriches code generation requests for [GitLab Duo Code Suggestions](index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
 
@@ -28,23 +29,20 @@ Repository X-Ray only enhances code generation requests and not code completion 
 
 ## How Repository X-Ray works
 
+> - Maximum number of libraries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500365) in GitLab 17.6.
+
 When a new commit is pushed to your project's default branch, the Repository X-Ray triggers a background job that scans and parses the applicable configuration files in your repository automatically.
 
 Typically, only one scanning job runs at a time in each project. This means that if a second scan is triggered while a scan is already in progress, that second scan waits until the first scan is complete before executing. This could result in a small delay before the latest configuration file data is parsed and updated in the database.
 
+When a code generation request is made, a maximum of 300 libraries from the parsed data is included in the prompt as additional context.
+
 ## Enable Repository X-Ray
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../feature_flags.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483928) in GitLab 17.6. Feature flag `ai_enable_internal_repository_xray_service` removed.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-The Repository X-Ray service is automatically enabled if:
-
-- You have enabled the `ai_enable_internal_repository_xray_service` feature flag.
-- Your project has access to [GitLab Duo Code Suggestions](index.md).
+The Repository X-Ray service is automatically enabled if your project has access to [GitLab Duo Code Suggestions](index.md).
 
 ## Supported languages and dependency managers
 
@@ -71,10 +69,13 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 
 1. For Python Pip, all configuration files matching the `*requirements*.txt` glob pattern are processed.
 
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+
 ## Enable Repository X-Ray in your CI pipeline (deprecated)
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/14100) in GitLab 17.4.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) in GitLab 17.6
+and is planned for removal in 18.0. Use [Enable Repository X-Ray](#enable-repository-x-ray) instead.
 
 Prerequisites:
 
@@ -142,3 +143,5 @@ This link can be either of the following:
 
 - Direct, that is, the project is in a group that has the Duo Pro add-on.
 - Indirect, for example, the parent group of the current project's group has the Duo Pro add-on.
+
+<!--- end_remove -->

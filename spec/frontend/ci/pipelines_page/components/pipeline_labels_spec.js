@@ -30,7 +30,6 @@ describe('Pipeline label component', () => {
       propsData: { ...defaultProps, ...props },
       provide: {
         pipelineSchedulesPath: 'group/project/-/schedules',
-        targetProjectFullPath: projectPath,
         ...provide,
       },
     });
@@ -151,64 +150,28 @@ describe('Pipeline label component', () => {
   });
 
   describe('fork badge', () => {
-    describe('when the pipeline path does not equal the project path', () => {
-      describe('with a trailing slash', () => {
-        beforeEach(() => {
-          const forkedPipeline = { ...defaultProps.pipeline };
-          forkedPipeline.project.full_path = '/test/forked';
+    describe('when project is not forked', () => {
+      it('does not render the badge', () => {
+        createComponent();
 
-          createComponent({
-            ...forkedPipeline,
-          });
-        });
+        expect(findForkTag().exists()).toBe(false);
+      });
+    });
 
-        it('renders the badge', () => {
-          expect(findForkTag().exists()).toBe(true);
-          expect(findForkTag().text()).toBe('fork');
+    describe('when project is forked', () => {
+      beforeEach(() => {
+        const forkedPipeline = { ...defaultProps.pipeline };
+        forkedPipeline.project.forked = true;
+
+        createComponent({
+          ...forkedPipeline,
         });
       });
 
-      describe('without a trailing slash', () => {
-        beforeEach(() => {
-          const forkedPipeline = { ...defaultProps.pipeline };
-          forkedPipeline.project.full_path = 'test/forked';
-
-          createComponent({
-            ...forkedPipeline,
-          });
-        });
-
-        it('renders the badge', () => {
-          expect(findForkTag().exists()).toBe(true);
-          expect(findForkTag().text()).toBe('fork');
-        });
+      it('renders the badge', () => {
+        expect(findForkTag().exists()).toBe(true);
+        expect(findForkTag().text()).toBe('fork');
       });
-    });
-  });
-
-  describe('when the project path equals the pipeline path', () => {
-    beforeEach(() => {
-      const sourcePipeline = { ...defaultProps.pipeline };
-      sourcePipeline.project.full_path = 'test/test';
-
-      createComponent({ ...sourcePipeline });
-    });
-
-    it('should not render', () => {
-      expect(findForkTag().exists()).toBe(false);
-    });
-  });
-
-  describe('when no targetBranchFullPath is provided', () => {
-    beforeEach(() => {
-      const forkedPipeline = { ...defaultProps.pipeline };
-      forkedPipeline.project.full_path = 'test/forked';
-
-      createComponent({ ...forkedPipeline }, { targetProjectFullPath: undefined });
-    });
-
-    it('does not render the badge', () => {
-      expect(findForkTag().exists()).toBe(false);
     });
   });
 

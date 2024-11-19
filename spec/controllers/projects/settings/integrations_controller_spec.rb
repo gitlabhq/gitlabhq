@@ -249,7 +249,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
       let(:integration_params) { { active: true } }
       let(:params) { project_params(service: integration_params) }
 
-      let(:message) { 'Jira settings saved and active.' }
+      let(:message) { 'Jira issues settings saved and active.' }
       let(:redirect_url) { edit_project_settings_integration_path(project, integration) }
 
       before do
@@ -300,7 +300,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
       context 'when param `active` is set to false' do
         let(:integration_params) { { active: false } }
-        let(:message) { 'Jira settings saved, but not active.' }
+        let(:message) { 'Jira issues settings saved, but not active.' }
 
         it_behaves_like 'integration update'
       end

@@ -170,7 +170,7 @@ export default {
     <gl-loading-icon v-if="isLoading" class="gl-m-3" size="sm" />
     <p
       v-else-if="filteredArtifacts.length === 0"
-      class="gl-m-0 gl-px-4 gl-py-3 gl-text-gray-600"
+      class="gl-m-0 gl-px-4 gl-py-3 gl-text-subtle"
       data-testid="artifacts-empty-message"
     >
       {{ $options.i18n.emptyArtifactsMessage }}

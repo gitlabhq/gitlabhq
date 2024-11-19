@@ -317,7 +317,7 @@ secondary site is a read-only copy.
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 
-      ![Add secondary site](../replication/img/adding_a_secondary_v15_8.png)
+      ![Form to add a new secondary Geo site](../replication/img/adding_a_secondary_v15_8.png)
 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.

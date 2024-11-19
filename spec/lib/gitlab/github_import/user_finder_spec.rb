@@ -3,16 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let(:project) do
+  let_it_be(:project) do
     create(
       :project,
       import_type: 'github',
-      import_url: 'https://api.github.com/user/repo'
+      import_url: 'https://github.com/user/repo.git'
     )
   end
 
-  let(:client) { double(:client) }
-  let(:finder) { described_class.new(project, client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:settings) { Gitlab::GithubImport::Settings.new }
+  let(:user_mapping_enabled) { true }
+
+  subject(:finder) { described_class.new(project, client) }
+
+  before do
+    project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled })
+  end
 
   describe '#author_id_for' do
     context 'with default author_key' do
@@ -100,15 +107,42 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   end
 
   describe '#user_id_for' do
-    it 'returns the user ID for the given user' do
-      user = { id: 4, login: 'kittens' }
+    context 'when user mapping is disabled' do
+      let(:user_mapping_enabled) { false }
 
-      expect(finder).to receive(:find).with(user[:id], user[:login]).and_return(42)
-      expect(finder.user_id_for(user)).to eq(42)
+      it 'returns the user ID for the given user' do
+        user = { id: 4, login: 'kittens' }
+
+        expect(finder).to receive(:find).with(user[:id], user[:login]).and_return(42)
+        expect(finder.user_id_for(user)).to eq(42)
+      end
     end
 
-    it 'does not fail with empty input' do
-      expect(finder.user_id_for(nil)).to eq(nil)
+    context 'when user mapping is enabled' do
+      let!(:source_user) do
+        create(:import_source_user,
+          namespace_id: project.root_ancestor.id,
+          source_user_identifier: '7',
+          source_hostname: 'https://github.com'
+        )
+      end
+
+      it 'returns the mapped_user_id of source user with matching user identifier' do
+        user = { id: 7, login: 'anything' }
+
+        expect(finder.user_id_for(user)).to eq(source_user.mapped_user_id)
+      end
+
+      it 'creates a new source user when user identifier does not match' do
+        user = { id: 6, login: 'anything' }
+
+        expect { finder.user_id_for(user) }.to change { Import::SourceUser.count }.by(1)
+        expect(finder.user_id_for(user)).not_to eq(source_user.mapped_user_id)
+      end
+
+      it 'does not fail with empty input' do
+        expect(finder.user_id_for(nil)).to eq(nil)
+      end
     end
   end
 
@@ -535,6 +569,10 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   describe '#id_for_github_id' do
     let(:id) { 4 }
 
+    before do
+      allow(project).to receive(:github_enterprise_import?).and_return(false)
+    end
+
     it 'queries and caches the user ID for a given GitHub ID' do
       expect(finder).to receive(:query_id_for_github_id)
         .with(id)
@@ -560,12 +598,8 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     end
 
     context 'when importing from github enterprise' do
-      let(:project) do
-        create(
-          :project,
-          import_type: 'github',
-          import_url: 'https://othergithub.net/user/repo'
-        )
+      before do
+        allow(project).to receive(:github_enterprise_import?).and_return(true)
       end
 
       it 'does not look up the user by external id' do
@@ -582,6 +616,10 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
   describe '#id_for_github_email' do
     let(:email) { 'kittens@example.com' }
+
+    before do
+      allow(project).to receive(:github_enterprise_import?).and_return(true)
+    end
 
     it 'queries and caches the user ID for a given Email address' do
       expect(finder).to receive(:query_id_for_github_email)
@@ -649,6 +687,37 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
     it 'reads a cache key that does not exist' do
       expect(finder.read_id_from_cache('foo')).to eq([false, nil])
+    end
+  end
+
+  describe '#source_user_accepted?' do
+    let!(:user) { { id: 7, login: 'anything' } }
+    let!(:source_user) do
+      create(
+        :import_source_user, :awaiting_approval,
+        namespace: project.root_ancestor,
+        source_hostname: 'https://github.com',
+        import_type: project.import_type,
+        source_user_identifier: user[:id]
+      )
+    end
+
+    it 'returns true when the associated source user has an accepted status' do
+      source_user.accept!
+
+      expect(finder.source_user_accepted?(user)).to be(true)
+    end
+
+    it 'returns false when the associated source user does not have an accepted status' do
+      expect(finder.source_user_accepted?(user)).to be(false)
+    end
+
+    context 'when user contribution mapping is disabled' do
+      let(:user_mapping_enabled) { false }
+
+      it 'returns true' do
+        expect(finder.source_user_accepted?(user)).to be(true)
+      end
     end
   end
 end

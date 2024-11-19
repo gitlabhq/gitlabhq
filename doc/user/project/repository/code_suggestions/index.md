@@ -8,7 +8,7 @@ description: "Code Suggestions helps you write code in GitLab more efficiently b
 # Code Suggestions
 
 DETAILS:
-**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing)
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
@@ -16,6 +16,7 @@ DETAILS:
 > - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 > - Subscription changed to require GitLab Duo Pro on February 15, 2024.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 NOTE:
 GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
@@ -86,8 +87,17 @@ To use Code Suggestions:
    - To reject a suggestion, press <kbd>Esc</kbd>.
    - To ignore a suggestion, keep typing as you usually would.
 
-AI is non-deterministic, so you may not get the same suggestion every time with the same input.
-To generate quality code, write clear, descriptive, specific tasks.
+All editor extensions from GitLab, except Neovim, add an icon to your IDE's status bar. For example, in
+Visual Studio:
+
+![The status bar in Visual Studio.](../../../../editor_extensions/img/visual_studio_status_bar_v17_4.png)
+
+| Icon | Status | Meaning |
+| :--- | :----- | :------ |
+| **{tanuki-ai}** | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
+| **{tanuki-ai-off}** | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
+| ![The status icon for fetching Code Suggestions.](../../../../editor_extensions/img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
+| ![The status icon for a Code Suggestions error.](../../../../editor_extensions/img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
 
 ## Best practices
 
@@ -263,7 +273,7 @@ Code Suggestions is powered by a generative AI model.
 - For code generation, algorithms or large code blocks might take more than five seconds to generate.
 
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
 
 ### Streaming
 
@@ -281,11 +291,11 @@ external model.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
 
-By default, code completion requests are sent from the IDE directly to the AI Gateway to minimize the latency.
+By default, code completion requests are sent from the IDE directly to the AI gateway to minimize the latency.
 For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
 possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
 code completion requests are sent indirectly through the GitLab self-managed instance, which in turn sends the requests
-to the AI Gateway. This might result in your requests having higher latency.
+to the AI gateway. This might result in your requests having higher latency.
 
 #### Configure direct or indirect connections
 

@@ -29,7 +29,11 @@ module ShardingKeySpecHelpers
     INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
     WHERE pg_class.relname = '#{table_name}'
     AND contype = 'c'
-    AND pg_get_constraintdef(pg_constraint.oid) ILIKE '%#{column_name} IS NOT NULL%'
+    AND (
+      pg_get_constraintdef(pg_constraint.oid) ILIKE '%#{column_name} IS NOT NULL%'
+      OR
+      pg_get_constraintdef(pg_constraint.oid) ILIKE '%num_nonnulls%#{column_name}%> 0%'
+    )
     SQL
 
     result = ApplicationRecord.connection.execute(sql)

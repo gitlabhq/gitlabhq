@@ -1,10 +1,11 @@
 ---
 table_name: audit_events_instance_google_cloud_logging_configurations
 classes:
-  - AuditEvents::Instance::GoogleCloudLoggingConfiguration
+- AuditEvents::Instance::GoogleCloudLoggingConfiguration
 feature_categories:
-  - audit_events
-description: Stores Instance level Google Cloud Logging configurations associated with IAM service accounts, used for generating access tokens.
+- audit_events
+description: Stores Instance level Google Cloud Logging configurations associated
+  with IAM service accounts, used for generating access tokens.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423036
 milestone: '16.4'
 gitlab_schema: gitlab_main_clusterwide

@@ -10,13 +10,5 @@ milestone: '14.6'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-desired_sharding_key:
-  agent_project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: agent_id
-        table: cluster_agents
-        sharding_key: project_id
-        belongs_to: agent
-desired_sharding_key_migration_job_name: BackfillAgentActivityEventsAgentProjectId
+sharding_key:
+  agent_project_id: projects

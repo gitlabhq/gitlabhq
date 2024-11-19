@@ -163,11 +163,10 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       context 'filter with search parameter' do
         let_it_be(:token1) { create(:personal_access_token, name: 'test_1') }
         let_it_be(:token2) { create(:personal_access_token, name: 'test_2') }
-        let_it_be(:token3) { create(:personal_access_token, name: '') }
 
         where(:pattern, :status, :result_count, :result) do
           'test'   | :ok | 2 | lazy { [token1.id, token2.id] }
-          ''       | :ok | 4 | lazy { [token1.id, token2.id, token3.id, current_users_token.id] }
+          ''       | :ok | 3 | lazy { [token1.id, token2.id, current_users_token.id] }
           'test_1' | :ok | 1 | lazy { [token1.id] }
           'asdf'   | :ok | 0 | lazy { [] }
         end
@@ -361,7 +360,6 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       context 'filter with search parameter' do
         let_it_be(:token1) { create(:personal_access_token, name: 'test_1', user: current_user) }
         let_it_be(:token2) { create(:personal_access_token, name: 'test_1') }
-        let_it_be(:token3) { create(:personal_access_token, name: '') }
 
         where(:pattern, :status, :result_count, :result) do
           'test'   | :ok | 1 | lazy { [token1.id] }

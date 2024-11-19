@@ -6,6 +6,23 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Vue 3 Testing
 
+As we transition to using Vue 3, it's important that our tests pass in Vue 3 mode.
+We're adding progressively stricter checks to our pipelines to enforce proper Vue 3 testing.
+
+Right now, we fail pipelines if:
+
+1. A new test file is added that fails in Vue 3 mode.
+1. An existing test file fails under Vue 3 that was previously passing.
+1. One of the known failures on the [quarantine list](#quarantine-list) is now passing and has not been removed from the quarantine list.
+
+## Running unit tests using Vue 3
+
+To run unit tests using Vue 3, set the `VUE_VERSION` environment variable to `3` when executing jest.
+
+```shell
+VUE_VERSION=3 yarn jest #[file-path]
+```
+
 ## Testing Caveats
 
 ### Ref management when mocking composables
@@ -116,3 +133,143 @@ describe('MyComponent', () => {
   })
 })
 ```
+
+### Vue router
+
+If you are testing a Vue Router configuration using a real (not mocked) `VueRouter` object, read the following
+[guidelines](https://test-utils.vuejs.org/guide/advanced/vue-router.html#Using-a-Real-Router). A
+source of failure is that Vue Router 4 handles routing asynchronously, therefore we should
+`await` for the routing operations to be completed. You can use the `waitForPromises` utility to
+wait until all promises are flushed.
+
+In the following example, a test asserts that VueRouter navigated to a page after clicking a button. If
+`waitForPromises` is not invoked after clicking the button, the assertion would fail because the router's
+state hasn't transitioned to the target page.
+
+```javascript
+it('navigates to /create when clicking New workspace button', async () => {
+  expect(findWorkspacesListPage().exists()).toBe(true);
+
+  await findNewWorkspaceButton().trigger('click');
+  await waitForPromises();
+
+  expect(findCreateWorkspacePage().exists()).toBe(true);
+});
+```
+
+### Vue Apollo troubleshooting
+
+You might encounter some unit test failures on components that execute Apollo mutations and
+update the in-memory query cache, for example:
+
+```shell
+ApolloError: 'get' on proxy: property '[property]' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '#<Object>' but got '#<Object>')
+```
+
+This error happens because Apollo tries to modify a [Vue reactive object](https://vuejs.org/guide/essentials/reactivity-fundamentals.html)
+when we call the `writeQuery` or `updateQuery` methods. Avoid using objects passed through a component's
+property in operations that update Apollo's cache. You should always rely on constructing new objects or
+data that already exists in the Apollo's cache. As a last resort, use the `cloneDeep` utility to remove
+the Vue's reactivity proxy from the target object.
+
+In the following example, the component updates the Apollo's in-memory cache after the mutation succeeds
+by swapping the `agent` object between two arrays. The `agent` object is also available in the `agent`
+property, but it is reactive object. The incorrect approach references the `agent` object passed to
+the component as a property which causes the proxy error. The correct approach finds the `agent`
+object that is already stored in the Apollo's cache.
+
+```html
+<script>
+import { toRaw } from 'vue';
+
+export default {
+  props: {
+    namespace: {
+      type: String,
+      required: true,
+    },
+    agent: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  methods: {
+    async execute() {
+      try {
+        await this.$apollo.mutate({
+          mutation: createClusterAgentMappingMutation,
+          update(store) {
+            store.updateQuery(
+              {
+                query: getAgentsWithAuthorizationStatusQuery,
+                variables: { namespace },
+              },
+              (sourceData) =>
+                produce(sourceData, (draftData) => {
+                  const { mappedAgents, unmappedAgents } = draftData.namespace;
+
+                  /*
+                  * BAD: The error described in this section is caused by adding a Vue reactive
+                  * object the nodes array. `this.agent` is a component property hence it is wrapped
+                  * with a reactivity proxy.
+                  */
+                  mappedAgents.nodes.push(this.agent);
+                  unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
+
+                  /*
+                  * PREFERRED FIX: Only use data that already exists in the in-memory cache.
+                  */
+                  const targetAgentIndex = removeFrom.nodes.findIndex((node) => node.id === agent.id);
+
+                  mappedAgents.nodes.push(removeFrom.nodes[targetAgentIndex]);
+                  unmappedAgents.nodes.splice(targetAgentIndex, 1);
+
+
+                  /*
+                  * ALTERNATIVE (LAST RESORT) FIX: Use lodash `cloneDeep` to create a clone
+                  * of the object without Vue reactivity:
+                  */
+                  mappedAgents.nodes.push(cloneDeep(this.agent));
+                  unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
+
+                }),
+            );
+          },
+        });
+      } catch (e) {
+        Sentry.captureException(e);
+        this.$emit('error', e);
+      }
+    },
+  },
+};
+</script>
+
+```
+
+## Quarantine list
+
+The `scripts/frontend/quarantined_vue3_specs.txt` file is built up of all the known failing Vue 3 test files.
+In order to not overwhelm us with failing pipelines, these files are skipped on the Vue 3 test job.
+
+If you're reading this, it's likely you were sent here by a failing quarantine job.
+This job is confusing as it fails when a test passes and it passes if they all fail.
+The reason for this is because all newly passing tests should be [removed from the quarantine list](#removing-from-the-quarantine-list).
+Congratulate yourself on fixing a previously failing test and remove it fom the quarantine list to get this pipeline passing again.
+
+### Removing from the quarantine list
+
+If your pipeline is failing because of the `vue3 check quarantined` jobs, good news!
+You fixed a previously failing test!
+What you need to do now is remove the newly-passing test from the quarantine list.
+This ensures that the test will continue to pass and prevent any further regressions.
+
+### Adding to the quarantine list
+
+Don't do it.
+This list should only get smaller, not larger.
+If your MR introduces a new test file or breaks a currently passing one, then you should fix it.
+
+If you are moving a test file from one location to another, then it's okay to modify the location in the quarantine list.
+However, before doing so, consider fixing the test first.

@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -198,7 +198,7 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 
 In these circumstances, that the job succeeds is the default behavior. The job's status indicates
 success or failure of the analyzer itself. Analyzer results are displayed in the
-[job logs](../../ci/yaml/script.md#expand-and-collapse-job-log-sections),
+[job logs](../../ci/jobs/job_logs.md#expand-and-collapse-job-log-sections),
 [merge request widget](index.md#merge-request), or
 [security dashboard](security_dashboard/index.md).
 

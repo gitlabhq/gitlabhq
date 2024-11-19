@@ -33,7 +33,7 @@ export default {
         : __('Collapse replies');
     },
     toggleIconColor() {
-      return this.collapsed ? '!gl-text-primary' : '!gl-text-blue-600';
+      return this.collapsed ? '!gl-text-default' : '!gl-text-blue-600';
     },
     authors() {
       return [...new Set(this.replies.map((item) => item.author))];

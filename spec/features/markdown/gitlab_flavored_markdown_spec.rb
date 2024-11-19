@@ -102,7 +102,7 @@ RSpec.describe "GitLab Flavored Markdown", feature_category: :markdown do
       @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix #{issue.to_reference}")
     end
 
-    it "renders title in merge_requests#index" do
+    it "renders title in merge_requests#index", :js do
       visit project_merge_requests_path(project)
 
       expect(page).to have_link(issue.to_reference)

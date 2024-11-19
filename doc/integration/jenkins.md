@@ -76,7 +76,7 @@ Install and configure the Jenkins plugin to authorize the connection to GitLab.
 1. Enter the GitLab server's URL in **GitLab host URL**.
 1. To test the connection, select **Test Connection**.
 
-   ![Jenkins plugin configuration](img/jenkins_gitlab_plugin_config.png)
+   ![Jenkins plugin configuration](img/jenkins_gitlab_plugin_config_v8_3.png)
 
 For more information, see
 [Jenkins-to-GitLab authentication](https://github.com/jenkinsci/gitlab-plugin#jenkins-to-gitlab-authentication).
@@ -157,7 +157,7 @@ If you cannot [provide GitLab with your Jenkins server URL and authentication in
 1. Under **Secret Token**, select **Generate**.
 1. Copy the token, and save the job configuration.
 1. In GitLab:
-   - [Create a webhook for your project](../user/project/integrations/webhooks.md#configure-webhooks-in-gitlab).
+   - [Create a webhook for your project](../user/project/integrations/webhooks.md#configure-webhooks).
    - Enter the trigger URL (such as `https://JENKINS_URL/project/YOUR_JOB`).
    - Paste the token in **Secret Token**.
 1. To test the webhook, select **Test**.

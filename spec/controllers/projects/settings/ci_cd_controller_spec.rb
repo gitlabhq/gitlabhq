@@ -401,6 +401,49 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         expect(json_response).to have_key("errors")
       end
     end
+
+    describe 'GET #export_job_token_authorizations' do
+      subject(:get_authorizations) do
+        get :export_job_token_authorizations, params: {
+          namespace_id: project.namespace,
+          project_id: project
+        }, format: :csv
+      end
+
+      let!(:authorizations) do
+        create_list(:ci_job_token_authorization, 3, accessed_project: project)
+      end
+
+      context 'when the export is successful' do
+        it 'renders the CSV' do
+          get_authorizations
+
+          expect(response).to have_gitlab_http_status(:ok)
+          rows = response.body.lines
+
+          expect(rows[0]).to include('Origin Project Path,Last Authorized At (UTC)')
+          expect(rows[1]).to include(authorizations.first.origin_project.full_path)
+          expect(rows[1]).to include(authorizations.first.last_authorized_at.utc.iso8601)
+        end
+      end
+
+      context 'when the export fails' do
+        let(:export_service) { instance_double(Ci::JobToken::ExportAuthorizationsService) }
+        let(:failed_response) { ServiceResponse.error(message: 'Export failed') }
+
+        before do
+          allow(::Ci::JobToken::ExportAuthorizationsService).to receive(:new).and_return(export_service)
+          allow(export_service).to receive(:execute).and_return(failed_response)
+        end
+
+        it 'sets a flash alert and redirects to the project CI/CD settings' do
+          get_authorizations
+
+          expect(flash[:alert]).to eq('Failed to generate export')
+          expect(response).to redirect_to(project_settings_ci_cd_path(project))
+        end
+      end
+    end
   end
 
   context 'as a developer' do

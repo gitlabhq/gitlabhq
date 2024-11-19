@@ -57,7 +57,7 @@ export default {
     parseTime(rawTime) {
       const DATE_PLUS_T_LENGTH = 11; // 2024-05-30T
       const TIME_LENGTH = 8; // 00:00:00
-      return `${rawTime.slice(DATE_PLUS_T_LENGTH, DATE_PLUS_T_LENGTH + TIME_LENGTH)}Z`;
+      return `${rawTime.slice(DATE_PLUS_T_LENGTH, DATE_PLUS_T_LENGTH + TIME_LENGTH)}`;
     },
   },
 };
@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div
-    class="job-log-viewer gl-rounded-base gl-p-3 gl-text-sm gl-font-monospace"
+    class="job-log-viewer gl-rounded-bl-base gl-rounded-br-base gl-p-3 gl-text-sm gl-font-monospace"
     role="log"
     aria-live="polite"
     :aria-busy="loading"

@@ -1,6 +1,3 @@
-import { s__ } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
-
 export const EDITOR_APP_DRAWER_HELP = 'HELP';
 export const EDITOR_APP_DRAWER_JOB_ASSISTANT = 'JOB_ASSISTANT';
 export const EDITOR_APP_DRAWER_AI_ASSISTANT = 'AI_ASSISTANT';
@@ -67,6 +64,7 @@ export const CI_HELP_LINK = 'CI_HELP_LINK';
 export const CI_NEEDS_LINK = 'CI_NEEDS_LINK';
 export const CI_RUNNERS_LINK = 'CI_RUNNERS_LINK';
 export const CI_YAML_LINK = 'CI_YAML_LINK';
+export const GITLAB_UNIVERSITY_LINK = 'GITLAB_UNIVERSITY_LINK';
 
 export const pipelineEditorTrackingOptions = {
   label: 'pipeline_editor',
@@ -81,6 +79,7 @@ export const pipelineEditorTrackingOptions = {
       [CI_NEEDS_LINK]: 'visit_help_drawer_link_needs',
       [CI_RUNNERS_LINK]: 'visit_help_drawer_link_runners',
       [CI_YAML_LINK]: 'visit_help_drawer_link_yaml',
+      [GITLAB_UNIVERSITY_LINK]: 'visit_help_drawer_link_gitlab_university',
     },
     openHelpDrawer: 'open_help_drawer',
     resimulatePipeline: 'resimulate_pipeline',
@@ -91,36 +90,3 @@ export const pipelineEditorTrackingOptions = {
 export const VALIDATE_TAB_FEEDBACK_URL = 'https://gitlab.com/gitlab-org/gitlab/-/issues/346687';
 
 export const COMMIT_SHA_POLL_INTERVAL = 1000;
-
-export const MIGRATION_PLAN_HELP_PATH = helpPagePath('ci/migration/plan_a_migration');
-export const MIGRATE_FROM_JENKINS_TRACKING_LABEL = 'migrate_from_jenkins_prompt';
-
-export const I18N = {
-  title: s__('Pipelines|Get started with GitLab CI/CD'),
-  learnBasics: {
-    title: s__('Pipelines|Learn the basics of pipelines and .yml files'),
-    subtitle: s__(
-      'Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works.',
-    ),
-    gettingStarted: {
-      title: s__('Pipelines|"Hello world" with GitLab CI'),
-      description: s__(
-        'Pipelines|Get familiar with GitLab CI syntax by  setting up a simple pipeline running a  "Hello world" script to see how it runs, explore how CI/CD works.',
-      ),
-      cta: s__('Pipelines|Try test template'),
-    },
-    migrateFromJenkins: {
-      title: s__('Pipelines|Migrate to GitLab CI/CD from Jenkins'),
-      description: s__(
-        'Pipelines|Take advantage of simple, scalable pipelines and CI/CD-enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!',
-      ),
-      cta: s__('Pipelines|Start with a migration plan'),
-    },
-  },
-  templates: {
-    title: s__('Pipelines|Ready to set up CI/CD for your project?'),
-    subtitle: s__(
-      "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD.",
-    ),
-  },
-};

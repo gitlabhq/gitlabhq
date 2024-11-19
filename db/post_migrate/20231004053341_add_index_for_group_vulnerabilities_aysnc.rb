@@ -15,7 +15,7 @@ class AddIndexForGroupVulnerabilitiesAysnc < Gitlab::Database::Migration[2.1]
 
   def up
     # TODO: Issue for synchronous migration https://gitlab.com/gitlab-org/gitlab/-/issues/426371
-    prepare_async_index :vulnerabilities, COLUMN_NAMES, name: INDEX_NAME
+    prepare_async_index :vulnerabilities, COLUMN_NAMES, name: INDEX_NAME # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   end
 
   def down

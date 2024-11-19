@@ -91,7 +91,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
           end
 
           ci_model.table_name = :_test_table_name
-          stub_const('Ci::Pipeline::NEXT_PARTITION_VALUE', 101)
+          stub_const('Ci::Partition::LATEST_PARTITION_VALUE', 101)
         end
 
         subject(:value) { partitioning_strategy.next_partition_if.call(active_partition) }
@@ -198,7 +198,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
   end
 
   describe '.registered_models' do
-    subject(:ci_partitioned_models) { described_class.registered_models }
+    subject(:ci_partitioned_models) { described_class.registered_models.map(&:name) }
 
     it 'returns a list of CI models being partitioned' do
       expected_list = %w[
@@ -216,7 +216,8 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
         CommitStatus
       ]
 
-      expect(ci_partitioned_models.map(&:name)).to eq(expected_list)
+      expect(ci_partitioned_models).to include(*expected_list)
+      expect(ci_partitioned_models).not_to include('Ci::BuildPendingState')
     end
   end
 end

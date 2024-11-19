@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -14,7 +14,7 @@ You can integrate your GitLab instance with [Salesforce](https://www.salesforce.
 
 ## Create a Salesforce Connected App
 
-To enable Salesforce OmniAuth provider, you must use Salesforce's credentials for your GitLab instance.
+To enable Salesforce OmniAuth provider, you must use the Salesforce credentials for your GitLab instance.
 To get the credentials (a pair of Client ID and Client Secret), you must [create a Connected App](https://help.salesforce.com/s/articleView?language=en_US&id=sf.connected_app_create.htm&type=5) on Salesforce.
 
 1. Sign in to [Salesforce](https://login.salesforce.com/).
@@ -26,14 +26,14 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    - **Contact Email**: Enter the contact email for Salesforce to use when contacting you or your support team.
    - **Description**: Description for the application.
 
-   ![Salesforce App Details](img/salesforce_app_details.png)
+   ![Salesforce App Details](img/salesforce_app_details_v11_11.png)
 
 1. Select **API (Enable OAuth Settings)** and select **Enable OAuth Settings**.
 1. Fill in the application details into the following fields:
    - **Callback URL**: The callback URL of your GitLab installation. For example, `https://gitlab.example.com/users/auth/salesforce/callback`.
    - **Selected OAuth Scopes**: Move `Access your basic information (id, profile, email, address, phone)` and `Allow access to your unique identifier (openid)` to the right column.
 
-   ![Salesforce OAuth App Details](img/salesforce_oauth_app_details.png)
+   ![Salesforce OAuth App Details](img/salesforce_oauth_app_details_v11_11.png)
 
 1. Select **Save**.
 
@@ -84,7 +84,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
 1. Change `SALESFORCE_CLIENT_ID` to the Consumer Key from the Salesforce connected application page.
 1. Change `SALESFORCE_CLIENT_SECRET` to the Consumer Secret from the Salesforce connected application page.
 
-   ![Salesforce App Secret Details](img/salesforce_app_secret_details.png)
+   ![Salesforce App Secret Details](img/salesforce_app_secret_details_v11_11.png)
 
 1. Save the configuration file.
 

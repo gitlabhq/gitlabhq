@@ -6,7 +6,7 @@ column: shared_runners_enabled
 db_type: boolean
 default: 'true'
 description: "(**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`)
-  Enable shared runners for new projects."
+  Enable instance runners for new projects."
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

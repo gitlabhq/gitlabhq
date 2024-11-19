@@ -8,6 +8,8 @@ extends: substitution
 message: "Use 'to-do item' in most cases, or 'Add a to do' if referring to the UI button."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#to-do-item
 level: warning
+action:
+  name: replace
 ignorecase: false
 swap:
   '[Tt]o [Dd]o [Ii]tems?': to-do item

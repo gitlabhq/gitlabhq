@@ -4,7 +4,8 @@ classes:
 - Insight
 feature_categories:
 - value_stream_management
-description: The table is used to specify a project which contains the group level insights configuration.
+description: The table is used to specify a project which contains the group level
+  insights configuration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9665
 milestone: '11.9'
 gitlab_schema: gitlab_main_cell

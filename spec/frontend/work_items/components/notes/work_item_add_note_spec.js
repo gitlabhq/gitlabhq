@@ -41,8 +41,13 @@ describe('Work item add note', () => {
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
     canCreateNote = true,
+    emailParticipantsWidgetPresent = true,
     workItemIid = '1',
-    workItemResponse = workItemByIidResponseFactory({ canUpdate, canCreateNote }),
+    workItemResponse = workItemByIidResponseFactory({
+      canUpdate,
+      canCreateNote,
+      emailParticipantsWidgetPresent,
+    }),
     signedIn = true,
     isEditing = true,
     workItemType = 'Task',
@@ -257,6 +262,36 @@ describe('Work item add note', () => {
         expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
       });
 
+      it('refetches widgets when work item type is updated', async () => {
+        await createComponent({
+          isEditing: true,
+          mutationHandler: jest.fn().mockResolvedValue({
+            data: {
+              createNote: {
+                note: {
+                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                  discussion: {
+                    id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                    notes: {
+                      nodes: [],
+                      __typename: 'NoteConnection',
+                    },
+                    __typename: 'Discussion',
+                  },
+                  __typename: 'Note',
+                },
+                __typename: 'CreateNotePayload',
+                errors: ['Commands only Type changed successfully.', 'Command names ["type"]'],
+              },
+            },
+          }),
+        });
+
+        await waitForPromises();
+
+        expect(workItemResponseHandler).toHaveBeenCalled();
+      });
+
       it('emits error to parent when the comment form emits error', async () => {
         await createComponent({ isEditing: true, signedIn: true });
         const error = 'error';
@@ -303,6 +338,22 @@ describe('Work item add note', () => {
 
       expect(findWorkItemLockedComponent().exists()).toBe(true);
       expect(findCommentForm().exists()).toBe(false);
+    });
+  });
+
+  describe('email participants', () => {
+    it('sets `hasEmailParticipantsWidget` prop to `true` for comment form by default', async () => {
+      await createComponent();
+
+      expect(findCommentForm().props('hasEmailParticipantsWidget')).toEqual(true);
+    });
+
+    describe('when email participants widget is not available', () => {
+      it('sets `hasEmailParticipantsWidget` prop to `false` for comment form', async () => {
+        await createComponent({ emailParticipantsWidgetPresent: false });
+
+        expect(findCommentForm().props('hasEmailParticipantsWidget')).toEqual(false);
+      });
     });
   });
 

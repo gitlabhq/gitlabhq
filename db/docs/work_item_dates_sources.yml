@@ -1,9 +1,9 @@
 ---
 table_name: work_item_dates_sources
 classes:
-  - WorkItems::DatesSource
+- WorkItems::DatesSource
 feature_categories:
-  - team_planning
+- team_planning
 description: The rolled up Start and Due dates for Work Items.
 introduced_by_url:
 milestone: '16.7'

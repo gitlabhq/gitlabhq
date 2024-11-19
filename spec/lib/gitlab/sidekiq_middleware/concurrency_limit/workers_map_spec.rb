@@ -27,21 +27,21 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap, feature_
     let(:expected_limit) { 60 }
 
     it 'accepts worker instance' do
-      expect(described_class.limit_for(worker: worker_class.new).call).to eq(expected_limit)
+      expect(described_class.limit_for(worker: worker_class.new)).to eq(expected_limit)
     end
 
     it 'accepts worker class' do
-      expect(described_class.limit_for(worker: worker_class).call).to eq(expected_limit)
+      expect(described_class.limit_for(worker: worker_class)).to eq(expected_limit)
     end
 
-    it 'returns nil for unknown worker' do
-      expect(described_class.limit_for(worker: described_class)).to be_nil
+    it 'returns 0 for unknown worker' do
+      expect(described_class.limit_for(worker: described_class)).to eq(0)
     end
 
-    it 'returns nil if the feature flag is disabled' do
+    it 'returns 0 if the feature flag is disabled' do
       stub_feature_flags(sidekiq_concurrency_limit_middleware: false)
 
-      expect(described_class.limit_for(worker: worker_class)).to be_nil
+      expect(described_class.limit_for(worker: worker_class)).to eq(0)
     end
   end
 
@@ -49,24 +49,21 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap, feature_
     subject(:over_the_limit?) { described_class.over_the_limit?(worker: worker_class) }
 
     where(:limit, :current, :result) do
-      nil        | 0   | false
-      nil        | 5   | false
-      -> { nil } | 0   | false
-      -> { nil } | 5   | false
-      -> { 0 }   | 0   | false
-      -> { 0 }   | 10  | false
-      -> { 5 }   | 10  | true
-      -> { 10 }  | 0   | false
-      -> { 10 }  | 5   | false
-      -> { -1 }  | 0   | true
-      -> { -1 }  | 1   | true
-      -> { -10 } | 10  | true
+      0   | 0   | false
+      0   | 10  | false
+      5   | 10  | true
+      10  | 0   | false
+      10  | 5   | false
+      -1  | 0   | true
+      -1  | 1   | true
+      -10 | 10  | true
     end
 
     with_them do
       before do
         allow(described_class).to receive(:limit_for).and_return(limit)
-        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency).to receive(:current_for)
+        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:concurrent_worker_count)
           .and_return(current)
       end
 

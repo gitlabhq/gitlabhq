@@ -5,6 +5,10 @@
 class BulkImports::Configuration < ApplicationRecord
   self.table_name = 'bulk_import_configurations'
 
+  include IgnorableColumns
+
+  ignore_column :migrate_memberships, remove_with: '17.8', remove_after: '2025-01-20'
+
   belongs_to :bulk_import, inverse_of: :configuration, optional: false
 
   validates :url, :access_token, length: { maximum: 255 }, presence: true

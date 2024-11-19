@@ -112,9 +112,9 @@ steps:
 
 ### The result
 
-1. ![Step 1](img/pipeline_wizard_sample_step1.png)
-1. ![Step 2](img/pipeline_wizard_sample_step2.png)
-1. ![Step 3](img/pipeline_wizard_sample_step3.png)
+1. ![Step 1 of the pipeline wizard, where you select a Docker image for building the image.](img/pipeline_wizard_sample_step1_v15_1.png)
+1. ![Step 2 of the pipeline wizard, where you define commands for setting up a local build environment.](img/pipeline_wizard_sample_step2_v15_1.png)
+1. ![Last step of the pipeline wizard, where you enter a commit message and commit the pipeline configuration.](img/pipeline_wizard_sample_step3_v15_1.png)
 
 ### The commit step
 

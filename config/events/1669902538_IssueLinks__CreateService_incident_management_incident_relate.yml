@@ -7,7 +7,7 @@ identifiers:
 - user
 - namespace
 description: "Count of unique users adding issues per that are related to an incident. Migrated from Service Ping"
-product_group: respond
+product_group: platform_insights
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223
 distributions:

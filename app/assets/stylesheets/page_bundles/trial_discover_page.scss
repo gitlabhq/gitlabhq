@@ -1,9 +1,0 @@
-@import 'mixins_and_variables_and_functions';
-
-.trial-discover-page-card {
-  @include media-breakpoint-down(md) {
-    .description-text {
-      height: 6em;
-    }
-  }
-}

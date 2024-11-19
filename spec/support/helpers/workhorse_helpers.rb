@@ -3,7 +3,7 @@
 module WorkhorseHelpers
   extend self
 
-  UPLOAD_PARAM_NAMES = %w[name size path remote_id sha256 type].freeze
+  UPLOAD_PARAM_NAMES = %w[name size path remote_id sha256 sha1 md5 type].freeze
 
   def workhorse_send_data
     @_workhorse_send_data ||= begin

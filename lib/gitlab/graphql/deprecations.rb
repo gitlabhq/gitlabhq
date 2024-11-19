@@ -34,8 +34,8 @@ module Gitlab
           ERROR
         end
 
-        # GitLab allows items to be marked as "alpha", which leverages GraphQL deprecations.
-        deprecation_args = kwargs.extract!(:alpha, :deprecated)
+        # GitLab allows items to be marked as "experiment", which leverages GraphQL deprecations.
+        deprecation_args = kwargs.extract!(:experiment, :deprecated)
 
         self.deprecation = Deprecation.parse(**deprecation_args)
         return unless deprecation

@@ -56,7 +56,7 @@ module Gitlab
             when "-"
               line_old += 1
               context = :old
-            when "\\" # rubocop:disable Lint/EmptyWhen
+            when "\\"
               # No increment
             else
               line_new += 1

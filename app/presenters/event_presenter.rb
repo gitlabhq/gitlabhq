@@ -52,6 +52,8 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
 
     if design_note?
       'Design'
+    elsif wiki_page_note?
+      'Wiki Page'
     elsif target.for_issue? || target.for_work_item?
       target.noteable.issue_type
     else

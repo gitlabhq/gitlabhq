@@ -26,17 +26,17 @@ When you select a row in the compliance violations report, a drawer appears that
 - A list of users that approved the merge request.
 - The user that merged the merge request.
 
-## View the compliance violations report for a group
+## View the compliance violations report
 
 > - Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Owner role for the project or group.
 
 To view the compliance violations report:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Compliance center**.
 
 You can sort the compliance report on:

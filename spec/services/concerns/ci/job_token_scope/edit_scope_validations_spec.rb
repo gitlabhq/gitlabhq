@@ -18,9 +18,9 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
 
   subject(:test_instance) { test_class.new(source_project, current_user) }
 
-  describe '#validate_edit!' do
-    subject(:validate_edit_execution) do
-      test_instance.validate_edit!(source_project, target_project, current_user)
+  describe '#validate_source_project_and_target_project_access!' do
+    subject(:validate_source_project_and_target_project_access) do
+      test_instance.validate_source_project_and_target_project_access!(source_project, target_project, current_user)
     end
 
     before do
@@ -44,7 +44,7 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
       with_them do
         it 'passes the validation' do
           expect do
-            validate_edit_execution
+            validate_source_project_and_target_project_access
           end.not_to raise_error
         end
       end
@@ -66,7 +66,7 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
       with_them do
         it 'raises an error' do
           expect do
-            validate_edit_execution
+            validate_source_project_and_target_project_access
           end.to raise_error(Ci::JobTokenScope::EditScopeValidations::ValidationError,
             'Insufficient permissions to modify the job token scope')
         end
@@ -85,7 +85,7 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
       with_them do
         it 'raises an error' do
           expect do
-            validate_edit_execution
+            validate_source_project_and_target_project_access
           end.to raise_error(Ci::JobTokenScope::EditScopeValidations::ValidationError,
             Ci::JobTokenScope::EditScopeValidations::TARGET_PROJECT_UNAUTHORIZED_OR_UNFOUND)
         end
@@ -93,9 +93,9 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
     end
   end
 
-  describe '#validate_group_add!' do
-    subject(:validate_group_execution) do
-      test_instance.validate_group_add!(source_project, target_group, current_user)
+  describe '#validate_source_project_and_target_group_access!' do
+    subject(:validate_source_project_and_target_group_access) do
+      test_instance.validate_source_project_and_target_group_access!(source_project, target_group, current_user)
     end
 
     before do
@@ -119,7 +119,7 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
       with_them do
         it 'passes the validation' do
           expect do
-            validate_group_execution
+            validate_source_project_and_target_group_access
           end.not_to raise_error
         end
       end
@@ -141,7 +141,7 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
       with_them do
         it 'raises an error' do
           expect do
-            validate_group_execution
+            validate_source_project_and_target_group_access
           end.to raise_error(Ci::JobTokenScope::EditScopeValidations::ValidationError,
             'Insufficient permissions to modify the job token scope')
         end
@@ -160,7 +160,7 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
       with_them do
         it 'raises an error' do
           expect do
-            validate_group_execution
+            validate_source_project_and_target_group_access
           end.to raise_error(Ci::JobTokenScope::EditScopeValidations::ValidationError,
             Ci::JobTokenScope::EditScopeValidations::TARGET_GROUP_UNAUTHORIZED_OR_UNFOUND)
         end

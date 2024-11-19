@@ -28,7 +28,7 @@ module Types
     field :project, Types::ProjectType, null: false, description: 'Project of the container registry.'
     field :protection_rule_exists, GraphQL::Types::Boolean,
       null: false,
-      alpha: { milestone: '17.2' },
+      experiment: { milestone: '17.2' },
       description:
         'Whether any matching container protection rule exists for this container. ' \
         'Available only when feature flag `container_registry_protected_containers` is enabled.'

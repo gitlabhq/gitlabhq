@@ -3,6 +3,8 @@
 module QA
   module Resource
     class InstanceOauthApplication < Base
+      uses_admin_api_client
+
       attr_accessor :name, :redirect_uri, :scopes, :trusted
 
       attributes :id, :application_id, :application_secret

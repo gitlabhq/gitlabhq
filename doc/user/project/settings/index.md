@@ -18,23 +18,25 @@ To configure features and permissions for a project:
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
-1. To enable or disable features in the project, use the feature toggles.
+1. To turn features on or off in the project, use the feature toggles.
 1. Select **Save changes**.
 
-When you disable a feature, the following additional features are also disabled:
+### Feature dependencies
 
-- If you disable the **Issues** feature, project users cannot use:
+When you turn off a feature, the following additional features are also unavailable:
+
+- If you turn off the **Issues** feature, project users cannot use:
 
   - **Issue Boards**
   - **Service Desk**
   - Project users can still access **Milestones** from merge requests.
 
-- If you disable **Issues** and **Merge Requests**, project users cannot use:
+- If you turn off **Issues** and **Merge Requests**, project users cannot use:
 
   - **Labels**
   - **Milestones**
 
-- If you disable **Repository**, project users cannot access:
+- If you turn off **Repository**, project users cannot access:
 
   - **Merge requests**
   - **CI/CD**
@@ -44,23 +46,24 @@ When you disable a feature, the following additional features are also disabled:
 - The metrics dashboard requires read access to project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
 
-## Enable and disable project features
+## Toggle project features
 
-Enabled project features are visible and accessible to project members.
-You can disable specific project features, so that they are not visible and accessible to project members, regardless of their role.
+Available project features are visible and accessible to project members.
+You can turn off specific project features, so that they are not visible
+and accessible to project members, regardless of their role.
 
-To enable or disable individual features in a project:
+To toggle the availability of individual features in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. To enable a feature, turn on the toggle. To disable a feature, turn off the toggle.
+1. To change the availability of a feature, turn the toggle on or off.
 1. Select **Save changes**.
 
-## Disable project analytics
+## Turn off project analytics
 
 By default, project analytics are displayed under the **Analyze** item in the left sidebar.
-To disable this feature and remove the **Analyze** item from the left sidebar:
+To turn this feature off and remove the **Analyze** item from the left sidebar:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -68,7 +71,7 @@ To disable this feature and remove the **Analyze** item from the left sidebar:
 1. Turn off the **Analytics** toggle.
 1. Select **Save changes**.
 
-## Disable CVE identifier request in issues
+## Turn off CVE identifier request in issues
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -78,7 +81,7 @@ DETAILS:
 
 In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
 
-To disable the CVE identifier request option in issues in your project:
+To turn off the CVE identifier request option in issues in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -86,7 +89,7 @@ To disable the CVE identifier request option in issues in your project:
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
 1. Select **Save changes**.
 
-## Disable project email notifications
+## Turn off project email notifications
 
 Prerequisites:
 
@@ -97,7 +100,7 @@ Prerequisites:
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear the **Enable email notifications** checkbox.
 
-### Disable diff previews in project email notifications
+### Turn off diff previews in project email notifications
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with the flag](../../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) the flag `diff_preview_in_email` on GitLab.com, self-managed, and GitLab Dedicated in GitLab 17.1.
@@ -116,7 +119,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-To disable diff previews for a project:
+To turn off diff previews for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -130,13 +133,12 @@ Configure your project's merge request settings:
 
 - Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
 - Add merge request [description templates](../description_templates.md).
-- Enable:
+- Turn on:
   - [Merge request approvals](../merge_requests/approvals/index.md).
   - [Status checks](../merge_requests/status_checks.md).
-  - [Merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
+  - [Merge only if pipeline succeeds](../merge_requests/auto_merge.md).
   - [Merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
   - [Required associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
-  - [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers)
   - [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
 - Configure:
   - [Suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).

@@ -18,7 +18,7 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
         .to match_array(%w[id message starts_at ends_at color font active target_access_levels target_path
-          broadcast_type dismissable])
+          broadcast_type dismissable theme])
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
       expect(json_response['id']).to eq message.id
       expect(json_response.keys)
         .to match_array(%w[id message starts_at ends_at color font active target_access_levels target_path
-          broadcast_type dismissable])
+          broadcast_type dismissable theme])
     end
   end
 
@@ -131,6 +131,23 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['dismissable']).to eq true
+      end
+
+      it 'accepts a theme' do
+        attrs = { message: 'new message', theme: 'red' }
+
+        post api(path, admin, admin_mode: true), params: attrs
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['theme']).to eq 'red'
+      end
+
+      it 'errors for an invalid theme' do
+        attrs = attributes_for(:broadcast_message, theme: 'unicorn-rainbow')
+
+        post api(path, admin, admin_mode: true), params: attrs
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       context 'when create does not persist record' do
@@ -239,6 +256,23 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['dismissable']).to eq true
+      end
+
+      it 'accepts a theme' do
+        attrs = { message: 'new message', theme: 'red' }
+
+        put api(path, admin, admin_mode: true), params: attrs
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['theme']).to eq 'red'
+      end
+
+      it 'errors for an invalid theme' do
+        attrs = attributes_for(:broadcast_message, theme: 'unicorn-rainbow')
+
+        put api(path, admin, admin_mode: true), params: attrs
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       context 'when update fails' do

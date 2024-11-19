@@ -31,13 +31,6 @@ RSpec.shared_examples 'User creates wiki page' do
       end
     end
 
-    it "disables the submit button", :js do
-      page.within(".wiki-form") do
-        fill_in(:wiki_title, with: "")
-        expect(page).to have_button('Create page', disabled: true)
-      end
-    end
-
     it "makes sure links to unknown pages work correctly", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "[link test](test)")

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildRunnerSession, model: true, feature_category: :continuous_integration do
+RSpec.describe Ci::BuildRunnerSession, :model, feature_category: :continuous_integration do
   let!(:build) { create(:ci_build, :with_runner_session) }
   let(:url) { 'https://new.example.com' }
 

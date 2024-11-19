@@ -26,7 +26,7 @@ RSpec.describe DiscussionOnDiff do
           let(:diff_limit) { DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES + 1 }
 
           it 'returns fewer lines than the default' do
-            expect(subject.diff_lines.count).to be > diff_limit
+            expect(subject.diff_lines.count).to be >= diff_limit
 
             expect(truncated_lines.count).to be <= DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
           end

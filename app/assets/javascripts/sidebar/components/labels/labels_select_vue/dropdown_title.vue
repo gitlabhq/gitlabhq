@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <div class="hide-collapsed gl-mb-0 gl-mb-2 gl-font-bold gl-leading-20 gl-text-gray-900">
+  <div class="hide-collapsed gl-mb-0 gl-mb-2 gl-font-bold gl-leading-20 gl-text-default">
     {{ __('Labels') }}
     <template v-if="allowLabelEdit">
       <gl-loading-icon v-show="labelsSelectInProgress" size="sm" inline />

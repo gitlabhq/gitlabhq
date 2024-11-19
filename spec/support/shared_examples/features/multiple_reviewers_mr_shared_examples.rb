@@ -31,8 +31,8 @@ RSpec.shared_examples 'multiple reviewers merge request' do |action, save_button
       end
     end
 
-    page.within '.dropdown-menu-user' do
-      click_link user.name
+    page.within '.reviewers-dropdown' do
+      find_by_testid("listbox-item-#{user.username}").click
     end
 
     page.within '.issuable-sidebar' do

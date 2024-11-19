@@ -7,10 +7,12 @@ module QA
 
       let(:followed_user_api_client) { Runtime::API::Client.new(:gitlab, user: followed_user) }
 
-      let(:followed_user) { create(:user, name: "followed_user_#{SecureRandom.hex(8)}", api_client: admin_api_client) }
+      let(:followed_user) do
+        create(:user, name: "QA User followed_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
+      end
 
       let(:following_user) do
-        create(:user, name: "following_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
+        create(:user, name: "QA User following_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
       end
 
       let(:group) do
@@ -41,13 +43,6 @@ module QA
         # Create both tokens before logging in the first time so that we don't need to log out in the middle of the test
         admin_api_client.personal_access_token
         followed_user_api_client.personal_access_token
-      end
-
-      after do
-        project&.api_client = admin_api_client
-        project&.remove_via_api!
-        followed_user&.remove_via_api!
-        following_user&.remove_via_api!
       end
 
       it 'can be followed and their activity seen', :blocking,

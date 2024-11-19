@@ -22,4 +22,8 @@ RSpec.describe WorkItems::Widgets::LinkedItems, feature_category: :portfolio_man
   describe '#linked_work_items' do
     it { expect(described_class.new(work_item).linked_work_items(user)).to eq(work_item.linked_work_items(user)) }
   end
+
+  describe '.quick_action_commands' do
+    it { expect(described_class.quick_action_commands).to match_array([:blocks, :blocked_by]) }
+  end
 end

@@ -1,0 +1,9 @@
+---
+name: prompt_migration_merge_request_reader
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499593
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169942
+rollout_issue_url: https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/595
+milestone: '17.6'
+group: group::custom models
+type: experiment
+default_enabled: false

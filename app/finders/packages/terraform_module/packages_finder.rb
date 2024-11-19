@@ -9,9 +9,9 @@ module Packages
       end
 
       def execute
-        return ::Packages::Package.none unless project && params[:package_name]
+        return packages if project && params[:package_name]
 
-        packages
+        ::Packages::TerraformModule::Package.none
       end
 
       private
@@ -19,11 +19,10 @@ module Packages
       attr_reader :project, :params
 
       def packages
-        result = project
-          .packages
-          .with_name(params[:package_name])
-          .terraform_module
-          .installable
+        result = ::Packages::TerraformModule::Package
+                   .for_projects(project)
+                   .with_name(params[:package_name])
+                   .installable
 
         params[:package_version] ? result.with_version(params[:package_version]) : result.has_version.order_version_desc
       end

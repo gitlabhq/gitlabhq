@@ -65,6 +65,7 @@ describe('WorkItemDetailModal component', () => {
         reportAbusePath: 'report/abuse',
         groupPath: '',
         hasSubepicsFeature: false,
+        hasLinkedItemsEpicsFeature: true,
       },
       stubs: {
         GlModal,

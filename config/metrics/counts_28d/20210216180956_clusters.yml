@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.monitor.clusters
 description: Count users creating clusters in last 28 days.
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 28d
@@ -10,7 +10,7 @@ data_source: database
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

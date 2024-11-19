@@ -36,7 +36,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
   describe "#perform" do
     subject(:worker) { described_class.new }
 
-    let_it_be(:admin_bot) { create(:user, :admin_bot) }
+    let_it_be(:admin_bot) { ::Users::Internal.admin_bot }
     let_it_be(:non_admin_user) { create(:user) }
     let_it_be(:new_blank_project) do
       create_project_with_statistics.tap do |project|
@@ -120,7 +120,8 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
         worker.perform
       end
 
-      it 'invokes Projects::DestroyService for projects that are inactive even after being notified' do
+      it 'invokes Projects::DestroyService for projects that are inactive even after being notified',
+        :enable_admin_mode do
         Gitlab::Redis::SharedState.with do |redis|
           redis.hset(
             'inactive_projects_deletion_warning_email_notified',
@@ -135,7 +136,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
 
         worker.perform
 
-        expect(inactive_large_project.reload.pending_delete).to eq(true)
+        expect(Project.exists?(inactive_large_project.id)).to be(false)
 
         Gitlab::Redis::SharedState.with do |redis|
           expect(

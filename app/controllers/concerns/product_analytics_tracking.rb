@@ -5,7 +5,9 @@ module ProductAnalyticsTracking
   extend ActiveSupport::Concern
 
   class_methods do
-    def track_event(*controller_actions, name:, action: nil, label: nil, conditions: nil, destinations: [:redis_hll], &block)
+    def track_event(
+      *controller_actions, name:, action: nil, label: nil, conditions: nil, destinations: [:redis_hll],
+      &block)
       custom_conditions = [:trackable_html_request?, *conditions]
 
       after_action only: controller_actions, if: custom_conditions do

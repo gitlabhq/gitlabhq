@@ -23,6 +23,7 @@ RSpec.describe API::Entities::BulkImports::Entity, feature_category: :importers 
       :updated_at,
       :failures,
       :migrate_projects,
+      :migrate_memberships,
       :has_failures,
       :stats
     )

@@ -9,7 +9,6 @@ RSpec.describe "projectBlobsRemove", feature_category: :source_code_management d
   let_it_be(:current_user) { create(:user, owner_of: project) }
   let_it_be(:repo) { project.repository }
 
-  let(:async_rewrite_history) { false }
   let(:project_path) { project.full_path }
   let(:mutation_params) { { project_path: project_path, blob_oids: blob_oids } }
   let(:mutation) { graphql_mutation(:project_blobs_remove, mutation_params) }
@@ -17,51 +16,15 @@ RSpec.describe "projectBlobsRemove", feature_category: :source_code_management d
 
   subject(:post_mutation) { post_graphql_mutation(mutation, current_user: current_user) }
 
-  before do
-    stub_feature_flags(async_rewrite_history: async_rewrite_history)
-  end
-
   describe 'Removing blobs:' do
-    before do
-      ::Gitlab::GitalyClient.clear_stubs!
-    end
-
-    it 'submits blobs to rewriteHistory RPC' do
-      expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
-        blobs = array_including(gitaly_request_with_params(blobs: blob_oids))
-        expect(instance).to receive(:rewrite_history)
-          .with(blobs, kind_of(Hash))
-          .and_return(Gitaly::RewriteHistoryResponse.new)
-      end
+    it 'processes text redaction asynchoronously' do
+      expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
+        project_id: project.id, user_id: current_user.id, blob_oids: blob_oids, redactions: []
+      )
 
       post_mutation
 
       expect(graphql_mutation_response(:project_blobs_remove)['errors']).not_to be_present
-    end
-
-    it 'does not create an audit event' do
-      allow_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
-        blobs = array_including(gitaly_request_with_params(blobs: blob_oids))
-        allow(instance).to receive(:rewrite_history)
-          .with(blobs, kind_of(Hash))
-          .and_return(Gitaly::RewriteHistoryResponse.new)
-      end
-
-      expect { post_mutation }.not_to change { AuditEvent.count }
-    end
-
-    context 'when async_rewrite_history is enabled' do
-      let(:async_rewrite_history) { true }
-
-      it 'processes text redaction asynchoronously' do
-        expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
-          project_id: project.id, user_id: current_user.id, blob_oids: blob_oids, redactions: []
-        )
-
-        post_mutation
-
-        expect(graphql_mutation_response(:project_blobs_remove)['errors']).not_to be_present
-      end
     end
   end
 
@@ -117,26 +80,6 @@ RSpec.describe "projectBlobsRemove", feature_category: :source_code_management d
         expect(graphql_errors).to include(a_hash_including('message' => <<~MESSAGE))
           Argument 'blobOids' on InputObject 'projectBlobsRemoveInput' is required. Expected type [String!]!
         MESSAGE
-      end
-    end
-
-    context 'when Gitaly RPC returns an error' do
-      before do
-        ::Gitlab::GitalyClient.clear_stubs!
-      end
-
-      let(:error_message) { 'error message' }
-
-      it 'returns a generic error message' do
-        expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
-          blobs = array_including(gitaly_request_with_params(blobs: blob_oids))
-          generic_error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::FAILED_PRECONDITION, error_message)
-          expect(instance).to receive(:rewrite_history).with(blobs, kind_of(Hash)).and_raise(generic_error)
-        end
-
-        post_mutation
-
-        expect(graphql_errors).to include(a_hash_including('message' => "Internal server error: 9:#{error_message}"))
       end
     end
   end

@@ -33,7 +33,7 @@ First, define a job in your `.gitlab-ci.yml` file that generates the
 GitLab checks this report, compares key load performance metrics
 between the source and target branches, and then shows the information in a merge request widget:
 
-![Load Performance Widget](img/load_performance_testing.png)
+![Load Performance Widget](img/load_performance_testing_v13_2.png)
 
 Next, you need to configure the test environment and write the k6 test.
 

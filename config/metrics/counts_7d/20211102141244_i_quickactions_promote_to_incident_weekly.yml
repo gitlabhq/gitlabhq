@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_promote_to_incident_weekly
 description: Count of WAU using the `/severity` quick action
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 milestone: "14.5"
@@ -16,7 +16,7 @@ data_category: optional
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

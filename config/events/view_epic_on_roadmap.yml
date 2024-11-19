@@ -1,0 +1,13 @@
+---
+description: Tracks when a user views an epic on the roadmap.
+action: view_epic_on_roadmap
+product_group: product_planning
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163428
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

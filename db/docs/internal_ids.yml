@@ -4,7 +4,8 @@ classes:
 - InternalId
 feature_categories:
 - database
-description: Keeps track of counters scoped to a certain context, e.g. a project-wide counter for issues.
+description: Keeps track of counters scoped to a certain context, e.g. a project-wide
+  counter for issues.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17580
 milestone: '10.7'
 gitlab_schema: gitlab_main_cell

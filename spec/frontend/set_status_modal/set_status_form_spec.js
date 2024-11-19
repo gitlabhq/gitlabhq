@@ -7,6 +7,7 @@ import { NEVER_TIME_RANGE } from '~/set_status_modal/constants';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { timeRanges } from '~/vue_shared/constants';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
+import { EMOJI_THUMBS_UP } from '~/emoji/constants';
 
 const [thirtyMinutes, , , oneDay] = timeRanges;
 
@@ -15,7 +16,7 @@ describe('SetStatusForm', () => {
 
   const defaultPropsData = {
     defaultEmoji: 'speech_balloon',
-    emoji: 'thumbsup',
+    emoji: EMOJI_THUMBS_UP,
     message: 'Foo bar',
     availability: false,
   };

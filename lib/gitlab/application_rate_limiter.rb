@@ -8,6 +8,8 @@ module Gitlab
   module ApplicationRateLimiter
     InvalidKeyError = Class.new(StandardError)
 
+    LIMIT_USAGE_BUCKET = [0.25, 0.5, 0.75, 1].freeze
+
     class << self
       # Application rate limits
       #
@@ -120,34 +122,27 @@ module Gitlab
 
         strategy = resource.present? ? IncrementPerActionedResource.new(resource.id) : IncrementPerAction.new
 
-        ::Gitlab::Instrumentation::RateLimitingGates.track(key)
+        _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval, users_allowlist: users_allowlist, peek: peek)
+      end
 
-        return false if scoped_user_in_allowlist?(scope, users_allowlist)
+      # Increments the resource usage for a given key and returns true if the action should
+      # be throttled.
+      #
+      # @param key [Symbol] Key attribute registered in `.rate_limits`
+      # @param scope [<ActiveRecord>] Array of ActiveRecord models, Strings
+      #     or Symbols to scope throttling to a specific request (e.g. per user
+      #     per project)
+      # @param resource_key [Symbol] Key attribute in SafeRequestStore
+      # @param threshold [Integer] Threshold value to override default
+      #     one registered in `.rate_limits`
+      # @param interval [Integer] Interval value to override default
+      #     one registered in `.rate_limits`
+      #
+      # @return [Boolean] Whether or not a request should be throttled
+      def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:)
+        strategy = IncrementResourceUsagePerAction.new(resource_key)
 
-        threshold_value = threshold || threshold(key)
-
-        return false if threshold_value == 0
-
-        interval_value = interval || interval(key)
-
-        return false if interval_value == 0
-
-        # `period_key` is based on the current time and interval so when time passes to the next interval
-        # the key changes and the rate limit count starts again from 0.
-        # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
-        period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)
-        cache_key = cache_key(key, scope, period_key)
-
-        value = if peek
-                  strategy.read(cache_key)
-                else
-                  # We add a 1 second buffer to avoid timing issues when we're at the end of a period
-                  expiry = interval_value - time_elapsed_in_period + 1
-
-                  strategy.increment(cache_key, expiry)
-                end
-
-        value > threshold_value
+        _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval)
       end
 
       # Similar to #throttled? above but checks for the bypass header in the request and logs the request when it is over the rate limit
@@ -195,6 +190,26 @@ module Gitlab
         throttled?(key, peek: true, scope: scope, threshold: threshold, interval: interval, users_allowlist: users_allowlist)
       end
 
+      def report_metrics(key, value, threshold, peek)
+        return if threshold == 0 # guard against div-by-zero
+
+        label = {
+          throttle_key: key,
+          peek: peek,
+          feature_category: Gitlab::ApplicationContext.current_context_attribute(:feature_category)
+        }
+        application_rate_limiter_histogram.observe(label, value / threshold.to_f)
+      end
+
+      def application_rate_limiter_histogram
+        @application_rate_limiter_histogram ||= Gitlab::Metrics.histogram(
+          :gitlab_application_rate_limiter_throttle_utilization_ratio,
+          "The utilization-ratio of a throttle.",
+          { peek: nil, throttle_key: nil, feature_category: nil },
+          LIMIT_USAGE_BUCKET
+        )
+      end
+
       # Logs request using provided logger
       #
       # @param request [Http::Request] - Web request to be logged
@@ -221,6 +236,39 @@ module Gitlab
       end
 
       private
+
+      def _throttled?(key, scope:, strategy:, threshold: nil, interval: nil, users_allowlist: nil, peek: false)
+        ::Gitlab::Instrumentation::RateLimitingGates.track(key)
+
+        return false if scoped_user_in_allowlist?(scope, users_allowlist)
+
+        threshold_value = threshold || threshold(key)
+
+        return false if threshold_value == 0
+
+        interval_value = interval || interval(key)
+
+        return false if interval_value == 0
+
+        # `period_key` is based on the current time and interval so when time passes to the next interval
+        # the key changes and the rate limit count starts again from 0.
+        # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
+        period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)
+        cache_key = cache_key(key, scope, period_key)
+
+        value = if peek
+                  strategy.read(cache_key)
+                else
+                  # We add a 1 second buffer to avoid timing issues when we're at the end of a period
+                  expiry = interval_value - time_elapsed_in_period + 1
+
+                  strategy.increment(cache_key, expiry)
+                end
+
+        report_metrics(key, value, threshold_value, peek)
+
+        value > threshold_value
+      end
 
       def threshold(key)
         value = rate_limit_value_by_key(key, :threshold)

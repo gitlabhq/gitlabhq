@@ -136,7 +136,7 @@ Creating a release using a CI/CD job could potentially trigger multiple pipeline
 
 - Tag first, release second:
 
-  1. A tag is created via UI or pushed.
+  1. A tag is created from the UI or pushed.
   1. A tag pipeline is triggered, and runs `release` job.
   1. A release is created.
 

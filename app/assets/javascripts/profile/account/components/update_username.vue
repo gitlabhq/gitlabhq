@@ -119,7 +119,7 @@ Please update your Git repository remotes as soon as possible.`),
           required="required"
         />
       </div>
-      <p class="form-text text-muted">{{ path }}</p>
+      <p class="form-text gl-text-subtle">{{ path }}</p>
     </div>
     <gl-button
       v-gl-modal-directive="$options.modalId"

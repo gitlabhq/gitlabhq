@@ -13,7 +13,10 @@ module Gitlab
         self.table_name = :batched_background_migrations
 
         has_many :batched_jobs, foreign_key: :batched_background_migration_id
-        has_one :last_job, -> { order(max_value: :desc) },
+        has_one :last_job,
+          ->(relation) {
+            relation.cursor? ? where.not(max_cursor: nil).order(max_cursor: :desc) : order(max_value: :desc)
+          },
           class_name: 'Gitlab::Database::BackgroundMigration::BatchedJob',
           foreign_key: :batched_background_migration_id
 
@@ -124,6 +127,8 @@ module Gitlab
             .sum(:batch_size)
         end
 
+        delegate :cursor?, to: :job_class
+
         def reset_attempts_of_blocked_jobs!
           batched_jobs.blocked_by_max_attempts.each_batch(of: 100) do |batch|
             batch.update_all(attempts: 0)
@@ -138,13 +143,21 @@ module Gitlab
         end
 
         def create_batched_job!(min, max)
-          batched_jobs.create!(
-            min_value: min,
-            max_value: max,
+          job_arguments = {
             batch_size: batch_size,
             sub_batch_size: sub_batch_size,
             pause_ms: pause_ms
-          )
+          }
+
+          if cursor?
+            job_arguments[:min_cursor] = min
+            job_arguments[:max_cursor] = max
+          else
+            job_arguments[:min_value] = min
+            job_arguments[:max_value] = max
+          end
+
+          batched_jobs.create!(job_arguments)
         end
 
         def retry_failed_jobs!
@@ -171,7 +184,17 @@ module Gitlab
         end
 
         def next_min_value
-          last_job&.max_value&.next || min_value
+          if cursor?
+            # Cursors require a subtle off-by-one change: we return the end of the last batch instead
+            # of bumping it by 1 with .next because this class doesn't know what's in the cursor.
+            # This means that the min_cursor here must be logically before the beginning of the batch, not just
+            # equal to the first row (if it's equal it'll make batching skip the first row), this is because the
+            # KeysetIterator we use for cursor batching expects the cursor passed to it to be before the start of
+            # the iteration range.
+            last_job&.max_cursor || min_cursor
+          else
+            last_job&.max_value&.next || min_value
+          end
         end
 
         def job_class

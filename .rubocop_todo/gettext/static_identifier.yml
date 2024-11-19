@@ -4,7 +4,6 @@ Gettext/StaticIdentifier:
     - 'app/graphql/types/project_type.rb'
     - 'app/models/integrations/confluence.rb'
     - 'app/services/import/fogbugz_service.rb'
-    - 'app/services/issuable_links/create_service.rb'
     - 'app/services/issues/set_crm_contacts_service.rb'
     - 'app/services/projects/create_from_template_service.rb'
     - 'app/services/security/ci_configuration/base_create_service.rb'

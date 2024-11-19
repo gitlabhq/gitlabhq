@@ -43,45 +43,14 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
     end
   end
 
-  describe '#partition_name' do
-    subject { described_class.new(table, from, to, partition_name: partition_name).partition_name }
-
-    let(:table) { 'foo' }
-    let(:from) { '2020-04-01 00:00:00' }
-    let(:to) { '2020-05-01 00:00:00' }
-    let(:partition_name) { nil }
-
-    it 'uses table as prefix' do
-      expect(subject).to start_with(table)
-    end
-
-    it 'uses Year-Month (from) as suffix' do
-      expect(subject).to end_with("_202004")
-    end
-
-    context 'without from date' do
-      let(:from) { nil }
-
-      it 'uses 000000 as suffix for first partition' do
-        expect(subject).to end_with("_000000")
-      end
-    end
-
-    context 'with partition name explicitly given' do
-      let(:partition_name) { "foo_bar" }
-
-      it 'uses given partition name' do
-        expect(subject).to eq(partition_name)
-      end
-    end
-  end
-
   describe '#to_sql' do
-    subject { described_class.new(table, from, to).to_sql }
+    subject { described_class.new(table, from, to, partition_name: partition_name).to_sql }
 
     let(:table) { 'foo' }
     let(:from) { '2020-04-01 00:00:00' }
     let(:to) { '2020-05-01 00:00:00' }
+    let(:suffix) { '202004' }
+    let(:partition_name) { "#{table}_#{suffix}" }
 
     it 'transforms to a CREATE TABLE statement' do
       expect(subject).to eq(<<~SQL)
@@ -93,6 +62,7 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
 
     context 'without from date' do
       let(:from) { nil }
+      let(:suffix) { '000000' }
 
       it 'uses MINVALUE instead' do
         expect(subject).to eq(<<~SQL)
@@ -140,8 +110,8 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
       expect_inequality(make_new, make_new(partition_name: 'different'))
     end
 
-    it 'nil partition_name is ignored if auto-generated matches' do
-      expect_equality(make_new, make_new(partition_name: nil))
+    it 'raises en error if partition_name is nil' do
+      expect { make_new(partition_name: nil) }.to raise_error(ArgumentError, "partition_name required but none given")
     end
   end
 
@@ -150,24 +120,24 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
 
     it 'sorts by partition name, i.e. by month - MINVALUE partition first' do
       partitions = [
-        described_class.new(table, '2020-04-01', '2020-05-01'),
-        described_class.new(table, '2020-02-01', '2020-03-01'),
-        described_class.new(table, nil, '2020-02-01'),
-        described_class.new(table, '2020-03-01', '2020-04-01')
+        described_class.new(table, '2020-04-01', '2020-05-01', partition_name: "#{table}_202004"),
+        described_class.new(table, '2020-02-01', '2020-03-01', partition_name: "#{table}_202002"),
+        described_class.new(table, nil, '2020-02-01', partition_name: "#{table}_000000"),
+        described_class.new(table, '2020-03-01', '2020-04-01', partition_name: "#{table}_202003")
       ]
 
       expect(partitions.sort).to eq(
         [
-          described_class.new(table, nil, '2020-02-01'),
-          described_class.new(table, '2020-02-01', '2020-03-01'),
-          described_class.new(table, '2020-03-01', '2020-04-01'),
-          described_class.new(table, '2020-04-01', '2020-05-01')
+          described_class.new(table, nil, '2020-02-01', partition_name: "#{table}_000000"),
+          described_class.new(table, '2020-02-01', '2020-03-01', partition_name: "#{table}_202002"),
+          described_class.new(table, '2020-03-01', '2020-04-01', partition_name: "#{table}_202003"),
+          described_class.new(table, '2020-04-01', '2020-05-01', partition_name: "#{table}_202004")
         ])
     end
 
     it 'returns nil for partitions of different tables' do
-      one = described_class.new('foo', '2020-02-01', '2020-03-01')
-      two = described_class.new('bar', '2020-02-01', '2020-03-01')
+      one = described_class.new('foo', '2020-02-01', '2020-03-01', partition_name: 'foo_202002')
+      two = described_class.new('bar', '2020-02-01', '2020-03-01', partition_name: 'bar_202002')
 
       expect(one.<=>(two)).to be_nil
     end

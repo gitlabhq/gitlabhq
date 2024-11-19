@@ -7,18 +7,17 @@ import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import projectWorkItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
 import updateAwardEmojiMutation from '../graphql/update_award_emoji.mutation.graphql';
 import {
-  EMOJI_THUMBSDOWN,
-  EMOJI_THUMBSUP,
   WIDGET_TYPE_AWARD_EMOJI,
   DEFAULT_PAGE_SIZE_EMOJIS,
   I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR,
 } from '../constants';
 
 export default {
-  defaultAwards: [EMOJI_THUMBSUP, EMOJI_THUMBSDOWN],
+  defaultAwards: [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN],
   isLoggedIn: isLoggedIn(),
   components: {
     AwardsList,

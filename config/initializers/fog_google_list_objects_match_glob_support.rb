@@ -28,12 +28,10 @@ module Fog
           )
           # rubocop: enable Style/PercentLiteralDelimiters
 
-          # rubocop: disable Gitlab/ModuleWithInstanceVariables -- this is an exact copy of the original method
           @storage_json.list_objects(
             bucket,
             **options.select { |k, _| allowed_opts.include? k }
           )
-          # rubocop: enable Gitlab/ModuleWithInstanceVariables
         end
       end
     end

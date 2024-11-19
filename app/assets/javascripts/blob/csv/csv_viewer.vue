@@ -2,7 +2,7 @@
 import { GlLoadingIcon, GlTable, GlButton } from '@gitlab/ui';
 import Papa from 'papaparse';
 import { setUrlParams } from '~/lib/utils/url_utility';
-import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
+import PapaParseAlert from '../components/papa_parse_alert.vue';
 import { MAX_ROWS_TO_RENDER } from './constants';
 
 export default {

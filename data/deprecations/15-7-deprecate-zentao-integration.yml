@@ -5,6 +5,11 @@
   reporter: arturoherrero  # (required) GitLab username of the person reporting the deprecation
   stage: Foundations  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377825  # (required) Link to the deprecation issue in GitLab
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: instance  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: false  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  window: 3  # Can be "1", "2" or "3"
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
     and will be moved to the JiHu GitLab codebase.

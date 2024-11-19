@@ -11,13 +11,12 @@ import { BRANCH_REF_TYPE_ICON } from '~/ref/constants';
 import {
   SEARCH_ICON,
   EVENT_SELECT_SOURCE_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE,
+  SOURCE_BRANCH_PARAM,
+  NOT_SOURCE_BRANCH_PARAM,
+  SOURCE_BRANCH_ENDPOINT_PATH,
 } from '../../constants';
 
 const trackingMixin = InternalEvents.mixin();
-
-export const SOURCE_BRANCH_PARAM = 'source_branch';
-export const NOT_SOURCE_BRANCH_PARAM = 'not[source_branch]';
-export const SOURCE_BRANCH_ENDPOINT_PATH = '/-/autocomplete/merge_request_source_branches.json';
 
 export default {
   name: 'SourceBranchFilter',

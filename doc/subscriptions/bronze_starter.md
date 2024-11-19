@@ -66,7 +66,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Full code quality reports in the code quality tab](../ci/testing/code_quality.md#pipeline-details-view)
   - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
   - [Multiple assignees](../user/project/merge_requests/index.md#assign-a-user-to-a-merge-request)
-  - [Approval rule information for reviewers](../user/project/merge_requests/reviews/index.md#see-how-reviewers-map-to-approval-rules)
+  - [Approval rule information for reviewers](../user/project/merge_requests/reviews/index.md#request-a-review)
   - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
@@ -112,12 +112,12 @@ Bronze-level subscribers:
 
 - APIs:
   - LDAP synchronization:
-    - Certain fields in the [group details API](../api/groups.md#details-of-a-group)
-    - [syncing groups](../api/groups.md#sync-group-with-ldap)
+    - Certain fields in the [group details API](../api/groups.md#get-a-single-group)
+    - [syncing groups](../api/groups.md#sync-a-group-with-ldap)
     - Listing, adding, and deleting [group links](../api/group_ldap_links.md)
     - [Push rules](../api/group_push_rules.md)
     - [Audit events](../api/audit_events.md), including
-      [group audit events](../api/groups.md#group-audit-events) and
+      [group audit events](../api/groups.md#list-audit-events) and
       [project audit events](../api/audit_events.md#project-audit-events)
   - Projects API: certain fields in the [Create project API](../api/projects.md)
   - [Resource iteration events API](../api/resource_iteration_events.md)

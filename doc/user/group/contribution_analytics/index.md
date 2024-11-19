@@ -27,8 +27,8 @@ To view contribution analytics:
 Three bar charts and a table illustrate the number of contributions made by each group member:
 
 - Push events
-- Merge requests
-- Closed issues
+- Created, merged, and closed merge requests
+- Created and closed issues
 
 ### View a member's contributions
 
@@ -36,7 +36,7 @@ You can view the number of events associated with a specific group member.
 
 To do this, hover over the bar with the member's name.
 
-![Contribution analytics bar graphs](img/group_stats_graph.png)
+![Contribution analytics bar graphs](img/group_stats_graph_v15_9.png)
 
 ### Zoom in on a chart
 

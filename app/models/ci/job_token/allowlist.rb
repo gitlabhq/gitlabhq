@@ -30,24 +30,34 @@ module Ci
         ::Group.id_in(group_links.pluck(:target_group_id))
       end
 
-      def add!(target_project, user:)
+      def add!(target_project, user:, policies: [])
+        job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
+
         Ci::JobToken::ProjectScopeLink.create!(
           source_project: @source_project,
           direction: @direction,
           target_project: target_project,
-          added_by: user
+          added_by: user,
+          job_token_policies: job_token_policies
         )
       end
 
-      def add_group!(target_group, user:)
+      def add_group!(target_group, user:, policies: [])
+        job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
+
         Ci::JobToken::GroupScopeLink.create!(
           source_project: @source_project,
           target_group: target_group,
-          added_by: user
+          added_by: user,
+          job_token_policies: job_token_policies
         )
       end
 
       private
+
+      def add_policies_to_ci_job_token_enabled
+        Feature.enabled?(:add_policies_to_ci_job_token, @source_project)
+      end
 
       def source_links
         Ci::JobToken::ProjectScopeLink

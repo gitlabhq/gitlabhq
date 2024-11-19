@@ -46,7 +46,7 @@ module Types
       field :user_achievements,
         Types::Achievements::UserAchievementType.connection_type,
         null: true,
-        alpha: { milestone: '15.10' },
+        experiment: { milestone: '15.10' },
         description: "Recipients for the achievement.",
         extras: [:lookahead],
         resolver: ::Resolvers::Achievements::UserAchievementsResolver

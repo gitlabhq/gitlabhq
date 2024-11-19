@@ -27,7 +27,7 @@ describe('FormErrorTracker', () => {
   });
 
   describe('trackErrorOnEmptyField', () => {
-    it('tracks error when input filed is empty', () => {
+    it('tracks error when input field is empty', () => {
       jest.spyOn(Tracking, 'event');
 
       FormErrorTracker.trackErrorOnEmptyField({
@@ -45,21 +45,37 @@ describe('FormErrorTracker', () => {
     });
 
     it('tracks error when radio button is unchecked', () => {
+      const mockFormGroup = document.createElement('div');
+
+      mockFormGroup.className = 'form-group';
+      mockFormGroup.innerHTML = `
+        <label>groupLabel</label>
+        <input type="radio" id="mock-radio" data-track-action-for-errors="${trackAction}">
+      `;
+
+      const mockRadio = mockFormGroup.querySelector('#mock-radio');
+
+      jest.spyOn(Tracking, 'event');
+      FormErrorTracker.trackErrorOnEmptyField({ target: mockRadio });
+
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, `track_${trackAction}_error`, {
+        label: 'missing_group_label',
+      });
+    });
+
+    it('does not track an error when input field is not empty', () => {
       jest.spyOn(Tracking, 'event');
 
       FormErrorTracker.trackErrorOnEmptyField({
         target: {
           id,
           validationMessage: message,
-          value: true,
-          checked: false,
+          value: 'value',
           dataset: { trackActionForErrors: trackAction },
         },
       });
 
-      expect(Tracking.event).toHaveBeenCalledWith(undefined, `track_${trackAction}_error`, {
-        label: `${id}_${message}`,
-      });
+      expect(Tracking.event).not.toHaveBeenCalled();
     });
   });
 

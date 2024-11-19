@@ -74,3 +74,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelinePolicy.prepend_mod_with('Ci::PipelinePolicy')

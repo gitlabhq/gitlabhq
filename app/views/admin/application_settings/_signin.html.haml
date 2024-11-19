@@ -33,7 +33,7 @@
     .form-group
       = f.label :two_factor_authentication, _('Two-factor grace period'), class: 'label-bold'
       = f.number_field :two_factor_grace_period, min: 0, class: 'form-control gl-form-input', placeholder: '0'
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = _('Maximum time that users are allowed to skip the setup of two-factor authentication (in hours). Set to 0 (zero) to enforce at next sign in.')
     .form-group
       = f.label :admin_mode, _('Admin Mode'), class: 'label-bold'
@@ -52,9 +52,9 @@
     .form-group
       = f.label :home_page_url, _('Home page URL'), class: 'label-bold'
       = f.text_field :home_page_url, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
-      %span.form-text.text-muted#home_help_block= _("Direct non-authenticated users to this page.")
+      %span.form-text.gl-text-subtle#home_help_block= _("Direct non-authenticated users to this page.")
     .form-group
       = f.label :after_sign_out_path, _('Sign-out page URL'), class: 'label-bold'
       = f.text_field :after_sign_out_path, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
-      %span.form-text.text-muted#home_help_block= _("Direct users to this page after they sign out.")
+      %span.form-text.gl-text-subtle#home_help_block= _("Direct users to this page after they sign out.")
   = f.submit _('Save changes'), pajamas_button: true

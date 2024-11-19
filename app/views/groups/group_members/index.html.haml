@@ -1,38 +1,35 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
 
-.row.gl-mt-3
-  .col-lg-12
-    .gl-flex.gl-flex-wrap.gl-justify-between
-      - if can_admin_group_member?(@group)
-        %h4
-          = _('Group members')
-        %p.gl-w-full.order-md-1
-          = group_member_header_subtext(@group)
-        = render_if_exists 'groups/group_members/link_to_pending_members'
-        - if current_appearance&.member_guidelines?
-          .gl-w-full.order-md-1
-            = brand_member_guidelines
-        .gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3.md:gl-w-auto.gl-w-full
-          .js-invite-group-trigger{ data: { classes: 'md:gl-w-auto gl-w-full', display_text: _('Invite a group') } }
-          - if can_admin_service_accounts?(@group)
-            = render_if_exists 'groups/group_members/create_service_account'
-          .js-invite-members-trigger{ data: { variant: 'confirm',
-            classes: 'md:gl-w-auto gl-w-full',
-            trigger_source: 'group_members_page',
-            display_text: _('Invite members') } }
-        = render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
+- if can_admin_group_member?(@group)
+  = render_if_exists 'groups/group_members/link_to_pending_members'
+  = render ::Layouts::PageHeadingComponent.new(_('Group members')) do |c|
+    - c.with_description do
+      = group_member_header_subtext(@group)
+    - c.with_actions do
+      - if current_appearance&.member_guidelines?
+        .gl-w-full.order-md-1
+        = brand_member_guidelines
+      .js-invite-group-trigger{ data: { classes: 'md:gl-w-auto gl-w-full', display_text: _('Invite a group') } }
+      - if can_admin_service_accounts?(@group)
+        = render_if_exists 'groups/group_members/create_service_account'
+      .js-invite-members-trigger{ data: { variant: 'confirm',
+        classes: 'md:gl-w-auto gl-w-full',
+        trigger_source: 'group_members_page',
+        display_text: _('Invite members') } }
 
-    = render_if_exists 'groups/group_members/ldap_sync'
+= render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
 
-    .js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
-                                                                             members: @members,
-                                                                             invited: @invited_members,
-                                                                             access_requests: @requesters,
-                                                                             banned: @banned || [],
-                                                                             include_relations: @include_relations,
-                                                                             search: params[:search_groups],
-                                                                             pending_members_count: @pending_promotion_members_count,
-                                                                             placeholder_users: @placeholder_users_count
-                                                                            ).to_json } }
-      = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
+= render_if_exists 'groups/group_members/ldap_sync'
+
+.js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
+                                                                          members: @members,
+                                                                          invited: @invited_members,
+                                                                          access_requests: @requesters,
+                                                                          banned: @banned || [],
+                                                                          include_relations: @include_relations,
+                                                                          search: params[:search_groups],
+                                                                          pending_members_count: @pending_promotion_members_count,
+                                                                          placeholder_users: @placeholder_users_count
+                                                                        ).to_json } }
+  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

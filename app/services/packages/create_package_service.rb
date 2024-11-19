@@ -30,6 +30,10 @@ module Packages
         end
     end
 
+    def can_create_package?
+      can?(current_user, :create_package, project)
+    end
+
     private
 
     def package_attrs(attrs)

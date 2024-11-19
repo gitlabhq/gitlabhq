@@ -102,99 +102,18 @@ module API
           'assembla' => ::Integrations::Assembla.api_arguments,
           'bamboo' => ::Integrations::Bamboo.api_arguments,
           'bugzilla' => ::Integrations::Bugzilla.api_arguments,
-          'buildkite' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'Buildkite project GitLab token'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The Buildkite pipeline URL'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
-            }
-          ],
+          'buildkite' => ::Integrations::Buildkite.api_arguments,
           'campfire' => ::Integrations::Campfire.api_arguments,
           'confluence' => ::Integrations::Confluence.api_arguments,
           'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_arguments,
-          'datadog' => [
-            {
-              required: true,
-              name: :api_key,
-              type: String,
-              desc: 'API key used for authentication with Datadog'
-            },
-            {
-              required: false,
-              name: :datadog_site,
-              type: String,
-              desc: 'The Datadog site to send data to. To send data to the EU site, use datadoghq.eu'
-            },
-            {
-              required: false,
-              name: :api_url,
-              type: String,
-              desc: '(Advanced) The full URL for your Datadog site'
-            },
-            {
-              required: false,
-              name: :archive_trace_events,
-              type: ::Grape::API::Boolean,
-              desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
-            },
-            {
-              required: false,
-              name: :datadog_service,
-              type: String,
-              desc: 'Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments'
-            },
-            {
-              required: false,
-              name: :datadog_env,
-              type: String,
-              desc: 'For self-managed deployments, set the env tag for all the data sent to Datadog'
-            },
-            {
-              required: false,
-              name: :datadog_tags,
-              type: String,
-              desc: 'Custom tags in Datadog. Specify one tag per line in the format: "key:value\nkey2:value2"'
-            }
-          ],
+          'datadog' => ::Integrations::Datadog.api_arguments,
           'diffblue-cover' => ::Integrations::DiffblueCover.api_arguments,
           'discord' => [
             ::Integrations::Discord.api_arguments,
             chat_notification_flags,
             chat_notification_channels
           ].flatten,
-          'drone-ci' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'Drone CI token'
-            },
-            {
-              required: true,
-              name: :drone_url,
-              type: String,
-              desc: 'Drone CI URL'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            }
-          ],
+          'drone-ci' => ::Integrations::DroneCi.api_arguments,
           'emails-on-push' => [
             {
               required: true,
@@ -274,38 +193,7 @@ module API
               desc: 'Colorize messages'
             }
           ],
-          'jenkins' => [
-            {
-              required: true,
-              name: :jenkins_url,
-              type: String,
-              desc: 'Jenkins root URL like https://jenkins.example.com'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            },
-            {
-              required: true,
-              name: :project_name,
-              type: String,
-              desc: 'The URL-friendly project name. Example: my_project_name'
-            },
-            {
-              required: false,
-              name: :username,
-              type: String,
-              desc: 'A user with access to the Jenkins server, if applicable'
-            },
-            {
-              required: false,
-              name: :password,
-              type: String,
-              desc: 'The password of the user'
-            }
-          ],
+          'jenkins' => ::Integrations::Jenkins.api_arguments,
           'jira' => [
             {
               required: true,
@@ -680,7 +568,7 @@ module API
           required: false,
           name: :use_inherited_settings,
           type: ::Grape::API::Boolean,
-          desc: 'Indicates whether or not to inherit default settings. Defaults to `false`.'
+          desc: 'Indicates whether to inherit the default settings. Defaults to `false`.'
         }
       end
     end

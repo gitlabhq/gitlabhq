@@ -26,7 +26,7 @@
 
   = render ::Layouts::CrudComponent.new(_('Active project access tokens'),
     icon: 'token',
-    count: @active_access_tokens.size,
+    count: @active_access_tokens_size,
     count_options: { class: 'js-token-count' },
     form_options: { class: 'gl-hidden js-toggle-content js-add-new-token-form' },
     options: { class: 'gl-mt-5 js-toggle-container js-token-card' }) do |c|
@@ -40,12 +40,13 @@
         = render_if_exists 'projects/settings/access_tokens/form', type: type
 
     - c.with_body do
-      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
+      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
 
   - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @project.root_ancestor)
-    = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),
-      icon: 'token',
-      count: @inactive_access_tokens.size,
-      count_options: { class: 'js-token-count' }) do |c|
-      - c.with_body do
-        #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This project has no inactive access tokens.')} }
+    .gl-mt-5
+      = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),
+        icon: 'token',
+        count: @inactive_access_tokens.size,
+        count_options: { class: 'js-token-count' }) do |c|
+        - c.with_body do
+          #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This project has no inactive access tokens.')} }

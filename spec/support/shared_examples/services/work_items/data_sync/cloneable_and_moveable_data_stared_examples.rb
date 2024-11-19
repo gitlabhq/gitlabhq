@@ -34,7 +34,7 @@ RSpec.shared_examples 'cloneable and moveable work item' do
   end
 
   it 'returns a new work item with the same attributes' do
-    new_work_item = service.execute
+    new_work_item = service.execute[:work_item]
 
     expect(new_work_item).to be_persisted
     expect(new_work_item).to have_attributes(original_work_item_attrs)
@@ -50,40 +50,86 @@ end
 RSpec.shared_examples 'cloneable and moveable widget data' do
   using RSpec::Parameterized::TableSyntax
 
-  def set_assignees
-    original_work_item.assignee_ids = assignees.map(&:id)
-  end
-
   def work_item_assignees(work_item)
     work_item.reload.assignees
   end
 
-  where(:widget_name, :eval_value, :before_lambda, :expected_data, :operations) do
-    :assignees | :work_item_assignees | -> { set_assignees } | ref(:assignees) | [ref(:move), ref(:clone)]
+  def work_item_award_emoji(work_item)
+    work_item.reload.award_emoji.pluck(:user_id, :name)
+  end
+
+  def work_item_emails(work_item)
+    work_item.reload.email_participants.pluck(:email)
+  end
+
+  def work_item_milestone(work_item)
+    work_item.reload.milestone&.title
+  end
+
+  let(:move) { WorkItems::DataSync::MoveService }
+  let(:clone) { WorkItems::DataSync::CloneService }
+
+  let_it_be(:users) { create_list(:user, 3) }
+  let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
+  let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
+  let_it_be(:participant2) { create(:issue_email_participant, issue: original_work_item, email: 'user2@example.com') }
+  let_it_be(:award_emojis) { original_work_item.reload.award_emoji.pluck(:user_id, :name) }
+
+  let_it_be(:emails) do
+    create_list(:issue_email_participant, 2, issue: original_work_item)
+    # create email participants on original work item and return emails as `expected_data` for later comparison.
+    original_work_item.reload.email_participants.map(&:email)
+  end
+
+  let_it_be(:assignees) do
+    original_work_item.assignee_ids = users.map(&:id)
+    # set assignees and return assigned users as `expected_data` for later comparison.
+    users
+  end
+
+  let_it_be(:milestone) do
+    milestone = if original_work_item.namespace.is_a?(Group)
+                  create(:milestone, group: original_work_item.namespace)
+                else
+                  create(:project_milestone, project: original_work_item.project)
+                end
+
+    original_work_item.update!(milestone: milestone)
+
+    # create milestone with same title in destination namespace so that it can be assigned to moved work item
+    if target_namespace.is_a?(Group)
+      create(:milestone, group: target_namespace, title: milestone.title)
+    elsif target_namespace.is_a?(Namespaces::ProjectNamespace)
+      create(:project_milestone, project: target_namespace.project, title: milestone.title)
+    else
+      create(:project_milestone, project: target_namespace, title: milestone.title)
+    end
+
+    milestone.title
+  end
+
+  where(:widget_name, :eval_value, :expected_data, :operations) do
+    :assignees          | :work_item_assignees   | ref(:assignees)    | [ref(:move), ref(:clone)]
+    :award_emoji        | :work_item_award_emoji | ref(:award_emojis) | [ref(:move)]
+    :email_participants | :work_item_emails      | ref(:emails)       | [ref(:move)]
+    :milestone          | :work_item_milestone   | ref(:milestone)    | [ref(:move), ref(:clone)]
   end
 
   with_them do
     context "with widget" do
-      let(:move) { WorkItems::DataSync::MoveService }
-      let(:clone) { WorkItems::DataSync::CloneService }
-
-      before do
-        instance_exec(&before_lambda)
-      end
-
       it 'clones and moves widget data' do
-        new_work_item = service.execute
+        new_work_item = service.execute[:work_item]
         widget_value = send(eval_value, new_work_item)
 
         if operations.include?(described_class)
-          expect(widget_value).not_to be_nil
-          expect(widget_value).not_to be_empty
-          expect(widget_value).to match_array(expected_data)
+          expect(widget_value).not_to be_blank
+          # trick to compare single values and arrays with a single statement
+          expect([widget_value].flatten).to match_array([expected_data].flatten)
         else
-          expect(widget_value).to be_empty
+          expect(widget_value).to be_blank
         end
 
-        expect(original_work_item.reload.public_send(widget_name)).to be_empty if described_class == move
+        expect(original_work_item.reload.public_send(widget_name)).to be_blank if described_class == move
       end
     end
   end

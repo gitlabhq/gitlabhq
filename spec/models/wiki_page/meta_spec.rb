@@ -60,6 +60,14 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
     end
   end
 
+  describe '#to_reference' do
+    it 'returns a canonical slug as reference to the object' do
+      meta = create(:wiki_page_meta, canonical_slug: 'foo')
+
+      expect(meta.to_reference).to eq('foo')
+    end
+  end
+
   describe '#canonical_slug' do
     subject { described_class.find(meta.id) }
 

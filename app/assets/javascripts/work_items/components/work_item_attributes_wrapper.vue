@@ -15,7 +15,6 @@ import {
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_TIME_TRACKING,
-  WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
@@ -120,17 +119,14 @@ export default {
     workItemLabels() {
       return this.isWidgetPresent(WIDGET_TYPE_LABELS);
     },
-    workItemDueDate() {
+    workItemStartAndDueDate() {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
-    workItemRolledupDates() {
-      return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
+    canWorkItemRollUp() {
+      return this.workItemStartAndDueDate?.rollUp;
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
-    },
-    isWorkItemWeightEditable() {
-      return this.workItemWeight?.widgetDefinition?.editable;
     },
     workItemProgress() {
       return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
@@ -216,28 +212,27 @@ export default {
         @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
       />
     </template>
-    <template v-if="isWorkItemWeightEditable">
+    <template v-if="workItemWeight">
       <work-item-weight
         class="work-item-attributes-item"
         :can-update="canUpdate"
-        :weight="workItemWeight.weight"
+        :full-path="fullPath"
+        :widget="workItemWeight"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
       />
     </template>
-    <template v-if="workItemRolledupDates && showRolledupDates">
+    <template v-if="canWorkItemRollUp && showRolledupDates">
       <work-item-rolledup-dates
         class="work-item-attributes-item"
         :can-update="canUpdate"
         :full-path="fullPath"
-        :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
-        :due-date-fixed="workItemRolledupDates.dueDateFixed"
-        :due-date-inherited="workItemRolledupDates.dueDate"
-        :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
-        :start-date-fixed="workItemRolledupDates.startDateFixed"
-        :start-date-inherited="workItemRolledupDates.startDate"
+        :start-date="workItemStartAndDueDate.startDate"
+        :due-date="workItemStartAndDueDate.dueDate"
+        :is-fixed="workItemStartAndDueDate.isFixed"
+        :should-roll-up="canWorkItemRollUp"
         :work-item-type="workItemType"
         :work-item="workItem"
         @error="$emit('error', $event)"
@@ -246,6 +241,7 @@ export default {
     <template v-if="workItemMilestone">
       <work-item-milestone
         class="js-milestone work-item-attributes-item"
+        :is-group="isGroup"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :work-item-milestone="workItemMilestone.milestone"
@@ -261,6 +257,7 @@ export default {
       <work-item-iteration
         class="work-item-attributes-item"
         :full-path="fullPath"
+        :is-group="isGroup"
         :iteration="workItemIteration.iteration"
         :can-update="canUpdate"
         :work-item-id="workItem.id"
@@ -272,12 +269,12 @@ export default {
         "
       />
     </template>
-    <template v-if="workItemDueDate && !showRolledupDates">
+    <template v-if="workItemStartAndDueDate && !showRolledupDates">
       <work-item-due-date
         class="work-item-attributes-item"
         :can-update="canUpdate"
-        :due-date="workItemDueDate.dueDate"
-        :start-date="workItemDueDate.startDate"
+        :due-date="workItemStartAndDueDate.dueDate"
+        :start-date="workItemStartAndDueDate.startDate"
         :work-item-type="workItemType"
         :full-path="fullPath"
         :work-item="workItem"

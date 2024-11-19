@@ -19,11 +19,14 @@ export default {
     ToolbarMoreDropdown,
     CommentTemplatesModal,
     HeaderDivider,
+    SummarizeCodeChanges: () =>
+      import('ee_component/merge_requests/components/summarize_code_changes.vue'),
   },
   inject: {
     newCommentTemplatePaths: { default: () => [] },
     tiptapEditor: { default: null },
     contentEditor: { default: null },
+    canSummarizeChanges: { default: false },
   },
   props: {
     supportsQuickActions: {
@@ -207,5 +210,9 @@ export default {
       @select="insertSavedReply"
     />
     <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
+    <div v-if="canSummarizeChanges" class="gl-flex">
+      <header-divider />
+      <summarize-code-changes />
+    </div>
   </div>
 </template>

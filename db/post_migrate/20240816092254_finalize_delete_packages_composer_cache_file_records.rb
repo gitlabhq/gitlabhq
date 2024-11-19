@@ -2,19 +2,11 @@
 
 class FinalizeDeletePackagesComposerCacheFileRecords < Gitlab::Database::Migration[2.2]
   milestone '17.4'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
-  disable_ddl_transaction!
 
-  MIGRATION = 'DeletePackagesComposerCacheFileRecords'
-
+  # The migration was finalized in 17.4
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159861#note_2067062639
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: MIGRATION,
-      table_name: :packages_composer_cache_files,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op
   end
 
   def down

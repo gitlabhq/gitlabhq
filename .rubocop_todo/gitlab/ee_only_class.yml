@@ -1,6 +1,5 @@
 ---
 Gitlab/EeOnlyClass:
-  Details: grace period
   Exclude:
     - 'ee/app/controllers/concerns/ee/routable_actions/sso_enforcement_redirect.rb'
     - 'ee/app/graphql/ee/resolvers/pending_group_members_resolver.rb'
@@ -106,7 +105,6 @@ Gitlab/EeOnlyClass:
     - 'ee/lib/ee/gitlab/checks/push_rules/commit_check.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/file_size_check.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/tag_check.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/ci/variables/builder/scan_execution_policies.rb'
     - 'ee/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy.rb'
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'

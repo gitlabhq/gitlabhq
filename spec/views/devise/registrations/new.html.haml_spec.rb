@@ -29,7 +29,7 @@ RSpec.describe 'devise/registrations/new', feature_category: :system_access do
       allow(view).to receive(:providers).and_return([provider_label])
     end
 
-    it { is_expected.to have_css("[data-track-action='#{tracking_action}'][data-track-label='#{tracking_label}']") }
+    it { is_expected.to have_tracking(action: tracking_action, label: tracking_label) }
     it { is_expected.to have_content(_('Continue with:')) }
     it { is_expected.to have_css('form[action="/users/auth/github"]') }
   end

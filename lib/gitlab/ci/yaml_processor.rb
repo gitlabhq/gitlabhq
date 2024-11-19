@@ -84,7 +84,7 @@ module Gitlab
         return unless job[:stage]
 
         unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
-          error!("#{name} job: chosen stage does not exist; available stages are #{@stages.join(", ")}")
+          error!("#{name} job: chosen stage #{job[:stage]} does not exist; available stages are #{@stages.join(", ")}")
         end
       end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Todo Query', feature_category: :team_planning do
+RSpec.describe 'Todo Query', feature_category: :notifications do
   include GraphqlHelpers
 
   let_it_be(:current_user) { nil }

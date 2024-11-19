@@ -2,8 +2,8 @@
 - button_tooltip = local_assigns.fetch(:title, _("Show all breadcrumbs"))
 - if defined?(@breadcrumb_collapsed_links) && @breadcrumb_collapsed_links.key?(dropdown_location)
   %li.expander.gl-breadcrumb-item.gl-inline-flex
-    %button.text-expander.has-tooltip.js-breadcrumbs-collapsed-expander.gl-ml-0{ type: "button", data: { container: "body" }, "aria-label": button_tooltip, title: button_tooltip }
-      = sprite_icon("ellipsis_h", size: 12)
+    = render Pajamas::ButtonComponent.new(icon: 'ellipsis_h',
+      button_options: { class: 'button-ellipsis-horizontal js-breadcrumbs-collapsed-expander gl-ml-0', type: "button", data: { container: 'body' }, "aria-label": button_tooltip, title: button_tooltip })
   - @breadcrumb_collapsed_links[dropdown_location].each_with_index do |item, index|
     %li.gl-breadcrumb-item{ :class => "!gl-hidden" }
       = link_to item[:href] do

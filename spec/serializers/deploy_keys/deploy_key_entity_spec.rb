@@ -41,7 +41,8 @@ RSpec.describe DeployKeys::DeployKeyEntity do
               name: project.name,
               full_path: project_path(project),
               full_name: project.full_name,
-              refs_url: refs_project_path(project)
+              refs_url: refs_project_path(project),
+              forked: nil
             }
           }
         ]

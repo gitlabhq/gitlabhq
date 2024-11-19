@@ -20,4 +20,6 @@
 :root {
   --default-diff-color-deletion: #eb919b;
   --default-diff-color-addition: #a0f5b4;
+  --diff-addition-color: #{$line-number-new};
+  --diff-deletion-color: #{$line-number-old};
 }

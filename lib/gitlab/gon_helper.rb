@@ -43,6 +43,7 @@ module Gitlab
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.emoji_sprites_css_path = universal_path_to_stylesheet('emoji_sprites')
+      gon.emoji_backend_version  = Gitlab::Emoji::EMOJI_VERSION
       gon.gridstack_css_path     = universal_path_to_stylesheet('lazy_bundles/gridstack')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
@@ -67,7 +68,11 @@ module Gitlab
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
         gon.time_display_format = current_user.time_display_format
-        gon.current_user_use_work_items_view = current_user.user_preference&.use_work_items_view || false
+
+        if current_user.user_preference
+          gon.current_user_use_work_items_view = current_user.user_preference.use_work_items_view || false
+          gon.text_editor = current_user.user_preference.text_editor
+        end
       end
 
       if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
@@ -80,6 +85,7 @@ module Gitlab
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:ui_for_organizations, current_user)
       push_frontend_feature_flag(:organization_switching, current_user)
+      push_frontend_feature_flag(:find_and_replace, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_view_preference, current_user)
@@ -157,6 +163,8 @@ module Gitlab
     # which has similar properties.
     # rubocop:disable Gitlab/AvoidCurrentOrganization -- This method follows the spirit of the rule
     def current_organization
+      return unless ::Current.organization_assigned
+
       ::Current.organization
     end
     # rubocop:enable Gitlab/AvoidCurrentOrganization

@@ -1,8 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_weekly
-description: A weekly count of container images published to the registry using a
-  deploy token
+description: A weekly count of distinct deploy tokens used for container repository interactions with the container registry
 product_group: container_registry
 value_type: number
 status: removed
@@ -15,7 +14,7 @@ options:
 distribution:
 - ee
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

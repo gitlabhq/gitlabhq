@@ -1,0 +1,16 @@
+---
+description: Tracks when an invite email is sent
+action: invite_email_sent
+identifiers:
+product_group: tenant_scale
+milestone: '14.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169895
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Always `invite_email`

@@ -183,7 +183,11 @@ export default {
         return true;
       });
 
-      if (this.previewNote && !this.previewNoteLoadedInList) {
+      // don't show preview in modal, as we might accidentally load a note from the parent work item
+      const urlParams = new URLSearchParams(window.location.search);
+      const modalOpen = urlParams.has('show');
+
+      if (this.previewNote && !this.previewNoteLoadedInList && !modalOpen) {
         const preview = {
           notes: {
             nodes: [this.previewNote],
@@ -221,7 +225,9 @@ export default {
       const discussionNoteId = convertToGraphQLId(TYPENAME_DISCUSSION_NOTE, this.previewNoteId);
 
       function matchingNoteId(note) {
-        return note.notes.nodes[0].id === noteId || note.notes.nodes[0].id === discussionNoteId;
+        return note.notes.nodes.find((singleReply) => {
+          return singleReply.id === noteId || singleReply.id === discussionNoteId;
+        });
       }
 
       const notes = this.workItemNotes?.nodes || [];

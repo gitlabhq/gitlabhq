@@ -5,10 +5,7 @@ import { GlFormCheckboxGroup } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE } from '~/search/sidebar/constants';
-import ForksFilter, {
-  INCLUDE_FORKED_FILTER_PARAM,
-} from '~/search/sidebar/components/forks_filter/index.vue';
+import ForksFilter from '~/search/sidebar/components/forks_filter/index.vue';
 
 Vue.use(Vuex);
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -104,7 +101,7 @@ describe('ForksFilter', () => {
       findCheckboxFilter().vm.$emit('input', selectedFilter);
 
       expect(defaultActions.setQuery).toHaveBeenCalledWith(expect.any(Object), {
-        key: INCLUDE_FORKED_FILTER_PARAM,
+        key: 'include_forked',
         value: 'false',
       });
       expect(selectedFilter).toEqual([false]);
@@ -120,12 +117,12 @@ describe('ForksFilter', () => {
       });
     });
 
-    it(`dispatches internal ${EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE}`, () => {
+    it(`dispatches internal click_zoekt_include_forks_on_search_results_page`, () => {
       findCheckboxFilter().vm.$emit('change');
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
-        EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE,
+        'click_zoekt_include_forks_on_search_results_page',
         {},
         undefined,
       );

@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -54,16 +54,26 @@ When designing your policies, your goals should be to:
 - Design policy enforcement for minimum overhead but maximum coverage
 - Ensure separation of duties
 
-### Policy enforcement design
+### Enforcement
 
-To maximize policy coverage, link a security policy project at the highest level that achieves your objectives: group
-level, subgroup level, or project level. Enforcement at the highest level minimizes the number of
-security policy projects and therefore the management overhead. Policies cascade down from each level to a project, such that policies may be enforced from the group level, each subgroup above it, and then for any policies created at the project level itself.
+To enforce policies to meet your requirements, consider the following factors:
 
-Policy inheritance not only ensures maximum coverage with the minimum
-number of security policy projects, but also helps when implementing policy changes. For example, to test a policy change
-you could copy an existing policy and enforce the modified policy first to a project, then to a
-subgroup, and, if applicable, to a group.
+- **Inheritance:** By default, a policy is enforced on the organizational units it's linked to, and
+  all their descendent subgroups and their projects.
+- **Scope:** To customize policy enforcement, you can define a policy's scope to match your needs.
+
+#### Inheritance
+
+To maximize policy coverage, link a security policy project to the highest organizational units that
+achieves your objectives: groups, subgroups, or projects. A policy is enforced on the organizational
+units it's linked to, and all their descendent subgroups and their projects. Enforcement at the
+highest point minimizes the number of security policies required, minimizing the management
+overhead.
+
+You can use policy inheritance to incrementally roll out policies. For example, when rolling out a
+new policy, you can enforce it on a single project, then conduct testing. If the tests pass, you can
+then remove it from the project and enforce it on a group, moving up the hierarchy until the policy
+is enforced on all applicable projects.
 
 Policies enforced on an existing group or subgroup are automatically enforced in any new subgroups and projects created under them, provided that all of the following are true:
 
@@ -71,7 +81,9 @@ Policies enforced on an existing group or subgroup are automatically enforced in
 - The existing group or subgroup is already linked to the security policy project.
 
 NOTE:
-GitLab SaaS users may enforce policies against their top-level group or across subgroups, but cannot enforce policies across GitLab SaaS top-level groups. GitLab self-managed users can enforce policies across multiple top-level groups in their instance.
+GitLab SaaS users can enforce policies against their top-level group or across subgroups, but cannot
+enforce policies across GitLab SaaS top-level groups. GitLab self-managed users can enforce policies
+across multiple top-level groups in their instance.
 
 The following example illustrates two groups and their structure:
 
@@ -105,8 +117,87 @@ Assuming no policies are enforced, consider the following examples:
   "SAST" policy applies to project A.
 - If the "SAST" policy is enforced at subgroup "Accounts receiving", it applies only to projects B
   and C. No policy applies to project A.
-- If the "Secret Detection" is enforced at project K, it applies only to project K. No other
+- If the "Secret Detection" policy is enforced at project K, it applies only to project K. No other
   subgroups or projects have a policy apply to them.
+
+#### Scope
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+> - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
+
+You can refine a policy's scope by:
+
+- Compliance frameworks: Enforce a policy on projects with selected compliance frameworks.
+- Group:
+  - All projects in a group, including all its descendent subgroups and their projects. Optionally
+    exclude specific projects.
+  - All projects in multiple groups, including their descendent subgroups and their projects. Only
+    groups linked to the same security policy project can be listed in the policy. Optionally
+    exclude specific projects.
+- Projects: Include or exclude specific projects. Only projects linked to the same security policy
+  project can be listed in the policy.
+
+These options can be used together in the same policy. However, exclusion takes precedence over
+inclusion.
+
+##### `policy_scope` keyword
+
+Use the `policy_scope` keyword to enforce the policy on only those groups, projects, compliance
+frameworks, or a combination, that you specify.
+
+| Field                   | Type     | Possible values          | Description |
+|-------------------------|----------|--------------------------|-------------|
+| `compliance_frameworks` | `array`  | Not applicable           | List of IDs of the compliance frameworks in scope for enforcement, in an array of objects with key `id`. |
+| `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+| `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
+
+##### Scope examples
+
+In this example, the scan execution policy enforces a SAST scan in every release pipeline, on
+every project with the compliance frameworks with an ID either `2` or `11` applied to them.
+
+```yaml
+---
+scan_execution_policy:
+- name: Enforce specified scans in every release pipeline
+  description: This policy enforces a SAST scan for release branches
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - release/*
+  actions:
+  - scan: sast
+  policy_scope:
+    compliance_frameworks:
+      - id: 2
+      - id: 11
+```
+
+In this example, the scan execution policy enforces a secret detection and SAST scan on pipelines
+for the default branch, on all projects in the group with ID `203` (including all descendent
+subgroups and their projects), excluding the project with ID `64`.
+
+```yaml
+- name: Enforce specified scans in every default branch pipeline
+  description: This policy enforces Secret Detection and SAST scans for the default branch
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: secret_detection
+  - scan: sast
+  policy_scope:
+    groups:
+      including:
+        - id: 203
+    projects:
+      excluding:
+        - id: 64
+```
 
 ### Separation of duties
 

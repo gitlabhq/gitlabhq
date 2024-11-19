@@ -1,7 +1,7 @@
-- page_title @application.name, _("Applications")
+- add_to_breadcrumbs _("Applications"), admin_applications_path
+- page_title @application.name
 
-%h1.page-title.gl-text-size-h-display
-  Application: #{@application.name}
+= render ::Layouts::PageHeadingComponent.new(_('Application: %{application_name}') % { application_name: @application.name })
 
 = render 'shared/doorkeeper/applications/show',
   edit_path: edit_admin_application_path(@application),

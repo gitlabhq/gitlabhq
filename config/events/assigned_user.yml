@@ -1,0 +1,13 @@
+---
+description: Tracks when a user is assigned to a work item or project.
+action: assigned_user
+product_group: project_management
+milestone: '15.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114848
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

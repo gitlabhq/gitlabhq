@@ -258,30 +258,22 @@ class ContainerRepository < ApplicationRecord
   def set_delete_ongoing_status
     now = Time.zone.now
 
-    values = {
+    update_columns(
       status: :delete_ongoing,
       delete_started_at: now,
-      status_updated_at: now
-    }
-
-    values[:next_delete_attempt_at] = nil if Feature.enabled?(:set_delete_failed_container_repository, project)
-
-    update_columns(values)
+      status_updated_at: now,
+      next_delete_attempt_at: nil
+    )
   end
 
   def set_delete_scheduled_status
-    values = {
+    update_columns(
       status: :delete_scheduled,
       delete_started_at: nil,
-      status_updated_at: Time.zone.now
-    }
-
-    if Feature.enabled?(:set_delete_failed_container_repository, project)
-      values[:failed_deletion_count] = failed_deletion_count + 1
-      values[:next_delete_attempt_at] = next_delete_attempt_with_delay
-    end
-
-    update_columns(values)
+      status_updated_at: Time.zone.now,
+      failed_deletion_count: failed_deletion_count + 1,
+      next_delete_attempt_at: next_delete_attempt_with_delay
+    )
   end
 
   def set_delete_failed_status

@@ -2,14 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillUpstreamPipelinePartitionIdOnPCiBuilds, feature_category: :continuous_integration do
+RSpec.describe Gitlab::BackgroundMigration::BackfillUpstreamPipelinePartitionIdOnPCiBuilds,
+  :suppress_partitioning_routing_analyzer,
+  feature_category: :continuous_integration do
   let(:pipelines_table) { table(:ci_pipelines, primary_key: :id, database: :ci) }
 
   let(:jobs_table) { partitioned_table(:p_ci_builds, database: :ci) }
 
-  let!(:pipeline_1) { pipelines_table.create!(partition_id: 100, project_id: 1) }
-  let!(:pipeline_2) { pipelines_table.create!(partition_id: 100, project_id: 1) }
-  let!(:pipeline_3) { pipelines_table.create!(partition_id: 100, project_id: 1) }
+  let!(:pipeline_1) { pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }
+  let!(:pipeline_2) { pipelines_table.create!(id: 2, partition_id: 100, project_id: 1) }
+  let!(:pipeline_3) { pipelines_table.create!(id: 3, partition_id: 100, project_id: 1) }
 
   let!(:job_1) { jobs_table.create!(commit_id: pipeline_1.id, partition_id: pipeline_1.partition_id, project_id: 1) }
   let!(:job_2) { jobs_table.create!(commit_id: pipeline_2.id, partition_id: pipeline_2.partition_id, project_id: 1) }

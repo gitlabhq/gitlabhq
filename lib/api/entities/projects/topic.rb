@@ -9,6 +9,7 @@ module API
         expose :title
         expose :description
         expose :total_projects_count
+        expose :organization_id
         expose :avatar_url do |topic, options|
           topic.avatar_url(only_path: false)
         end

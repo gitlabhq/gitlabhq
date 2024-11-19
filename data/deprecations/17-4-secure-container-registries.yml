@@ -2,6 +2,7 @@
   removal_milestone: "18.0"
   announcement_milestone: "17.4"
   breaking_change: true
+  window: 1
   reporter: thiagocsf
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470641

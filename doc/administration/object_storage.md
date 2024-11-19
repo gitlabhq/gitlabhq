@@ -31,7 +31,7 @@ If you store data locally, see how to
 ## Supported object storage providers
 
 GitLab is tightly integrated with the Fog library, so you can see which
-[providers](https://fog.io/about/provider_documentation.html) can be used
+[providers](https://fog.github.io/about/provider_documentation.html) can be used
 with GitLab.
 
 Specifically, GitLab has been tested by vendors and customers on a number of object storage providers:
@@ -876,7 +876,7 @@ with the Fog library that GitLab uses. Symptoms include an error in `production.
 
 ### Artifacts always downloaded with filename `download`
 
-Downloaded artifact filenames are set via the `response-content-disposition` header in the
+Downloaded artifact filenames are set with the `response-content-disposition` header in the
 [GetObject request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html).
 If the S3 provider does not support this header, the downloaded file is always saved as `download`.
 

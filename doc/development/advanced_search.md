@@ -89,7 +89,7 @@ The `__elasticsearch__` methods would return a proxy object, for example:
 
 These proxy objects would talk to Elasticsearch server directly (see top half of the diagram).
 
-![Elasticsearch Architecture](img/elasticsearch_architecture.svg)
+![Elasticsearch Architecture](img/elasticsearch_architecture_v12_3.svg)
 
 In the planned new design, each model would have a pair of corresponding sub-classed proxy objects, in which
 model-specific logic is located. For example, `Snippet` would have `SnippetClassProxy` being a subclass
@@ -219,11 +219,16 @@ All new indexes must have:
 
 - `project_id` and `namespace_id` fields (if available). One of the fields must be used for routing.
 - A `traversal_ids` field for efficient global and group search. Populate the field with `object.namespace.elastic_namespace_ancestry`
+- Fields for authorization:
+  - For project data - `visibility_level`
+  - For group data - `namespace_visibility_level`
+  - Any required access level fields. These correspond to project feature access levels such as `issues_access_level` or `repository_access_level`
+- A `schema_version` integer field in a `YYWW` (year/week) format. This field is used for data migrations.
 
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
    - `index_name`: in the format `gitlab-<env>-<type>` (for example, `gitlab-production-work_items`).
-   - `mappings`: a hash containing the index schema such as fields, data types, and analyzers.
+   - `mappings`: a hash containing the index schema such as fields, data types, and analyzers. Data types for primary and foreign keys must match the column type in the database. For example, the database column type `integer` maps to `integer` and `bigint` maps to `long` in the mapping.
    - `settings`: a hash containing the index settings such as replicas and tokenizers.
      The default is good enough for most cases.
 1. Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to create the index
@@ -248,10 +253,12 @@ All new indexes must have:
 Create a `Search::Elastic::References::` class in `ee/lib/search/elastic/references/`.
 
 The reference is used to perform bulk operations in Elasticsearch.
-The file must inherit from `Search::Elastic::Reference` and define the following methods:
+The file must inherit from `Search::Elastic::Reference` and define the following constant and methods:
 
 ```ruby
 include Search::Elastic::Concerns::DatabaseReference # if there is a corresponding database record for every document
+
+SCHEMA_VERSION = 24_46 # integer in YYWW format
 
 override :serialize
 def self.serialize(record)

@@ -8,13 +8,25 @@
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
+- if show_mr_dashboard_banner?
+  = render Pajamas::AlertComponent.new(title: _('Your merge requests have a new homepage!'),
+    variant: :info,
+    alert_options: { class: 'gl-mt-5 js-new-mr-dashboard-banner', data: { dismiss_endpoint: callouts_path, defer_links: 'true', feature_id: Users::CalloutsHelper::NEW_MR_DASHBOARD_BANNER } },
+    close_button_options: { data: { href: merge_requests_dashboard_path } }) do |c|
+    = c.with_body do
+      = _("View merge requests you're involved with from start to finish by highlighting those that Needs Attention and those you are Following.")
+
+    = c.with_actions do
+      = render Pajamas::ButtonComponent.new(href: merge_requests_dashboard_path, button_options: { class: 'deferred-link' }) do
+        = _('Visit new homepage')
+
 = render ::Layouts::PageHeadingComponent.new(title) do |c|
   - c.with_actions do
     - if current_user
       = render 'shared/new_project_item_vue_select'
 
 - if merge_request_dashboard_enabled?(current_user) && !current_page?(merge_requests_search_dashboard_path)
-  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path, initial_data: merge_request_dashboard_data.to_json } }
+  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json } }
     = gl_loading_icon(size: 'lg')
 
 - if !merge_request_dashboard_enabled?(current_user) || current_page?(merge_requests_search_dashboard_path)

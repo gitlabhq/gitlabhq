@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # rubocop: disable RSpec/MultipleMemoizedHelpers
-RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, schema: 20230728020644 do
+RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, schema: 20230721095222 do
   let!(:migration_attrs) do
     {
       start_id: 1,

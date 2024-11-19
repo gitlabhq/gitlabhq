@@ -8,7 +8,5 @@ description: Token for the site to be validated
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41639
 milestone: '13.4'
 gitlab_schema: gitlab_sec
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects

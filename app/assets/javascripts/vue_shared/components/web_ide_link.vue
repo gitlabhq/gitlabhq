@@ -238,7 +238,7 @@ export default {
       return this.gitpodText || __('Gitpod');
     },
     computedShowGitpodButton() {
-      return this.showGitpodButton && this.gitpodEnabled;
+      return this.showGitpodButton && this.gitpodEnabled && this.gitpodUrl;
     },
     pipelineEditorAction() {
       if (!this.showPipelineEditorButton) {
@@ -328,7 +328,7 @@ export default {
                   action.shortcut
                 }}</kbd>
               </span>
-              <span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary">
+              <span data-testid="action-secondary-text" class="gl-text-sm gl-text-subtle">
                 {{ action.secondaryText }}
               </span>
             </div>

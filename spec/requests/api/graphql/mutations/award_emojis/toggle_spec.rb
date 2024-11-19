@@ -11,7 +11,7 @@ RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
   let_it_be(:issue_note) { create(:note, project: project) }
 
   let(:awardable) { issue_note }
-  let(:emoji_name) { 'thumbsup' }
+  let(:emoji_name) { AwardEmoji::THUMBS_UP }
   let(:mutation) do
     variables = {
       awardable_id: GitlabSchema.id_from_object(awardable).to_s,

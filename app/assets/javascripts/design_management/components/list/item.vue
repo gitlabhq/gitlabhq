@@ -72,17 +72,17 @@ export default {
       const icons = {
         creation: {
           name: 'file-addition-solid',
-          classes: 'gl-text-green-500',
+          classes: 'gl-fill-icon-success',
           tooltip: __('Added in this version'),
         },
         modification: {
           name: 'file-modified-solid',
-          classes: 'gl-text-blue-500',
+          classes: 'gl-fill-icon-info',
           tooltip: __('Modified in this version'),
         },
         deletion: {
           name: 'file-deletion-solid',
-          classes: 'gl-text-red-500',
+          classes: 'gl-fill-icon-danger',
           tooltip: __('Archived in this version'),
         },
       };

@@ -71,7 +71,7 @@ To set a compute quota for a group or namespace:
 1. In the **Compute quota** box, enter the maximum number of compute minutes.
 1. Select **Save changes**.
 
-You can also use the [update group API](../../api/groups.md#update-group) or the
+You can also use the [update group API](../../api/groups.md#update-group-attributes) or the
 [update user API](../../api/users.md#modify-a-user) instead.
 
 ## Reset compute usage

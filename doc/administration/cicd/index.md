@@ -116,96 +116,9 @@ balanced across many projects.
 
 ### Disable compute quota enforcement
 
-To disable the enforcement of [compute quotas](../../ci/pipelines/compute_minutes.md) on instance runners, you can temporarily
+To disable the enforcement of [compute minutes quotas](compute_minutes.md) on instance runners, you can temporarily
 enable the `ci_queueing_disaster_recovery_disable_quota` [feature flag](../feature_flags.md).
 This flag reduces system resource usage on the `jobs/request` endpoint.
 
 When enabled, jobs created in the last hour can run in projects which are out of quota.
 Earlier jobs are already canceled by a periodic background worker (`StuckCiJobsWorker`).
-
-## CI/CD troubleshooting Rails console commands
-
-The following commands are run in the [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-
-WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
-We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
-
-### Cancel stuck pending pipelines
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-Ci::Pipeline.where(project_id: project.id).where(status: 'pending').count
-Ci::Pipeline.where(project_id: project.id).where(status: 'pending').each {|p| p.cancel if p.stuck?}
-Ci::Pipeline.where(project_id: project.id).where(status: 'pending').count
-```
-
-### Try merge request integration
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-mr = project.merge_requests.find_by(iid: <merge_request_iid>)
-mr.project.try(:ci_integration)
-```
-
-### Validate the `.gitlab-ci.yml` file
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-content = p.ci_config_for(project.repository.root_ref_sha)
-Gitlab::Ci::Lint.new(project: project,  current_user: User.first).validate(content)
-```
-
-### Disable AutoDevOps on Existing Projects
-
-```ruby
-Project.all.each do |p|
-  p.auto_devops_attributes={"enabled"=>"0"}
-  p.save
-end
-```
-
-### Obtain runners registration token
-
-WARNING:
-The ability to pass a runner registration token, and support for certain configuration arguments, was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal
-in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see
-[Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
-
-Prerequisites:
-
-- Runner registration tokens must be [enabled](../settings/continuous_integration.md#enable-runner-registrations-tokens) in the **Admin** area.
-
-```ruby
-Gitlab::CurrentSettings.current_application_settings.runners_registration_token
-```
-
-### Seed runners registration token
-
-WARNING:
-The ability to pass a runner registration token, and support for certain configuration arguments, was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal
-in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see
-[Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
-
-```ruby
-appSetting = Gitlab::CurrentSettings.current_application_settings
-appSetting.set_runners_registration_token('<new-runners-registration-token>')
-appSetting.save!
-```
-
-### Run pipeline schedules manually
-
-You can run pipeline schedules manually through the Rails console to reveal any errors that are usually not visible.
-
-```ruby
-# schedule_id can be obtained from Edit Pipeline Schedule page
-schedule = Ci::PipelineSchedule.find_by(id: <schedule_id>)
-
-# Select the user that you want to run the schedule for
-user = User.find_by_username('<username>')
-
-# Run the schedule
-ps = Ci::CreatePipelineService.new(schedule.project, user, ref: schedule.ref).execute!(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
-```

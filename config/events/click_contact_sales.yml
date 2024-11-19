@@ -1,0 +1,16 @@
+---
+description: Tracks clicks on the contact sales button for inquiries.
+action: click_contact_sales
+product_group: acquisition
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167945
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: type of trial and if it is active or not.

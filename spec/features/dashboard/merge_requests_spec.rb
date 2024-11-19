@@ -246,7 +246,7 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
 
       visit project_merge_requests_path(project)
 
-      expect(find('.issues-filters')).to have_content(s_('SortOptions|Priority'))
+      expect(find_by_testid('issuable-search-container')).to have_content(s_('SortOptions|Priority'))
     end
 
     it 'passes axe automated accessibility testing' do

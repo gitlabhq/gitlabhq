@@ -12,9 +12,9 @@ module WorkItems
 
     def preloads
       {
-        work_item_type: :work_item_type,
+        work_item_type: ::Gitlab::Issues::TypeAssociationGetter.call,
         web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
-        widgets: { work_item_type: :enabled_widget_definitions },
+        widgets: { ::Gitlab::Issues::TypeAssociationGetter.call => :enabled_widget_definitions },
         archived: :project
       }
     end
@@ -34,7 +34,7 @@ module WorkItems
     def widget_preloads
       {
         last_edited_by: :last_edited_by,
-        assignees: :assignees,
+        assignees: :assignees_by_name_and_id,
         participants: WorkItem.participant_includes,
         parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
@@ -54,7 +54,7 @@ module WorkItems
           project: [:project_feature, :group]
         },
         :author,
-        :work_item_type,
+        ::Gitlab::Issues::TypeAssociationGetter.call,
         *super
       ]
     end

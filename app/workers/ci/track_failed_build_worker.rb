@@ -2,7 +2,7 @@
 
 # Worker for tracking exit codes of failed CI jobs
 module Ci
-  class TrackFailedBuildWorker # rubocop:disable Scalability/IdempotentWorker
+  class TrackFailedBuildWorker
     include ApplicationWorker
     include PipelineBackgroundQueue
 

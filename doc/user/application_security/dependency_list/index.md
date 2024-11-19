@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -26,7 +26,7 @@ For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9
 
 To list your project's dependencies the SBOM document must:
 
-- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4` or `1.5`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
+- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
 - Be uploaded as [a CI/CD artifact report](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline on the default branch.
 
 NOTE:
@@ -55,7 +55,7 @@ To view the dependencies of a project or all projects in a group:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 
-Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name or packager.
+Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name, packager, or license.
 
 | Field     | Description |
 |:----------|:-----------|
@@ -112,10 +112,24 @@ The dependency path is only displayed for dependencies that have vulnerabilities
 
 Dependency paths are supported for the following package managers:
 
-- [NuGet](https://www.nuget.org/)
-- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
-- [sbt](https://www.scala-sbt.org)
 - [Conan](https://conan.io)
+- [Gradle](https://gradle.org/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [Maven](https://maven.apache.org/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [NPM](https://www.npmjs.com/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [NuGet](https://www.nuget.org/)
+- [Pipenv](https://pipenv.pypa.io/en/latest/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [pip-tools](https://pip-tools.readthedocs.io/en/latest/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [pnpm](https://pnpm.io/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [Poetry](https://python-poetry.org/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [sbt](https://www.scala-sbt.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+<ol>
+  <li>
+    <a id="notes-regarding-dependency-path-support"></a>
+    <p>Supported only when using the <a href="https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main">`dependency-scanning` component</a>.</p>
+  </li>
+</ol>
 
 ### Licenses
 

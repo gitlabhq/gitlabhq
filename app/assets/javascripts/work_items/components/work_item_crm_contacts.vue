@@ -331,7 +331,7 @@ export default {
                   <div class="gl-font-bold">{{ organizationName }}</div>
                   <div
                     v-if="contact.organization.description || contact.organization.defaultRate"
-                    class="gl-text-gray-600"
+                    class="gl-text-subtle"
                   >
                     <gl-truncate-text
                       v-if="contact.organization.description"

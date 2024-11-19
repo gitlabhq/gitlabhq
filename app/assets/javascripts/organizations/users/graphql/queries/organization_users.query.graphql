@@ -1,0 +1,38 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getOrganizationUsers(
+  $id: OrganizationsOrganizationID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
+  organization(id: $id) {
+    id
+    organizationUsers(first: $first, last: $last, before: $before, after: $after) {
+      nodes {
+        badges {
+          text
+          variant
+        }
+        id
+        user {
+          id
+          username
+          avatarUrl
+          name
+          publicEmail
+          createdAt
+          lastActivityOn
+        }
+        accessLevel {
+          stringValue
+        }
+        isLastOwner
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

@@ -78,6 +78,7 @@ export const getQueryResponse = {
             targetBranch: 'main',
             targetBranchPath: '/target-branch',
             approved: false,
+            hidden: false,
             approvedBy: {
               nodes: [
                 {

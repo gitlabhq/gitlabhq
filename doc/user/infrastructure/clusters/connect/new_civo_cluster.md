@@ -70,7 +70,7 @@ Use CI/CD environment variables to configure your project.
 1. Set the variable `TF_VAR_agent_token` to the agent token you received in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address in the previous task.
 
-![img/variables_civo.png](img/variables_civo.png)
+![Required configuration](img/variables_civo_v17_3.png)
 
 **Optional configuration:**
 

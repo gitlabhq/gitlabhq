@@ -11,7 +11,7 @@ require 'gitlab/safe_request_store'
 require_relative '../../app/models/ability'
 require_relative '../support/ability_check'
 
-RSpec.describe Support::AbilityCheck, feature_category: :system_access do # rubocop:disable RSpec/FilePath
+RSpec.describe Support::AbilityCheck, feature_category: :system_access do # rubocop:disable RSpec/SpecFilePathFormat
   let(:user) { :user }
   let(:child) { Testing::Child.new }
   let(:parent) { Testing::Parent.new(child) }

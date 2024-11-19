@@ -78,6 +78,7 @@ export default {
         };
       },
       update(data) {
+        if (!data?.note) return null;
         return {
           ...data.note,
           author: {

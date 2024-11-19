@@ -25,7 +25,7 @@ module Keeps
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
     def each_change
-      each_batched_background_migration do |migration_yaml_file, migration|
+      batched_background_migrations.each do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
 
         job_name = migration['migration_job_name']
@@ -219,10 +219,12 @@ module Keeps
       Gem::Version.new(milestone) <= Gem::Version.new(::Gitlab::Database.min_schema_gitlab_version)
     end
 
-    def each_batched_background_migration
-      all_batched_background_migration_files.map do |f|
-        yield(f, YAML.load_file(f))
+    def batched_background_migrations
+      migrations = all_batched_background_migration_files.index_with do |f|
+        YAML.load_file(f)
       end
+
+      migrations.sort_by { |_f, migration| Gitlab::VersionInfo.parse_from_milestone(migration['milestone']) }
     end
 
     def all_batched_background_migration_files

@@ -2,9 +2,7 @@
 # Cop supports --autocorrect.
 Layout/LineContinuationSpacing:
   Exclude:
-    - 'app/controllers/concerns/controller_with_cross_project_access_check.rb'
     - 'app/controllers/projects/google_cloud/databases_controller.rb'
-    - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
     - 'app/graphql/types/environment_type.rb'
     - 'app/helpers/application_settings_helper.rb'
     - 'app/helpers/projects_helper.rb'
@@ -17,7 +15,6 @@ Layout/LineContinuationSpacing:
     - 'app/services/feature_flags/update_service.rb'
     - 'app/services/issues/build_service.rb'
     - 'app/services/merge_requests/merge_service.rb'
-    - 'app/services/uploads/destroy_service.rb'
     - 'app/services/users/email_verification/validate_token_service.rb'
     - 'ee/app/controllers/ee/ldap/omniauth_callbacks_controller.rb'
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
@@ -43,7 +40,6 @@ Layout/LineContinuationSpacing:
     - 'ee/lib/api/ldap_group_links.rb'
     - 'ee/lib/api/vulnerability_findings.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'ee/spec/controllers/groups/group_members_controller_spec.rb'
@@ -61,9 +57,6 @@ Layout/LineContinuationSpacing:
     - 'ee/spec/graphql/mutations/requirements_management/export_requirements_spec.rb'
     - 'ee/spec/helpers/ee/labels_helper_spec.rb'
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
-    - 'ee/spec/lib/audit/group_merge_request_approval_setting_changes_auditor_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/ci/pipeline/quota/size_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/pipeline/chain/limit/size_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/mailers/ee/emails/identity_verification_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/epics/create_spec.rb'

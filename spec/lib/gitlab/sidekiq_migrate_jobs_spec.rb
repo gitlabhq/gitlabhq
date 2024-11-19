@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
   :clean_gitlab_redis_queues_metadata, :allow_unrouted_sidekiq_calls do
   def clear_queues
-    Sidekiq::Queue.new('authorized_projects').clear
+    Sidekiq::Queue.new('test').clear
     Sidekiq::Queue.new('post_receive').clear
     Sidekiq::RetrySet.new.clear
     Sidekiq::ScheduledSet.new.clear
@@ -18,6 +18,22 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
   end
 
   describe '#migrate_set', :aggregate_failures do
+    let(:worker_class) do
+      Class.new do
+        def self.name
+          'TestWorker'
+        end
+
+        include ApplicationWorker
+
+        def perform(*args); end
+      end
+    end
+
+    before do
+      stub_const('TestWorker', worker_class)
+    end
+
     shared_examples 'processing a set' do
       let(:migrator) { described_class.new(mappings) }
 
@@ -27,7 +43,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
       end
 
       context 'when the set is empty' do
-        let(:mappings) { { 'AuthorizedProjectsWorker' => 'new_queue' } }
+        let(:mappings) { { 'TestWorker' => 'new_queue' } }
 
         it 'returns the number of scanned and migrated jobs' do
           expect(migrator.migrate_set(set_name)).to eq(
@@ -55,14 +71,13 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
           expect(migrator.migrate_set(set_name)).to eq(scanned: 3, migrated: 0)
 
           expect(set_after.length).to eq(3)
-          expect(set_after.map(&:first)).to all(include('queue' => 'default',
-            'class' => 'AuthorizedProjectsWorker'))
+          expect(set_after.map(&:first)).to all(include('queue' => 'default', 'class' => 'TestWorker'))
         end
       end
 
       context 'when there are matching jobs' do
         it 'migrates only the workers matching the given worker from the set' do
-          migrator = described_class.new({ 'AuthorizedProjectsWorker' => 'new_queue' })
+          migrator = described_class.new({ 'TestWorker' => 'new_queue' })
           freeze_time do
             create_jobs
 
@@ -71,7 +86,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
               migrated: 3)
 
             set_after.each.with_index do |(item, score), i|
-              if item['class'] == 'AuthorizedProjectsWorker'
+              if item['class'] == 'TestWorker'
                 expect(item).to include('queue' => 'new_queue', 'args' => [i])
               else
                 expect(item).to include('queue' => 'default', 'args' => [i])
@@ -84,16 +99,16 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
         it 'allows migrating multiple workers at once' do
           migrator = described_class.new({
-                                           'AuthorizedProjectsWorker' => 'new_queue',
-                                           'PostReceive' => 'another_queue'
-                                         })
+            'TestWorker' => 'new_queue',
+            'PostReceive' => 'another_queue'
+          })
           freeze_time do
             create_jobs
 
             expect(migrator.migrate_set(set_name)).to eq(scanned: 4, migrated: 4)
 
             set_after.each.with_index do |(item, score), i|
-              if item['class'] == 'AuthorizedProjectsWorker'
+              if item['class'] == 'TestWorker'
                 expect(item).to include('queue' => 'new_queue', 'args' => [i])
               else
                 expect(item).to include('queue' => 'another_queue', 'args' => [i])
@@ -106,9 +121,9 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
         it 'allows migrating multiple workers to the same queue' do
           migrator = described_class.new({
-                                           'AuthorizedProjectsWorker' => 'new_queue',
-                                           'PostReceive' => 'new_queue'
-                                         })
+            'TestWorker' => 'new_queue',
+            'PostReceive' => 'new_queue'
+          })
           freeze_time do
             create_jobs
 
@@ -180,9 +195,9 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
             logger = Logger.new(StringIO.new)
             migrator = described_class.new({
-                                             'AuthorizedProjectsWorker' => 'new_queue',
-                                             'PostReceive' => 'another_queue'
-                                           }, logger: logger)
+              'TestWorker' => 'new_queue',
+              'PostReceive' => 'another_queue'
+            }, logger: logger)
 
             expect(logger).to receive(:info).with(a_string_matching('Processing')).once.ordered
             expect(logger).to receive(:info).with(a_string_matching('In progress')).once.ordered
@@ -199,10 +214,10 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
       let(:schedule_jitter) { 0 }
 
       def create_jobs(include_post_receive: true)
-        AuthorizedProjectsWorker.perform_in(1.hour, 0)
-        AuthorizedProjectsWorker.perform_in(2.hours, 1)
+        TestWorker.perform_in(1.hour, 0)
+        TestWorker.perform_in(2.hours, 1)
         PostReceive.perform_in(3.hours, 2) if include_post_receive
-        AuthorizedProjectsWorker.perform_in(4.hours, 3)
+        TestWorker.perform_in(4.hours, 3)
       end
 
       it_behaves_like 'processing a set'
@@ -210,10 +225,10 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
     context 'retried jobs' do
       def create_jobs(include_post_receive: true)
-        retry_in(AuthorizedProjectsWorker, 1.hour, 0)
-        retry_in(AuthorizedProjectsWorker, 2.hours, 1)
+        retry_in(TestWorker, 1.hour, 0)
+        retry_in(TestWorker, 2.hours, 1)
         retry_in(PostReceive, 3.hours, 2) if include_post_receive
-        retry_in(AuthorizedProjectsWorker, 4.hours, 3)
+        retry_in(TestWorker, 4.hours, 3)
       end
 
       include_context 'when handling retried jobs'

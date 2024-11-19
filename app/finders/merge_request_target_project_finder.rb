@@ -11,9 +11,10 @@ class MergeRequestTargetProjectFinder
     @project_feature = project_feature
   end
 
-  def execute(search: nil, include_routes: false)
+  def execute(search: nil, include_routes: false, include_fork_networks: false)
     if source_project.fork_network
       items = include_routes ? projects.inc_routes : projects
+      items = include_fork_networks ? items.include_fork_networks : items
       by_search(items, search).allow_cross_joins_across_databases(
         url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
     else

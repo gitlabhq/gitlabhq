@@ -162,6 +162,16 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
         expect(result.dig('data', 'group', 'customEmoji', 'nodes').count).to eq(2)
       end
     end
+
+    it 'avoids N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new do
+        GitlabSchema.execute(query, context: { current_user: user })
+      end
+
+      create_list(:custom_emoji, 3, group: group)
+
+      expect { GitlabSchema.execute(query, context: { current_user: user }) }.not_to exceed_query_limit(control)
+    end
   end
 
   describe 'emailsDisabled' do

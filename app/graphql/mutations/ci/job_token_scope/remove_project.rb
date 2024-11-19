@@ -27,10 +27,16 @@ module Mutations
           },
           description: 'Direction of access, which defaults to outbound.'
 
-        field :ci_job_token_scope,
+        field :ci_job_token_scope_allowlist_entry,
+          Types::Ci::JobTokenScope::AllowlistEntryType,
+          null: true,
+          experiment: { milestone: '17.6' },
+          description: "Allowlist entry for the CI job token's access scope."
+
+        field :ci_job_token_scope, # rubocop: disable GraphQL/ExtractType -- no value for now
           Types::Ci::JobTokenScopeType,
           null: true,
-          description: "CI job token's scope of access."
+          description: "CI job token's access scope."
 
         def resolve(project_path:, target_project_path:, direction: :outbound)
           project = authorized_find!(project_path)
@@ -43,11 +49,13 @@ module Mutations
           if result.success?
             {
               ci_job_token_scope: ::Ci::JobToken::Scope.new(project),
+              ci_job_token_scope_allowlist_entry: result.payload,
               errors: []
             }
           else
             {
               ci_job_token_scope: nil,
+              ci_job_token_scope_allowlist_entry: nil,
               errors: [result.message]
             }
           end

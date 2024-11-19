@@ -28,9 +28,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-joining-a-project-alert',
   '.js-all-seats-used',
   '.js-period-in-terraform-state-name-alert',
-  '.js-expired-duo-pro-trial-widget',
-  '.js-duo-free-access-ending-banner',
-  '.js-expired-trial-widget',
+  '.js-new-mr-dashboard-banner',
 ];
 
 const initCallouts = () => {

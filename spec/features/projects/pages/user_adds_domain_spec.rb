@@ -60,7 +60,7 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
         fill_in 'Domain', with: 'my.test.domain.com'
         click_button 'Create new domain'
 
-        expect(page).to have_content('Domain has already been taken')
+        expect(page).to have_content("Domain is already in use by project #{project.full_path}")
       end
     end
   end
@@ -110,7 +110,7 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
       fill_in 'Domain', with: 'my.test.domain.com'
       click_button 'Create new domain'
 
-      expect(page).to have_content('Domain has already been taken')
+      expect(page).to have_content("Domain is already in use by project #{project.full_path}")
     end
 
     it 'shows warning message if auto ssl is failed' do

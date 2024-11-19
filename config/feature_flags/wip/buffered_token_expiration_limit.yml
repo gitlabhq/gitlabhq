@@ -1,0 +1,9 @@
+---
+name: buffered_token_expiration_limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461782
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153876
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490989
+milestone: '17.6'
+group: group::authentication
+type: wip
+default_enabled: false

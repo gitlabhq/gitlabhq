@@ -98,30 +98,15 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
       }
     end
 
-    context 'when the rename_abuse_workers feature is enabled' do
-      it 'executes the ::AntiAbuse::SpamAbuseEventsWorker' do
-        expect(::AntiAbuse::SpamAbuseEventsWorker).to receive(:perform_async).with(params)
+    it 'executes the ::AntiAbuse::SpamAbuseEventsWorker' do
+      expect(::AntiAbuse::SpamAbuseEventsWorker).to receive(:perform_async).with(params)
 
-        subject
-      end
-    end
-
-    context 'when the rename_abuse_workers feature is not enabled' do
-      before do
-        stub_feature_flags(rename_abuse_workers: false)
-      end
-
-      it 'executes the ::Abuse::SpamAbuseEventsWorker' do
-        expect(::Abuse::SpamAbuseEventsWorker).to receive(:perform_async).with(params)
-
-        subject
-      end
+      subject
     end
   end
 
   shared_examples 'does not execute the SpamAbuseEventsWorker' do
     specify do
-      expect(::Abuse::SpamAbuseEventsWorker).not_to receive(:perform_async)
       expect(::AntiAbuse::SpamAbuseEventsWorker).not_to receive(:perform_async)
 
       subject

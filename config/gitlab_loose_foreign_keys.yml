@@ -103,16 +103,6 @@ ci_pipeline_schedules:
   - table: projects
     column: project_id
     on_delete: async_delete
-ci_pipelines:
-  - table: merge_requests
-    column: merge_request_id
-    on_delete: async_delete
-  - table: users
-    column: user_id
-    on_delete: async_nullify
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 ci_project_mirrors:
   - table: projects
     column: project_id
@@ -140,7 +130,19 @@ ci_runner_projects:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_runner_taggings_group_type:
+  - table: namespaces
+    column: sharding_key_id
+    on_delete: async_delete
+ci_runner_taggings_project_type:
+  - table: projects
+    column: sharding_key_id
+    on_delete: async_delete
 ci_runners:
+  - table: users
+    column: creator_id
+    on_delete: async_nullify
+ci_runners_e59bb2812d:
   - table: users
     column: creator_id
     on_delete: async_nullify
@@ -193,7 +195,7 @@ country_access_logs:
     column: user_id
     on_delete: async_delete
 dast_pre_scan_verifications:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
   - table: projects
@@ -211,7 +213,7 @@ dast_profiles:
     column: project_id
     on_delete: async_delete
 dast_profiles_pipelines:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
 dast_profiles_tags:
@@ -264,7 +266,7 @@ dependency_list_export_parts:
     column: organization_id
     on_delete: async_delete
 dependency_list_exports:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_delete
   - table: users
@@ -295,6 +297,10 @@ group_security_exclusions:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+group_type_ci_runners_e59bb2812d:
+  - table: namespaces
+    column: sharding_key_id
+    on_delete: async_delete
 groups_visits:
   - table: namespaces
     column: entity_id
@@ -317,7 +323,7 @@ members:
     column: user_id
     on_delete: async_delete
 merge_request_metrics:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
 merge_request_requested_changes:
@@ -331,11 +337,11 @@ merge_request_requested_changes:
     column: user_id
     on_delete: async_delete
 merge_requests:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: head_pipeline_id
     on_delete: async_nullify
 merge_trains:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
 ml_candidates:
@@ -420,12 +426,15 @@ p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_stages:
   - table: projects
     column: project_id
     on_delete: async_delete
 packages_build_infos:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
 packages_npm_metadata_caches:
@@ -435,7 +444,7 @@ packages_npm_metadata_caches:
     target_column: status
     target_value: 2
 packages_package_file_build_infos:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
 pages_deployments:
@@ -456,6 +465,10 @@ project_security_exclusions:
 project_security_statistics:
   - table: projects
     column: project_id
+    on_delete: async_delete
+project_type_ci_runners_e59bb2812d:
+  - table: projects
+    column: sharding_key_id
     on_delete: async_delete
 projects:
   - table: users
@@ -495,7 +508,7 @@ sbom_components:
     column: organization_id
     on_delete: async_delete
 sbom_occurrences:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
   - table: projects
@@ -530,7 +543,7 @@ security_trainings:
 snippets:
   - table: organizations
     column: organization_id
-    on_delete: async_nullify
+    on_delete: async_delete
 terraform_state_versions:
   - table: ci_builds
     column: ci_build_id
@@ -548,7 +561,14 @@ user_details:
 virtual_registries_packages_maven_cached_responses:
   - table: virtual_registries_packages_maven_upstreams
     column: upstream_id
-    on_delete: async_nullify
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
+  - table: namespaces
+    column: group_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
 vulnerabilities:
   - table: users
     column: dismissed_by_id
@@ -590,9 +610,24 @@ vulnerability_external_issue_links:
     column: author_id
     on_delete: async_delete
 vulnerability_feedback:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_nullify
+  - table: users
+    column: comment_author_id
+    on_delete: async_nullify
+  - table: users
+    column: author_id
+    on_delete: async_delete
+  - table: issues
+    column: issue_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_finding_evidences:
   - table: projects
     column: project_id
@@ -635,15 +670,11 @@ vulnerability_namespace_historical_statistics:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
-vulnerability_occurrence_pipelines:
-  - table: ci_pipelines
-    column: pipeline_id
-    on_delete: async_delete
 vulnerability_occurrences:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: initial_pipeline_id
     on_delete: async_nullify
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
   - table: projects
@@ -660,6 +691,10 @@ vulnerability_remediations:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_representation_information:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_scanners:
   - table: projects
     column: project_id
@@ -672,7 +707,7 @@ vulnerability_state_transitions:
     column: author_id
     on_delete: async_nullify
 vulnerability_statistics:
-  - table: ci_pipelines
+  - table: p_ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
   - table: projects

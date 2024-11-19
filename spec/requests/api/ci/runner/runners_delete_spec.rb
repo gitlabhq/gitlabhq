@@ -42,15 +42,46 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       context 'when valid token is provided' do
-        let(:runner) { create(:ci_runner) }
+        let!(:runner) { create(:ci_runner, *args) }
+        let(:args) { [] }
 
-        subject { delete api('/runners'), params: { token: runner.token } }
+        subject(:perform_request) { delete api('/runners'), params: { token: runner.token } }
 
-        it 'deletes Runner' do
-          subject
+        it 'deletes runner' do
+          expect { perform_request }
+            .to change { ::Ci::Runner.count }.by(-1)
 
           expect(response).to have_gitlab_http_status(:no_content)
-          expect(::Ci::Runner.count).to eq(0)
+        end
+
+        it 'does not create missing runner manager' do
+          query = ActiveRecord::QueryRecorder.new { perform_request }
+
+          expect(query.log.select { |cmd| cmd.include?(::Ci::RunnerManager.table_name) }).to be_empty
+        end
+
+        it 'does not modify any record' do
+          query = ActiveRecord::QueryRecorder.new { perform_request }
+
+          expect(query.log.select { |cmd| cmd.include?('UPDATE') }).to be_empty
+        end
+
+        context 'with associated runner manager' do
+          let(:args) { :with_runner_manager }
+
+          it 'deletes runner and associated manager' do
+            expect { perform_request }
+              .to change { ::Ci::Runner.count }.by(-1)
+              .and change { ::Ci::RunnerManager.count }.by(-1)
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+
+          it 'does not modify any record' do
+            query = ActiveRecord::QueryRecorder.new { perform_request }
+
+            expect(query.log.select { |cmd| cmd.include?('UPDATE') }).to be_empty
+          end
         end
 
         it_behaves_like '412 response' do

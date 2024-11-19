@@ -84,7 +84,7 @@ module IconsHelper
   end
 
   def external_snippet_icon(name)
-    content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}")
+    content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}") # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
   end
 
   def audit_icon(name, css_class: nil)
@@ -102,9 +102,10 @@ module IconsHelper
 
   def boolean_to_icon(value)
     if value
-      sprite_icon('check', css_class: 'gl-text-green-500')
+      sprite_icon('check',
+        css_class: 'gl-text-green-500') + content_tag(:span, _('Enabled'), class: 'gl-pl-2 gl-text-subtle')
     else
-      sprite_icon('power', css_class: 'gl-text-gray-500')
+      content_tag(:span, _('Not enabled'), class: 'gl-text-subtle')
     end
   end
 

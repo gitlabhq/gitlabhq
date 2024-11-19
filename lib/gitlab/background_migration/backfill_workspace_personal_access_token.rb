@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::BackfillWorkspacePersonalAccessToken.prepend_mod_with('Gitlab::BackgroundMigration::BackfillWorkspacePersonalAccessToken') # rubocop:disable Layout/LineLength
+Gitlab::BackgroundMigration::BackfillWorkspacePersonalAccessToken.prepend_mod_with('Gitlab::BackgroundMigration::BackfillWorkspacePersonalAccessToken')

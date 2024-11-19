@@ -8,6 +8,7 @@ module Ci
 
     delegate :short_token, to: :trigger, prefix: true, allow_nil: true
 
+    validates :project_id, presence: true, on: :create
     # We switched to Ci::PipelineVariable from Ci::TriggerRequest.variables.
     # Ci::TriggerRequest doesn't save variables anymore.
     validates :variables, absence: true

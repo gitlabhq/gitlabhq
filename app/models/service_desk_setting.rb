@@ -19,11 +19,14 @@ class ServiceDeskSetting < ApplicationRecord
     allow_blank: true,
     format: { with: /\A[a-z0-9_]+\z/, message: ->(setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
 
+  # Don't use Devise.email_regexp or URI::MailTo::EMAIL_REGEXP to be a bit more restrictive
+  # on the format of an email. For example because we don't want to allow `+` and other
+  # subaddress delimeters in the local part.
   validates :custom_email,
     length: { maximum: 255 },
     uniqueness: true,
     allow_nil: true,
-    format: Gitlab::Utils::Email::EMAIL_REGEXP_WITH_ANCHORS
+    format: Gitlab::Email::ServiceDesk::CustomEmail::EMAIL_REGEXP_WITH_ANCHORS
 
   validates :custom_email_credential,
     presence: true,

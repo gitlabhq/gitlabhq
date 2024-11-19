@@ -32,7 +32,7 @@ module Resolvers
 
       argument :skip_verify_project_sha, GraphQL::Types::Boolean,
         required: false,
-        alpha: { milestone: '16.5' },
+        experiment: { milestone: '16.5' },
         description: "If the provided `sha` is found in the project's repository but is not " \
           "associated with a Git reference (a detached commit), the verification fails and a " \
           "validation error is returned. Otherwise, verification passes, even if the `sha` is " \

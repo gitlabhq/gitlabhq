@@ -77,4 +77,42 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
       end
     end
   end
+
+  describe 'POST /:namespace/:project/merge_requests' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:user) { create(:user) }
+
+    let(:create_params) do
+      {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        merge_request: {
+          source_branch: 'two-commits',
+          target_branch: 'master',
+          title: 'Something',
+          merge_after: '2024-09-03T21:18'
+        }
+      }
+    end
+
+    before_all do
+      group.add_developer(user)
+    end
+
+    before do
+      login_as(user)
+    end
+
+    it 'creates correct merge schedule' do
+      post namespace_project_merge_requests_path(create_params)
+
+      expect(response).to redirect_to(project_merge_request_path(project, MergeRequest.last))
+
+      merge_request = MergeRequest.last
+      expect(merge_request.merge_schedule.merge_after).to eq(
+        Time.zone.parse('2024-09-03T21:18')
+      )
+    end
+  end
 end

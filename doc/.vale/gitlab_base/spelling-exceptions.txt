@@ -183,6 +183,7 @@ colocate
 colocated
 colocating
 commit's
+Command Palette
 CommonMark
 compilable
 composable
@@ -506,6 +507,7 @@ kanban
 kanbans
 kaniko
 Karma
+Kata
 KCachegrind
 Kerberos
 Keycloak
@@ -1009,6 +1011,7 @@ swimlane
 swimlanes
 syncable
 Sysbench
+Sysbox
 syscall
 syscalls
 syslog

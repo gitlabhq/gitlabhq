@@ -28,13 +28,14 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
     end
 
     context 'when symbol files are found' do
-      it 'creates a symbol record and extracts the signature' do
+      it 'creates a symbol record and extracts the signature', :aggregate_failures do
         expect_next_instance_of(Packages::Nuget::Symbols::ExtractSignatureAndChecksumService,
           instance_of(File)) do |service|
           expect(service).to receive(:execute).and_call_original
         end
 
         expect { subject }.to change { package.nuget_symbols.count }.by(1)
+        expect(package.nuget_symbols.last.project_id).to eq(package.project_id)
       end
     end
 

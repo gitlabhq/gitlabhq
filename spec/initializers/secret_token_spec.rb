@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/01_secret_token'
 
-# rubocop:disable RSpec/FilePath -- The initializer name starts with `01` because we want to run it ASAP
+# rubocop:disable RSpec/SpecFilePathFormat -- The initializer name starts with `01` because we want to run it ASAP
 # rubocop:disable RSpec/FeatureCategory -- This is a shared responsibility
 RSpec.describe SecretsInitializer do
   let(:rails_env_name) { 'test' }
@@ -91,7 +91,10 @@ RSpec.describe SecretsInitializer do
     let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m }
 
     around do |example|
-      original_credentials = Rails.application.credentials
+      # We store Rails.application.credentials as a hash so that we can revert to the original
+      # values after the example has run. Assigning Rails.application.credentials= directly doesn't work.
+      original_credentials = Rails.application.credentials.to_h
+
       # Ensure we clear any existing `encrypted_settings_key_base` credential
       allowed_keys.each do |key|
         Rails.application.credentials.public_send(:"#{key}=", nil)
@@ -99,7 +102,9 @@ RSpec.describe SecretsInitializer do
 
       example.run
 
-      Rails.application.credentials = original_credentials
+      original_credentials.each do |key, value|
+        Rails.application.credentials.public_send(:"#{key}=", value)
+      end
     end
 
     before do
@@ -249,11 +254,13 @@ RSpec.describe SecretsInitializer do
           expect(new_secrets['otp_key_base']).to eq('otp_key_base')
           expect(new_secrets['openid_connect_signing_key']).to match(rsa_key)
         end
+        expect(initializer).to receive(:warn).with(/^Creating a backup of secrets file/)
         expect(initializer).to receive(:warn).with(
           "Missing Rails.application.credentials.openid_connect_signing_key for #{rails_env_name} environment. " \
             "The secret will be generated and stored in config/secrets.yml."
         )
 
+        expect(FileUtils).to receive(:mv).with(fake_secret_file.path, anything)
         initializer.execute!
 
         expect(Rails.application.credentials.secret_key_base).to eq('env_key')
@@ -264,4 +271,4 @@ RSpec.describe SecretsInitializer do
   end
 end
 # rubocop:enable RSpec/FeatureCategory
-# rubocop:enable RSpec/FilePath
+# rubocop:enable RSpec/SpecFilePathFormat

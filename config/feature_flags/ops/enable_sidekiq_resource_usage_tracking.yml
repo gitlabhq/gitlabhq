@@ -1,0 +1,9 @@
+---
+name: enable_sidekiq_resource_usage_tracking
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/work_items/3919
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170895
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501502
+milestone: '17.6'
+group: group::scalability
+type: ops
+default_enabled: false

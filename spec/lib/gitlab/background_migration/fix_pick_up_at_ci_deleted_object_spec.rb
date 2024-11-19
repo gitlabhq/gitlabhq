@@ -41,7 +41,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixPickUpAtCiDeletedObject, schema: 
 
   describe '#perform' do
     context 'when there are invalid records' do
-      it 'resets pick_up_at values' do
+      it 'resets pick_up_at values', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500119' do
         expect { migration.perform }
           .to not_change { deleted_object1.reload.pick_up_at }
           .and not_change { deleted_object2.reload.pick_up_at }

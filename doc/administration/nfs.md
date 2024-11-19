@@ -169,7 +169,7 @@ use the `hard` option, because (from the man page):
 
 Other vendors make similar recommendations, including
 [Recommended mount options for read-write directories](https://help.sap.com/docs/SUPPORT_CONTENT/basis/3354611703.html) and NetApp's
-[knowledge base](https://kb.netapp.com/Advice_and_Troubleshooting/Data_Storage_Software/ONTAP_OS/What_are_the_differences_between_hard_mount_and_soft_mount),
+[knowledge base](https://kb.netapp.com/on-prem/ontap/da/NAS/NAS-KBs/What_are_the_differences_between_hard_mount_and_soft_mount),
 they highlight that if the NFS client driver caches data, `soft` means there is no certainty if
 writes by GitLab are actually on disk.
 

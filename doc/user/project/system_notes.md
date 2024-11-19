@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 System notes are short descriptions that help you understand the history of events
-that occur during the life cycle of a GitLab object, such as:
+that occur during the lifecycle of a GitLab object, such as:
 
 - [Alerts](../../operations/incident_management/alerts.md).
 - [Designs](issues/design_management.md).

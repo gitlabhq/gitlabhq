@@ -8,7 +8,7 @@
     .form-group
       = f.label :users_get_by_id_limit_allowlist_raw, _('Users to exclude from the rate limit'), class: 'label-bold'
       = f.text_area :users_get_by_id_limit_allowlist_raw, class: 'form-control gl-form-input', rows: 5, aria: { describedBy: 'users-api-limit-users-allowlist-field-description' }
-      .form-text.text-muted{ id: 'users-api-limit-users-allowlist-field-description' }
+      .form-text.gl-text-subtle{ id: 'users-api-limit-users-allowlist-field-description' }
         = _('List of users who are allowed to exceed the rate limit. Example: username1, username2')
 
   = f.submit _('Save changes'), pajamas_button: true

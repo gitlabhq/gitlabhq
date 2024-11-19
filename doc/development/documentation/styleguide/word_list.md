@@ -52,6 +52,35 @@ thereafter. If the first word in a sentence, do not capitalize `factor` or `auth
 
 - Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first sign in.
 
+## ability, able
+
+Try to avoid using **ability** or **able** because they can be ambiguous.
+The usage of these words is similar to [allow and enable](#allow-enable).
+
+Instead of talking about the abilities of the user, or
+the capabilities of the product, be direct and specific.
+
+You can, however, use these terms when you're talking about security, or
+preventing someone from being able to complete a task in the UI.
+
+Do not confuse **ability** or **able** with [permissions](#permissions) or [roles](#roles).
+
+Use:
+
+- You cannot change this setting.
+- To change this setting, you must have the Maintainer role.
+- Confirm you can sign in.
+- The external load balancer cannot connect.
+- Option to delete branches introduced in GitLab 17.1.
+
+Instead of:
+
+- You are not able to change this setting.
+- You must have the ability to change this setting.
+- Verify you are able to sign in.
+- The external load balancer will not be able to connect.
+- Ability to delete branches introduced in GitLab 17.1.
+
 ## above
 
 Try to avoid using **above** when referring to an example or table in a documentation page. If required, use **previous** instead. For example:
@@ -114,7 +143,7 @@ Use title case for **Admin Mode**. The UI uses title case.
 
 Use **administrator access** instead of **admin** when talking about a user's access level.
 
-![admin access level](img/admin_access_level.png)
+![admin access level](img/admin_access_level_v15_9.png)
 
 An **administrator** is not a [role](#roles) or [permission](#permissions).
 
@@ -158,6 +187,10 @@ Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
 ## AI, artificial intelligence
 
 Use **AI**. Do not spell out **artificial intelligence**.
+
+## AI gateway
+
+Use lowercase for **AI gateway** and do not hyphenate.
 
 ## AI Impact Dashboard
 
@@ -258,6 +291,28 @@ Instead, use **assign**. For example:
 ## authenticated user
 
 Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
+
+## authenticate
+
+Try to use the most suitable preposition when using **authenticate** as a verb.
+
+Use **authenticate with** when referring to a system or provider that
+performs the authentication, like a token or a service like OAuth.
+
+For example:
+
+- Authenticate with a deploy token.
+- Authenticate with your credentials.
+- Authenticate with OAuth.
+- The runner uses an authentication token to authenticate with GitLab.
+
+Use **authenticate against** when referring to a resource that contains
+credentials that are checked for validation.
+
+For example:
+
+- The client authenticates against the LDAP directory.
+- The script authenticates against the local user database.
 
 ## before you begin
 
@@ -416,7 +471,7 @@ For example:
 
 - Your instance must be able to synchronize your subscription data with GitLab.
 
-## cloud native
+## cloud-native
 
 When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
 This version is different than the larger, more monolithic **Linux package** that is used to deploy GitLab.
@@ -525,7 +580,7 @@ For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epi
 
 ## configuration
 
-When you update a collection of settings, call it a **configuration**.
+When you edit a collection of settings, call it a **configuration**.
 
 ## configure
 
@@ -757,6 +812,17 @@ Instead of:
 
 Do not use **easily**. If the user doesn't find the process to be easy, we lose their trust.
 
+## edit
+
+Use **edit** for UI documentation and user actions.
+
+Use **update** for API documentation and programmatic changes.
+
+For example:
+
+- To edit your profile settings, select **Edit**.
+- Use this endpoint to update user permissions.
+
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
@@ -831,11 +897,11 @@ Try to avoid **etc.**. Be as specific as you can. Do not use
 
 Use:
 
-- You can update objects, like merge requests and issues.
+- You can edit objects, like merge requests and issues.
 
 Instead of:
 
-- You can update objects, like merge requests, issues, etc.
+- You can edit objects, like merge requests, issues, etc.
 
 ## expand
 
@@ -1009,6 +1075,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo AI Impact Dashboard
 - GitLab Duo Chat
 - GitLab Duo Code Explanation
+- GitLab Duo Code Review
 - GitLab Duo Code Review Summary
 - GitLab Duo Code Suggestions
 - GitLab Duo for the CLI
@@ -1102,6 +1169,19 @@ Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the in
 
 Use **GitLab Workflow extension for VS Code** to refer to the extension.
 You can also use **GitLab Workflow for VS Code** or **GitLab Workflow**.
+
+For terms in VS Code, see [VS Code user interface](#vs-code-user-interface)
+
+## GraphiQL
+
+Use **GraphiQL** or **GraphQL explorer** to refer to this tool.
+
+In most cases, you should use **GraphiQL** on its own with no descriptor.
+
+Do not use:
+
+- GraphiQL explorer tool
+- GraphiQL explorer
 
 ## group access token
 
@@ -1304,6 +1384,12 @@ Instead of:
 - This setting is turned on at the group level.
 - This is a project-level setting.
 
+## lifecycle, life cycle, life-cycle
+
+Use one word for **lifecycle**. Do not use **life cycle** or **life-cycle**.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
+
 ## list
 
 Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
@@ -1482,6 +1568,15 @@ When writing about the Minimal Access role:
 Do not use bold.
 
 Do not use **Minimal Access permissions**. A user who is assigned the Minimal Access role has a set of associated permissions.
+
+## model registry
+
+When documenting the GitLab model registry features and functionality, use lowercase.
+
+Use:
+
+- The GitLab model registry supports A, B, and C.
+- You can publish a model to your project's model registry.
 
 ## n/a, N/A, not applicable
 
@@ -1681,8 +1776,8 @@ Use:
 
 If you write a phrase like, "On the **Issues** page," ensure steps for how to get to the page are nearby. Otherwise, people might not know what the **Issues** page is.
 
-The page name should be visible in the UI at the top of the page.
-If it is not, you should be able to get the name from the breadcrumb.
+The page name should be visible in the UI at the top of the page,
+or included in the breadcrumb.
 
 The docs should match the case in the UI, and the page name should be bold. For example:
 
@@ -1707,6 +1802,18 @@ Examples:
 - parent pipeline
 
 See also: [child](#child), and [subgroup](#subgroup).
+
+## per
+
+Do not use **per** because it can have several different meanings.
+
+Use the specific prepositional phrase instead:
+
+- for each
+- through
+- by
+- every
+- according to
 
 ## permissions
 
@@ -1834,8 +1941,8 @@ Use **resolution** when the troubleshooting solution fixes the issue permanently
 A resolution usually involves file and code changes to correct the problem.
 For example:
 
-- To resolve this issue, update the `.gitlab-ci.yml` file.
-- One resolution is to update the `.gitlab-ci.yml` file.
+- To resolve this issue, edit the `.gitlab-ci.yml` file.
+- One resolution is to edit the `.gitlab-ci.yml` file.
 
 See also [workaround](#workaround).
 
@@ -1883,7 +1990,7 @@ Use:
 
 Instead of:
 
-- You must have the Owner role for the group.
+- You must have the Owner role of the group.
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
@@ -1981,7 +2088,7 @@ Searching is different from [filtering](#filter).
 
 When referring to the subscription billing model:
 
-- For GitLab SaaS, use **seats**. Customers purchase seats. Users occupy seats when they are invited
+- For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
   to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
 - For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
@@ -2246,6 +2353,12 @@ You **turn on** or **turn off** a toggle. For example:
 
 - Turn on the **blah** toggle.
 
+## top-level group
+
+Use lowercase for **top-level group** (hyphenated).
+
+Do not use **root group**.
+
 ## TFA, two-factor authentication
 
 Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) instead.
@@ -2287,7 +2400,7 @@ Use **update** for installing a newer **patch** version of the software only. Fo
 
 - Update GitLab from 14.9 to 14.9.1.
 
-Do not use **update** for any other case. Instead, use **upgrade**.
+Do not use **update** for any other case. Instead, use **[upgrade](#upgrade)** or **[edit](#edit)**.
 
 ## upgrade
 
@@ -2363,6 +2476,12 @@ Pay attention to spacing by the letter **v**. In semantic versioning, no space e
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
 
+## VS Code user interface
+
+When describing the user interface of VS Code and the Web IDE, follow the usage and capitalization of the
+[VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface), such as Command Palette
+and Primary Side Bar.
+
 ## Vulnerability Explanation
 
 Use title case for **Vulnerability Explanation**.
@@ -2388,6 +2507,10 @@ Use:
 Instead of:
 
 - We created a feature for you to add widgets.
+
+## Web IDE user interface
+
+See [VS Code user interface](#vs-code-user-interface).
 
 ## workaround
 

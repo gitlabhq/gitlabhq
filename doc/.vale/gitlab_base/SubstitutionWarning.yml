@@ -9,6 +9,8 @@ extends: substitution
 message: "Use '%s' instead of '%s' when possible."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: warning
+action:
+  name: replace
 ignorecase: true
 swap:
   active user: "billable user"

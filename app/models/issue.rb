@@ -24,7 +24,6 @@ class Issue < ApplicationRecord
   include FromUnion
   include EachBatch
   include PgFullTextSearchable
-  include IgnorableColumns
   include Gitlab::DueAtFilterable
 
   extend ::Gitlab::Utils::Override
@@ -61,23 +60,29 @@ class Issue < ApplicationRecord
   ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
 
   # Interim columns to convert integer IDs to bigint
-  ignore_column :author_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :closed_by_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :duplicated_to_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :last_edited_by_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :milestone_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :moved_to_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :project_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
-  ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :author_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :closed_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :duplicated_to_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :last_edited_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :milestone_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :moved_to_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :project_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
-  belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :work_items
+  belongs_to :work_item_type, class_name: 'WorkItems::Type'
+
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  belongs_to :correct_work_item_type, # rubocop:disable Rails/InverseOf -- Temp association to the same record
+    class_name: 'WorkItems::Type',
+    foreign_key: :correct_work_item_type_id,
+    primary_key: :correct_id
 
   belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
@@ -93,6 +98,8 @@ class Issue < ApplicationRecord
 
   has_many :issue_assignees
   has_many :issue_email_participants
+  alias_method :email_participants, :issue_email_participants
+
   has_one :email
   has_many :assignees, class_name: "User", through: :issue_assignees
   has_many :zoom_meetings
@@ -104,6 +111,9 @@ class Issue < ApplicationRecord
       ordered.first
     end
   end
+  has_many :assignees_by_name_and_id, -> { ordered_by_name_asc_id_desc },
+    class_name: "User", through: :issue_assignees,
+    source: :assignee
 
   has_one :search_data, class_name: 'Issues::SearchData'
   has_one :issuable_severity
@@ -191,25 +201,38 @@ class Issue < ApplicationRecord
 
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_api_entity_associations, -> {
-    preload(:work_item_type, :timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
-      namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },
+    preload(::Gitlab::Issues::TypeAssociationGetter.call,
+      :timelogs, :closed_by, :assignees, :author, :issuable_severity,
+      :labels, namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },
       project: [:project_namespace, :project_feature, :route, { group: :route }, { namespace: :route }],
-      duplicated_to: { project: [:project_feature] })
+      duplicated_to: { project: [:project_feature] }
+    )
   }
   scope :with_issue_type, ->(types) {
     types = Array(types)
 
-    # Using != 1 since we also want the guard clause to handle empty arrays
-    return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+    if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
+      # Using != 1 since we also want the guard clause to handle empty arrays
+      return joins(:correct_work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
 
-    # This optimization helps the planer use the correct indexes when filtering by a single type
-    where(
-      '"issues"."work_item_type_id" = (?)',
-      WorkItems::Type.by_type(types.first).select(:id).limit(1)
-    )
+      # This optimization helps the planer use the correct indexes when filtering by a single type
+      where(
+        '"issues"."correct_work_item_type_id" = (?)',
+        WorkItems::Type.by_type(types.first).select(:correct_id).limit(1)
+      )
+    else
+      # Using != 1 since we also want the guard clause to handle empty arrays
+      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+
+      # This optimization helps the planer use the correct indexes when filtering by a single type
+      where(
+        '"issues"."work_item_type_id" = (?)',
+        WorkItems::Type.by_type(types.first).select(:id).limit(1)
+      )
+    end
   }
   scope :without_issue_type, ->(types) {
-    joins(:work_item_type).where.not(work_item_types: { base_type: types })
+    joins(::Gitlab::Issues::TypeAssociationGetter.call).where.not(work_item_types: { base_type: types })
   }
 
   scope :public_only, -> { where(confidential: false) }
@@ -251,7 +274,9 @@ class Issue < ApplicationRecord
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
-  scope :with_work_item_type, -> { joins(:work_item_type) }
+  scope :with_work_item_type, -> {
+    joins(::Gitlab::Issues::TypeAssociationGetter.call)
+  }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
@@ -330,6 +355,25 @@ class Issue < ApplicationRecord
 
   def self.participant_includes
     [:assignees] + super
+  end
+
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  def work_item_type
+    return correct_work_item_type if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
+
+    super
+  end
+
+  def work_item_type_id=(work_item_type_id)
+    self.correct_work_item_type_id = WorkItems::Type.find_by(id: work_item_type_id)&.correct_id
+
+    super
+  end
+
+  def work_item_type=(work_item_type)
+    self.correct_work_item_type = work_item_type
+
+    super
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)

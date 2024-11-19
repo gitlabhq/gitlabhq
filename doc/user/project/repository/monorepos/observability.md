@@ -38,7 +38,7 @@ The following are log entry fields in the Gitaly logs that can be filtered on:
 | `json.grpc.request.glRepository`     | A repository in question. In the form of `project-<project_id>` eg: `project-214`  | In order to see how many clones/fetches were for a given repository. |
 | `json.grpc.request.glProjectPath`    | A repository in question. In the form of a project path eg: `my-org/coolproject`  | In order to see how many clones/fetches were for a given repository. |
 
-The following are log entry fields that give useful information about cpu and
+The following are log entry fields that give useful information about CPU and
 memory:
 
 | Log field to inspect     | What does it tell you?                                          |

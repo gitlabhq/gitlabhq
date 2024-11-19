@@ -145,7 +145,7 @@ export const containerRepositoryMock = {
     visibility: 'public',
     path: 'gitlab-test',
     id: '1',
-    containerExpirationPolicy: {
+    containerTagsExpirationPolicy: {
       enabled: false,
       nextRunAt: '2020-11-27T08:59:27Z',
     },

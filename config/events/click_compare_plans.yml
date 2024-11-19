@@ -1,0 +1,16 @@
+---
+description: Tracks clicks on the compare plans for subscription options.
+action: click_compare_plans
+product_group: activation
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153166
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: trial is active or not true/false

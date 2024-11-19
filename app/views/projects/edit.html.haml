@@ -52,10 +52,8 @@
     - c.with_description do
       = s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
     - c.with_body do
-      = render_if_exists 'projects/settings/restore', project: @project
-
       .gl-flex.gl-gap-5.gl-flex-col
-        = render Pajamas::CardComponent.new(header_options: { class: 'gl-px-5 gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-gray-100' }, body_options: { class: 'gl-px-5 gl-py-4' }) do |c|
+        = render Pajamas::CardComponent.new do |c|
           - c.with_header do
             .gl-flex.gl-grow
               %h4.gl-text-base.gl-leading-24.gl-m-0= _('Housekeeping')
@@ -73,7 +71,7 @@
 
         = render_if_exists 'projects/settings/archive'
 
-        = render Pajamas::CardComponent.new(header_options: { class: 'gl-px-5 gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-gray-100' }, body_options: { class: 'gl-px-5 gl-py-4' }) do |c|
+        = render Pajamas::CardComponent.new do |c|
           - c.with_header do
             .gl-flex.gl-grow
               %h4.gl-text-base.gl-leading-24.gl-m-0= _('Change path')
@@ -105,6 +103,7 @@
 
         = render 'remove_fork', project: @project
 
+        = render_if_exists 'shared/groups_projects/settings/restore', context: @project
         = render 'remove', project: @project
 - else
   - if can?(current_user, :archive_project, @project)

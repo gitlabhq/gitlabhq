@@ -16,7 +16,7 @@ RSpec.describe PagesDomains::CreateAcmeOrderService, feature_category: :pages do
   end
 
   let(:lets_encrypt_client) do
-    instance_double('Gitlab::LetsEncrypt::Client').tap do |client|
+    instance_double(Gitlab::LetsEncrypt::Client).tap do |client|
       allow(client).to receive(:new_order).with(pages_domain.domain)
         .and_return(order_double)
     end

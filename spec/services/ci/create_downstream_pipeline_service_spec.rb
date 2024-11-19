@@ -804,13 +804,13 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect { subject }.to change(downstream_project.ci_pipelines, :count).by(1)
         expect(subject).to be_error
         expect(subject.message).to eq(
-          ["test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post"]
+          ["test job: chosen stage testx does not exist; available stages are .pre, build, test, deploy, .post"]
         )
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
         expect(bridge.options[:downstream_errors]).to eq(
-          ['test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post']
+          ['test job: chosen stage testx does not exist; available stages are .pre, build, test, deploy, .post']
         )
       end
     end

@@ -21,7 +21,7 @@ class SyncIndexForPCiBuildsPart2 < Gitlab::Database::Migration[2.2]
       name: "p_ci_builds_commit_id_bigint_artifacts_expire_at_id_idx",
       columns: [:commit_id_convert_to_bigint, :artifacts_expire_at, :id],
       options: {
-        where: "type::text = 'Ci::Build'::text AND (retried = false OR retried IS NULL) AND (name::text = ANY (ARRAY['sast'::character varying::text, 'secret_detection'::character varying::text, 'dependency_scanning'::character varying::text, 'container_scanning'::character varying::text, 'dast'::character varying::text]))" # rubocop:disable Layout/LineLength -- Where clause is just too long.
+        where: "type::text = 'Ci::Build'::text AND (retried = false OR retried IS NULL) AND (name::text = ANY (ARRAY['sast'::character varying::text, 'secret_detection'::character varying::text, 'dependency_scanning'::character varying::text, 'container_scanning'::character varying::text, 'dast'::character varying::text]))"
       }
     }
   ]

@@ -1448,6 +1448,10 @@ RSpec.describe Note, feature_category: :team_planning do
     it 'returns alert_management_alert for an alert note' do
       expect(build(:note_on_alert).noteable_ability_name).to eq('alert_management_alert')
     end
+
+    it 'returns wiki page for a wiki page note' do
+      expect(build(:note_on_wiki_page).noteable_ability_name).to eq('wiki_page')
+    end
   end
 
   describe '#cache_markdown_field' do

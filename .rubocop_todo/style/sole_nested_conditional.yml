@@ -4,7 +4,6 @@ Style/SoleNestedConditional:
   Exclude:
     - 'app/controllers/ldap/omniauth_callbacks_controller.rb'
     - 'app/controllers/omniauth_callbacks_controller.rb'
-    - 'app/controllers/projects/blob_controller.rb'
     - 'app/helpers/nav_helper.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
     - 'app/models/issue.rb'

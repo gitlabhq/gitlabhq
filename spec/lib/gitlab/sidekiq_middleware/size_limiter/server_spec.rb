@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-# rubocop: disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Server, :clean_gitlab_redis_queues do
   subject(:middleware) { described_class.new }
 

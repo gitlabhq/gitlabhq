@@ -20,7 +20,7 @@ module Types
         null: true,
         description: 'Available widgets for the work item type.',
         method: :widgets,
-        alpha: { milestone: '16.7' }
+        experiment: { milestone: '16.7' }
 
       def widget_definitions
         object.widgets(context[:resource_parent])

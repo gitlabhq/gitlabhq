@@ -624,40 +624,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
-  describe 'GET #rapid_diffs' do
-    subject(:send_request) { get :rapid_diffs, params: params }
-
-    let(:format) { :html }
-    let(:params) do
-      {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: commit.id,
-        format: format
-      }
-    end
-
-    it 'renders rapid_diffs template' do
-      send_request
-
-      expect(assigns(:diffs)).to be_a(Gitlab::Diff::FileCollection::Commit)
-      expect(assigns(:environment)).to be_nil
-      expect(response).to render_template(:rapid_diffs)
-    end
-
-    context 'when the feature flag rapid_diffs is disabled' do
-      before do
-        stub_feature_flags(rapid_diffs: false)
-      end
-
-      it 'returns 404' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
   describe '#append_info_to_payload' do
     it 'appends diffs_files_count for logging' do
       expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|

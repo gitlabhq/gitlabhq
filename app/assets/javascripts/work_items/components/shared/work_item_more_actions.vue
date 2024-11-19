@@ -14,6 +14,7 @@ export default {
   i18n: {
     moreActions: s__('WorkItem|More actions'),
     showLabels: s__('WorkItem|Show labels'),
+    showClosed: s__('WorkItem|Show closed items'),
   },
   components: {
     GlDisclosureDropdown,
@@ -40,7 +41,12 @@ export default {
     showLabels: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
+    },
+    showClosed: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     showViewRoadmapAction: {
       type: Boolean,
@@ -109,6 +115,20 @@ export default {
           <gl-toggle
             :value="showLabels"
             :label="$options.i18n.showLabels"
+            class="gl-justify-between"
+            label-position="left"
+          />
+        </template>
+      </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
+        class="work-item-dropdown-toggle"
+        @action="$emit('toggle-show-closed')"
+      >
+        <template #list-item>
+          <gl-toggle
+            :value="showClosed"
+            :label="$options.i18n.showClosed"
             class="gl-justify-between"
             label-position="left"
           />

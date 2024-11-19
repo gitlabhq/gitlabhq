@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import VueApollo from 'vue-apollo';
-import { isEmpty } from 'lodash';
+import { isEmpty, map, pick, isEqual } from 'lodash';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -22,7 +22,6 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
-  WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_LABELS,
@@ -297,13 +296,13 @@ export const setNewWorkItemCache = async (
   widgetDefinitions,
   workItemType,
   workItemTypeId,
+  workItemTypeIconName,
   // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_ASSIGNEES,
     WIDGET_TYPE_LABELS,
     WIDGET_TYPE_WEIGHT,
-    WIDGET_TYPE_ROLLEDUP_DATES,
     WIDGET_TYPE_MILESTONE,
     WIDGET_TYPE_ITERATION,
     WIDGET_TYPE_START_AND_DUE_DATE,
@@ -322,7 +321,7 @@ export const setNewWorkItemCache = async (
   }
 
   const workItemTitleCase = convertEachWordToTitleCase(workItemType.split('_').join(' '));
-  const availableWidgets = widgetDefinitions?.flatMap((i) => i.type);
+  const availableWidgets = widgetDefinitions?.flatMap((i) => i.type) || [];
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
 
@@ -410,19 +409,6 @@ export const setNewWorkItemCache = async (
         });
       }
 
-      if (widgetName === WIDGET_TYPE_ROLLEDUP_DATES) {
-        widgets.push({
-          type: 'ROLLEDUP_DATES',
-          dueDate: null,
-          dueDateFixed: null,
-          dueDateIsFixed: null,
-          startDate: null,
-          startDateFixed: null,
-          startDateIsFixed: null,
-          __typename: 'WorkItemWidgetRolledupDates',
-        });
-      }
-
       if (widgetName === WIDGET_TYPE_MILESTONE) {
         widgets.push({
           type: 'MILESTONE',
@@ -444,6 +430,8 @@ export const setNewWorkItemCache = async (
           type: 'START_AND_DUE_DATE',
           dueDate: null,
           startDate: null,
+          isFixed: false,
+          rollUp: false,
           __typename: 'WorkItemWidgetStartAndDueDate',
         });
       }
@@ -522,8 +510,21 @@ export const setNewWorkItemCache = async (
 
   const draftData = JSON.parse(getDraft(autosaveKey));
 
+  // get the widgets stored in draft data
+  const draftDataWidgets = map(draftData?.workspace?.workItem?.widgets, pick('type')) || [];
+
+  // this is to fix errors when we are introducing a new widget and the cache always updates from the old widgets
+  // Like if we we introduce a new widget , the user might always see the cached data until hits cancel
+  const draftWidgetsAreSameAsCacheDigits = isEqual(
+    draftDataWidgets.sort(),
+    availableWidgets.sort(),
+  );
+
   const isValidDraftData =
-    !isEmpty(draftData) && getStorageDraftString && draftData?.workspace?.workItem;
+    draftData?.workspace?.workItem &&
+    getStorageDraftString &&
+    draftData?.workspace?.workItem &&
+    isEmpty(draftWidgetsAreSameAsCacheDigits);
 
   /** check in case of someone plays with the localstorage, we need to be sure */
   if (!isValidDraftData) {
@@ -559,7 +560,7 @@ export const setNewWorkItemCache = async (
                 id: newWorkItemPath,
                 fullPath,
                 name: newWorkItemPath,
-                __typename: 'Namespace', // eslint-disable-line @gitlab/require-i18n-strings
+                __typename: 'Namespace',
               },
               author: {
                 id: currentUserId,
@@ -573,7 +574,7 @@ export const setNewWorkItemCache = async (
               workItemType: {
                 id: workItemTypeId || 'mock-work-item-type-id',
                 name: workItemTitleCase,
-                iconName: 'issue-type-epic',
+                iconName: workItemTypeIconName,
                 __typename: 'WorkItemType',
               },
               userPermissions: {
@@ -588,7 +589,7 @@ export const setNewWorkItemCache = async (
               widgets,
               __typename: 'WorkItem',
             },
-            __typename: 'Namespace', // eslint-disable-line @gitlab/require-i18n-strings
+            __typename: 'Namespace',
           },
         },
   });

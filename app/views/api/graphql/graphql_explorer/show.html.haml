@@ -1,0 +1,13 @@
+!!! 5
+%html
+  %head
+    %title GraphQL explorer
+
+    = csrf_meta_tags
+    = action_cable_meta_tag
+    = Gon::Base.render_data(nonce: content_security_policy_nonce)
+
+    = universal_stylesheet_link_tag 'page_bundles/graphql_explorer'
+    = webpack_bundle_tag 'graphql_explorer'
+  %body
+    #graphiql-container Loading...

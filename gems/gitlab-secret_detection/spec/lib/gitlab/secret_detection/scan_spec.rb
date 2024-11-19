@@ -9,8 +9,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
     Struct.new(:id, :data).new(id, data)
   end
 
-  def create_exclusion(value:)
-    Struct.new(:value).new(value)
+  let(:exclusion) do
+    Struct.new('Exclusion', :value, :keyword_init)
   end
 
   let(:ruleset) do
@@ -49,6 +49,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
     }
   end
 
+  let(:empty_applied_exclusions) { [] }
+
   it "does not raise an error parsing the toml file" do
     expect { scan }.not_to raise_error
   end
@@ -76,7 +78,11 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
       end
 
       it "does not match" do
-        expected_response = Gitlab::SecretDetection::Response.new(Gitlab::SecretDetection::Status::NOT_FOUND)
+        expected_response = Gitlab::SecretDetection::Response.new(
+          Gitlab::SecretDetection::Status::NOT_FOUND,
+          nil,
+          empty_applied_exclusions
+        )
 
         expect(scan.secrets_scan(blobs)).to eq(expected_response)
       end
@@ -165,7 +171,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
               ruleset['rules'][2]['id'],
               ruleset['rules'][2]['description']
             )
-          ]
+          ],
+          empty_applied_exclusions
         )
       end
 
@@ -249,7 +256,11 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
       it "whole secret detection scan operation times out" do
         scan_timeout_secs = 0.000_001 # 1 micro-sec to intentionally timeout large blob
 
-        expected_response = Gitlab::SecretDetection::Response.new(Gitlab::SecretDetection::Status::SCAN_TIMEOUT)
+        expected_response = Gitlab::SecretDetection::Response.new(
+          Gitlab::SecretDetection::Status::SCAN_TIMEOUT,
+          nil,
+          empty_applied_exclusions
+        )
 
         begin
           response = scan.secrets_scan(blobs, timeout: scan_timeout_secs)
@@ -283,7 +294,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
               blobs[2].id,
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
-          ]
+          ],
+          empty_applied_exclusions
         )
 
         expect(scan.secrets_scan(blobs, blob_timeout: each_blob_timeout_secs)).to eq(expected_response)
@@ -308,7 +320,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
               all_large_blobs[2].id,
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
-          ]
+          ],
+          empty_applied_exclusions
         )
 
         expect(scan.secrets_scan(all_large_blobs, blob_timeout: each_blob_timeout_secs)).to eq(expected_response)
@@ -333,8 +346,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         let(:exclusions) do
           {
             raw_value: [
-              create_exclusion(value: 'GR134894112312312312312312312'), # gitleaks:allow
-              create_exclusion(value: 'glpat-12312312312312312312') # gitleaks:allow
+              exclusion.new(value: 'GR134894112312312312312312312'), # gitleaks:allow
+              exclusion.new(value: 'glpat-12312312312312312312') # gitleaks:allow
             ]
           }
         end
@@ -374,10 +387,11 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
                 ruleset['rules'][1]['id'],
                 ruleset['rules'][1]['description']
               )
-            ]
+            ],
+            exclusions[:raw_value]
           )
 
-          expect(scan.secrets_scan(blobs, exclusions: exclusions)).to eq(expected_response)
+          expect(scan.secrets_scan(blobs, exclusions:)).to eq(expected_response)
         end
       end
 
@@ -385,8 +399,8 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         let(:exclusions) do
           {
             rule: [
-              create_exclusion(value: "gitlab_runner_registration_token"),
-              create_exclusion(value: "gitlab_personal_access_token")
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_personal_access_token")
             ]
           }
         end
@@ -404,10 +418,16 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
                 ruleset['rules'][1]['id'],
                 ruleset['rules'][1]['description']
               )
+            ],
+            [
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_personal_access_token")
             ]
           )
 
-          expect(scan.secrets_scan(blobs, exclusions: exclusions)).to eq(expected_response)
+          expect(scan.secrets_scan(blobs, exclusions:)).to eq(expected_response)
         end
       end
     end

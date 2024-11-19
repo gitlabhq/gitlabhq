@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
   include Gitlab::Routing
 
-  let(:abuse_report) { build_stubbed(:abuse_report) }
+  let_it_be(:abuse_report) { build_stubbed(:abuse_report, :with_labels) }
 
   let(:entity) do
     described_class.new(abuse_report)

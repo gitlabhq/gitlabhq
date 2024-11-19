@@ -38,7 +38,6 @@ class SwapColumnsForCiPipelinesPipelineIdBigintV2 < Gitlab::Database::Migration[
   end
 
   def swap
-    # rubocop:disable Migration/WithLockRetriesDisallowedMethod
     with_lock_retries(raise_on_exhaustion: true) do
       # Lock the tables involved.
       lock_tables(TABLE_NAME)
@@ -55,6 +54,5 @@ class SwapColumnsForCiPipelinesPipelineIdBigintV2 < Gitlab::Database::Migration[
       # Swap index
       swap_indexes(TABLE_NAME, INDEX_NAME, BIGINT_INDEX_NAME)
     end
-    # rubocop:enable Migration/WithLockRetriesDisallowedMethod
   end
 end

@@ -12,7 +12,7 @@ module Resolvers
 
     def resolve(id:)
       Gitlab::Graphql::Lazy.with_value(find_object(id: id)) do |package|
-        package if package.default?
+        package if package&.default?
       end
     end
 

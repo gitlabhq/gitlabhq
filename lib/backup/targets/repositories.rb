@@ -43,7 +43,12 @@ module Backup
         enqueue_consecutive
 
       ensure
-        strategy.finish!
+        begin
+          strategy.finish!
+
+        rescue Error => e
+          logger.error(e.message)
+        end
 
         restore_object_pools
       end

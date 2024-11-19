@@ -25,10 +25,10 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
     "title": "Update .gitlab-ci.yml file",
   },
   "created": "2022-10-17T07:44:17Z",
-  "deployed": "2022-10-17T07:44:43Z",
   "deploymentApproval": {
     "isApprovalActionAvailable": false,
   },
+  "finished": "2022-10-17T07:44:43Z",
   "id": "31",
   "job": {
     "label": "deploy-prod (#860)",
@@ -86,10 +86,10 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
     "title": "Update .gitlab-ci.yml file",
   },
   "created": "2022-10-17T07:44:17Z",
-  "deployed": "2022-10-17T07:44:43Z",
   "deploymentApproval": {
     "isApprovalActionAvailable": false,
   },
+  "finished": "2022-10-17T07:44:43Z",
   "id": "31",
   "job": undefined,
   "rollback": null,
@@ -122,10 +122,10 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
     "title": "Update .gitlab-ci.yml file",
   },
   "created": "2022-10-17T07:44:17Z",
-  "deployed": "",
   "deploymentApproval": {
     "isApprovalActionAvailable": false,
   },
+  "finished": "",
   "id": "31",
   "job": null,
   "rollback": null,

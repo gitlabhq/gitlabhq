@@ -14,7 +14,6 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     post :cancel
     post :retry
     get :builds
-    get :dag
     get :failures
     get :status
     get :test_report

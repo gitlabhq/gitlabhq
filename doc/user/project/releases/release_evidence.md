@@ -48,24 +48,7 @@ Here is an example of a release evidence object:
         "state": "closed",
         "due_date": "2019-05-12 12:00:00 UTC",
         "created_at": "2019-04-17 15:45:12 UTC",
-        "issues": [
-          {
-            "id": 82,
-            "title": "The top-right popup is broken",
-            "author_name": "John Doe",
-            "author_email": "john@doe.com",
-            "state": "closed",
-            "due_date": "2019-05-10 12:00:00 UTC"
-          },
-          {
-            "id": 89,
-            "title": "The title of this page is misleading",
-            "author_name": "Jane Smith",
-            "author_email": "jane@smith.com",
-            "state": "closed",
-            "due_date": "nil"
-          }
-        ]
+        "description": "milestone description",
       },
       {
         "id": 12,
@@ -73,7 +56,7 @@ Here is an example of a release evidence object:
         "state": "closed",
         "due_date": "2019-05-30 18:30:00 UTC",
         "created_at": "2019-04-17 15:45:12 UTC",
-        "issues": []
+        "description": "milestone description",
       }
     ],
     "report_artifacts": [

@@ -13,6 +13,7 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
   let(:commit) { project.commit }
   let(:signed_text) { 'This message was signed by an ssh key' }
   let(:signer) { :SIGNER_USER }
+  let(:author_email) { 'blob@example.com' }
 
   let(:signature_text) do
     # ssh-keygen -Y sign -n git -f id_test message.txt
@@ -35,7 +36,8 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       signature_text,
       signed_text,
       signer,
-      commit
+      commit,
+      author_email
     )
   end
 
@@ -312,6 +314,26 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
 
       it 'returns public key fingerprint' do
         expect(signature.key_fingerprint).to eq('3dNIFKfIAXZb/JL30KKv95cps+mZwVAuAYQhIWxAb+8')
+      end
+    end
+  end
+
+  describe '#user_id' do
+    it 'returns the user id from signed by key' do
+      expect(signature.user_id).to eq(user.id)
+    end
+
+    context 'for system verified commits' do
+      let(:signer) { :SIGNER_SYSTEM }
+      let(:new_user) { create(:user) }
+
+      before do
+        allow(User).to receive(:find_by_any_email)
+          .with(author_email).and_return(new_user)
+      end
+
+      it 'returns the user id from author email' do
+        expect(signature.user_id).to eq(new_user.id)
       end
     end
   end

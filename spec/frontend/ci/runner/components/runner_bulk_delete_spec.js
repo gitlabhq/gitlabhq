@@ -24,8 +24,8 @@ describe('RunnerBulkDelete', () => {
   let mockCheckedRunnerIds;
 
   const findBanner = () => wrapper.findByTestId('runner-bulk-delete-banner');
-  const findClearBtn = () => wrapper.findByText('Clear selection');
-  const findDeleteBtn = () => wrapper.findByText('Delete selected');
+  const findClearBtn = () => wrapper.findByTestId('clear-selection');
+  const findDeleteBtn = () => wrapper.findByTestId('delete-selected');
   const findModal = () => wrapper.findComponent(GlModal);
 
   const mockRunners = allRunnersData.data.runners.nodes;

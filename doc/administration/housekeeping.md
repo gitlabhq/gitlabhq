@@ -252,7 +252,7 @@ of a repository. When creating the first fork, we:
 
 1. Create an object pool repository that contains all objects of the repository
    that is about to be forked.
-1. Link the repository to this new object pool via the alternates mechanism of Git.
+1. Link the repository to this new object pool by using the alternates mechanism of Git.
 1. Repack the repository so that it uses objects from the object pool. It thus
    can drop its own copy of the objects.
 

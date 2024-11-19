@@ -414,7 +414,7 @@ module ApplicationHelper
   end
 
   def client_class_list
-    "gl-browser-#{browser_id} gl-platform-#{platform_id}"
+    "gl-browser-#{browser_id} gl-platform-#{platform_id}" # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
   end
 
   def client_js_flags

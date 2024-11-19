@@ -5,7 +5,10 @@ module API
     include PaginationParams
     include Helpers::CustomAttributes
 
-    before { authenticate_non_get! }
+    before do
+      authenticate_non_get!
+      set_current_organization
+    end
 
     helpers Helpers::GroupsHelpers
 

@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -27,6 +27,7 @@ describe('Work Item Note Actions', () => {
   const findAuthorBadge = () => wrapper.findByTestId('author-badge');
   const findMaxAccessLevelBadge = () => wrapper.findByTestId('max-access-level-badge');
   const findContributorBadge = () => wrapper.findByTestId('contributor-badge');
+  const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -82,6 +83,42 @@ describe('Work Item Note Actions', () => {
 
   afterEach(() => {
     showSpy.mockClear();
+  });
+
+  describe('dropdown group', () => {
+    it('renders dropdown group when either canReportAbuse or showEdit is true', () => {
+      createComponent({ canReportAbuse: true, showEdit: true });
+
+      expect(findDisclosureDropdownGroup().exists()).toBe(true);
+    });
+
+    it('does not render dropdown group when both canReportAbuse and showEdit are false', () => {
+      createComponent({ canReportAbuse: false, showEdit: false });
+
+      expect(findDisclosureDropdownGroup().exists()).toBe(false);
+    });
+
+    it('renders reportAbuse button inside dropdown group when canReportAbuse is true', () => {
+      createComponent({ canReportAbuse: true });
+
+      expect(findDisclosureDropdownGroup().exists()).toBe(true);
+      expect(findReportAbuseToAdminButton().exists()).toBe(true);
+    });
+
+    it('renders delete note button inside dropdown group when showEdit is true', () => {
+      createComponent({ showEdit: true });
+
+      expect(findDisclosureDropdownGroup().exists()).toBe(true);
+      expect(findDeleteNoteButton().exists()).toBe(true);
+    });
+
+    it('renders both reportAbuse and delete note buttons when both canReportAbuse and showEdit are true', () => {
+      createComponent({ canReportAbuse: true, showEdit: true });
+
+      expect(findDisclosureDropdownGroup().exists()).toBe(true);
+      expect(findReportAbuseToAdminButton().exists()).toBe(true);
+      expect(findDeleteNoteButton().exists()).toBe(true);
+    });
   });
 
   describe('reply button', () => {

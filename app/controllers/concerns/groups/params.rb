@@ -19,6 +19,7 @@ module Groups
         :emails_disabled,
         :emails_enabled,
         :show_diff_preview_in_email,
+        :token_expiry_notify_inherited,
         :mentions_disabled,
         :lfs_enabled,
         :name,
@@ -54,6 +55,7 @@ module Groups
         :setup_for_company,
         :jobs_to_be_done,
         :crm_enabled,
+        :crm_source_group_id,
         :enable_namespace_descendants_cache
       ] + [group_feature_attributes: group_feature_attributes]
     end

@@ -41,12 +41,6 @@
     }
   }
 
-  .environment-information {
-    border: 1px solid var(--gl-border-color-default);
-    padding: 8px $gl-padding 12px;
-    border-radius: $gl-border-radius-base;
-  }
-
   .build-loader-animation {
     @include build-loader-animation;
     float: left;
@@ -157,9 +151,13 @@
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
-  border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
-  @apply gl-min-h-8;
+  @apply gl-min-h-8 gl-rounded-t-none gl-rounded-b-lg gl-border-l gl-border-r gl-border-section;
   background-color: $builds-log-bg;
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-dark & {
+    @apply gl-bg-subtle gl-shadow-lg;
+  }
 }
 
 .build-log-container:fullscreen {
@@ -172,11 +170,13 @@
 
 .job-log-line {
   display: flex;
-  padding: 0 $gl-padding-8;
+  // 1px vertical spacing so
+  // job log items don't stack
+  padding: 1px $gl-padding-8;
 }
 
 .job-log-line-number {
-  color: $gray-500;
+  @apply gl-text-gray-500;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;

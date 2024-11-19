@@ -32,11 +32,33 @@ Instead you should use polling mechanism with ETag caching in Redis.
 
 Cache Miss:
 
-![Cache miss](img/cache-miss.svg)
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+sequenceDiagram
+   Client->>+Rails: GET /projects/5/pipelines
+   Rails->>+EtagCaching: GET /projects/5/pipelines
+   EtagCaching->>+Redis: read(key = 'GET <ETag>')
+   rect rgb(255, 204, 203)
+     Redis->>+EtagCaching: cache MISS
+   end
+   EtagCaching->>+Redis: write('<New ETag>')
+   EtagCaching->>+Rails: GET /projects/5/pipelines
+   Rails->>+Client: JSON response with ETag
+```
 
 Cache Hit:
 
-![Cache hit](img/cache-hit.svg)
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+sequenceDiagram
+   Client->>+Rails: GET /projects/5/pipelines
+   Rails->>+EtagCaching: GET /projects/5/pipelines
+   EtagCaching->>+Redis: read(key = 'GET <ETag>')
+   rect rgb(144, 238, 144)
+     Redis->>+EtagCaching: cache HIT
+   end
+   EtagCaching->>+Client: 304 Not Modified
+```
 
 1. Whenever a resource changes we generate a random value and store it in
    Redis.

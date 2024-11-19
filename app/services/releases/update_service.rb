@@ -37,8 +37,18 @@ module Releases
       return error(_('Release does not exist'), 404) unless release
       return error(_('Access Denied'), 403) unless allowed?
       return error(_('params is empty'), 400) if empty_params?
-      return error(format(_("Milestone(s) not found: %{milestones}"), milestones: inexistent_milestone_titles.join(', ')), 400) if inexistent_milestone_titles.any? # rubocop:disable Layout/LineLength
-      return error(format(_("Milestone id(s) not found: %{milestones}"), milestones: inexistent_milestone_ids.join(', ')), 400) if inexistent_milestone_ids.any? # rubocop:disable Layout/LineLength
+
+      if inexistent_milestone_titles.any?
+        return error(
+          format(_("Milestone(s) not found: %{milestones}"),
+            milestones: inexistent_milestone_titles.join(', ')), 400)
+      end
+
+      return unless inexistent_milestone_ids.any?
+
+      return error(
+        format(_("Milestone id(s) not found: %{milestones}"),
+          milestones: inexistent_milestone_ids.join(', ')), 400)
     end
 
     def allowed?

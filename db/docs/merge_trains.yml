@@ -4,7 +4,8 @@ classes:
 - MergeTrains::Car
 feature_categories:
 - continuous_integration
-description: Each record represents a single merge request which is or was part of a merge train.
+description: Each record represents a single merge request which is or was part of
+  a merge train.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/827fc3ccb9335aa29fba0fc532b70015ec4c5186
 milestone: '11.11'
 gitlab_schema: gitlab_main_cell

@@ -14,6 +14,7 @@ import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationQuery from './queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseQuery from './queries/flux_helm_release.query.graphql';
 import k8sEventsQuery from './queries/k8s_events.query.graphql';
+import k8sPodLogsWatcherQuery from './queries/k8s_pod_logs_watcher.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 import { connectionStatus } from './resolvers/kubernetes/constants';
@@ -180,6 +181,15 @@ export const apolloProvider = (endpoint) => {
       reason: '',
       source: {},
       type: '',
+    },
+  });
+
+  cache.writeQuery({
+    query: k8sPodLogsWatcherQuery,
+    data: {
+      k8sPodLogsWatcher: {
+        watcher: null,
+      },
     },
   });
 

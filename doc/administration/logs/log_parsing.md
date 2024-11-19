@@ -313,7 +313,7 @@ grep "fatal: " current |
 
 ### Parsing `gitlab-shell/gitlab-shell.log`
 
-For investigating Git calls via SSH.
+For investigating Git calls through SSH.
 
 Find the top 20 calls by project and user:
 

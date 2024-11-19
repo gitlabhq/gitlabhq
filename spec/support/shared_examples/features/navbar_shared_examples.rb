@@ -8,9 +8,10 @@ RSpec.shared_examples 'verified navigation bar' do
   end
 
   it 'renders correctly' do
-    current_structure = page.all('[data-testid="non-static-items-section"] > li').map do |item|
-      nav_sub_items = item.all('li', visible: :all).map do |list_item|
-        list_item.all('a', visible: :all).first.text(:all).gsub(/\s+\d+$/, '') # remove counts at the end
+    section = page.find('[data-testid="non-static-items-section"]')
+    current_structure = section.all('& > li', wait: false).map do |item|
+      nav_sub_items = item.all('li', visible: :all, wait: false).map do |list_item|
+        list_item.all('a', visible: :all, wait: false).first.text(:all).gsub(/\s+\d+$/, '') # remove counts at the end
       end
 
       { nav_item: item.text, nav_sub_items: nav_sub_items }

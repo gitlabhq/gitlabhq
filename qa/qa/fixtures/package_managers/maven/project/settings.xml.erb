@@ -9,6 +9,12 @@ xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.o
           <name><%= maven_header_name %></name>
           <value><%= token %></value>
         </property>
+        <!-- Disable the expect header as some proxies don't play nice with it. See https://maven.apache.org/guides/mini/guide-http-settings.html#The_Basics. -->
+        <!-- See https://gitlab.com/gitlab-org/gitlab/-/issues/499660 -->
+        <property>
+          <name>Expect</name>
+          <value />
+        </property>
       </httpHeaders>
     </configuration>
   </server>

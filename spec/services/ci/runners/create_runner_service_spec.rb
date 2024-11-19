@@ -174,6 +174,20 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
         it_behaves_like 'it can create a runner'
         it_behaves_like 'it can return an error'
 
+        it 'does not track runner creation with maintenance note' do
+          expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+        end
+
+        context 'when maintenance note is specified' do
+          let(:params) { { runner_type: 'instance_type', maintenance_note: 'a note' } }
+
+          it 'tracks runner creation with maintenance note' do
+            expect { execute }
+              .to trigger_internal_events('set_runner_maintenance_note')
+              .with(user: current_user, additional_properties: { label: 'instance_type' })
+          end
+        end
+
         context 'with unexpected scope param specified' do
           let(:params) { { runner_type: 'instance_type', scope: group } }
 
@@ -224,6 +238,20 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
         expect(runner.sharding_key_id).to eq(group.id)
       end
 
+      it 'does not track runner creation with maintenance note' do
+        expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+      end
+
+      context 'when maintenance note is specified' do
+        let(:params) { { runner_type: 'group_type', scope: group, maintenance_note: 'a note' } }
+
+        it 'tracks runner creation with maintenance note' do
+          expect { execute }
+            .to trigger_internal_events('set_runner_maintenance_note')
+            .with(user: current_user, namespace: group, additional_properties: { label: 'group_type' })
+        end
+      end
+
       context 'with missing scope param' do
         let(:params) { { runner_type: 'group_type' } }
 
@@ -267,6 +295,16 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
 
       it 'populates sharding_key_id correctly' do
         expect(runner.sharding_key_id).to eq(project.id)
+      end
+
+      context 'when maintenance note is specified' do
+        let(:params) { { runner_type: 'project_type', scope: project, maintenance_note: 'a note' } }
+
+        it 'tracks runner creation with maintenance note' do
+          expect { execute }
+            .to trigger_internal_events('set_runner_maintenance_note')
+            .with(user: current_user, project: project, additional_properties: { label: 'project_type' })
+        end
       end
 
       context 'with missing scope param' do

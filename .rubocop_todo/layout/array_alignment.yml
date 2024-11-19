@@ -90,7 +90,6 @@ Layout/ArrayAlignment:
     - 'lib/gitlab/cleanup/project_upload_file_finder.rb'
     - 'lib/gitlab/conflict/file_collection.rb'
     - 'lib/gitlab/database/background_migration/batched_job.rb'
-    - 'lib/gitlab/email/receiver.rb'
     - 'lib/gitlab/etag_caching/router/rails.rb'
     - 'lib/gitlab/git/diff.rb'
     - 'lib/gitlab/import_export/importer.rb'

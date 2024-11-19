@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
-import { VSA_METRICS_GROUPS, METRICS_POPOVER_CONTENT } from '~/analytics/shared/constants';
+import { VSA_METRICS_GROUPS, VALUE_STREAM_METRIC_METADATA } from '~/analytics/shared/constants';
 import { prepareTimeMetricsData } from '~/analytics/shared/utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import ValueStreamsDashboardLink from '~/analytics/shared/components/value_streams_dashboard_link.vue';
@@ -91,7 +91,10 @@ describe('ValueStreamMetrics', () => {
       });
 
       describe('filterFn', () => {
-        const transferredMetricsData = prepareTimeMetricsData(metricsData, METRICS_POPOVER_CONTENT);
+        const transferredMetricsData = prepareTimeMetricsData(
+          metricsData,
+          VALUE_STREAM_METRIC_METADATA,
+        );
 
         it('with a filter function, will call the function with the metrics data', async () => {
           const filteredData = [

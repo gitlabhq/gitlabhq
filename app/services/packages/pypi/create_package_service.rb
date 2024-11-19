@@ -5,7 +5,15 @@ module Packages
     class CreatePackageService < ::Packages::CreatePackageService
       include ::Gitlab::Utils::StrongMemoize
 
+      ERROR_REASON_INVALID_PARAMETER = :invalid_parameter
+      ERROR_RESPONSE_PACKAGE_PROTECTED =
+        ServiceResponse.error(message: 'Package protected.', reason: :package_protected)
+      ERROR_RESPONSE_UNAUTHORIZED = ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized)
+
       def execute
+        return ERROR_RESPONSE_UNAUTHORIZED unless can_create_package?
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if current_package_protected?
+
         ::Packages::Package.transaction do
           meta = Packages::Pypi::Metadatum.new(
             package: created_package,
@@ -30,11 +38,26 @@ module Packages
 
           ServiceResponse.success(payload: { package: created_package })
         end
-      rescue ActiveRecord::RecordInvalid => e
-        ServiceResponse.error(message: e.message, reason: :invalid_parameter)
+      rescue ActiveRecord::RecordInvalid, ArgumentError => e
+        ServiceResponse.error(message: e.message, reason: ERROR_REASON_INVALID_PARAMETER)
       end
 
       private
+
+      def current_package_protected?
+        return false if Feature.disabled?(:packages_protected_packages_pypi, project)
+
+        service_response =
+          Packages::Protection::CheckRuleExistenceService.new(
+            project: project,
+            current_user: current_user,
+            params: { package_name: params[:name], package_type: :pypi }
+          ).execute
+
+        raise ArgumentError, service_response.message if service_response.error?
+
+        service_response[:protection_rule_exists?]
+      end
 
       def created_package
         find_or_create_package!(:pypi)

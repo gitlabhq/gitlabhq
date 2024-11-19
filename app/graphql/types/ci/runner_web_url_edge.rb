@@ -2,7 +2,6 @@
 
 module Types
   module Ci
-    # rubocop: disable Graphql/AuthorizeTypes
     class RunnerWebUrlEdge < ::Types::BaseEdge
       field :edit_url, GraphQL::Types::String, null: true,
         description: 'Web URL of the runner edit page. The value depends on where you put the field in the query. You can use it for projects or groups.',

@@ -14,13 +14,27 @@ those used for code.
 Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs:
 
 - `docs-lint markdown`: Runs several types of tests, including:
-  - Documentation content: [Vale](vale.md)
-  - Markdown structure: [markdownlint](markdownlint.md)
-  - Miscellaneous tests: [`lint-docs.sh`](#tests-in-lint-docsh), including
-    [`mermaidlint`](#mermaid-chart-linting) for invalid Mermaid charts
-- `docs-lint links`: Checks the validity of internal links in the documentation suite.
-- `ui-docs-links lint` and `eslint-docs`: Checks the validity of links from UI elements, such as files in `app/views`
-  files.
+  - [Vale](vale.md): Checks documentation content.
+  - [markdownlint](markdownlint.md): Checks Markdown structure.
+  - [`lint-docs.sh`](#tests-in-lint-docsh) script: Miscellaneous tests, including
+    [`mermaidlint`](#mermaid-chart-linting) to check for invalid Mermaid charts.
+- `docs-lint links`: Checks the validity of [relative links](links.md#run-the-relative-link-test-locally) in the documentation suite.
+- `ui-docs-links lint`: Checks links to documentation [from `.haml` files](links.md#run-haml-lint-tests).
+- `rubocop-docs`: Checks links to documentation [from `.rb` files](links.md#run-rubocop-tests).
+- `eslint-docs`: Checks links to documentation [from `.js` and `.vue` files](links.md#run-eslint-tests).
+- `docs-lint redirects`: Checks for deleted or renamed documentation files without [redirects](../redirects.md).
+- `docs code_quality` and `code_quality cache`: Runs [code quality](../../../ci/testing/code_quality.md)
+  to add Vale [warnings and errors into the MR changes tab (diff view)](../../../ci/testing/code_quality.md#merge-request-changes-view).
+
+A few files are generated from scripts. A CI/CD job fails when either the source code files
+or the documentation files are updated without following the correct process:
+
+- `graphql-verify`: Fails when `doc/api/graphql/reference/index.md` is not updated
+  with the [update process](../../rake_tasks.md#update-graphql-documentation-and-schema-definitions).
+- `docs-lint deprecations-and-removals`: Fails when `doc/update/deprecations.md` is
+  not updated with the [update process](../../deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation).
+
+For a full list of automated files, see [Automated pages](../site_architecture/automation.md).
 
 ## Tests in `lint-doc.sh`
 
@@ -68,11 +82,6 @@ pipelines:
 
 These jobs check links, including anchor links, and report any problems. Any link that requires a network
 connection is skipped.
-
-## Tests in `ui-docs-links lint`
-
-The `ui-docs-links lint` job uses `haml-lint` to test that all documentation links from
-UI elements (`app/views` files, for example) link to valid pages and anchors.
 
 ## Install documentation linters
 
@@ -266,8 +275,6 @@ Some, but not all, linting can be disabled on documentation files:
 
 - [Vale tests can be disabled](vale.md#disable-vale-tests) for all or part of a file.
 - [`markdownlint` tests can be disabled](markdownlint.md#disable-markdownlint-tests) for all or part of a file.
-- [Documentation link tests](links.md#run-documentation-link-tests-locally) cannot be disabled.
-- [UI link tests](links.md#run-ui-link-tests-locally) cannot be disabled.
 
 ## Tool versions used in CI/CD pipelines
 

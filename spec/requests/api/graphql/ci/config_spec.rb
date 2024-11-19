@@ -415,7 +415,6 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
 
     it_behaves_like 'a working graphql query'
 
-    # rubocop:disable Layout/LineLength
     it 'returns correct includes' do
       expect(graphql_data['ciConfig']["includes"]).to eq(
         [
@@ -467,7 +466,6 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
         ]
       )
     end
-    # rubocop:enable Layout/LineLength
   end
 
   describe 'skip_verify_project_sha' do

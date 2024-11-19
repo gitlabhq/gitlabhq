@@ -4,6 +4,10 @@ module Ci
   class Partition < Ci::ApplicationRecord
     MAX_PARTITION_SIZE = 100.gigabytes
 
+    INITIAL_PARTITION_VALUE = 100
+    LATEST_PARTITION_VALUE = 102
+    DEFAULT_PARTITION_VALUES = (INITIAL_PARTITION_VALUE..LATEST_PARTITION_VALUE).to_a.freeze
+
     validates :id, :status, presence: true
     validates :status, uniqueness: { if: ->(partition) { partition.status_changed? && partition.current? } }
 

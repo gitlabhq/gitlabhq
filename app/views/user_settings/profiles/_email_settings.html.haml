@@ -8,7 +8,7 @@
 .form-group.gl-form-group
   = form.label :email, _('Email')
   = form.text_field :email, required: true, class: 'gl-form-input form-control gl-md-form-input-lg', value: (@user.email unless @user.temp_oauth_email?), readonly: readonly || email_change_disabled
-  %small.form-text.gl-text-secondary
+  .form-text.gl-text-subtle
     = help_text.html_safe
 
   - unless password_automatically_set
@@ -21,7 +21,7 @@
       options_for_select(@user.public_verified_emails, selected: @user.public_email),
       { include_blank: s_("Profiles|Do not show on profile") },
       { class: 'gl-form-select custom-select', disabled: email_change_disabled }
-  %small.form-text.gl-text-secondary
+  .form-text.gl-text-subtle
     = s_("Profiles|This email will be displayed on your public profile.")
 
 .form-group.gl-form-group
@@ -34,5 +34,5 @@
       options_for_select(commit_email_select_options(@user), selected: @user.commit_email),
       {},
       { class: 'gl-form-select custom-select', disabled: email_change_disabled }
-  %small.form-text.gl-text-secondary
+  .form-text.gl-text-subtle
     = commit_email_docs_link

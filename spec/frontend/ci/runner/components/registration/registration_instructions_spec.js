@@ -15,6 +15,7 @@ import RegistrationInstructions from '~/ci/runner/components/registration/regist
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
 import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
+import GkeRegistrationInstructions from '~/ci/runner/components/registration/gke_registration_instructions.vue';
 import {
   DEFAULT_PLATFORM,
   EXECUTORS_HELP_URL,
@@ -24,6 +25,7 @@ import {
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   WINDOWS_PLATFORM,
   GOOGLE_CLOUD_PLATFORM,
+  GOOGLE_KUBERNETES_ENGINE,
 } from '~/ci/runner/constants';
 import { runnerForRegistration, mockAuthenticationToken } from '../../mock_data';
 
@@ -140,7 +142,7 @@ describe('RegistrationInstructions', () => {
 
       expect(findPlatformsDrawer().props('open')).toBe(false);
 
-      await findByText('How do I install GitLab Runner?').vm.$emit('click');
+      await wrapper.findByTestId('how-to-install-btn').vm.$emit('click');
       expect(findPlatformsDrawer().props('open')).toBe(true);
 
       await findPlatformsDrawer().vm.$emit('close');
@@ -389,6 +391,58 @@ describe('RegistrationInstructions', () => {
       await waitForPromises();
 
       expect(findGoogleCloudRegistrationInstructions().exists()).toBe(false);
+    });
+  });
+
+  describe('when using GKE registration method', () => {
+    const findGkeRegistrationInstructions = () =>
+      wrapper.findComponent(GkeRegistrationInstructions);
+
+    it('passes a group path to the google instructions', async () => {
+      createComponent({
+        props: {
+          platform: GOOGLE_KUBERNETES_ENGINE,
+          groupPath: 'mock/group/path',
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGkeRegistrationInstructions().props()).toEqual({
+        token: mockAuthenticationToken,
+        groupPath: 'mock/group/path',
+        projectPath: null,
+      });
+    });
+
+    it('passes a project path to the google instructions', async () => {
+      createComponent({
+        props: {
+          platform: GOOGLE_KUBERNETES_ENGINE,
+          projectPath: 'mock/project/path',
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGkeRegistrationInstructions().props()).toEqual({
+        token: mockAuthenticationToken,
+        projectPath: 'mock/project/path',
+        groupPath: null,
+      });
+    });
+
+    it('does not show google instructions when on another platform', async () => {
+      createComponent({
+        props: {
+          platform: WINDOWS_PLATFORM,
+          projectPath: 'mock/project/path',
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGkeRegistrationInstructions().exists()).toBe(false);
     });
   });
 });

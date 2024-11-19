@@ -16,7 +16,7 @@ RSpec.describe ErrorTracking::SentryClient::Projects, feature_category: :observa
 
   shared_examples 'has correct return type' do |klass|
     it "returns objects of type #{klass}" do
-      expect(subject).to all( be_a(klass) )
+      expect(subject).to all(be_a(klass))
     end
   end
 

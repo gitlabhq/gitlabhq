@@ -7,12 +7,12 @@ info: Analysis of Application Settings for Cells 1.0.
 
 ## Statistics
 
-- Number of attributes: 499
+- Number of attributes: 504
 - Number of encrypted attributes: 43 (9.0%)
-- Number of attributes documented: 309 (62.0%)
-- Number of attributes on GitLab.com different from the defaults: 218 (44.0%)
-- Number of attributes with `clusterwide` set: 498 (100.0%)
-- Number of attributes with `clusterwide: true` set: 120 (24.0%)
+- Number of attributes documented: 310 (62.0%)
+- Number of attributes on GitLab.com different from the defaults: 221 (44.0%)
+- Number of attributes with `clusterwide` set: 504 (100.0%)
+- Number of attributes with `clusterwide: true` set: 122 (24.0%)
 
 ## Individual columns
 
@@ -33,7 +33,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `allow_possible_spam` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `allow_project_creation_for_guest_and_below` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `allow_runner_registration_token` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `allow_top_level_group_owners_to_create_service_accounts` | `false` | `boolean` | `` | `true` | `false` | `false` | `???`| `false` |
+| `allow_top_level_group_owners_to_create_service_accounts` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `anthropic_api_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
 | `archive_builds_in_seconds` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
 | `arkose_labs_client_secret` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -166,6 +166,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `elasticsearch_password` | `true` | `bytea` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `elasticsearch_pause_indexing` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `elasticsearch_requeue_workers` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `elasticsearch_retry_on_failure` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `elasticsearch_search` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `elasticsearch_url` | `false` | `character` | `string` | `false` | `'http://localhost:9200'::character` | `true` | `false`| `true` |
 | `elasticsearch_username` | `false` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
@@ -239,6 +240,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `housekeeping_incremental_repack_period` | `false` | `integer` | `integer` | `true` | `10` | `false` | `false`| `true` |
 | `html_emails_enabled` | `false` | `boolean` | `boolean` | `false` | `true` | `false` | `false`| `true` |
 | `id` | `false` | `bigint` | `` | `true` | `???` | `false` | `false`| `false` |
+| `identity_verification_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `import_sources` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `true`| `true` |
 | `importers` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `inactive_projects_delete_after_months` | `false` | `integer` | `` | `true` | `2` | `false` | `false`| `false` |
@@ -246,6 +248,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `inactive_projects_send_warning_email_after_months` | `false` | `integer` | `` | `true` | `1` | `false` | `false`| `false` |
 | `include_optional_metrics_in_service_ping` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `instance_level_ai_beta_features_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `integrations` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `invisible_captcha_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `invitation_flow_enforcement` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `issues_create_limit` | `false` | `integer` | `integer` | `true` | `0` | `true` | `true`| `true` |
@@ -419,6 +422,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `sidekiq_job_limiter_compression_threshold_bytes` | `false` | `integer` | `integer` | `true` | `100000` | `false` | `false`| `true` |
 | `sidekiq_job_limiter_limit_bytes` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `sidekiq_job_limiter_mode` | `false` | `smallint` | `string` | `true` | `1` | `false` | `false`| `true` |
+| `sign_in_restrictions` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `signup_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `false`| `true` |
 | `silent_mode_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `slack_app_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `false`| `true` |
@@ -485,6 +489,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `throttle_unauthenticated_period_in_seconds` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `throttle_unauthenticated_requests_per_period` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `time_tracking_limit_to_hours` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `transactional_emails` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `two_factor_grace_period` | `false` | `integer` | `integer` | `false` | `48` | `false` | `false`| `true` |
 | `unconfirmed_users_delete_after_days` | `false` | `integer` | `integer` | `true` | `7` | `true` | `true`| `true` |
 | `unique_ips_limit_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |

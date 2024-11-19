@@ -16,7 +16,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   let_it_be(:issue) { create(:issue, project: project, description: 'Some **issue** description') }
   let_it_be(:email) { 'someone@gitlab.com' }
   let_it_be(:expected_unsubscribe_url) { unsubscribe_sent_notification_url('b7721fc7e8419911a8bea145236a0519') }
-  let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
+  let_it_be(:credential) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
   let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
   let_it_be(:service_desk_setting) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
   let_it_be(:issue_email_participant) { create(:issue_email_participant, issue: issue, email: email) }

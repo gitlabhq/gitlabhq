@@ -93,7 +93,7 @@ export default {
   <div>
     <div
       v-if="showParticipantLabel"
-      class="gl-mb-2 gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-24 gl-text-gray-900"
+      class="gl-mb-2 gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-24 gl-text-default"
     >
       {{ participantLabel }}
       <gl-loading-icon v-if="loading" inline />

@@ -29,7 +29,7 @@ module Resolvers
       private
 
       def unconditional_includes
-        [:author, :project]
+        [:author, :project, :note_metadata]
       end
 
       def preloads

@@ -1,0 +1,9 @@
+---
+name: expiring_pats_30d_60d_notifications
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464040
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166683
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480556
+milestone: '17.6'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

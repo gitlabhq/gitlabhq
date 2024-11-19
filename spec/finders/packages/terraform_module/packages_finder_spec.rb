@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Packages::TerraformModule::PackagesFinder, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:package1) { create(:terraform_module_package, project: project, version: '1.0.0') }
+  let_it_be_with_reload(:package1) { create(:terraform_module_package, project: project, version: '1.0.0') }
   let_it_be(:package2) { create(:terraform_module_package, project: project, version: '2.0.0', name: package1.name) }
 
   let(:params) { {} }
@@ -16,6 +16,12 @@ RSpec.describe ::Packages::TerraformModule::PackagesFinder, feature_category: :p
       let(:project) { nil }
 
       it { is_expected.to be_empty }
+
+      context 'with package_name' do
+        let(:params) { { package_name: package1.name } }
+
+        it { is_expected.to be_empty }
+      end
     end
 
     context 'without package_name' do

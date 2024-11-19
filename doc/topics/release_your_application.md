@@ -16,9 +16,9 @@ release features incrementally.
 
 | | | |
 |--|--|--|
-| [**Getting started**](../user/get_started/get_started_deploy_release.md)<br>Overview of how features fit together. | [**Packages and registries**](../user/packages/index.md)<br>Package management, container registry, artifact storage, dependency management. | [**Environments and deployments**](../ci/environments/index.md)<br>Environments, deployments, rollbacks, safety, approvals. |
-| [**Releases**](../user/project/releases/index.md)<br>Releases, versioning, assets, tags, milestones, evidence. | [**Roll out an application incrementally**](../ci/environments/incremental_rollouts.md)<br>Kubernetes, CI/CD, risk mitigation, deployment. | [**Feature flags**](../operations/feature_flags.md)<br>Progressive delivery, controlled deployment, risk reduction. |
-| [**GitLab Pages**](../user/project/pages/index.md)<br>Static site hosting, documentation publishing, project websites, custom domains. | | |
+| [**Getting started**](../user/get_started/get_started_deploy_release.md)<br>Overview of how features fit together. | [**Packages and registries**](../user/packages/index.md)<br>Package management, container registry, artifact storage, dependency management. | [**Environments**](../ci/environments/index.md)<br>Environments, variables, dashboards, review apps. |
+| [**Deployments**](../ci/environments/deployments.md)<br>Deployments, rollbacks, safety, approvals. | [**Releases**](../user/project/releases/index.md)<br>Releases, versioning, assets, tags, milestones, evidence. | [**Roll out an application incrementally**](../ci/environments/incremental_rollouts.md)<br>Kubernetes, CI/CD, risk mitigation, deployment. |
+| [**Feature flags**](../operations/feature_flags.md)<br>Progressive delivery, controlled deployment, risk reduction. | [**GitLab Pages**](../user/project/pages/index.md)<br>Static site hosting, documentation publishing, project websites, custom domains. | |
 
 ## Related topics
 

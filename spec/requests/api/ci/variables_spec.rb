@@ -56,25 +56,6 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
           expect(json_response['description']).to be_nil
           expect(json_response['hidden']).to eq(true)
         end
-
-        context 'and feature flag `ci_hidden_variables is disabled`' do
-          before do
-            stub_feature_flags(ci_hidden_variables: false)
-          end
-
-          it 'returns project variable details without changes' do
-            get api("/projects/#{project.id}/variables/#{variable.key}", user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['value']).to eq(variable.value)
-            expect(json_response['protected']).to eq(variable.protected?)
-            expect(json_response['masked']).to eq(variable.masked?)
-            expect(json_response['raw']).to eq(variable.raw?)
-            expect(json_response['variable_type']).to eq('env_var')
-            expect(json_response['description']).to be_nil
-            expect(json_response['hidden']).to eq(true)
-          end
-        end
       end
 
       context 'when variable is not hidden' do
@@ -92,25 +73,6 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
           expect(json_response['variable_type']).to eq('env_var')
           expect(json_response['description']).to be_nil
           expect(json_response['hidden']).to eq(false)
-        end
-
-        context 'and feature flag `ci_hidden_variables is disabled`' do
-          before do
-            stub_feature_flags(ci_hidden_variables: false)
-          end
-
-          it 'returns project variable details' do
-            get api("/projects/#{project.id}/variables/#{variable.key}", user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['value']).to eq(variable.value)
-            expect(json_response['protected']).to eq(variable.protected?)
-            expect(json_response['masked']).to eq(variable.masked?)
-            expect(json_response['raw']).to eq(variable.raw?)
-            expect(json_response['variable_type']).to eq('env_var')
-            expect(json_response['description']).to be_nil
-            expect(json_response['hidden']).to eq(false)
-          end
         end
       end
 

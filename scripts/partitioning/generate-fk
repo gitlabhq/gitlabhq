@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec bundle exec rails generate gitlab:partitioning:foreign_keys "$@"

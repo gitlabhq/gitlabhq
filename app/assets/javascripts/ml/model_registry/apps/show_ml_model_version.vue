@@ -1,4 +1,6 @@
 <script>
+import VueRouter from 'vue-router';
+import { GlAvatar, GlTab, GlTabs, GlBadge, GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -6,22 +8,56 @@ import { s__, sprintf } from '~/locale';
 import { setUrlFragment, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ModelVersionDetail from '../components/model_version_detail.vue';
+import ModelVersionPerformance from '../components/model_version_performance.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
-import ModelVersionEdit from '../components/model_version_edit.vue';
+import ModelVersionArtifacts from '../components/model_version_artifacts.vue';
+import { ROUTE_DETAILS, ROUTE_PERFORMANCE, ROUTE_ARTIFACTS } from '../constants';
+
+const routes = [
+  {
+    path: '/',
+    name: ROUTE_DETAILS,
+    component: ModelVersionDetail,
+  },
+  {
+    path: '/artifacts',
+    name: ROUTE_ARTIFACTS,
+    component: ModelVersionArtifacts,
+  },
+  {
+    path: '/performance',
+    name: ROUTE_PERFORMANCE,
+    component: ModelVersionPerformance,
+  },
+  { path: '*', redirect: { name: ROUTE_DETAILS } },
+];
 
 export default {
   name: 'ShowMlModelVersionApp',
   components: {
+    GlAvatar,
+    GlButton,
     LoadOrErrorOrShow,
-    ModelVersionDetail,
     ModelVersionActionsDropdown,
     TitleArea,
-    ModelVersionEdit,
+    GlTabs,
+    GlTab,
+    GlBadge,
+    GlIcon,
+    GlLink,
+    GlSprintf,
+    TimeAgoTooltip,
   },
+  router: new VueRouter({
+    routes,
+  }),
+  mixins: [timeagoMixin],
   provide() {
     return {
       projectPath: this.projectPath,
@@ -62,6 +98,10 @@ export default {
       required: true,
     },
     modelPath: {
+      type: String,
+      required: true,
+    },
+    editModelVersionPath: {
       type: String,
       required: true,
     },
@@ -122,6 +162,27 @@ export default {
         variant: 'success',
       };
     },
+    createdMessage() {
+      return s__('MlModelRegistry|Version created %{timeAgo} by %{author}');
+    },
+    authorId() {
+      return getIdFromGraphQLId(`${this.modelVersion.author.id}`);
+    },
+    showCreatedDetail() {
+      return this.modelVersion?.author && this.modelVersion?.createdAt;
+    },
+    tabIndex() {
+      return routes.findIndex(({ name }) => name === this.$route.name);
+    },
+    showAuthor() {
+      return Boolean(this.modelVersion?.author);
+    },
+    author() {
+      return this.modelVersion?.author;
+    },
+    artifactsCount() {
+      return this.modelVersion.artifactsCount;
+    },
   },
   methods: {
     handleError(error) {
@@ -164,7 +225,24 @@ export default {
         this.handleDeleteError(error);
       }
     },
+    goTo(name) {
+      if (name !== this.$route.name) {
+        this.$router.push({ name });
+      }
+    },
   },
+  i18n: {
+    editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
+    authorTitle: s__('MlModelRegistry|Publisher'),
+    tabs: {
+      modelVersionCard: s__('MlModelRegistry|Version card'),
+      artifacts: s__('MlModelRegistry|Artifacts'),
+      performance: s__('MlModelRegistry|Performance'),
+    },
+  },
+  ROUTE_DETAILS,
+  ROUTE_ARTIFACTS,
+  ROUTE_PERFORMANCE,
 };
 </script>
 
@@ -172,19 +250,88 @@ export default {
   <div>
     <div class="gl-flex gl-flex-wrap gl-justify-between gl-py-3 sm:gl-flex-nowrap">
       <div class="gl-min-w-0 gl-grow gl-flex-col">
-        <title-area :title="title" />
+        <title-area :title="title">
+          <template #metadata-versions-count>
+            <div
+              v-if="showCreatedDetail"
+              class="detail-page-header-body mb-3 gl-flex-wrap gl-gap-x-2"
+              data-testid="metadata"
+            >
+              <gl-icon name="machine-learning" />
+              <gl-sprintf :message="createdMessage">
+                <template #timeAgo>
+                  <time-ago-tooltip :time="modelVersion.createdAt" />
+                </template>
+                <template #author>
+                  <gl-link
+                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    :href="author.webUrl"
+                    :data-user-id="authorId"
+                  >
+                    <span class="sm:gl-inline">{{ author.name }}</span>
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </div>
+          </template>
+        </title-area>
       </div>
       <div class="gl-mt-3 gl-flex gl-items-start gl-gap-3">
-        <model-version-edit
-          v-if="modelVersion && canWriteModelRegistry"
-          :model-with-version="modelWithModelVersion"
+        <gl-button
+          v-if="canWriteModelRegistry"
+          data-testid="edit-model-version-button"
+          variant="confirm"
+          :href="editModelVersionPath"
+          >{{ $options.i18n.editModelVersionButtonLabel }}</gl-button
+        >
+        <model-version-actions-dropdown
+          :model-version="modelWithModelVersion"
+          @delete-model-version="deleteModelVersion"
         />
-        <model-version-actions-dropdown @delete-model-version="deleteModelVersion" />
       </div>
     </div>
 
-    <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-      <model-version-detail :model-version="modelVersion" allow-artifact-import />
-    </load-or-error-or-show>
+    <div class="gl-grid gl-gap-3 md:gl-grid-cols-4">
+      <div class="md:gl-col-span-3 md:gl-pr-8">
+        <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
+          <gl-tabs class="gl-mt-4" :value="tabIndex">
+            <gl-tab
+              :title="$options.i18n.tabs.modelVersionCard"
+              @click="goTo($options.ROUTE_DETAILS)"
+            />
+            <gl-tab @click="goTo($options.ROUTE_ARTIFACTS)">
+              <template #title>
+                {{ $options.i18n.tabs.artifacts }}
+                <gl-badge class="gl-tab-counter-badge">{{ artifactsCount }}</gl-badge>
+              </template>
+            </gl-tab>
+            <gl-tab
+              :title="$options.i18n.tabs.performance"
+              @click="goTo($options.ROUTE_PERFORMANCE)"
+            />
+          </gl-tabs>
+          <router-view
+            :model-version="modelVersion"
+            can-write-model-registry
+            import-path
+            allow-artifact-import
+          />
+        </load-or-error-or-show>
+      </div>
+
+      <div class="gl-pt-6 md:gl-col-span-1">
+        <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
+        <div v-if="showAuthor" class="gl-mt-3 gl-text-gray-500">
+          <gl-link
+            data-testid="sidebar-author-link"
+            class="js-user-link gl-font-bold !gl-text-gray-500"
+            :href="author.webUrl"
+          >
+            <gl-avatar :label="author.name" :src="author.avatarUrl" :size="24" />
+            {{ author.name }}
+          </gl-link>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

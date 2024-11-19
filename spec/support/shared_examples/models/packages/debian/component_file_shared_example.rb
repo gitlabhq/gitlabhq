@@ -196,11 +196,6 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
         .to receive(:update_file_store)
         .and_call_original
 
-      expect(component_file)
-        .to receive(:update_column)
-        .with('file_store', ::Packages::PackageFileUploader::Store::LOCAL)
-        .and_call_original
-
       expect { subject }.to change { component_file.size }.from(nil).to(74)
     end
   end

@@ -1659,14 +1659,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { is_expected.to match(/^new \[MASKED\]x+ data$/) }
 
-      context 'when consistent_ci_variable_masking feature is disabled' do
-        before do
-          stub_feature_flags(consistent_ci_variable_masking: false)
-        end
-
-        it { is_expected.to match(/^new x+ data$/) }
-      end
-
       it 'increments trace mutation metric' do
         build.hide_secrets(data, metrics)
 
@@ -1682,14 +1674,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:data) { "new #{build.token} data" }
 
       it { is_expected.to match(/^new \[MASKED\]x+ data$/) }
-
-      context 'when consistent_ci_variable_masking feature is disabled' do
-        before do
-          stub_feature_flags(consistent_ci_variable_masking: false)
-        end
-
-        it { is_expected.to match(/^new x+ data$/) }
-      end
 
       it 'increments trace mutation metric' do
         build.hide_secrets(data, metrics)
@@ -4332,54 +4316,27 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#pages_generator?', feature_category: :pages do
-    context 'with customizable_pages_job_name feature flag enabled' do
-      where(:name, :pages_config, :enabled, :result) do
-        'foo' | nil | false | false
-        'pages' | nil | false | false
-        'pages:preview' | nil | true | false
-        'pages' | nil | true | true
-        'foo' | true | true | true
-        'foo' | { expire_in: '1 day' } | true | true
-        'foo' | false | true | false
-        'pages' | false | true | false
-      end
-
-      with_them do
-        before do
-          stub_pages_setting(enabled: enabled)
-          build.update!(name: name, options: { pages: pages_config })
-          stub_feature_flags(customizable_pages_job_name: true)
-        end
-
-        subject { build.pages_generator? }
-
-        it { is_expected.to eq(result) }
-      end
+    where(:name, :pages_config, :enabled, :result) do
+      'foo' | nil | false | false
+      'pages' | nil | false | false
+      'pages:preview' | nil | true | false
+      'pages' | nil | true | true
+      'foo' | true | true | true
+      'foo' | { expire_in: '1 day' } | true | true
+      'foo' | false | true | false
+      'pages' | false | true | false
     end
 
-    context 'with customizable_pages_job_name feature flag disabled' do
-      where(:name, :pages_config, :enabled, :result) do
-        'foo' | nil | false | false
-        'pages' | nil | false | false
-        'pages:preview' | nil | true | false
-        'pages' | nil | true | true
-        'foo' | true | true | false
-        'foo' | { expire_in: '1 day' } | true | false
-        'foo' | false | true | false
-        'pages' | false | true | true
+    with_them do
+      before do
+        stub_pages_setting(enabled: enabled)
+        build.update!(name: name, options: { pages: pages_config })
+        stub_feature_flags(customizable_pages_job_name: true)
       end
 
-      with_them do
-        before do
-          stub_feature_flags(customizable_pages_job_name: false)
-          stub_pages_setting(enabled: enabled)
-          build.update!(name: name, options: { pages: pages_config })
-        end
+      subject { build.pages_generator? }
 
-        subject { build.pages_generator? }
-
-        it { is_expected.to eq(result) }
-      end
+      it { is_expected.to eq(result) }
     end
   end
 
@@ -5411,7 +5368,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'wraps around to max size of a signed smallint' do
         expect { drop_with_exit_code }
-        .to change { build.reload.metadata&.exit_code }.from(nil).to(2)
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(32767)
       end
     end
   end
@@ -5567,14 +5524,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it { expect(matchers).to all be_protected }
-      end
-
-      context 'with use_new_queue_tags disabled' do
-        before do
-          stub_feature_flags(use_new_queue_tags: false)
-        end
-
-        it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
       end
     end
   end
@@ -6074,40 +6023,46 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe 'token format for builds transiting into pending' do
-    let(:partition_id) { 100 }
-    let(:ci_build) { described_class.new(partition_id: partition_id) }
+  describe 'TokenAuthenticatable' do
+    it_behaves_like 'TokenAuthenticatable' do
+      let(:token_field) { :token }
+    end
 
-    context 'when build is initialized without a token and transits to pending' do
-      let(:partition_id_prefix_in_16_bit_encode) { partition_id.to_s(16) + '_' }
+    describe 'token format for builds transiting into pending' do
+      let(:partition_id) { 100 }
+      let(:ci_build) { described_class.new(partition_id: partition_id) }
 
-      it 'generates a token' do
-        expect { ci_build.enqueue }
-          .to change { ci_build.token }.from(nil).to(a_string_starting_with("glcbt-#{partition_id_prefix_in_16_bit_encode}"))
+      context 'when build is initialized without a token and transits to pending' do
+        let(:partition_id_prefix_in_16_bit_encode) { partition_id.to_s(16) + '_' }
+
+        it 'generates a token' do
+          expect { ci_build.enqueue }
+            .to change { ci_build.token }.from(nil).to(a_string_starting_with("glcbt-#{partition_id_prefix_in_16_bit_encode}"))
+        end
+      end
+
+      context 'when build is initialized with a token and transits to pending' do
+        let(:token) { 'an_existing_secret_token' }
+
+        before do
+          ci_build.set_token(token)
+        end
+
+        it 'does not change the existing token' do
+          expect { ci_build.enqueue }
+            .not_to change { ci_build.token }.from(token)
+        end
       end
     end
 
-    context 'when build is initialized with a token and transits to pending' do
-      let(:token) { 'an_existing_secret_token' }
+    describe '#prefix_and_partition_for_token' do
+      # 100.to_s(16) -> 64
+      let(:ci_build) { described_class.new(partition_id: 100) }
 
-      before do
-        ci_build.set_token(token)
+      it 'is prefixed with static string and partition id' do
+        ci_build.ensure_token
+        expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
       end
-
-      it 'does not change the existing token' do
-        expect { ci_build.enqueue }
-          .not_to change { ci_build.token }.from(token)
-      end
-    end
-  end
-
-  describe '#prefix_and_partition_for_token' do
-    # 100.to_s(16) -> 64
-    let(:ci_build) { described_class.new(partition_id: 100) }
-
-    it 'is prefixed with static string and partition id' do
-      ci_build.ensure_token
-      expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
     end
   end
 
@@ -6131,13 +6086,5 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     it { expect(build.tags_ids_relation.pluck(:name)).to match_array(tag_list) }
-
-    context 'with use_new_queue_tags disabled' do
-      before do
-        stub_feature_flags(use_new_queue_tags: false)
-      end
-
-      it { expect(build.tags_ids_relation.pluck(:name)).to match_array(tag_list) }
-    end
   end
 end

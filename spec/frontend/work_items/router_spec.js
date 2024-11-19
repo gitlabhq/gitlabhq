@@ -66,6 +66,7 @@ describe('Work items router', () => {
         hasIterationsFeature: false,
         hasOkrsFeature: false,
         hasSubepicsFeature: false,
+        hasLinkedItemsEpicsFeature: false,
         hasIssuableHealthStatusFeature: false,
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
@@ -90,13 +91,19 @@ describe('Work items router', () => {
     gon.relative_url_root = '/my-org';
     const router = createRouter({ fullPath: '/work_item' });
 
-    expect(router.options.base).toBe('/my-org/work_item/-');
+    // options.history only exists in Vue 3 router
+    const basePath = router.options.history?.base || router.options.base;
+
+    expect(basePath).toBe('/my-org/work_item/-');
   });
 
   it('includes groups in path for groups', () => {
     const router = createRouter({ fullPath: '/work_item', workspaceType: 'group' });
 
-    expect(router.options.base).toBe('/groups/work_item/-');
+    // options.history only exists in Vue 3 router
+    const basePath = router.options.history?.base || router.options.base;
+
+    expect(basePath).toBe('/groups/work_item/-');
   });
 
   describe.each(workItemTypes)('Create Work Item for type: %s', (type) => {

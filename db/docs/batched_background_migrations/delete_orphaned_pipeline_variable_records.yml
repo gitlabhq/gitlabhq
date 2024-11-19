@@ -1,0 +1,8 @@
+---
+migration_job_name: DeleteOrphanedPipelineVariableRecords
+description: Deletes corrupted rows from p_ci_pipeline_variables table
+feature_category: continuous_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169441
+milestone: '17.6'
+queued_migration_version: 20241016131601
+finalized_by: # version of the migration that finalized this BBM

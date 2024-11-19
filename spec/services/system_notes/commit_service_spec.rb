@@ -7,7 +7,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
   let_it_be(:project)  { create(:project, :repository, group: group) }
   let_it_be(:author)   { create(:user) }
 
-  let(:commit_service) { described_class.new(noteable: noteable, project: project, author: author) }
+  let(:commit_service) { described_class.new(noteable: noteable, container: project, author: author) }
 
   describe '#add_commits' do
     subject { commit_service.add_commits(new_commits, old_commits, oldrev) }

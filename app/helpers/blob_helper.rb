@@ -30,9 +30,7 @@ module BlobHelper
       return ide_edit_path(target_project, branch, path)
     end
 
-    if target_project != source_project
-      params = { target_project: target_project.full_path }
-    end
+    params = { target_project: target_project.full_path } if target_project != source_project
 
     result = File.join(ide_path, 'project', source_project.full_path, 'merge_requests', merge_request.to_param)
     result += "?#{params.to_query}" unless params.nil?
@@ -232,14 +230,10 @@ module BlobHelper
   def contribution_options(project)
     options = []
 
-    if can?(current_user, :create_issue, project)
-      options << link_to("submit an issue", new_project_issue_path(project))
-    end
+    options << link_to("submit an issue", new_project_issue_path(project)) if can?(current_user, :create_issue, project)
 
     merge_project = merge_request_source_project_for_project(@project)
-    if merge_project
-      options << link_to("create a merge request", project_new_merge_request_path(project))
-    end
+    options << link_to("create a merge request", project_new_merge_request_path(project)) if merge_project
 
     options
   end

@@ -109,7 +109,7 @@ export default {
     </div>
     <span
       v-if="!selectedLabels.length"
-      class="text-secondary hide-collapsed"
+      class="hide-collapsed gl-text-subtle"
       data-testid="empty-placeholder"
     >
       <slot></slot>

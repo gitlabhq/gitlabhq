@@ -1,4 +1,5 @@
 <script>
+import { GlFormGroup } from '@gitlab/ui';
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { TYPE_ISSUE } from '~/issues/constants';
@@ -14,6 +15,7 @@ const SPACE_FACTOR = 1;
 export default {
   name: 'RelatedIssuableInput',
   components: {
+    GlFormGroup,
     IssueToken,
   },
   props: {
@@ -179,49 +181,61 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="issuableFormWrapper"
-    :class="{ focus: isInputFocused }"
-    class="add-issuable-form-input-wrapper form-control gl-field-error-outline gl-h-auto gl-px-3 gl-pb-0 gl-pt-2"
-    @click="onIssuableFormWrapperClick"
-  >
-    <ul class="gl-m-0 gl-flex gl-list-none gl-flex-wrap gl-items-baseline gl-p-0">
-      <li
-        v-for="(reference, index) in references"
-        :key="reference"
-        class="gl-mb-2 gl-mr-2 gl-max-w-full"
-      >
-        <issue-token
-          :id-key="index"
-          :display-reference="reference.text || reference"
-          can-remove
-          is-condensed
-          :path-id-separator="pathIdSeparator"
-          event-namespace="pendingIssuable"
-          @pendingIssuableRemoveRequest="
-            (params) => {
-              $emit('pendingIssuableRemoveRequest', params);
-            }
-          "
-        />
-      </li>
-      <li class="gl-mb-2 gl-grow">
-        <input
-          :id="inputId"
-          ref="input"
-          :value="inputValue"
-          :placeholder="inputPlaceholder"
-          :aria-label="inputPlaceholder"
-          type="text"
-          class="gl-w-full gl-border-none gl-outline-none"
-          data-testid="add-issue-field"
-          autocomplete="off"
-          @input="onInput"
-          @focus="onFocus"
-          @blur="onBlur"
-          @keyup.escape.exact="$emit('addIssuableFormCancel')"
-        />
-      </li>
-    </ul>
-  </div>
+  <gl-form-group>
+    <div
+      ref="issuableFormWrapper"
+      :class="{ focus: isInputFocused }"
+      class="add-issuable-form-input-wrapper form-control gl-field-error-outline gl-h-auto gl-px-3 gl-pb-0 gl-pt-2"
+      @click="onIssuableFormWrapperClick"
+    >
+      <ul class="gl-m-0 gl-flex gl-list-none gl-flex-wrap gl-items-baseline gl-p-0">
+        <li
+          v-for="(reference, index) in references"
+          :key="reference"
+          class="gl-mb-2 gl-mr-2 gl-max-w-full"
+        >
+          <issue-token
+            :id-key="index"
+            :display-reference="reference.text || reference"
+            can-remove
+            is-condensed
+            :path-id-separator="pathIdSeparator"
+            event-namespace="pendingIssuable"
+            @pendingIssuableRemoveRequest="
+              (params) => {
+                $emit('pendingIssuableRemoveRequest', params);
+              }
+            "
+          />
+        </li>
+        <li class="gl-mb-2 gl-grow">
+          <input
+            :id="inputId"
+            ref="input"
+            :aria-describedby="`${inputId}-description`"
+            :value="inputValue"
+            :placeholder="inputPlaceholder"
+            :aria-label="inputPlaceholder"
+            type="text"
+            class="gl-w-full gl-border-none gl-outline-none"
+            data-testid="add-issue-field"
+            autocomplete="off"
+            @input="onInput"
+            @focus="onFocus"
+            @blur="onBlur"
+            @keyup.escape.exact="$emit('addIssuableFormCancel')"
+          />
+        </li>
+      </ul>
+    </div>
+    <template #description>
+      <span :id="`${inputId}-description`">
+        {{
+          __(
+            'Only issues can be linked from this form. You can also link this issue from an epic or task.',
+          )
+        }}
+      </span>
+    </template>
+  </gl-form-group>
 </template>

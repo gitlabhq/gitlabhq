@@ -17,7 +17,9 @@ RSpec.describe Issuable::DiscussionsListService, feature_category: :team_plannin
   describe 'fetching notes for issue' do
     let_it_be(:issuable) { create(:issue, project: project) }
 
-    it_behaves_like 'listing issuable discussions', user_role: :guest, internal_discussions: 1, total_discussions: 7
+    context 'when qurantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446157' do
+      it_behaves_like 'listing issuable discussions', user_role: :guest, internal_discussions: 1, total_discussions: 7
+    end
 
     context 'without notes widget' do
       let_it_be(:issuable) { create(:work_item, project: project) }
@@ -35,6 +37,9 @@ RSpec.describe Issuable::DiscussionsListService, feature_category: :team_plannin
   describe 'fetching notes for merge requests' do
     let_it_be(:issuable) { create(:merge_request, source_project: project, target_project: project) }
 
-    it_behaves_like 'listing issuable discussions', user_role: :reporter, internal_discussions: 0, total_discussions: 6
+    context 'when qurantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446156' do
+      it_behaves_like 'listing issuable discussions',
+        user_role: :reporter, internal_discussions: 0, total_discussions: 6
+    end
   end
 end

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Group-level analytics moved to GitLab Premium in 13.9.
 
 GitLab provides different types of analytics insights at the instance, group, and project level.
-These insights appear on the left sidebar, under [**Analyze**](../project/settings/index.md#disable-project-analytics).
+These insights appear on the left sidebar, under [**Analyze**](../project/settings/index.md#turn-off-project-analytics).
 
 ## Analytics features
 

@@ -3,18 +3,10 @@
 module QA
   module Resource
     class Group < GroupBase
-      attributes :require_two_factor_authentication, :description, :path
+      attributes :require_two_factor_authentication, :description
 
       attribute :full_path do
         determine_full_path
-      end
-
-      attribute :name do
-        @name || @path || Runtime::Namespace.name
-      end
-
-      attribute :path do
-        @path || @name || Runtime::Namespace.name
       end
 
       attribute :sandbox do
@@ -29,8 +21,13 @@ module QA
         end
       end
 
+      attribute :name do
+        path
+      end
+
       def initialize
         @description = "QA test run at #{Runtime::Namespace.time}"
+        @path = Runtime::Namespace.group_name
         @require_two_factor_authentication = false
         # Add visibility to enable create private group
         @visibility = 'public'

@@ -107,7 +107,7 @@ but it doesn't guarantee that every `git push` event is received. You should sti
 [`GitRepository.spec.interval`](https://fluxcd.io/flux/components/source/gitrepositories/#interval)
 to an acceptable duration.
 
-DISCLAIMER:
+NOTE:
 The agent only has access to the agent configuration project and all public projects.
 The agent is not able to immediately reconcile any private projects, except the agent configuration project.
 Allowing the agent to access private projects is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).

@@ -127,31 +127,6 @@ module Gitlab
                               'inputs with coverage-guided fuzzing.'),
               configuration_text: s_('SecurityConfiguration|Manage corpus')
             }
-          },
-          breach_and_attack_simulation: {
-            anchor: 'bas',
-            badge: {
-              always_display: true,
-              text: s_('SecurityConfiguration|Incubating feature'),
-              tooltip_text: s_('SecurityConfiguration|Breach and Attack Simulation is an incubating ' \
-                               'feature extending existing security testing by simulating adversary activity.'),
-              variant: 'neutral'
-            },
-            description: s_('SecurityConfiguration|Simulate breach and attack scenarios against your ' \
-                            'running application by attempting to detect and exploit known vulnerabilities.'),
-            name: s_('SecurityConfiguration|Breach and Attack Simulation (BAS)'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/breach_and_attack_simulation/index.md'),
-            secondary: {
-              configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-                'user/application_security/breach_and_attack_simulation/index.md',
-                anchor: 'extend-dynamic-application-security-testing-dast'),
-              description: s_('SecurityConfiguration|Enable incubating Breach and Attack Simulation focused ' \
-                              'features such as callback attacks in your DAST scans.'),
-              name: s_('SecurityConfiguration|Out-of-Band Application Security Testing (OAST)')
-            },
-            short_name: s_('SecurityConfiguration|BAS'),
-            type: 'breach_and_attack_simulation'
           }
         }.freeze
       end

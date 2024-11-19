@@ -1,6 +1,9 @@
 export const FREQUENTLY_USED_KEY = 'frequently_used';
 export const FREQUENTLY_USED_EMOJIS_STORAGE_KEY = 'frequently_used_emojis';
 
+export const EMOJI_THUMBS_UP = 'thumbsup';
+export const EMOJI_THUMBS_DOWN = 'thumbsdown';
+
 export const CATEGORY_NAMES = [
   FREQUENTLY_USED_KEY,
   'custom',

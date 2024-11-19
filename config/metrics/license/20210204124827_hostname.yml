@@ -13,7 +13,7 @@ instrumentation_class: HostnameMetric
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - free
 - premium
 - ultimate

@@ -207,6 +207,8 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
 };
 
 export const updateDiscussion = ({ commit, state }, discussion) => {
+  if (discussion == null) return null;
+
   commit(types.UPDATE_DISCUSSION, discussion);
 
   return utils.findNoteObjectById(state.discussions, discussion.id);
@@ -490,15 +492,8 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   }
 
   const processQuickActions = (res) => {
-    const {
-      errors: { commands_only: commandsOnly } = {
-        commands_only: null,
-        command_names: [],
-      },
-      command_names: commandNames,
-    } = res;
-    const message = commandsOnly;
-
+    const { quick_actions_status: { messages = null, command_names: commandNames = [] } = {} } =
+      res;
     if (commandNames?.indexOf('submit_review') >= 0) {
       dispatch('batchComments/clearDrafts');
     }
@@ -506,14 +501,14 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     /*
      The following reply means that quick actions have been successfully applied:
 
-     {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
+     {"commands_changes":{},"valid":false,"errors":{},"quick_actions_status":{"messages":["Commands applied"],"command_names":["due"],"commands_only":true}}
      */
-    if (hasQuickActions && message) {
+    if (hasQuickActions && messages) {
       // synchronizing the quick action with the sidebar widget
       // this is a temporary solution until we have confidentiality real-time updates
       if (
         confidentialWidget.setConfidentiality &&
-        message.some((m) => m.includes('Made this issue confidential'))
+        messages.some((m) => m.includes('Made this issue confidential'))
       ) {
         confidentialWidget.setConfidentiality();
       }
@@ -521,7 +516,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
 
       createAlert({
-        message: message || __('Commands applied'),
+        message: messages || __('Commands applied'),
         variant: VARIANT_INFO,
         parent: noteData.flashContainer,
       });

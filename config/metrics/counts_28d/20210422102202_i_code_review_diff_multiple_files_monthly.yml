@@ -15,7 +15,7 @@ options:
     - i_code_review_diff_multiple_files
 distribution:
   - ce
-tier:
+tiers:
   - free
   - premium
   - ultimate

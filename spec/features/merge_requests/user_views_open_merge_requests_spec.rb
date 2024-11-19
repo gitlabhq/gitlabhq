@@ -80,8 +80,8 @@ RSpec.describe 'User views open merge requests', :js, feature_category: :code_re
         end
 
         it 'shows pipeline status' do
-          page.within('.mr-list') do
-            expect(page).to have_link('Pipeline: pending')
+          page.within('.issuable-list') do
+            expect(page).to have_link('Pending')
           end
         end
       end

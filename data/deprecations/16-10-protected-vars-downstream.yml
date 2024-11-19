@@ -2,7 +2,7 @@
 
 - title: "Behavior change for protected variables and multi-project pipelines"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "16.10"
   # Change breaking_change to false if needed.
   breaking_change: true
@@ -16,7 +16,7 @@
 
     While [forwarding CI/CD variables](https://docs.gitlab.com/ee/ci/pipelines/downstream_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline) through downstream pipelines is useful for some workflows, [protected variables](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable) require additional care. They are intended for use only with specific protected branches or tags.
 
-    In GitLab 18.0, variable forwarding will be updated to ensure protected variables are only passed in specific situations:
+    In GitLab 19.0, variable forwarding will be updated to ensure protected variables are only passed in specific situations:
 
     - Project-level protected variables can only be forwarded to downstream pipelines in the same project (child pipelines).
     - Group-level protected variables can only be forwarded to downstream pipelines of projects that belong to the same group as the source project.

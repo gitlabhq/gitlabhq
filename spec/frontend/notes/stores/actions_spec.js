@@ -821,7 +821,10 @@ describe('Actions Notes Store', () => {
       });
 
       it('dispatches clearDrafts is command names contains submit_review', async () => {
-        const response = { command_names: ['submit_review'], valid: true };
+        const response = {
+          quick_actions_status: { command_names: ['submit_review'] },
+          valid: true,
+        };
         dispatch = jest.fn().mockResolvedValue(response);
         await actions.saveNote(
           {

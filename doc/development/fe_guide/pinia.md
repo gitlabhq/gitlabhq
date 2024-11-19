@@ -81,6 +81,28 @@ Try to split all your migrations into two steps:
 1. Refactor just the Vuex API: Don't change the store structure, make sure it works in Pinia ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149489)).
 1. Refactor the structure: Split your store into multiple smaller, single purpose stores.
 
+### Automated migration using codemods
+
+You can use [ast-grep](https://ast-grep.github.io/) codemods to simplify migration from Vuex to Pinia.
+
+1. [Install ast-grep](https://ast-grep.github.io/guide/quick-start.html#installation) on your system before proceeding.
+1. Run `scripts/frontend/codemods/vuex-to-pinia/migrate.sh path/to/your/store`
+
+The codemods will migrate `actions.js`, `mutations.js` and `getters.js` located in your store folder.
+Manually scan these files after running the codemods to ensure they are properly migrated.
+Vuex specs can not be automatically migrated, migrate them by hand.
+
+Vuex module calls are replaced using Pinia conventions:
+
+1. `dispatch('anotherModule/action', ...args, { root: true })` → `useAnotherModule().action(...args)`
+1. `dispatch('action', ...args, { root: true })` → `useRootStore().action(...args)`
+1. `rootGetters['anotherModule/getter']` → `useAnotherModule().getter`
+1. `rootGetters.getter` → `useRootStore().getter`
+1. `rootState.anotherModule.state` → `useAnotherModule().state`
+
+If you have not yet migrated a dependent module (`useAnotherModule` and `useRootStore` in the examples above) you can create a temporary dummy store.
+Use the guidance below to migrate Vuex modules.
+
 ### Migrating stores with nested modules
 
 It is not trivial to iteratively migrate stores with nested modules that have dependencies between them.

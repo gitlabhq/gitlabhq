@@ -1,16 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ModelEdit from '~/ml/model_registry/components/model_edit.vue';
-
 import editModelMutation from '~/ml/model_registry/graphql/mutations/edit_model.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { createMockDirective } from 'helpers/vue_mock_directive';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { editModelResponses, model } from '../graphql_mock_data';
 
@@ -41,38 +38,31 @@ describe('ModelEdit', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(ModelEdit, {
-      propsData: { model: modelProp, disableAttachments: true },
-      provide: {
+      propsData: {
+        model: modelProp,
+        disableAttachments: true,
         projectPath: 'some/project',
-        maxAllowedFileSize: 99999,
         markdownPreviewPath: '/markdown-preview',
-        modelId: 'gid://gitlab/Ml::Model/1',
-      },
-      directives: {
-        GlModal: createMockDirective('gl-modal'),
+        modelPath: 'model/path',
       },
       apolloProvider,
     });
   };
 
-  const findEditModal = () => wrapper.findComponent(ModelEdit);
+  const findPrimaryButton = () => wrapper.findByTestId('primary-button');
+  const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
   const findModelName = () => wrapper.findByTestId('nameId');
   const findModelDescription = () => wrapper.findByTestId('descriptionId');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-  const findGlModal = () => wrapper.findComponent(GlModal);
-  const findGlAlert = () => wrapper.findByTestId('modalEditAlert');
+  const findGlAlert = () => wrapper.findByTestId('edit-alert');
   const submitForm = async () => {
-    findGlModal().vm.$emit('primary', new Event('primary'));
+    findPrimaryButton().vm.$emit('click');
     await waitForPromises();
   };
 
   describe('Initial state', () => {
     beforeEach(() => {
       createWrapper();
-    });
-
-    it('renders the component', () => {
-      expect(findEditModal().exists()).toBe(true);
     });
 
     it('shows disabled model name input', () => {
@@ -87,17 +77,16 @@ describe('ModelEdit', () => {
       expect(findModelDescription().attributes('value')).toBe(model.description);
     });
 
-    it('renders the edit button in the modal', () => {
-      expect(findGlModal().props('actionPrimary')).toEqual({
-        attributes: { variant: 'confirm', disabled: false },
-        text: 'Save changes',
+    it('renders the edit button', () => {
+      expect(findPrimaryButton().props()).toMatchObject({
+        variant: 'confirm',
+        disabled: false,
       });
     });
 
-    it('renders the cancel button in the modal', () => {
-      expect(findGlModal().props('actionSecondary')).toEqual({
-        text: 'Cancel',
-        attributes: { variant: 'default' },
+    it('renders the cancel button', () => {
+      expect(findSecondaryButton().props()).toMatchObject({
+        variant: 'default',
       });
     });
 

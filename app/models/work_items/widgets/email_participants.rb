@@ -3,7 +3,9 @@
 module WorkItems
   module Widgets
     class EmailParticipants < Base
-      delegate :email_participants_emails, to: :work_item
+      delegate :issue_email_participants, to: :work_item
+
+      alias_method :email_participants, :issue_email_participants
 
       def self.quick_action_commands
         [:add_email, :remove_email]

@@ -1,0 +1,4 @@
+---
+RSpec/UndescriptiveLiteralsDescription:
+  Exclude:
+    - 'spec/services/merge_requests/base_service_spec.rb'

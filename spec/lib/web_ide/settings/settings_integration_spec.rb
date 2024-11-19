@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disable RSpec/FilePath -- This cop fails because the spec is named 'settings_integration_spec.rb' but describes ::WebIde::Settings class. But we want it that way, because it's an integration spec, not a unit spec, but we still want to be able to use `described_class`
+RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disable RSpec/SpecFilePathFormat -- This cop fails because the spec is named 'settings_integration_spec.rb' but describes ::WebIde::Settings class. But we want it that way, because it's an integration spec, not a unit spec, but we still want to be able to use `described_class`
   let_it_be(:user) { create(:user) }
 
   let(:expected_vscode_extension_gallery_setting) do
     {
       service_url: "https://open-vsx.org/vscode/gallery",
       item_url: "https://open-vsx.org/vscode/item",
-      resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}",
+      resource_url_template: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}',
       control_url: "",
       nls_base_url: "",
       publisher_url: ""
@@ -72,7 +72,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
         stub_env("GITLAB_WEB_IDE_VSCODE_EXTENSIONS_GALLERY",
           '{"service_url":"https://OVERRIDE.org/vscode/gallery",' \
             '"item_url":"https://OVERRIDE.org/vscode/item",' \
-            '"resource_url_template":"https://OVERRIDE.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"}'
+            '"resource_url_template":"https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}"}'
         )
       end
 
@@ -81,7 +81,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
           {
             service_url: "https://OVERRIDE.org/vscode/gallery",
             item_url: "https://OVERRIDE.org/vscode/item",
-            resource_url_template: "https://OVERRIDE.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"
+            resource_url_template: "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}"
           }
         )
       end
@@ -102,7 +102,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
       it "uses default value" do
         expected_value = {
           item_url: "https://open-vsx.org/vscode/item",
-          resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}",
+          resource_url_template: "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}",
           service_url: "https://open-vsx.org/vscode/gallery",
           control_url: "",
           nls_base_url: "",

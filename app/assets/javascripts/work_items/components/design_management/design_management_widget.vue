@@ -217,10 +217,12 @@ export default {
   <crud-component
     v-if="hasDesignsAndVersions"
     anchor-name="designs"
+    anchor-id="designs"
     :title="s__('DesignManagement|Designs')"
     data-testid="designs-root"
     class="gl-mt-5"
     is-collapsible
+    persist-collapsed-state
   >
     <template #count>
       <design-version-dropdown :all-versions="allVersions" />

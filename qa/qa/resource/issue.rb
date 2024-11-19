@@ -18,7 +18,8 @@ module QA
         :assignee_ids,
         :labels,
         :title,
-        :description
+        :description,
+        :state
 
       attribute :confidential do
         false

@@ -46,4 +46,8 @@ class ProjectImportData < ApplicationRecord
   def clear_credentials
     self.credentials = {}
   end
+
+  def user_mapping_enabled?
+    self.data&.dig('user_contribution_mapping_enabled') || false
+  end
 end
