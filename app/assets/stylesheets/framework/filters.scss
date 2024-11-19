@@ -272,17 +272,11 @@
 
 .filtered-search-history-dropdown-toggle-button.gl-button {
   border-radius: $gl-border-radius-base-inner 0 0 $gl-border-radius-base-inner;
-  color: $gl-text-color-secondary;
   margin: -1px 0 -1px -1px;
   box-shadow: inset 0 0 0 1px var(--gl-control-border-color-default);
   flex: 1;
   transition: color 0.1s linear;
   width: auto;
-
-  &:hover,
-  &:focus {
-    @apply gl-text-default;
-  }
 }
 
 .filtered-search-history-dropdown {

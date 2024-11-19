@@ -152,7 +152,7 @@ $comparison-empty-state-height: 62px;
   .ci-table {
     th {
       background-color: var(--white, $white);
-      color: var(--gl-gray-700, $gl-text-color-secondary);
+      @apply gl-text-strong;
     }
   }
 }

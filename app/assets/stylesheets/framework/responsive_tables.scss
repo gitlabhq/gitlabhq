@@ -136,7 +136,7 @@
 
 .table-mobile-header {
   @include flex-max-width(40);
-  color: $gl-text-color-secondary;
+  @apply gl-text-strong;
   text-align: left;
 
   @include media-breakpoint-up(md) {

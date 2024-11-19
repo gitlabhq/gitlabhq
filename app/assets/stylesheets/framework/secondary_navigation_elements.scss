@@ -16,7 +16,7 @@
       padding: $gl-spacing-scale-5 $gl-spacing-scale-4;
       font-size: $gl-font-size;
       line-height: $gl-line-height-16;
-      color: $gl-text-color-secondary;
+      @apply gl-text-subtle;
       border: 0;
       white-space: nowrap;
 

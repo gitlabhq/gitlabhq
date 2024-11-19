@@ -6,7 +6,7 @@
   font-size: $gl-font-size;
   padding: $gl-padding 0 $gl-padding $gl-spacing-scale-8;
   border-bottom: 1px solid $gray-50;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
   position: relative;
   line-height: $gl-line-height-20;
 
@@ -15,13 +15,13 @@
     left: 0;
 
     svg {
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
   }
 
   .system-note-image-inline {
     svg {
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
   }
 

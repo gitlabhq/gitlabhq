@@ -25,6 +25,7 @@ import { __ } from '~/locale';
 
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
+import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   MR_TREE_SHOW_KEY,
@@ -60,7 +61,6 @@ import NoChanges from './no_changes.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
 import DiffAppControls from './diff_app_controls.vue';
-import getMRCodequalityAndSecurityReports from './graphql/get_mr_codequality_and_security_reports.query.graphql';
 
 export const FINDINGS_STATUS_PARSED = 'PARSED';
 export const FINDINGS_STATUS_ERROR = 'ERROR';
@@ -181,8 +181,13 @@ export default {
         return !this.codequalityReportAvailable && !this.sastReportAvailable;
       },
       update(data) {
-        const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
-        this.activeProject = data?.project?.mergeRequest?.project;
+        if (!data?.project?.mergeRequest) {
+          return;
+        }
+
+        const { codequalityReportsComparer, sastReport } = data.project.mergeRequest;
+        this.activeProject = data.project.mergeRequest.project;
+
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
           (!this.codequalityReportAvailable ||

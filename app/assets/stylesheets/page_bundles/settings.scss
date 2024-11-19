@@ -159,7 +159,7 @@
 }
 
 .settings-list-icon {
-  color: var(--gray-500, $gl-text-color-secondary);
+  @apply gl-text-subtle;
   font-size: $default-icon-size;
   line-height: 42px;
 }

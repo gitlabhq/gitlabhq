@@ -153,7 +153,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user has less then 20 followers' do
+    describe 'followers list without pagination' do
       let(:follower) { create(:user) }
 
       before do
@@ -171,10 +171,12 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user has more then 20 followers' do
-      let(:other_users) { create_list(:user, 21) }
+    describe 'followers list with pagination' do
+      let(:other_users) { create_list(:user, 2) }
 
       before do
+        stub_const("UsersController::FOLLOWERS_FOLLOWING_USERS_PER_PAGE", 1)
+
         other_users.each do |follower|
           follower.follow(user)
         end
@@ -185,11 +187,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
       it 'shows paginated followers' do
         page.within('#js-legacy-tabs-container') do
-          other_users.each_with_index do |follower, i|
-            break if i == 20
-
-            expect(page).to have_content(follower.name)
-          end
+          expect(page).to have_content(other_users.first.name)
           expect(page).to have_selector('.gl-card')
           expect(page).to have_selector('.gl-pagination')
           expect(page).to have_selector('.gl-pagination .js-pagination-page', count: 2)
@@ -214,7 +212,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user is following less then 20 people' do
+    describe 'following list without pagination' do
       let(:followee) { create(:user) }
 
       before do
@@ -232,10 +230,12 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user is following more then 20 people' do
-      let(:other_users) { create_list(:user, 21) }
+    describe 'following list with pagination' do
+      let(:other_users) { create_list(:user, 2) }
 
       before do
+        stub_const("UsersController::FOLLOWERS_FOLLOWING_USERS_PER_PAGE", 1)
+
         other_users.each do |followee|
           user.follow(followee)
         end
@@ -246,11 +246,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
       it 'shows paginated following' do
         page.within('#js-legacy-tabs-container') do
-          other_users.each_with_index do |followee, i|
-            break if i == 20
-
-            expect(page).to have_content(followee.name)
-          end
+          expect(page).to have_content(other_users.first.name)
           expect(page).to have_selector('.gl-card')
           expect(page).to have_selector('.gl-pagination')
           expect(page).to have_selector('.gl-pagination .js-pagination-page', count: 2)

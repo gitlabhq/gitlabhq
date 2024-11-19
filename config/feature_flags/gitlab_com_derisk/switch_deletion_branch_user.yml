@@ -1,0 +1,9 @@
+---
+name: switch_deletion_branch_user
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497498
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170202
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500385
+milestone: '17.6'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

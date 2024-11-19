@@ -8,6 +8,8 @@ class UsersController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include Gitlab::NoteableMetadata
 
+  FOLLOWERS_FOLLOWING_USERS_PER_PAGE = 21
+
   requires_cross_project_access show: false,
     groups: false,
     projects: false,
@@ -130,13 +132,13 @@ class UsersController < ApplicationController
 
   def followers
     present_users do
-      @user_followers = user.followers.page(params[:page])
+      @user_followers = user.followers.page(params[:page]).per(FOLLOWERS_FOLLOWING_USERS_PER_PAGE)
     end
   end
 
   def following
     present_users do
-      @user_following = user.followees.page(params[:page])
+      @user_following = user.followees.page(params[:page]).per(FOLLOWERS_FOLLOWING_USERS_PER_PAGE)
     end
   end
 

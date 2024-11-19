@@ -209,6 +209,9 @@ You can delete the source branch for a merge request:
 
 An administrator can make this option the default in the project's settings.
 
+The delete-branch action is performed by the user who sets auto-merge, or merges the merge request.
+If the user lacks the correct role, such as in a forked project, the source branch deletion fails.
+
 ### Update merge requests when target branch merges
 
 DETAILS:

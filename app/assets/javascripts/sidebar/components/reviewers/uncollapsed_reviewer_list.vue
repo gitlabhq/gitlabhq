@@ -11,26 +11,27 @@ const JUST_APPROVED = 'approved';
 const REVIEW_STATE_ICONS = {
   APPROVED: {
     name: 'check-circle',
-    class: 'gl-text-green-500',
+    iconClass: 'gl-fill-icon-success',
     title: s__('MergeRequest|Reviewer approved changes'),
   },
   REQUESTED_CHANGES: {
     name: 'error',
-    class: 'gl-text-red-500',
+    iconClass: 'gl-fill-icon-danger',
     title: s__('MergeRequest|Reviewer requested changes'),
   },
   REVIEWED: {
     name: 'comment-lines',
-    class: 'gl-text-blue-500',
+    iconClass: 'gl-fill-icon-info',
     title: s__('MergeRequest|Reviewer commented'),
   },
   UNREVIEWED: {
     name: 'dash-circle',
+    iconClass: 'gl-fill-icon-default',
     title: s__('MergeRequest|Awaiting review'),
   },
   REVIEW_STARTED: {
     name: 'comment-dots',
-    class: 'gl-text-subtle',
+    iconClass: 'gl-fill-icon-default',
     title: s__('MergeRequest|Reviewer started review'),
   },
 };
@@ -143,10 +144,7 @@ export default {
       if (user.mergeRequestInteraction.approved) {
         return {
           ...REVIEW_STATE_ICONS.APPROVED,
-          class: [
-            REVIEW_STATE_ICONS.APPROVED.class,
-            this.loadingStates[user.id] === JUST_APPROVED && 'merge-request-approved-icon',
-          ],
+          class: [this.loadingStates[user.id] === JUST_APPROVED && 'merge-request-approved-icon'],
         };
       }
       return (
@@ -205,13 +203,14 @@ export default {
       <span
         v-gl-tooltip.top.viewport
         :title="reviewStateIcon(user).title"
-        :class="reviewStateIcon(user).class"
         class="gl-float-right gl-my-2 gl-ml-auto gl-shrink-0"
+        :class="reviewStateIcon(user).class"
         data-testid="reviewer-state-icon-parent"
       >
         <gl-icon
           :size="reviewStateIcon(user).size || 16"
           :name="reviewStateIcon(user).name"
+          :class="reviewStateIcon(user).iconClass"
           :aria-label="reviewStateIcon(user).title"
           data-testid="reviewer-state-icon"
         />

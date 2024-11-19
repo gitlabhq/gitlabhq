@@ -173,20 +173,6 @@ ul.related-merge-requests > li gl-emoji {
   display: block;
 }
 
-.issue-sort-dropdown {
-  .btn-group {
-    width: 100%;
-  }
-
-  .reverse-sort-btn {
-    color: $gl-text-color-secondary;
-
-    &.disabled {
-      @apply gl-text-disabled;
-    }
-  }
-}
-
 @include media-breakpoint-up(sm) {
   .emoji-block .row {
     display: flex;

@@ -685,7 +685,7 @@
   @include email-code-block;
 
   &.gl-text-secondary {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
 
     p,
     h1,
@@ -694,7 +694,7 @@
     h4,
     h5,
     table:not(.code) {
-      color: $gl-text-color-secondary;
+      @apply gl-text-subtle;
     }
   }
 

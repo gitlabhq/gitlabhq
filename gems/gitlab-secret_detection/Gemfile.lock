@@ -9,18 +9,22 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.1.2)
+    activesupport (7.1.5)
       base64
+      benchmark (>= 0.3)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       connection_pool (>= 2.2.5)
       drb
       i18n (>= 1.6, < 2)
+      logger (>= 1.4.2)
       minitest (>= 5.1)
       mutex_m
+      securerandom (>= 0.3)
       tzinfo (~> 2.0)
     ast (2.4.2)
     base64 (0.2.0)
+    benchmark (0.4.0)
     benchmark-malloc (0.2.0)
     benchmark-perf (0.6.0)
     benchmark-trend (0.4.0)
@@ -45,6 +49,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.6.3)
     language_server-protocol (3.17.0.3)
+    logger (1.6.1)
     mini_portile2 (2.8.5)
     minitest (5.20.0)
     mutex_m (0.2.0)
@@ -124,6 +129,7 @@ GEM
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
+    securerandom (0.3.2)
     toml-rb (2.2.0)
       citrus (~> 3.0, > 3.0)
     tzinfo (2.0.6)

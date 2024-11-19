@@ -47,7 +47,7 @@ input[type='file'] {
 .text-secondary {
   // Override Bootstrap's light secondary color
   // We have to use !important because bootstrap has that set as well
-  color: $gl-text-color-secondary !important;
+  @apply gl-text-subtle #{!important};
 }
 
 .bg-success,

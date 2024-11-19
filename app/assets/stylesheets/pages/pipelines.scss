@@ -36,7 +36,7 @@
       vertical-align: middle;
 
       &:not(.text-warning) {
-        fill: $gl-text-color-secondary;
+        @apply gl-fill-icon-subtle;
       }
     }
 
@@ -65,7 +65,7 @@
 
   .duration,
   .finished-at {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
     margin: 0;
     white-space: nowrap;
   }

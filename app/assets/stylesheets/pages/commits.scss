@@ -51,7 +51,7 @@
   }
 
   .committer {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
 
     .commit-author-link {
       @apply gl-text-default;
@@ -117,7 +117,6 @@
 
   .btn svg {
     top: auto;
-    fill: $gl-text-color-secondary;
   }
 
   :first-child {
@@ -166,7 +165,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $gl-text-color-secondary;
+      @apply gl-fill-icon-subtle;
     }
   }
 }

@@ -48,7 +48,7 @@
   .dropdown-menu-inner-content,
   .file-row .file-row-icon svg,
   .file-row:hover .file-row-icon svg {
-    color: var(--ide-text-color-secondary, $gl-text-color-secondary);
+    color: var(--ide-text-color-secondary, var(--gl-text-color-subtle));
   }
 
   .nav-links li:not(.md-header-toolbar),
@@ -78,7 +78,7 @@
   }
 
   .text-secondary {
-    color: var(--ide-text-color-secondary, $gl-text-color-secondary) !important;
+    color: var(--ide-text-color-secondary, var(--gl-text-color-subtle)) !important;
   }
 
   input[type='search']::placeholder,

@@ -257,6 +257,7 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.13.0",
     "@gitlab/eslint-plugin": "20.6.0",
+    "@gitlab/noop": "^1.0.0",
     "@gitlab/stylelint-config": "6.2.2",
     "@graphql-eslint/eslint-plugin": "3.20.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
@@ -327,13 +328,12 @@
     "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.html#bootstrapvue"
   },
   "resolutions": {
+    "**/glob/jackspeak": "npm:@gitlab/noop@1.0.0",
     "**/simple-update-notifier/semver": "^7.0.0",
-    "chokidar": "^3.5.3",
     "@types/node": "14.17.5",
-    "tough-cookie": "4.1.3",
+    "chokidar": "^3.5.3",
     "nwsapi": "2.2.2",
-    "wrap-ansi@^7.0.0": "7.0.0",
-    "wrap-ansi@^6.2.0": "6.2.0"
+    "tough-cookie": "4.1.3"
   },
   "engines": {
     "node": ">=12.22.1",

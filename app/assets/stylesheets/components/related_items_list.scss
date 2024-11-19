@@ -79,7 +79,7 @@ $item-remove-button-space: 42px;
   .item-milestone .milestone-title,
   .item-due-date,
   .item-weight .board-card-info-text {
-    color: $gl-text-color-secondary;
+    @apply gl-text-subtle;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -89,7 +89,7 @@ $item-remove-button-space: 42px;
 .item-meta {
   flex-basis: 100%;
   font-size: $gl-font-size;
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 
   .item-due-date,
   .board-card-weight {

@@ -10259,7 +10259,10 @@ CREATE TABLE compliance_requirements (
     namespace_id bigint NOT NULL,
     name text NOT NULL,
     description text NOT NULL,
+    control_expression text,
+    requirement_type smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_71d7c59197 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_be5c3cfc16 CHECK ((char_length(control_expression) <= 2048)),
     CONSTRAINT check_f1fb6fdd81 CHECK ((char_length(name) <= 255))
 );
 

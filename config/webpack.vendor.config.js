@@ -64,6 +64,12 @@ module.exports = {
       rootDirectory: ROOT_PATH,
       exclude: new RegExp(
         [
+          /*
+          @gitlab/noop is a tool to remove parts of our dependency tree. By it's
+          nature it might not be installed into a folder itself and that would
+          confuse this webpack plugin
+          */
+          '@gitlab/noop',
           /**
            * This Webpack plugin complains when packages have the wrong versions.
            * It doesn't seem like it considers yarn resolutions, so we just do it
