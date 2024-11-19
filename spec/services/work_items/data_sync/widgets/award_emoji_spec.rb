@@ -39,7 +39,7 @@ RSpec.describe WorkItems::DataSync::Widgets::AwardEmoji, feature_category: :team
       context 'when cloning work item' do
         let(:params) { { operation: :clone } }
 
-        it 'copies award_emoji from work_item to target_work_item' do
+        it 'does not copy award_emoji' do
           expect(callback).not_to receive(:new_work_item_award_emoji)
           expect(::AwardEmoji).not_to receive(:insert_all)
 

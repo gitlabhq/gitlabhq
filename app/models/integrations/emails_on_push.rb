@@ -12,6 +12,7 @@ module Integrations
     field :send_from_committer_email,
       type: :checkbox,
       title: -> { s_("EmailsOnPushService|Send from committer") },
+      description: -> { s_("EmailsOnPushService|Send from committer") },
       help: -> do
         @help ||= begin
           domains = Notify.allowed_email_domains.map { |domain| "user@#{domain}" }.join(", ")
@@ -23,15 +24,18 @@ module Integrations
     field :disable_diffs,
       type: :checkbox,
       title: -> { s_("EmailsOnPushService|Disable code diffs") },
-      help: -> { s_("EmailsOnPushService|Don't include possibly sensitive code diffs in notification body.") }
+      help: -> { s_("EmailsOnPushService|Don't include possibly sensitive code diffs in notification body.") },
+      description: -> { s_("EmailsOnPushService|Disable code diffs") }
 
     field :branches_to_be_notified,
       type: :select,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      description: -> { _('Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`.') },
       choices: branch_choices
 
     field :recipients,
       type: :textarea,
+      required: true,
       placeholder: -> { s_('EmailsOnPushService|tanuki@example.com gitlab@example.com') },
       help: -> { s_('EmailsOnPushService|Emails separated by whitespace.') }
 

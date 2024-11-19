@@ -80,7 +80,7 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
 
       # Check last commit
       expect(find('.commit-content').text).to include(message)
-      expect(find_by_testid('last-commit-id-label').text).to eq(short_newrev)
+      expect(find('.js-commit-sha-group').text).to eq(short_newrev)
     end
   end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SentNotification < ApplicationRecord
+  include EachBatch
+
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :recipient, class_name: "User"

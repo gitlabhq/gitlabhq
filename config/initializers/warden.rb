@@ -12,7 +12,7 @@ Rails.application.configure do |config|
     when :set_user
       activity.user_authenticated!
       activity.user_session_override!
-    when :fetch # rubocop:disable Lint/EmptyWhen
+    when :fetch
       # We ignore session fetch events
     else
       activity.user_session_override!
