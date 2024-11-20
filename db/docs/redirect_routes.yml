@@ -8,3 +8,4 @@ description: Stores routes for redirect after changing the path to group or proj
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11136
 milestone: '9.2'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

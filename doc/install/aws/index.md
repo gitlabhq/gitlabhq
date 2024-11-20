@@ -149,7 +149,7 @@ We now create a VPC, a virtual networking environment that you control:
    `10.0.0.0/16`. If you don't require dedicated hardware, you can leave
    "Tenancy" as default. Select **Create VPC** when ready.
 
-   ![Create VPC](img/create_vpc_v17_0.png)
+   ![Create a VPC for GitLab cloud infrastructure](img/create_vpc_v17_0.png)
 
 1. Select the VPC, select **Actions**, select **Edit VPC Settings** and check **Enable DNS resolution**. Select **Save** when done.
 
@@ -193,7 +193,7 @@ create a new one:
 1. Select it from the table, and then under the **Actions** dropdown list choose
    "Attach to VPC".
 
-   ![Create gateway](img/create_gateway_v17_0.png)
+   ![Create an internet gateway](img/create_gateway_v17_0.png)
 
 1. Choose `gitlab-vpc` from the list and hit **Attach**.
 
@@ -409,7 +409,7 @@ persistence and is used to store session data, temporary cache information, and 
    Select the VPC we created earlier (`gitlab-vpc`) and ensure the selected subnets table only contains the [private subnets](#subnets).
 1. Select **Create** when ready.
 
-   ![ElastiCache subnet](img/ec_subnet_v17_0.png)
+   ![Create a subnet group](img/ec_subnet_v17_0.png)
 
 ### Create the Redis Cluster
 

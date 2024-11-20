@@ -222,7 +222,7 @@ Dangerfile
 ^[Secure] @gitlab-org/secure/dynamic-analysis-be
 /ee/app/services/app_sec/dast/
 
-^[Security Policies frontend] @gitlab-org/govern/security-policies-frontend
+^[Security Policies frontend] @gitlab-org/security-risk-management/security-policies/frontend
 /ee/app/assets/javascripts/approvals/components/license_compliance/**
 /ee/app/assets/javascripts/approvals/stores/modules/license_compliance/**
 /ee/app/assets/javascripts/license_compliance/**
@@ -250,7 +250,7 @@ Dangerfile
 /ee/spec/frontend/security_orchestration/**
 /ee/spec/views/projects/security/policies/**
 
-^[Security Policies backend] @gitlab-org/govern/security-policies-backend
+^[Security Policies backend] @gitlab-org/security-risk-management/security-policies/backend
 /app/models/clusters/applications/cilium.rb
 /ee/app/controllers/groups/security/policies_controller.rb
 /ee/app/controllers/projects/security/policies_controller.rb
@@ -302,7 +302,7 @@ Dangerfile
 /app/finders/security/license_compliance_jobs_finder.rb
 /ee/app/controllers/projects/licenses_controller.rb
 /ee/app/finders/software_license_policies_finder.rb
-/ee/app/models/sca/license_compliance.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
+/ee/app/models/sca/license_compliance.rb @gitlab-org/security-risk-management/security-policies/backend @gitlab-org/secure/composition-analysis-be
 /ee/app/models/sca/license_policy.rb
 /ee/app/models/software_license_policy.rb
 /ee/app/models/software_license.rb
@@ -323,7 +323,7 @@ Dangerfile
 /ee/spec/factories/spdx_license.rb
 /ee/spec/finders/software_license_policies_finder_spec.rb
 /ee/spec/lib/gitlab/ci/parsers/license_compliance/**
-/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
+/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/security-risk-management/security-policies/backend @gitlab-org/secure/composition-analysis-be
 /ee/spec/models/sca/license_policy_spec.rb
 /ee/spec/models/software_license_policy_spec.rb
 /ee/spec/models/software_license_spec.rb
@@ -917,7 +917,7 @@ lib/gitlab/checks/**
 /doc/development/ai_features/ @gitlab-org/ai-powered
 /doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
 /doc/development/application_limits.md @gitlab-org/distribution
-/doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
+/doc/development/audit_event_guide/ @gitlab-org/security-risk-management/security-policies/frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/foundations/engineering
@@ -944,7 +944,7 @@ lib/gitlab/checks/**
 /doc/development/permissions.md @rlehmann1
 /doc/development/permissions/ @rlehmann1
 /doc/development/pipelines/ @gl-quality/eng-prod
-/doc/development/policies.md @gitlab-org/govern/authentication/approvers
+/doc/development/policies.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/govern/threat-insights-frontend-team
@@ -1173,7 +1173,7 @@ lib/gitlab/checks/**
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block
 
-[Authorization] @gitlab-org/govern/authorization/approvers
+[Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/declarative_policy.rb
 /config/initializers/declarative_policy_cached_attributes.rb
 /app/policies/
@@ -1198,7 +1198,7 @@ lib/gitlab/checks/**
 /app/assets/javascripts/packages_and_registries/harbor_registry/
 /ee/app/services/ee/auth/container_registry_authentication_service.rb
 
-[Authentication] @gitlab-org/govern/authentication/approvers
+[Authentication] @gitlab-org/software-supply-chain-security/authentication/approvers
 /app/assets/javascripts/access_tokens/
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql
 /app/assets/javascripts/authentication/
@@ -1607,7 +1607,7 @@ lib/api/entities/project_identity.rb
 lib/api/entities/project.rb
 ee/lib/ee/api/entities/project.rb
 
-[Compliance] @gitlab-org/govern/compliance/engineering
+[Compliance] @gitlab-org/software-supply-chain-security/compliance/engineering
 /app/services/audit_events/build_service.rb
 /ee/app/services/ee/audit_events/build_service.rb
 /app/models/audit_event.rb

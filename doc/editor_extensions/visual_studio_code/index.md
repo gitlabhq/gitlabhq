@@ -91,6 +91,41 @@ or **Accept Next Line Of Inline Suggestion**:
    or **Accept Next Line Of Inline Suggestion**.
 1. Press <kbd>Enter</kbd> to save your changes.
 
+## Switch GitLab accounts in VS Code
+
+If you use multiple GitLab accounts (such as personal and work), the extension uses your `git remote` URL
+to determine which account to use. In some cases, the extension can't determine which account to use, and
+must ask you to select which project and account to use. This can happen:
+
+- If you have a single remote URL `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`, but two accounts for
+  `gitlab.com` (like `@sidney` and `@sidney_work`).
+- If you have a single GitLab account (for example `@sidney`), but you have multiple remotes, like:
+  - `origin`: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
+  - `personal-fork`: `git@gitlab.com:myusername/gitlab-vscode-extension.git`
+
+In these cases, the extension adds a **(multiple projects)** label to show you must choose an account.
+To select an account:
+
+1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. Expand **Issues and Merge Requests**.
+1. Select the line containing **(multiple projects)** to expand the list of accounts.
+1. Select the option you want to use:
+   ![select project-account combination](../img/select-project-account_v17_7.png)
+
+The **Issues and Merge requests** list updates with your information.
+
+### Change your selection
+
+To change your account selection for a project:
+
+1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. Expand **Issues and Merge Requests** to show the project list.
+1. Right-click the project's name, and select  **Clear selected project**.
+
+## Use slash commands
+
+Issues and merge requests support [GitLab slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) to perform actions directly in VS Code.
+
 ## Create a snippet
 
 Create a [snippet](../../user/snippets.md) to store and share bits of code and text with other users.
@@ -182,7 +217,7 @@ Prerequisites:
 
 To view security findings:
 
-1. On the left vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
 1. On the sidebar, expand **Security scanning**.
 1. Select either **New findings** or **Fixed findings**.
 1. Select a desired severity level.

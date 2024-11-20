@@ -271,20 +271,20 @@ module InternalEventsCli
       end
 
       def prompt_for_tier(defaults)
-        assign_shared_attr(:tier) do
+        assign_shared_attr(:tiers) do
           new_page!(8, 9, STEPS)
 
           prompt_for_array_selection(
             'Which tiers will the metric be reported from?',
             [%w[free premium ultimate], %w[premium ultimate], %w[ultimate]],
-            defaults[:tier]
+            defaults[:tiers]
           )
         end
 
-        assign_shared_attr(:tiers) { |metric| [*metric.tier] }
+        assign_shared_attr(:tiers) { |metric| [*metric.tiers] }
 
         assign_shared_attr(:distribution) do |metric|
-          metric.tier.include?('free') ? %w[ce ee] : %w[ee]
+          metric.tiers.include?('free') ? %w[ce ee] : %w[ee]
         end
       end
 
@@ -538,7 +538,6 @@ module InternalEventsCli
           fields[:stage] << find_stage(event.product_group)
           fields[:section] << find_section(event.product_group)
           fields[:distribution] << event.distributions&.sort
-          fields[:tier] << event.tiers&.sort
           fields[:tiers] << event.tiers&.sort
         end
 

@@ -120,7 +120,7 @@
     - "2\n" # Enum-select: Modify attributes
     - "\n" # Accept group from event definition
     - "\n" # Accept URL from event definition
-    - "2\n" # Override tier -> Select: [premium, ultimate]
+    - "2\n" # Override tiers -> Select: [premium, ultimate]
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:

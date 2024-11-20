@@ -12,3 +12,4 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 exempt_from_sharding: true
 notes: Exempted because Marked for drop - https://gitlab.com/gitlab-org/gitlab/-/issues/444234
+table_size: small

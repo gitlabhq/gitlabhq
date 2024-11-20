@@ -35,5 +35,5 @@ export default {
 </script>
 
 <template>
-  <div v-safe-html="signedOutText" class="disabled-comment gl-text-center gl-text-secondary"></div>
+  <div v-safe-html="signedOutText" class="gl-grow gl-text-center gl-text-subtle"></div>
 </template>

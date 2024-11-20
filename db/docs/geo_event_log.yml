@@ -12,3 +12,4 @@ gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
 notes: This table is a log of all events that occur on a primary Geo node/site, which
   a secondary might be interested in.
+table_size: small

@@ -313,7 +313,12 @@
 .diff-files-holder {
   .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
     @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+
+    .timeline-entry:last-child .timeline-entry-inner {
+      @apply gl-border-b-0;
+    }
   }
+
 }
 
 .diffs {

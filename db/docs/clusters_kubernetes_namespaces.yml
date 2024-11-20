@@ -10,3 +10,4 @@ milestone: '11.5'
 gitlab_schema: gitlab_main
 exempt_from_sharding: true
 notes: Exempted because Table is scheduled for removal
+table_size: small

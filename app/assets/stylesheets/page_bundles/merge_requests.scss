@@ -645,8 +645,7 @@
 }
 
 .mr-widget-extension {
-  border-top: 1px solid var(--gl-border-color-default);
-  background-color: var(--gray-10, $gray-10);
+  @apply gl-bg-subtle gl-border-t gl-border-t-section;
   container-name: mr-widget-extension;
   container-type: inline-size;
   // Adds a fix for the view app dropdown not showing up
@@ -655,7 +654,7 @@
   z-index: 1;
 
   &.clickable:hover {
-    background-color: var(--gray-50, $gray-50);
+    @apply gl-bg-strong;
     cursor: pointer;
   }
 }

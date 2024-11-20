@@ -12,3 +12,4 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 exempt_from_sharding: true
 notes: Exempted because Table is scheduled for removal
+table_size: small

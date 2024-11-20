@@ -81,7 +81,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'analytics_cycle_analytics_merge_request_stage_events.group_id',
       # This is event log table for gitlab_subscriptions and should not be deleted.
       # See more: https://gitlab.com/gitlab-org/gitlab/-/issues/462598#note_1949768698
-      'gitlab_subscription_histories.namespace_id'
+      'gitlab_subscription_histories.namespace_id',
+      # allowed as it points to itself
+      'organizations.id'
     ]
   end
 

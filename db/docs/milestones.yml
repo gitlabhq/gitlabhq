@@ -14,3 +14,4 @@ allow_cross_foreign_keys:
 sharding_key:
   project_id: projects
   group_id: namespaces
+table_size: small

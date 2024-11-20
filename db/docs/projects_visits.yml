@@ -13,3 +13,4 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:
   entity_id: projects
+table_size: small

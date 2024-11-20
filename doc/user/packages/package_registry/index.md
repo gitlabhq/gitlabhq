@@ -85,7 +85,7 @@ For more information about using the GitLab package registry with CI/CD, see:
 
 - [Generic](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [npm](../npm_registry/index.md#publishing-a-package-by-using-a-cicd-pipeline)
+- [npm](../npm_registry/index.md#publish-a-package-with-a-cicd-pipeline)
 - [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 - [PyPI](../pypi_repository/index.md#authenticate-with-a-ci-job-token)
 - [Terraform](../terraform_module_registry/index.md#authenticate-to-the-terraform-module-registry)

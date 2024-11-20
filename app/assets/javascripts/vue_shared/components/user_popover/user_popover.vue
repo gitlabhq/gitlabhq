@@ -245,7 +245,7 @@ export default {
         <template #meta>
           <span
             v-if="hasPronouns"
-            class="gl-p-1 gl-text-sm gl-font-normal gl-text-gray-500"
+            class="gl-p-1 gl-text-sm gl-font-normal gl-text-subtle"
             data-testid="user-popover-pronouns"
             >({{ user.pronouns }})</span
           >
@@ -266,7 +266,7 @@ export default {
       </template>
       <template v-else>
         <template v-if="!isBlocked">
-          <div class="gl-text-gray-500">
+          <div class="gl-text-subtle">
             <div v-if="user.email" class="gl-mb-2 gl-flex">
               <gl-icon name="mail" class="gl-shrink-0" />
               <span ref="email" class="gl-ml-2">{{ user.email }}</span>

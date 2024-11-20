@@ -13,10 +13,6 @@ data_category: optional
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

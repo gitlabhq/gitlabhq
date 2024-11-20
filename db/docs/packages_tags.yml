@@ -12,3 +12,4 @@ gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
 desired_sharding_key_migration_job_name: BackfillPackagesTagsProjectId
+table_size: small
