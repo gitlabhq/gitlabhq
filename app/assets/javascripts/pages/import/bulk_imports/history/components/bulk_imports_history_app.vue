@@ -287,7 +287,7 @@ export default {
             :name="item.entity_type"
             :title="getEntityTooltip(item)"
             :aria-label="getEntityTooltip(item)"
-            class="gl-text-gray-500"
+            variant="subtle"
           />
           <gl-link
             v-if="item.destination_full_path"

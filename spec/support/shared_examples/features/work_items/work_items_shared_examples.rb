@@ -1,15 +1,5 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with work_items_beta' do |flag|
-  before do
-    stub_feature_flags(work_items_beta: flag)
-    stub_feature_flags(notifications_todos_buttons: false)
-
-    page.refresh
-    wait_for_all_requests
-  end
-end
-
 RSpec.shared_examples 'work items title' do
   it 'updates title' do
     click_button 'Edit', match: :first
@@ -336,16 +326,16 @@ RSpec.shared_examples 'work items milestone' do
   it 'adds and removes milestone', :aggregate_failures do
     within_testid 'work-item-milestone' do
       click_button 'Edit'
-      send_keys "\"#{milestones[11].title}\""
-      select_listbox_item(milestones[11].title)
+      send_keys "\"#{milestones[8].title}\""
+      select_listbox_item(milestones[8].title)
 
-      expect(page).to have_link(milestones[11].title)
+      expect(page).to have_link(milestones[8].title)
 
       click_button 'Edit'
       click_button 'Clear'
 
       expect(page).to have_text('None')
-      expect(page).not_to have_link(milestones[11].title)
+      expect(page).not_to have_link(milestones[8].title)
     end
   end
 end
@@ -489,6 +479,28 @@ end
 def find_and_click_clear(selector, button_name = 'Clear')
   within(selector) do
     click_button button_name
+  end
+end
+
+RSpec.shared_examples 'work items weight' do
+  it 'updates and clears a weight', :aggregate_failures do
+    within_testid 'work-item-weight' do
+      click_button 'Edit'
+      send_keys(3, :enter)
+
+      expect(page).to have_text(3)
+
+      click_button 'Edit'
+      send_keys(:backspace, 0, :enter)
+
+      expect(page).to have_text(0)
+      expect(page).not_to have_text('None')
+
+      click_button 'Edit'
+      send_keys(:backspace, :enter)
+
+      expect(page).to have_text('None')
+    end
   end
 end
 

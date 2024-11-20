@@ -31,7 +31,8 @@ export default {
       v-gl-tooltip
       :title="s__('Analytics|View metrics only for users who have consented to activity tracking.')"
       name="information-o"
-      class="gl-self-center gl-text-gray-500"
+      class="gl-self-center"
+      variant="subtle"
     />
   </div>
 </template>

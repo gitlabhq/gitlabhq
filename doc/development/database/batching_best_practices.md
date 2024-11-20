@@ -24,7 +24,7 @@ Batching performance is closely related to pagination performance since the unde
 
 There are two main aspects to consider when implementing batching in background jobs: total runtime and data modification volume.
 
-Background jobs shouldn't run for a long time. A Sidekiq process can crash or it can be forcefully stopped (e.g. on restart or deployment). Additionally, due to our [error budget](../stage_group_observability/index.md#error-budget) rules, after 5 minutes of runtime, error budget violations will be added to the group where the feature is registered. When implementing batching in background jubs, make sure that you're familiar with our guidelines related to [idempotent jobs](../sidekiq/idempotent_jobs.md)
+Background jobs shouldn't run for a long time. A Sidekiq process can crash or it can be forcefully stopped (e.g. on restart or deployment). Additionally, due to our [error budget](../stage_group_observability/index.md#error-budget) rules, after 5 minutes of runtime, error budget violations will be added to the group where the feature is registered. When implementing batching in background jobs, make sure that you're familiar with our guidelines related to [idempotent jobs](../sidekiq/idempotent_jobs.md)
 
 Updating or deleting a large volume of records can increase database replication lag and it can add extra strain to the primary database. It's advisable to limit the total number of records we process (or batch over) within the background job.
 

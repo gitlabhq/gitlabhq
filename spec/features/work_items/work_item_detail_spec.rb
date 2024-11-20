@@ -2,11 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work item', :js, feature_category: :team_planning do
-  before do
-    stub_feature_flags(notifications_todos_buttons: false)
-  end
-
+RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   include ListboxHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -20,18 +16,21 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:task) { create(:work_item, :task, project: project) }
   let_it_be(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
   let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
+  let_it_be(:milestones) { create_list(:milestone, 10, project: project) }
   let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
-  let(:work_items_path) { project_work_item_path(project, work_item.iid) }
-  let(:list_path) { project_issues_path(project) }
   let_it_be(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
+  let(:list_path) { project_issues_path(project) }
+  let(:work_items_path) { project_work_item_path(project, work_item.iid) }
 
   context 'for signed in user' do
+    before_all do
+      group.add_developer(user)
+    end
+
     before do
       stub_feature_flags(notifications_todos_buttons: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
-      group.add_developer(user)
       sign_in(user)
       visit work_items_path
     end
@@ -41,41 +40,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
         expect(page).to have_link(project.name, href: project_path(project))
         expect(page).to have_link('Issues', href: list_path)
         expect(find('nav:last-of-type li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
-      end
-    end
-
-    it 'actions dropdown is displayed' do
-      expect(page).to have_button _('More actions')
-    end
-
-    context 'when work_items_beta is enabled' do
-      before do
-        stub_feature_flags(work_items_beta: true)
-        stub_feature_flags(notifications_todos_buttons: false)
-
-        page.refresh
-        wait_for_all_requests
-      end
-
-      it 'reassigns to another user',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        within_testid('work-item-assignees') do
-          click_button 'Edit'
-        end
-
-        select_listbox_item(user.username)
-
-        wait_for_requests
-
-        within_testid('work-item-assignees') do
-          click_button 'Edit'
-        end
-
-        select_listbox_item(user2.username)
-
-        wait_for_requests
-
-        expect(work_item.reload.assignees).to include(user2)
       end
     end
 
@@ -97,9 +61,25 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items crm contacts'
   end
 
-  context 'for signed in owner' do
+  context 'when item is a task' do
+    before_all do
+      project.add_developer(user)
+    end
+
     before do
+      sign_in(user)
+      visit project_work_item_path(project, task.iid)
+    end
+
+    it_behaves_like 'work items parent', :issue
+  end
+
+  context 'for signed in owner' do
+    before_all do
       project.add_owner(user)
+    end
+
+    before do
       sign_in(user)
       visit work_items_path
     end
@@ -108,23 +88,16 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   end
 
   context 'for guest users' do
-    before do
+    before_all do
       project.add_guest(user)
+    end
+
+    before do
       sign_in(user)
       visit work_items_path
     end
 
     it_behaves_like 'work items comment actions for guest users'
-  end
-
-  context 'when item is a task' do
-    before do
-      project.add_developer(user)
-      sign_in(user)
-      visit project_work_item_path(project, task.iid)
-    end
-
-    it_behaves_like 'work items parent', :issue
   end
 
   context 'for user not signed in' do
@@ -145,27 +118,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       wait_for_all_requests
 
       expect(page).to have_content(note.note)
-    end
-
-    context 'when work_items_beta is enabled' do
-      before do
-        stub_feature_flags(work_items_beta: true)
-
-        page.refresh
-        wait_for_all_requests
-      end
-
-      it 'hides the assignees edit button' do
-        within_testid('work-item-assignees') do
-          expect(page).not_to have_button('Edit')
-        end
-      end
-
-      it 'hides the labels edit button' do
-        within_testid('work-item-labels') do
-          expect(page).not_to have_button('Edit')
-        end
-      end
     end
   end
 end

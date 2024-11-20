@@ -30,10 +30,10 @@ export default {
       required: false,
       default: false,
     },
-    colorClass: {
+    iconVariant: {
       type: String,
       required: false,
-      default: 'gl-fill-icon-default',
+      default: 'default',
     },
   },
   computed: {
@@ -68,7 +68,7 @@ export default {
       v-gl-tooltip.hover="showTooltipOnHover"
       :name="iconName"
       :title="workItemTooltipTitle"
-      :class="colorClass"
+      :variant="iconVariant"
     />
     <span v-if="workItemTypeName" :class="{ 'gl-sr-only': !showText }">{{ workItemTypeName }}</span>
   </span>

@@ -108,7 +108,7 @@ export default {
   >
     <div class="gl-flex gl-w-full gl-items-center gl-px-3">
       <gl-button
-        class="gl-mr-4 gl-fill-current gl-text-gray-500"
+        class="gl-mr-4"
         :aria-label="label"
         :icon="icons.caret"
         size="small"

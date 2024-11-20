@@ -19,7 +19,7 @@ export default {
     GlIcon,
     PipelineStages,
   },
-  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 gl-text-gray-500 !gl-align-middle'],
+  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 !gl-align-middle'],
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -84,6 +84,7 @@ export default {
       :class="$options.arrowStyles"
       name="arrow-right"
       data-testid="upstream-arrow-icon"
+      variant="subtle"
     />
     <pipeline-stages
       :is-merge-train="isMergeTrain"
@@ -95,6 +96,7 @@ export default {
       :class="$options.arrowStyles"
       name="arrow-right"
       data-testid="downstream-arrow-icon"
+      variant="subtle"
     />
     <downstream-pipelines
       v-if="hasDownstreamPipelines"

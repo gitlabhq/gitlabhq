@@ -100,7 +100,8 @@ To set the maximum job timeout:
 To control the amount of time `script` and `after_script` runs before it terminates, specify a timeout value in the `.gitlab-ci.yml` file.
 
 For example, you can specify a timeout to terminate a long-running `script` early. This ensures artifacts and caches can still be uploaded
-before the job timeout is exceeded.
+before the [job timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is exceeded.
+The timeout values for `script` and `after_script` must be less than the job timeout.
 
 - To set a timeout for `script`, use the job variable `RUNNER_SCRIPT_TIMEOUT`.
 - To set a timeout for `after_script`, and override the default of 5 minutes, use the job variable `RUNNER_AFTER_SCRIPT_TIMEOUT`.
@@ -664,7 +665,7 @@ The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-su
 
   ```yaml
   variables:
-     GIT_SUBMODULE_PATHS: :(exclude)submoduleA :(exclude)submoduleB
+     GIT_SUBMODULE_PATHS: ":(exclude)submoduleA :(exclude)submoduleB"
   ```
 
 WARNING:

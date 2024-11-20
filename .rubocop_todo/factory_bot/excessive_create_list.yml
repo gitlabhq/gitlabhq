@@ -20,7 +20,6 @@ FactoryBot/ExcessiveCreateList:
     - 'spec/features/issues/user_scrolls_to_deeplinked_note_spec.rb'
     - 'spec/features/projects/container_registry_spec.rb'
     - 'spec/features/users/overview_spec.rb'
-    - 'spec/features/work_items/work_item_spec.rb'
     - 'spec/frontend/fixtures/timelogs.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
     - 'spec/lib/gitlab/database/consistency_checker_spec.rb'

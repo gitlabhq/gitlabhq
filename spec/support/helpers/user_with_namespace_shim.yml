@@ -600,7 +600,7 @@
 - spec/features/users/user_browses_projects_on_user_page_spec.rb
 - spec/features/webauthn_spec.rb
 - spec/features/whats_new_spec.rb
-- spec/features/work_items/work_item_spec.rb
+- spec/features/work_items/work_item_detail_spec.rb
 - spec/finders/admin/projects_finder_spec.rb
 - spec/finders/autocomplete/move_to_project_finder_spec.rb
 - spec/finders/autocomplete/routes_finder_spec.rb

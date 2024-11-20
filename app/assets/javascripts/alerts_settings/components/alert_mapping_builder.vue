@@ -145,8 +145,8 @@ export default {
         <gl-icon
           v-gl-tooltip
           name="question-o"
-          class="gl-text-gray-500"
           :title="$options.i18n.fallbackTooltip"
+          variant="subtle"
         />
       </h5>
     </div>

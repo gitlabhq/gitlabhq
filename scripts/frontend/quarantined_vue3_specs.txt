@@ -249,7 +249,6 @@ spec/frontend/ide/ide_router_extension_spec.js
 spec/frontend/ide/ide_router_spec.js
 spec/frontend/ide/sync_router_and_store_spec.js
 spec/frontend/import_entities/import_projects/components/import_projects_table_spec.js
-spec/frontend/integrations/beyond_identity/components/exclusions_list_spec.js
 spec/frontend/integrations/edit/components/sections/connection_spec.js
 spec/frontend/invite_members/components/members_token_select_spec.js
 spec/frontend/issuable/components/issuable_by_email_spec.js
@@ -321,7 +320,6 @@ spec/frontend/projects/compare/components/revision_dropdown_spec.js
 spec/frontend/projects/components/new_edit_form_spec.js
 spec/frontend/projects/new/components/new_project_url_select_spec.js
 spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js
-spec/frontend/projects/settings/branch_rules/components/view/rule_drawer_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js
 spec/frontend/projects/settings/repository/branch_rules/app_spec.js
 spec/frontend/projects/settings/topics/components/topics_token_selector_spec.js
