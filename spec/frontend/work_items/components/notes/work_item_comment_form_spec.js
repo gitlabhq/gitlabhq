@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
 import { STATE_OPEN, i18n } from '~/work_items/constants';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemEmailParticipantsByIidQuery from '~/work_items/graphql/notes/work_item_email_participants_by_iid.query.graphql';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
@@ -17,6 +18,7 @@ import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.
 import {
   workItemEmailParticipantsResponse,
   workItemEmailParticipantsEmptyResponse,
+  workItemByIidResponseFactory,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -36,6 +38,8 @@ const workItemId = 'gid://gitlab/WorkItem/1';
 
 describe('Work item comment form component', () => {
   let wrapper;
+  let workItemResponse;
+  let workItemResponseHandler;
 
   const mockAutosaveKey = 'test-auto-save-key';
 
@@ -66,11 +70,19 @@ describe('Work item comment form component', () => {
     isDiscussionResolved = false,
     isDiscussionResolvable = false,
     hasEmailParticipantsWidget = false,
+    canMarkNoteAsInternal = true,
     emailParticipantsResponseHandler = emailParticipantsSuccessHandler,
   } = {}) => {
+    workItemResponse = workItemByIidResponseFactory({
+      canMarkNoteAsInternal,
+    });
+
+    workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
+
     wrapper = shallowMountExtended(WorkItemCommentForm, {
       apolloProvider: createMockApollo([
         [workItemEmailParticipantsByIidQuery, emailParticipantsResponseHandler],
+        [workItemByIidQuery, workItemResponseHandler],
       ]),
       propsData: {
         fullPath: 'test-project-path',
@@ -335,8 +347,25 @@ describe('Work item comment form component', () => {
     });
 
     describe('when used as a new discussion', () => {
+      describe('user permissions to mark note as internal', () => {
+        it('should have the ability to add internal note when permission exists', async () => {
+          createComponent({ canMarkNoteAsInternal: true, isNewDiscussion: true });
+
+          await waitForPromises();
+
+          expect(findInternalNoteCheckbox().exists()).toBe(true);
+        });
+
+        it('should not have the ability to add internal note when permission does not exist', async () => {
+          createComponent({ canMarkNoteAsInternal: false, isNewDiscussion: true });
+          await waitForPromises();
+          expect(findInternalNoteCheckbox().exists()).toBe(false);
+        });
+      });
+
       beforeEach(() => {
         createComponent({ isNewDiscussion: true });
+        return waitForPromises();
       });
 
       it('should have the add as internal note capability', () => {

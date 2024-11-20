@@ -7,12 +7,12 @@ info: Analysis of Application Settings for Cells 1.0.
 
 ## Statistics
 
-- Number of attributes: 504
-- Number of encrypted attributes: 43 (9.0%)
-- Number of attributes documented: 310 (62.0%)
-- Number of attributes on GitLab.com different from the defaults: 221 (44.0%)
-- Number of attributes with `clusterwide` set: 504 (100.0%)
-- Number of attributes with `clusterwide: true` set: 122 (24.0%)
+- Number of attributes: 506
+- Number of encrypted attributes: 43 (8.0%)
+- Number of attributes documented: 311 (61.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
+- Number of attributes with `clusterwide` set: 506 (100.0%)
+- Number of attributes with `clusterwide: true` set: 123 (24.0%)
 
 ## Individual columns
 
@@ -389,6 +389,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `require_personal_access_token_expiry` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `require_two_factor_authentication` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `required_instance_ci_template` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
+| `resource_usage_limits` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `true` | `false`| `true` |
 | `restricted_visibility_levels` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `false`| `true` |
 | `rsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
@@ -507,6 +508,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `user_default_internal_regex` | `false` | `character` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `user_defaults_to_private_profile` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `user_oauth_applications` | `false` | `boolean` | `boolean` | `false` | `true` | `false` | `false`| `true` |
+| `user_seat_management` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `user_show_add_ssh_key_message` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `users_get_by_id_limit` | `false` | `integer` | `` | `true` | `300` | `false` | `false`| `false` |
 | `users_get_by_id_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `false`| `false` |

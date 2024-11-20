@@ -1,12 +1,8 @@
 - page_title _('Authentication log')
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+  - c.with_description do
     = _('This is a security log of authentication events involving your account.')
-
-  = render 'event_table', events: @events
+  - c.with_body do
+    = render 'event_table', events: @events

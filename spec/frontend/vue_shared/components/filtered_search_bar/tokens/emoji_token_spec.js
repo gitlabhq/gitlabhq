@@ -153,7 +153,7 @@ describe('EmojiToken', () => {
     it('renders token item when value is selected', () => {
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
-      expect(tokenSegments).toHaveLength(3); // My Reaction, =, "thumbs_up"
+      expect(tokenSegments).toHaveLength(3); // My Reaction, =, "thumbsup"
       expect(tokenSegments.at(2).findComponent(GlEmoji).attributes('data-name')).toEqual(
         EMOJI_THUMBS_UP,
       );

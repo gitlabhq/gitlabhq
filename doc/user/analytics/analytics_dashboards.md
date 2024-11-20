@@ -72,15 +72,16 @@ You can use the dashboard designer to:
   - Add and remove visualizations.
   - Resize or move panels.
 
-## Visualization designer
+## Data explorer
 
 > - Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/470875) in GitLab 17.6 from "Visualization designer" to "Data explorer"
 
 NOTE:
 This feature is only compatible with the product analytics data source.
 
-You can use the visualization designer to:
+You can use the data explorer to:
 
 - [Create custom visualizations](#create-a-custom-visualization).
 - [Generate custom visualizations with GitLab Duo](#generate-a-custom-visualization-with-gitlab-duo).
@@ -258,7 +259,7 @@ To create a custom visualization:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
-1. Select **Visualization designer**.
+1. Select **Data explorer**.
 1. In the **Visualization title** field, enter the name of your visualization.
 1. From the **Visualization type** dropdown list, select a visualization type.
 1. In the **What metric do you want to visualize?** section, select a [measure or a dimension](#visualization-query-builder).
@@ -285,7 +286,7 @@ To generate a custom visualization with GitLab Duo using a natural language quer
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
-1. Select **Visualization designer**.
+1. Select **Data explorer**.
 1. In the **Visualization title** field, enter the name of your visualization.
 1. From the **Visualization type** dropdown list, select a visualization type.
 1. In the **Generate with GitLab Duo** section, enter your prompt. For example:
@@ -353,5 +354,5 @@ If a dashboard panel displays an error message:
 If GitLab Duo doesn't return the expected or a useful result, try editing your query to:
 
 - Specify a date range. For example: _number of unique users in 2023 to 2024, grouped monthly_.
-- Use the same names for metrics and dimensions as shown in the visualization designer.
+- Use the same names for metrics and dimensions as shown in the data explorer.
   For example: _returning users_ instead of _existing customers_.

@@ -32,6 +32,8 @@ module Gitlab
               add_approval!(gitlab_user_id)
               add_reviewer!(gitlab_user_id) if options[:add_reviewer]
             else
+              # TODO this method and this if/else can be removed when `github_user_mapping` flag is removed
+              # because there will always be a gitlab_user_id when using placeholder users.
               add_complementary_review_note!(project.creator_id)
             end
           end

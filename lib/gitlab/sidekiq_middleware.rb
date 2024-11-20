@@ -57,6 +57,8 @@ module Gitlab
     # eg: `config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)`
     def self.client_configurator
       ->(chain) do
+        # ConcurrencyLimit::Resume needs to be first and before Labkit and ConcurrencyLimit::Client
+        chain.add ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Resume
         chain.add ::Gitlab::SidekiqMiddleware::WorkerContext::Client # needs to be before the Labkit middleware
         chain.add ::Labkit::Middleware::Sidekiq::Client
         # Sidekiq Client Middleware should be placed before DuplicateJobs::Client middleware,

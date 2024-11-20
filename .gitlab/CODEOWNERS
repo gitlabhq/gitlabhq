@@ -404,9 +404,9 @@ Dangerfile
 ^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /app/assets/javascripts/vue_shared/components/customizable_dashboard/
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_visualization_designer.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_data_explorer.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/dashboards_list.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualization_designer/selectors/product_analytics/
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/data_explorer/selectors/product_analytics/
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/column_chart.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue

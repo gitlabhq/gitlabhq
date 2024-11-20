@@ -630,6 +630,9 @@ class ApplicationSetting < ApplicationRecord
       :users_get_by_id_limit
   end
 
+  attribute :resource_usage_limits, :ind_jsonb, default: -> { {} }
+  validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
+
   jsonb_accessor :rate_limits,
     concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
     concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],

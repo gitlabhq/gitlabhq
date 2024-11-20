@@ -1131,3 +1131,9 @@ msgid "CycleAnalytics|%{stageName}"
 msgid_plural "CycleAnalytics|%d stages selected"
 msgstr[0] "%{stageName}"
 msgstr[1] "%d stages selected"
+
+msgid "Example: (feature|hotfix)\\/.*"
+msgstr "Ejemplo: (feature|hotfix)\\/.*"
+
+msgid "Example: (jar|exe)$"
+msgstr "Ejemplo: (jar|exe)$"

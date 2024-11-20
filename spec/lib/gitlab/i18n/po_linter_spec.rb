@@ -47,6 +47,24 @@ RSpec.describe Gitlab::I18n::PoLinter do
       end
     end
 
+    context 'for a translations with namespaces' do
+      let(:po_path) { 'spec/fixtures/namespaces.po' }
+
+      it 'has an error for translation with namespace' do
+        message_id = "404|Not found"
+        expected_message = "contains a namespace, remove it from the translation. For more information see https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+
+      it 'has an error for plural translation with namespace' do
+        message_id = "CommitHistory|1 commit"
+        expected_message = "contains a namespace, remove it from the translation. For more information see https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+    end
+
     context 'for a translations with newlines' do
       let(:po_path) { 'spec/fixtures/newlines.po' }
 
@@ -214,6 +232,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
       expect(linter).to receive(:validate_number_of_plurals).with([], fake_entry)
       expect(linter).to receive(:validate_unescaped_chars).with([], fake_entry)
       expect(linter).to receive(:validate_translation).with([], fake_entry)
+      expect(linter).to receive(:validate_namespace).with([], fake_entry)
       expect(linter).to receive(:validate_html).with([], fake_entry)
 
       linter.validate_entry(fake_entry)

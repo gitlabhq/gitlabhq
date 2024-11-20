@@ -44,6 +44,8 @@ module Gitlab
           end
         end
 
+        private
+
         # Creates the merge request and returns its ID.
         #
         # This method will return `nil` if the merge request could not be

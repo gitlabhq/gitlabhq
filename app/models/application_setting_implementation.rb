@@ -169,6 +169,7 @@ module ApplicationSettingImplementation
         require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
         resource_token_expiry_inherited_members: true,
+        resource_usage_limits: {},
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: default_min_key_size(:rsa),
         session_expire_delay: Settings.gitlab['session_expire_delay'],

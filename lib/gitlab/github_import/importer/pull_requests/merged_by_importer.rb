@@ -27,7 +27,7 @@ module Gitlab
             metrics_upsert(gitlab_user_id)
 
             if mapper.user_mapping_enabled?
-              push_with_record(merge_request.metrics, :merged_by_id, merged_by[:id], mapper.user_mapper)
+              push_with_record(merge_request.metrics, :merged_by_id, merged_by.id, mapper.user_mapper)
             else
               add_legacy_note!
             end

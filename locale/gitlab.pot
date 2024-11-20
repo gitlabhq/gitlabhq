@@ -6458,6 +6458,9 @@ msgstr ""
 msgid "Analytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
+msgid "Analytics|Data explorer"
+msgstr ""
+
 msgid "Analytics|Data table"
 msgstr ""
 
@@ -6608,7 +6611,7 @@ msgstr ""
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr ""
 
-msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
+msgid "Analytics|Use the data explorer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
 msgstr ""
 
 msgid "Analytics|View available dashboards"
@@ -6618,9 +6621,6 @@ msgid "Analytics|View metrics only for users who have consented to activity trac
 msgstr ""
 
 msgid "Analytics|Visualization"
-msgstr ""
-
-msgid "Analytics|Visualization designer"
 msgstr ""
 
 msgid "Analytics|Visualization title"
@@ -55215,6 +55215,9 @@ msgid "The GitLab subscription service (customers.gitlab.com) is currently exper
 msgstr ""
 
 msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"
+msgstr ""
+
+msgid "The Hangouts Chat webhook (for example, `https://chat.googleapis.com/v1/spaces...`)."
 msgstr ""
 
 msgid "The ID of the application."

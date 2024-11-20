@@ -12,7 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
       :import_source_user,
       source_user_identifier: 1,
       source_hostname: project.import_url,
-      import_type: ::Import::SOURCE_GITHUB,
+      import_type: Import::SOURCE_GITHUB,
       namespace: project.root_ancestor
     )
   end
@@ -29,6 +29,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
     )
   end
 
+  let(:user_references) { placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id) }
+
   subject(:importer) { described_class.new(review_request, project, client) }
 
   it 'imports unique merge request reviewers as placeholders', :aggregate_failures do
@@ -37,14 +39,12 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
     reviewers = merge_request.reviewers
 
     expect(reviewers.size).to eq(2)
-    expect(reviewers.all?(&:placeholder?)).to be(true)
+    expect(reviewers).to all(be_placeholder)
     expect(reviewers).to include(source_user.mapped_user)
   end
 
   it 'pushes placeholder references for unique merge request reviewers' do
     expect { 2.times { importer.execute } }.not_to raise_error
-
-    user_references = placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)
 
     # The existing placeholder will always have a lower id than the one created during import
     # so we can assume the first reviewer is for source_user when sorted by user_id
@@ -74,8 +74,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
     end
 
     it 'does not push any placeholder references' do
-      user_references = placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)
-
       expect(user_references).to be_empty
     end
   end

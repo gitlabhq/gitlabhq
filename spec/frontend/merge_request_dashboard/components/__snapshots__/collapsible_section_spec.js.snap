@@ -70,7 +70,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
       content
     </div>
     <div
-      class="crud-pagination gl-border-t gl-flex gl-justify-center gl-p-5"
+      class="crud-pagination gl-border-t gl-border-t-section gl-flex gl-justify-center gl-p-5"
       data-testid="crud-pagination"
     />
   </div>

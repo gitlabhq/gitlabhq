@@ -10,10 +10,86 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-This page describes the syntax and error handling used in Code Owners files,
-and provides an example file.
+The Code Owners configuration is stored in a `CODEOWNERS` file.
+This file determines who should review and approve changes.
 
-## Code Owners syntax
+This page describes the syntax and error handling used in `CODEOWNERS` files and provides examples of how to use them.
+
+## Example `CODEOWNERS` file
+
+```plaintext
+# This is an example of a CODEOWNERS file.
+# Lines that start with `#` are ignored.
+
+# Specify a default Code Owner by using a wildcard:
+* @default-codeowner
+
+# Specify multiple Code Owners by using a tab or space:
+* @multiple @code @owners
+
+# Rules defined later in the file take precedence over earlier rules.
+# For example, for all files with a filename ending in `.rb`:
+*.rb @ruby-owner
+
+# Files with a `#` can still be accessed by escaping the pound sign:
+\#file_with_pound.rb @owner-file-with-pound
+
+# You can use both usernames or email addresses to match users:
+LICENSE @legal janedoe@gitlab.com
+
+# Use group names to match groups, and nested groups:
+README @group @group/with-nested/subgroup
+
+# Specify Code Owners for directories:
+/docs/ @all-docs
+/docs/* @root-docs
+/docs/**/*.md @root-docs
+
+# Match directories nested anywhere in the repository:
+lib/ @lib-owner
+
+# Match only a directory in the root of the repository:
+/config/ @config-owner
+
+# If the path contains spaces, escape them like this:
+path\ with\ spaces/ @space-owner
+
+# Code Owners sections:
+[Documentation]
+ee/docs    @docs
+docs       @docs
+
+[Development] @dev-team
+*
+README.md @docs-team
+data-models/ @data-science-team
+
+# This section is combined with the previously defined [Documentation] section:
+[DOCUMENTATION]
+README.md  @docs
+```
+
+## Code Owner file loading
+
+The `CODEOWNERS` file is loaded from the target branch.
+GitLab checks these locations in your repository in this order:
+
+1. Root directory: `./CODEOWNERS`
+1. Documentation directory: `./docs/CODEOWNERS`
+1. `.gitlab` directory: `./.gitlab/CODEOWNERS`
+
+The first `CODEOWNERS` file found is used, and all others are ignored.
+
+## Pattern matching
+
+GitLab uses `File::fnmatch` with the `File::FNM_DOTMATCH` and `File::FNM_PATHNAME` flags set for pattern matching:
+
+- The repository structure is treated like an isolated file system.
+- The patterns follow a subset of shell filename globbing rules, and are not regular expressions.
+- The `File::FNM_DOTMATCH` flag allows `*` to match dotfiles like `.gitignore`.
+- The `File::FNM_PATHNAME` flag prevents `*` from matching the `/` path separator.
+- `**` matches directories recursively. For example, `**/*.rb` matches `config/database.rb`
+  and `app/controllers/users/stars_controller.rb`.
 
 ### Comments
 
@@ -25,7 +101,7 @@ Lines beginning with `#` are ignored:
 
 ### Sections
 
-Sections are groups of entries. A section begins with a section heading in square brackets, followed by the entries.
+Sections are groups of entries. A section begins with a section heading in square brackets `[ ]`:
 
 ```plaintext
 [Section name]
@@ -35,8 +111,14 @@ Sections are groups of entries. A section begins with a section heading in squar
 
 #### Section headings
 
-Section headings must always have a name. They can also be made optional, or
-require a specific number of approvals. A list of default owners can be added to the section heading line.
+Section headings must have a name and can:
+
+- Require approval (default).
+- Be optional (prefixed with `^`).
+- Require a specific number of approvals. For more information, see [Group inheritance and eligibility](index.md#group-inheritance-and-eligibility) and [Approvals shown as optional](troubleshooting.md#approvals-shown-as-optional).
+- Include default owners.
+
+Examples:
 
 ```plaintext
 # Required section
@@ -57,91 +139,56 @@ require a specific number of approvals. A list of default owners can be added to
 
 #### Section names
 
-Sections names are defined between square brackets. Section names are not case-sensitive.
+Section names are case-insensitive and defined between square brackets.
 [Sections with duplicate names](index.md#sections-with-duplicate-names) are combined.
-
-```plaintext
-[Section name]
-```
-
-#### Required sections
-
-Required sections do not include `^` before the [section name](#section-names).
-
-```plaintext
-[Required section]
-```
-
-#### Optional sections
-
-Optional sections include a `^` before the [section name](#section-names).
-
-```plaintext
-^[Optional section]
-```
-
-#### Sections requiring multiple approvals
-
-Sections requiring multiple approvals include the number of approvals in square brackets after the [section name](#section-names).
-
-```plaintext
-[Section requiring 5 approvals][5]
-```
-
-NOTE:
-Optional sections ignore the number of approvals required.
-
-#### Sections with default owners
-
-You can define a default owner for the entries in a section by appending the owners to the [section heading](#section-headings).
-
-```plaintext
-# Section with @username as default owner
-[Section name] @username
-
-# Section with @group and @subgroup as default owners and requiring 2 approvals
-[Section name][2] @group @subgroup
-```
 
 ### Code Owner entries
 
-Each Code Owner entry includes a path followed by one or more owners.
+Each entry includes a path followed by one or more owners.
 
 ```plaintext
-README.md @username1
+README.md @username1 @username2
 ```
 
 NOTE:
-If an entry is duplicated in a section, [the last entry is used from each section.](index.md#define-more-specific-owners-for-more-specifically-defined-files-or-directories)
+If an entry is duplicated in a section, [the last entry is used.](index.md#define-more-specific-owners-for-more-specifically-defined-files-or-directories)
+
+## Path matching
+
+Paths can be absolute, relative, wildcard, or globstar, and are matched against the repository root.
 
 ### Relative paths
 
-If a path does not start with a `/`, the path is treated as if it starts with
-a [globstar](#globstar-paths). `README.md` is treated the same way as `/**/README.md`:
+Paths without a leading `/` are treated as [globstar paths](#globstar-paths):
 
 ```plaintext
-# This will match /README.md, /internal/README.md, /app/lib/README.md
+# Matches /README.md, /internal/README.md, /app/lib/README.md
 README.md @username
 
-# This will match /internal/README.md, /docs/internal/README.md, /docs/api/internal/README.md
+# Matches /internal/README.md, /docs/internal/README.md, /docs/api/internal/README.md
 internal/README.md
 ```
 
+NOTE:
+When using globstar paths, be cautious of unintended matches.
+For example, `README.md` without a leading `/` matches any `README.md`
+file in any directory or subdirectory of the repository.
+
 ### Absolute paths
 
-If a path starts with a `/` it matches the root of the repository.
+Paths starting with `/` match from the repository root:
 
 ```plaintext
-# Matches only the file named `README.md` in the root of the repository.
+# # Matches only README.md in the root.
 /README.md
 
-# Matches only the file named `README.md` inside the `/docs` directory.
+# Matches only README.md inside the /docs directory.
 /docs/README.md
 ```
 
 ### Directory paths
 
-If a path ends with `/`, the path matches any file in the directory.
+Paths ending with `/` match any file in the directory:
 
 ```plaintext
 # This is the same as `/docs/**/*`
@@ -150,7 +197,7 @@ If a path ends with `/`, the path matches any file in the directory.
 
 ### Wildcard paths
 
-Wildcards can be used to match one of more characters of a path.
+Use wildcards to match multiple characters:
 
 ```plaintext
 # Any markdown files in the docs directory
@@ -171,17 +218,17 @@ Wildcards can be used to match one of more characters of a path.
 
 ### Globstar paths
 
-Globstars (`**`) can be used to match zero or more directories and subdirectories.
+Use `**` to match zero or more directories recursively:
 
 ```plaintext
-# This will match /docs/index.md, /docs/api/index.md, /docs/api/graphql/index.md
+# Matches /docs/index.md, /docs/api/index.md, and /docs/api/graphql/index.md.
 /docs/**/index.md
 ```
 
-### Entry owners
+## Entry owners
 
-Entries must be followed by one or more owner. These can be groups, subgroups,
-and users. Order of owners is not important.
+Entries must have one or more owners These can be groups, subgroups,
+and users.
 
 ```plaintext
 /path/to/entry.rb @group
@@ -190,38 +237,21 @@ and users. Order of owners is not important.
 /path/to/entry.rb @group @group/subgroup @user
 ```
 
-#### Groups as entry owners
+For more information on adding groups as Code Owners, see [Add a group as a Code Owner](index.md#add-a-group-as-a-code-owner).
 
-Groups and subgroups can be owners of an entry.
-Each entry can be owned by [one or more owners](#entry-owners).
-For more details see the [Add a group as a Code Owner](index.md#add-a-group-as-a-code-owner).
-
-```plaintext
-/path/to/entry.rb @group
-/path/to/entry.rb @group/subgroup
-/path/to/entry.rb @group @group/subgroup
-```
-
-### Users as entry owners
-
-Users can be owners of an entry. Each entry can be owned by
-[one or more owners](#entry-owners).
-
-```plaintext
-/path/to/entry.rb @username1
-/path/to/entry.rb @username1 @username2
-```
-
-## Error handling in Code Owners
+## Error handling
 
 > - Error validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216066) in GitLab 16.3.
 
 ### Entries with spaces
 
-Paths containing whitespace must be escaped with backslashes: `path\ with\ spaces/*.md`.
-Without the backslashes, the path after the first whitespace is parsed as an owner.
-GitLab the parses `folder with spaces/*.md @group` into
-`path: "folder", owners: " with spaces/*.md @group"`.
+Escape whitespace in paths with backslashes:
+
+```plaintext
+path\ with\ spaces/*.md @owner
+```
+
+Without escaping, GitLab parses `folder with spaces/*.md @group` as: `path: "folder", owners: " with spaces/*.md @group"`.
 
 ### Unparsable sections
 
@@ -265,22 +295,23 @@ GitLab recognizes the heading `[Section name` as an entry. The `[Docs]` section 
 
 ### Malformed owners
 
-Each entry must contain 1 or more owners to be valid, malformed owners are ignored.
-For example `/path/* @group user_without_at_symbol @user_with_at_symbol`
-is owned by `@group` and `@user_with_at_symbol`.
+Each entry must contain one or more owners. Malformed owners are invalid and ignored:
+
+```plaintext
+/path/* @group user_without_at_symbol @user_with_at_symbol
+```
+
+This entry is owned by `@group` and `@user_with_at_symbol`.
 
 ### Inaccessible or incorrect owners
 
-Inaccessible or incorrect owners are ignored. For example, if `@group`, `@username`,
-and `example@gitlab.com` are accessible on the project and we create an entry:
+GitLab ignores inaccessible or incorrect owners. For example:
 
 ```plaintext
 * @group @grou @username @i_left @i_dont_exist example@gitlab.com invalid@gitlab.com
 ```
 
-GitLab ignores `@grou`, `@i_left`, `@i_dont_exist`, and `invalid@gitlab.com`.
-
-For more information on who is accessible, see [Add a group as a Code Owner](index.md#add-a-group-as-a-code-owner).
+If only `@group`, `@username`, and `example@gitlab.com` are accessible, GitLab ignores the others.
 
 ### Zero owners
 
@@ -292,85 +323,14 @@ NOTE:
 When a protected branch has `Require code owner approval` enabled, rules with
 zero owners are still honored.
 
-### Less than 1 required approval
+### Minimum approvals
 
 When [defining the number of approvals](index.md#require-multiple-approvals-from-code-owners) for a section,
 the minimum number of approvals is `1`. Setting the number of approvals to
 `0` results in GitLab requiring one approval.
 
-## Example `CODEOWNERS` file
+## Related topics
 
-```plaintext
-# This is an example of a CODEOWNERS file.
-# Lines that start with `#` are ignored.
-
-# app/ @commented-rule
-
-# Specify a default Code Owner by using a wildcard:
-* @default-codeowner
-
-# Specify multiple Code Owners by using a tab or space:
-* @multiple @code @owners
-
-# Rules defined later in the file take precedence over the rules
-# defined before.
-# For example, for all files with a filename ending in `.rb`:
-*.rb @ruby-owner
-
-# Files with a `#` can still be accessed by escaping the pound sign:
-\#file_with_pound.rb @owner-file-with-pound
-
-# Specify multiple Code Owners separated by spaces or tabs.
-# In the following case the CODEOWNERS file from the root of the repo
-# has 3 Code Owners (@multiple @code @owners):
-CODEOWNERS @multiple @code @owners
-
-# You can use both usernames or email addresses to match
-# users. Everything else is ignored. For example, this code
-# specifies the `@legal` and a user with email `janedoe@gitlab.com` as the
-# owner for the LICENSE file:
-LICENSE @legal this_does_not_match janedoe@gitlab.com
-
-# Use group names to match groups, and nested groups to specify
-# them as owners for a file:
-README @group @group/with-nested/subgroup
-
-# End a path in a `/` to specify the Code Owners for every file
-# nested in that directory, on any level:
-/docs/ @all-docs
-
-# End a path in `/*` to specify Code Owners for every file in
-# a directory, but not nested deeper. This code matches
-# `docs/index.md` but not `docs/projects/index.md`:
-/docs/* @root-docs
-
-# Include `/**` to specify Code Owners for all subdirectories
-# in a directory. This rule matches `docs/projects/index.md` or
-# `docs/development/index.md`
-/docs/**/*.md @root-docs
-
-# This code makes matches a `lib` directory nested anywhere in the repository:
-lib/ @lib-owner
-
-# This code match only a `config` directory in the root of the repository:
-/config/ @config-owner
-
-# If the path contains spaces, escape them like this:
-path\ with\ spaces/ @space-owner
-
-# Code Owners section:
-[Documentation]
-ee/docs    @docs
-docs       @docs
-
-# Use of default owners for a section. In this case, all files (*) are owned by
-the dev team except the README.md and data-models which are owned by other teams.
-[Development] @dev-team
-*
-README.md @docs-team
-data-models/ @data-science-team
-
-# This section is combined with the previously defined [Documentation] section:
-[DOCUMENTATION]
-README.md  @docs
-```
+- [Code Owners](index.md)
+- [Merge request approvals](../merge_requests/approvals/index.md)
+- [Protected branches](../repository/branches/protected.md)

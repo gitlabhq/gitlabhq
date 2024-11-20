@@ -1,13 +1,12 @@
-%h5.gl-mt-0
-  = _('History of authentications')
-
-%ul.content-list
-  - events.each do |event|
-    - if event.success?
-      %li
-        %span.description
-          = audit_icon('key', css_class: 'gl-mr-2')
-          = _('Signed in with %{authentication} authentication') % { authentication: event.provider }
-        %span.gl-float-right= time_ago_with_tooltip(event.created_at)
-
-= paginate events, theme: "gitlab"
+= render ::Layouts::CrudComponent.new(_('History of authentications')) do |c|
+  - c.with_body do
+    %ul.content-list
+      - events.each do |event|
+        - if event.success?
+          %li
+            %span.description
+              = audit_icon('key', css_class: 'gl-mr-2')
+              = _('Signed in with %{authentication} authentication') % { authentication: event.provider }
+            %span.gl-float-right= time_ago_with_tooltip(event.created_at)
+  - c.with_pagination do
+    = paginate events, theme: "gitlab"

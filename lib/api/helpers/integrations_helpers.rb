@@ -121,20 +121,7 @@ module API
             chat_notification_channels
           ].flatten,
           'google-play' => ::Integrations::GooglePlay.api_arguments,
-          'hangouts-chat' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces…'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent'
-            }
-          ].flatten,
+          'hangouts-chat' => ::Integrations::HangoutsChat.api_arguments,
           'harbor' => ::Integrations::Harbor.api_arguments,
           'irker' => [
             {

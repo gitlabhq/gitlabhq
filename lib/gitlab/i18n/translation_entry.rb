@@ -5,6 +5,7 @@ module Gitlab
     class TranslationEntry
       PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/
       ANGLE_BRACKET_REGEX = /[<>]/
+      NAMESPACE_REGEX = /^((?u)\w+|\s)*\|/
 
       attr_reader :nplurals, :entry_data
 
@@ -66,6 +67,14 @@ module Gitlab
 
       def translations_have_multiple_lines?
         translation_entries.any?(Array)
+      end
+
+      def translations_contain_namespace?
+        all_translations.any? { |translation| contains_namespace?(translation) }
+      end
+
+      def contains_namespace?(string)
+        string =~ NAMESPACE_REGEX
       end
 
       def msgid_contains_unescaped_chars?

@@ -38,7 +38,7 @@ describe('Integration Snippets notes', () => {
         ':heart',
         ['heart', 'heart decoration', 'heart with arrow', 'heart with ribbon', 'heart_exclamation'],
       ],
-      [':red', ['red apple', 'red_car', 'red_circle', 'credit card', 'tired face']],
+      [':red', ['red apple', 'red_car', 'red_circle', 'red_exclamation_mark', 'red_heart']],
       [
         ':circle',
         // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/347549

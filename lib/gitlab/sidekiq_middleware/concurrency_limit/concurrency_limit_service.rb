@@ -6,7 +6,8 @@ module Gitlab
       class ConcurrencyLimitService
         REDIS_KEY_PREFIX = 'sidekiq:concurrency_limit'
 
-        delegate :add_to_queue!, :queue_size, :has_jobs_in_queue?, :resume_processing!, to: :@queue_manager
+        delegate :add_to_queue!, :queue_size, :metadata_key, :has_jobs_in_queue?, :resume_processing!,
+          to: :@queue_manager
 
         delegate :track_execution_start, :track_execution_end, :cleanup_stale_trackers,
           :concurrent_worker_count, to: :@worker_execution_tracker
@@ -32,6 +33,10 @@ module Gitlab
 
           def queue_size(worker_name)
             new(worker_name).queue_size
+          end
+
+          def metadata_key(worker_name)
+            new(worker_name).metadata_key
           end
 
           def cleanup_stale_trackers(worker_name)
