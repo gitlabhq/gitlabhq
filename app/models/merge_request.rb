@@ -1414,11 +1414,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_auto_merge_strategy
-    if Feature.enabled?(:merge_when_checks_pass, project)
-      AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
-    else
-      AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
-    end
+    AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
   end
 
   def auto_merge_strategy=(strategy)

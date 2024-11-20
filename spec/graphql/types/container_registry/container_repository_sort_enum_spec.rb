@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ContainerRepositorySort'] do
+RSpec.describe GitlabSchema.types['ContainerRepositorySort'], feature_category: :container_registry do
   specify { expect(described_class.graphql_name).to eq('ContainerRepositorySort') }
 
   it_behaves_like 'common sort values'

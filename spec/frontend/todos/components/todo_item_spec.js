@@ -21,6 +21,9 @@ describe('TodoItem', () => {
         },
         ...props,
       },
+      provide: {
+        currentTab: 0,
+      },
     });
   };
 
@@ -49,15 +52,22 @@ describe('TodoItem', () => {
     expect(wrapper.findComponent(TodoItemActions).exists()).toBe(true);
   });
 
+  describe('state based style', () => {
+    it('applies background when todo is done', () => {
+      createComponent({ todo: { state: TODO_STATE_DONE } });
+      expect(wrapper.attributes('class')).toContain('gl-bg-subtle');
+    });
+
+    it('applies no background when todo is pending', () => {
+      createComponent({ todo: { state: TODO_STATE_PENDING } });
+      expect(wrapper.attributes('class')).not.toContain('gl-bg-subtle');
+    });
+  });
+
   describe('computed properties', () => {
     it('isDone returns true when todo state is done', () => {
       createComponent({ todo: { state: TODO_STATE_DONE } });
       expect(wrapper.vm.isDone).toBe(true);
-    });
-
-    it('isPending returns true when todo state is pending', () => {
-      createComponent({ todo: { state: TODO_STATE_PENDING } });
-      expect(wrapper.vm.isPending).toBe(true);
     });
   });
 

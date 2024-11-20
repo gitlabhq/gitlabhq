@@ -857,7 +857,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
       context 'when auto merge is enabled and target branch changed' do
         before do
-          AutoMergeService.new(project, user, { sha: merge_request.diff_head_sha }).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+          AutoMergeService.new(project, user, { sha: merge_request.diff_head_sha }).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
         end
 
         it 'calls MergeRequests::ResolveTodosService#async_execute' do
@@ -920,16 +920,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
         end
 
-        context 'when merge_when_checks_pass is disabled' do
-          before do
-            stub_feature_flags(merge_when_checks_pass: false)
-          end
-
-          it 'does not publish a DraftStateChangeEvent' do
-            expect { update_merge_request(title: 'New title') }.not_to publish_event(MergeRequests::DraftStateChangeEvent)
-          end
-        end
-
         context 'when removing through wip_event param' do
           it 'removes Draft from the title' do
             expect { update_merge_request({ wip_event: "ready" }) }
@@ -964,16 +954,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             }
 
             expect { update_merge_request(title: 'Draft: New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
-          end
-        end
-
-        context 'when merge_when_checks_pass is disabled' do
-          before do
-            stub_feature_flags(merge_when_checks_pass: false)
-          end
-
-          it 'does not publish a DraftStateChangeEvent' do
-            expect { update_merge_request(title: 'Draft: New title') }.not_to publish_event(MergeRequests::DraftStateChangeEvent)
           end
         end
 

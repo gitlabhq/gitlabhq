@@ -40,7 +40,7 @@ module Types
       null: true,
       description: "List of the instance's CI/CD variables.",
       resolver: Resolvers::Ci::VariablesResolver
-    field :container_repository, Types::ContainerRepositoryDetailsType,
+    field :container_repository, Types::ContainerRegistry::ContainerRepositoryDetailsType,
       null: true,
       description: 'Find a container repository.' do
       argument :id,

@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['ContainerRepositoryDetails'], feature_category: :container_registry do
   fields = %i[id name path location created_at updated_at expiration_policy_started_at
-              status tags_count expiration_policy_cleanup_status tags size manifest
-              project migration_state last_cleanup_deleted_tags_count user_permissions last_published_at
-              protection_rule_exists]
+    status tags_count expiration_policy_cleanup_status tags size manifest
+    project migration_state last_cleanup_deleted_tags_count user_permissions last_published_at
+    protection_rule_exists]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepositoryDetails') }
 
@@ -20,7 +20,7 @@ RSpec.describe GitlabSchema.types['ContainerRepositoryDetails'], feature_categor
     subject { described_class.fields['tags'] }
 
     it 'returns tags connection type' do
-      is_expected.to have_graphql_type(Types::ContainerRepositoryTagType.connection_type)
+      is_expected.to have_graphql_type(Types::ContainerRegistry::ContainerRepositoryTagType.connection_type)
     end
   end
 end

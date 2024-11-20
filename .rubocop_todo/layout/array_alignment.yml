@@ -123,7 +123,6 @@ Layout/ArrayAlignment:
     - 'spec/graphql/resolvers/project_issues_resolver_spec.rb'
     - 'spec/graphql/types/blob_viewer_type_spec.rb'
     - 'spec/graphql/types/boards/board_issue_input_type_spec.rb'
-    - 'spec/graphql/types/container_repository_details_type_spec.rb'
     - 'spec/graphql/types/container_repository_type_spec.rb'
     - 'spec/graphql/types/issuable_sort_enum_spec.rb'
     - 'spec/graphql/types/issue_type_spec.rb'

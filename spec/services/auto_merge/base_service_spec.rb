@@ -56,32 +56,6 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
       end
     end
 
-    context 'when strategy is merge when pipeline succeeds' do
-      let(:service) { AutoMerge::MergeWhenPipelineSucceedsService.new(project, user) }
-
-      before do
-        pipeline = build(:ci_pipeline)
-        allow(merge_request).to receive(:diff_head_pipeline) { pipeline }
-      end
-
-      it 'sets the auto merge strategy' do
-        subject
-
-        merge_request.reload
-        expect(merge_request.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-      end
-
-      it 'returns activated strategy name' do
-        is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS.to_sym)
-      end
-
-      it 'calls AutoMergeProcessWorker' do
-        expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'merge_request_id' => merge_request.id }).once
-
-        subject
-      end
-    end
-
     context 'when failed to save merge request' do
       before do
         allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid }
@@ -133,7 +107,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
   describe '#update' do
     subject { service.update(merge_request) } # rubocop:disable Rails/SaveBang
 
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
     context 'when merge params are specified' do
       let(:params) do
@@ -178,7 +152,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
             'should_remove_source_branch' => false,
             'commit_message' => "Merge branch 'patch-12' into 'master'",
             'squash_commit_message' => "Update README.md",
-            'auto_merge_strategy' => 'merge_when_pipeline_succeeds'
+            'auto_merge_strategy' => 'merge_when_checks_pass'
           })
       end
 
@@ -207,7 +181,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
   describe '#cancel' do
     subject { service.cancel(merge_request) }
 
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
     it_behaves_like 'Canceled or Dropped'
 
@@ -253,7 +227,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
   describe '#abort' do
     subject { service.abort(merge_request, reason) }
 
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
     let(:reason) { 'an error' }
 
     it_behaves_like 'Canceled or Dropped'

@@ -27,7 +27,6 @@ GraphQL/ExtractType:
     - 'app/graphql/types/commit_type.rb'
     - 'app/graphql/types/container_expiration_policy_type.rb'
     - 'app/graphql/types/container_registry/protection/rule_type.rb'
-    - 'app/graphql/types/container_repository_type.rb'
     - 'app/graphql/types/diff_type.rb'
     - 'app/graphql/types/environment_type.rb'
     - 'app/graphql/types/error_tracking/sentry_detailed_error_type.rb'

@@ -1822,7 +1822,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     describe 'auto merge' do
       context 'when auto merge is enabled' do
-        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
         let_it_be_with_reload(:pipeline) do
           create(:ci_pipeline, :running,
             project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)

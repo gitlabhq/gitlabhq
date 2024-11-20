@@ -529,7 +529,7 @@ module Types
       experiment: { milestone: '16.10' },
       resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
 
-    field :container_repositories, Types::ContainerRepositoryType.connection_type,
+    field :container_repositories, Types::ContainerRegistry::ContainerRepositoryType.connection_type,
       null: true,
       description: 'Container repositories of the project.',
       resolver: Resolvers::ContainerRepositoriesResolver

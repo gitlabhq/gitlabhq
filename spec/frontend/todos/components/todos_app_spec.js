@@ -41,6 +41,7 @@ describe('TodosApp', () => {
   const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
   const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
+  const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
 
   it('should have a tracking event for each tab', () => {
     expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
@@ -143,6 +144,61 @@ describe('TodosApp', () => {
     await waitForPromises();
     expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(2);
     expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+  });
+
+  it('refetches todos one second after the cursor leaves the list of todos', async () => {
+    jest.useFakeTimers();
+    createComponent();
+
+    // Wait and account for initial query
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Simulate interacting with a todo item then mousing out of the list zone
+    wrapper.vm.handleItemChanged(1, true);
+    const list = findTodoItemListContainer();
+    list.trigger('mouseleave');
+
+    // Should refresh the count, but not the list
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+
+    // Run out the clock
+    jest.advanceTimersByTime(1000 + 50); // 1s + some jitter
+
+    // Refreshes the count and the list
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(2);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not refresh todos after the cursor leaves the list of todos if nothing changed', async () => {
+    jest.useFakeTimers();
+    createComponent();
+
+    // Wait and account for initial query
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Simulate NOT interacting with a todo item then mousing out of the list zone
+    const list = findTodoItemListContainer();
+    list.trigger('mouseleave');
+
+    // Should not update anything
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Run out the clock
+    jest.advanceTimersByTime(1000 + 50); // 1s + some jitter
+
+    // Should not update anything
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
   });
 
   it('passes the default status to the filter bar', () => {

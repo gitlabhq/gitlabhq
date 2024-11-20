@@ -6,8 +6,8 @@ RSpec.describe GitlabSchema.types['ContainerRepository'], feature_category: :con
   include GraphqlHelpers
 
   fields = %i[id name path location created_at updated_at expiration_policy_started_at
-              status tags_count expiration_policy_cleanup_status project
-              migration_state last_cleanup_deleted_tags_count user_permissions protection_rule_exists]
+    status tags_count expiration_policy_cleanup_status project
+    migration_state last_cleanup_deleted_tags_count user_permissions protection_rule_exists]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepository') }
 
@@ -23,7 +23,7 @@ RSpec.describe GitlabSchema.types['ContainerRepository'], feature_category: :con
     subject { described_class.fields['status'] }
 
     it 'returns status enum' do
-      is_expected.to have_graphql_type(Types::ContainerRepositoryStatusEnum)
+      is_expected.to have_graphql_type(Types::ContainerRegistry::ContainerRepositoryStatusEnum)
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe GitlabSchema.types['ContainerRepository'], feature_category: :con
     subject { described_class.fields['expirationPolicyCleanupStatus'] }
 
     it 'returns cleanup status enum' do
-      is_expected.to have_graphql_type(Types::ContainerRepositoryCleanupStatusEnum)
+      is_expected.to have_graphql_type(Types::ContainerRegistry::ContainerRepositoryCleanupStatusEnum)
     end
   end
 

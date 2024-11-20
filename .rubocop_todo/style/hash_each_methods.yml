@@ -12,7 +12,6 @@ Style/HashEachMethods:
     - 'app/graphql/types/ci/runner_access_level_enum.rb'
     - 'app/graphql/types/ci/variable_type_enum.rb'
     - 'app/graphql/types/clusters/agent_token_status_enum.rb'
-    - 'app/graphql/types/container_repository_status_enum.rb'
     - 'app/graphql/types/data_visualization_palette/color_enum.rb'
     - 'app/graphql/types/data_visualization_palette/weight_enum.rb'
     - 'app/graphql/types/dependency_proxy/manifest_type_enum.rb'

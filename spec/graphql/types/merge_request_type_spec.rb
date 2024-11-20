@@ -164,8 +164,8 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       end
     end
 
-    context 'when MR is set to merge when pipeline succeeds' do
-      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, target_project: project, source_project: project) }
+    context 'when MR is set to auto merge' do
+      let(:merge_request) { create(:merge_request, :merge_when_checks_pass, target_project: project, source_project: project) }
 
       it 'is not nil' do
         value = resolve_field(:merge_user, merge_request)

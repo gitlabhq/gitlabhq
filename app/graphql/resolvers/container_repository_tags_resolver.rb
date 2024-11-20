@@ -2,9 +2,9 @@
 
 module Resolvers
   class ContainerRepositoryTagsResolver < BaseResolver
-    type Types::ContainerRepositoryTagType.connection_type, null: true
+    type Types::ContainerRegistry::ContainerRepositoryTagType.connection_type, null: true
 
-    argument :sort, Types::ContainerRepositoryTagsSortEnum,
+    argument :sort, Types::ContainerRegistry::ContainerRepositoryTagsSortEnum,
       description: 'Sort tags by these criteria.',
       required: false,
       default_value: nil
@@ -82,7 +82,7 @@ module Resolvers
     end
 
     def sort_tags(to_be_sorted, sort)
-      raise StandardError unless Types::ContainerRepositoryTagsSortEnum.enum.include?(sort)
+      raise StandardError unless Types::ContainerRegistry::ContainerRepositoryTagsSortEnum.enum.include?(sort)
 
       sort_value, _, direction = sort.to_s.rpartition('_')
 

@@ -119,7 +119,7 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
   describe 'container_repository field' do
     subject { described_class.fields['containerRepository'] }
 
-    it { is_expected.to have_graphql_type(Types::ContainerRepositoryDetailsType) }
+    it { is_expected.to have_graphql_type(Types::ContainerRegistry::ContainerRepositoryDetailsType) }
   end
 
   describe 'package field' do

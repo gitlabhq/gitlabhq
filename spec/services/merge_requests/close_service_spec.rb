@@ -58,7 +58,7 @@ RSpec.describe MergeRequests::CloseService, feature_category: :code_review_workf
       end
 
       context 'when auto merge is enabled' do
-        let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+        let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
         it 'cancels the auto merge' do
           expect(@merge_request).not_to be_auto_merge_enabled

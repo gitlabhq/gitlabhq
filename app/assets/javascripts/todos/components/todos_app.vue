@@ -17,13 +17,12 @@ import Tracking from '~/tracking';
 import {
   INSTRUMENT_TAB_LABELS,
   INSTRUMENT_TODO_FILTER_CHANGE,
-  INSTRUMENT_TODO_ITEM_CLICK,
   STATUS_BY_TAB,
+  TAB_PENDING,
+  TODO_WAIT_BEFORE_RELOAD,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
-import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
-import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
@@ -56,6 +55,8 @@ export default {
   },
   data() {
     return {
+      updatePid: null,
+      needsRefresh: false,
       cursor: {
         first: ENTRIES_PER_PAGE,
         after: null,
@@ -99,6 +100,10 @@ export default {
         this.alert = createAlert({ message: s__('Todos|Something went wrong. Please try again.') });
         Sentry.captureException(error);
       },
+      watchLoading() {
+        // We reset the `needsRefresh` when paginating or changing tabs
+        this.needsRefresh = false;
+      },
     },
     pendingTodosCount: {
       query: getPendingTodosCount,
@@ -129,7 +134,7 @@ export default {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
-      return this.currentTab === 0 && !this.showEmptyState;
+      return this.currentTab === TAB_PENDING && !this.showEmptyState;
     },
   },
   mounted() {
@@ -176,27 +181,10 @@ export default {
         this.updateAllQueries(false);
       }
     },
-    async handleItemChanged(id, markedAsDone) {
-      await this.updateAllQueries(false);
-      this.showUndoToast(id, markedAsDone);
-    },
-    showUndoToast(todoId, markedAsDone) {
-      const message = markedAsDone ? s__('Todos|Marked as done') : s__('Todos|Marked as undone');
-      const mutation = markedAsDone ? markAsPendingMutation : markAsDoneMutation;
+    async handleItemChanged() {
+      this.needsRefresh = true;
 
-      const { hide } = this.$toast.show(message, {
-        action: {
-          text: s__('Todos|Undo'),
-          onClick: async () => {
-            hide();
-            await this.$apollo.mutate({ mutation, variables: { todoId } });
-            this.track(INSTRUMENT_TODO_ITEM_CLICK, {
-              label: markedAsDone ? 'undo_mark_done' : 'undo_mark_pending',
-            });
-            this.updateAllQueries(false);
-          },
-        },
-      });
+      await this.updateCounts();
     },
     updateCounts() {
       return this.$apollo.queries.pendingTodosCount.refetch();
@@ -208,6 +196,29 @@ export default {
       await Promise.all([this.updateCounts(), this.$apollo.queries.todos.refetch()]);
 
       this.showSpinnerWhileLoading = true;
+    },
+    markInteracting() {
+      clearTimeout(this.updatePid);
+    },
+    stoppedInteracting() {
+      if (!this.needsRefresh) {
+        return;
+      }
+
+      if (this.updatePid) {
+        clearTimeout(this.updatePid);
+      }
+
+      this.updatePid = setTimeout(() => {
+        /*
+         We double-check needsRefresh or
+         whether a query is already running
+         */
+        if (this.needsRefresh && !this.$apollo.queries.todos.loading) {
+          this.updateAllQueries(false);
+        }
+        this.updatePid = null;
+      }, TODO_WAIT_BEFORE_RELOAD);
     },
   },
 };
@@ -262,7 +273,13 @@ export default {
     <div>
       <div class="gl-flex gl-flex-col">
         <gl-loading-icon v-if="isLoading && showSpinnerWhileLoading" size="lg" class="gl-mt-5" />
-        <ul v-else class="gl-m-0 gl-border-collapse gl-list-none gl-p-0">
+        <ul
+          v-else
+          data-testid="todo-item-list-container"
+          class="gl-m-0 gl-border-collapse gl-list-none gl-p-0"
+          @mouseenter="markInteracting"
+          @mouseleave="stoppedInteracting"
+        >
           <transition-group name="todos">
             <todo-item
               v-for="todo in todos"

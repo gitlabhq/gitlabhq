@@ -5,12 +5,6 @@ require 'spec_helper'
 RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService, feature_category: :code_review_workflow do
   include_context 'for auto_merge strategy context'
 
-  let(:merge_when_checks_pass_ff) { false }
-
-  before do
-    stub_feature_flags(merge_when_checks_pass: merge_when_checks_pass_ff)
-  end
-
   describe "#available_for?" do
     subject { service.available_for?(mr_merge_if_green_enabled) }
 
@@ -27,19 +21,7 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService, feature_category: :c
       mr_merge_if_green_enabled.update_head_pipeline
     end
 
-    it { is_expected.to be_truthy }
-
-    context 'when merge when checks ff is true' do
-      let(:merge_when_checks_pass_ff) { true }
-
-      it { is_expected.to be_falsey }
-    end
-
-    it 'memoizes the result' do
-      expect(mr_merge_if_green_enabled).to receive(:can_be_merged_by?).once.and_call_original
-
-      2.times { is_expected.to be_truthy }
-    end
+    it { is_expected.to be_falsey }
 
     context 'when the head pipeline succeeded' do
       let(:pipeline_status) { :success }

@@ -151,7 +151,7 @@ module Types
       resolver: Resolvers::GroupMembersResolver
 
     field :container_repositories,
-      Types::ContainerRepositoryType.connection_type,
+      Types::ContainerRegistry::ContainerRepositoryType.connection_type,
       null: true,
       description: 'Container repositories of the group.',
       resolver: Resolvers::ContainerRepositoriesResolver,

@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/types/container_repository_type.rb'
     - 'app/graphql/types/deployment_tag_type.rb'
     - 'app/graphql/types/design_management/design_at_version_type.rb'
     - 'app/graphql/types/design_management/design_fields.rb'

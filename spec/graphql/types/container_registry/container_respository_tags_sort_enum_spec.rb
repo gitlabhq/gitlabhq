@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ContainerRepositoryTagSort'] do
+RSpec.describe GitlabSchema.types['ContainerRepositoryTagSort'], feature_category: :container_registry do
   specify { expect(described_class.graphql_name).to eq('ContainerRepositoryTagSort') }
 
   it 'exposes all the existing issue sort values' do

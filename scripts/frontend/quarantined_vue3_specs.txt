@@ -397,7 +397,6 @@ spec/frontend/vue_shared/components/page_heading_spec.js
 spec/frontend/vue_shared/components/project_selector/project_selector_spec.js
 spec/frontend/vue_shared/components/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/vue_shared/components/smart_virtual_list_spec.js
-spec/frontend/vue_shared/components/source_viewer/components/chunk_spec.js
 spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js
 spec/frontend/vue_shared/directives/tooltip_on_truncate_spec.js

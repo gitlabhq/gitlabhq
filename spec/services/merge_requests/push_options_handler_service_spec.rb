@@ -139,21 +139,6 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
       expect(last_mr.merge_user).to eq(user1)
       expect(last_mr.merge_params['sha']).to eq(change[:newrev])
     end
-
-    context 'when merge_when_checks_pass is false' do
-      before do
-        stub_feature_flags(merge_when_checks_pass: false)
-      end
-
-      it 'sets auto_merge_enabled' do
-        service.execute
-
-        expect(last_mr.auto_merge_enabled).to eq(true)
-        expect(last_mr.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-        expect(last_mr.merge_user).to eq(user1)
-        expect(last_mr.merge_params['sha']).to eq(change[:newrev])
-      end
-    end
   end
 
   shared_examples_for 'a service that can remove the source branch when it is merged' do

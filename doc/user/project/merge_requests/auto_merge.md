@@ -17,8 +17,9 @@ DETAILS:
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flags `merge_when_checks_pass` and `additional_merge_when_checks_ready` on GitLab.com in GitLab 17.0.
 > - [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with `merge_when_checks_pass` in GitLab 17.1.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flags `merge_when_checks_pass` by default in GitLab 17.4.
+> - Merge when checks pass [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
 
-When you enable the `merge_when_checks_pass` feature flag, if the content of a merge request is ready to merge,
+If the content of a merge request is ready to merge,
 you can select **Set to auto-merge**. The merge request auto-merges when all required checks complete successfully, and you don't need to remember to manually merge the merge request.
 
 After you set auto-merge, these checks must all pass before the merge request merges:

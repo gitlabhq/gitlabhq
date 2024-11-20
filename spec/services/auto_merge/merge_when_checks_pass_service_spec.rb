@@ -15,12 +15,6 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
   describe '#available_for?' do
     subject { service.available_for?(mr_merge_if_green_enabled) }
 
-    let(:feature_flag) { true }
-
-    before do
-      stub_feature_flags(merge_when_checks_pass: feature_flag)
-    end
-
     context 'when immediately mergeable' do
       context 'when a non active pipeline' do
         before do
@@ -47,24 +41,12 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
       end
     end
 
-    context 'when merge when checks pass flag is off' do
-      let(:feature_flag) { false }
-
-      it { is_expected.to eq false }
-    end
-
     context 'when draft status' do
       before do
         mr_merge_if_green_enabled.update!(title: 'Draft: check')
       end
 
       it { is_expected.to eq true }
-
-      context 'when merge_when_checks_pass flag is off' do
-        let(:feature_flag) { false }
-
-        it { is_expected.to eq false }
-      end
     end
 
     context 'when discussions open' do
@@ -75,12 +57,6 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
       end
 
       it { is_expected.to eq true }
-
-      context 'when merge_when_checks_pass flag is off' do
-        let(:feature_flag) { false }
-
-        it { is_expected.to eq false }
-      end
     end
 
     context 'when pipline is active' do
@@ -94,12 +70,6 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
       end
 
       it { is_expected.to eq true }
-
-      context 'when merge_when_checks_pass flag is off' do
-        let(:feature_flag) { false }
-
-        it { is_expected.to eq false }
-      end
     end
 
     context 'when the user does not have permission to merge' do

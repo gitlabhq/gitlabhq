@@ -49,20 +49,10 @@ RSpec.describe MergeRequestPollWidgetEntity do
     end
 
     context 'when auto merge is enabled' do
-      let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
+      let(:resource) { create(:merge_request, :merge_when_checks_pass) }
 
       it 'returns auto merge related information' do
         expect(subject[:auto_merge_strategy]).to eq('merge_when_checks_pass')
-      end
-
-      context 'when merge_when_checks_pass is false' do
-        before do
-          stub_feature_flags(merge_when_checks_pass: false)
-        end
-
-        it 'returns auto merge related information' do
-          expect(subject[:auto_merge_strategy]).to eq('merge_when_pipeline_succeeds')
-        end
       end
     end
 
@@ -82,16 +72,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
 
       it 'returns available auto merge strategies' do
         expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_checks_pass])
-      end
-
-      context 'when the merge_when_checks_pass is false' do
-        before do
-          stub_feature_flags(merge_when_checks_pass: false)
-        end
-
-        it 'returns available auto merge strategies' do
-          expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_pipeline_succeeds])
-        end
       end
     end
 

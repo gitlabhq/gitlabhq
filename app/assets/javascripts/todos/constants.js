@@ -49,3 +49,5 @@ export const INSTRUMENT_TODO_SORT_CHANGE = 'sort_todo_list';
 export const INSTRUMENT_TODO_FILTER_CHANGE = 'filter_todo_list';
 
 export const INSTRUMENT_TAB_LABELS = ['status_pending', 'status_done', 'status_all'];
+
+export const TODO_WAIT_BEFORE_RELOAD = 1 * 1000; // 1 seconds

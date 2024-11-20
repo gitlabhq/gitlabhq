@@ -6,7 +6,7 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_of: project) }
-    let_it_be(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, source_project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :merge_when_checks_pass, source_project: project) }
 
     let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
     let(:service) { described_class.new(project, user, one_or_more_discussions: discussion) }
@@ -46,18 +46,6 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
           .to publish_event(MergeRequests::DiscussionsResolvedEvent)
           .with(current_user_id: user.id, merge_request_id: merge_request.id)
       end
-
-      context 'when merge_when_checks_pass is false' do
-        before do
-          stub_feature_flags(merge_when_checks_pass: false)
-        end
-
-        it 'schedules an auto-merge' do
-          expect(AutoMergeProcessWorker).to receive(:perform_async)
-
-          service.execute
-        end
-      end
     end
 
     context 'when not all discussions are resolved' do
@@ -65,18 +53,6 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
 
       it 'does not publish the discussions resolved event' do
         expect { service.execute }.not_to publish_event(MergeRequests::DiscussionsResolvedEvent)
-      end
-
-      context 'when merge_when_checks_pass is false' do
-        before do
-          stub_feature_flags(merge_when_checks_pass: false)
-        end
-
-        it 'schedules an auto-merge' do
-          expect(AutoMergeProcessWorker).to receive(:perform_async)
-
-          described_class.new(project, user, one_or_more_discussions: [discussion, other_discussion]).execute
-        end
       end
     end
 

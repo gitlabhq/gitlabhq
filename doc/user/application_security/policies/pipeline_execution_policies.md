@@ -118,6 +118,26 @@ When enforcing pipeline execution policies over projects whose CI/CD configurati
 control, you should define jobs in the `.pipeline-policy-pre` and `.pipeline-policy-post` stages.
 These stages are always available, regardless of any project's CI/CD configuration.
 
+When you use the `override_project_ci` [pipeline strategy](#pipeline-strategies) with multiple
+pipeline execution policies and with custom stages, the stages must be defined in the same relative order
+to be compatible with each other:
+
+Valid configuration example:
+
+```yaml
+  - `override-policy-1` stages: `[build, test, policy-test, deploy]`
+  - `override-policy-2` stages: `[test, deploy]`
+```
+
+Invalid configuration example:
+
+```yaml
+  - `override-policy-1` stages: `[build, test, policy-test, deploy]`
+  - `override-policy-2` stages: `[deploy, test]`
+```
+
+The pipeline fails if one or more `override_project_ci` policies has an invalid `stages` configuration.
+
 ### `content` type
 
 | Field | Type | Required | Description |
@@ -199,12 +219,13 @@ compliance_job:
  ...
 ```
 
-NOTE:
-Jobs from the project configuration that are defined for a custom
-`stage` are excluded from the final pipeline.
-To include a job in the final configuration, define it for a
-[default pipeline stage](../../../ci/yaml/index.md#stages) or a reserved
-stage (`.pipeline-policy-pre` or `.pipeline-policy-post`).
+> Jobs from the project configuration that are defined for a custom
+> `stage` are excluded from the final pipeline.
+> To include a job in the final configuration, you can:
+>
+> - Use [stages](../../../ci/yaml/index.md#stages) to define custom stages in the pipeline execution policy configuration.
+> - Use a [default pipeline stage](../../../ci/yaml/index.md#stages)
+> - Use a reserved stage (`.pipeline-policy-pre` or `.pipeline-policy-post`).
 
 ## CI/CD variables
 

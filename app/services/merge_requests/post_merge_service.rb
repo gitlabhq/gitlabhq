@@ -114,7 +114,6 @@ module MergeRequests
     end
 
     def cancel_auto_merges_targeting_source_branch(merge_request)
-      return unless Feature.enabled?(:merge_when_checks_pass, merge_request.project)
       return unless params[:delete_source_branch]
 
       merge_request.source_project

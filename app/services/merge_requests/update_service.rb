@@ -238,7 +238,7 @@ module MergeRequests
         # email template itself, see `change_in_merge_request_draft_status_email` template.
         notify_draft_status_changed(merge_request)
         trigger_merge_request_status_updated(merge_request)
-        publish_draft_change_event(merge_request) if Feature.enabled?(:merge_when_checks_pass, project)
+        publish_draft_change_event(merge_request)
       end
 
       if !old_title_draft && new_title_draft
