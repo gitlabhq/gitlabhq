@@ -82,12 +82,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
 
         it_behaves_like 'returning a service response success response', action: :download_file
 
-        it 'bumps the statistics', :freeze_time do
-          stub_external_registry_request(etag: etag_returned_by_upstream)
-
-          expect { execute }.to change { cached_response.reload.downloaded_at }.to(Time.zone.now)
-        end
-
         context 'and is too old' do
           before do
             cached_response.update!(upstream_checked_at: 1.year.ago)
@@ -101,9 +95,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
             it 'bumps the statistics', :freeze_time do
               stub_external_registry_request(etag: etag_returned_by_upstream)
 
-              expect { execute }
-                .to change { cached_response.reload.downloaded_at }.to(Time.zone.now)
-                .and change { cached_response.upstream_checked_at }.to(Time.zone.now)
+              expect { execute }.to change { cached_response.reload.upstream_checked_at }.to(Time.zone.now)
             end
           end
 

@@ -21798,6 +21798,9 @@ msgstr ""
 msgid "Environments|Stop"
 msgstr ""
 
+msgid "Environments|Stop %{environmentName}"
+msgstr ""
+
 msgid "Environments|Stop environment"
 msgstr ""
 
@@ -21805,9 +21808,6 @@ msgid "Environments|Stop environments that have not been updated since the speci
 msgstr ""
 
 msgid "Environments|Stop unused environments"
-msgstr ""
-
-msgid "Environments|Stopping %{environmentName}"
 msgstr ""
 
 msgid "Environments|Synced"
@@ -23267,6 +23267,9 @@ msgid "Failed to remove user identity."
 msgstr ""
 
 msgid "Failed to remove user key."
+msgstr ""
+
+msgid "Failed to request a review because no user was specified."
 msgstr ""
 
 msgid "Failed to retrieve page"
@@ -46514,6 +46517,9 @@ msgstr ""
 msgid "Request a new one"
 msgstr ""
 
+msgid "Request a review"
+msgstr ""
+
 msgid "Request changes"
 msgstr ""
 
@@ -46547,6 +46553,9 @@ msgstr ""
 msgid "Requested %{time_ago}"
 msgstr ""
 
+msgid "Requested a review from %{reviewer_users_sentence}."
+msgstr ""
+
 msgid "Requested design version does not exist."
 msgstr ""
 
@@ -46560,6 +46569,9 @@ msgid "Requests"
 msgstr ""
 
 msgid "Requests a Duo Code Review"
+msgstr ""
+
+msgid "Requests a review from %{reviewer_users_sentence}."
 msgstr ""
 
 msgid "Requests for pages at %{code_start}%{help_text_url}%{code_end} redirect to the URL. The destination must meet certain requirements. %{docs_link_start}Learn more%{docs_link_end}."
@@ -55251,6 +55263,9 @@ msgid "The URL should start with http:// or https://"
 msgstr ""
 
 msgid "The URLs for connecting to Elasticsearch. For clustering, add the URLs separated by commas."
+msgstr ""
+
+msgid "The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`)."
 msgstr ""
 
 msgid "The XML file must be less than %{max_size} MB."

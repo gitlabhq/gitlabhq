@@ -65,11 +65,8 @@ module VirtualRegistries
 
         def cache_response_still_valid?
           return false unless cached_response
+          return true unless cached_response.stale?
 
-          unless cached_response.stale?
-            cached_response.bump_statistics
-            return true
-          end
           # cached response with no etag can't be checked
           return false if cached_response.upstream_etag.blank?
 
@@ -77,7 +74,7 @@ module VirtualRegistries
 
           return false unless cached_response.upstream_etag == response.headers['etag']
 
-          cached_response.bump_statistics(include_upstream_checked_at: true)
+          cached_response.update_column(:upstream_checked_at, Time.current)
           true
         end
 

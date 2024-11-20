@@ -123,6 +123,7 @@ describe('Merge requests list app', () => {
       recentSearchesStorageKey: 'merge_requests',
       sortOptions: getSortOptions({ hasManualSort: false }),
       initialSortBy: 'CREATED_DESC',
+      issuableSymbol: '!',
       issuables: getQueryResponse.data.project.mergeRequests.nodes,
       tabs: mergeRequestListTabs,
       currentTab: 'opened',

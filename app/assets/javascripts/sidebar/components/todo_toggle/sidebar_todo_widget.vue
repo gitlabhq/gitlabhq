@@ -231,6 +231,7 @@ export default {
       category="tertiary"
       type="reset"
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
+      :class="{ '!gl-text-blue-500': hasTodo }"
       @click.stop.prevent="toggleTodo"
     >
       <gl-animated-todo-icon :is-on="hasTodo" />

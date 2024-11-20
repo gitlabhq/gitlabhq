@@ -52,6 +52,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
       note = project.notes.diff_notes.take
       expect(note).to be_valid
+      expect(note.imported_from).to eq(::Import::SOURCE_GITHUB.to_s)
       expect(note.author_id).to eq(user.id)
       expect(note.commit_id).to eq('original123abc')
       expect(note.created_at).to eq(created_at)
@@ -160,12 +161,18 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           end
 
           it 'imports the note as diff note' do
+            expect_next_instance_of(Import::Github::Notes::CreateService) do |service|
+              expect(service).to receive(:execute).with(importing: true).and_call_original
+            end
+
             expect { subject.execute }
               .to change(DiffNote, :count)
               .by(1)
+              .and not_change(LegacyDiffNote, :count)
 
             note = project.notes.diff_notes.take
             expect(note).to be_valid
+            expect(note.imported_from).to eq(::Import::SOURCE_GITHUB.to_s)
             expect(note.noteable_type).to eq('MergeRequest')
             expect(note.noteable_id).to eq(merge_request.id)
             expect(note.project_id).to eq(project.id)
@@ -313,12 +320,17 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           end
 
           it 'imports the note as diff note' do
+            expect_next_instance_of(Import::Github::Notes::CreateService) do |service|
+              expect(service).to receive(:execute).with(importing: true).and_call_original
+            end
+
             expect { subject.execute }
               .to change(DiffNote, :count)
               .by(1)
 
             note = project.notes.diff_notes.take
             expect(note).to be_valid
+            expect(note.imported_from).to eq(::Import::SOURCE_GITHUB.to_s)
             expect(note.noteable_type).to eq('MergeRequest')
             expect(note.noteable_id).to eq(merge_request.id)
             expect(note.project_id).to eq(project.id)

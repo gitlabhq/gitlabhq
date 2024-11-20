@@ -2699,6 +2699,8 @@
       when: never
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *dependency-patterns
 
@@ -2708,6 +2710,8 @@
       when: never
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *python-patterns
 

@@ -48,3 +48,4 @@ Customize and configure your self-managed GitLab installation.
 - [Snippets](../administration/snippets/index.md)
 - [Host the product documentation](../administration/docs_self_host.md)
 - [Custom HTML header tags](../administration/custom_html_header_tags.md)
+- [Self-hosted models](../administration/self_hosted_models/index.md)

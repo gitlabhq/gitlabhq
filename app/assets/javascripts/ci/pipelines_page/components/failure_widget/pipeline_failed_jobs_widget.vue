@@ -113,6 +113,7 @@ export default {
         class="!gl-text-subtle"
         :aria-expanded="isExpanded.toString()"
         :aria-controls="$options.ariaControlsId"
+        data-testid="toggle-button"
         @click="toggleWidget"
       >
         <gl-icon :name="iconName" class="gl-mr-2" />
@@ -125,6 +126,15 @@ export default {
       <gl-badge>
         {{ failedJobsCountBadge }}
       </gl-badge>
+    </template>
+    <template #actions>
+      <gl-button
+        v-if="isExpanded"
+        href="https://gitlab.com/gitlab-org/gitlab/-/issues/502436"
+        data-testid="feedback-button"
+      >
+        {{ __('Leave feedback') }}
+      </gl-button>
     </template>
     <failed-jobs-list
       v-if="isExpanded"

@@ -33,7 +33,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
           expect(last_cached_response).to have_attributes(
             group_id: registry.group.id,
             upstream_checked_at: Time.zone.now,
-            downloaded_at: Time.zone.now,
             relative_path: "/#{path}",
             upstream_etag: etag,
             content_type: content_type,
@@ -72,7 +71,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
           expect(execute.payload).to eq(cached_response: last_cached_response)
 
           expect(last_cached_response).to have_attributes(
-            downloaded_at: Time.zone.now,
             upstream_checked_at: Time.zone.now,
             upstream_etag: etag
           )

@@ -10,7 +10,8 @@ module Import
 
     def initialize(import_source_user)
       @import_source_user = import_source_user
-      @reassigned_by_user = User.find_by_id(import_source_user.reassigned_by_user_id)
+      @reassigned_by_user = import_source_user.reassigned_by_user
+      @project_membership_created = false
     end
 
     def execute
@@ -23,6 +24,8 @@ module Import
 
       create_memberships
       delete_placeholder_memberships
+
+      UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if project_membership_created?
 
       import_source_user.complete!
     end
@@ -153,6 +156,8 @@ module Import
       )
 
       member.save!
+
+      @project_membership_created = true if memberable.is_a?(Project)
     rescue ActiveRecord::ActiveRecordError => exception
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
         exception,
@@ -191,6 +196,10 @@ module Import
 
     def placeholder_memberships
       Import::Placeholders::Membership.by_source_user(import_source_user)
+    end
+
+    def project_membership_created?
+      @project_membership_created == true
     end
 
     def log_create_membership_skipped(message, placeholder_membership, existing_membership)

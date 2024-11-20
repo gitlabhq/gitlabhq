@@ -29,7 +29,6 @@ module VirtualRegistries
               file: file,
               size: file.size,
               file_sha1: file.sha1,
-              downloaded_at: now,
               content_type: content_type
             }
             updates[:file_md5] = file.md5 unless Gitlab::FIPS.enabled?

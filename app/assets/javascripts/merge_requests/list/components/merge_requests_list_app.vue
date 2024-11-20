@@ -709,6 +709,7 @@ export default {
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="mergeRequests"
+      issuable-symbol="!"
       :error="mergeRequestsError"
       :tabs="$options.mergeRequestListTabs"
       :current-tab="state"

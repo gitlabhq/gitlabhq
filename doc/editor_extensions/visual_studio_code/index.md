@@ -198,18 +198,62 @@ To view issues and merge requests for a specific project:
    - All project merge requests
    - Your [custom queries](custom_queries.md)
 
-1. Select an issue or merge request to open it in a new VS Code tab.
-1. Optional. If you select a merge request, its sidebar entry expands to show all files changed
-   in the merge request. Deleted files are marked in red. For example:
+Select an issue or merge request to open it in a new VS Code tab.
+
+## Review a merge request
+
+Use this extension to review, comment on, and approve merge requests without leaving VS Code:
+
+1. While viewing [issues and merge requests](#view-issues-and-merge-requests) in VS Code, select the
+   merge request you want to review. Its sidebar entry expands with more information.
+1. Under the merge request's number and title, select **Description** to read more about the merge request.
+1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
+   Diff comments are shown inline in the tab. In the list, deleted files are marked in red:
 
    ![An alphabetical list of files changed in this merge request, including the type of changes.](../img/vscode_view_changed_file_v17_6.png)
 
-   1. Select a file to view its diff in a VS Code tab.
+Use the diff to:
+
+- Review and create discussions.
+- Resolve and unresolve these discussions.
+- Delete and edit individual comments.
+
+### Compare with default branch
+
+<!-- vale gitlab_base.InclusiveLanguage = NO -->
+
+To compare your branch with your project's default branch, without creating a merge request:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Compare current branch with master** and press <kbd>Enter</kbd>.
+
+The extension opens a new browser tab. It shows a diff between the most recent commit on your branch, and
+the most recent commit on your project's default branch.
+
+<!-- vale gitlab_base.InclusiveLanguage = YES -->
+
+### Open current file in GitLab UI
+
+To open a file from your current GitLab project in the GitLab UI, with specific lines highlighted:
+
+1. Open your desired file in VS Code.
+1. Select the lines you want to highlight.
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Open active file on GitLab** and press <kbd>Enter</kbd>.
 
 ## View security findings
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 Prerequisites:
 
+- You're using GitLab Workflow version 3.74.0 or later.
 - Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
   Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST),
   Container Scanning, or Dependency Scanning.

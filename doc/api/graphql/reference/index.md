@@ -20959,6 +20959,7 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkprojects"></a>`projects` | [`ProjectConnection`](#projectconnection) | Projects associated with the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkscanexecutionpolicies"></a>`scanExecutionPolicies` | [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection) | Scan Execution Policies of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkscanresultpolicies"></a>`scanResultPolicies` | [`ScanResultPolicyConnection`](#scanresultpolicyconnection) | Scan Result Policies of the compliance framework. (see [Connections](#connections)) |
+| <a id="complianceframeworkvulnerabilitymanagementpolicies"></a>`vulnerabilityManagementPolicies` | [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection) | Vulnerability Management Policies of the compliance framework. (see [Connections](#connections)) |
 
 ### `ComplianceRequirement`
 
@@ -25649,6 +25650,27 @@ Returns [`[VulnerableProjectsByGrade!]`](#vulnerableprojectsbygrade).
 | <a id="groupvulnerabilitygradesincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include grades belonging to subgroups. |
 | <a id="groupvulnerabilitygradeslettergrade"></a>`letterGrade` | [`VulnerabilityGrade`](#vulnerabilitygrade) | Filter the response by given letter grade. |
 
+##### `Group.vulnerabilityManagementPolicies`
+
+Vulnerability Management Policies of the project.
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvulnerabilitymanagementpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="groupvulnerabilitymanagementpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Group.vulnerabilitySeveritiesCount`
 
 Counts for each vulnerability severity in the group and its subgroups.
@@ -29476,6 +29498,27 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="namespacescanresultpoliciesincludeunscoped"></a>`includeUnscoped` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.3. **Status**: Experiment. Filter policies that are scoped to the project. |
 | <a id="namespacescanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
+##### `Namespace.vulnerabilityManagementPolicies`
+
+Vulnerability Management Policies of the project.
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacevulnerabilitymanagementpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="namespacevulnerabilitymanagementpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
 ##### `Namespace.workItem`
 

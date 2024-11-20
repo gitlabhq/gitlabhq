@@ -91,7 +91,7 @@ export default {
     @primary="onSubmit"
   >
     <template #modal-title>
-      <gl-sprintf :message="s__('Environments|Stopping %{environmentName}')">
+      <gl-sprintf :message="s__('Environments|Stop %{environmentName}')">
         <template #environmentName>
           <span v-gl-tooltip :title="environment.name" class="gl-grow gl-truncate">
             {{ environment.name }}?

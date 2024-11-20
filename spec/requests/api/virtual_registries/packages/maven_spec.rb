@@ -1339,7 +1339,6 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
           relative_path: "/#{path}",
           upstream_etag: nil,
           upstream_checked_at: Time.zone.now,
-          downloaded_at: Time.zone.now,
           file_sha1: kind_of(String),
           file_md5: kind_of(String)
         )

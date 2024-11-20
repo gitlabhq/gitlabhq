@@ -151,6 +151,14 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         described_class.new(project, user, opts).execute
       end
 
+      context 'when importing execute option is set to true' do
+        it 'does not enqueue NewNoteWorker' do
+          expect(NewNoteWorker).not_to receive(:perform_async)
+
+          described_class.new(project, user, opts).execute(importing: true)
+        end
+      end
+
       context 'issue is an incident' do
         let(:issue) { create(:incident, project: project) }
 

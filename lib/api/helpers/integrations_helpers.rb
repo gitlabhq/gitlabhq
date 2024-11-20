@@ -428,14 +428,7 @@ module API
             }
           ],
           'telegram' => ::Integrations::Telegram.api_arguments,
-          'unify-circuit' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Unify Circuit webhook. e.g. https://circuit.com/rest/v2/webhooks/incoming/…'
-            }
-          ].flatten,
+          'unify-circuit' => ::Integrations::UnifyCircuit.api_arguments,
           'webex-teams' => ::Integrations::WebexTeams.api_arguments,
           'zentao' => [
             {

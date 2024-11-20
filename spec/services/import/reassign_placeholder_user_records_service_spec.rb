@@ -194,6 +194,30 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         )
       end
 
+      it 'calls UserProjectAccessChangedService' do
+        expect_next_instance_of(UserProjectAccessChangedService, reassign_to_user.id) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        service.execute
+      end
+
+      it 'does not call UserProjectAccessChangedService when there are no memberships created' do
+        Import::Placeholders::Membership.delete_all
+
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        expect { service.execute }.not_to change { Member.count }
+      end
+
+      it 'does not call UserProjectAccessChangedService when only group memberships are created' do
+        Import::Placeholders::Membership.where(project: project).delete_all
+
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        expect { service.execute }.to change { GroupMember.count }.by(1)
+      end
+
       it 'deletes reassigned placeholder references and memberships for the source user' do
         expect { service.execute }
           .to change { Import::SourceUserPlaceholderReference.where(source_user: source_user).count }.to(0)
@@ -203,6 +227,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
       context 'when reassigned by user no longer exists' do
         before do
           source_user.reassigned_by_user.destroy!
+          source_user.reload
         end
 
         it 'can still create memberships' do
@@ -210,7 +235,8 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         end
 
         it 'logs a warning' do
-          expect(::Import::Framework::Logger).to receive(:warn).with(
+          allow(Import::Framework::Logger).to receive(:warn)
+          expect(Import::Framework::Logger).to receive(:warn).with(
             hash_including(
               message: 'Reassigned by user was not found, this may affect membership checks',
               source_user_id: source_user.id

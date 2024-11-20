@@ -28515,6 +28515,8 @@ CREATE INDEX idx_pkgs_npm_metadata_caches_on_id_and_project_id_and_status ON pac
 
 CREATE INDEX idx_pkgs_nuget_symbols_on_lowercase_signature_and_file_name ON packages_nuget_symbols USING btree (lower(signature), lower(file));
 
+CREATE UNIQUE INDEX idx_pkgs_nuget_symbols_on_signature_and_file_path_with_pkg_id ON packages_nuget_symbols USING btree (signature, file_path) WHERE (package_id IS NOT NULL);
+
 CREATE INDEX idx_pkgs_on_project_id_name_version_on_installable_terraform ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 12) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_pkgs_project_id_lower_name_when_nuget_installable_version ON packages_packages USING btree (project_id, lower((name)::text)) WHERE ((package_type = 4) AND (version IS NOT NULL) AND (status = ANY (ARRAY[0, 1])));
@@ -31328,8 +31330,6 @@ CREATE UNIQUE INDEX index_packages_nuget_symbols_on_object_storage_key ON packag
 CREATE INDEX index_packages_nuget_symbols_on_package_id ON packages_nuget_symbols USING btree (package_id);
 
 CREATE INDEX index_packages_nuget_symbols_on_project_id ON packages_nuget_symbols USING btree (project_id);
-
-CREATE UNIQUE INDEX index_packages_nuget_symbols_on_signature_and_file_path ON packages_nuget_symbols USING btree (signature, file_path);
 
 CREATE INDEX index_packages_on_available_pypi_packages ON packages_packages USING btree (project_id, id) WHERE ((status = ANY (ARRAY[0, 1])) AND (package_type = 5) AND (version IS NOT NULL));
 
