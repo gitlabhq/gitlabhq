@@ -4,9 +4,9 @@ module Members
   class ScheduleDeletionService
     include BaseServiceUtility
 
-    def initialize(root_namespace, user, scheduled_by)
+    def initialize(root_namespace, user_id, scheduled_by)
       @root_namespace = root_namespace
-      @user = user
+      @user_id = user_id
       @scheduled_by = scheduled_by
     end
 
@@ -19,12 +19,12 @@ module Members
 
     private
 
-    attr_reader :root_namespace, :user, :scheduled_by
+    attr_reader :root_namespace, :user_id, :scheduled_by
 
     def schedule_deletion
       schedule = Members::DeletionSchedule.new(
         namespace: root_namespace,
-        user: user,
+        user_id: user_id,
         scheduled_by: scheduled_by
       )
 

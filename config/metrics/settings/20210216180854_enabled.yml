@@ -3,6 +3,8 @@ data_category: optional
 key_path: object_store.lfs.enabled
 description: Whether Object Storage is enabled for LFS
 product_group: cloud_connector
+product_categories:
+- build
 value_type: boolean
 status: active
 time_frame: none

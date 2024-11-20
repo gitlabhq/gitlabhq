@@ -3,6 +3,8 @@ data_category: optional
 key_path: object_store.artifacts.object_store.direct_upload
 description: Whether Direct Upload for Object Storage is enabled for Artifacts
 product_group: cloud_connector
+product_categories:
+- build
 value_type: boolean
 status: active
 time_frame: none
