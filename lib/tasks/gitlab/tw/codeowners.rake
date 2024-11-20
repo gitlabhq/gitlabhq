@@ -69,7 +69,7 @@ namespace :tw do
       CodeOwnerRule.new('Platform Insights', '@lciutacu'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
-      CodeOwnerRule.new('Provision', '@fneill'),
+      CodeOwnerRule.new('Provision', '@lciutacu'),
       CodeOwnerRule.new('Redirect', 'Redirect'),
       # CodeOwnerRule.new('Respond', ''),
       CodeOwnerRule.new('Runner', '@rsarangadharan'),
@@ -80,12 +80,12 @@ namespace :tw do
       CodeOwnerRule.new('Source Code', '@brendan777'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson @phillipwells'),
       # CodeOwnerRule.new('Subscription Management', ''),
-      CodeOwnerRule.new('Tenant Scale', '@lciutacu'),
+      CodeOwnerRule.new('Tenant Scale', '@emily.sahlani'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@rdickenson'),
       CodeOwnerRule.new('Tutorials', '@kpaizee'),
       # CodeOwnerRule.new('US Public Sector Services', ''),
-      CodeOwnerRule.new('Utilization', '@fneill')
+      CodeOwnerRule.new('Utilization', '@lciutacu')
       # CodeOwnerRule.new('Vulnerability Research', '')
     ].freeze
 

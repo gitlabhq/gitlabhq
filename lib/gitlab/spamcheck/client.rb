@@ -18,11 +18,7 @@ module Gitlab
       URL_SCHEME_REGEX = %r{^grpc://|^tls://}
 
       def initialize
-        @endpoint_url = if Feature.enabled?(:spamcheck_runway_migration, :instance, type: :gitlab_com_derisk)
-                          ENV['SPAMCHECK_RUNWAY_URL']
-                        else
-                          Gitlab::CurrentSettings.current_application_settings.spam_check_endpoint_url
-                        end
+        @endpoint_url = Gitlab::CurrentSettings.current_application_settings.spam_check_endpoint_url
 
         @creds = client_creds(@endpoint_url)
 

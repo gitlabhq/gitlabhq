@@ -1,9 +1,0 @@
----
-name: sm_duo_pro_bulk_user_assignment
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/12959
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156779
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443570
-milestone: '17.2'
-group: group::provision
-type: development
-default_enabled: true

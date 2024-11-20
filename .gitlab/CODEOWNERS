@@ -568,7 +568,7 @@ lib/gitlab/checks/**
 /doc/administration/gitaly/ @eread
 /doc/administration/guest_users.md @jglassman1
 /doc/administration/housekeeping.md @eread
-/doc/administration/inactive_project_deletion.md @lciutacu
+/doc/administration/inactive_project_deletion.md @emily.sahlani
 /doc/administration/incoming_email.md @msedlakjakubowski
 /doc/administration/index.md @axil
 /doc/administration/instance_limits.md @axil
@@ -583,8 +583,8 @@ lib/gitlab/checks/**
 /doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @brendan777
 /doc/administration/libravatar.md @axil
-/doc/administration/license.md @fneill
-/doc/administration/license_file.md @fneill
+/doc/administration/license.md @lciutacu
+/doc/administration/license_file.md @lciutacu
 /doc/administration/load_balancer.md @axil
 /doc/administration/logs/ @axil
 /doc/administration/logs/index.md @lciutacu
@@ -612,7 +612,7 @@ lib/gitlab/checks/**
 /doc/administration/packages/index.md @phillipwells
 /doc/administration/pages/ @msedlakjakubowski
 /doc/administration/polling.md @axil
-/doc/administration/postgresql/ @lciutacu
+/doc/administration/postgresql/ @emily.sahlani
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @jglassman1
 /doc/administration/raketasks/praefect.md @eread
@@ -646,13 +646,13 @@ lib/gitlab/checks/**
 /doc/administration/settings/package_registry_rate_limits.md @phillipwells
 /doc/administration/settings/project_integration_management.md @ashrafkhamis
 /doc/administration/settings/push_event_activities_limit.md @brendan777
-/doc/administration/settings/rate_limit_on_groups_api.md @lciutacu
+/doc/administration/settings/rate_limit_on_groups_api.md @emily.sahlani
 /doc/administration/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
-/doc/administration/settings/rate_limit_on_members_api.md @lciutacu
+/doc/administration/settings/rate_limit_on_members_api.md @emily.sahlani
 /doc/administration/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
-/doc/administration/settings/rate_limit_on_organizations_api.md @lciutacu
+/doc/administration/settings/rate_limit_on_organizations_api.md @emily.sahlani
 /doc/administration/settings/rate_limit_on_pipelines_creation.md @lyspin
-/doc/administration/settings/rate_limit_on_projects_api.md @lciutacu
+/doc/administration/settings/rate_limit_on_projects_api.md @emily.sahlani
 /doc/administration/settings/rate_limit_on_users_api.md @jglassman1
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
 /doc/administration/settings/scim_setup.md @jglassman1
@@ -660,7 +660,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/security_contact_information.md @eread
 /doc/administration/settings/slack_app.md @ashrafkhamis
 /doc/administration/settings/terraform_limits.md @phillipwells
-/doc/administration/settings/third_party_offers.md @lciutacu
+/doc/administration/settings/third_party_offers.md @emily.sahlani
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
@@ -716,6 +716,7 @@ lib/gitlab/checks/**
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @jglassman1
+/doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
 /doc/api/graphql/audit_event_streaming_groups.md @eread
 /doc/api/graphql/audit_event_streaming_instances.md @eread
 /doc/api/graphql/audit_report.md @eread
@@ -729,14 +730,14 @@ lib/gitlab/checks/**
 /doc/api/graphql/users_example.md @jglassman1
 /doc/api/group_access_tokens.md @jglassman1
 /doc/api/group_activity_analytics.md @lciutacu
-/doc/api/group_badges.md @lciutacu
+/doc/api/group_badges.md @emily.sahlani
 /doc/api/group_boards.md @msedlakjakubowski
 /doc/api/group_clusters.md @phillipwells
 /doc/api/group_epic_boards.md @msedlakjakubowski
 /doc/api/group_import_export.md @ashrafkhamis
 /doc/api/group_iterations.md @msedlakjakubowski
 /doc/api/group_labels.md @msedlakjakubowski
-/doc/api/group_ldap_links.md @lciutacu
+/doc/api/group_ldap_links.md @emily.sahlani
 /doc/api/group_level_variables.md @marcel.amirault
 /doc/api/group_markdown_uploads.md @msedlakjakubowski
 /doc/api/group_milestones.md @msedlakjakubowski
@@ -750,13 +751,13 @@ lib/gitlab/checks/**
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
 /doc/api/group_wikis.md @msedlakjakubowski
-/doc/api/groups.md @lciutacu
+/doc/api/groups.md @emily.sahlani
 /doc/api/import.md @ashrafkhamis
 /doc/api/index.md @ashrafkhamis
 /doc/api/instance_clusters.md @phillipwells
 /doc/api/instance_level_ci_variables.md @marcel.amirault
 /doc/api/integrations.md @ashrafkhamis
-/doc/api/invitations.md @lciutacu
+/doc/api/invitations.md @emily.sahlani
 /doc/api/issue_links.md @msedlakjakubowski
 /doc/api/issues.md @msedlakjakubowski
 /doc/api/issues_statistics.md @msedlakjakubowski
@@ -765,7 +766,7 @@ lib/gitlab/checks/**
 /doc/api/jobs.md @lyspin
 /doc/api/keys.md @brendan777
 /doc/api/labels.md @msedlakjakubowski
-/doc/api/license.md @fneill
+/doc/api/license.md @lciutacu
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
 /doc/api/markdown.md @msedlakjakubowski
@@ -783,7 +784,7 @@ lib/gitlab/checks/**
 /doc/api/notification_settings.md @sselhorn
 /doc/api/oauth2.md @jglassman1
 /doc/api/openapi/ @ashrafkhamis
-/doc/api/organizations.md @lciutacu
+/doc/api/organizations.md @emily.sahlani
 /doc/api/packages.md @phillipwells
 /doc/api/packages/ @phillipwells
 /doc/api/pages.md @msedlakjakubowski
@@ -799,7 +800,7 @@ lib/gitlab/checks/**
 /doc/api/project_badges.md @brendan777
 /doc/api/project_clusters.md @phillipwells
 /doc/api/project_container_registry_protection_rules.md @marcel.amirault
-/doc/api/project_forks.md @lciutacu
+/doc/api/project_forks.md @emily.sahlani
 /doc/api/project_import_export.md @ashrafkhamis
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
@@ -810,12 +811,12 @@ lib/gitlab/checks/**
 /doc/api/project_relations_export.md @ashrafkhamis
 /doc/api/project_repository_storage_moves.md @eread
 /doc/api/project_snippets.md @brendan777
-/doc/api/project_starring.md @lciutacu
+/doc/api/project_starring.md @emily.sahlani
 /doc/api/project_statistics.md @brendan777
 /doc/api/project_templates.md @brendan777
 /doc/api/project_vulnerabilities.md @rdickenson
 /doc/api/project_webhooks.md @ashrafkhamis
-/doc/api/projects.md @lciutacu
+/doc/api/projects.md @emily.sahlani
 /doc/api/protected_branches.md @brendan777
 /doc/api/protected_environments.md @phillipwells
 /doc/api/protected_tags.md @brendan777
@@ -851,7 +852,7 @@ lib/gitlab/checks/**
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault
 /doc/api/templates/licenses.md @rdickenson @phillipwells
 /doc/api/todos.md @sselhorn
-/doc/api/topics.md @lciutacu
+/doc/api/topics.md @emily.sahlani
 /doc/api/user_email_addresses.md @jglassman1
 /doc/api/user_follow_unfollow.md @jglassman1
 /doc/api/user_keys.md @jglassman1
@@ -982,12 +983,13 @@ lib/gitlab/checks/**
 /doc/solutions/ @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/index.md @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
-/doc/subscriptions/ @fneill
+/doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
 /doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/topics/ @msedlakjakubowski
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/git/ @brendan777
+/doc/topics/git/project.md @emily.sahlani
 /doc/topics/offline/ @axil
 /doc/topics/runner_fleet_design_guides/ @rsarangadharan
 /doc/tutorials/ @kpaizee
@@ -995,7 +997,7 @@ lib/gitlab/checks/**
 /doc/tutorials/compliance_pipeline/ @eread
 /doc/tutorials/configure_gitlab_runner_to_use_gke/ @rsarangadharan
 /doc/tutorials/container_scanning/ @rdickenson @phillipwells
-/doc/tutorials/convert_personal_namespace_to_group/ @lciutacu
+/doc/tutorials/convert_personal_namespace_to_group/ @emily.sahlani
 /doc/tutorials/create_register_first_runner/ @rsarangadharan
 /doc/tutorials/dependency_scanning.md @rdickenson @phillipwells
 /doc/tutorials/export_sbom.md @rdickenson @phillipwells
@@ -1006,7 +1008,7 @@ lib/gitlab/checks/**
 /doc/tutorials/issue_triage/ @msedlakjakubowski
 /doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/left_sidebar/ @sselhorn
-/doc/tutorials/move_personal_project_to_group/ @lciutacu
+/doc/tutorials/move_personal_project_to_group/ @emily.sahlani
 /doc/tutorials/observability/ @lciutacu
 /doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
@@ -1042,11 +1044,11 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
 /doc/user/get_started/get_started_monitoring.md @lciutacu
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
-/doc/user/get_started/get_started_projects.md @lciutacu
+/doc/user/get_started/get_started_projects.md @emily.sahlani
 /doc/user/gitlab_duo/ @sselhorn @jglassman1 @fneill
 /doc/user/gitlab_duo_chat/ @sselhorn @jglassman1 @fneill
 /doc/user/glql/ @msedlakjakubowski
-/doc/user/group/access_and_permissions.md @lciutacu
+/doc/user/group/access_and_permissions.md @emily.sahlani
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
 /doc/user/group/compliance_pipelines.md @eread
@@ -1056,41 +1058,41 @@ lib/gitlab/checks/**
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @ashrafkhamis
-/doc/user/group/index.md @lciutacu
+/doc/user/group/index.md @emily.sahlani
 /doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @msedlakjakubowski
-/doc/user/group/manage.md @lciutacu
+/doc/user/group/manage.md @emily.sahlani
 /doc/user/group/repositories_analytics/ @lyspin
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
 /doc/user/group/settings/ @jglassman1
 /doc/user/group/ssh_certificates.md @brendan777
-/doc/user/group/subgroups/ @lciutacu
-/doc/user/group/troubleshooting.md @lciutacu
+/doc/user/group/subgroups/ @emily.sahlani
+/doc/user/group/troubleshooting.md @emily.sahlani
 /doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @rsarangadharan
 /doc/user/markdown.md @msedlakjakubowski
-/doc/user/namespace/ @lciutacu
+/doc/user/namespace/ @emily.sahlani
 /doc/user/okrs.md @msedlakjakubowski
 /doc/user/operations_dashboard/ @phillipwells
-/doc/user/organization/ @lciutacu
+/doc/user/organization/ @emily.sahlani
 /doc/user/packages/ @phillipwells
 /doc/user/packages/container_registry/ @marcel.amirault
 /doc/user/packages/dependency_proxy/ @marcel.amirault
 /doc/user/packages/harbor_container_registry/ @marcel.amirault
 /doc/user/profile/account/ @jglassman1
-/doc/user/profile/achievements.md @lciutacu
+/doc/user/profile/achievements.md @emily.sahlani
 /doc/user/profile/comment_templates.md @aqualls
-/doc/user/profile/contributions_calendar.md @lciutacu
+/doc/user/profile/contributions_calendar.md @emily.sahlani
 /doc/user/profile/index.md @jglassman1
 /doc/user/profile/notifications.md @sselhorn
 /doc/user/profile/personal_access_tokens.md @jglassman1
 /doc/user/profile/service_accounts.md @jglassman1
 /doc/user/profile/user_passwords.md @jglassman1
 /doc/user/project/autocomplete_characters.md @brendan777
-/doc/user/project/badges.md @lciutacu
+/doc/user/project/badges.md @emily.sahlani
 /doc/user/project/changelogs.md @brendan777
 /doc/user/project/clusters/ @phillipwells
 /doc/user/project/code_intelligence.md @aqualls
@@ -1103,7 +1105,7 @@ lib/gitlab/checks/**
 /doc/user/project/import/ @ashrafkhamis
 /doc/user/project/import/jira.md @msedlakjakubowski
 /doc/user/project/import/jira_migration_options.md @msedlakjakubowski
-/doc/user/project/index.md @lciutacu
+/doc/user/project/index.md @emily.sahlani
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @ashrafkhamis
 /doc/user/project/integrations/bamboo.md @lyspin
@@ -1117,7 +1119,7 @@ lib/gitlab/checks/**
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @ashrafkhamis
 /doc/user/project/labels.md @msedlakjakubowski
-/doc/user/project/members/ @lciutacu
+/doc/user/project/members/ @emily.sahlani
 /doc/user/project/merge_requests/ @aqualls
 /doc/user/project/merge_requests/approvals/ @brendan777
 /doc/user/project/merge_requests/cherry_pick_changes.md @brendan777
@@ -1129,9 +1131,9 @@ lib/gitlab/checks/**
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/ml/experiment_tracking/ @sselhorn @jglassman1 @fneill
 /doc/user/project/ml/model_registry/ @sselhorn @jglassman1 @fneill
-/doc/user/project/organize_work_with_projects.md @lciutacu
+/doc/user/project/organize_work_with_projects.md @emily.sahlani
 /doc/user/project/pages/ @msedlakjakubowski
-/doc/user/project/project_topics.md @lciutacu
+/doc/user/project/project_topics.md @emily.sahlani
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/releases/ @phillipwells
@@ -1147,18 +1149,18 @@ lib/gitlab/checks/**
 /doc/user/project/service_desk/ @msedlakjakubowski
 /doc/user/project/settings/import_export.md @ashrafkhamis
 /doc/user/project/settings/import_export_troubleshooting.md @ashrafkhamis
-/doc/user/project/settings/index.md @lciutacu
-/doc/user/project/settings/migrate_projects.md @lciutacu
+/doc/user/project/settings/index.md @emily.sahlani
+/doc/user/project/settings/migrate_projects.md @emily.sahlani
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/system_notes.md @brendan777
 /doc/user/project/time_tracking.md @msedlakjakubowski
-/doc/user/project/troubleshooting.md @lciutacu
-/doc/user/project/use_project_as_go_package.md @lciutacu
+/doc/user/project/troubleshooting.md @emily.sahlani
+/doc/user/project/use_project_as_go_package.md @emily.sahlani
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/wiki/ @msedlakjakubowski
-/doc/user/project/working_with_projects.md @lciutacu
-/doc/user/public_access.md @lciutacu
-/doc/user/reserved_names.md @lciutacu
+/doc/user/project/working_with_projects.md @emily.sahlani
+/doc/user/public_access.md @emily.sahlani
+/doc/user/reserved_names.md @emily.sahlani
 /doc/user/rich_text_editor.md @msedlakjakubowski
 /doc/user/search/ @ashrafkhamis
 /doc/user/search/command_palette.md @sselhorn
@@ -1166,8 +1168,8 @@ lib/gitlab/checks/**
 /doc/user/snippets.md @brendan777
 /doc/user/ssh.md @jglassman1
 /doc/user/ssh_troubleshooting.md @jglassman1
-/doc/user/storage_management_automation.md @fneill
-/doc/user/storage_usage_quotas.md @fneill
+/doc/user/storage_management_automation.md @lciutacu
+/doc/user/storage_usage_quotas.md @lciutacu
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @sselhorn
 /doc/user/workspace/ @ashrafkhamis

@@ -26,30 +26,6 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
 
   before do
     stub_application_setting(spam_check_endpoint_url: endpoint)
-    stub_feature_flags(spamcheck_runway_migration: false)
-  end
-
-  describe '#initialize' do
-    context 'When the runway migration feature flag is enabled' do
-      before do
-        stub_feature_flags(spamcheck_runway_migration: true)
-        stub_env('SPAMCHECK_RUNWAY_URL', 'tls://spamcheck.runway')
-      end
-
-      it 'uses the runway url' do
-        client = described_class.new
-
-        expect(client.instance_variable_get(:@endpoint_url)).to eq('spamcheck.runway')
-      end
-    end
-
-    context 'When the runway migration feature flag is diabled' do
-      it 'uses the configured url' do
-        client = described_class.new
-
-        expect(client.instance_variable_get(:@endpoint_url)).to eq('grpc.test.url')
-      end
-    end
   end
 
   describe 'url scheme' do
