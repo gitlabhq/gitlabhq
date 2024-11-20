@@ -68,6 +68,16 @@
     "BoardEpic",
     "Epic"
   ],
+  "ExpressionInterface": [
+    "BooleanExpression",
+    "IntegerExpression",
+    "StringExpression"
+  ],
+  "ExpressionValue": [
+    "BooleanExpression",
+    "IntegerExpression",
+    "StringExpression"
+  ],
   "ExternalAuditEventDestinationInterface": [
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"

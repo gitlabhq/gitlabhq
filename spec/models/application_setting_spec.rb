@@ -203,6 +203,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
 
+    it { is_expected.to allow_value(http).for(:jira_connect_additional_audience_url) }
+    it { is_expected.to allow_value(https).for(:jira_connect_additional_audience_url) }
+
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings).for(:prometheus_alert_db_indicators_settings) }
@@ -411,6 +414,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it { is_expected.not_to allow_value('http://localhost:9000').for(:grafana_url) }
         it { is_expected.not_to allow_value('http://localhost:9000').for(:jira_connect_proxy_url) }
+        it { is_expected.not_to allow_value('http://localhost:9000').for(:jira_connect_additional_audience_url) }
       end
 
       context 'with invalid grafana URL' do

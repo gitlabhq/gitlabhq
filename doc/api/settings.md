@@ -142,6 +142,7 @@ Example response:
   "jira_connect_application_key": null,
   "jira_connect_public_key_storage_enabled": false,
   "jira_connect_proxy_url": null,
+  "jira_connect_additional_audience_url": null,
   "silent_mode_enabled": false,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,

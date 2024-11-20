@@ -171,6 +171,10 @@ module MergeRequests
       end
     end
 
+    def request_duo_code_review(merge_request)
+      # Overriden in EE
+    end
+
     def filter_params(merge_request)
       super
 

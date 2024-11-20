@@ -38,10 +38,8 @@ export const projectsWithScope = {
               id: 2,
               fullPath: 'root/332268-test',
               name: 'root/332268-test',
-              namespace: {
-                id: '1234',
-                fullPath: 'root',
-              },
+              webUrl: 'http://localhost/root/332268-test',
+              avatarUrl: 'http://localhost/avatar.png',
             },
           ],
         },
@@ -120,17 +118,6 @@ export const mockProjects = [
     webUrl: 'http://localhost/root/ci-project',
     isLocked: true,
     __typename: 'Project',
-  },
-];
-
-export const mockFields = [
-  {
-    key: 'fullPath',
-    label: '',
-  },
-  {
-    key: 'actions',
-    label: '',
   },
 ];
 
@@ -243,22 +230,8 @@ export const getAddNamespaceHandler = (error) =>
     data: { ciJobTokenScopeAddGroupOrProject: { errors: error ? [error] : [] } },
   });
 
-export const inboundRemoveGroupSuccess = {
-  data: {
-    ciJobTokenScopeRemoveProject: {
-      errors: [],
-      __typename: 'CiJobTokenScopeRemoveGroupPayload',
-    },
-  },
-};
-
-export const inboundRemoveProjectSuccess = {
-  data: {
-    ciJobTokenScopeRemoveProject: {
-      errors: [],
-      __typename: 'CiJobTokenScopeRemoveProjectPayload',
-    },
-  },
+export const inboundRemoveNamespaceSuccess = {
+  data: { removeNamespace: { errors: [] } },
 };
 
 export const inboundUpdateScopeSuccessResponse = {

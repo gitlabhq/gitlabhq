@@ -2,6 +2,8 @@
 key_path: counts.container_registry_events_i_container_registry_delete_manifest
 description: A count of manifests that have been deleted
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: active
 milestone: "15.10"

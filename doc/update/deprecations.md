@@ -489,6 +489,24 @@ Project Owners and Maintainers should review their private projects' lists of me
 
 </div>
 
+<div class="deprecation " data-milestone="18.0">
+
+### Increased default security for use of pipeline variables
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/502382).
+
+</div>
+
+GitLab believes in secure-by-default practices. To honor this, we are making some changes to support least privilege principles relating to the use of CI/CD variables. Today, users with the Developer role or higher are able to use [pipeline variables](https://docs.gitlab.com/ee/ci/variables/#use-pipeline-variables) by default, without any verification or opt-in. In 18.0, GitLab is updating the [pipeline variable restrictions](https://docs.gitlab.com/ee/ci/variables/#restrict-pipeline-variables) to default enabled. As a result of this change, your project's use of pipeline CI/CD variables will be stricter by default, increased to only users with the Owner role. If necessary, you can manually set this setting to a lower role if still needed for your workflows, though it's not recommended.
+
+You can already start using a more secure-by-default experience for pipeline variables by enabling the current setting with the Project settings API, to increase the allowed role to Maintainers and above. You can also raise the minimum role to the recommended [Owner only, or no one](https://docs.gitlab.com/ee/ci/variables/#set-a-minimum-role-for-pipeline-variables). Starting in 17.7, this will be the default for all new projects for self-managed instances, and the default for all new projects in new namespaces on GitLab.com. We also plan to make this easier to manage by adding an option to control this from the project settings UI.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="18.0">
 
 ### Limited `scan` actions in a scan execution policy

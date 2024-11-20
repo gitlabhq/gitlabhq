@@ -1922,7 +1922,6 @@ Layout/LineLength:
     - 'ee/spec/support/shared_examples/services/scoped_label_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/search_notes_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/vulnerabilities/calls_vulnerability_statistics_utility_services_in_order.rb'
-    - 'ee/spec/support/shared_examples/views/subscription_shared_examples.rb'
     - 'ee/spec/tasks/geo_rake_spec.rb'
     - 'ee/spec/validators/json_schema_validator_spec.rb'
     - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'

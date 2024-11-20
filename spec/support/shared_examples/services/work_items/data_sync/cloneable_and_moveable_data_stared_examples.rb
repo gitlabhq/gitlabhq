@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'fails to transfer work item' do |error_message|
+  it 'does not raise error' do
+    expect { service.execute }.not_to raise_error
+  end
+
+  it 'returns error response' do
+    response = service.execute
+
+    expect(response.success?).to be false
+    expect(response.error?).to be true
+    expect(response.message).to include(error_message)
+  end
+end
+
 RSpec.shared_examples 'cloneable and moveable work item' do
   it 'increases the target namespace work items count by 1' do
     expect do

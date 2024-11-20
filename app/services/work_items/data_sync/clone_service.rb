@@ -36,7 +36,7 @@ module WorkItems
         end
 
         unless work_item.can_clone?(current_user, target_namespace)
-          error_message = s_('CloneWorkItem|Cannot clone work item due to insufficient permissions!')
+          error_message = s_('CloneWorkItem|Cannot clone work item due to insufficient permissions.')
 
           return error(error_message, :unprocessable_entity)
         end

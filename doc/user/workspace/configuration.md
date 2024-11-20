@@ -82,7 +82,9 @@ You also have access to the terminal and can install any necessary dependencies.
 To use images from private container registries:
 
 1. Create an [image pull secret in Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
-1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md#image_pull_secrets).
+1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md).
+
+For more information, see [`image_pull_secrets`](gitlab_agent_configuration.md#image_pull_secrets).
 
 ## Configure sudo access for a workspace
 

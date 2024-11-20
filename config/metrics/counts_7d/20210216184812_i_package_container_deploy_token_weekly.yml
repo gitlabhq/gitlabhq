@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_weekly
 description: A weekly count of distinct deploy tokens used for container repository interactions with the container registry
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: removed
 time_frame: 7d

@@ -437,6 +437,14 @@ jest vue3 check quarantined:
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:check-quarantined-without-fixtures"; fi
   parallel: 1
+  artifacts:
+    name: quarantined_tests_output
+    expire_in: 31d
+    when: always
+    paths:
+      - jest_stdout
+      - jest_stderr
+      - junit_jest.xml
 
 jest-with-fixtures vue3 check quarantined:
   extends:
@@ -448,6 +456,14 @@ jest-with-fixtures vue3 check quarantined:
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:check-quarantined-with-fixtures"; fi
   parallel: 1
+  artifacts:
+    name: quarantined_tests_output
+    expire_in: 31d
+    when: always
+    paths:
+      - jest_stdout
+      - jest_stderr
+      - junit_jest.xml
 
 jest-integration:
   extends:

@@ -133,9 +133,7 @@ ee/spec/frontend/usage_quotas/code_suggestions/components/add_on_eligible_user_l
 ee/spec/frontend/usage_quotas/code_suggestions/components/health_check_list_spec.js
 ee/spec/frontend/usage_quotas/pipelines/components/app_spec.js
 ee/spec/frontend/usage_quotas/seats/components/subscription_user_list_spec.js
-ee/spec/frontend/users/identity_verification/components/credit_card_verification_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
-ee/spec/frontend/users/identity_verification/components/phone_verification_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
 ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
 ee/spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
@@ -285,7 +283,6 @@ spec/frontend/notes/components/discussion_notes_spec.js
 spec/frontend/notes/components/note_preview_spec.js
 spec/frontend/notes/components/notes_app_spec.js
 spec/frontend/notes/components/timeline_toggle_spec.js
-spec/frontend/notes/components/toggle_replies_widget_spec.js
 spec/frontend/organizations/groups_and_projects/components/app_spec.js
 spec/frontend/organizations/shared/components/new_edit_form_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
@@ -327,7 +324,6 @@ spec/frontend/projects/settings_service_desk/components/custom_email_form_spec.j
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_setting_spec.js
 spec/frontend/projects/your_work/components/app_spec.js
-spec/frontend/ref/components/ambiguous_ref_modal_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
@@ -378,7 +374,6 @@ spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_spec.js
 spec/frontend/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog_spec.js
 spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
-spec/frontend/vue_merge_request_widget/components/widget/widget_spec.js
 spec/frontend/vue_popovers_spec.js
 spec/frontend/vue_shared/components/alert_details_table_spec.js
 spec/frontend/vue_shared/components/color_picker/color_picker_spec.js
@@ -400,7 +395,6 @@ spec/frontend/vue_shared/components/markdown_drawer/markdown_drawer_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/page_heading_spec.js
 spec/frontend/vue_shared/components/project_selector/project_selector_spec.js
-spec/frontend/vue_shared/components/runner_instructions/instructions/runner_aws_instructions_spec.js
 spec/frontend/vue_shared/components/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/vue_shared/components/smart_virtual_list_spec.js
 spec/frontend/vue_shared/components/source_viewer/components/chunk_spec.js

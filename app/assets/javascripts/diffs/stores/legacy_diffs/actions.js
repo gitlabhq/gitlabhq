@@ -20,7 +20,12 @@ import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { isCollapsed } from '~/diffs/utils/diff_file';
+import {
+  countLinesInBetween,
+  findClosestMatchLine,
+  isCollapsed,
+  lineExists,
+} from '~/diffs/utils/diff_file';
 import { useNotes } from '~/notes/store/legacy_notes';
 import {
   INLINE_DIFF_VIEW_TYPE,
@@ -1074,13 +1079,15 @@ export function addDraftToFile({ filePath, draft }) {
 
 export function fetchLinkedFile(linkedFileUrl) {
   const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
+  const [, fragmentFileHash, oldNumber, newNumber] =
+    window.location.hash.substring(1).match(/^([0-9a-f]{40})_([0-9]+)_([0-9]+)$/) || [];
 
   this[types.SET_BATCH_LOADING_STATE]('loading');
   this[types.SET_RETRIEVING_BATCHES](true);
 
   return axios
     .get(linkedFileUrl)
-    .then(({ data: diffData }) => {
+    .then(async ({ data: diffData }) => {
       const [{ file_hash }] = diffData.diff_files;
 
       // we must store linked file in the `diffs`, otherwise collapsing and commenting on a file won't work
@@ -1091,6 +1098,14 @@ export function fetchLinkedFile(linkedFileUrl) {
 
       if (!isNoteLink && !this.currentDiffFileId) {
         this[types.SET_CURRENT_DIFF_FILE](file_hash);
+      }
+
+      if (fragmentFileHash && oldNumber && newNumber) {
+        await this.fetchLinkedExpandedLine({
+          fileHash: fragmentFileHash,
+          oldLine: parseInt(oldNumber, 10),
+          newLine: parseInt(newNumber, 10),
+        });
       }
 
       this[types.SET_BATCH_LOADING_STATE]('loaded');
@@ -1108,6 +1123,84 @@ export function fetchLinkedFile(linkedFileUrl) {
     .finally(() => {
       this[types.SET_RETRIEVING_BATCHES](false);
     });
+}
+
+export function fetchLinkedExpandedLine({ fileHash, oldLine, newLine }) {
+  const file = this.linkedFile;
+  if (!file || file.file_hash !== fileHash) return Promise.resolve();
+
+  const lines = file[INLINE_DIFF_LINES_KEY];
+  if (lineExists(lines, oldLine, newLine)) return Promise.resolve();
+
+  const matchLine = findClosestMatchLine(lines, newLine);
+  const { new_pos: matchNewPosition, old_pos: matchOldPosition } = matchLine.meta_data;
+  const matchLineIndex = lines.indexOf(matchLine);
+  const linesInBetween = countLinesInBetween(lines, matchLineIndex);
+  const isExpandBoth = linesInBetween !== -1 && linesInBetween < 20;
+  const previousLine = lines[matchLineIndex - 1];
+  const previousLineNumber = previousLine?.new_line;
+  const isLastMatchLine = matchLineIndex === lines.length - 1;
+  const isExpandDown =
+    isLastMatchLine ||
+    (previousLine && !isExpandBoth && newLine - previousLineNumber < matchNewPosition - newLine);
+  const loadLines = (params, rest) => {
+    return this.loadMoreLines({
+      endpoint: file.context_lines_path,
+      fileHash: file.file_hash,
+      params: {
+        offset: matchNewPosition - matchOldPosition,
+        ...params,
+      },
+      isExpandDown: false,
+      lineNumbers: {
+        oldLineNumber: matchOldPosition,
+        newLineNumber: matchNewPosition,
+      },
+      ...rest,
+    });
+  };
+
+  if (isExpandBoth) {
+    return loadLines({
+      unfold: false,
+      since: previousLine.new_line + 1,
+      to: matchNewPosition - 1,
+      bottom: false,
+    });
+  }
+
+  if (!isExpandDown) {
+    return loadLines({
+      unfold: true,
+      since: newLine,
+      to: matchNewPosition - 1,
+      bottom: isLastMatchLine,
+    });
+  }
+
+  const rest = {};
+  if (!isLastMatchLine) {
+    Object.assign(rest, {
+      isExpandDown: true,
+      lineNumbers: {
+        oldLineNumber: previousLine.old_line,
+        newLineNumber: previousLine.new_line,
+      },
+      nextLineNumbers: {
+        old_line: matchOldPosition,
+        new_line: matchNewPosition,
+      },
+    });
+  }
+  return loadLines(
+    {
+      unfold: true,
+      since: previousLine.new_line + 1,
+      to: newLine,
+      bottom: true,
+    },
+    rest,
+  );
 }
 
 export function unlinkFile() {

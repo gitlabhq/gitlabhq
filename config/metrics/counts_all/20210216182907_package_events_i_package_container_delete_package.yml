@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.package_events_i_package_container_delete_package
 description: A count of container images that have been deleted
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: removed
 milestone_removed: "14.4"

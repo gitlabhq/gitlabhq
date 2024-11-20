@@ -8,6 +8,7 @@ import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
+import { countLinesInBetween } from '~/diffs/utils/diff_file';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
@@ -165,17 +166,7 @@ export default {
       }
     },
     getCountBetweenIndex(index) {
-      if (index === 0) {
-        return -1;
-      }
-      if (!this.diffLines[index + 1]) {
-        return -1;
-      }
-
-      return (
-        Number(this.diffLines[index + 1].left.new_line) -
-        Number(this.diffLines[index - 1].left.new_line)
-      );
+      return countLinesInBetween(this.diffLines, index);
     },
     getCodeQualityLine(line) {
       return (

@@ -149,7 +149,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiSelfHostedModels`
 
-List of self-hosted LLM servers.
+Returns the self-hosted model if an ID is provided, otherwise returns all models.
 
 DETAILS:
 **Introduced** in GitLab 17.1.
@@ -160,6 +160,12 @@ Returns [`AiSelfHostedModelConnection`](#aiselfhostedmodelconnection).
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaiselfhostedmodelsid"></a>`id` | [`AiSelfHostedModelID`](#aiselfhostedmodelid) | Global ID of a self-hosted model. |
 
 ### `Query.aiSlashCommands`
 
@@ -377,6 +383,12 @@ DETAILS:
 **Status**: Experiment.
 
 Returns [`CloudConnectorStatus`](#cloudconnectorstatus).
+
+### `Query.complianceRequirementControls`
+
+Get the list of all the compliance requirement controls.
+
+Returns [`ComplianceRequirementControl`](#compliancerequirementcontrol).
 
 ### `Query.containerRepository`
 
@@ -19623,6 +19635,18 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="boardlistissuesfilters"></a>`filters` | [`BoardIssueInput`](#boardissueinput) | Filters applied when selecting issues in the board list. |
 
+### `BooleanExpression`
+
+an expression with a boolean value.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="booleanexpressionfield"></a>`field` | [`String!`](#string) | Field the expression applies to. |
+| <a id="booleanexpressionoperator"></a>`operator` | [`String!`](#string) | Operator of the expression. |
+| <a id="booleanexpressionvalue"></a>`value` | [`Boolean!`](#boolean) | Boolean value of the expression. |
+
 ### `Branch`
 
 #### Fields
@@ -20950,6 +20974,16 @@ Represents a ComplianceRequirement associated with a ComplianceFramework.
 | <a id="compliancerequirementname"></a>`name` | [`String!`](#string) | Name of the compliance requirement. |
 | <a id="compliancerequirementrequirementtype"></a>`requirementType` | [`String!`](#string) | Type of the compliance requirement. |
 
+### `ComplianceRequirementControl`
+
+Lists down all the possible types of requirement controls.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementcontrolcontrolexpressions"></a>`controlExpressions` | [`[ControlExpression!]!`](#controlexpression) | List of requirement controls. |
+
 ### `ComplianceStandardsAdherence`
 
 Compliance standards adherence for a project.
@@ -21279,6 +21313,18 @@ Represents the contributions of a user.
 | <a id="contributionanalyticscontributionrepopushed"></a>`repoPushed` | [`Int`](#int) | Number of repository pushes the user made. |
 | <a id="contributionanalyticscontributiontotalevents"></a>`totalEvents` | [`Int`](#int) | Total number of events contributed by the user. |
 | <a id="contributionanalyticscontributionuser"></a>`user` | [`UserCore`](#usercore) | Contributor User object. |
+
+### `ControlExpression`
+
+Represents a control expression.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="controlexpressionexpression"></a>`expression` | [`ExpressionValue!`](#expressionvalue) | Expression details for the control. |
+| <a id="controlexpressionid"></a>`id` | [`ID!`](#id) | ID for the control. |
+| <a id="controlexpressionname"></a>`name` | [`String!`](#string) | Name of the control. |
 
 ### `CoverageFuzzingCorpus`
 
@@ -26345,6 +26391,18 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+
+### `IntegerExpression`
+
+An expression with an integer value.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="integerexpressionfield"></a>`field` | [`String!`](#string) | Field the expression applies to. |
+| <a id="integerexpressionoperator"></a>`operator` | [`String!`](#string) | Operator of the expression. |
+| <a id="integerexpressionvalue"></a>`value` | [`Int!`](#int) | Integer value of the expression. |
 
 ### `IntegrationExclusion`
 
@@ -34570,6 +34628,18 @@ Progress of standards adherence checks.
 | <a id="statusactionpath"></a>`path` | [`String`](#string) | Path for the action. |
 | <a id="statusactiontitle"></a>`title` | [`String`](#string) | Title for the action, for example: Retry. |
 
+### `StringExpression`
+
+an expression with a string value.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="stringexpressionfield"></a>`field` | [`String!`](#string) | Field the expression applies to. |
+| <a id="stringexpressionoperator"></a>`operator` | [`String!`](#string) | Operator of the expression. |
+| <a id="stringexpressionvalue"></a>`value` | [`String!`](#string) | String value of the expression. |
+
 ### `Submodule`
 
 #### Fields
@@ -41938,6 +42008,16 @@ One of:
 
 - [`NugetDependencyLinkMetadata`](#nugetdependencylinkmetadata)
 
+#### `ExpressionValue`
+
+Represents possible value types for an expression.
+
+One of:
+
+- [`BooleanExpression`](#booleanexpression)
+- [`IntegerExpression`](#integerexpression)
+- [`StringExpression`](#stringexpression)
+
 #### `GoogleCloudArtifactRegistryArtifact`
 
 A base type of Google Artifact Registry artifacts.
@@ -42300,6 +42380,23 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="eventableevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
+
+#### `ExpressionInterface`
+
+Defines the common fields for all expressions.
+
+Implementations:
+
+- [`BooleanExpression`](#booleanexpression)
+- [`IntegerExpression`](#integerexpression)
+- [`StringExpression`](#stringexpression)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="expressioninterfacefield"></a>`field` | [`String!`](#string) | Field the expression applies to. |
+| <a id="expressioninterfaceoperator"></a>`operator` | [`String!`](#string) | Operator of the expression. |
 
 #### `ExternalAuditEventDestinationInterface`
 

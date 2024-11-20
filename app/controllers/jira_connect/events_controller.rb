@@ -59,9 +59,19 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
 
   def jwt_verification_claims
     {
-      aud: Gitlab.config.jira_connect.enforce_jira_base_url_https ? jira_connect_base_url(protocol: 'https') : jira_connect_base_url,
+      aud: calculate_audiences,
       iss: transformed_params[:client_key],
       qsh: Atlassian::Jwt.create_query_string_hash(request.url, request.method, jira_connect_base_url)
     }
+  end
+
+  def calculate_audiences
+    audiences = [Gitlab.config.jira_connect.enforce_jira_base_url_https ? jira_connect_base_url(protocol: 'https') : jira_connect_base_url]
+
+    if (additional_url = Gitlab::CurrentSettings.jira_connect_additional_audience_url).present?
+      audiences << Gitlab::Utils.append_path(additional_url, "-/jira_connect")
+    end
+
+    audiences
   end
 end

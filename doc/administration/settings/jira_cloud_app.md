@@ -417,3 +417,22 @@ You must use the reverse proxy FQDN only to connect Jira Cloud to GitLab.
 You must continue to access GitLab from the internal GitLab FQDN.
 If you access GitLab from the reverse proxy FQDN, GitLab might not work as expected.
 For more information, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319).
+
+### Set an additional JWT audience
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498587) in GitLab 17.7.
+
+When GitLab receives a JWT token from Jira,
+GitLab verifies the token by checking the JWT audience.
+By default, the audience is derived from your internal GitLab FQDN.
+
+In some reverse proxy configurations, you might have to set
+the reverse proxy FQDN as an additional JWT audience.
+To set an additional JWT audience:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **GitLab for Jira App**.
+1. In **Jira Connect Additional Audience URL**, enter the additional audience
+   (for example, `https://gitlab.mycompany.com`).
+1. Select **Save changes**.

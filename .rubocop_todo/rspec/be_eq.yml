@@ -148,7 +148,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/gitlab/elastic/client_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/document_reference_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/elasticsearch_enabled_cache_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/search_results_spec.rb'
     - 'ee/spec/lib/gitlab/exclusive_lease_spec.rb'
     - 'ee/spec/lib/gitlab/geo/event_gap_tracking_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/login_state_spec.rb'

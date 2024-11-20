@@ -1,5 +1,5 @@
 const { spawnSync } = require('node:child_process');
-const { readFile } = require('node:fs/promises');
+const { readFile, open } = require('node:fs/promises');
 const parser = require('fast-xml-parser');
 const defaultChalk = require('chalk');
 const { getLocalQuarantinedFiles } = require('./jest_vue3_quarantine_utils');
@@ -53,28 +53,6 @@ async function parseJUnitReport() {
   };
 }
 
-/**
- * Wraps the output of `callback` in a collapsible section (for GitLab CI).
- *
- * Assumes `callback` is synchronous.
- *
- * See https://docs.gitlab.com/ee/ci/jobs/job_logs.html#custom-collapsible-sections
- */
-function section(header, callback, { showCollapsed = true } = {}) {
-  const ANSI_CLEAR_LINE = '\x1b[0K';
-  const timestamp = () => Math.floor(Date.now() / 1000);
-  const collapsed = showCollapsed ? '[collapsed=true]' : '';
-  const name = header.toLowerCase().replace(/\W+/g, '_');
-
-  console.log(
-    `${ANSI_CLEAR_LINE}section_start:${timestamp()}:${name}${collapsed}\r${ANSI_CLEAR_LINE}${chalk.cyan.bold(header)}`,
-  );
-
-  callback();
-
-  console.log(`${ANSI_CLEAR_LINE}section_end:${timestamp()}:${name}\r${ANSI_CLEAR_LINE}`);
-}
-
 function reportPassingSpecsShouldBeUnquarantined(passed) {
   const docsLink =
     // eslint-disable-next-line no-restricted-syntax
@@ -108,6 +86,10 @@ async function changedFiles() {
 
 async function main() {
   const filesThatChanged = await changedFiles();
+  const jestStdout = (await open('jest_stdout', 'w')).createWriteStream();
+  const jestStderr = (await open('jest_stderr', 'w')).createWriteStream();
+
+  console.log('Running quarantined specs...');
 
   // Note: we don't care what Jest's exit code is.
   //
@@ -120,30 +102,28 @@ async function main() {
   // If it's non-zero, then either:
   //   - one or more specs failed (which is expected!), or
   //   - there was some unknown error. We shouldn't block MRs in this case.
-  section('Jest output (only useful for debugging the CI job itself, not the tests)', () =>
-    spawnSync(
-      'node_modules/.bin/jest',
-      [
-        '--config',
-        'jest.config.js',
-        '--ci',
-        '--findRelatedTests',
-        ...filesThatChanged,
-        '--passWithNoTests',
-        // Explicitly have one shard, so that the `shard` method of the sequencer is called.
-        '--shard=1/1',
-        '--testSequencer',
-        './scripts/frontend/check_jest_vue3_quarantine_sequencer.js',
-        '--logHeapUsage',
-      ],
-      {
-        stdio: 'inherit',
-        env: {
-          ...process.env,
-          VUE_VERSION: '3',
-        },
+  spawnSync(
+    'node_modules/.bin/jest',
+    [
+      '--config',
+      'jest.config.js',
+      '--ci',
+      '--findRelatedTests',
+      ...filesThatChanged,
+      '--passWithNoTests',
+      // Explicitly have one shard, so that the `shard` method of the sequencer is called.
+      '--shard=1/1',
+      '--testSequencer',
+      './scripts/frontend/check_jest_vue3_quarantine_sequencer.js',
+      '--logHeapUsage',
+    ],
+    {
+      stdio: ['inherit', jestStdout, jestStderr],
+      env: {
+        ...process.env,
+        VUE_VERSION: '3',
       },
-    ),
+    },
   );
 
   const { passed, total } = await parseJUnitReport();

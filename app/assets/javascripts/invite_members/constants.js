@@ -41,7 +41,9 @@ export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
   "InviteMembersModal|Congratulations on creating your project, you're almost there!",
 );
 export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username, name or email address');
-export const MEMBERS_PLACEHOLDER = s__('InviteMembersModal|Select members or type email addresses');
+export const MEMBERS_PLACEHOLDER = s__(
+  'InviteMembersModal|Select from existing GitLab usernames or enter email addresses',
+);
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');
 export const GROUP_MODAL_TO_GROUP_DEFAULT_INTRO_TEXT = s__(
@@ -78,7 +80,7 @@ export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date
 export const TOAST_MESSAGE_SUCCESSFUL = s__('InviteMembersModal|Members were successfully added');
 export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Something went wrong');
 export const READ_MORE_TEXT = s__(
-  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions`,
+  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later.`,
 );
 export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
   `InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration`,

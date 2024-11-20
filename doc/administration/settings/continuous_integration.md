@@ -313,6 +313,7 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 ## Set CI/CD limits
 
 > - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
+> - **Maximum number of instance-level CI/CD variables** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456845) in GitLab 17.1.
 > - **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
@@ -331,6 +332,7 @@ from the **Admin** area:
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
+   - **Maximum number of instance-level CI/CD variables**
 <!-- vale gitlab_base.CurrentStatus = YES -->
 
 ## Job token permissions

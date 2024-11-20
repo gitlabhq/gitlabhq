@@ -24,7 +24,6 @@ RSpec/InstanceVariable:
     - 'ee/spec/services/geo/metrics_update_service_spec.rb'
     - 'ee/spec/services/groups/participants_service_spec.rb'
     - 'ee/spec/services/projects/create_from_template_service_spec.rb'
-    - 'ee/spec/support/shared_examples/views/subscription_shared_examples.rb'
     - 'ee/spec/views/projects/security/corpus_management/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/dast_profiles/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/dast_scanner_profiles/new.html.haml_spec.rb'
