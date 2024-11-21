@@ -80,5 +80,33 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
         it { is_expected.to have_attributes(reason: :invalid_parameter) }
       end
     end
+
+    context 'with an exisiting package' do
+      let!(:package) { create(:maven_package, project: project, name: path, version: version) }
+
+      let(:params) do
+        {
+          path: path_with_version,
+          name: path,
+          version: version
+        }
+      end
+
+      it_behaves_like 'returning an error service response',
+        message: 'Validation failed: Name has already been taken' do
+        it { is_expected.to have_attributes(reason: :name_taken) }
+      end
+
+      context 'when use_exclusive_lease_in_mvn_find_or_create_package FF is disabled' do
+        before do
+          stub_feature_flags(use_exclusive_lease_in_mvn_find_or_create_package: false)
+        end
+
+        it_behaves_like 'returning an error service response',
+          message: 'Validation failed: Name has already been taken' do
+          it { is_expected.to have_attributes(reason: :invalid_parameter) }
+        end
+      end
+    end
   end
 end

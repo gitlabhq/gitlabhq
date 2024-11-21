@@ -1,19 +1,6 @@
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
-export const usageQuotasHelpPaths = {
-  repositorySizeLimit: helpPagePath('administration/settings/account_and_limit_settings', {
-    anchor: 'repository-size-limit',
-  }),
-  usageQuotas: helpPagePath('user/storage_usage_quotas'),
-  usageQuotasProjectStorageLimit: helpPagePath('user/storage_usage_quotas', {
-    anchor: 'view-storage',
-  }),
-  usageQuotasNamespaceStorageLimit: helpPagePath('user/storage_usage_quotas', {
-    anchor: 'view-storage',
-  }),
-};
-
 export const PROJECT_STORAGE_TYPES = [
   {
     id: 'buildArtifacts',

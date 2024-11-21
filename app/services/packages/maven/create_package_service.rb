@@ -18,7 +18,14 @@ module Packages
 
         ServiceResponse.success(payload: { package: package })
       rescue ActiveRecord::RecordInvalid => e
-        ServiceResponse.error(message: e.message, reason: :invalid_parameter)
+        reason = if e.record&.errors&.of_kind?(:name, :taken) && ::Feature.enabled?(
+          :use_exclusive_lease_in_mvn_find_or_create_package, project)
+                   :name_taken
+                 else
+                   :invalid_parameter
+                 end
+
+        ServiceResponse.error(message: e.message, reason: reason)
       end
     end
   end

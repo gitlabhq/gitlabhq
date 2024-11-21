@@ -22,7 +22,6 @@ export default {
                 ...d,
                 definitionLineNumber: parseInt(d.definition_path?.split('#L').pop() || 0, 10),
               };
-              addInteractionClass({ path, d, wrapTextNodes: state.wrapTextNodes });
             }
             return acc;
           }, {});
@@ -65,12 +64,11 @@ export default {
     if (!data) return;
 
     if (el.closest('.js-code-navigation') && !isCurrentElementPopoverOpen) {
-      const fileTitle = document.querySelector('.js-file-title');
       const { lineIndex, charIndex } = el.dataset;
 
       position = {
         x: el.offsetLeft || 0,
-        y: el.offsetTop + (fileTitle?.offsetHeight || 0) || 0,
+        y: el.offsetTop + (el.closest('pre.code')?.offsetTop || 0) || 0,
         height: el.offsetHeight,
         lineIndex: parseInt(lineIndex, 10),
       };

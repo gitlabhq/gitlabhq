@@ -48,7 +48,7 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
 - [ ] Ensure `~severity::x` label is on this issue, all associated issues, and merge requests
 - [ ] Ensure the [Links section](#links) is completed.
-- [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#versions-affected) and editions affected to the [details section](#details)
+- [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#versions-affected), editions affected, and date introduced to the [details section](#details)
   - The Git history of the files affected may help you associate the issue with a [release](https://about.gitlab.com/releases/)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
@@ -65,15 +65,17 @@ After your merge request has been approved according to our [approval guidelines
 
 ### Details
 
-| Description                         | Details | Further details                                          |
-|-------------------------------------|---------|----------------------------------------------------------|
-| Versions affected                   | X.Y     |                                                          |
-| GitLab EE only                      | Yes/No  |                                                          |
-| Upgrade notes                       |         |                                                          |
-| GitLab Settings updated             | Yes/No  |                                                          |
-| Migration required                  | Yes/No  |                                                          |
-| Breaking change to UI or public API | Yes/No  | <!-- How should the breaking change be communicated? --> |
-| Thanks                              |         |                                                          |
+| Description                         | Details    | Further details                                           |
+|-------------------------------------|------------|-----------------------------------------------------------|
+| Version affected                    | X.Y        |                                                           |
+| Date introduced on .com             | YYYY-MM-DD | #TODO for Engineering - please follow the format          |
+| Date detected                       | YYYY-MM-DD | #TODO for AppSec - please follow the format               |
+| GitLab EE only                      | Yes/No     |                                                           |
+| Upgrade notes                       |            |                                                           |
+| GitLab Settings updated             | Yes/No     |                                                           |
+| Migration required                  | Yes/No     |                                                           |
+| Breaking change to UI or public API | Yes/No     | <!-- How should the breaking change be communicated? -->  |
+| Thanks                              |            |                                                           |
 
 [security process for engineers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md
 [secpick documentation]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/secpick_script.md

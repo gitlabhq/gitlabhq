@@ -401,22 +401,43 @@ Dangerfile
 /spec/frontend/mr_notes/stores/
 /spec/frontend/diffs/store/
 
-^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
+^[Analytics Dashboards backend] @gitlab-org/analytics-section/platform-insights/engineers/backend @gitlab-org/plan-stage/optimize-group/engineers/backend
+/ee/app/controllers/projects/settings/analytics_controller.rb
+/ee/app/controllers/projects/analytics/dashboards_controller.rb
+/ee/app/helpers/analytics/analytics_dashboards_helper.rb
+/ee/app/helpers/analytics/analytics_settings_helper.rb
+/ee/app/helpers/projects/analytics_dashboard_helper.rb
+/ee/app/models/product_analytics/
+
+^[Analytics Dashboards frontend] @gitlab-org/analytics-section/platform-insights/engineers/frontend @gitlab-org/plan-stage/optimize-group/engineers/frontend
 /app/assets/javascripts/vue_shared/components/customizable_dashboard/
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_data_explorer.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/dashboards_list.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/data_explorer/selectors/product_analytics/
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/column_chart.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/single_stat.vue
-/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/
-/ee/app/assets/javascripts/analytics/analytics_dashboards/index.js
-/ee/app/assets/javascripts/analytics/analytics_dashboards/router.js
-/ee/app/assets/javascripts/analytics/analytics_dashboards/constants.js
-/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_customizable_dashboards.query.graphql
+/ee/app/assets/javascripts/analytics/analytics_dashboards/
+
+^[Product Analytics backend] @gitlab-org/analytics-section/platform-insights/engineers/backend
+/ee/lib/analytics/product_analytics/
+/ee/lib/product_analytics/
+/ee/lib/api/analytics/product_analytics.rb
+/ee/app/services/product_analytics/
+
+^[Product Analytics frontend] @gitlab-org/analytics-section/platform-insights/engineers/frontend
 /ee/app/assets/javascripts/product_analytics/
+
+^[Observability backend] @gitlab-org/analytics-section/platform-insights/engineers/backend
+/ee/app/helpers/observability/
+/ee/app/helpers/projects/observability_helper.rb
+/lib/gitlab/observability.rb
+/ee/lib/ee/gitlab/observability.rb
+/ee/lib/api/internal/observability.rb
+/ee/app/controllers/projects/tracing_controller.rb
+/ee/app/controllers/projects/metrics_controller.rb
+/ee/app/controllers/projects/logs_controller.rb
+/ee/app/services/observability/
+
+^[Observability frontend] @gitlab-org/analytics-section/platform-insights/engineers/frontend
+/app/assets/javascripts/observability/
+/ee/app/assets/javascripts/logs/
+/ee/app/assets/javascripts/metrics/
+/ee/app/assets/javascripts/tracing/
 
 ^[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /ee/lib/gitlab/usage_data_counters/
@@ -626,7 +647,7 @@ lib/gitlab/checks/**
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/restart_gitlab.md @axil
-/doc/administration/self_hosted_models/ @sselhorn @jglassman1 @fneill
+/doc/administration/self_hosted_models/ @jglassman1
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
@@ -687,7 +708,7 @@ lib/gitlab/checks/**
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @ashrafkhamis
-/doc/api/chat.md @sselhorn @jglassman1 @fneill
+/doc/api/chat.md @fneill
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @brendan777
@@ -780,7 +801,6 @@ lib/gitlab/checks/**
 /doc/api/merge_trains.md @lyspin
 /doc/api/metadata.md @phillipwells
 /doc/api/milestones.md @msedlakjakubowski
-/doc/api/model_registry.md @sselhorn @jglassman1 @fneill
 /doc/api/namespaces.md @jglassman1
 /doc/api/notes.md @msedlakjakubowski
 /doc/api/notification_settings.md @sselhorn
@@ -930,37 +950,37 @@ lib/gitlab/checks/**
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
 /doc/development/database/ @abdwdd @alexpooley @manojmj
-/doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/distributed_tracing.md @gitlab-org/analytics-section/platform-insights/engineers
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @fneill
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
-/doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/platform-insights/engineers/frontend @gitlab-org/plan-stage/optimize-group/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
-/doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
-/doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/internal_analytics/ @gitlab-org/analytics-section/platform-insights/engineers @gitlab-org/analytics-section/analytics-instrumentation/engineers
+/doc/development/logging.md @gitlab-org/analytics-section/platform-insights/engineers
 /doc/development/navigation_sidebar.md @gitlab-org/foundations/engineering
-/doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/observability/ @gitlab-org/analytics-section/platform-insights/engineers
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
 /doc/development/permissions.md @rlehmann1
 /doc/development/permissions/ @rlehmann1
 /doc/development/pipelines/ @gl-quality/eng-prod
 /doc/development/policies.md @gitlab-org/govern/authentication/approvers
-/doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/prometheus_metrics.md @gitlab-org/analytics-section/platform-insights/engineers
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/govern/threat-insights-frontend-team
 /doc/development/sec/gemnasium_analyzer_data.md @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
 /doc/development/software_design.md @gl-quality/eng-prod
-/doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/stage_group_observability/ @gitlab-org/analytics-section/platform-insights/engineers
 /doc/downgrade_ee_to_ce/ @axil
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @aqualls
 /doc/install/ @axil
-/doc/install/install_ai_gateway.md @sselhorn @jglassman1 @fneill
+/doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @jglassman1
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/datadog.md @rsarangadharan
@@ -1041,7 +1061,7 @@ lib/gitlab/checks/**
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/discussions/ @aqualls
-/doc/user/duo_workflow/ @sselhorn @jglassman1 @fneill
+/doc/user/duo_workflow/ @sselhorn
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/get_started/get_started_managing_code.md @brendan777
@@ -1049,8 +1069,8 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_monitoring.md @lciutacu
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @emily.sahlani
-/doc/user/gitlab_duo/ @sselhorn @jglassman1 @fneill
-/doc/user/gitlab_duo_chat/ @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo/ @sselhorn
+/doc/user/gitlab_duo_chat/ @fneill
 /doc/user/glql/ @msedlakjakubowski
 /doc/user/group/access_and_permissions.md @emily.sahlani
 /doc/user/group/clusters/ @phillipwells
@@ -1132,8 +1152,6 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/squash_and_merge.md @brendan777
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
-/doc/user/project/ml/experiment_tracking/ @sselhorn @jglassman1 @fneill
-/doc/user/project/ml/model_registry/ @sselhorn @jglassman1 @fneill
 /doc/user/project/organize_work_with_projects.md @emily.sahlani
 /doc/user/project/pages/ @msedlakjakubowski
 /doc/user/project/project_topics.md @emily.sahlani

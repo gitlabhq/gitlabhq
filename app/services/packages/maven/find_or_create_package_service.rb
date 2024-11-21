@@ -3,22 +3,18 @@
 module Packages
   module Maven
     class FindOrCreatePackageService < BaseService
-      include ::Gitlab::ExclusiveLeaseHelpers
-
       SNAPSHOT_TERM = '-SNAPSHOT'
       MAX_FILE_NAME_LENGTH = 5000
+      DuplicatePackageError = Class.new(StandardError)
 
       def execute
         return ServiceResponse.error(message: 'File name is too long') if file_name_too_long?
 
-        return find_or_create_package if ::Feature.disabled?(:use_exclusive_lease_in_mvn_find_or_create_package,
-          project)
-
-        # A temp exclusive lease to prevent race conditions. We will switch to use database `upsert`
-        # when we have a unique index: https://gitlab.com/gitlab-org/gitlab/-/issues/424238#note_2187274213
-        in_lock(lease_key, retries: 0) { find_or_create_package }
-      rescue FailedToObtainLockError => e
-        ServiceResponse.error(message: e.message, reason: :failed_to_obtain_lease)
+        begin
+          find_or_create_package
+        rescue DuplicatePackageError
+          retry # in case of a race condition, retry the block. 2nd attempt should succeed
+        end
       end
 
       private
@@ -67,7 +63,11 @@ module Packages
             ::Packages::Maven::CreatePackageService.new(project, current_user, package_params)
                                                    .execute
 
-          return service_response if service_response.error?
+          if service_response.error?
+            raise DuplicatePackageError if service_response.cause.name_taken?
+
+            return service_response
+          end
 
           package = service_response[:package]
         end

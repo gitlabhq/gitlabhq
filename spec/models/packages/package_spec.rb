@@ -343,6 +343,33 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
+    describe '#prevent_concurrent_inserts' do
+      let(:maven_package) { build(:maven_package, project_id: 5) }
+      let(:lock_key) do
+        maven_package.connection.quote("#{described_class.table_name}-#{maven_package.project_id}-#{maven_package.name}-#{maven_package.version}")
+      end
+
+      subject { maven_package.send(:prevent_concurrent_inserts) }
+
+      it 'executes advisory lock' do
+        expect(maven_package.connection).to receive(:execute).with("SELECT pg_advisory_xact_lock(hashtext(#{lock_key}))")
+
+        subject
+      end
+
+      context 'when the use_exclusive_lease_in_mvn_find_or_create_package FF is disabled' do
+        before do
+          stub_feature_flags(use_exclusive_lease_in_mvn_find_or_create_package: false)
+        end
+
+        it 'does not execute advisory lock' do
+          expect(maven_package.connection).not_to receive(:execute)
+
+          subject
+        end
+      end
+    end
+
     Packages::Package.package_types.keys.without('conan').each do |pt|
       context "project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }

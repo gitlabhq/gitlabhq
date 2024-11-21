@@ -1,4 +1,0 @@
----
-Gitlab/AvoidCurrentOrganization:
-  Exclude:
-    - 'lib/gitlab/github_gists_import/importer/gist_importer.rb'

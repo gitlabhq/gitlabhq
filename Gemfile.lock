@@ -730,7 +730,7 @@ GEM
     gitlab-experiment (0.9.1)
       activesupport (>= 3.0)
       request_store (>= 1.0)
-    gitlab-fog-azure-rm (2.1.0)
+    gitlab-fog-azure-rm (2.2.0)
       faraday (~> 2.0)
       faraday-follow_redirects (~> 0.3.0)
       faraday-net_http_persistent (~> 2.0)
@@ -921,7 +921,7 @@ GEM
       faraday (~> 2.0)
       graphql-client
     graphlyte (1.0.0)
-    graphql (2.4.1)
+    graphql (2.4.4)
       base64
       fiber-storage
     graphql-client (0.23.0)
@@ -1880,9 +1880,7 @@ GEM
       unf_ext
     unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
-    unicode-emoji (4.0.0)
-      unicode-version (~> 1.0)
-    unicode-version (1.4.0)
+    unicode-emoji (4.0.4)
     unicode_utils (1.4.0)
     uniform_notifier (1.16.0)
     unleash (3.2.2)
@@ -2065,7 +2063,7 @@ DEPENDENCIES
   gitlab-dangerfiles (~> 4.8.0)
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)
-  gitlab-fog-azure-rm (~> 2.1.0)
+  gitlab-fog-azure-rm (~> 2.2.0)
   gitlab-glfm-markdown (~> 0.0.21)
   gitlab-housekeeper!
   gitlab-http!
