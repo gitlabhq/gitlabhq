@@ -105,7 +105,10 @@ export default {
 </script>
 <template>
   <div class="container-fluid gl-my-1 gl-grid-rows-auto">
-    <div class="row gl-my-3 gl-flex gl-items-center" data-testid="widget-row">
+    <div
+      class="row gl-my-3 gl-flex gl-flex-wrap gl-items-center gl-gap-y-4"
+      data-testid="widget-row"
+    >
       <div class="align-items-center col-4 gl-flex gl-text-gray-900">
         <ci-icon :status="job.detailedStatus" />
         <gl-link
@@ -124,9 +127,8 @@ export default {
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
         {{ tooltipErrorText }}
       </gl-tooltip>
-      <div class="col-4 gl-text-right">
+      <div class="col-4 gl-flex gl-max-w-full gl-flex-grow gl-justify-end gl-gap-3">
         <root-cause-analysis-button
-          class="gl-mr-2"
           :job-gid="job.id"
           :job-status-group="statusGroup"
           :can-troubleshoot-job="canTroubleshootJob"

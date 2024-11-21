@@ -53,10 +53,15 @@ module ProtectedBranches
 
       return unless (group = project_or_group).is_a?(Group)
 
-      group.all_projects.find_each do |project|
+      group.all_projects.each_batch do |projects_relation|
+        # First we remove the cache for each project in the group and then
+        # touch the projects_relation to update the projects' cache key.
         with_redis do |redis|
-          redis.unlink redis_key(project)
+          projects_relation.each do |project|
+            redis.unlink redis_key(project)
+          end
         end
+        projects_relation.touch_all
       end
     end
 

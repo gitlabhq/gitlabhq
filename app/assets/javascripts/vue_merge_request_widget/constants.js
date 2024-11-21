@@ -167,13 +167,13 @@ export const EXTENSION_ICON_NAMES = {
 };
 
 export const EXTENSION_ICON_CLASS = {
-  failed: 'gl-text-red-500',
-  warning: 'gl-text-orange-500',
-  success: 'gl-text-green-500',
-  neutral: 'gl-text-gray-400',
-  error: 'gl-text-red-500',
-  notice: 'gl-text-gray-500',
-  scheduled: 'gl-text-blue-500',
+  failed: 'mr-widget-status-icon-failed',
+  warning: 'mr-widget-status-icon-warning',
+  success: 'mr-widget-status-icon-success',
+  neutral: 'mr-widget-status-icon-neutral',
+  error: 'mr-widget-status-icon-error',
+  notice: 'mr-widget-status-icon-notice',
+  scheduled: 'mr-widget-status-icon-scheduled',
   severityCritical: 'gl-text-red-800',
   severityHigh: 'gl-text-red-600',
   severityMedium: 'gl-text-orange-400',

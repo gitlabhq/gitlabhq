@@ -1,35 +1,6 @@
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
-export const ERROR_MESSAGE = s__(
-  'UsageQuota|Something went wrong while fetching project storage statistics',
-);
-export const LEARN_MORE_LABEL = __('Learn more.');
-export const USAGE_QUOTAS_LABEL = s__('UsageQuota|Usage Quotas');
-export const TOTAL_USAGE_TITLE = s__('UsageQuota|Usage breakdown');
-export const TOTAL_USAGE_SUBTITLE = s__(
-  'UsageQuota|Includes artifacts, repositories, wiki, and other items.',
-);
-export const TOTAL_USAGE_DEFAULT_TEXT = __('Not applicable.');
-export const HELP_LINK_ARIA_LABEL = s__('UsageQuota|%{linkTitle} help link');
-export const RECALCULATE_REPOSITORY_LABEL = s__('UsageQuota|Recalculate repository usage');
-
-export const containerRegistryId = 'containerRegistrySize';
-export const containerRegistryPopoverId = 'container-registry-popover';
-
-export const containerRegistryPopover = {
-  content: s__(
-    'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
-  ),
-  docsLink: helpPagePath(
-    'user/packages/container_registry/reduce_container_registry_storage.html',
-    { anchor: 'view-container-registry-usage' },
-  ),
-};
-
-export const PROJECT_TABLE_LABEL_STORAGE_TYPE = s__('UsageQuota|Storage type');
-export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
-
 export const usageQuotasHelpPaths = {
   repositorySizeLimit: helpPagePath('administration/settings/account_and_limit_settings', {
     anchor: 'repository-size-limit',
@@ -84,7 +55,9 @@ export const NAMESPACE_STORAGE_TYPES = [
       `UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.`,
     ),
     warning: {
-      popoverContent: containerRegistryPopover.content,
+      popoverContent: s__(
+        'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
+      ),
     },
   },
 ];

@@ -101,16 +101,21 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
     describe '#refresh' do
       let(:project_service) { described_class.new(project, user) }
 
-      it 'clears cached values' do
+      it 'clears cached values', time_travel_to: 1.minute.from_now do
         expect(service.fetch('main') { true }).to eq(true)
         expect(service.fetch('not-found') { false }).to eq(false)
 
         if entity.is_a?(Group)
           expect(project_service.fetch('main') { true }).to eq(true)
           expect(project_service.fetch('not-found') { false }).to eq(false)
+          # When refreshing a group we also touch each project within the
+          # group.
+          expect { service.refresh }.to change { project.reload.updated_at }.to(Time.current)
+        else
+          # We already touch the project when updating a project's protected
+          # branches so refresh shouldn't affect the project
+          expect { service.refresh }.not_to change { project.reload.updated_at }
         end
-
-        service.refresh
 
         # Recreates cache
         expect(service.fetch('main') { false }).to eq(false)

@@ -2,9 +2,9 @@
 import { GlTable, GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
-import { containerRegistryPopover } from '~/usage_quotas/storage/constants';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import StorageTypeHelpLink from './storage_type_help_link.vue';
 import StorageTypeWarning from './storage_type_warning.vue';
 
@@ -94,7 +94,10 @@ export default {
       return project.statistics.storageSize !== project.statistics.costFactoredStorageSize;
     },
   },
-  containerRegistryPopover,
+  containerRegistryDocsLink: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage.html',
+    { anchor: 'view-container-registry-usage' },
+  ),
 };
 </script>
 
@@ -121,8 +124,12 @@ export default {
           :storage-type="field.key"
           :help-links="helpLinks"
         /><storage-type-warning v-if="field.key == 'containerRegistry'">
-          {{ $options.containerRegistryPopover.content }}
-          <gl-link :href="$options.containerRegistryPopover.docsLink" target="_blank">
+          {{
+            s__(
+              'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
+            )
+          }}
+          <gl-link :href="$options.containerRegistryDocsLink" target="_blank">
             {{ __('Learn more.') }}
           </gl-link>
         </storage-type-warning>

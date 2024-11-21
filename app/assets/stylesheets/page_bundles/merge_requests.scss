@@ -848,6 +848,29 @@
   }
 }
 
+.mr-widget-status-icon-neutral,
+.mr-widget-status-icon-notice {
+  color: var(--gl-status-neutral-icon-color);
+}
+
+.mr-widget-status-icon-warning {
+  color: var(--gl-status-warning-icon-color);
+}
+
+.mr-widget-status-icon-failed,
+.mr-widget-status-icon-error {
+  color: var(--gl-status-danger-icon-color);
+}
+
+.mr-widget-status-icon-success {
+  color: var(--gl-status-success-icon-color);
+}
+
+.mr-widget-status-icon-info,
+.mr-widget-status-icon-scheduled {
+  color: var(--gl-status-info-icon-color);
+}
+
 .mr-widget-status-icon-level-1::before {
   content: '';
   position: absolute;

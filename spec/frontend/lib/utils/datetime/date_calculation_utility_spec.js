@@ -45,6 +45,7 @@ import {
   secondsToDays,
   secondsToMilliseconds,
   totalDaysInMonth,
+  daysToSeconds,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -945,4 +946,16 @@ describe('getStartOfWeek', () => {
       expect(actual.toISOString()).toEqual(expectedAsString);
     },
   );
+});
+
+describe('daysToSeconds', () => {
+  it('converts days to seconds correctly', () => {
+    expect(daysToSeconds(0)).toBe(0);
+    expect(daysToSeconds(0.1)).toBe(8640);
+    expect(daysToSeconds(0.5)).toBe(43200);
+    expect(daysToSeconds(1)).toBe(86400);
+    expect(daysToSeconds(2.5)).toBe(216000);
+    expect(daysToSeconds(3)).toBe(259200);
+    expect(daysToSeconds(5)).toBe(432000);
+  });
 });
