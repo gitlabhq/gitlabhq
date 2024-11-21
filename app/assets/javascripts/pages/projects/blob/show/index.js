@@ -1,13 +1,11 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { GlButton } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import TableOfContents from '~/blob/components/table_contents.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
-import { __ } from '~/locale';
 import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
@@ -18,7 +16,6 @@ import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
-import { generateHistoryUrl } from '~/repository/utils/url_utility';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -205,33 +202,6 @@ if (tableContentsEl) {
     el: tableContentsEl,
     render(h) {
       return h(TableOfContents);
-    },
-  });
-}
-
-const treeHistoryLinkEl = document.getElementById('js-commit-history-link');
-if (treeHistoryLinkEl) {
-  const { historyLink } = treeHistoryLinkEl.dataset;
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: treeHistoryLinkEl,
-    router,
-    render(h) {
-      const url = generateHistoryUrl(
-        historyLink,
-        this.$route.params.path,
-        this.$route.meta.refType || this.$route.query.ref_type,
-      );
-      return h(
-        GlButton,
-        {
-          attrs: {
-            href: url.href,
-            category: 'tertiary',
-          },
-        },
-        [__('History')],
-      );
     },
   });
 }

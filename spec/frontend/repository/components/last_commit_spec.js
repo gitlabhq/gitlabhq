@@ -21,7 +21,6 @@ const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findStatusBox = () => wrapper.findComponent(SignatureBadge);
 const findCommitInfo = () => wrapper.findComponent(CommitInfo);
-const findHistoryButton = () => wrapper.findByTestId('last-commit-history');
 
 const defaultPipelineEdges = [
   {
@@ -99,7 +98,7 @@ const createComponent = async (data = {}) => {
 
   wrapper = shallowMountExtended(LastCommit, {
     apolloProvider: createMockApollo([[pathLastCommitQuery, mockResolver]]),
-    propsData: { currentPath, historyUrl: '/history' },
+    propsData: { currentPath },
     mixins: [{ data: () => ({ ref: refMock }) }],
     stubs: {
       SignatureBadge,
@@ -143,11 +142,6 @@ describe('Repository last commit component', () => {
 
   it('renders short commit ID', () => {
     expect(findLastCommitLabel().text()).toBe('12345678');
-  });
-
-  it('renders History button with correct href', () => {
-    expect(findHistoryButton().exists()).toBe(true);
-    expect(findHistoryButton().attributes('href')).toContain('/history');
   });
 
   it('hides pipeline components when pipeline does not exist', async () => {

@@ -10,8 +10,7 @@
     = render_if_exists 'projects/tree/lock_link'
     = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
 
-    .gl-block.sm:gl-hidden.gl-w-full
-      #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
+    #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil, css_classes: 'gl-w-full sm:gl-w-auto'

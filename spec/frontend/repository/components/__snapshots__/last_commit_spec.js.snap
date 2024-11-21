@@ -5,10 +5,10 @@ exports[`Repository last commit component renders commit widget 1`] = `
   commit="[object Object]"
 >
   <div
-    class="commit-actions gl-flex gl-items-start"
+    class="commit-actions gl-flex gl-flex-align gl-flex-row gl-items-center"
   >
     <div
-      class="gl-flex gl-h-7 gl-items-center gl-ml-5"
+      class="gl-ml-5"
     >
       <ci-icon-stub
         aria-label="Pipeline: failed"
@@ -19,7 +19,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
       />
     </div>
     <gl-button-group-stub
-      class="gl-flex gl-items-center gl-ml-4 js-commit-sha-group"
+      class="gl-ml-4 js-commit-sha-group"
     >
       <gl-button-stub
         buttontextclasses=""
@@ -43,18 +43,6 @@ exports[`Repository last commit component renders commit widget 1`] = `
         variant="default"
       />
     </gl-button-group-stub>
-    <gl-button-stub
-      buttontextclasses=""
-      category="tertiary"
-      class="gl-ml-4"
-      data-testid="last-commit-history"
-      href="/history"
-      icon=""
-      size="medium"
-      variant="default"
-    >
-      History
-    </gl-button-stub>
   </div>
 </commit-info-stub>
 `;

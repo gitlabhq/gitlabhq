@@ -8,6 +8,7 @@ import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import { generateHistoryUrl } from '~/repository/utils/url_utility';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
@@ -18,6 +19,7 @@ export default {
   i18n: {
     compare: __('Compare'),
     findFile: __('Find file'),
+    history: __('History'),
   },
   components: {
     GlButton,
@@ -61,6 +63,10 @@ export default {
       required: false,
       default: null,
     },
+    historyLink: {
+      type: String,
+      required: true,
+    },
     projectId: {
       type: String,
       required: true,
@@ -69,6 +75,15 @@ export default {
   computed: {
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
+    },
+    historyPath() {
+      const url = generateHistoryUrl(
+        this.historyLink,
+        this.$route.params.path,
+        this.$route.meta.refType || this.$route.query.ref_type,
+      );
+
+      return url.href;
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -151,6 +166,9 @@ export default {
         class="shortcuts-compare"
         >{{ $options.i18n.compare }}</gl-button
       >
+      <gl-button v-if="!isReadmeView" :href="historyPath" data-testid="tree-history-control">{{
+        $options.i18n.history
+      }}</gl-button>
       <gl-button
         v-gl-tooltip.html="findFileTooltip"
         :aria-keyshortcuts="findFileShortcutKey"
