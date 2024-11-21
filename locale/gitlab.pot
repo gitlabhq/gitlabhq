@@ -4370,7 +4370,13 @@ msgstr ""
 msgid "AdminSettings|Setting must be greater than 0."
 msgstr ""
 
+msgid "AdminSettings|Show a banner on merge requests in projects with Jenkins pipelines to prompt migration to GitLab CI/CD instead."
+msgstr ""
+
 msgid "AdminSettings|Show a redirect page that warns you about user-generated content in GitLab Pages."
+msgstr ""
+
+msgid "AdminSettings|Show the migrate from Jenkins banner"
 msgstr ""
 
 msgid "AdminSettings|Silent exports by admins %{silent_admin_exports_link_start}%{icon}%{silent_admin_exports_link_end}"

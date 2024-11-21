@@ -6900,6 +6900,7 @@ CREATE TABLE application_settings (
     integrations jsonb DEFAULT '{}'::jsonb NOT NULL,
     user_seat_management jsonb DEFAULT '{}'::jsonb NOT NULL,
     resource_usage_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
+    show_migrate_from_jenkins_banner boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),

@@ -88,6 +88,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
+  def work_item_crm_contacts(work_item)
+    work_item.reload.customer_relations_contacts
+  end
+
   let(:move) { WorkItems::DataSync::MoveService }
   let(:clone) { WorkItems::DataSync::CloneService }
 
@@ -108,6 +112,28 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     )
     # create sent notification for original work item and return recipients as `expected_data` for later comparison.
     original_work_item.reload.sent_notifications.pluck(:recipient_id)
+  end
+
+  let_it_be(:crm_contacts) do
+    # create a crm group and assign it to both original and new work item namespaces in order to be able to move the
+    # crm contacts from the original one to the new one
+    crm_group = create(:group)
+    create(:crm_settings, group: group, source_group: crm_group)
+
+    # The target_namespace can be a `Group`, `Namespaces::ProjectNamespace` or `Project`, we fetch the group, based
+    # on the namespace type. Also we check that the `target group`` is different that the group, as there will
+    # be validation errors when we create the crm_settings
+    if target_namespace.is_a?(Group)
+      create(:crm_settings, group: target_namespace, source_group: crm_group) if target_namespace != group
+    elsif target_namespace.is_a?(Namespaces::ProjectNamespace) || target_namespace.is_a?(Project)
+      create(:crm_settings, group: target_namespace.group, source_group: crm_group) if target_namespace.group != group
+    end
+
+    contacts = create_list(:contact, 2, group: crm_group)
+    original_work_item.customer_relations_contacts << contacts
+    # set the crm_contacts on the before_all call and return the contacts as `expected_data` for later comparison as the
+    # cleanup callback will delete the association
+    contacts
   end
 
   let_it_be(:emails) do
@@ -150,6 +176,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     :milestone          | :work_item_milestone          | ref(:milestone)     | [ref(:move), ref(:clone)]
     :subscriptions      | :work_item_subscriptions      | ref(:subscriptions) | [ref(:move)]
     :sent_notifications | :work_item_sent_notifications | ref(:notifications) | [ref(:move)]
+    :customer_relations_contacts | :work_item_crm_contacts | ref(:crm_contacts) | [ref(:move), ref(:clone)]
   end
 
   with_them do
@@ -158,7 +185,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
         allow(original_work_item).to receive(:from_service_desk?).and_return(true)
       end
 
-      it 'clones and moves widget data' do
+      it 'clones and moves widget data', :aggregate_failures do
         new_work_item = service.execute[:work_item]
         widget_value = send(eval_value, new_work_item)
 

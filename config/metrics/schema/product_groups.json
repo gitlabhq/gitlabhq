@@ -59,6 +59,7 @@
     "runner",
     "scalability",
     "secret_detection",
+    "security_insights",
     "security_policies",
     "source_code",
     "static_analysis",
@@ -66,7 +67,6 @@
     "switchboard",
     "technical_writing",
     "tenant_scale",
-    "threat_insights",
     "utilization",
     "ux_paper_cuts",
     "vulnerability_research"

@@ -48,6 +48,18 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
       it { expect(subject.payload).to eq(metadata) }
     end
 
+    shared_examples 'extracting metadata from README files only' do
+      let(:metadata) { super().tap { |metadata| metadata[:root].slice!(:readme) } }
+
+      before do
+        allow_next_instance_of(::Packages::TerraformModule::Metadata::ParseHclFileService) do |parser|
+          allow(parser).to receive(:execute).and_raise(StandardError)
+        end
+      end
+
+      it_behaves_like 'extracting metadata'
+    end
+
     shared_examples 'raising too many files error' do
       context 'with too many files' do
         before do
@@ -159,6 +171,10 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
 
         it_behaves_like 'extracting metadata'
       end
+
+      context 'when a processing error occurs druing HCL file parsing' do
+        it_behaves_like 'extracting metadata from README files only'
+      end
     end
 
     context 'when processing a zip archive' do
@@ -179,6 +195,10 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
 
       it_behaves_like 'raising too many files error'
       it_behaves_like 'aggregating metadata'
+
+      context 'when a processing error occurs druing HCL file parsing' do
+        it_behaves_like 'extracting metadata from README files only'
+      end
     end
 
     context 'for getting module_type from path' do

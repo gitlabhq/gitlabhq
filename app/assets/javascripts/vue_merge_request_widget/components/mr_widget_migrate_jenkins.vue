@@ -1,6 +1,8 @@
 <script>
 import { GlBadge, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { reportToSentry } from '~/ci/utils';
 import { s__ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
 import { InternalEvents } from '~/tracking';
 import { JM_JENKINS_TITLE_ICON_NAME, JM_MIGRATION_LINK, JM_EVENT_NAME } from '../constants';
 
@@ -25,6 +27,14 @@ export default {
       type: String,
       required: true,
     },
+    path: {
+      type: String,
+      required: true,
+    },
+    featureId: {
+      type: String,
+      required: true,
+    },
   },
   i18n: {
     title: s__('mrWidget|Migrate to GitLab CI/CD from Jenkins'),
@@ -36,6 +46,14 @@ export default {
   },
   methods: {
     dismiss() {
+      axios
+        .post(this.path, {
+          feature_name: this.featureId,
+        })
+        .catch((error) => {
+          reportToSentry(this.$options.name, error);
+        });
+
       this.trackEvent(this.$options.JM_EVENT_NAME);
 
       this.$emit('dismiss');

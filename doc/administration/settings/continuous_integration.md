@@ -362,6 +362,21 @@ To disable the banner:
 1. Clear the **Enable pipeline suggestion banner** checkbox.
 1. Select **Save changes**.
 
+## Disable the migrate from Jenkins banner
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470025) in GitLab 17.7.
+
+By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
+
+![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v_17_7.png)
+
+To disable the banner:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Clear the **Show the migrate from Jenkins banner** checkbox.
+1. Select **Save changes**.
+
 ## Required pipeline configuration
 
 DETAILS:

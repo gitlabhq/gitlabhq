@@ -205,6 +205,7 @@ module API
       optional :floc_enabled, type: Grape::API::Boolean, desc: 'Enable FloC (Federated Learning of Cohorts)'
       optional :user_deactivation_emails_enabled, type: Boolean, desc: 'Send emails to users upon account deactivation'
       optional :suggest_pipeline_enabled, type: Boolean, desc: 'Enable pipeline suggestion banner'
+      optional :show_migrate_from_jenkins_banner, type: Boolean, desc: 'Enable Jenkins migration banner'
       optional :enable_artifact_external_redirect_warning_page, type: Boolean, desc: 'Show the external redirect page that warns you about user-generated content in GitLab Pages'
       optional :users_get_by_id_limit, type: Integer, desc: "Maximum number of calls to the /users/:id API per 10 minutes per user. Set to 0 for unlimited requests."
       optional :runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for shared runners, in seconds'

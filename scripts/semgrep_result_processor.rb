@@ -17,6 +17,7 @@ class SemgrepResultProcessor
     <small>
     This AppSec automation is currently under testing.
     Use ~"appsec-sast::helpful" or ~"appsec-sast::unhelpful" for quick feedback.
+    To stop the bot from further commenting, you can use the ~"appsec-sast::stop" label.
     For any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).
     </small>
 
@@ -30,6 +31,11 @@ class SemgrepResultProcessor
     perform_allowlist_check
     semgrep_results = get_sast_results
     unique_results = filter_duplicate_findings(semgrep_results)
+    if sast_stop_label_present?
+      puts "Not adding comments for this MR as it has the appsec-sast::stop label. Here are the new unique findings that would have otherwise been posted: #{unique_results}"
+      return
+    end
+
     create_inline_comments(unique_results)
 
   rescue StandardError => e
@@ -139,6 +145,11 @@ class SemgrepResultProcessor
       puts "Failed to post inline comment with status code #{response.code}: #{response.body}. Posting normal comment instead."
       post_comment message_from_bot
     end
+  end
+
+  def sast_stop_label_present?
+    labels = ENV['CI_MERGE_REQUEST_LABELS'] || ""
+    labels.split(',').map(&:strip).include?('appsec-sast::stop')
   end
 
   private

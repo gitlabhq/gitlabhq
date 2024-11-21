@@ -53,6 +53,50 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
 
       expect { processor.execute }.to raise_error(SystemExit)
     end
+
+    context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
+      it "prints the 'not adding comments' message" do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'appsec-sast::stop')
+
+        expect(processor).to receive(:perform_allowlist_check)
+        expect(processor).to receive(:get_sast_results)
+        expect(processor).to receive(:filter_duplicate_findings).with(sample_results)
+
+        expect do
+          processor.execute
+        end.to output(/Not adding comments for this MR as it has the appsec-sast::stop label/).to_stdout
+      end
+    end
+  end
+
+  describe '#sast_stop_label_present?' do
+    context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
+      it 'returns true' do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'appsec-sast::stop, other-label')
+        expect(processor.sast_stop_label_present?).to be true
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS does not include appsec-sast::stop' do
+      it 'returns false' do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'another-label, different-label')
+        expect(processor.sast_stop_label_present?).to be false
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is empty' do
+      it 'returns false' do
+        stub_env('CI_MERGE_REQUEST_LABELS', '')
+        expect(processor.sast_stop_label_present?).to be false
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is nil' do
+      it 'returns false' do
+        stub_env('CI_MERGE_REQUEST_LABELS', nil)
+        expect(processor.sast_stop_label_present?).to be false
+      end
+    end
   end
 
   describe '#perform_allowlist_check' do

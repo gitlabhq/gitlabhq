@@ -4,7 +4,7 @@ action: scan
 identifiers:
 - project
 - user
-product_group: threat_insights
+product_group: security_insights
 milestone: '14.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
 distributions:

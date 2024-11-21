@@ -240,6 +240,8 @@ RSpec.describe Packages::TerraformModule::Metadata::ProcessFileService, feature_
 
         execute
       end
+
+      it_behaves_like 'returning an error service response', message: 'Error processing path'
     end
   end
 end
