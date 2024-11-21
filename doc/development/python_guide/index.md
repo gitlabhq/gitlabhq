@@ -95,11 +95,11 @@ installed from the `pipenv install` command.
 
 ## Learning resources
 
-If you are new to Python or looking to refresh your knowledge, this section provides variours materials for 
-learning the language. 
+If you are new to Python or looking to refresh your knowledge, this section provides variours materials for
+learning the language.
 
-1. **[Python Cheatsheet](https://www.pythoncheatsheet.org)** 
-A comprehensive reference covering essential Python syntax, built-in functions, and useful libraries. 
+1. **[Python Cheatsheet](https://www.pythoncheatsheet.org)**
+A comprehensive reference covering essential Python syntax, built-in functions, and useful libraries.
 This is ideal for both beginners and experienced users who want a quick, organized summary of Python's key features.
 
 1. **[A Whirlwind Tour of Python (Jupyter Notebook)](https://github.com/jakevdp/WhirlwindTourOfPython)**  

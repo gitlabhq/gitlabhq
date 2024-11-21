@@ -172,7 +172,7 @@ To configure this URL, use one of these methods:
 
 :::TabTitle `.npmrc` file
 
-Create or edit the `.npmrc` file in your project root: 
+Create or edit the `.npmrc` file in your project root:
 
 ```plaintext
 @scope:registry=https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/ //gitlab.example.com/api/v4/projects/<project_id>/packages/npm/:_authToken="${NPM_TOKEN}"

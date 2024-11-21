@@ -327,6 +327,21 @@ class DelayedWorker
 end
 ```
 
+When using the `feature_flag` property with `overrides`, the jobs defaults to `always` for all database connections.
+When the feature flag is enabled, the configured data consistency is then applied to each database independently.
+For the below example, when the flag is enabled, the `main` database connections will use the `:always` data consistency while
+`ci` database connections will use `:sticky` data consistency.
+
+```ruby
+class DelayedWorker
+  include ApplicationWorker
+
+  data_consistency :always, overrides: { ci: :sticky }, feature_flag: :load_balancing_for_delayed_worker
+
+  # ...
+end
+```
+
 ### Data consistency with idempotent jobs
 
 For [idempotent jobs](idempotent_jobs.md) that declare either `:sticky` or `:delayed` data consistency, we are

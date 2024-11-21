@@ -94,7 +94,7 @@ The first step is to benchmark the CI/CD pipelines' efficiency between groups an
 - Using Value Stream Analytics to identify bottlenecks in the processes.
 - Breaking the changes down into smaller iterations.
 - Adding automation.
-- Improving the performance of your pipelines. 
+- Improving the performance of your pipelines.
 
 ## Time to restore service
 
@@ -118,7 +118,7 @@ The first step is to benchmark the team response and recover from service interr
 
 - Improving the observability into the production environment.
 - Improving response workflows.
-- Improving deployment frequency and lead time for changes so fixes can get into production more efficiently. 
+- Improving deployment frequency and lead time for changes so fixes can get into production more efficiently.
 
 ## Change failure rate
 

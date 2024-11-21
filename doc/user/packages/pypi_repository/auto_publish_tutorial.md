@@ -111,7 +111,7 @@ To publish to external PyPI registries, you must configure a secret variable in 
    script:
    - TWINE_PASSWORD=${PYPI_TOKEN} TWINE_USERNAME=__token__ python -m twine upload dist/*
    ```
-   
+
 ## Check the pipeline
 
 When you commit your changes, you should check to make sure the pipeline runs correctly:

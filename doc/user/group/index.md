@@ -24,7 +24,7 @@ For more information about creating and managing your groups, see [Manage groups
 
 ## Group hierarchy
 
-Groups are organized in a tree structure: 
+Groups are organized in a tree structure:
 
 - A **top-level group** is a group created at the "root" of the organization. An organization can have one or more top-level groups. A top-level group can contain one or more subgroups.
 - A **parent group** is a group that contains one or more subgroups.

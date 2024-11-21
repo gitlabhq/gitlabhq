@@ -319,7 +319,7 @@ gemnasium-dependency_scanning:
     - if: "$CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\\bdependency_scanning\\b/"
 ```
 
-## Dependency Scanning fails with `gradlew: permission denied` 
+## Dependency Scanning fails with `gradlew: permission denied`
 
 The `permission denied` error on `gradlew` typically indicates that `gradlew` was checked into the repository without an executable bit set. The error might appear in your job with this message:
 

@@ -77,7 +77,7 @@ If you have [Docker Desktop](https://handbook.gitlab.com/handbook/tools-and-tips
 or a container manager other than Colima installed already:
 
 1. Pull the base Docker image:
-   
+
    ```shell
    docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
    ```

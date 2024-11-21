@@ -18,7 +18,7 @@ With Terraform remote [backends](https://www.terraform.io/language/settings/back
 you can store the state file in a remote and shared store.
 
 GitLab provides a [Terraform HTTP backend](https://www.terraform.io/language/settings/backends/http)
-to securely store your state files with minimal configuration. 
+to securely store your state files with minimal configuration.
 The Terraform state backend provides automatic versioning and encryption of the state files managed by the GitLab instance.
 
 WARNING:

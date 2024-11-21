@@ -16,7 +16,7 @@ a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're
-using the right version of the documentation for your installation. 
+using the right version of the documentation for your installation.
 
 To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
 
@@ -132,7 +132,7 @@ The following are required to run Geo:
   **must** [check OS locale data compatibility](replication/troubleshooting/common.md#check-os-locale-data-compatibility)
   across Geo sites to avoid silent corruption of database indexes.
 - [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
-  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported. 
+  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.
 - All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS

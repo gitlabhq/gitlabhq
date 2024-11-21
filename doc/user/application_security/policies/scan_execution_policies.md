@@ -239,7 +239,7 @@ The keys for a schedule rule are:
 
 If both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` feature flags are enabled, concurrency control is applied.
 Concurrency control limits the number of pipeline jobs created by the scan execution policy that can be active for each top-level group on an instance. For GitLab.com, the limit is managed by GitLab administrators.
-The active pipeline job statuses are: 
+The active pipeline job statuses are:
 
 - `preparing`
 - `pending`

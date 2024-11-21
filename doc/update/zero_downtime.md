@@ -264,7 +264,7 @@ In addition to the above, Rails is where the main database migrations need to be
 1. On every **other Rails node** sequentially:
 
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
-   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service. 
+   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
    As an example, you can do this by using the following shell script:
 
       ```shell

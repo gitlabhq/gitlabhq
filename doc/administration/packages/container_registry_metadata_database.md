@@ -668,7 +668,7 @@ but you have not [migrated existing data](#existing-registries) to the metadata 
 
 #### Error: `registry metadata database in use, please enable the database`
 
-This error happens when you have completed [migrating existing data](#existing-registries) to the metadata database, 
+This error happens when you have completed [migrating existing data](#existing-registries) to the metadata database,
 but you have not enabled the database in your configuration.
 
 #### Problems checking or creating the lock files

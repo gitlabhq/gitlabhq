@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users, :aggregate_failures, feature_category: :user_management do
+RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feature_category: :user_management do
   include WorkhorseHelpers
   include KeysetPaginationHelpers
   include CryptoHelpers

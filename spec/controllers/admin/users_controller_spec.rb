@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::UsersController, feature_category: :user_management do
+RSpec.describe Admin::UsersController, :with_current_organization, feature_category: :user_management do
   let(:user) { create(:user) }
 
-  let_it_be(:admin) { create(:admin) }
+  let_it_be_with_reload(:admin) { create(:admin, organizations: [current_organization]) }
 
   before do
     sign_in(admin)

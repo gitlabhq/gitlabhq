@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::Users', feature_category: :user_management do
+RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :user_management do
   include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
 
   let_it_be(:user, reload: true) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
 
   before do
     sign_in(admin)
