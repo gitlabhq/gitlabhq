@@ -192,13 +192,13 @@ export default {
             <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
               <span
                 v-safe-html="highlightedName(item.text)"
-                class="gl-truncate gl-text-gray-900"
+                class="gl-truncate gl-text-strong"
                 data-testid="autocomplete-item-name"
               ></span>
               <span
                 v-if="item.value"
                 v-safe-html="item.namespace"
-                class="gl-truncate gl-text-sm gl-text-gray-500"
+                class="gl-truncate gl-text-sm gl-text-subtle"
                 data-testid="autocomplete-item-namespace"
               ></span>
             </span>

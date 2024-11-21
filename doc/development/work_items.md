@@ -129,7 +129,7 @@ What we will do to achieve this:
 1. Ensure we write to both `issues#issue_type` and `issues#work_item_type_id` columns for
    new or updated issues.
 1. Backfill the `work_item_type_id` column to point to the `work_item_types#id` corresponding
-   to issue's project root groups. For example:
+   to issue's project top-level groups. For example:
 
    ```ruby
    issue.project.root_group.work_item_types.where(base_type: issue.issue_type).first.id.

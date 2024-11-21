@@ -83,7 +83,7 @@ CI/CD templates, which you can use to get started, are in [this repository](http
 
 For more information about using the GitLab package registry with CI/CD, see:
 
-- [Generic](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
+- [Generic](../generic_packages/index.md#publish-a-package)
 - [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
 - [npm](../npm_registry/index.md#publish-a-package-with-a-cicd-pipeline)
 - [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)

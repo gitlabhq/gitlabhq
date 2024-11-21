@@ -162,7 +162,7 @@ export default {
       return '';
     },
     commandHighlightClass() {
-      return darkModeEnabled() ? '!gl-bg-gray-10' : '!gl-bg-gray-50';
+      return darkModeEnabled() ? '!gl-bg-subtle' : '!gl-bg-strong';
     },
   },
   watch: {
@@ -431,7 +431,7 @@ export default {
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-w-full gl-rounded-lg gl-pb-0"
     >
-      <div class="input-box-wrapper gl-border-b -gl-mb-1 gl-bg-white gl-p-2">
+      <div class="input-box-wrapper gl-border-b -gl-mb-1 gl-bg-default gl-p-2">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -511,7 +511,7 @@ export default {
     </form>
     <template #modal-footer>
       <div class="gl-m-0 gl-flex gl-grow gl-justify-between gl-align-middle">
-        <span class="gl-text-gray-500"
+        <span class="gl-text-subtle"
           >{{ $options.i18n.COMMAND_PALETTE_TIP }} <command-palette-lottery
         /></span>
         <span

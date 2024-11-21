@@ -13,6 +13,7 @@ import IssueToken from './issue_token.vue';
 const SPACE_FACTOR = 1;
 
 export default {
+  TYPE_ISSUE,
   name: 'RelatedIssuableInput',
   components: {
     GlFormGroup,
@@ -228,7 +229,7 @@ export default {
         </li>
       </ul>
     </div>
-    <template #description>
+    <template v-if="issuableType === $options.TYPE_ISSUE" #description>
       <span :id="`${inputId}-description`">
         {{
           __(

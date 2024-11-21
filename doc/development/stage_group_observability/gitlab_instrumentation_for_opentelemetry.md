@@ -15,12 +15,12 @@ collect and display OpenTelemetry data. Therefore, you should point the
 
 1. Which has an Ultimate license, and where you have
 1. In which you have at least the Maintainer role
-1. In which you have access to enable top-level root-group feature flags (or is under the `gitlab-org` or `gitlab-com` root groups which already have the flags enabled)
+1. In which you have access to enable top-level group feature flags (or is under the `gitlab-org` or `gitlab-com` top-level groups which already have the flags enabled)
 
 Once you have a project identified to use:
 
 1. Note the ID of the project (from the three dots at upper right of main project page).
-1. Note the ID of the top-level root group which contains the project.
+1. Note the ID of the top-level group which contains the project.
 1. When setting the environment variables for the following steps, add them to `env.runit` in the root of the `gitlab-development-kit` folder.
 1. Follow instructions to [configure distributed tracing for a project](../../operations/tracing.md), with the following custom settings:
    - For the `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` environment variable, use the following value:

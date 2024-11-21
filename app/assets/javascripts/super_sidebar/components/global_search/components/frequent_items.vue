@@ -115,7 +115,7 @@ export default {
     </template>
 
     <gl-disclosure-dropdown-item v-if="showEmptyState" class="gl-cursor-text">
-      <span class="gl-mx-3 gl-my-3 gl-text-sm gl-text-gray-500">{{ emptyStateText }}</span>
+      <span class="gl-mx-3 gl-my-3 gl-text-sm gl-text-subtle">{{ emptyStateText }}</span>
     </gl-disclosure-dropdown-item>
 
     <gl-disclosure-dropdown-item key="all" :item="viewAllItem" class="show-hover-layover">

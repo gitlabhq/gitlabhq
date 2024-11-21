@@ -70,11 +70,6 @@ workflow:
     NAMESPACE: gitlab
     KUBECONFIG: /root/.kube/config
     BUNDLE_WITHOUT: development
-    GITLAB_USERNAME: root
-    GITLAB_PASSWORD: 5iveL!fe
-    GITLAB_ADMIN_USERNAME: root
-    GITLAB_ADMIN_PASSWORD: 5iveL!fe
-    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
@@ -95,8 +90,6 @@ workflow:
       bundle exec cng create deployment "${DEPLOYMENT_TYPE}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
         --timeout 5m \
-        --admin-password "${GITLAB_ADMIN_PASSWORD}" \
-        --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --retry 1 \
         --ci \

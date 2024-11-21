@@ -585,9 +585,8 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   &.gl-modal .modal-footer {
-    background-color: $gray-50;
+    @apply gl-bg-strong gl-border-t;
     padding: $command-palette-spacing;
-    border-top: 1px solid $gray-100;
   }
 }
 

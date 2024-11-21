@@ -14,15 +14,14 @@ and extend your view with [custom queries](custom_queries.md).
 
 This extension brings the GitLab features you use every day directly into your VS Code environment:
 
-- [View issues](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-issues-review-mrs) and merge requests.
+- [View issues](#view-issues-and-merge-requests) and merge requests.
 - Run [common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
-- Create and [review](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#merge-request-reviews)
-  merge requests.
+- Create and [review](#review-a-merge-request) merge requests.
 - [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
 - View [pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
 - [Create](#create-a-snippet) and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
-- [View security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
+- [View security findings](#view-security-findings).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
@@ -64,7 +63,7 @@ This extension requires you to create a GitLab personal access token, and assign
 
 The extension matches your Git repository remote URL with the GitLab instance URL you specified
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
-For more details, see [Account management](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#account-management).
+For more details, see [Switch GitLab accounts in VS Code](#switch-gitlab-accounts-in-vs-code).
 
 The extension shows information in the VS Code status bar if both:
 
@@ -76,8 +75,8 @@ The extension shows information in the VS Code status bar if both:
 After you install GitLab Workflow, go to **Settings > Extensions > GitLab Workflow** in VS Code to configure its settings:
 
 - [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code).
-- [Features to display or hide](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
-- [Self-signed certificate](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#self-signed-certificates) information.
+- [Features to display or hide](settings.md#extension-settings).
+- [Self-signed certificate](troubleshooting.md#configure-self-signed-certificates) information.
 - [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
 ### Customize keyboard shortcuts
@@ -278,7 +277,7 @@ Prerequisites:
 
 - You're a member of a GitLab project.
 - You've installed the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- You've signed in to your GitLab instance, as described in [Setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/tree/main/#setup).
+- You've signed in to your GitLab instance, as described in [Set up the GitLab Workflow extension](#set-up-the-gitlab-workflow-extension).
 
 To search the titles and description fields in your project:
 

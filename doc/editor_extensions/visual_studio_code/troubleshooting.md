@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 If you encounter any issues with the GitLab Workflow extension for VS Code, or have feature requests for it:
 
-1. Check the [extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md)
+1. Check the [extension documentation](index.md)
    for known issues and solutions.
 1. Report bugs or request features in the
    [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
@@ -202,6 +202,6 @@ before starting VS Code. If you set the token in a
 you don't have to set a personal access token each time you delete your VS Code storage. Set these variables:
 
 - `GITLAB_WORKFLOW_INSTANCE_URL`: Your GitLab instance URL, like `https://gitlab.com`.
-- `GITLAB_WORKFLOW_TOKEN`: Your personal access token, which you created [during setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup).
+- `GITLAB_WORKFLOW_TOKEN`: Your personal access token, which you created [during setup](index.md#set-up-the-gitlab-workflow-extension).
 
 The token configured in an environment variable is overridden if you configure a token for the same GitLab instance in the extension.

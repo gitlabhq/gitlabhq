@@ -5,9 +5,10 @@ module QA
     include Support::API
 
     describe 'API basics', product_group: :source_code do
-      let(:api_client) { Runtime::API::Client.new(:gitlab) }
+      let(:test_user) { Runtime::UserStore.test_user }
+      let(:api_client) { test_user.api_client }
       let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }
-      let(:sanitized_project_path) { CGI.escape("#{Runtime::User.username}/#{project_name}") }
+      let(:sanitized_project_path) { CGI.escape("#{test_user.username}/#{project_name}") }
       let(:file_name) { 'bã®' }
       # this file path deliberately includes a subdirectory which matches the file name to verify file/dir matching logic
       let(:file_path) { CGI.escape("føo/#{file_name}/føo/#{file_name}") }

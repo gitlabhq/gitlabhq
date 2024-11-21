@@ -16,7 +16,7 @@ These words are listed in the
 where:
 
 - `TOP_LEVEL_ROUTES` are names reserved as usernames or top-level groups.
-- `PROJECT_WILDCARD_ROUTES` are names reserved for child groups or projects.
+- `PROJECT_WILDCARD_ROUTES` are names reserved for subgroups or projects.
 - `GROUP_ROUTES` are names reserved for all groups or projects.
 
 ## Limitations on usernames, project and group names and slugs
