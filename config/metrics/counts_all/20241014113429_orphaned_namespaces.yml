@@ -1,7 +1,7 @@
 ---
 key_path: counts.orphaned_namespaces
 description: Whether orphaned namespaces are present
-product_group: tenant_scale
+product_group: organizations
 value_type: number
 status: active
 milestone: "17.6"

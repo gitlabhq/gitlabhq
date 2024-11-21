@@ -572,7 +572,6 @@ RSpec/BeEq:
     - 'spec/controllers/application_controller_spec.rb'
     - 'spec/controllers/autocomplete_controller_spec.rb'
     - 'spec/controllers/concerns/internal_redirect_spec.rb'
-    - 'spec/controllers/concerns/onboarding/status_spec.rb'
     - 'spec/controllers/concerns/routable_actions_spec.rb'
     - 'spec/controllers/dashboard_controller_spec.rb'
     - 'spec/controllers/groups/application_controller_spec.rb'

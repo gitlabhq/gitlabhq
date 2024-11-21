@@ -4689,6 +4689,28 @@ Input type: `DestroyComplianceFrameworkInput`
 | <a id="mutationdestroycomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroycomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.destroyComplianceRequirement`
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Input type: `DestroyComplianceRequirementInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroycompliancerequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroycompliancerequirementid"></a>`id` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID!`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Global ID of the compliance requirement to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroycompliancerequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroycompliancerequirementerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.destroyContainerRepository`
 
 Input type: `DestroyContainerRepositoryInput`
@@ -21974,6 +21996,7 @@ Represents a CVE's Enrichment (EPSS score).
 | ---- | ---- | ----------- |
 | <a id="cveenrichmenttypecve"></a>`cve` | [`String!`](#string) | CVE identifier of relevant vulnerability. |
 | <a id="cveenrichmenttypeepssscore"></a>`epssScore` | [`Float!`](#float) | EPSS score for the CVE. |
+| <a id="cveenrichmenttypeisknownexploit"></a>`isKnownExploit` | [`Boolean!`](#boolean) | Whether the CVE appears in the CISA KEV catalog. |
 
 ### `CvssType`
 
@@ -30883,6 +30906,7 @@ Represents generic policy violation information.
 | ---- | ---- | ----------- |
 | <a id="policyviolationinfoname"></a>`name` | [`String!`](#string) | Represents the name of the violated policy. |
 | <a id="policyviolationinforeporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report type. |
+| <a id="policyviolationinfostatus"></a>`status` | [`PolicyViolationStatus`](#policyviolationstatus) | Represents the status of the violated policy. |
 
 ### `PreviewBillableUserChange`
 
@@ -35945,7 +35969,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
-| <a id="vulnerabilitycveenrichment"></a>`cveEnrichment` | [`CveEnrichmentType`](#cveenrichmenttype) | Enrichment (EPSS score) for CVE vulnerabilities. |
+| <a id="vulnerabilitycveenrichment"></a>`cveEnrichment` | [`CveEnrichmentType`](#cveenrichmenttype) | Enrichment (EPSS score and KEV) for CVE vulnerabilities. |
 | <a id="vulnerabilitycvss"></a>`cvss` | [`[CvssType!]!`](#cvsstype) | CVSS information for the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
 | <a id="vulnerabilitydescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
@@ -39871,6 +39895,14 @@ Types of security policy project created status.
 | <a id="policyviolationerrortypescan_removed"></a>`SCAN_REMOVED` | Represents mismatch between the scans of the source and target pipelines. |
 | <a id="policyviolationerrortypeunknown"></a>`UNKNOWN` | Represents unknown error. |
 
+### `PolicyViolationStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="policyviolationstatusfailed"></a>`FAILED` | Represents a failed policy violation. |
+| <a id="policyviolationstatusrunning"></a>`RUNNING` | Represents a running policy violation. |
+| <a id="policyviolationstatuswarning"></a>`WARNING` | Represents a policy violation warning. |
+
 ### `ProductAnalyticsState`
 
 Current state of the product analytics stack.
@@ -41231,6 +41263,12 @@ An example `ClustersClusterID` is: `"gid://gitlab/Clusters::Cluster/1"`.
 Color represented as a hex code or named color.
 
 For example: "#fefefe".
+
+### `ComplianceManagementComplianceFrameworkComplianceRequirementID`
+
+A `ComplianceManagementComplianceFrameworkComplianceRequirementID` is a global ID. It is encoded as a string.
+
+An example `ComplianceManagementComplianceFrameworkComplianceRequirementID` is: `"gid://gitlab/ComplianceManagement::ComplianceFramework::ComplianceRequirement/1"`.
 
 ### `ComplianceManagementFrameworkID`
 

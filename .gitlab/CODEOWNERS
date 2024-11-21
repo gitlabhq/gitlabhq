@@ -722,6 +722,8 @@ lib/gitlab/checks/**
 /doc/api/graphql/audit_report.md @eread
 /doc/api/graphql/branch_rules.md @brendan777
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
+/doc/api/graphql/epic_work_items_api_migration_guide.md @msedlakjakubowski
+/doc/api/graphql/examples.md @ashrafkhamis
 /doc/api/graphql/getting_started.md @ashrafkhamis
 /doc/api/graphql/index.md @ashrafkhamis
 /doc/api/graphql/reference/ @ashrafkhamis
@@ -810,6 +812,7 @@ lib/gitlab/checks/**
 /doc/api/project_push_rules.md @brendan777
 /doc/api/project_relations_export.md @ashrafkhamis
 /doc/api/project_repository_storage_moves.md @eread
+/doc/api/project_security_settings.md @rdickenson
 /doc/api/project_snippets.md @brendan777
 /doc/api/project_starring.md @emily.sahlani
 /doc/api/project_statistics.md @brendan777
@@ -885,6 +888,7 @@ lib/gitlab/checks/**
 /doc/ci/jobs/ @marcel.amirault
 /doc/ci/jobs/job_artifacts.md @lyspin
 /doc/ci/jobs/job_artifacts_troubleshooting.md @lyspin
+/doc/ci/jobs/job_logs.md @lyspin
 /doc/ci/migration/ @marcel.amirault
 /doc/ci/migration/bamboo.md @lyspin
 /doc/ci/migration/teamcity.md @lyspin
@@ -907,18 +911,18 @@ lib/gitlab/checks/**
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/ @lyspin
 /doc/ci/testing/code_quality.md @rdickenson @phillipwells
+/doc/ci/testing/code_quality_codeclimate_scanning.md @rdickenson @phillipwells
 /doc/ci/testing/code_quality_troubleshooting.md @rdickenson @phillipwells
 /doc/ci/triggers/ @marcel.amirault
 /doc/ci/variables/ @marcel.amirault
 /doc/ci/yaml/ @marcel.amirault
 /doc/ci/yaml/artifacts_reports.md @lyspin
-/doc/ci/yaml/ci_job_log_timestamps.md @rsarangadharan
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
 /doc/development/ai_architecture.md @gitlab-org/ai-powered
 /doc/development/ai_features/ @gitlab-org/ai-powered
 /doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
 /doc/development/application_limits.md @gitlab-org/distribution
-/doc/development/audit_event_guide/ @gitlab-org/security-risk-management/security-policies/frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
+/doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/foundations/engineering
@@ -945,7 +949,7 @@ lib/gitlab/checks/**
 /doc/development/permissions.md @rlehmann1
 /doc/development/permissions/ @rlehmann1
 /doc/development/pipelines/ @gl-quality/eng-prod
-/doc/development/policies.md @gitlab-org/software-supply-chain-security/authentication/approvers
+/doc/development/policies.md @gitlab-org/govern/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/govern/threat-insights-frontend-team
@@ -1125,7 +1129,6 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/cherry_pick_changes.md @brendan777
 /doc/user/project/merge_requests/csv_export.md @eread
 /doc/user/project/merge_requests/methods/ @brendan777
-/doc/user/project/merge_requests/reviews/data_usage.md @sselhorn @jglassman1 @fneill
 /doc/user/project/merge_requests/squash_and_merge.md @brendan777
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
@@ -1144,7 +1147,6 @@ lib/gitlab/checks/**
 /doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/files/index.md @ashrafkhamis
 /doc/user/project/repository/monorepos/ @eread
-/doc/user/project/repository/web_editor.md @brendan777
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski
 /doc/user/project/settings/import_export.md @ashrafkhamis

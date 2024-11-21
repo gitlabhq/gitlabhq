@@ -59,6 +59,17 @@ RSpec.describe Gitlab::Profiler do
       described_class.profile('/', user: user, private_token: private_token)
     end
 
+    it 'passes headers' do
+      user = double(:user)
+      headers = { 'Private-Token' => private_token, 'foo' => 'bar' }
+
+      expect(described_class).to receive(:with_user).with(nil).and_call_original
+      expect(app).to receive(:get).with('/', params: nil, headers: headers)
+      expect(app).to receive(:get).with('/api/v4/users')
+
+      described_class.profile('/', user: user, headers: headers)
+    end
+
     it 'generates sampling data' do
       user = double(:user)
       temp_data = Tempfile.new

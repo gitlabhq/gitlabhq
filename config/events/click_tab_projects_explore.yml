@@ -7,7 +7,7 @@ identifiers:
 additional_properties:
   label:
     description: Tab name
-product_group: tenant_scale
+product_group: organizations
 milestone: '17.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158282
 distributions:

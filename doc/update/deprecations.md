@@ -376,6 +376,24 @@ upgrade to GitLab 16.3 or above, and remove the feature flag configuration.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381894).
+
+</div>
+
+The `name` field in the `ProjectMonthlyUsageType` of GitLab's GraphQL API will be removed in GitLab 18.0.
+
+To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ProjectMonthlyUsageType`. Replace any references to the `name` field with `project.name`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner platforms and setup instructions in GraphQL API
 
 <div class="deprecation-notes">

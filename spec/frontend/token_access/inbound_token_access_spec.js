@@ -12,11 +12,11 @@ import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import {
   inboundJobTokenScopeEnabledResponse,
   inboundJobTokenScopeDisabledResponse,
   inboundGroupsAndProjectsWithScopeResponse,
-  inboundGroupsAndProjectsWithScopeResponseWithAddedItem,
   inboundRemoveNamespaceSuccess,
   inboundUpdateScopeSuccessResponse,
 } from './mock_data';
@@ -61,6 +61,9 @@ describe('TokenAccess component', () => {
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
   const findNamespaceForm = () => wrapper.findComponent(NamespaceForm);
   const findSaveChangesBtn = () => wrapper.findByTestId('save-ci-job-token-scope-changes-btn');
+  const findCountLoadingIcon = () => wrapper.findByTestId('count-loading-icon');
+  const findGroupCount = () => wrapper.findByTestId('group-count');
+  const findProjectCount = () => wrapper.findByTestId('project-count');
 
   const createComponent = (requestHandlers, mountFn = shallowMountExtended, provide = {}) => {
     wrapper = mountFn(InboundTokenAccess, {
@@ -74,6 +77,9 @@ describe('TokenAccess component', () => {
         $toast: {
           show: mockToastShow,
         },
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
 
@@ -336,7 +342,7 @@ describe('TokenAccess component', () => {
   describe.each`
     type         | index | mutation                                       | handler
     ${'group'}   | ${0}  | ${inboundRemoveGroupCIJobTokenScopeMutation}   | ${inboundRemoveGroupSuccessHandler}
-    ${'project'} | ${2}  | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler}
+    ${'project'} | ${1}  | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler}
   `('remove $type', ({ type, index, mutation, handler }) => {
     it(`calls remove ${type} mutation`, async () => {
       await createComponent(
@@ -344,7 +350,7 @@ describe('TokenAccess component', () => {
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
             inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            jest.fn().mockResolvedValue(inboundGroupsAndProjectsWithScopeResponseWithAddedItem),
+            inboundGroupsAndProjectsWithScopeResponseHandler,
           ],
           [mutation, handler],
         ],
@@ -356,44 +362,13 @@ describe('TokenAccess component', () => {
       expect(handler).toHaveBeenCalledWith({ projectPath, targetPath: expect.any(String) });
     });
 
-    it(`decrements the ${type} count`, async () => {
-      await createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            jest
-              .fn()
-              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponseWithAddedItem)
-              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponse),
-          ],
-          [mutation, handler],
-        ],
-        mountExtended,
-      );
-
-      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('2');
-      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
-        `2 ${type}s have access`,
-      );
-
-      findRemoveProjectBtnAt(index).trigger('click');
-
-      await waitForPromises();
-
-      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('1');
-      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
-        `1 ${type} has access`,
-      );
-    });
-
     it(`remove ${type} handles error correctly`, async () => {
       await createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
             inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            jest.fn().mockResolvedValue(inboundGroupsAndProjectsWithScopeResponseWithAddedItem),
+            inboundGroupsAndProjectsWithScopeResponseHandler,
           ],
           [mutation, failureHandler],
         ],
@@ -426,6 +401,65 @@ describe('TokenAccess component', () => {
       expect(findTokenDisabledAlert().exists()).toBe(false);
       expect(findRadioGroup().exists()).toBe(false);
       expect(findSaveChangesBtn().exists()).toBe(false);
+    });
+  });
+
+  describe('allowlist counts', () => {
+    beforeEach(() => {
+      const requestHandlers = [
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
+      ];
+
+      return createComponent(requestHandlers, mountExtended);
+    });
+
+    describe('when allowlist query is loaded', () => {
+      it('does not show loading icon', () => {
+        expect(findCountLoadingIcon().exists()).toBe(false);
+      });
+
+      it('shows group count', () => {
+        expect(findGroupCount().text()).toBe('1');
+      });
+
+      it('has group count tooltip', () => {
+        const tooltip = getBinding(findGroupCount().element, 'gl-tooltip');
+
+        expect(tooltip).toMatchObject({ modifiers: { d0: true }, value: '1 group has access' });
+      });
+
+      it('shows project count', () => {
+        expect(findProjectCount().text()).toBe('1');
+      });
+
+      it('has project count tooltip', () => {
+        const tooltip = getBinding(findProjectCount().element, 'gl-tooltip');
+
+        expect(tooltip).toMatchObject({ modifiers: { d0: true }, value: '1 project has access' });
+      });
+    });
+
+    describe('when allowlist query is loading', () => {
+      beforeEach(async () => {
+        findToggleFormBtn().vm.$emit('click');
+        await nextTick();
+        findNamespaceForm().vm.$emit('saved');
+      });
+
+      it('shows loading icon', () => {
+        expect(findCountLoadingIcon().exists()).toBe(true);
+      });
+
+      it('does not show group count', () => {
+        expect(findGroupCount().exists()).toBe(false);
+      });
+
+      it('does not show project count', () => {
+        expect(findProjectCount().exists()).toBe(false);
+      });
     });
   });
 });

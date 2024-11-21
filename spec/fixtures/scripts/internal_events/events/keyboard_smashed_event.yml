@@ -9,9 +9,6 @@ identifiers:
 product_group: import_and_integrate
 milestone: '16.6'
 introduced_by_url: TODO
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

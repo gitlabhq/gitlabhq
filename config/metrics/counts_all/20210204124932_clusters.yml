@@ -2,7 +2,7 @@
 data_category: operational
 key_path: gitaly.clusters
 description: Total GitLab Managed clusters both enabled and disabled
-product_group: gitaly_cluster
+product_group: gitaly
 value_type: number
 status: active
 time_frame: all

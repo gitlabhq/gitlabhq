@@ -23,6 +23,10 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     it { is_expected.to have_one(:helm_file_metadatum).inverse_of(:package_file).class_name('Packages::Helm::FileMetadatum') }
   end
 
+  describe 'included modules' do
+    it { is_expected.to include_module(AfterCommitQueue) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
 

@@ -30,3 +30,4 @@ desired_sharding_key:
 desired_sharding_key_migration_job_name:
 - BackfillSecurityOrchestrationPolicyRuleSchedulesProjectId
 - BackfillSecurityOrchestrationPolicyRuleSchedulesNamespaceId
+table_size: small

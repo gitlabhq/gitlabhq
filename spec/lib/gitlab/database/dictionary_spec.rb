@@ -161,7 +161,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
       describe '#table_size' do
         it 'returns the table_size of the table' do
-          expect(database_dictionary.table_size).to eq('unknown')
+          expect(database_dictionary.table_size).to eq('small')
         end
       end
 

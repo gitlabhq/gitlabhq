@@ -316,7 +316,7 @@
 
   .coverage {
     font-size: 12px;
-    color: var(--gray-500, $gray-500);
+    @apply gl-text-subtle;
     line-height: initial;
   }
 }

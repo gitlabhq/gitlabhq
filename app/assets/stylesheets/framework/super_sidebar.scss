@@ -45,10 +45,10 @@ $command-palette-spacing: px-to-rem(14px);
     --super-sidebar-border-color: var(--gl-border-color-section);
     --super-sidebar-user-bar-bg: var(--gl-color-alpha-light-4);
 
-    --super-sidebar-user-bar-button-bg: var(--gl-background-color-default);
-    --super-sidebar-user-bar-button-border-color: var(--gl-color-alpha-light-8);
-    --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-light-16);
-    --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-light-24);
+    --super-sidebar-user-bar-button-bg: var(--gl-color-alpha-light-16);
+    --super-sidebar-user-bar-button-border-color: var(--gl-color-alpha-light-16);
+    --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-light-24);
+    --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-light-32);
 
     --super-sidebar-nav-item-hover-bg: var(--gl-color-alpha-light-8);
     --super-sidebar-nav-item-active-bg: var(--gl-color-alpha-light-16);
@@ -112,7 +112,7 @@ $command-palette-spacing: px-to-rem(14px);
   &.gl-dark {
     @include super-sidebar-theme(
       $background: var(--gl-background-color-subtle),
-      $user-bar-background: var(--gl-color-neutral-900),
+      $user-bar-background: var(--gl-color-neutral-800),
       $user-bar-button-color: var(--gl-color-neutral-50),
       $context-header: var(--gl-color-neutral-300),
       $accent-color: var(--gl-color-neutral-500),

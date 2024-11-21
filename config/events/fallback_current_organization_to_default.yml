@@ -5,7 +5,7 @@ action: fallback_current_organization_to_default
 additional_properties:
   label:
     description: Caller ID containing either the controller action or request path from where the event triggered.
-product_group: tenant_scale
+product_group: organizations
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172017
 distributions:

@@ -186,7 +186,7 @@
   }
 
   .sidebar-item-value & {
-    fill: $gray-500;
+    @apply gl-fill-icon-subtle;
   }
 }
 

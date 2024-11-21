@@ -1,0 +1,8 @@
+---
+migration_job_name: CreateMissingTerraformModuleMetadata
+description: Creates the missing terraform module metadata
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171729
+milestone: '17.7'
+queued_migration_version: 20241118145604
+finalized_by: # version of the migration that finalized this BBM

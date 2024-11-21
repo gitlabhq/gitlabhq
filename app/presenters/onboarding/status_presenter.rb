@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Onboarding
-  class Status
+  class StatusPresenter
     def self.registration_path_params(params:) # rubocop:disable Lint/UnusedMethodArgument -- overridden in EE
       {}
     end
@@ -15,7 +15,7 @@ module Onboarding
     def single_invite?
       # If there are more than one member it will mean we have been invited to multiple projects/groups and
       # are not able to distinguish which one we should putting the user in after registration
-      members.count == 1
+      members.size == 1
     end
 
     def last_invited_member
@@ -41,4 +41,4 @@ module Onboarding
   end
 end
 
-Onboarding::Status.prepend_mod_with('Onboarding::Status')
+Onboarding::StatusPresenter.prepend_mod

@@ -194,25 +194,13 @@
   }
 
   .icon,
-  gl-emoji,
-  .award-control-icon {
+  gl-emoji {
     vertical-align: middle;
     line-height: 0.5em;
   }
 
   .award-control-icon-loading {
     display: none;
-  }
-
-  .award-control-icon {
-    color: $gray-100;
-
-    svg {
-      height: $default-icon-size;
-      width: $default-icon-size;
-      border-radius: 50%;
-      fill: $gray-500;
-    }
   }
 
   .award-control-icon-positive,

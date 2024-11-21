@@ -385,11 +385,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     store_location_for(:user, after_sign_up_path)
   end
 
-  def onboarding_status
-    Onboarding::Status
+  def onboarding_status_presenter
+    Onboarding::StatusPresenter
       .new(request.env.fetch('omniauth.params', {}).deep_symbolize_keys, session['user_return_to'], @user)
   end
-  strong_memoize_attr :onboarding_status
+  strong_memoize_attr :onboarding_status_presenter
 
   # overridden in EE
   def sign_in_and_redirect_or_verify_identity(user, _, _)

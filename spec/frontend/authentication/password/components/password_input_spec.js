@@ -17,9 +17,12 @@ describe('PasswordInput', () => {
   const findPasswordInput = () => wrapper.findComponent(GlFormInput);
   const findToggleButton = () => wrapper.findComponent(GlButton);
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     return shallowMount(PasswordInput, {
-      propsData,
+      propsData: {
+        ...propsData,
+        ...props,
+      },
     });
   };
 
@@ -28,12 +31,23 @@ describe('PasswordInput', () => {
   });
 
   it('sets password input attributes correctly', () => {
-    expect(findPasswordInput().attributes('id')).toBe(propsData.id);
-    expect(findPasswordInput().attributes('autocomplete')).toBe(propsData.autocomplete);
-    expect(findPasswordInput().attributes('name')).toBe(propsData.name);
-    expect(findPasswordInput().attributes('minlength')).toBe(propsData.minimumPasswordLength);
-    expect(findPasswordInput().attributes('data-testid')).toBe(propsData.testid);
-    expect(findPasswordInput().attributes('title')).toBe(propsData.title);
+    const passwordInput = findPasswordInput();
+
+    expect(passwordInput.attributes('id')).toBe(propsData.id);
+    expect(passwordInput.attributes('autocomplete')).toBe(propsData.autocomplete);
+    expect(passwordInput.attributes('name')).toBe(propsData.name);
+    expect(passwordInput.attributes('minlength')).toBe(propsData.minimumPasswordLength);
+    expect(passwordInput.attributes('data-testid')).toBe(propsData.testid);
+    expect(passwordInput.attributes('title')).toBe(propsData.title);
+    expect(passwordInput.attributes('required')).toBe('true');
+  });
+
+  describe('when password input is not required', () => {
+    it('does not set required attribute', () => {
+      wrapper = createComponent({ required: false });
+
+      expect(findPasswordInput().attributes('required')).toBe(undefined);
+    });
   });
 
   describe('when the show password button is clicked', () => {

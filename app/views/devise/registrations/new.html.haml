@@ -10,7 +10,7 @@
 .signup-page
   .gl-mb-3.gl-p-4
     = render 'signup_box_form',
-      url: registration_path(resource_name, ::Onboarding::Status.registration_path_params(params: params)),
+      url: registration_path(resource_name, ::Onboarding::StatusPresenter.registration_path_params(params: params)),
       button_text: _('Continue')
 
     - if signup_button_based_providers_enabled?
@@ -20,7 +20,7 @@
         .gl-flex.gl-flex-col.gl-gap-3
           - enabled_button_based_providers_for_signup.each do |provider|
             = render 'devise/shared/omniauth_provider_button',
-              href: omniauth_authorize_path(:user, provider, onboarding_status.registration_omniauth_params),
+              href: omniauth_authorize_path(:user, provider, onboarding_status_presenter.registration_omniauth_params),
               provider: provider,
               classes: 'js-track-omni-auth',
               data: { provider: provider, track_action: "#{provider}_sso", track_label: preregistration_tracking_label }

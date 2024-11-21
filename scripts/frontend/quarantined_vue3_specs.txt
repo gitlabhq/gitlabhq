@@ -37,7 +37,6 @@ ee/spec/frontend/boards/components/epic_board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/epics_swimlanes_spec.js
 ee/spec/frontend/ci/pipeline_details/header/pipeline_header_spec.js
 ee/spec/frontend/ci/runner/components/runner_details_spec.js
-ee/spec/frontend/ci/runner/components/runner_form_fields_spec.js
 ee/spec/frontend/ci/runner/components/runner_header_spec.js
 ee/spec/frontend/ci/runner/components/stat/runner_upgrade_status_stats_spec.js
 ee/spec/frontend/ci/runner/group_runners_dashboard/group_runners_wait_times_spec.js

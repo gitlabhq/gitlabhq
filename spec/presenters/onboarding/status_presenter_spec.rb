@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::Status, feature_category: :onboarding do
-  let_it_be(:member) { create(:group_member) }
-  let_it_be(:user) { member.user }
-  let_it_be(:source) { member.group }
+RSpec.describe Onboarding::StatusPresenter, feature_category: :onboarding do
+  let(:member) { build_stubbed(:group_member) }
+  let(:members) { [member] }
+  let(:user) { build_stubbed(:user, members: members) }
 
   describe '.registration_path_params' do
     let(:params) { { some: 'thing' } }
@@ -28,22 +28,20 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
 
     context 'when there is only one member for the user' do
       context 'when the member source exists' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
     context 'when there is more than one member for the user' do
-      before do
-        create(:group_member, user: user)
-      end
+      let(:members) { [member, build_stubbed(:group_member)] }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when there are no members for the user' do
       let(:user) { build_stubbed(:user) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -53,13 +51,14 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
     it { is_expected.to eq(member) }
 
     context 'when another member exists and is most recent' do
-      let!(:last_member) { create(:group_member, user: user) }
+      let(:last_member) { build_stubbed(:group_member) }
+      let(:members) { [member, last_member] }
 
       it { is_expected.to eq(last_member) }
     end
 
     context 'when there are no members' do
-      let_it_be(:user) { build_stubbed(:user) }
+      let(:members) { [] }
 
       it { is_expected.to be_nil }
     end
@@ -69,19 +68,20 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
     subject { described_class.new(nil, nil, user).last_invited_member_source }
 
     context 'when a member exists' do
-      it { is_expected.to eq(source) }
+      it { is_expected.to eq(member.group) }
     end
 
     context 'when no members exist' do
-      let_it_be(:user) { build_stubbed(:user) }
+      let(:members) { [] }
 
       it { is_expected.to be_nil }
     end
 
     context 'when another member exists and is most recent' do
-      let!(:last_member_source) { create(:group_member, user: user).group }
+      let(:last_member) { build_stubbed(:group_member) }
+      let(:members) { [member, last_member] }
 
-      it { is_expected.to eq(last_member_source) }
+      it { is_expected.to eq(last_member.group) }
     end
   end
 end

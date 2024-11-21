@@ -29,7 +29,7 @@
     padding: 20px 2px;
 
     .stage {
-      color: var(--gray-500, $gray-500);
+      @apply gl-text-subtle;
       font-weight: $gl-font-weight-normal;
       vertical-align: middle;
     }

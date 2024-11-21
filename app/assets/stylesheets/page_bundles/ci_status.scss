@@ -66,7 +66,7 @@
 
   &.ci-created,
   &.ci-skipped {
-    color: var(--gray-500, $gray-500);
+    @apply gl-text-subtle;
     border-color: currentColor;
 
     &:not(span):hover {

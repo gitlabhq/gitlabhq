@@ -54,6 +54,7 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
 
           it 'logs monitoring data' do
             expect(Gitlab::AppLogger).to receive(:info).with(
+              message: 'Processed scheduled member deletion',
               user_id: user.id,
               namespace_id: group.id,
               destroyed_count: 1

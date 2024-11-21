@@ -2,7 +2,7 @@
 key_path: batched_background_migrations_metric
 name: "batched_background_migrations"
 description: "Tracks the execution time of batched background migrations"
-product_group: database
+product_group: database_frameworks
 value_type: object
 status: active
 milestone: "16.2"

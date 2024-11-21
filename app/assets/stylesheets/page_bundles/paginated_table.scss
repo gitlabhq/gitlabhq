@@ -8,18 +8,6 @@
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tabs-nav {
     border-bottom-width: 0;
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-tab-nav-item {
-      color: var(--gray-500, $gray-500);
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      > .gl-tab-counter-badge {
-        color: inherit;
-        font-size: $gl-font-size-sm;
-        background-color: var(--gray-50, $gray-50);
-      }
-    }
   }
 
   @include media-breakpoint-down(xs) {

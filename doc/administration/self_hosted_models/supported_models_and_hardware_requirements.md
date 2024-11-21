@@ -27,7 +27,6 @@ Install one of the following GitLab-approved LLM models:
 | Model family | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
 |--------------|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
 | Mistral Codestral   | [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1)                                        | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| Mistral      | [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | Mistral      | [Mistral 7B-it](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3)                     | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Mistral      | [Mixtral 8x7B-it](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Mistral      | [Mixtral 8x22B-it](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1)       |  **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |

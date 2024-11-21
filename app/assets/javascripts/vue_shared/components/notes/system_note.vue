@@ -31,12 +31,12 @@ import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 const ICON_COLORS = {
-  check: 'gl-bg-green-100 gl-text-green-700 icon-success',
-  'merge-request-close': 'gl-bg-red-100 gl-text-red-700 icon-danger',
-  merge: 'gl-bg-blue-100 gl-text-blue-700 icon-info',
-  'issue-close': 'gl-bg-blue-100 gl-text-blue-700 icon-info',
-  issues: 'gl-bg-green-100 gl-text-green-700 icon-success',
-  error: 'gl-bg-red-100 gl-text-red-700 icon-danger',
+  check: 'system-note-icon-success',
+  'merge-request-close': 'system-note-icon-danger',
+  merge: 'system-note-icon-info',
+  'issue-close': 'system-note-icon-info',
+  issues: 'system-note-icon-success',
+  error: 'system-note-icon-danger',
 };
 
 export default {

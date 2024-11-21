@@ -22,9 +22,6 @@ additional_properties:
 product_group: analytics_instrumentation
 milestone: '16.6'
 introduced_by_url: TODO
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

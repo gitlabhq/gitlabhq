@@ -204,8 +204,6 @@ module InternalEventsCli
           'Which tiers will the event be recorded on?',
           [%w[free premium ultimate], %w[premium ultimate], %w[ultimate]]
         )
-
-        event.distributions = event.tiers.include?('free') ? %w[ce ee] : %w[ee]
       end
 
       def create_event_file

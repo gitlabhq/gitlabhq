@@ -2,7 +2,7 @@
 data_category: optional
 key_path: gitaly.filesystems
 description: Filesystem data for Gitaly installations
-product_group: gitaly_cluster
+product_group: gitaly
 value_type: string
 status: active
 time_frame: all

@@ -9,21 +9,19 @@ module Gitlab
     #
     # Using a pattern defined in `FileUploader` it copies files to a new
     # project and rewrites all links to uploads in a given text.
-    #
-    #
     class UploadsRewriter
       include Gitlab::Utils::StrongMemoize
 
-      def initialize(text, _text_html, source_project, _current_user)
+      def initialize(text, _text_html, source_container, _current_user)
         @text = text
-        @source_project = source_project
+        @source_container = source_container
         @pattern = FileUploader::MARKDOWN_PATTERN
       end
 
-      def rewrite(target_parent)
+      def rewrite(target_container)
         return @text unless needs_rewrite?
 
-        @target_parent = target_parent
+        @target_container = target_container
 
         rewritten_text = Gitlab::StringRegexMarker.new(@text).mark(@pattern) do |markdown, left:, right:, mode:|
           transform_markdown(markdown)
@@ -46,7 +44,7 @@ module Gitlab
       end
 
       def find_file(secret, file_name)
-        UploaderFinder.new(@source_project, secret, file_name).execute
+        UploaderFinder.new(@source_container, secret, file_name).execute
       end
 
       def transform_markdown(markdown)
@@ -56,9 +54,7 @@ module Gitlab
         # No file will be returned for a path traversal
         return markdown unless file.try(:exists?)
 
-        klass = @target_parent.is_a?(Namespace) ? NamespaceFileUploader : FileUploader
-        moved = klass.copy_to(file, @target_parent)
-
+        moved = uploader_class.copy_to(file, @target_container)
         moved_markdown = moved.markdown_link
 
         # Prevents rewrite of plain links as embedded
@@ -67,6 +63,10 @@ module Gitlab
         else
           moved_markdown.delete_prefix('!')
         end
+      end
+
+      def uploader_class
+        @klass ||= @target_container.is_a?(Group) ? NamespaceFileUploader : FileUploader
       end
     end
   end

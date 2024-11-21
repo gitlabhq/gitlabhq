@@ -15,8 +15,7 @@ module Namespaces
 
     delegate :execute_hooks, :execute_integrations, :group, to: :project, allow_nil: true
     delegate :external_references_supported?, :default_issues_tracker?, :pending_delete?, to: :project
-    delegate :service_desk_alias_address, to: :project
-    delegate :crm_group, to: :project
+    delegate :service_desk_alias_address, :crm_group, :hashed_storage?, :disk_path, to: :project
 
     def self.sti_name
       'Project'

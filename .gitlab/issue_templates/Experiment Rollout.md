@@ -83,7 +83,7 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 ## Roll Out Steps
 
 - [ ] [Confirm that end-to-end tests pass with the feature flag enabled](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/feature_flags.html#confirming-that-end-to-end-tests-pass-with-a-feature-flag-enabled). If there are failing tests, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) to collaborate in updating the tests or confirming that the failing tests are not caused by the changes behind the enabled feature flag.
-  - See [`#qa-staging` Slack channel](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) and look for the following messages:
+  - See [`#e2e-run-staging` Slack channel](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) and look for the following messages:
     - test kicked off: `Feature flag <feature-flag-name> has been set to true on **gstg**`
     - test result: `This pipeline was triggered due to toggling of <feature-flag-name> feature flag`
 - [ ] Enable on staging (`/chatops run feature set <feature-flag-name> true --staging`)

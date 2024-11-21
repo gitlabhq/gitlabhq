@@ -12,10 +12,6 @@ import {
 export const Tracker = {
   nonInitializedQueue: [],
   initialized: false,
-  definitionsLoaded: false,
-  definitionsManifest: {},
-  definitionsEventsQueue: [],
-  definitions: [],
   ALLOWED_URL_HASHES: ['#diff', '#note'],
   /**
    * (Legacy) Determines if tracking is enabled at the user level.
@@ -63,64 +59,6 @@ export const Tracker = {
     }
 
     return dispatchSnowplowEvent(...eventData);
-  },
-
-  /**
-   * Preloads event definitions.
-   *
-   * @returns {undefined}
-   */
-  loadDefinitions() {
-    // TODO: fetch definitions from the server and flush the queue
-    // See https://gitlab.com/gitlab-org/gitlab/-/issues/358256
-    Tracker.definitionsLoaded = true;
-
-    while (Tracker.definitionsEventsQueue.length) {
-      Tracker.dispatchFromDefinition(...Tracker.definitionsEventsQueue.shift());
-    }
-  },
-
-  /**
-   * Dispatches a structured event with data from its event definition.
-   *
-   * @param {String} basename
-   * @param {Object} eventData
-   * @returns {Boolean}
-   */
-  definition(basename, eventData = {}) {
-    if (!Tracker.enabled()) {
-      return false;
-    }
-
-    if (!(basename in Tracker.definitionsManifest)) {
-      throw new Error(`Missing Snowplow event definition "${basename}"`);
-    }
-
-    return Tracker.dispatchFromDefinition(basename, eventData);
-  },
-
-  /**
-   * Builds an event with data from a valid definition and sends it to
-   * Snowplow. If the definitions are not loaded, it pushes the data to a queue.
-   *
-   * @param {String} basename
-   * @param {Object} eventData
-   * @returns {Boolean}
-   */
-  dispatchFromDefinition(basename, eventData) {
-    if (!Tracker.definitionsLoaded) {
-      Tracker.definitionsEventsQueue.push([basename, eventData]);
-
-      return false;
-    }
-
-    const eventDefinition = Tracker.definitions.find((definition) => definition.key === basename);
-
-    return Tracker.event(
-      eventData.category ?? eventDefinition.category,
-      eventData.action ?? eventDefinition.action,
-      eventData,
-    );
   },
 
   /**

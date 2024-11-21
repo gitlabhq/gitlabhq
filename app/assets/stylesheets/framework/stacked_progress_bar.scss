@@ -8,7 +8,7 @@
   .status-unavailable,
   .status-green,
   .status-neutral,
-  .status-red, {
+  .status-red {
     height: 100%;
     min-width: 40px;
     padding: 0 5px;
@@ -24,7 +24,7 @@
 
   .status-unavailable {
     padding: 0 10px;
-    color: $gray-500;
+    @apply gl-text-subtle;
   }
 
   .status-green {

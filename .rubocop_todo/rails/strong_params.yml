@@ -237,7 +237,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/concerns/ee/analytics/cycle_analytics/stage_actions.rb'
     - 'ee/app/controllers/concerns/ee/analytics/cycle_analytics/value_stream_actions.rb'
     - 'ee/app/controllers/concerns/ee/issuable_collections.rb'
-    - 'ee/app/controllers/concerns/ee/onboarding/status.rb'
     - 'ee/app/controllers/concerns/epic_relations.rb'
     - 'ee/app/controllers/concerns/insights_actions.rb'
     - 'ee/app/controllers/country_states_controller.rb'

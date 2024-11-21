@@ -451,11 +451,11 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     end
 
     let(:metric1_attributes) do
-      { 'key_path' => 'counter.category.event', 'description' => 'Metric description', 'tier' => ['free'] }
+      { 'key_path' => 'counter.category.event', 'description' => 'Metric description', 'tiers' => ['free'] }
     end
 
     let(:metric2_attributes) do
-      { 'key_path' => 'counter.category.event2', 'description' => 'Metric description2', 'tier' => ['free'] }
+      { 'key_path' => 'counter.category.event2', 'description' => 'Metric description2', 'tiers' => ['free'] }
     end
 
     let(:metric1) do
@@ -504,9 +504,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       payload = YAML.safe_load(response.body)
       expect(payload.length).to be 2
       expect(payload[0]).to include(metric1_attributes)
-      expect(payload[0]['tiers']).to eq(payload[0]['tier'])
       expect(payload[1]).to include(metric2_attributes)
-      expect(payload[1]['tiers']).to eq(payload[1]['tier'])
     end
 
     context "with include_paths being true" do

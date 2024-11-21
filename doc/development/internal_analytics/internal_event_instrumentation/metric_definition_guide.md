@@ -61,9 +61,6 @@ events:
 - name: view_productivity_analytics
 distribution:
 - ee
-tier:
-- premium
-- ultimate
 tiers:
 - premium
 - ultimate
@@ -91,8 +88,6 @@ data_source: internal_events
 data_category: optional
 distribution:
   - ee
-tier:
-  - ultimate
 tiers:
   - ultimate
 time_frame: 7d
@@ -121,8 +116,6 @@ data_source: internal_events
 data_category: optional
 distribution:
 - ee
-tier:
-- ultimate
 tiers:
 - ultimate
 events:

@@ -43,22 +43,21 @@ module Gitlab
     #
     # - profiler_options: A keyword Hash of arguments passed to the profiler. Defaults:
     #   { mode: :wall, out: <some temporary file>, interval: 1000, raw: true }
-    def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil, profiler_options: {})
+    def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil, headers: {}, profiler_options: {})
       app = ActionDispatch::Integration::Session.new(Rails.application)
       verb = :get
-      headers = {}
 
       if post_data
         verb = :post
         headers['Content-Type'] = 'application/json'
       end
 
-      if private_token
-        headers['Private-Token'] = private_token
-        user = nil # private_token overrides user
-      end
+      headers['Private-Token'] = private_token if private_token
 
-      logger = create_custom_logger(logger, private_token: private_token)
+      # private_token overrides user
+      user = nil if headers['Private-Token'].present?
+
+      logger = create_custom_logger(logger, private_token: headers['Private-Token'])
 
       result = ::Gitlab::SafeRequestStore.ensure_request_store do
         # Make an initial call for an asset path in development mode to avoid

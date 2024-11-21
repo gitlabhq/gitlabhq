@@ -19,3 +19,4 @@ desired_sharding_key:
         table: issues
         sharding_key: namespace_id
         belongs_to: work_item
+table_size: small

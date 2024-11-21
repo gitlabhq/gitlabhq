@@ -11,12 +11,6 @@ RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
   let(:issue) { create(:issue, project: source_parent, description: content) }
 
   describe '#initialize' do
-    it 'raises an error if source_parent is not a Project' do
-      expect do
-        described_class.new(user, issue, :description, create(:group), target_parent)
-      end.to raise_error(ArgumentError, 'The rewriter classes require that `source_parent` is a `Project`')
-    end
-
     it 'raises an error if field does not have cached markdown' do
       expect do
         described_class.new(user, issue, :author, source_parent, target_parent)
@@ -69,15 +63,126 @@ RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
     end
 
     context 'when content contains an upload' do
-      let(:image_uploader) { build(:file_uploader, container: source_parent) }
+      let_it_be(:source_project) { create(:project) }
+      let_it_be(:target_project) { create(:project) }
+      let_it_be(:source_group) { create(:group) }
+      let_it_be(:target_group) { create(:group) }
+
+      let(:secret1) { '98765432109876543210987654321098' }
+      let(:secret2) { '01234567890123456789012345678901' }
+      let(:image_uploader) { build(:file_uploader, container: source_parent, secret: secret1) }
       let(:content) { "Text and #{image_uploader.markdown_link}" }
 
-      it 'rewrites content' do
-        new_content = subject
+      let(:destination_path) do
+        target_uploader = FileUploader.new(target_parent)
+        target_uploader.object_store = image_uploader.object_store
+        target_uploader.filename = image_uploader.filename
+        target_uploader.upload_path
+      end
 
-        expect(new_content[:description]).not_to eq(content)
-        expect(new_content[:description].length).to eq(content.length)
-        expect(new_content[1]).to eq(nil)
+      shared_examples 'rewrite uploads url' do
+        it 'rewrites content' do
+          # fake secret to predict destination path
+          allow(FileUploader).to receive(:generate_secret).and_return(secret2)
+
+          new_content = subject
+
+          expect(Upload.where(model_id: target_model_id, model_type: target_model_type).count).to eq(1)
+          expect(new_content[:description]).to include(destination_path)
+          expect(new_content[:description]).not_to eq(content)
+          expect(new_content[:description].length).to eq(content.length)
+          expect(new_content[1]).to eq(nil)
+        end
+      end
+
+      context 'when source and target are projects' do
+        let(:source_parent) { source_project }
+        let(:target_parent) { target_project }
+        let(:issue) { create(:issue, project: source_project, description: content) }
+        let(:target_model_id) { target_project.id }
+        let(:target_model_type) { 'Project' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source and target are project namespaces' do
+        let(:source_parent) { source_project.project_namespace }
+        let(:target_parent) { target_project.project_namespace }
+        let(:issue) { create(:issue, project: source_project, description: content) }
+        let(:target_model_id) { target_project.id }
+        let(:target_model_type) { 'Project' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source and target are groups' do
+        let(:source_parent) { source_group }
+        let(:target_parent) { target_group }
+        let(:issue) { create(:issue, :group_level, namespace: source_group, description: content) }
+        let(:target_model_id) { target_group.id }
+        let(:target_model_type) { 'Namespace' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source is project and target is project namespace' do
+        let(:source_parent) { source_project }
+        let(:target_parent) { target_project.project_namespace }
+        let(:issue) { create(:issue, project: source_project, description: content) }
+        let(:target_model_id) { target_project.id }
+        let(:target_model_type) { 'Project' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source is project and target is group' do
+        let(:source_parent) { source_project }
+        let(:target_parent) { target_group }
+        let(:issue) { create(:issue, project: source_project, description: content) }
+        let(:target_model_id) { target_group.id }
+        let(:target_model_type) { 'Namespace' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source is project namespace and target is project' do
+        let(:source_parent) { source_project.project_namespace }
+        let(:target_parent) { target_project }
+        let(:issue) { create(:issue, project: source_project, description: content) }
+        let(:target_model_id) { target_project.id }
+        let(:target_model_type) { 'Project' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source is project namespace and target is group' do
+        let(:source_parent) { source_project.project_namespace }
+        let(:target_parent) { target_group }
+        let(:issue) { create(:issue, project: source_project, description: content) }
+        let(:target_model_id) { target_group.id }
+        let(:target_model_type) { 'Namespace' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source is group and target is project' do
+        let(:source_parent) { source_group }
+        let(:target_parent) { target_project }
+        let(:issue) { create(:issue, :group_level, namespace: source_group, description: content) }
+        let(:target_model_id) { target_project.id }
+        let(:target_model_type) { 'Project' }
+
+        it_behaves_like 'rewrite uploads url'
+      end
+
+      context 'when source is group and target is project namespace' do
+        let(:source_parent) { source_group }
+        let(:target_parent) { target_project.project_namespace }
+        let(:issue) { create(:issue, :group_level, namespace: source_group, description: content) }
+        let(:target_model_id) { target_project.id }
+        let(:target_model_type) { 'Project' }
+
+        it_behaves_like 'rewrite uploads url'
       end
     end
   end

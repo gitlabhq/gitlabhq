@@ -587,7 +587,8 @@ namespace :gitlab do
               'feature_categories' => [],
               'description' => nil,
               'introduced_by_url' => nil,
-              'milestone' => milestone
+              'milestone' => milestone,
+              'table_size' => 'small'
             }
 
             if File.exist?(file)

@@ -642,7 +642,7 @@ $ide-commit-header-height: 48px;
   border-bottom: 1px solid var(--ide-border-color-alt, $border-color);
 
   svg {
-    color: var(--ide-text-color-secondary, $gray-500);
+    color: var(--ide-text-color-secondary, var(--gl-icon-color-subtle));
 
     &:focus,
     &:hover {
@@ -680,7 +680,7 @@ $ide-commit-header-height: 48px;
 
       &,
       &:hover {
-        color: var(--ide-text-color-secondary, $gray-500);
+        color: var(--ide-text-color-secondary, var(--gl-icon-color-subtle));
       }
     }
   }
@@ -1013,7 +1013,7 @@ $ide-commit-header-height: 48px;
 .ide-file-icon-holder {
   display: flex;
   align-items: center;
-  color: var(--ide-text-color-secondary, $gray-500);
+  color: var(--ide-text-color-secondary, var(--gl-text-color-subtle));
 }
 
 .file-row:active {

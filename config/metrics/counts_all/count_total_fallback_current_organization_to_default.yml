@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_fallback_current_organization_to_default
 description: Total count of instances where the current organization fallbacks to the Default organization
-product_group: tenant_scale
+product_group: organizations
 performance_indicator_type: []
 value_type: number
 status: active
@@ -13,10 +13,6 @@ data_category: optional
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

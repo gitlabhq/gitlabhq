@@ -140,8 +140,7 @@ module API
 
             track_package_event('push_package', :rubygems, project: project, namespace: project.namespace)
 
-            package_file = nil
-
+            response = nil
             ApplicationRecord.transaction do
               package = ::Packages::CreateTemporaryPackageService.new(
                 project, current_user, declared_params.merge(build: current_authenticated_job)
@@ -152,18 +151,14 @@ module API
                 file_name: PACKAGE_FILENAME
               }
 
-              package_file = ::Packages::CreatePackageFileService.new(
-                package, file_params.merge(build: current_authenticated_job)
+              response = ::Packages::Rubygems::CreatePackageFileService.new(
+                package: package,
+                params: file_params.merge(build: current_authenticated_job)
               ).execute
             end
 
-            if package_file
-              ::Packages::Rubygems::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
-
-              created!
-            else
-              bad_request!('Package creation failed')
-            end
+            created! if response&.success?
+            bad_request!(response&.message)
           rescue ObjectStorage::RemoteStoreError => e
             Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project.id })
 

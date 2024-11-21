@@ -185,9 +185,6 @@ module Gitlab
             metrics = definitions.values.map do |definition|
               result = definition.to_h
 
-              # TODO: remove during clean up of replacing tier with tiers in definition files
-              result[:tiers] = result[:tier] unless result.key?(:tiers)
-
               result[:file_path] = Pathname.new(definition.path).relative_path_from(Rails.root).to_s if include_paths
               result
             end

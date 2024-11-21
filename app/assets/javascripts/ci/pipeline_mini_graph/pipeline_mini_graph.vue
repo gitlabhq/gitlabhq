@@ -18,7 +18,7 @@ export default {
   i18n: {
     pipelineMiniGraphFetchError: __('There was a problem fetching the pipeline mini graph.'),
   },
-  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 !gl-align-middle'],
+  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 gl-text-subtle !gl-align-middle'],
   directives: {
     GlTooltip: GlTooltipDirective,
   },

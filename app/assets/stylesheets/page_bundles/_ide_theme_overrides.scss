@@ -88,11 +88,11 @@
   }
 
   .dropdown-input .dropdown-input-clear {
-    color: var(--ide-input-border, $gray-500);
+    color: var(--ide-input-border, var(--gl-control-border-color-default));
   }
 
   .ide-nav-form .input-icon {
-    color: var(--ide-input-border, $gray-500);
+    color: var(--ide-input-border, var(--gl-control-border-color-default));
   }
 
   code {

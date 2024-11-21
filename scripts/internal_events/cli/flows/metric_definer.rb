@@ -537,7 +537,6 @@ module InternalEventsCli
           fields[:product_group] << event.product_group
           fields[:stage] << find_stage(event.product_group)
           fields[:section] << find_section(event.product_group)
-          fields[:distribution] << event.distributions&.sort
           fields[:tiers] << event.tiers&.sort
         end
 

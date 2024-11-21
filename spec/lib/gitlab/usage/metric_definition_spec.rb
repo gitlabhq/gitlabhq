@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       time_frame: 'none',
       data_source: 'database',
       distribution: %w[ee ce],
-      tier: %w[free premium ultimate],
       tiers: %w[free premium ultimate],
       data_category: 'standard',
       removed_by_url: 'http://gdk.test'
@@ -202,7 +201,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       :data_source        | nil
       :distribution       | nil
       :distribution       | 'test'
-      :tier               | %w[test ee]
+      :tiers              | %w[test ee]
       :repair_issue_url   | nil
       :removed_by_url     | 1
       :another_attribute  | nil
@@ -550,7 +549,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         time_frame: 'none',
         data_source: 'database',
         distribution: %w[ee ce],
-        tier: %w[free starter premium ultimate bronze silver gold],
         tiers: %w[free starter premium ultimate bronze silver gold],
         data_category: 'optional'
       }

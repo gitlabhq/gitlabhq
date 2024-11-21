@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :aggregate_failures, :clean_gitlab_redis_shared_state, feature_category: :virtual_registry do
   let_it_be(:registry) { create(:virtual_registries_packages_maven_registry, :with_upstream) }
   let_it_be(:project) { create(:project, namespace: registry.group) }
   let_it_be(:user) { create(:user, owner_of: project) }
@@ -22,6 +22,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
       end
 
       it 'returns a success service response' do
+        expect(service).to receive(:can?).and_call_original
         expect(execute).to be_success
 
         expect(execute.payload[:action]).to eq(action)
@@ -150,6 +151,19 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           end
 
           it_behaves_like 'returning a service response success response', action: :download_file
+        end
+
+        context 'with a cached permissions evaluation' do
+          before do
+            Rails.cache.fetch(service.send(:permissions_cache_key)) do
+              can?(user, :read_virtual_registry, registry)
+            end
+          end
+
+          it 'does not call the permissions evaluation again' do
+            expect(service).not_to receive(:can).and_call_original
+            expect(execute).to be_success
+          end
         end
       end
     end

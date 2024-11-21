@@ -6,7 +6,7 @@
 
 If there is no relevant deprecation issue, hit pause and:
 
-- Review the [process for deprecating and removing features](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+- Review the [process for deprecating and removing features](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 - Connect with the Product Manager DRI.
 
 Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
@@ -27,7 +27,7 @@ Deprecation announcements can and should be created and merged into Docs at any 
 
 Please review:
 
-- The definitions of ["Deprecation", "End of Support", and "Removal"](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- The definitions of ["Deprecation"](https://docs.gitlab.com/ee/update/terminology.html#deprecation), ["End of Support"](https://docs.gitlab.com/ee/update/terminology.html#end-of-support), and ["Removal"](https://docs.gitlab.com/ee/update/terminology.html#removal).
 - The [guidelines for deprecations](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 - The process for [creating a deprecation announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
@@ -36,15 +36,15 @@ They are frequently updated, and everyone should make sure they are aware of the
 ## EM/PM release post item checklist
 
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
-- [ ] For [breaking changes](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes): 
-  - [ ] Add the `breaking change` label to the MR.
-  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned release window for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
+- [ ] For [breaking changes](https://docs.gitlab.com/ee/update/terminology.html#breaking-change):
+  - [ ] Add the ~"breaking change"  label to the MR.
+  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned [release window](https://docs.gitlab.com/ee/update/breaking_windows.html) for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
 - [ ] Confirm this MR is labeled ~"release post item::deprecation"
 - [ ] Follow the process to [create a deprecation YAML file](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 - [ ] Add reviewers by the 10th.
 - [ ] Add scoped `devops::` and `group::` labels as necessary.
 - [ ] Add the appropriate milestone to this MR.
-- [ ] If the changes modify log format(addition/deletion/modification) of product feature, tag `@gitlab-com/gl-security/engineering-and-research/security-logging` team over the GitLab issue/MR. 
+- [ ] If the changes modify log format(addition/deletion/modification) of product feature, tag `@gitlab-com/gl-security/engineering-and-research/security-logging` team over the GitLab issue/MR.
 - [ ] When ready to be merged (and no later than the 15th) `@mention` the TW for final review and merge.
 
 ## Reviewers

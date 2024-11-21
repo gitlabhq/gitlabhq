@@ -19,7 +19,7 @@ export default {
     GlIcon,
     PipelineStages,
   },
-  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 !gl-align-middle'],
+  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 gl-text-subtle !gl-align-middle'],
   directives: {
     GlTooltip: GlTooltipDirective,
   },

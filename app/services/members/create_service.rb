@@ -198,7 +198,8 @@ module Members
       Gitlab::EventStore.publish(
         Members::MembersAddedEvent.new(data: {
           source_id: source.id,
-          source_type: source.class.name
+          source_type: source.class.name,
+          invited_user_ids: invites
         })
       )
     end

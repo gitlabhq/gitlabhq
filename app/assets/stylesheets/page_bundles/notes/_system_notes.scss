@@ -49,26 +49,32 @@
 
 // Vertical line gradient for specific system note icons
 .system-note-icon {
-  &.icon-success{
-    --bg-color: var(--green-100, #{$green-100});
+  color: var(--system-note-icon-color);
+  background-color: var(--system-note-icon-background-color);
+
+  &.system-note-icon-success {
+    --system-note-icon-color: var(--gl-status-success-text-color);
+    --system-note-icon-background-color: var(--gl-status-success-background-color);
   }
 
-  &.icon-danger {
-    --bg-color: var(--red-100, #{$red-100});
+  &.system-note-icon-danger {
+    --system-note-icon-color: var(--gl-status-danger-text-color);
+    --system-note-icon-background-color: var(--gl-status-danger-background-color);
   }
 
-  &.icon-info {
-    --bg-color: var(--blue-100, #{$blue-100});
+  &.system-note-icon-info {
+    --system-note-icon-color: var(--gl-status-info-text-color);
+    --system-note-icon-background-color: var(--gl-status-info-background-color);
   }
 
   &:not(.mr-system-note-empty) {
     &::before {
-      @include activity-line-gradient(transparent, var(--bg-color));
+      @include activity-line-gradient(transparent, var(--system-note-icon-background-color));
       bottom: 100%;
     }
 
     &::after {
-      @include activity-line-gradient(var(--bg-color), transparent);
+      @include activity-line-gradient(var(--system-note-icon-background-color), transparent);
       top: 100%;
     }
   }

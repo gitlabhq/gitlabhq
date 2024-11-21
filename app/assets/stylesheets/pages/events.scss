@@ -81,7 +81,7 @@
         border: 0;
         background: $gray-10;
         border-radius: 0;
-        color: $gray-500;
+        @apply gl-text-subtle;
         overflow: hidden;
       }
 

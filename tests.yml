@@ -297,8 +297,8 @@ mapping:
   # Registration/Onboarding
   - source:
     - 'ee/app/(controllers|services)/registrations/.*'
-    - 'ee/app/controllers/concerns/ee/onboarding/status\.rb'
-    - 'app/controllers/concerns/onboarding/status\.rb'
+    - 'ee/app/presenters/ee/onboarding/status_presenter\.rb'
+    - 'app/presenters/onboarding/status_presenter\.rb'
     test:
     - 'ee/spec/features/registrations/saas/*_spec.rb'
     - ee/spec/features/registrations/email_opt_in_registration_spec.rb

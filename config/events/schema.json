@@ -6,11 +6,16 @@
     "product_group",
     "introduced_by_url",
     "milestone",
-    "tiers",
-    "distributions"
+    "tiers"
   ],
   "additionalProperties": false,
   "properties": {
+    "distributions": {
+      "type": [
+        "array",
+        "null"
+      ]
+    },
     "description": {
       "type": "string"
     },
@@ -156,16 +161,6 @@
         "null"
       ],
       "pattern": "^<?[0-9]+\\.[0-9]+$"
-    },
-    "distributions": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "ee",
-          "ce"
-        ]
-      }
     },
     "tiers": {
       "type": "array",

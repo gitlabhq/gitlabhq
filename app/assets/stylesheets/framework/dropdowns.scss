@@ -156,7 +156,7 @@
   .dropdown-menu-toggle-icon {
     position: absolute;
     right: $gl-padding-8;
-    color: $gray-500;
+    @apply gl-fill-icon-subtle;
   }
 }
 
@@ -588,7 +588,7 @@
     position: absolute;
     top: $gl-padding-8;
     right: 20px;
-    color: $gray-500;
+    @apply gl-fill-icon-subtle;
     font-size: 12px;
     pointer-events: none;
   }
