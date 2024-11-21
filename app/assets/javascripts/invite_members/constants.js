@@ -7,6 +7,7 @@ export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
 export const WARNING_TOKEN_BACKGROUND = 'gl-bg-orange-100';
 export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
 export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';
+export const MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY = 'members_queued_successfully';
 
 export const GROUP_FILTERS = {
   ALL: 'all',
@@ -77,7 +78,10 @@ export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to i
 
 export const ACCESS_LEVEL = s__('InviteMembersModal|Select a role');
 export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date (optional)');
-export const TOAST_MESSAGE_SUCCESSFUL = s__('InviteMembersModal|Members were successfully added');
+export const TOAST_MESSAGE_SUCCESSFUL = s__('InviteMembersModal|Members were successfully added.');
+export const QUEUED_MESSAGE_SUCCESSFUL = s__(
+  'InviteMembersModal|Some invitations have been queued for administrator approval.',
+);
 export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Something went wrong');
 export const READ_MORE_TEXT = s__(
   `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later.`,

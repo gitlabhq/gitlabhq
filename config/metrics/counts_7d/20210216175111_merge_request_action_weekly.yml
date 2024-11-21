@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.source_code.merge_request_action_weekly
 description: Count of unique users who perform an action on a merge request
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 time_frame: 7d

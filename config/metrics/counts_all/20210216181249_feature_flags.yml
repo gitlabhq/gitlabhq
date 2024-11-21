@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.feature_flags
 description: Number of feature flag toggles
 product_group: environments
+product_categories:
+- feature_flags
 value_type: number
 status: active
 time_frame: all

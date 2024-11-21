@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.quickactions.i_quickactions_remove_attention_monthly
 description: Count of MAU using the `/remove_attention` quick action
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95241/

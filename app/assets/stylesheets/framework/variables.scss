@@ -288,11 +288,6 @@ $note-spacing-left: 2.5rem;
 $note-spacing-reply-left: 2rem;
 
 /*
-* Calendar
-*/
-$calendar-user-contrib-text: #959494;
-
-/*
 * Boards
 */
 $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
@@ -315,11 +310,11 @@ $job-line-number-width: 50px;
  */
 // See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
 $calendar-activity-colors: (
-  $gray-50,
-  $data-viz-blue-100,
-  $data-viz-blue-400,
-  $data-viz-blue-700,
-  $data-viz-blue-950,
+  var(--gray-50),
+  var(--data-viz-blue-100),
+  var(--data-viz-blue-400),
+  var(--data-viz-blue-600),
+  var(--data-viz-blue-900)
 ) !default;
 
 /*

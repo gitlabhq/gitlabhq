@@ -25,6 +25,7 @@ import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message
 import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
+  markLocalStorageForQueuedAlert,
 } from '../utils/trigger_successful_invite_alert';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
@@ -128,7 +129,6 @@ export default {
       modalId: uniqueId('invite-members-modal-'),
       newUsersToInvite: [],
       usersWithWarning: {},
-      warningTitle: '',
       invalidMembers: {},
       source: 'unknown',
       mode: 'default',
@@ -297,15 +297,16 @@ export default {
         const payload = this.getInvitePayload({ accessLevel, expiresAt, memberRoleId });
         const response = await apiAddByInvite(this.id, payload);
 
-        const { error, message, usersWithWarning, warningTitle } = responseFromSuccess(response);
+        const { error, message, usersWithWarning } = responseFromSuccess(response);
 
         this.usersWithWarning = usersWithWarning;
-        this.warningTitle = warningTitle;
 
         if (error) {
           this.errorReason = response.data.reason;
           this.showErrors(message);
-        } else if (!this.hasInvalidMembers && !this.hasUsersWithWarning) {
+        } else if (this.hasUsersWithWarning) {
+          markLocalStorageForQueuedAlert();
+        } else if (!this.hasInvalidMembers) {
           this.onInviteSuccess();
         }
       } catch (error) {
@@ -359,7 +360,6 @@ export default {
       this.errorReason = '';
       this.invalidFeedbackMessage = '';
       this.usersWithWarning = {};
-      this.warningTitle = '';
       this.invalidMembers = {};
     },
     clearEmptyInviteError() {
@@ -474,20 +474,6 @@ export default {
               />
             </gl-button>
           </template>
-        </gl-alert>
-        <gl-alert
-          v-if="hasUsersWithWarning"
-          class="gl-mb-4"
-          variant="warning"
-          :dismissible="false"
-          :title="warningTitle"
-          data-testid="alert-member-warning"
-        >
-          <ul class="gl-mb-0 gl-pl-5">
-            <li v-for="(warningMessage, user) in usersWithWarning" :key="user">
-              <strong>{{ tokenName(user) }}:</strong> {{ warningMessage }}
-            </li>
-          </ul>
         </gl-alert>
         <user-limit-notification
           v-else-if="showUserLimitNotification"

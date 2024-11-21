@@ -2,6 +2,8 @@
 key_path: usage_activity_by_stage_monthly.create.merge_request_authors_monthly
 description: Number of unique merge request authors
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: removed
 milestone: "15.6"

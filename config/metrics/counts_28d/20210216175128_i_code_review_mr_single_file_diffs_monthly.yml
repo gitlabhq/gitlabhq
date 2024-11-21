@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_monthly
 description: Count of unique merge requests per month with diffs viewed file by file
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 time_frame: 28d

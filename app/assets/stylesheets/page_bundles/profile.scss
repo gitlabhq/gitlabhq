@@ -71,7 +71,7 @@ $profile-grid-flex: 1fr;
 
 .user-contrib-text {
   font-size: 11px;
-  fill: $calendar-user-contrib-text;
+  fill: var(--gl-text-color-subtle);
 }
 
 .user-profile {

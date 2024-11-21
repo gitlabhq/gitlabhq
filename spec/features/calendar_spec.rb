@@ -41,7 +41,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         "#{contributions} #{'contribution'.pluralize(contributions)}"
       end
 
-    "#{get_cell_level_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-gray-300\">#{date}</span>']"
+    "#{get_cell_level_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-subtle\">#{date}</span>']"
   end
 
   def get_days_of_week

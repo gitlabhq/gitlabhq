@@ -4,6 +4,8 @@ key_path: redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_month
 description: Count of MAU using the `/unassign_reviewer` or `/remove_reviewer` quick
   action on Merge Requests
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 time_frame: 28d

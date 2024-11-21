@@ -29911,7 +29911,7 @@ msgstr ""
 msgid "InviteMembersModal|Manage members"
 msgstr ""
 
-msgid "InviteMembersModal|Members were successfully added"
+msgid "InviteMembersModal|Members were successfully added."
 msgstr ""
 
 msgid "InviteMembersModal|Please add members to invite"
@@ -29941,7 +29941,7 @@ msgstr ""
 msgid "InviteMembersModal|Show more (%{count})"
 msgstr ""
 
-msgid "InviteMembersModal|Some requests have been sent for administrator approval"
+msgid "InviteMembersModal|Some invitations have been queued for administrator approval."
 msgstr ""
 
 msgid "InviteMembersModal|Something went wrong"
@@ -48589,6 +48589,9 @@ msgstr ""
 msgid "ScanResultPolicy|%{count} licenses"
 msgstr ""
 
+msgid "ScanResultPolicy|%{listType} according to the %{buttonType}"
+msgstr ""
+
 msgid "ScanResultPolicy|Add new criteria"
 msgstr ""
 
@@ -48599,6 +48602,12 @@ msgid "ScanResultPolicy|Age is:"
 msgstr ""
 
 msgid "ScanResultPolicy|Allow the merge request to proceed, even if not all criteria are met"
+msgstr ""
+
+msgid "ScanResultPolicy|Allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Allowlist or Denylist"
 msgstr ""
 
 msgid "ScanResultPolicy|Attribute is:"
@@ -48623,6 +48632,9 @@ msgid "ScanResultPolicy|Clear all"
 msgstr ""
 
 msgid "ScanResultPolicy|Customized CI Variables"
+msgstr ""
+
+msgid "ScanResultPolicy|Denied"
 msgstr ""
 
 msgid "ScanResultPolicy|Don't show me this again"
@@ -48683,6 +48695,9 @@ msgid "ScanResultPolicy|License is:"
 msgstr ""
 
 msgid "ScanResultPolicy|License scanning allows only one criteria: Status"
+msgstr ""
+
+msgid "ScanResultPolicy|License status"
 msgstr ""
 
 msgid "ScanResultPolicy|Make approval rules optional using scan execution policies"
@@ -48775,6 +48790,9 @@ msgstr ""
 msgid "ScanResultPolicy|Select licenses"
 msgstr ""
 
+msgid "ScanResultPolicy|Select list type"
+msgstr ""
+
 msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
@@ -48823,13 +48841,22 @@ msgstr ""
 msgid "ScanResultPolicy|When this policy's criteria %{strongStart}cannot be met:%{strongEnd}"
 msgstr ""
 
+msgid "ScanResultPolicy|You can have only one of the two: deny list or allow list."
+msgstr ""
+
 msgid "ScanResultPolicy|You have selected all protected branches in this policy's rules. To better protect your project, you should leave this setting enabled. %{linkStart}What are the risks of allowing pushing and force pushing?%{linkEnd}"
+msgstr ""
+
+msgid "ScanResultPolicy|allowlist (%{licenceCount} %{licences})"
 msgstr ""
 
 msgid "ScanResultPolicy|any commits"
 msgstr ""
 
 msgid "ScanResultPolicy|any unsigned commits"
+msgstr ""
+
+msgid "ScanResultPolicy|denylist (%{licenceCount} %{licences})"
 msgstr ""
 
 msgid "ScanResultPolicy|license status"
@@ -66032,6 +66059,11 @@ msgstr ""
 
 msgid "lfs objects"
 msgstr ""
+
+msgid "licence"
+msgid_plural "licenses"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "limit of %{project_limit} reached"
 msgstr ""

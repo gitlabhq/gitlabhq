@@ -529,3 +529,13 @@ registry['registry_http_addr'] = "127.0.0.1:5000"
 ```
 
 See [issue 5449](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5449) for more details.
+
+## Push failures and high CPU usage with Google Cloud Storage (GCS)
+
+You might get a `502 Bad Gateway` error when pushing container images to a registry that uses GCS as the backend. The registry might also experience CPU usage spikes when pushing large images.
+
+This issue occurs when the registry communicates with GCS using the HTTP/2 protocol.
+
+The workaround is to disable HTTP/2 in your registry deployment by setting the `GODEBUG` environment variable to `http2client=0`.
+
+For more information, see [issue 1425](https://gitlab.com/gitlab-org/container-registry/-/issues/1425).

@@ -211,7 +211,7 @@ describe('InviteGroupsModal', () => {
       });
 
       it('displays the successful toastMessage', () => {
-        expect(mockToastShow).toHaveBeenCalledWith('Members were successfully added', {
+        expect(mockToastShow).toHaveBeenCalledWith('Members were successfully added.', {
           onComplete: expect.any(Function),
         });
       });

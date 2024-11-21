@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_merge_request_widget_test_summary_view_monthly
 description: The count of unique users (monthly) who were able to see the Test Summary widget extension
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: "15.2"

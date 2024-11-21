@@ -71,13 +71,13 @@ workflow:
     KUBECONFIG: /root/.kube/config
     BUNDLE_WITHOUT: development
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
+    CNG_FORCE_COLOR: "true"
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
-    CNG_FORCE_COLOR: "true"
-    QA_RUN_IN_PARALLEL: "false" # TODO: consider re-enabling after https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/99 is completed
+    QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"

@@ -433,7 +433,7 @@ export default {
       this.syncUrl();
     },
     syncUrl() {
-      const searchParams = new URLSearchParams();
+      const searchParams = new URLSearchParams(window.location.search);
 
       FILTERS.forEach(({ apiParam, urlParam, toUrlValueResolver }) => {
         if (this.filters[apiParam].length) {
@@ -441,10 +441,14 @@ export default {
             ? toUrlValueResolver(this.filters[apiParam][0])
             : this.filters[apiParam][0];
           searchParams.set(urlParam, urlValue);
+        } else {
+          searchParams.delete(urlParam);
         }
       });
 
-      if (!this.isDefaultSortOrder) {
+      if (this.isDefaultSortOrder) {
+        searchParams.delete('sort');
+      } else {
         searchParams.set('sort', this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`);
       }
 

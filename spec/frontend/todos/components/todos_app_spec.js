@@ -4,6 +4,7 @@ import { GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
@@ -227,5 +228,31 @@ describe('TodosApp', () => {
     });
     expect(findFilterBar().props('todosStatus')).toEqual(status);
     unmockTracking();
+  });
+
+  it('syncs tab change to URL while leaving other params unchanged', () => {
+    setWindowLocation('?group_id=123');
+    createComponent();
+    expect(window.location.search).toBe('?group_id=123');
+
+    findGlTabs().vm.$emit('input', 1);
+    expect(window.location.search).toBe('?group_id=123&state=done');
+
+    findGlTabs().vm.$emit('input', 2);
+    expect(window.location.search).toBe('?group_id=123&state=all');
+
+    findGlTabs().vm.$emit('input', 0);
+    expect(window.location.search).toBe('?group_id=123');
+  });
+
+  describe('reading `state` param from URL', () => {
+    beforeEach(() => {
+      setWindowLocation('?state=done');
+    });
+
+    it('activates correct tab', () => {
+      createComponent();
+      expect(findGlTabs().props('value')).toBe(1);
+    });
   });
 });

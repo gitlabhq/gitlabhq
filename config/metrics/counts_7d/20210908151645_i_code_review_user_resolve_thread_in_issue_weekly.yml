@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_user_resolve_thread_in_issue_weekly
 description: The number of users who resolve a thread in a new issue through the MR page weekly
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: "14.3"

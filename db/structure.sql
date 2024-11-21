@@ -20952,7 +20952,6 @@ CREATE TABLE virtual_registries_packages_maven_cached_responses (
     updated_at timestamp with time zone NOT NULL,
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
-    downloads_count integer DEFAULT 1 NOT NULL,
     relative_path text NOT NULL,
     file text NOT NULL,
     object_storage_key text NOT NULL,
@@ -20967,7 +20966,6 @@ CREATE TABLE virtual_registries_packages_maven_cached_responses (
     CONSTRAINT check_3f121b03fd CHECK ((char_length(file_final_path) <= 1024)),
     CONSTRAINT check_68b105cda6 CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_731cd48dbf CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT check_c2aad543bf CHECK ((downloads_count > 0)),
     CONSTRAINT check_d35a8e931f CHECK ((char_length(relative_path) <= 255))
 );
 

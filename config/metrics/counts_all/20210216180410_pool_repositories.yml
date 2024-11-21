@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.pool_repositories
 description: Count of unique object pool repositories for fork deduplication
 product_group: gitaly
+product_categories:
+- gitaly
 value_type: number
 status: active
 time_frame: all
