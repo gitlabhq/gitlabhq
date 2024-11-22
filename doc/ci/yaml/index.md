@@ -701,6 +701,10 @@ and the pipeline is for either:
 
 - If your rules match both branch pipelines (other than the default branch) and merge request pipelines,
   [duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines) can occur.
+- `start_in`, `allow_failure`, and `needs` are not supported in `workflow:rules`,
+  but do not cause a syntax violation. Though they have no effect, do not use them
+  in `workflow:rules` as it could cause syntax failures in the future. See
+  [issue 436473](https://gitlab.com/gitlab-org/gitlab/-/issues/436473) for more details.
 
 **Related topics**:
 

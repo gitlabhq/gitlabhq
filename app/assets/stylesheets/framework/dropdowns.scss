@@ -137,10 +137,6 @@
   line-height: $gl-line-height;
   width: 160px;
 
-  &:hover {
-    @apply gl-shadow-inner-1-gray-400;
-  }
-
   &:hover,
   &:focus {
     background-color: $gray-50;

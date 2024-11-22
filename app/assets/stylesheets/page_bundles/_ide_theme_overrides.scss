@@ -334,55 +334,6 @@
     color: var(--ide-btn-disabled-color, var(--gl-text-color-disabled)) !important;
   }
 
-  @function ide-btn-var($btn-type, $var-type, $value) {
-    @return var(--ide-btn-#{$btn-type}-#{$var-type}, $value);
-  }
-
-  @mixin ide-gl-button($btn-type, $bg-normal, $bg-hover, $bg-active, $border-normal, $border-hover, $border-focus, $border-active, $border-width-hover: 2px, $box-shadow-hover: $t-gray-a-08, $box-shadow-focus: 0 0 0 4px rgba($blue-500, 0.25)) {
-    background-color: ide-btn-var($btn-type, background, $bg-normal);
-    box-shadow: inset 0 0 0 1px ide-btn-var($btn-type, border, $border-normal);
-
-    &:hover,
-    &:focus {
-      background-color: ide-btn-var($btn-type, background, $bg-hover);
-    }
-
-    &:hover {
-      box-shadow: inset 0 0 0 ide-btn-var($btn-type, hover-border-width, $border-width-hover) ide-btn-var($btn-type, hover-border, $border-hover),
-        0 2px 2px 0 $box-shadow-hover;
-    }
-
-    &:focus {
-      box-shadow: inset 0 0 0 ide-btn-var($btn-type, hover-border-width, $border-width-hover) ide-btn-var($btn-type, hover-border, $border-focus),
-        ide-btn-var($btn-type, focus-box-shadow, $box-shadow-focus);
-    }
-
-    &:active:focus {
-      background-color: ide-btn-var($btn-type, background, $bg-active);
-      box-shadow: inset 0 0 0 ide-btn-var($btn-type, hover-border-width, $border-width-hover) ide-btn-var($btn-type, hover-border, $border-active),
-        ide-btn-var($btn-type, focus-box-shadow, $box-shadow-focus);
-    }
-  }
-
-  //gl-button is listed twice to overcome CSS specificity for the Bootstrap styles
-  .btn-default.gl-button.gl-button {
-    color: var(--ide-input-color, $gl-text-color);
-
-    @include ide-gl-button(default, $white, $gray-50, $gray-100, $gray-200, $gray-300, $gray-300, $gray-400);
-  }
-
-  .btn-danger.btn-danger-secondary.gl-button.gl-button {
-    color: var(--ide-input-color, $red-500);
-
-    @include ide-gl-button(danger-secondary, $white, $red-50, $red-100, $red-500, $red-600, $red-600, $red-700);
-  }
-
-  .btn[disabled].gl-button.gl-button {
-    color: var(--ide-btn-disabled-color, var(--gl-text-color-disabled));
-
-    @include ide-gl-button(disabled, $gray-10, $gray-10, $gray-10, $gray-100, $gray-100, $gray-100, $gray-100, 1px, transparent, transparent);
-  }
-
   .md table:not(.code) tbody {
     background-color: var(--ide-empty-state-background, $white);
   }

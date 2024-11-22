@@ -16,7 +16,7 @@
   .milestone-buttons.detail-page-header-actions.gl-flex.gl-self-start.gl-gap-3
     - if can_admin
       - if milestone.active?
-        = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :close }), method: :put, button_options: { class: 'btn-close gl-hidden md:gl-inline-block' }) do
+        = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :close }), method: :put, button_options: { class: 'btn-close gl-hidden md:gl-inline-flex' }) do
           = _('Close milestone')
       - else
         = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :activate }), method: :put, button_options: { class: 'gl-hidden md:gl-inline-block' }) do

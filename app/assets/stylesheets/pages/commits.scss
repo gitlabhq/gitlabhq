@@ -123,10 +123,6 @@
     border-top-left-radius: $gl-border-radius-base;
   }
 
-  :not(:first-child) {
-    border-left: 0;
-  }
-
   :last-child {
     border-bottom-right-radius: $gl-border-radius-base;
     border-top-right-radius: $gl-border-radius-base;

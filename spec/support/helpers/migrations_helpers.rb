@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module MigrationsHelpers
+  FINALIZE_FIRST_ERROR = <<ERROR
+Schema should not be specified for background migrations, finalize the migration first.
+The schema will be defaulted to the finalizing migration.
+
+See https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#finalize-a-batched-background-migration
+ERROR
+
   def migration_out_of_test_window?(migration_class)
     # Skip unless database migration (e.g background migration)
     return false unless migration_class < Gitlab::Database::Migration[1.0]
@@ -153,6 +160,8 @@ module MigrationsHelpers
     if metadata_schema == :latest
       migrations.last.version
     elsif self.class.metadata[:level] == :background_migration
+      raise FINALIZE_FIRST_ERROR if ENV['CI'].nil? && !metadata_schema.nil?
+
       metadata_schema || finalized_by_version || migrations.last.version
     else
       metadata_schema || previous_migration.version

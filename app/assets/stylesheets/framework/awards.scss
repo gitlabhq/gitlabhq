@@ -10,7 +10,7 @@
   // Show active state.
   .gl-button.selected {
     background-color: var(--blue-50) !important;
-    box-shadow: inset 0 0 0 2px var(--blue-500) !important;
+    border-color: var(--blue-500) !important;
   }
 }
 
@@ -139,7 +139,6 @@
     &:active {
       background-color: $white;
       border-color: $border-color;
-      box-shadow: none;
     }
   }
 
@@ -162,7 +161,6 @@
   &:active {
     background-color: $blue-50;
     border-color: $blue-200;
-    box-shadow: inset 0 0 2px $blue-200;
   }
 
   &.is-active {
@@ -317,15 +315,6 @@
     border-top-left-radius: $input-focus-ring-border-radius !important;
     border-top-right-radius: $input-focus-ring-border-radius !important;
   }
-}
-
-.award-list .gl-button:focus {
-  @include gl-focus(
-    $outline: true,
-    $outline-offset: -2px,
-    $important: true
-  );
-  box-shadow: none !important;
 }
 
 .design-note.note-form .emoji-picker .gl-new-dropdown-panel {

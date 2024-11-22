@@ -26,7 +26,7 @@
         - edit_action_description = _('Edit merge request')
         - edit_action_shortcut = 'e'
         - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
-        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden sm:gl-block gl-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
+        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden sm:gl-inline-flex gl-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
           = _('Edit')
 
       .gl-flex.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-w-full.sm:gl-w-auto.gl-mt-2.sm:gl-mt-0
