@@ -166,6 +166,24 @@ usually a good idea.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/363214): The runner is under heavy load at this time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job failing early
 
+#### Improper Synchronization
+
+**Label:** `flaky-test::improper synchronization`
+
+**Description:** A flaky test issue caused by failing to account for delays, eventual consistency,
+asynchronous operations, or race conditions, leading to tests that assume an immediate state or experience
+unpredictable behavior due to the timing or order of events.
+
+**Difficulty to reproduce:** Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
+element on a page that is not yet rendered, or in unit tests by failing to wait for an asynchronous operation to complete.
+
+**Resolution:** In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
+
+**Examples:**
+
+- [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/502844): Text was not appearing on a page in time.
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/496393): Text was not appearing on a page in time.
+
 ### How to reproduce a flaky test locally?
 
 1. Reproduce the failure locally

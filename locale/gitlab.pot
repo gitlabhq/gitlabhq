@@ -17459,6 +17459,9 @@ msgstr ""
 msgid "DORA4Metrics|Month to date"
 msgstr ""
 
+msgid "DORA4Metrics|New issues"
+msgstr ""
+
 msgid "DORA4Metrics|No data available for Group: %{fullPath}"
 msgstr ""
 
@@ -60908,6 +60911,12 @@ msgid "ValueStreamAnalytics|The time it takes an organization to recover from a 
 msgstr ""
 
 msgid "ValueStreamAnalytics|The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines."
+msgstr ""
+
+msgid "ValueStreamAnalytics|There was an error while fetching DORA metrics data."
+msgstr ""
+
+msgid "ValueStreamAnalytics|There was an error while fetching flow metrics data."
 msgstr ""
 
 msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."

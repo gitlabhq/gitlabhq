@@ -17,6 +17,14 @@ azure_storage_account_name = "azuretester"
 azure_storage_access_key = "deadbeef"
 `
 
+const azureConfigWithManagedIdentity = `
+[object_storage]
+provider = "AzureRM"
+
+[object_storage.azurerm]
+azure_storage_account_name = "azuretester"
+`
+
 const googleConfigWithKeyLocation = `
 [object_storage]
 provider = "Google"
@@ -94,6 +102,21 @@ func TestRegisterGoCloudAzureURLOpeners(t *testing.T) {
 		AzureCredentials: AzureCredentials{
 			AccountName: "azuretester",
 			AccountKey:  "deadbeef",
+		},
+	}
+
+	require.Equal(t, expected, cfg.ObjectStorageCredentials)
+	testRegisterGoCloudURLOpener(t, cfg, "azblob")
+}
+
+func TestRegisterGoCloudAzureURLOpenersWithManagedIdentity(t *testing.T) {
+	cfg, err := LoadConfig(azureConfigWithManagedIdentity)
+	require.NoError(t, err)
+
+	expected := ObjectStorageCredentials{
+		Provider: "AzureRM",
+		AzureCredentials: AzureCredentials{
+			AccountName: "azuretester",
 		},
 	}
 

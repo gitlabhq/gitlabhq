@@ -93,8 +93,8 @@ By default, the Rake task uses the `root` username to create 40 runners and 400 
 
 ```mermaid
 graph TD
-    G1[Top level group 1] --> G11
-    G2[Top level group 2] --> G21
+    G1[Top-level group 1] --> G11
+    G2[Top-level group 2] --> G21
     G11[Group 1.1] --> G111
     G11[Group 1.1] --> G112
     G111[Group 1.1.1] --> P1111

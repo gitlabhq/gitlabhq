@@ -1,83 +1,153 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { nextTick } from 'vue';
-import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
-import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
-import { VSA_METRICS_GROUPS, VALUE_STREAM_METRIC_METADATA } from '~/analytics/shared/constants';
-import { prepareTimeMetricsData } from '~/analytics/shared/utils';
+import FlowMetricsQuery from '~/analytics/shared/graphql/flow_metrics.query.graphql';
+import DoraMetricsQuery from '~/analytics/shared/graphql/dora_metrics.query.graphql';
+import { FLOW_METRICS, DORA_METRICS, VSA_METRICS_GROUPS } from '~/analytics/shared/constants';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import ValueStreamsDashboardLink from '~/analytics/shared/components/value_streams_dashboard_link.vue';
 import { createAlert } from '~/alert';
 import { group } from '../mock_data';
+import {
+  mockGraphqlFlowMetricsResponse,
+  mockGraphqlDoraMetricsResponse,
+} from '../../shared/helpers';
+import {
+  mockDoraMetricsResponseData,
+  mockFlowMetricsResponseData,
+  mockMetricTilesData,
+} from '../../shared/mock_data';
+
+const mockTypePolicy = {
+  Query: { fields: { project: { merge: false }, group: { merge: false } } },
+};
 
 jest.mock('~/alert');
 
+Vue.use(VueApollo);
+
 describe('ValueStreamMetrics', () => {
   let wrapper;
-  let mockGetValueStreamSummaryMetrics;
+  let mockApolloProvider;
   let mockFilterFn;
+  let flowMetricsRequestHandler = null;
+  let doraMetricsRequestHandler = null;
 
-  const { full_path: requestPath } = group;
-  const fakeReqName = 'Mock metrics';
-  const metricsRequestFactory = () => ({
-    request: mockGetValueStreamSummaryMetrics,
-    endpoint: METRIC_TYPE_SUMMARY,
-    name: fakeReqName,
-  });
+  const setGraphqlQueryHandlerResponses = ({
+    doraMetricsResponse = mockDoraMetricsResponseData,
+    flowMetricsResponse = mockFlowMetricsResponseData,
+  } = {}) => {
+    flowMetricsRequestHandler = mockGraphqlFlowMetricsResponse(flowMetricsResponse);
+    doraMetricsRequestHandler = mockGraphqlDoraMetricsResponse(doraMetricsResponse);
+  };
 
-  const createComponent = (props = {}) => {
-    return shallowMountExtended(ValueStreamMetrics, {
+  const createMockApolloProvider = ({
+    flowMetricsRequest = flowMetricsRequestHandler,
+    doraMetricsRequest = doraMetricsRequestHandler,
+  } = {}) => {
+    return createMockApollo(
+      [
+        [FlowMetricsQuery, flowMetricsRequest],
+        [DoraMetricsQuery, doraMetricsRequest],
+      ],
+      {},
+      {
+        typePolicies: mockTypePolicy,
+      },
+    );
+  };
+
+  const { path: requestPath } = group;
+
+  const createComponent = async ({ props = {}, apolloProvider = null } = {}) => {
+    wrapper = shallowMountExtended(ValueStreamMetrics, {
+      apolloProvider,
       propsData: {
         requestPath,
         requestParams: {},
-        requests: [metricsRequestFactory()],
         ...props,
       },
     });
+
+    await waitForPromises();
   };
 
   const findVSDLink = () => wrapper.findComponent(ValueStreamsDashboardLink);
   const findMetrics = () => wrapper.findAllComponents(MetricTile);
   const findMetricsGroups = () => wrapper.findAllByTestId('vsa-metrics-group');
 
-  const expectToHaveRequest = (fields) => {
-    expect(mockGetValueStreamSummaryMetrics).toHaveBeenCalledWith({
-      endpoint: METRIC_TYPE_SUMMARY,
-      requestPath,
-      ...fields,
+  const expectDoraMetricsRequests = ({ fullPath = requestPath, startDate, endDate } = {}) =>
+    expect(doraMetricsRequestHandler).toHaveBeenCalledWith({
+      fullPath,
+      startDate,
+      endDate,
+      interval: 'ALL',
     });
-  };
 
-  describe('with successful requests', () => {
+  const expectFlowMetricsRequests = ({
+    fullPath = requestPath,
+    labelNames,
+    startDate,
+    endDate,
+  } = {}) =>
+    expect(flowMetricsRequestHandler).toHaveBeenCalledWith({
+      fullPath,
+      startDate,
+      endDate,
+      labelNames,
+    });
+
+  afterEach(() => {
+    mockApolloProvider = null;
+  });
+
+  describe('loading requests', () => {
     beforeEach(() => {
-      mockGetValueStreamSummaryMetrics = jest.fn().mockResolvedValue({ data: metricsData });
+      setGraphqlQueryHandlerResponses();
+
+      createComponent({ apolloProvider: createMockApolloProvider() });
     });
 
-    it('will display a loader with pending requests', async () => {
-      wrapper = createComponent();
-      await nextTick();
-
+    it('will display a loader with pending requests', () => {
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
     });
+  });
 
-    describe('with data loaded', () => {
+  describe('with data loaded', () => {
+    describe('default', () => {
       beforeEach(async () => {
-        wrapper = createComponent();
-        await waitForPromises();
+        setGraphqlQueryHandlerResponses();
+        mockApolloProvider = createMockApolloProvider();
+
+        await createComponent({ apolloProvider: mockApolloProvider });
       });
 
-      it('fetches data from the value stream analytics endpoint', () => {
-        expectToHaveRequest({ params: {} });
+      it('fetches dora metrics data', () => {
+        expectDoraMetricsRequests();
+      });
+
+      it('fetches flow metrics data', () => {
+        expectFlowMetricsRequests();
+      });
+
+      it('will not display a loading icon', () => {
+        expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(false);
       });
 
       describe.each`
-        index | identifier                   | value                   | label
-        ${0}  | ${metricsData[0].identifier} | ${metricsData[0].value} | ${metricsData[0].title}
-        ${1}  | ${metricsData[1].identifier} | ${metricsData[1].value} | ${metricsData[1].title}
-        ${2}  | ${metricsData[2].identifier} | ${metricsData[2].value} | ${metricsData[2].title}
-        ${3}  | ${metricsData[3].identifier} | ${metricsData[3].value} | ${metricsData[3].title}
+        index | identifier                              | value       | label
+        ${0}  | ${FLOW_METRICS.ISSUES}                  | ${10}       | ${'New issues'}
+        ${1}  | ${FLOW_METRICS.CYCLE_TIME}              | ${'-'}      | ${'Cycle time'}
+        ${2}  | ${FLOW_METRICS.LEAD_TIME}               | ${10}       | ${'Lead time'}
+        ${3}  | ${FLOW_METRICS.DEPLOYS}                 | ${751}      | ${'Deploys'}
+        ${4}  | ${DORA_METRICS.DEPLOYMENT_FREQUENCY}    | ${23.75}    | ${'Deployment frequency'}
+        ${5}  | ${DORA_METRICS.CHANGE_FAILURE_RATE}     | ${'5.7'}    | ${'Change failure rate'}
+        ${6}  | ${DORA_METRICS.LEAD_TIME_FOR_CHANGES}   | ${'0.2721'} | ${'Lead time for changes'}
+        ${7}  | ${DORA_METRICS.TIME_TO_RESTORE_SERVICE} | ${'0.8343'} | ${'Time to restore service'}
       `('metric tiles', ({ identifier, index, value, label }) => {
         it(`renders a metric tile component for "${label}"`, () => {
           const metric = findMetrics().at(index);
@@ -85,85 +155,92 @@ describe('ValueStreamMetrics', () => {
           expect(metric.isVisible()).toBe(true);
         });
       });
+    });
 
-      it('will not display a loading icon', () => {
-        expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(false);
+    describe('with filterFn', () => {
+      beforeEach(() => {
+        setGraphqlQueryHandlerResponses();
+
+        mockApolloProvider = createMockApolloProvider();
       });
 
-      describe('filterFn', () => {
-        const transferredMetricsData = prepareTimeMetricsData(
-          metricsData,
-          VALUE_STREAM_METRIC_METADATA,
-        );
+      it('with a filter function, will call the function with the metrics data', async () => {
+        const filteredData = mockMetricTilesData[0];
 
-        it('with a filter function, will call the function with the metrics data', async () => {
-          const filteredData = [
-            { identifier: 'issues', value: '3', title: 'New issues', description: 'foo' },
-          ];
-          mockFilterFn = jest.fn(() => filteredData);
+        mockFilterFn = jest.fn(() => [filteredData]);
 
-          wrapper = createComponent({
+        await createComponent({
+          apolloProvider: mockApolloProvider,
+          props: {
             filterFn: mockFilterFn,
-          });
-
-          await waitForPromises();
-
-          expect(mockFilterFn).toHaveBeenCalledWith(transferredMetricsData);
-          expect(findMetrics().at(0).props('metric')).toEqual(filteredData[0]);
+          },
         });
 
-        it('without a filter function, it will only update the metrics', async () => {
-          wrapper = createComponent();
-
-          await waitForPromises();
-
-          expect(mockFilterFn).not.toHaveBeenCalled();
-          expect(findMetrics().at(0).props('metric')).toEqual(transferredMetricsData[0]);
-        });
+        expect(mockFilterFn).toHaveBeenCalled();
+        expect(findMetrics().at(0).props('metric').identifier).toEqual(filteredData.identifier);
       });
 
-      describe('with additional params', () => {
-        beforeEach(async () => {
-          wrapper = createComponent({
+      it('without a filter function, it will only update the metrics', async () => {
+        await createComponent({ apolloProvider: mockApolloProvider });
+
+        expect(mockFilterFn).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with additional params', () => {
+      beforeEach(async () => {
+        setGraphqlQueryHandlerResponses();
+
+        await createComponent({
+          apolloProvider: createMockApolloProvider(),
+          props: {
             requestParams: {
               'project_ids[]': [1],
               created_after: '2020-01-01',
               created_before: '2020-02-01',
+              'labelNames[]': ['some', 'fake', 'label'],
             },
-          });
-
-          await waitForPromises();
-        });
-
-        it('fetches data for the `getValueStreamSummaryMetrics` request', () => {
-          expectToHaveRequest({
-            params: {
-              'project_ids[]': [1],
-              created_after: '2020-01-01',
-              created_before: '2020-02-01',
-            },
-          });
+          },
         });
       });
 
-      describe('groupBy', () => {
-        beforeEach(async () => {
-          mockGetValueStreamSummaryMetrics = jest.fn().mockResolvedValue({ data: metricsData });
-          wrapper = createComponent({ groupBy: VSA_METRICS_GROUPS });
-          await waitForPromises();
+      it('fetches the flowMetrics data', () => {
+        expectFlowMetricsRequests({
+          'project_ids[]': [1],
+          startDate: '2020-01-01',
+          endDate: '2020-02-01',
         });
+      });
 
-        it('renders the metrics as separate groups', () => {
-          const groups = findMetricsGroups();
-          expect(groups).toHaveLength(VSA_METRICS_GROUPS.length);
+      it('fetches the doraMetrics data', () => {
+        expectDoraMetricsRequests({
+          'project_ids[]': [1],
+          startDate: '2020-01-01',
+          endDate: '2020-02-01',
         });
+      });
+    });
 
-        it('renders titles for each group', () => {
-          const groups = findMetricsGroups();
-          groups.wrappers.forEach((g, index) => {
-            const { title } = VSA_METRICS_GROUPS[index];
-            expect(g.html()).toContain(title);
-          });
+    describe('with groupBy', () => {
+      beforeEach(async () => {
+        setGraphqlQueryHandlerResponses();
+
+        await createComponent({
+          apolloProvider: createMockApolloProvider(),
+          props: { groupBy: VSA_METRICS_GROUPS },
+        });
+      });
+
+      it('renders the metrics as separate groups', () => {
+        const groups = findMetricsGroups();
+        expect(groups).toHaveLength(VSA_METRICS_GROUPS.length);
+      });
+
+      it('renders titles for each group', () => {
+        const groups = findMetricsGroups();
+        groups.wrappers.forEach((g, index) => {
+          const { title } = VSA_METRICS_GROUPS[index];
+          expect(g.html()).toContain(title);
         });
       });
     });
@@ -171,11 +248,15 @@ describe('ValueStreamMetrics', () => {
 
   describe('Value Streams Dashboard Link', () => {
     it('will render when a dashboardsPath is set', async () => {
-      wrapper = createComponent({
-        groupBy: VSA_METRICS_GROUPS,
-        dashboardsPath: 'fake-group-path',
+      setGraphqlQueryHandlerResponses();
+
+      await createComponent({
+        apolloProvider: createMockApolloProvider(),
+        props: {
+          groupBy: VSA_METRICS_GROUPS,
+          dashboardsPath: 'fake-group-path',
+        },
       });
-      await waitForPromises();
 
       const vsdLink = findVSDLink();
 
@@ -184,24 +265,45 @@ describe('ValueStreamMetrics', () => {
     });
 
     it('does not render without a dashboardsPath', async () => {
-      wrapper = createComponent({ groupBy: VSA_METRICS_GROUPS });
-      await waitForPromises();
+      await createComponent({
+        apolloProvider: createMockApolloProvider(),
+        props: { groupBy: VSA_METRICS_GROUPS },
+      });
 
       expect(findVSDLink().exists()).toBe(false);
     });
   });
 
   describe('with a request failing', () => {
-    beforeEach(async () => {
-      mockGetValueStreamSummaryMetrics = jest.fn().mockRejectedValue();
-      wrapper = createComponent();
+    describe('failing DORA metrics request', () => {
+      beforeEach(async () => {
+        doraMetricsRequestHandler = jest.fn().mockRejectedValue({});
 
-      await waitForPromises();
+        await createComponent({
+          apolloProvider: createMockApolloProvider(),
+        });
+      });
+
+      it('should render an error message', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'There was an error while fetching DORA metrics data.',
+        });
+      });
     });
 
-    it('should render an error message', () => {
-      expect(createAlert).toHaveBeenCalledWith({
-        message: `There was an error while fetching value stream analytics ${fakeReqName} data.`,
+    describe('failing flow metrics request', () => {
+      beforeEach(async () => {
+        flowMetricsRequestHandler = jest.fn().mockRejectedValue({});
+
+        await createComponent({
+          apolloProvider: createMockApolloProvider(),
+        });
+      });
+
+      it('should render an error message', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'There was an error while fetching flow metrics data.',
+        });
       });
     });
   });

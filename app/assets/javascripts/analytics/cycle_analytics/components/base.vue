@@ -3,7 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
-import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
+import LegacyValueStreamMetrics from '~/analytics/shared/components/legacy_value_stream_metrics.vue';
 import { VSA_METRICS_GROUPS } from '~/analytics/shared/constants';
 import { toYmd, generateValueStreamsDashboardLink } from '~/analytics/shared/utils';
 import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
@@ -24,7 +24,7 @@ export default {
     PathNavigation,
     StageTable,
     ValueStreamFilters,
-    ValueStreamMetrics,
+    LegacyValueStreamMetrics,
     UrlSync,
   },
   props: {
@@ -188,7 +188,7 @@ export default {
         @selected="onSelectStage"
       />
     </div>
-    <value-stream-metrics
+    <legacy-value-stream-metrics
       :request-path="namespace.fullPath"
       :request-params="filterParams"
       :requests="metricsRequests"

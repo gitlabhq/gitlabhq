@@ -93,6 +93,10 @@ export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
 
 export const ISSUES_COMPLETED_TYPE = 'issues_completed';
 
+export const ALL_METRICS_QUERY_TYPE = 'ALL_METRICS_QUERY_TYPE';
+export const DORA_METRICS_QUERY_TYPE = 'DORA_METRICS_QUERY_TYPE';
+export const FLOW_METRICS_QUERY_TYPE = 'FLOW_METRICS_QUERY_TYPE';
+
 export const FLOW_METRICS = {
   LEAD_TIME: 'lead_time',
   CYCLE_TIME: 'cycle_time',
@@ -110,13 +114,19 @@ export const DORA_METRICS = {
   CHANGE_FAILURE_RATE: 'change_failure_rate',
 };
 
-const VSA_FLOW_METRICS_GROUP = {
-  key: 'lifecycle_metrics',
-  title: s__('ValueStreamAnalytics|Lifecycle metrics'),
-  keys: Object.values(FLOW_METRICS),
-};
-
-export const VSA_METRICS_GROUPS = [VSA_FLOW_METRICS_GROUP];
+export const VSA_METRICS_GROUPS = [
+  {
+    key: 'lifecycle_metrics',
+    title: s__('ValueStreamAnalytics|Lifecycle metrics'),
+    keys: [
+      FLOW_METRICS.LEAD_TIME,
+      FLOW_METRICS.CYCLE_TIME,
+      FLOW_METRICS.ISSUES,
+      FLOW_METRICS.COMMITS,
+      FLOW_METRICS.DEPLOYS,
+    ],
+  },
+];
 
 export const VULNERABILITY_CRITICAL_TYPE = 'vulnerability_critical';
 export const VULNERABILITY_HIGH_TYPE = 'vulnerability_high';
@@ -151,6 +161,9 @@ export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
   [UNITS.PERCENT]: '%',
 };
 
+// NOTE: ideally we would return these fields in the metrics queries
+//       the flow metrics query returns some but not all fields we need
+//        while the DORA query do not return any.
 export const VALUE_STREAM_METRIC_TILE_METADATA = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
     label: s__('DORA4Metrics|Deployment frequency'),
@@ -215,7 +228,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     unit: UNITS.DAYS,
   },
   [FLOW_METRICS.ISSUES]: {
-    label: s__('DORA4Metrics|Issues created'),
+    label: s__('DORA4Metrics|New issues'),
     unit: UNITS.COUNT,
     description: s__('ValueStreamAnalytics|Number of new issues created.'),
     groupLink: '-/issues_analytics',

@@ -32898,6 +32898,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitiescountbydayenddate"></a>`endDate` | [`ISO8601Date!`](#iso8601date) | Last day for which to fetch vulnerability history. |
 | <a id="projectvulnerabilitiescountbydaystartdate"></a>`startDate` | [`ISO8601Date!`](#iso8601date) | First day for which to fetch vulnerability history. |
 
+##### `Project.vulnerabilityIdentifierSearch`
+
+Search for vulnerabilities by identifier. Feature flag `vulnerability_filtering_by_identifier` has to be enabled for the project.
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Returns [`[String!]`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvulnerabilityidentifiersearchname"></a>`name` | [`String!`](#string) | Search identifier by name. Substring or partial match search is supported and argument should be greater than 3 characters. |
+
 ##### `Project.vulnerabilityManagementPolicies`
 
 Vulnerability Management Policies of the project.

@@ -4,7 +4,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
+import LegacyValueStreamMetrics from '~/analytics/shared/components/legacy_value_stream_metrics.vue';
 import BaseComponent from '~/analytics/cycle_analytics/components/base.vue';
 import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
@@ -79,7 +79,7 @@ function createComponent({ initialState, initialGetters } = {}) {
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findPathNavigation = () => wrapper.findComponent(PathNavigation);
 const findFilters = () => wrapper.findComponent(ValueStreamFilters);
-const findOverviewMetrics = () => wrapper.findComponent(ValueStreamMetrics);
+const findOverviewMetrics = () => wrapper.findComponent(LegacyValueStreamMetrics);
 const findStageTable = () => wrapper.findComponent(StageTable);
 const findStageEvents = () => findStageTable().props('stageEvents');
 const findEmptyStageTitle = () => wrapper.findComponent(GlEmptyState).props('title');
