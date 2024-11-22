@@ -140,6 +140,19 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
 
           it_behaves_like 'default branch pipeline'
         end
+
+        context 'with stable-ee branch pipeline' do
+          let(:ci_commit_branch)  { '17-6-stable-ee' }
+          let(:expected_job_name) { 'compile-production-assets' }
+
+          # Test requires syncing CI file, which means the test project's latest commit includes CI file changes
+          # This results in `[".frontend:rules:assets-shared", rules]` always evaluates to true.
+          # If we don't want to test this specific condition
+          # Make sure you comment out `- !reference [".frontend:rules:assets-shared", rules]` everywhere
+          # before running this test scenario.
+          # Otherwise, this test case always passes.
+          it_behaves_like 'default branch pipeline'
+        end
       end
 
       context 'with gitlab.com gitlab-org gitlab-foss project' do
