@@ -186,7 +186,7 @@ In the following example `sast-ruleset.toml` file, rules are matched by the `typ
 ### Offline configuration
 
 DETAILS:
-**Tier:** PREMIUM
+**Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through

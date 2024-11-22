@@ -55,7 +55,7 @@ module QA
           return if example_notification.example.metadata[:skip] || example_failed?(example_notification)
 
           response = nil
-          QA::Support::Retrier.retry_until(max_attempts: 10, sleep_interval: 2) do
+          QA::Support::Retrier.retry_until(max_attempts: 1, sleep_interval: 2) do
             response = get(cov_api_endpoint, headers: headers_access_token)
             coverage = JSON.parse(response.body)
             next true if response.code == 200 && coverage.any?

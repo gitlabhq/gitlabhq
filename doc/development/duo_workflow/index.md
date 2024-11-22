@@ -42,6 +42,7 @@ This detailed guide describes setting up the local development environment for [
 1. Set up [GitLab Runner with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md) so you can create CI jobs locally to test Workflow.
 1. Create a [personal access token](../../user/profile/personal_access_tokens.md) in your local GitLab instance with the `api` scope. Save this value and use it in the next step.
 1. Run GDK with an Ultimate license.
+1. If you're running GitLab in SaaS mode, you'll need to turn on the `beta and experimental features` functionality, as they are [turned off by default](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features). In the group settings for the project you'll run workflow against, ensure that the `Use experiment and beta Duo features` checkbox is checked.
 1. Manually create a Workflow using the following `curl` request; the output will be a workflow ID that is referred to as `$WORKFLOW_ID` throughout the rest of these docs:
 
    ```shell

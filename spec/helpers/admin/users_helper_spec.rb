@@ -94,12 +94,16 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
   describe 'admin_edit_user_organization_field_app_data' do
     let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
     let_it_be(:user) { create(:user, organizations: [organization]) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+    let_it_be(:organization_user) { user.organization_users.first }
 
     subject { Gitlab::Json.parse(helper.admin_edit_user_organization_field_app_data(user)) }
 
     it do
       is_expected.to eq({
-        "initial_access_level" => 'default',
+        'organization_user' => {
+          'access_level' => organization_user.access_level,
+          'id' => organization_user.id
+        },
         'initial_organization' => {
           'id' => organization.id,
           'name' => organization.name,

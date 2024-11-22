@@ -328,3 +328,11 @@ The `permission denied` error on `gradlew` typically indicates that `gradlew` wa
 ```
 
 Make the file executable by running `chmod +ux gradlew` locally and pushing it to your Git repository.
+
+## Dependency Scanning scanner is no longer `Gemnasium`
+
+Historically, the scanner used by Dependency Scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/index.md).
+
+With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom/index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing Dependency Scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
+
+As we move forward with the rollout and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in Dependency Scanning feature.

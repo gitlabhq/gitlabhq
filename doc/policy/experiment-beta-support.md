@@ -45,6 +45,7 @@ Beta features:
   or with less notice than for generally available features.
 - Have a low risk of data loss.
 - Have a user experience that is complete or near completion.
+- Can be equivalent to partner "Public Preview" status.
 
 ## Generally available (GA)
 

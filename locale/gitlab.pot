@@ -3932,6 +3932,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model family"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Model identifier"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Model identifier (optional)"
 msgstr ""
 
@@ -35342,9 +35345,6 @@ msgstr ""
 msgid "Model experiments"
 msgstr ""
 
-msgid "Model identifier"
-msgstr ""
-
 msgid "Model registry"
 msgstr ""
 
@@ -50155,6 +50155,9 @@ msgid "SecurityOrchestration|Merge request approval"
 msgstr ""
 
 msgid "SecurityOrchestration|Merge request approval policies allow a maximum 1 bot message action."
+msgstr ""
+
+msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 1 approver action."
 msgstr ""
 
 msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 5 approver actions."

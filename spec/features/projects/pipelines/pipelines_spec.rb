@@ -353,8 +353,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             wait_for_all_requests
           end
 
-          it 'enqueues manual action job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409984' do
-            expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] .gl-dropdown-toggle:disabled')
+          it 'enqueues manual action job' do
+            expect(manual.reload).to be_pending
           end
         end
       end

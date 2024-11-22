@@ -265,20 +265,11 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Introduced in GitLab 17.3 with a flag. Disabled by default.
-> - Enabled on GitLab.com in GitLab 17.3.
-> - Enabled on self-managed and GitLab Dedicated in GitLab 17.4.
-> - Generally available in GitLab 17.4. Feature flag removed.
+For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow) information.
+A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
 
-For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available. A
-vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable
-line of code (sink), through all assignments, manipulation, and sanitization. This information helps
-you understand and evaluate the vulnerability's context, impact, and risk.
-
-The **Code flow** tab shows:
-
-- The steps from source to sink.
-- The relevant files, including code snippets.
+For details on how to view a vulnerability's code flow, see
+[Vulnerability code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow).
 
 ![A code flow of a Python application across two files](img/example_code_flow_of_python_applications_v17_3.png)
 

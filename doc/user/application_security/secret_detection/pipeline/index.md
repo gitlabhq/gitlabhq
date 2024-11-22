@@ -810,7 +810,7 @@ In previous GitLab versions, the following variables were also available:
 ### Offline configuration
 
 DETAILS:
-**Tier:** PREMIUM
+**Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
