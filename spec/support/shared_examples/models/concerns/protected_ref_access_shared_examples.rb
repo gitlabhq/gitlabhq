@@ -131,7 +131,7 @@ RSpec.shared_examples 'protected ref access' do
 
     context 'when current_user cannot push_code to project' do
       before do
-        allow(current_user).to receive(:can?).with(:push_code, project).and_return(false) # rubocop:disable CodeReuse/ActiveRecord -- false positive flag on `with`
+        allow(current_user).to receive(:can?).with(:push_code, project).and_return(false)
       end
 
       it { is_expected.to eq false }

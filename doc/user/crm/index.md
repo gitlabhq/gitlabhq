@@ -14,6 +14,7 @@ DETAILS:
 > - In GitLab 14.8 and later, you can [create contacts and organizations only in top-level groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.1.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
@@ -26,12 +27,12 @@ For more information about what is planned for the future, see [issue 2256](http
 
 ## Permissions
 
-| Permission | Guest            | Group Reporter | Group Developer, Maintainer, and Owner |
-| ---------- | ---------------- | -------------- | -------------------------------------- |
-| View contacts/organizations | | ✓              | ✓ |
-| View issue contacts |         | ✓              | ✓ |
-| Add/remove issue contacts |   | ✓              | ✓ |
-| Create/edit contacts/organizations | |         | ✓ |
+| Permission                         | Guest | Planner | Group Reporter | Group Developer, Maintainer, and Owner |
+|------------------------------------|-------|---------|----------------|----------------------------------------|
+| View contacts/organizations        |       | ✓       | ✓              | ✓                                      |
+| View issue contacts                |       | ✓       | ✓              | ✓                                      |
+| Add/remove issue contacts          |       | ✓       | ✓              | ✓                                      |
+| Create/edit contacts/organizations |       |         |                | ✓                                      |
 
 ## Enable customer relations management (CRM)
 
@@ -73,7 +74,7 @@ To configure the contact source for a group or subgroup:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To view a group's contacts:
 
@@ -137,7 +138,7 @@ To change the state of a contact:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To view a group's organizations:
 
@@ -192,7 +193,7 @@ issues are linked to contacts matching the email addresses in the sender and CC 
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To view a contact's issues, select a contact from the issue sidebar, or:
 
@@ -204,7 +205,7 @@ To view a contact's issues, select a contact from the issue sidebar, or:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To view an organization's issues:
 
@@ -217,7 +218,7 @@ To view an organization's issues:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 You can view contacts associated with an issue in the right sidebar.
 
@@ -233,7 +234,7 @@ API.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To add [active](#change-the-state-of-a-contact) contacts to an issue use the `/add_contacts [contact:address@example.com]`
 [quick action](../project/quick_actions.md).
@@ -246,7 +247,7 @@ API.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To remove contacts from an issue use the `/remove_contacts [contact:address@example.com]`
 [quick action](../project/quick_actions.md).

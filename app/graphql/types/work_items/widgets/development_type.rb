@@ -16,7 +16,7 @@ module Types
           Types::WorkItems::ClosingMergeRequestType.connection_type,
           null: true,
           description: 'Merge requests that will close the work item when merged.'
-        field :related_branches, # rubocop:disable GraphQL/ExtractType -- no need to extract to related
+        field :related_branches,
           Types::WorkItems::RelatedBranchType.connection_type,
           calls_gitaly: true,
           description: 'Branches that have referred to the work item, but do not have an associated merge request.',

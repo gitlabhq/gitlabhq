@@ -3501,6 +3501,12 @@ msgstr ""
 msgid "Added %{label_references} %{label_text}."
 msgstr ""
 
+msgid "Added %{target} as a linked item blocked by this %{work_item_type}."
+msgstr ""
+
+msgid "Added %{target} as a linked item blocking this %{work_item_type}."
+msgstr ""
+
 msgid "Added %{timeAgo} by"
 msgstr ""
 
@@ -32614,6 +32620,12 @@ msgstr ""
 msgid "Link does not exist"
 msgstr ""
 
+msgid "Link items blocked by this item"
+msgstr ""
+
+msgid "Link items blocking this item"
+msgstr ""
+
 msgid "Link text"
 msgstr ""
 
@@ -33073,9 +33085,6 @@ msgstr ""
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
-msgid "Mark this issue as blocked by other issues"
-msgstr ""
-
 msgid "Mark this issue as related to another issue"
 msgstr ""
 
@@ -33145,9 +33154,6 @@ msgstr ""
 msgid "Marked"
 msgstr ""
 
-msgid "Marked %{target} as blocked by this issue."
-msgstr ""
-
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
@@ -33158,9 +33164,6 @@ msgid "Marked as ready. Merging is now allowed."
 msgstr ""
 
 msgid "Marked this %{noun} as ready."
-msgstr ""
-
-msgid "Marked this issue as blocked by %{target}."
 msgstr ""
 
 msgid "Marked this issue as related to %{issue_ref}."
@@ -33785,6 +33788,9 @@ msgid "MemberRole|The None role is assigned to the invited group users of a shar
 msgstr ""
 
 msgid "MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners."
+msgstr ""
+
+msgid "MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code, such as project managers and scrum masters."
 msgstr ""
 
 msgid "MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code."
@@ -41324,6 +41330,9 @@ msgid "Plan"
 msgstr ""
 
 msgid "Plan:"
+msgstr ""
+
+msgid "Planner"
 msgstr ""
 
 msgid "PlantUML"
@@ -51973,10 +51982,10 @@ msgstr ""
 msgid "Set the per-user rate limits for the requests to Organizations API."
 msgstr ""
 
-msgid "Set this issue as blocked by %{target}."
+msgid "Set this %{work_item_type} as blocked by %{target}."
 msgstr ""
 
-msgid "Set this issue as blocking %{target}."
+msgid "Set this %{work_item_type} as blocking %{target}."
 msgstr ""
 
 msgid "Set this number to 0 to disable the limit."
@@ -53394,9 +53403,6 @@ msgid "Specific branches"
 msgstr ""
 
 msgid "Specified URL cannot be used: \"%{reason}\""
-msgstr ""
-
-msgid "Specifies that this issue blocks other issues"
 msgstr ""
 
 msgid "Specify IP ranges that are always allowed for inbound traffic, for use with group-level IP restrictions. Runner and Pages daemon internal IPs should be listed here so that they can access project artifacts."
@@ -55299,6 +55305,9 @@ msgid "The Matrix access token (for example, `syt-zyx57W2v1u123ew11`)."
 msgstr ""
 
 msgid "The Mattermost token."
+msgstr ""
+
+msgid "The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code."
 msgstr ""
 
 msgid "The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}."
@@ -62429,25 +62438,7 @@ msgstr ""
 msgid "WikiClone|Clone Wiki repository"
 msgstr ""
 
-msgid "WikiClone|Clone repository"
-msgstr ""
-
 msgid "WikiClone|Git Access"
-msgstr ""
-
-msgid "WikiClone|Go to directory"
-msgstr ""
-
-msgid "WikiClone|Install Gollum"
-msgstr ""
-
-msgid "WikiClone|Start Gollum and edit locally"
-msgstr ""
-
-msgid "WikiClone|Step 1: Clone repository"
-msgstr ""
-
-msgid "WikiClone|Step 2: Install and start Gollum"
 msgstr ""
 
 msgid "WikiEdit|There is already a page with the same title in that path."

@@ -30,7 +30,7 @@ module Ci
 
         response = ServiceResponse.success
         runner.transaction do
-          current_project_ids = runner.project_ids # rubocop:disable CodeReuse/ActiveRecord -- reasonable use
+          current_project_ids = runner.project_ids
 
           response = associate_new_projects(new_project_ids, current_project_ids)
           response = disassociate_old_projects(new_project_ids, current_project_ids) if response.success?

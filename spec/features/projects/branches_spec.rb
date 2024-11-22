@@ -69,6 +69,20 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
 
           expect(page).to have_content(sorted_branches(repository, count: 6, sort_by: :updated_desc, state: 'active'))
         end
+
+        it 'sorts the branches by oldest updated', :js do
+          visit project_branches_filtered_path(project, state: 'active')
+
+          click_button 'Updated date'
+          within_testid 'branches-dropdown' do
+            first('span', text: 'Oldest updated').click
+          end
+
+          expect(page).to have_content(sorted_branches(repository, count: 6, sort_by: :updated_asc, state: 'active'))
+          expect(page).to have_current_path(
+            [project_branches_path(project, state: 'active'), 'sort=updated_asc'].join('&')
+          )
+        end
       end
 
       describe 'Stale branches page' do
@@ -76,6 +90,20 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
           visit project_branches_filtered_path(project, state: 'stale')
 
           expect(page).to have_content(sorted_branches(repository, count: 4, sort_by: :updated_asc, state: 'stale'))
+        end
+
+        it 'sorts the branches by oldest updated', :js do
+          visit project_branches_filtered_path(project, state: 'stale')
+
+          click_button 'Oldest updated'
+          within_testid 'branches-dropdown' do
+            first('span', text: 'Updated date').click
+          end
+
+          expect(page).to have_content(sorted_branches(repository, count: 4, sort_by: :updated_desc, state: 'stale'))
+          expect(page).to have_current_path(
+            [project_branches_path(project, state: 'stale'), 'sort=updated_desc'].join('&')
+          )
         end
       end
 
@@ -165,6 +193,9 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
         end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))
+        expect(page).to have_current_path(
+          [project_branches_path(project, state: 'all'), 'sort=updated_asc'].join('&')
+        )
       end
 
       it 'avoids a N+1 query in branches index' do

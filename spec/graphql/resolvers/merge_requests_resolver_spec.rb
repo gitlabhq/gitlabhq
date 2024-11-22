@@ -96,8 +96,9 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
 
       it 'can batch-resolve merge requests from different projects', :request_store do
-        # 2 queries for project_authorizations, and 2 for merge_requests
-        results = batch_sync(max_queries: queries_per_project * 2) do
+        # 2 queries for organization_users, 2 for project_authorizations, and 2 for merge_requests
+        extra_auth_queries = 2
+        results = batch_sync(max_queries: (queries_per_project + extra_auth_queries) * 2) do
           a = resolve_mr(project, iids: [iid_1])
           b = resolve_mr(project, iids: [iid_2])
           c = resolve_mr(other_project, iids: [other_iid])

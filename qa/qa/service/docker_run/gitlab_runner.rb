@@ -15,10 +15,10 @@ module QA
         MSG
 
         def initialize(name)
-          @image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.runner_container_image}" # rubocop:disable Layout/LineLength
+          @image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.runner_container_image}"
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
           @executor = :shell
-          @executor_image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.gitlab_qa_build_image}" # rubocop:disable Layout/LineLength
+          @executor_image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.gitlab_qa_build_image}"
           super()
         end
 

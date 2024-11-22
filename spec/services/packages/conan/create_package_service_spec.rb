@@ -169,15 +169,12 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
           stub_feature_flags(packages_protected_packages_conan: false)
         end
 
-        # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
         where(:package_name_pattern, :minimum_access_level_for_push, :user) do
           ref(:package_name)                  | :maintainer | ref(:project_developer)
           ref(:package_name)                  | :admin      | ref(:project_owner)
           ref(:package_name_pattern_no_match) | :maintainer | ref(:project_developer)
           ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)
         end
-        # rubocop:enable Layout/LineLength
-
         with_them do
           it_behaves_like 'a service response for valid package'
         end

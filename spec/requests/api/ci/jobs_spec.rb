@@ -269,7 +269,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group.id }])
           expect(json_response.dig('user', 'id')).to eq(api_user.id)
           expect(json_response.dig('user', 'username')).to eq(api_user.username)
-          expect(json_response.dig('user', 'roles_in_project')).to match_array %w[guest reporter developer]
+          expect(json_response.dig('user', 'roles_in_project')).to match_array %w[guest planner reporter developer]
           expect(json_response).not_to include('environment')
         end
 

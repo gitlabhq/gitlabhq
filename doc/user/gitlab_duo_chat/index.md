@@ -123,7 +123,7 @@ If you have selected code in the editor, this selection is sent along with your 
 
 ### In the editor window
 
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab Workflow extension for VS Code 5.15.0.
+> - Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab Workflow extension for VS Code 5.15.0.
 
 To open GitLab Duo Chat in the editor window, use any of these methods:
 
@@ -195,7 +195,7 @@ After GitLab Duo Chat opens:
 
 ### In the editor window
 
-> - [Generally available](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) in GitLab Duo 3.0.0.
+> - Introduced as [generally available](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) in GitLab Duo 3.0.0.
 
 To open GitLab Duo Chat in the editor window, use any of these methods:
 

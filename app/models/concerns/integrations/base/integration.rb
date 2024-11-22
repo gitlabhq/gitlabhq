@@ -692,7 +692,7 @@ module Integrations
 
       def api_field_names
         fields # rubocop:disable Style/NumberedParameters -- existing code moved as is
-          .reject { _1[:type] == :password || _1[:name] == 'webhook' || (_1.key?(:if) && _1[:if] != true) } # rubocop:disable Style/NumberedParameters -- existing code moved as is
+          .reject { _1[:type] == :password || _1[:name] == 'webhook' || (_1.key?(:if) && _1[:if] != true) }
           .pluck(:name) # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- existing code moved as is
       end
 

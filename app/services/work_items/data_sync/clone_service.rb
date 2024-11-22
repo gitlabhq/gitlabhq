@@ -41,7 +41,7 @@ module WorkItems
           return error(error_message, :unprocessable_entity)
         end
 
-        if target_namespace.pending_delete? # rubocop:disable Style/GuardClause -- does not read right with other checks above
+        if target_namespace.pending_delete?
           error_message = s_('CloneWorkItem|Cannot clone work item to target namespace as it is pending deletion.')
 
           return error(error_message, :unprocessable_entity)

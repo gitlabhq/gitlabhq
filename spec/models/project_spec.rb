@@ -1215,7 +1215,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe 'delegation' do
     let_it_be(:project) { create(:project) }
 
-    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
+    [:add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 

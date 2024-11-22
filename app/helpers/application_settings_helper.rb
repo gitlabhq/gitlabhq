@@ -502,6 +502,7 @@ module ApplicationSettingsHelper
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement,
       :can_create_group,
+      :can_create_organization,
       :bulk_import_concurrent_pipeline_batch_limit,
       :concurrent_relation_batch_export_limit,
       :bulk_import_enabled,

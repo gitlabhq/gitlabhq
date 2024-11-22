@@ -12,6 +12,7 @@ DETAILS:
 
 > - Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
 > - Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+> - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 You can estimate and track the time you spend on an item, such as:
 
@@ -50,8 +51,8 @@ You can see the estimated time remaining when you hover over the time tracking i
 
 Prerequisites:
 
-- In issues, you must have at least the Reporter role for the project.
-- In tasks, you must have at least the Reporter role for the project.
+- In issues, you must have at least the Planner role for the project.
+- In tasks, you must have at least the Planner role for the project.
 - In merge requests, you must have at least the Developer role for the project.
 
 To enter an estimate, use the `/estimate` [quick action](quick_actions.md), followed by the time.
@@ -67,8 +68,8 @@ Every time you enter a new time estimate, it overwrites the previous value.
 
 Prerequisites:
 
-- In issues, you must have at least the Reporter role for the project.
-- In tasks, you must have at least the Reporter role for the project.
+- In issues, you must have at least the Planner role for the project.
+- In tasks, you must have at least the Planner role for the project.
 - In merge requests, you must have at least the Developer role for the project.
 
 To remove an estimate entirely, use the `/remove_estimate` [quick action](quick_actions.md).
@@ -86,7 +87,7 @@ The total amount of time spent on an issue, task, or merge request cannot exceed
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 #### Using the user interface
 
@@ -135,7 +136,7 @@ If you type a future date, no time is logged.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To subtract time, enter a negative value. For example, `/spend -3d` removes three
 days from the total time spent. You can't go below 0 minutes of time spent,
@@ -160,7 +161,7 @@ To delete a timelog, either:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To delete all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
 

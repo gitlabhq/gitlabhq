@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Search::AbuseDetection, feature_category: :global_search 
         word | { query_string: ['stopword only abusive search detected'] }
       end
 
-      (['apples'] * (described_class::MAX_PIPE_SYNTAX_FILTERS + 1)).join('|') | { query_string: ['too many pipe syntax filters'] } # rubocop:disable Layout/LineLength
+      (['apples'] * (described_class::MAX_PIPE_SYNTAX_FILTERS + 1)).join('|') | { query_string: ['too many pipe syntax filters'] }
       (['apples'] * described_class::MAX_PIPE_SYNTAX_FILTERS).join('|')       | {}
       'x'                                                   | { query_string: ['abusive tiny search detected'] }
       'apples|x'                                            | { query_string: ['abusive tiny search detected'] }

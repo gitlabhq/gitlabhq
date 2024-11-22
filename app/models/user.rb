@@ -1424,7 +1424,7 @@ class User < ApplicationRecord
   #
   # This logic is duplicated from `Ability#project_abilities` into a SQL form.
   def projects_where_can_admin_issues
-    authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
+    authorized_projects(Gitlab::Access::PLANNER).non_archived.with_issues_enabled
   end
 
   # rubocop: disable CodeReuse/ServiceClass

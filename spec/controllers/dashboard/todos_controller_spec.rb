@@ -12,6 +12,30 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
   end
 
   describe 'GET #index' do
+    context 'when the `todos_vue_application` feature flag is disabled' do
+      before do
+        stub_feature_flags(todos_vue_application: false)
+      end
+
+      it 'renders the legacy view' do
+        get :index
+
+        expect(response).to render_template(:index)
+      end
+    end
+
+    context 'when the `todos_vue_application` feature flag is enabled' do
+      before do
+        stub_feature_flags(todos_vue_application: true)
+      end
+
+      it 'renders the legacy view' do
+        get :index
+
+        expect(response).to render_template(:vue)
+      end
+    end
+
     context 'project authorization' do
       it 'renders 404 when user does not have read access on given project' do
         unauthorized_project = create(:project, :private)
@@ -43,6 +67,10 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
     end
 
     context "with render_views" do
+      before do
+        stub_feature_flags(todos_vue_application: false)
+      end
+
       render_views
 
       it 'avoids N+1 queries', :request_store do
@@ -89,6 +117,7 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
       end
 
       before do
+        stub_feature_flags(todos_vue_application: false)
         allow(Kaminari.config).to receive(:default_per_page).and_return(2)
       end
 
@@ -158,28 +187,10 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
   end
 
   describe 'GET #vue' do
-    context 'with todos_vue_application on' do
-      before do
-        stub_feature_flags(todos_vue_application: true)
-      end
+    it 'redirects to #index' do
+      get :vue
 
-      it 'renders 200' do
-        get :vue
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    context 'with todos_vue_application off' do
-      before do
-        stub_feature_flags(todos_vue_application: false)
-      end
-
-      it 'redirects to #index' do
-        get :vue
-
-        expect(response).to redirect_to dashboard_todos_path
-      end
+      expect(response).to redirect_to dashboard_todos_path
     end
   end
 

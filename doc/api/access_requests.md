@@ -18,6 +18,7 @@ following levels are recognized:
 - No access (`0`)
 - Minimal access (`5`)
 - Guest (`10`)
+- Planner (`15`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)

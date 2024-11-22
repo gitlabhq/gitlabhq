@@ -7,6 +7,7 @@ module System
 
     ALLOWED_TARGET_ACCESS_LEVELS = [
       Gitlab::Access::GUEST,
+      Gitlab::Access::PLANNER,
       Gitlab::Access::REPORTER,
       Gitlab::Access::DEVELOPER,
       Gitlab::Access::MAINTAINER,

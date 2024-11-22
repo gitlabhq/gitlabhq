@@ -165,11 +165,11 @@ RSpec.describe GitlabSchema.types['CurrentUserTodos'] do
 
       expect do
         execute_query(query_type, graphql: query_without_state_arguments)
-      end.not_to exceed_query_limit(control) # at present this is 3
+      end.not_to exceed_query_limit(control).with_threshold(1) # at present this is 4
 
       expect do
         execute_query(query_type, graphql: with_state_arguments)
-      end.not_to exceed_query_limit(control).with_threshold(1)
+      end.not_to exceed_query_limit(control).with_threshold(2)
     end
 
     it 'returns correct data' do

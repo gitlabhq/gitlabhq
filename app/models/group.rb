@@ -553,6 +553,10 @@ class Group < Namespace
     add_member(user, :guest, current_user: current_user)
   end
 
+  def add_planner(user, current_user = nil)
+    add_member(user, :planner, current_user: current_user)
+  end
+
   def add_reporter(user, current_user = nil)
     add_member(user, :reporter, current_user: current_user)
   end

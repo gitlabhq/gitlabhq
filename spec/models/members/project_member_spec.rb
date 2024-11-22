@@ -113,6 +113,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       it 'returns Gitlab::Access.options' do
         expect(access_levels).to eq({
           "Guest" => 10,
+          "Planner" => 15,
           "Reporter" => 20,
           "Developer" => 30
         })

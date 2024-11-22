@@ -102,10 +102,11 @@ To move around the image while zoomed in, drag the image.
 
 > - Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
 > - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
+> - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 - The names of the uploaded files must be no longer than 255 characters.
 
 To add a design to an issue:
@@ -137,12 +138,13 @@ To add a design to an issue:
 ## Add a new version of a design
 
 > - Minimum role to add a new version of a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
+> - Minimum role to add a new version of a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 As discussion on a design continues, you might want to upload a new version of a design.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To do so, [add a design](#add-a-design-to-an-issue) with the same filename.
 
@@ -158,6 +160,7 @@ When designs are skipped, a warning message is displayed.
 ## Archive a design
 
 > - Minimum role to archive a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
+> - Minimum role to archive a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 You can archive individual designs or select a few of them to archive at once.
 
@@ -170,7 +173,7 @@ URL.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 - You can archive only the latest version of a design.
 
 To archive a single design:
@@ -233,10 +236,11 @@ so that everyone involved can participate in the discussion.
 ## Delete a comment from a design
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
+> Minimum role to delete comment from a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To delete a comment from a design:
 

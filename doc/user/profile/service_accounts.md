@@ -55,14 +55,12 @@ How you create an account differs depending on whether you are a:
 
 > - Introduced for GitLab.com in GitLab 16.3
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../../administration/feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
-
-FLAG:
-On GitLab self-managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts`. On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
 
 Prerequisites:
 
 - You must have the Owner role in a top-level group.
-- For GitLab self-managed, top-level group Owners must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+- For GitLab self-managed or GitLab Dedicated, top-level group Owners must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
 1. [Create a service account](../../api/group_service_accounts.md#create-a-service-account-user).
 

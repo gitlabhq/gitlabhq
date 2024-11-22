@@ -67,6 +67,13 @@ Rails/Date:
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/502580
     - danger/database/Dangerfile
 
+Rails/Pluck:
+  Exclude:
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/502580
+    - 'tooling/danger/**/*'
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
+  AutoCorrect: false
+
 RSpec:
   Language:
     Includes:
@@ -363,9 +370,6 @@ Rails/MailerName:
     # See for the context on why it's excluded https://gitlab.com/gitlab-org/gitlab/-/issues/239356#note_956419227
     - 'app/mailers/notify.rb'
 
-Rails/Pluck:
-  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
-  AutoCorrect: false
 
 Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982

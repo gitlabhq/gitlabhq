@@ -3,10 +3,12 @@
 RSpec.shared_context 'ProjectPolicy context' do
   let_it_be(:anonymous) { nil }
   let_it_be(:guest) { create(:user) }
+  let_it_be(:planner) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:inherited_guest) { create(:user) }
+  let_it_be(:inherited_planner) { create(:user) }
   let_it_be(:inherited_reporter) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
   let_it_be(:inherited_maintainer) { create(:user) }
@@ -30,6 +32,15 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_project_for_iids read_project_member read_release read_snippet
       read_wiki upload_file
     ]
+  end
+
+  let(:base_planner_permissions) do
+    base_guest_permissions +
+      %i[
+        admin_issue admin_issue_board admin_issue_board_list admin_label admin_milestone
+        read_confidential_issues update_issue reopen_issue destroy_issue read_internal_note
+        download_wiki_code create_wiki admin_wiki export_work_items
+      ]
   end
 
   let(:base_reporter_permissions) do
@@ -107,23 +118,27 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   # Used in EE specs
   let(:additional_guest_permissions) { [] }
+  let(:additional_planner_permissions) { [] }
   let(:additional_reporter_permissions) { [] }
   let(:additional_maintainer_permissions) { [] }
   let(:additional_owner_permissions) { [] }
 
   let(:guest_permissions) { base_guest_permissions + additional_guest_permissions }
+  let(:planner_permissions) { base_planner_permissions + additional_planner_permissions }
   let(:reporter_permissions) { base_reporter_permissions + additional_reporter_permissions }
   let(:maintainer_permissions) { base_maintainer_permissions + additional_maintainer_permissions }
   let(:owner_permissions) { base_owner_permissions + additional_owner_permissions }
 
   before_all do
     group.add_guest(inherited_guest)
+    group.add_planner(inherited_planner)
     group.add_reporter(inherited_reporter)
     group.add_developer(inherited_developer)
     group.add_maintainer(inherited_maintainer)
 
     [private_project, internal_project, public_project, public_project_in_group].each do |project|
       project.add_guest(guest)
+      project.add_planner(planner)
       project.add_reporter(reporter)
       project.add_developer(developer)
       project.add_maintainer(maintainer)

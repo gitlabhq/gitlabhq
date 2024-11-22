@@ -3,7 +3,7 @@
 module Todos
   module Destroy
     # Service class for deleting todos that belongs to confidential issues.
-    # It deletes todos for users that are not at least reporters, issue author or assignee.
+    # It deletes todos for users that are not at least planners, issue author or assignee.
     #
     # Accepts issue_id or project_id as argument.
     # When issue_id is passed it deletes matching todos for one confidential issue.

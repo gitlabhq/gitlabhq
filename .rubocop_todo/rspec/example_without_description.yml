@@ -198,7 +198,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/services/package_metadata/compressed_package_data_object_spec.rb'
     - 'ee/spec/services/package_metadata/data_object_fabricator_spec.rb'
     - 'ee/spec/services/package_metadata/data_objects/cve_enrichment_spec.rb'
-    - 'ee/spec/services/personal_access_tokens/rotation_verifier_service_spec.rb'
     - 'ee/spec/services/sbom/ingestion/occurrence_map_spec.rb'
     - 'ee/spec/services/security/scan_result_policies/sync_findings_to_approval_rules_service_spec.rb'
     - 'ee/spec/services/security/scan_result_policies/update_approvals_service_spec.rb'

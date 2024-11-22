@@ -1320,6 +1320,7 @@ When writing alt text:
 - Try to avoid repeating text you've already used in the topic.
 - Do not use inline styling like bold, italics, or backticks.
   Screen readers read `**text**` as `star star text star star`.
+- Use an empty alt text tag (`alt=""`) instead of omitting the tag altogether when the image does not add any unique information to the page. For example, when the image is decorative or is already fully described in the body text or caption. An empty alt tag tells assistive technologies that you have omitted the text intentionally, while a missing alt tag is ambiguous. 
 
 #### Automatic screenshot generator
 

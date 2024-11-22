@@ -19,6 +19,10 @@ module Namespaces
       enable :reopen_issue
     end
 
+    rule { can?(:planner_access) }.policy do
+      enable :reopen_issue
+    end
+
     rule { can?(:guest_access) }.policy do
       enable :read_work_item
       enable :read_issue

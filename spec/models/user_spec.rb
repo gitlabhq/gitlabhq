@@ -3973,6 +3973,7 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           [
+            Gitlab::Access::PLANNER,
             Gitlab::Access::REPORTER,
             Gitlab::Access::DEVELOPER,
             Gitlab::Access::MAINTAINER,
@@ -5297,18 +5298,22 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#projects_where_can_admin_issues' do
     let(:user) { create(:user) }
 
-    it 'includes projects for which the user access level is above or equal to reporter' do
+    it 'includes projects for which the user access level is above or equal to planner' do
+      planner_project = create(:project) { |p| p.add_planner(user) }
       reporter_project  = create(:project) { |p| p.add_reporter(user) }
       developer_project = create(:project) { |p| p.add_developer(user) }
       maintainer_project = create(:project) { |p| p.add_maintainer(user) }
 
-      expect(user.projects_where_can_admin_issues.to_a).to match_array([maintainer_project, developer_project, reporter_project])
+      expect(user.projects_where_can_admin_issues.to_a).to match_array(
+        [maintainer_project, developer_project, reporter_project, planner_project]
+      )
       expect(user.can?(:admin_issue, maintainer_project)).to eq(true)
       expect(user.can?(:admin_issue, developer_project)).to eq(true)
       expect(user.can?(:admin_issue, reporter_project)).to eq(true)
+      expect(user.can?(:admin_issue, planner_project)).to eq(true)
     end
 
-    it 'does not include for which the user access level is below reporter' do
+    it 'does not include for which the user access level is below planner' do
       project = create(:project)
       guest_project = create(:project) { |p| p.add_guest(user) }
 
@@ -6906,11 +6911,13 @@ RSpec.describe User, feature_category: :user_profile do
       let(:maintainer_project) { create(:project) }
       let(:reporter_project) { create(:project) }
       let(:developer_project) { create(:project) }
+      let(:planner_project) { create(:project) }
       let(:guest_project) { create(:project) }
       let(:no_access_project) { create(:project) }
 
       let(:projects) do
-        [owner_project, maintainer_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
+        [owner_project, maintainer_project, reporter_project,
+         developer_project, planner_project, guest_project, no_access_project].map(&:id)
       end
 
       let(:expected) do
@@ -6920,6 +6927,7 @@ RSpec.describe User, feature_category: :user_profile do
           reporter_project.id => Gitlab::Access::REPORTER,
           developer_project.id => Gitlab::Access::DEVELOPER,
           guest_project.id => Gitlab::Access::GUEST,
+          planner_project.id => Gitlab::Access::PLANNER,
           no_access_project.id => Gitlab::Access::NO_ACCESS
         }
       end
@@ -6929,6 +6937,7 @@ RSpec.describe User, feature_category: :user_profile do
         maintainer_project.add_maintainer(user)
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
+        planner_project.add_planner(user)
         guest_project.add_guest(user)
       end
 
@@ -6987,11 +6996,13 @@ RSpec.describe User, feature_category: :user_profile do
       let(:maintainer_group) { create(:group) }
       let(:reporter_group) { create(:group) }
       let(:developer_group) { create(:group) }
+      let(:planner_group) { create(:group) }
       let(:guest_group) { create(:group) }
       let(:no_access_group) { create(:group) }
 
       let(:groups) do
-        [owner_group, maintainer_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
+        [owner_group, maintainer_group, reporter_group, developer_group,
+         planner_group, guest_group, no_access_group, planner_group].map(&:id)
       end
 
       let(:expected) do
@@ -7000,6 +7011,7 @@ RSpec.describe User, feature_category: :user_profile do
           maintainer_group.id => Gitlab::Access::MAINTAINER,
           reporter_group.id => Gitlab::Access::REPORTER,
           developer_group.id => Gitlab::Access::DEVELOPER,
+          planner_group.id => Gitlab::Access::PLANNER,
           guest_group.id => Gitlab::Access::GUEST,
           no_access_group.id => Gitlab::Access::NO_ACCESS
         }
@@ -7010,6 +7022,7 @@ RSpec.describe User, feature_category: :user_profile do
         maintainer_group.add_maintainer(user)
         reporter_group.add_reporter(user)
         developer_group.add_developer(user)
+        planner_group.add_planner(user)
         guest_group.add_guest(user)
       end
 
@@ -8092,6 +8105,7 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when memberships exist' do
       it 'returns the highest access level for non requested memberships' do
         create(:group_member, :reporter, user_id: user.id)
+        create(:project_member, :planner, user_id: user.id)
         create(:project_member, :guest, user_id: user.id)
         create(:project_member, :maintainer, user_id: user.id, requested_at: Time.current)
 

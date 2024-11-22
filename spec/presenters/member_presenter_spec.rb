@@ -48,6 +48,7 @@ RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
     it 'returns all roles for the root group' do
       expect(described_class.new(root_member).valid_level_roles).to eq(
         'Guest' => Gitlab::Access::GUEST,
+        'Planner' => Gitlab::Access::PLANNER,
         'Reporter' => Gitlab::Access::REPORTER,
         'Developer' => Gitlab::Access::DEVELOPER,
         'Maintainer' => Gitlab::Access::MAINTAINER,

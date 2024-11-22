@@ -14,6 +14,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_disallowed(:upload_file)
+      expect_disallowed(*(guest_permissions - public_permissions))
+      expect_disallowed(*(planner_permissions - guest_permissions))
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -29,6 +31,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_disallowed(:upload_file)
+      expect_disallowed(*(guest_permissions - public_permissions))
+      expect_disallowed(*(planner_permissions - guest_permissions))
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -47,6 +51,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     specify do
       expect_disallowed(*public_permissions)
+      expect_disallowed(*guest_permissions)
+      expect_disallowed(*planner_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -62,6 +68,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     specify do
       expect_disallowed(*public_permissions)
+      expect_disallowed(*guest_permissions)
+      expect_disallowed(*planner_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -96,6 +104,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_disallowed(*public_permissions)
       expect_disallowed(*guest_permissions)
+      expect_disallowed(*planner_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -109,6 +118,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
+      expect_disallowed(*(planner_permissions - guest_permissions))
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -120,12 +130,31 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  context 'planners' do
+    let(:current_user) { planner }
+
+    specify do
+      expect_allowed(*public_permissions)
+      expect_allowed(*guest_permissions)
+      expect_allowed(*planner_permissions)
+      expect_disallowed(*(reporter_permissions - planner_permissions))
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*maintainer_permissions)
+      expect_disallowed(*(owner_permissions - [:destroy_issue]))
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { planner.id }
+    end
+  end
+
   context 'reporter' do
     let(:current_user) { reporter }
 
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
+      expect_allowed(*(planner_permissions - [:destroy_issue]))
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -143,6 +172,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
+      expect_allowed(*(planner_permissions - [:destroy_issue]))
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -165,6 +195,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows permissions from lower roles' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*(planner_permissions - [:destroy_issue]))
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
       end
@@ -179,6 +210,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows every maintainer permission' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*planner_permissions - [:destroy_issue])
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*maintainer_permissions)
@@ -197,6 +229,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
+      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
@@ -214,6 +247,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_disallowed(*public_permissions)
       expect_disallowed(*guest_permissions)
+      expect_disallowed(*planner_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -224,6 +258,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*maintainer_permissions)
@@ -247,6 +282,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
+      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
@@ -274,6 +310,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     it :aggregate_failures do
       expect_allowed(:read_resource_access_tokens, :destroy_resource_access_tokens)
       expect_disallowed(*guest_permissions)
+      expect_disallowed(*planner_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -290,6 +327,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it :aggregate_failures do
         expect_disallowed(:read_resource_access_tokens, :destroy_resource_access_tokens)
         expect_disallowed(*guest_permissions)
+        expect_disallowed(*planner_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -323,6 +361,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_disallowed(*public_permissions)
         expect_disallowed(*guest_permissions)
+        expect_disallowed(*planner_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -336,10 +375,25 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_disallowed(*(planner_permissions - guest_permissions))
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
+      end
+    end
+
+    context 'planners' do
+      let(:current_user) { planner }
+
+      specify do
+        expect_allowed(*public_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*planner_permissions)
+        expect_disallowed(*(reporter_permissions - planner_permissions))
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*(owner_permissions - [:destroy_issue]))
       end
     end
 
@@ -349,6 +403,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*(planner_permissions - [:destroy_issue]))
         expect_allowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -362,6 +417,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*(planner_permissions - [:destroy_issue]))
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -375,6 +431,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*(planner_permissions - [:destroy_issue]))
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
       end
@@ -391,6 +448,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
+        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*maintainer_permissions)
@@ -578,26 +636,31 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   context 'create_projects' do
     context 'without visibility levels restricted' do
       where(:project_creation_level, :current_user, :create_projects_allowed?) do
+        nil                                                    | lazy { planner }    | false
         nil                                                    | lazy { reporter }   | false
         nil                                                    | lazy { developer }  | true
         nil                                                    | lazy { maintainer } | true
         nil                                                    | lazy { owner }      | true
         nil                                                    | lazy { admin }      | true
+        ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { planner }    | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { reporter }   | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { developer }  | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { maintainer } | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { owner }      | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { admin }      | false
+        ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { planner }    | false
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { reporter }   | false
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { developer }  | false
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { maintainer } | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { owner }      | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { admin }      | true
+        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { planner }    | false
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { reporter }   | false
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { developer }  | true
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { maintainer } | true
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { owner }      | true
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { admin }      | true
+        ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { planner }    | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { reporter }   | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { developer }  | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { maintainer } | false
@@ -678,6 +741,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'when group has no project creation level set' do
       let(:project_creation_level) { nil }
 
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
       context 'reporter' do
         let(:current_user) { reporter }
 
@@ -705,6 +774,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'when group has project creation level set to no one' do
       let(:project_creation_level) { ::Gitlab::Access::NO_ONE_PROJECT_ACCESS }
+
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
 
       context 'reporter' do
         let(:current_user) { reporter }
@@ -734,6 +809,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'when group has project creation level set to maintainer only' do
       let(:project_creation_level) { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
 
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
       context 'reporter' do
         let(:current_user) { reporter }
 
@@ -761,6 +842,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'when group has project creation level set to developers + maintainer' do
       let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
 
       context 'reporter' do
         let(:current_user) { reporter }
@@ -794,6 +881,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         group.update!(subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
       end
 
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
       context 'reporter' do
         let(:current_user) { reporter }
 
@@ -822,6 +915,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'when group has subgroup creation level set to maintainer' do
       before do
         group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+      end
+
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
       end
 
       context 'reporter' do
@@ -878,7 +977,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    %w[guest reporter developer maintainer owner].each do |role|
+    %w[guest planner reporter developer maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -976,6 +1075,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
     end
 
+    context 'with planner' do
+      let(:current_user) { planner }
+
+      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
+    end
+
     context 'with guest' do
       let(:current_user) { guest }
 
@@ -1024,6 +1129,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { reporter }
 
       it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with planner' do
+      let(:current_user) { planner }
+
+      it { is_expected.to be_disallowed(:read_package) }
     end
 
     context 'with guest' do
@@ -1278,6 +1389,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_disallowed(:update_runners_registration_token) }
     end
 
+    context 'with planner' do
+      let(:current_user) { planner }
+
+      it { is_expected.to be_disallowed(:update_runners_registration_token) }
+    end
+
     context 'with guest' do
       let(:current_user) { guest }
 
@@ -1408,6 +1525,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_disallowed(:register_group_runners) }
     end
 
+    context 'with planner' do
+      let(:current_user) { planner }
+
+      it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+
     context 'with guest' do
       let(:current_user) { guest }
 
@@ -1508,6 +1631,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_disallowed(:create_runner) }
     end
 
+    context 'with planner' do
+      let(:current_user) { planner }
+
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
+
     context 'with guest' do
       let(:current_user) { guest }
 
@@ -1560,6 +1689,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'with reporter' do
       let(:current_user) { reporter }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with planner' do
+      let(:current_user) { planner }
 
       specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
@@ -1633,6 +1768,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         :maintainer | nil   | false
         :developer  | nil   | false
         :reporter   | nil   | false
+        :planner    | nil   | false
         :guest      | nil   | false
       end
 

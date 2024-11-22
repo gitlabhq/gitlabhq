@@ -705,7 +705,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/milestones/update_service_spec.rb'
     - 'ee/spec/services/package_metadata/ingestion/ingestion_service_spec.rb'
     - 'ee/spec/services/personal_access_tokens/revoke_invalid_tokens_spec.rb'
-    - 'ee/spec/services/personal_access_tokens/rotation_verifier_service_spec.rb'
     - 'ee/spec/services/projects/alerting/notify_service_spec.rb'
     - 'ee/spec/services/projects/create_from_template_service_spec.rb'
     - 'ee/spec/services/projects/destroy_service_spec.rb'

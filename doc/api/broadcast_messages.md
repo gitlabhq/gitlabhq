@@ -127,6 +127,7 @@ The `target_access_levels` are defined in the `Gitlab::Access` module. The
 following levels are valid:
 
 - Guest (`10`)
+- Planner (`15`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
@@ -198,6 +199,7 @@ The `target_access_levels` are defined in the `Gitlab::Access` module. The
 following levels are valid:
 
 - Guest (`10`)
+- Planner (`15`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)

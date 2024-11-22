@@ -771,6 +771,7 @@ module ProjectsHelper
       Gitlab::Access::NO_ACCESS => _('No access'),
       Gitlab::Access::MINIMAL_ACCESS => _("Minimal Access"),
       Gitlab::Access::GUEST => _('Guest'),
+      Gitlab::Access::PLANNER => _('Planner'),
       Gitlab::Access::REPORTER => _('Reporter'),
       Gitlab::Access::DEVELOPER => _('Developer'),
       Gitlab::Access::MAINTAINER => _('Maintainer'),

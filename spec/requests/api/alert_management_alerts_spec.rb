@@ -303,7 +303,9 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
       context 'and metric image not found' do
         subject do
-          put api("/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images/#{non_existing_record_id}", user) # rubocop: disable Layout/LineLength
+          put api(
+            "/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images/#{non_existing_record_id}", user
+          )
         end
 
         it 'returns an error' do
@@ -378,7 +380,9 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
       context 'when metric image not found' do
         subject do
-          delete api("/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images/#{non_existing_record_id}", user) # rubocop: disable Layout/LineLength
+          delete api(
+            "/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images/#{non_existing_record_id}", user
+          )
         end
 
         it 'returns an error' do

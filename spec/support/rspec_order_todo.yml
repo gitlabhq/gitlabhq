@@ -2192,7 +2192,6 @@
 - './ee/spec/services/personal_access_tokens/instance/update_lifetime_service_spec.rb'
 - './ee/spec/services/personal_access_tokens/revoke_invalid_tokens_spec.rb'
 - './ee/spec/services/personal_access_tokens/revoke_service_audit_log_spec.rb'
-- './ee/spec/services/personal_access_tokens/rotation_verifier_service_spec.rb'
 - './ee/spec/services/projects/alerting/notify_service_spec.rb'
 - './ee/spec/services/projects/cleanup_service_spec.rb'
 - './ee/spec/services/projects/create_from_template_service_spec.rb'

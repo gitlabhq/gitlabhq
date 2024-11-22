@@ -11,6 +11,7 @@ FactoryBot.define do
     transient do
       # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
       guests {}
+      planners {}
       reporters {}
       developers {}
       maintainers {}
@@ -29,6 +30,7 @@ FactoryBot.define do
       create(:namespace_settings, namespace: group) unless group.namespace_settings
 
       group.add_members(Array.wrap(evaluator.guests), :guest)
+      group.add_members(Array.wrap(evaluator.planners), :planner)
       group.add_members(Array.wrap(evaluator.reporters), :reporter)
       group.add_members(Array.wrap(evaluator.developers), :developer)
       group.add_members(Array.wrap(evaluator.maintainers), :maintainer)

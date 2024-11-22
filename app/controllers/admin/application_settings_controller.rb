@@ -191,7 +191,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
           allowed_to_push: [:access_level]
         }
       ] },
-      :can_create_organization,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_denylist_file,

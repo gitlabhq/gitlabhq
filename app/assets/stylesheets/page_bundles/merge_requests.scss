@@ -126,15 +126,9 @@
     overflow: visible;
   }
 
-
-  div:has(> .diff-file-is-active) {
-    box-shadow: 0 0 0 1px var(--gl-focus-ring-outer-color);
-    border-radius: #{$border-radius + $gl-spacing-scale-1};
-    padding: $gl-spacing-scale-1;
-
-    .diff-file-is-active {
-      margin-bottom: 0;
-    }
+  .diff-file-is-active {
+    outline: 1px solid var(--gl-focus-ring-outer-color);
+    outline-offset: 2px;
   }
 }
 

@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   include ExternalAuthorizationServiceHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:guest) { create(:user) }
   let_it_be(:author) { create(:user) }
+  let_it_be(:planner) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:non_team_member) { create(:user) }
@@ -14,6 +16,34 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
 
   def permissions(user, merge_request)
     described_class.new(user, merge_request)
+  end
+
+  # :policy, :is_allowed
+  def permission_table_for_guest
+    :read_merge_request            | true
+    :create_todo                   | true
+    :create_note                   | true
+    :update_subscription           | true
+    :create_merge_request_in       | true
+    :create_merge_request_from     | false
+    :approve_merge_request         | false
+    :update_merge_request          | false
+    :reset_merge_request_approvals | false
+    :mark_note_as_internal         | false
+  end
+
+  # :policy, :is_allowed
+  def permission_table_for_reporter
+    :read_merge_request            | true
+    :create_todo                   | true
+    :create_note                   | true
+    :update_subscription           | true
+    :create_merge_request_in       | true
+    :create_merge_request_from     | false
+    :approve_merge_request         | false
+    :update_merge_request          | false
+    :reset_merge_request_approvals | false
+    :mark_note_as_internal         | true
   end
 
   mr_perms = %i[create_merge_request_in
@@ -36,19 +66,9 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
   end
 
-  shared_examples_for 'a user with reporter access' do
-    using RSpec::Parameterized::TableSyntax
-
+  shared_examples_for 'a user with limited access' do
     where(:policy, :is_allowed) do
-      :create_merge_request_in   | true
-      :read_merge_request        | true
-      :create_todo               | true
-      :create_note               | true
-      :update_subscription       | true
-      :create_merge_request_from | false
-      :approve_merge_request     | false
-      :update_merge_request      | false
-      :mark_note_as_internal     | true
+      permission_table
     end
 
     with_them do
@@ -74,6 +94,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     before do
       project.add_guest(guest)
       project.add_guest(author)
+      project.add_planner(planner)
       project.add_developer(developer)
       project.add_developer(bot)
     end
@@ -105,12 +126,76 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
           end
         end
 
+        context 'and the user is a planner' do
+          let(:user) { planner }
+
+          it do
+            is_expected.to be_allowed(:update_merge_request)
+          end
+
+          it do
+            is_expected.to be_allowed(:reopen_merge_request)
+          end
+
+          it do
+            is_expected.to be_allowed(:approve_merge_request)
+          end
+
+          it do
+            is_expected.to be_allowed(:mark_note_as_internal)
+          end
+
+          it do
+            is_expected.to be_disallowed(:reset_merge_request_approvals)
+          end
+        end
+
         context 'and the user is a bot' do
           let(:user) { bot }
 
           it do
             is_expected.to be_allowed(:reset_merge_request_approvals)
           end
+        end
+      end
+
+      context 'and user is not author' do
+        let(:merge_request) do
+          create(:merge_request, source_project: project, target_project: project, author: author)
+        end
+
+        describe 'a guest' do
+          let(:permission_table) { permission_table_for_guest }
+
+          subject { permissions(guest, merge_request) }
+
+          it_behaves_like 'a user with limited access'
+        end
+
+        describe 'a planner' do
+          let(:permission_table) { permission_table_for_reporter } # same as reporter because MR is public
+
+          subject { permissions(planner, merge_request) }
+
+          it_behaves_like 'a user with limited access'
+        end
+      end
+
+      context 'with private project' do
+        let_it_be(:project) { create(:project, :private) }
+
+        describe 'a guest' do
+          subject { guest }
+
+          it_behaves_like 'a denied user'
+        end
+
+        describe 'a planner' do
+          let(:permission_table) { permission_table_for_reporter }
+
+          subject { permissions(planner, merge_request) }
+
+          it_behaves_like 'a user with limited access'
         end
       end
     end
@@ -130,6 +215,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
 
       describe 'a guest' do
         subject { guest }
+
+        it_behaves_like 'a denied user'
+      end
+
+      describe 'a planner' do
+        subject { planner }
 
         it_behaves_like 'a denied user'
       end
@@ -163,6 +254,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         it_behaves_like 'a denied user'
       end
 
+      describe 'a planner' do
+        subject { planner }
+
+        it_behaves_like 'a denied user'
+      end
+
       describe 'a developer' do
         subject { developer }
 
@@ -189,6 +286,10 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         expect(permissions(developer, merge_request)).to be_allowed(:reopen_merge_request)
       end
 
+      it 'prevents planner from reopening merge request' do
+        expect(permissions(planner, merge_request)).to be_disallowed(:reopen_merge_request)
+      end
+
       it 'prevents guest from reopening merge request' do
         expect(permissions(guest, merge_request)).to be_disallowed(:reopen_merge_request)
       end
@@ -203,6 +304,10 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
 
       it 'prevents developer from reopening merge request' do
         expect(permissions(developer, merge_request_locked)).to be_disallowed(:reopen_merge_request)
+      end
+
+      it 'prevents planners from reopening merge request' do
+        expect(permissions(planner, merge_request_locked)).to be_disallowed(:reopen_merge_request)
       end
 
       it 'prevents guests from reopening merge request' do
@@ -244,6 +349,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     before_all do
       group.add_guest(guest)
       group.add_guest(author)
+      group.add_planner(planner)
       group.add_reporter(reporter)
       group.add_developer(developer)
       group.add_developer(bot)
@@ -276,6 +382,22 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         end
       end
 
+      describe 'a planner' do
+        let(:permission_table) { permission_table_for_reporter }
+
+        subject { permissions(planner, merge_request) }
+
+        it_behaves_like 'a user with limited access'
+      end
+
+      describe 'a reporter' do
+        let(:permission_table) { permission_table_for_reporter }
+
+        subject { permissions(reporter, merge_request) }
+
+        it_behaves_like 'a user with limited access'
+      end
+
       context 'and merge requests are private' do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
@@ -288,10 +410,18 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
           it_behaves_like 'a denied user'
         end
 
+        describe 'a planner' do
+          subject { planner }
+
+          it_behaves_like 'a denied user'
+        end
+
         describe 'a reporter' do
+          let(:permission_table) { permission_table_for_reporter }
+
           subject { permissions(reporter, merge_request) }
 
-          it_behaves_like 'a user with reporter access'
+          it_behaves_like 'a user with limited access'
         end
 
         describe 'a developer' do
@@ -319,10 +449,20 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         it_behaves_like 'a denied user'
       end
 
+      describe 'a planner' do
+        let(:permission_table) { permission_table_for_reporter }
+
+        subject { permissions(planner, merge_request) }
+
+        it_behaves_like 'a user with limited access'
+      end
+
       describe 'a reporter' do
+        let(:permission_table) { permission_table_for_reporter }
+
         subject { permissions(reporter, merge_request) }
 
-        it_behaves_like 'a user with reporter access'
+        it_behaves_like 'a user with limited access'
       end
 
       describe 'a developer' do

@@ -107,7 +107,7 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
     context 'when private project' do
       let_it_be(:private_project) { create(:project, :repository, :private) }
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false, ignore_metrics: true do # rubocop:disable Layout/LineLength -- We prefer to keep it on a single line, for simplicity sake
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false, ignore_metrics: true do
         let(:url) { project_releases_url(private_project, format: :atom) }
 
         before do

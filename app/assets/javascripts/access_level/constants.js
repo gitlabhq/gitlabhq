@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 export const ACCESS_LEVEL_NO_ACCESS_INTEGER = 0;
 export const ACCESS_LEVEL_MINIMAL_ACCESS_INTEGER = 5;
 export const ACCESS_LEVEL_GUEST_INTEGER = 10;
+export const ACCESS_LEVEL_PLANNER_INTEGER = 15;
 export const ACCESS_LEVEL_REPORTER_INTEGER = 20;
 export const ACCESS_LEVEL_DEVELOPER_INTEGER = 30;
 export const ACCESS_LEVEL_MAINTAINER_INTEGER = 40;
@@ -14,6 +15,7 @@ export const ACCESS_LEVEL_ADMIN_INTEGER = 60;
 export const ACCESS_LEVEL_NO_ACCESS_STRING = 'NO_ACCESS';
 export const ACCESS_LEVEL_MINIMAL_ACCESS_STRING = 'MINIMAL_ACCESS';
 export const ACCESS_LEVEL_GUEST_STRING = 'GUEST';
+export const ACCESS_LEVEL_PLANNER_STRING = 'PLANNER';
 export const ACCESS_LEVEL_REPORTER_STRING = 'REPORTER';
 export const ACCESS_LEVEL_DEVELOPER_STRING = 'DEVELOPER';
 export const ACCESS_LEVEL_MAINTAINER_STRING = 'MAINTAINER';
@@ -23,6 +25,7 @@ export const ACCESS_LEVELS_INTEGER_TO_STRING = {
   [ACCESS_LEVEL_NO_ACCESS_INTEGER]: ACCESS_LEVEL_NO_ACCESS_STRING,
   [ACCESS_LEVEL_MINIMAL_ACCESS_INTEGER]: ACCESS_LEVEL_MINIMAL_ACCESS_STRING,
   [ACCESS_LEVEL_GUEST_INTEGER]: ACCESS_LEVEL_GUEST_STRING,
+  [ACCESS_LEVEL_PLANNER_INTEGER]: ACCESS_LEVEL_PLANNER_STRING,
   [ACCESS_LEVEL_REPORTER_INTEGER]: ACCESS_LEVEL_REPORTER_STRING,
   [ACCESS_LEVEL_DEVELOPER_INTEGER]: ACCESS_LEVEL_DEVELOPER_STRING,
   [ACCESS_LEVEL_MAINTAINER_INTEGER]: ACCESS_LEVEL_MAINTAINER_STRING,
@@ -32,6 +35,7 @@ export const ACCESS_LEVELS_INTEGER_TO_STRING = {
 const ACCESS_LEVEL_NO_ACCESS = __('No access');
 const ACCESS_LEVEL_MINIMAL_ACCESS = __('Minimal Access');
 const ACCESS_LEVEL_GUEST = __('Guest');
+const ACCESS_LEVEL_PLANNER = __('Planner');
 const ACCESS_LEVEL_REPORTER = __('Reporter');
 const ACCESS_LEVEL_DEVELOPER = __('Developer');
 const ACCESS_LEVEL_MAINTAINER = __('Maintainer');
@@ -54,6 +58,16 @@ export const BASE_ROLES = [
     occupiesSeat: false,
     description: s__(
       'MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.',
+    ),
+  },
+  {
+    value: 'PLANNER',
+    text: ACCESS_LEVEL_PLANNER,
+    accessLevel: ACCESS_LEVEL_PLANNER_INTEGER,
+    memberRoleId: null,
+    occupiesSeat: true,
+    description: s__(
+      'MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code, such as project managers and scrum masters.',
     ),
   },
   {

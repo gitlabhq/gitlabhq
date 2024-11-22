@@ -16,7 +16,9 @@ jest.mock('~/lib/utils/dom_utils', () => ({
 
 describe('Role details drawer', () => {
   const dropdownItems = roleDropdownItems(updateableMember);
-  const currentRole = dropdownItems.flatten[5];
+  const currentRole = dropdownItems.flatten.find(
+    (role) => role.accessLevel === updateableMember.accessLevel.integerValue,
+  );
   const newRole = dropdownItems.flatten[2];
   const saveRoleStub = jest.fn();
   let wrapper;

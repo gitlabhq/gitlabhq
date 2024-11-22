@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/SpecFilePathForm
-  feature_category: :continuous_integration do
+RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integration do
   describe 'pipeline logger' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }

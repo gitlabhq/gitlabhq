@@ -2,13 +2,9 @@
 
 module TokenAuthenticatableStrategies
   class Base
-    RANDOM_BYTES_LENGTH = 16
+    TRUE_PROC = ->(_) { true }
 
     attr_reader :klass, :token_field, :expires_at_field, :options
-
-    def self.random_bytes
-      SecureRandom.random_bytes(RANDOM_BYTES_LENGTH)
-    end
 
     def initialize(klass, token_field, options)
       @klass = klass
@@ -94,6 +90,8 @@ module TokenAuthenticatableStrategies
 
     private
 
+    # If a `format_with_prefix` option is provided, it applies and returns the formatted token.
+    # Otherwise, default implementation returns the token as-is
     def prefix_for(token_owner_record)
       case prefix_option = options[:format_with_prefix]
       when nil
@@ -105,18 +103,9 @@ module TokenAuthenticatableStrategies
       end
     end
 
-    # If a `format_with_prefix` option is provided, it applies and returns the formatted token.
-    # Otherwise, default implementation returns the token as-is
-    def format_token(token_owner_record, token)
-      prefix = prefix_for(token_owner_record)
-
-      prefix ? "#{prefix}#{token}" : token
-    end
-
     def write_new_token(token_owner_record)
       new_token = generate_available_token(token_owner_record)
-      formatted_token = format_token(token_owner_record, new_token)
-      set_token(token_owner_record, formatted_token)
+      set_token(token_owner_record, new_token)
 
       if expirable?
         token_owner_record[@expires_at_field] = @options[:expires_at].to_proc.call(token_owner_record)
@@ -135,33 +124,30 @@ module TokenAuthenticatableStrategies
     end
 
     def generate_token(token_owner_record)
-      if @options[:token_generator]
-        @options[:token_generator].call
+      if token_generator_proc
+        "#{prefix_for(token_owner_record)}#{token_generator_proc.call}"
       # TODO: Make all tokens routable by default: https://gitlab.com/gitlab-org/gitlab/-/issues/500016
       elsif generate_routable_token?(token_owner_record)
-        generate_routable_payload(@options[:routable_token], token_owner_record)
+        RoutableTokenGenerator.new(
+          token_owner_record,
+          routing_payload: options.dig(:routable_token, :payload),
+          prefix: prefix_for(token_owner_record)
+        ).generate_token
       else
-        Devise.friendly_token
+        "#{prefix_for(token_owner_record)}#{Devise.friendly_token}"
       end
     end
 
     def generate_routable_token?(token_owner_record)
-      @options[:routable_token] && token_owner_record.respond_to?(:user) && Feature.enabled?(:routable_token, token_owner_record.user)
+      @options.dig(:routable_token, :payload) && routing_condition_proc.call(token_owner_record)
     end
 
-    def default_routing_payload_hash
-      {
-        c: Settings.cell[:id]&.to_s(36),
-        r: self.class.random_bytes
-      }
+    def token_generator_proc
+      @options[:token_generator]
     end
 
-    def generate_routable_payload(routable_parts, token_owner_record)
-      payload_hash = default_routing_payload_hash.merge(
-        routable_parts.transform_values { |generator| generator.call(token_owner_record) }
-      ).compact_blank
-
-      Base64.urlsafe_encode64(payload_hash.sort.map { |k, v| "#{k}:#{v}" }.join("\n"), padding: false)
+    def routing_condition_proc
+      @options.dig(:routable_token, :if) || TRUE_PROC
     end
 
     def relation(unscoped)

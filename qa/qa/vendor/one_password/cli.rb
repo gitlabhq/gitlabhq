@@ -51,7 +51,7 @@ module QA
         # But note that if we add more tests that use this class, we might need to add a mechanism to invalidate
         # the cache after 30 minutes or if the session_token is rejected by op CLI.
         def session_token
-          @session_token ||= `echo '#{@password}' | op account add --address #{@address} --email #{@email} --secret-key #{@secret} --signin --raw` # rubocop:disable Layout/LineLength
+          @session_token ||= `echo '#{@password}' | op account add --address #{@address} --email #{@email} --secret-key #{@secret} --signin --raw`
         end
       end
     end

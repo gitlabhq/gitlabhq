@@ -243,7 +243,6 @@ Layout/ClassStructure:
     - 'ee/app/services/package_metadata/ingestion/compressed_package/package_ingestion_task.rb'
     - 'ee/app/services/path_locks/lock_service.rb'
     - 'ee/app/services/path_locks/unlock_service.rb'
-    - 'ee/app/services/personal_access_tokens/rotation_verifier_service.rb'
     - 'ee/app/services/search/zoekt/callback_service.rb'
     - 'ee/app/services/search/zoekt/task_serializer_service.rb'
     - 'ee/app/services/security/ingestion/tasks/update_vulnerability_uuids.rb'

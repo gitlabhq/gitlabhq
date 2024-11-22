@@ -2,7 +2,7 @@
 
 module API
   class Submodules < ::API::Base
-    SUBMODULE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(submodule: API::NO_SLASH_URL_PART_REGEX) # rubocop:disable Layout/LineLength -- no way to shorten this and adhere to naming convention
+    SUBMODULE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(submodule: API::NO_SLASH_URL_PART_REGEX)
 
     before { authenticate! }
 

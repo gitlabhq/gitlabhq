@@ -76,6 +76,7 @@ FactoryBot.define do
 
       # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
       guests {}
+      planners {}
       reporters {}
       developers {}
       maintainers {}
@@ -165,6 +166,7 @@ FactoryBot.define do
       project.create_ci_project_mirror!(namespace_id: project.namespace_id) unless project.ci_project_mirror
 
       project.add_members(Array.wrap(evaluator.guests), :guest)
+      project.add_members(Array.wrap(evaluator.planners), :planner)
       project.add_members(Array.wrap(evaluator.reporters), :reporter)
       project.add_members(Array.wrap(evaluator.developers), :developer)
       project.add_members(Array.wrap(evaluator.maintainers), :maintainer)

@@ -24,7 +24,7 @@ RSpec.describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_c
 
       context 'when user can read confidential issues' do
         before do
-          project.add_reporter(user)
+          project.add_planner(user)
         end
 
         it 'returns the right count with confidential issues' do

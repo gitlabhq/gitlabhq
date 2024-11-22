@@ -35,6 +35,10 @@ module Resolvers
       required: false,
       description: 'Filter projects by programming language name (case insensitive). For example: "css" or "ruby".'
 
+    before_connection_authorization do |projects, current_user|
+      ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
+    end
+
     def resolve_with_lookahead(**args)
       validate_args!(args)
 

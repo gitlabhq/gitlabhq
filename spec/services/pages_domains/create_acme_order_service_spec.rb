@@ -82,7 +82,7 @@ RSpec.describe PagesDomains::CreateAcmeOrderService, feature_category: :pages do
     end
 
     where(:lets_encrypt_client_error, :lets_encrypt_client_error_message) do
-      Acme::Client::Error::RejectedIdentifier | 'Invalid identifiers requested :: Cannot issue for "local": Domain name needs at least one dot' # rubocop:disable Layout/LineLength -- Ensuring one line table syntax
+      Acme::Client::Error::RejectedIdentifier | 'Invalid identifiers requested :: Cannot issue for "local": Domain name needs at least one dot' # rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective -- Ensuring one line table syntax
       Acme::Client::Error::BadCSR             | 'Error finalizing order :: signature algorithm not supported'
       Acme::Client::Error                     | 'Other acme client error'
       Acme::Client::Error                     | nil

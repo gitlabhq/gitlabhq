@@ -41,7 +41,7 @@ module WorkItems
       issue: { name: TYPE_NAMES[:issue], icon_name: 'issue-type-issue', enum_value: 0, id: 1 },
       incident: { name: TYPE_NAMES[:incident], icon_name: 'issue-type-incident', enum_value: 1, id: 2 },
       test_case: { name: TYPE_NAMES[:test_case], icon_name: 'issue-type-test-case', enum_value: 2, id: 3 }, ## EE-only
-      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'issue-type-requirements', enum_value: 3, id: 4 }, ## EE-only # rubocop:disable Layout/LineLength -- Only comment exceeds length
+      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'issue-type-requirements', enum_value: 3, id: 4 }, ## EE
       task: { name: TYPE_NAMES[:task], icon_name: 'issue-type-task', enum_value: 4, id: 5 },
       objective: { name: TYPE_NAMES[:objective], icon_name: 'issue-type-objective', enum_value: 5, id: 6 }, ## EE-only
       key_result: { name: TYPE_NAMES[:key_result], icon_name: 'issue-type-keyresult', enum_value: 6, id: 7 }, ## EE-only

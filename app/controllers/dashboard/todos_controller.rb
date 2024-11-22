@@ -13,17 +13,26 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   urgency :low
 
   def index
-    @sort = pagination_params[:sort]
-    @todos = @todos.page(pagination_params[:page])
-    @todos = @todos.with_entity_associations
+    push_frontend_feature_flag(:todos_vue_application, current_user)
 
-    return if redirect_out_of_range(@todos, todos_page_count(@todos))
+    # When removing the `todos_vue_application`, also drop the #vue method below
+    if Feature.enabled?(:todos_vue_application, current_user)
+      render :vue
+    else
+      @sort = pagination_params[:sort]
+      @todos = @todos.page(pagination_params[:page])
+      @todos = @todos.with_entity_associations
 
-    @allowed_todos = ::Todos::AllowedTargetFilterService.new(@todos, current_user).execute
+      return if redirect_out_of_range(@todos, todos_page_count(@todos))
+
+      @allowed_todos = ::Todos::AllowedTargetFilterService.new(@todos, current_user).execute
+    end
   end
 
+  # To be removed along with the `todos_vue_application` feature flag.
+  # Also make sure to remove the corresponding route in `config/routes/dashboard.rb`.
   def vue
-    redirect_to(dashboard_todos_path, status: :found) unless Feature.enabled?(:todos_vue_application, current_user)
+    redirect_to(dashboard_todos_path, status: :found)
   end
 
   def destroy

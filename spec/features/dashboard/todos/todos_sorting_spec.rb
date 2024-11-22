@@ -14,6 +14,7 @@ RSpec.describe 'Dashboard > User sorts todos', feature_category: :notifications 
 
   before do
     project.add_developer(user)
+    stub_feature_flags(todos_vue_application: false)
   end
 
   context 'sort options' do

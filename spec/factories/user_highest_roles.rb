@@ -6,6 +6,7 @@ FactoryBot.define do
     user
 
     trait(:guest)          { highest_access_level { GroupMember::GUEST } }
+    trait(:planner)        { highest_access_level { GroupMember::PLANNER } }
     trait(:reporter)       { highest_access_level { GroupMember::REPORTER } }
     trait(:developer)      { highest_access_level { GroupMember::DEVELOPER } }
     trait(:maintainer)     { highest_access_level { GroupMember::MAINTAINER } }

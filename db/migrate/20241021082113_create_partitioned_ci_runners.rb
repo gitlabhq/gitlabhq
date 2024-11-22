@@ -35,7 +35,6 @@ class CreatePartitionedCiRunners < Gitlab::Database::Migration[2.2]
 
   def create_partitioned_table(name)
     options = 'PARTITION BY LIST (runner_type)'
-    # rubocop: disable Migration/EnsureFactoryForTable -- we'll reuse the ci_runners factory once migrated
     create_table name, primary_key: PARTITIONED_TABLE_PK, options: options do |t|
       t.bigint :id, null: false
       t.bigint :creator_id
@@ -88,6 +87,5 @@ class CreatePartitionedCiRunners < Gitlab::Database::Migration[2.2]
       t.index %i[token_expires_at id], name: "idx_#{name}_on_token_expires_at_desc_and_id_desc",
         order: { token_expires_at: :desc, runner_type: :asc, id: :desc }
     end
-    # rubocop: enable Migration/EnsureFactoryForTable
   end
 end

@@ -2,7 +2,7 @@
 
 module Issues
   class ConfidentialityFilter < Issuables::BaseFilter
-    CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
+    CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::PLANNER
 
     def initialize(current_user:, parent:, assignee_filter:, related_groups: nil, **kwargs)
       @current_user = current_user

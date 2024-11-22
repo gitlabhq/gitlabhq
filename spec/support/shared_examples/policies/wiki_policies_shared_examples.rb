@@ -15,6 +15,7 @@ RSpec.shared_examples 'model with wiki policies' do
       permissions[:reporter] = permissions[:guest] + %i[download_wiki_code]
       permissions[:developer] = permissions[:reporter] + %i[create_wiki]
       permissions[:maintainer] = permissions[:developer] + %i[admin_wiki]
+      permissions[:planner] = permissions[:maintainer]
       permissions[:all] = permissions[:maintainer]
     end
   end
@@ -26,6 +27,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :public   | :enabled  | :maintainer | :maintainer
     :public   | :enabled  | :developer  | :developer
     :public   | :enabled  | :reporter   | :reporter
+    :public   | :enabled  | :planner    | :planner
     :public   | :enabled  | :guest      | :guest
     :public   | :enabled  | :non_member | :guest
     :public   | :enabled  | :anonymous  | :guest
@@ -34,6 +36,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :public   | :private  | :maintainer | :maintainer
     :public   | :private  | :developer  | :developer
     :public   | :private  | :reporter   | :reporter
+    :public   | :private  | :planner    | :planner
     :public   | :private  | :guest      | :guest
     :public   | :private  | :non_member | nil
     :public   | :private  | :anonymous  | nil
@@ -42,6 +45,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :public   | :disabled | :maintainer | nil
     :public   | :disabled | :developer  | nil
     :public   | :disabled | :reporter   | nil
+    :public   | :disabled | :planner    | nil
     :public   | :disabled | :guest      | nil
     :public   | :disabled | :non_member | nil
     :public   | :disabled | :anonymous  | nil
@@ -50,6 +54,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :internal | :enabled  | :maintainer | :maintainer
     :internal | :enabled  | :developer  | :developer
     :internal | :enabled  | :reporter   | :reporter
+    :internal | :enabled  | :planner    | :planner
     :internal | :enabled  | :guest      | :guest
     :internal | :enabled  | :non_member | :guest
     :internal | :enabled  | :anonymous  | nil
@@ -58,6 +63,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :internal | :private  | :maintainer | :maintainer
     :internal | :private  | :developer  | :developer
     :internal | :private  | :reporter   | :reporter
+    :internal | :private  | :planner    | :planner
     :internal | :private  | :guest      | :guest
     :internal | :private  | :non_member | nil
     :internal | :private  | :anonymous  | nil
@@ -66,6 +72,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :internal | :disabled | :maintainer | nil
     :internal | :disabled | :developer  | nil
     :internal | :disabled | :reporter   | nil
+    :internal | :disabled | :planner    | nil
     :internal | :disabled | :guest      | nil
     :internal | :disabled | :non_member | nil
     :internal | :disabled | :anonymous  | nil
@@ -74,6 +81,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :private  | :private  | :maintainer | :maintainer
     :private  | :private  | :developer  | :developer
     :private  | :private  | :reporter   | :reporter
+    :private  | :private  | :planner    | :planner
     :private  | :private  | :guest      | :guest
     :private  | :private  | :non_member | nil
     :private  | :private  | :anonymous  | nil
@@ -82,6 +90,7 @@ RSpec.shared_examples 'model with wiki policies' do
     :private  | :disabled | :maintainer | nil
     :private  | :disabled | :developer  | nil
     :private  | :disabled | :reporter   | nil
+    :private  | :disabled | :planner    | nil
     :private  | :disabled | :guest      | nil
     :private  | :disabled | :non_member | nil
     :private  | :disabled | :anonymous  | nil

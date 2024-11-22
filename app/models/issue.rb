@@ -835,7 +835,7 @@ class Issue < ApplicationRecord
     elsif project.personal? && project.team.owner?(user)
       true
     elsif confidential? && !assignee_or_author?(user)
-      project.member?(user, Gitlab::Access::REPORTER)
+      project.member?(user, Gitlab::Access::PLANNER)
     elsif project.public? || (project.internal? && !user.external?)
       project.feature_available?(:issues, user)
     else
@@ -848,7 +848,7 @@ class Issue < ApplicationRecord
     return false unless namespace.is_a?(::Group)
 
     if confidential? && !assignee_or_author?(user)
-      namespace.member?(user, Gitlab::Access::REPORTER)
+      namespace.member?(user, Gitlab::Access::PLANNER)
     else
       namespace.member?(user)
     end

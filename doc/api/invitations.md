@@ -21,6 +21,7 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 - No access (`0`)
 - Minimal access (`5`)
 - Guest (`10`)
+- Planner (`15`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)

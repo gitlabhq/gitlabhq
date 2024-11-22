@@ -7,6 +7,10 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Todos (Haml version)', :js, feature_category: :notifications do
   include DesignManagementTestHelpers
 
+  before do
+    stub_feature_flags(todos_vue_application: false)
+  end
+
   let_it_be(:user) { create(:user, username: 'john') }
   let_it_be(:user2) { create(:user, username: 'diane') }
   let_it_be(:user3) { create(:user) }
@@ -545,18 +549,16 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
   let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
 
-  # FIXME: The shared example below will work as soon as we drop the /vue part of the URL
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/501269
-  # it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :vue_dashboard_todos_path, :todos
-
   before do
     sign_in user
   end
 
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_todos_path, :todos
+
   describe 'empty states' do
     context 'when user has no todos at all (neither pending nor done)' do
       before do
-        visit vue_dashboard_todos_path
+        visit dashboard_todos_path
       end
 
       it 'shows empty state for new users' do
@@ -569,7 +571,7 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
     context 'when user has no pending todos (but some done todos)' do
       before do
         create_todo(state: :done)
-        visit vue_dashboard_todos_path
+        visit dashboard_todos_path
       end
 
       it 'shows a "well done" message on the "Pending" tab' do
@@ -581,7 +583,7 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
     context 'when user has pending todos but applied filters with no matches' do
       before do
         create_todo(state: :pending)
-        visit vue_dashboard_todos_path(author_id: user.id)
+        visit dashboard_todos_path(author_id: user.id)
       end
 
       it 'shows a "no matches" message' do
@@ -593,7 +595,7 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
     context 'when user has no done tasks' do
       before do
         create_todo(state: :pending)
-        visit vue_dashboard_todos_path(author_id: user.id)
+        visit dashboard_todos_path(author_id: user.id)
         click_on 'Done'
       end
 
@@ -620,7 +622,7 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
 
     before do
       sign_in(user)
-      visit vue_dashboard_todos_path
+      visit dashboard_todos_path
       wait_for_requests
     end
 

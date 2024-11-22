@@ -116,7 +116,7 @@ POST /groups/:id/access_tokens
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `name` | String | yes | Name of the group access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
-| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). |
+| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). |
 | `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell

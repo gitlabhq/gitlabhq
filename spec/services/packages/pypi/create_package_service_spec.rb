@@ -278,7 +278,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           minimum_access_level_for_push: minimum_access_level_for_push)
       end
 
-      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
+      # rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective -- Avoid formatting to keep one-line table syntax
       where(:package_name_pattern, :minimum_access_level_for_push, :user, :shared_examples_name) do
         ref(:package_name)                  | :maintainer | ref(:project_developer)         | 'an error service response for protected package'
         ref(:package_name)                  | :maintainer | ref(:project_maintainer)        | 'a service response for valid package'
@@ -297,7 +297,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
         ref(:package_name)                  | :maintainer | nil                             | 'an error service response for unauthorized'
         ref(:package_name)                  | :admin      | ref(:unauthorized_deploy_token) | 'an error service response for unauthorized'
       end
-      # rubocop:enable Layout/LineLength
+      # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 
       with_them do
         it_behaves_like params[:shared_examples_name]
@@ -308,15 +308,12 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           stub_feature_flags(packages_protected_packages_pypi: false)
         end
 
-        # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
         where(:package_name_pattern, :minimum_access_level_for_push, :user) do
           ref(:package_name)                  | :maintainer | ref(:project_developer)
           ref(:package_name)                  | :admin      | ref(:project_owner)
           ref(:package_name_pattern_no_match) | :maintainer | ref(:project_developer)
           ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)
         end
-        # rubocop:enable Layout/LineLength
-
         with_them do
           it_behaves_like 'a service response for valid package'
         end

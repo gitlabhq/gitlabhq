@@ -6,7 +6,7 @@ require_relative '../../../scripts/setup/tests-metadata'
 
 # rubocop:disable Gitlab/Json, Lint/MissingCopEnableDirective -- It's not intended to have extra dependency
 
-RSpec.describe TestsMetadata, feature_category: :tooling do # rubocop:disable Rails/FilePath,RSpec/SpecFilePathFormat -- We use dashes in scripts
+RSpec.describe TestsMetadata, feature_category: :tooling do # rubocop:disable RSpec/SpecFilePathFormat -- We use dashes in scripts
   subject(:metadata) do
     described_class.new(
       mode: mode,

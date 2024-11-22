@@ -245,13 +245,10 @@ When you require expiration dates for new access tokens:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab self-managed. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
-
-FLAG:
-On GitLab self-managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts`. On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
 
 By default, in GitLab self-managed, top-level group Owners can not create service accounts. GitLab administrators can allow top-level group Owners to create service accounts.
 

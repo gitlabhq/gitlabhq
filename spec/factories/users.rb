@@ -207,6 +207,7 @@ FactoryBot.define do
     transient do
       # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
       guest_of {}
+      planner_of {}
       reporter_of {}
       developer_of {}
       maintainer_of {}
@@ -216,6 +217,7 @@ FactoryBot.define do
 
     after(:create) do |user, evaluator|
       Array.wrap(evaluator.guest_of).each { |target| target.add_guest(user) }
+      Array.wrap(evaluator.planner_of).each { |target| target.add_planner(user) }
       Array.wrap(evaluator.reporter_of).each { |target| target.add_reporter(user) }
       Array.wrap(evaluator.developer_of).each { |target| target.add_developer(user) }
       Array.wrap(evaluator.maintainer_of).each { |target| target.add_maintainer(user) }

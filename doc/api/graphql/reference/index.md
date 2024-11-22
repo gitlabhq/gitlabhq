@@ -39234,6 +39234,7 @@ Access level of a group or project member.
 | <a id="memberaccesslevelmaintainer"></a>`MAINTAINER` | The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships. |
 | <a id="memberaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions. |
 | <a id="memberaccesslevelowner"></a>`OWNER` | The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners. |
+| <a id="memberaccesslevelplanner"></a>`PLANNER` | The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code. |
 | <a id="memberaccesslevelreporter"></a>`REPORTER` | The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code. |
 
 ### `MemberAccessLevelName`
@@ -39246,6 +39247,7 @@ Name of access levels of a group or project member.
 | <a id="memberaccesslevelnameguest"></a>`GUEST` | Guest access. |
 | <a id="memberaccesslevelnamemaintainer"></a>`MAINTAINER` | Maintainer access. |
 | <a id="memberaccesslevelnameowner"></a>`OWNER` | Owner access. |
+| <a id="memberaccesslevelnameplanner"></a>`PLANNER` | Planner access. |
 | <a id="memberaccesslevelnamereporter"></a>`REPORTER` | Reporter access. |
 
 ### `MemberApprovalStatusType`

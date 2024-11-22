@@ -13,6 +13,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
+  # This is not a linear condition (some policies available for planner might not be available for higher access levels)
+  condition(:planner) { access_level == GroupMember::PLANNER }
   condition(:developer) { access_level >= GroupMember::DEVELOPER }
   condition(:owner) { access_level >= GroupMember::OWNER }
   condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
@@ -133,6 +135,21 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :guest_access
     enable :read_release
     enable :award_emoji
+  end
+
+  rule { planner }.policy do
+    enable :planner_access
+    enable :guest_access
+    enable :admin_label
+    enable :admin_milestone
+    enable :admin_issue_board
+    enable :admin_issue_board_list
+    enable :admin_issue
+    enable :update_issue
+    enable :destroy_issue
+    enable :read_confidential_issues
+    enable :read_crm_organization
+    enable :read_crm_contact
   end
 
   rule { admin | organization_owner }.policy do
@@ -403,7 +420,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
 
   # Should be matched with ProjectPolicy#read_internal_note
-  rule { admin | reporter }.enable :read_internal_note
+  rule { admin | reporter | planner }.enable :read_internal_note
 
   rule { can?(:remove_group) }.enable :view_edit_page
 

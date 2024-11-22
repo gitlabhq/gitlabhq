@@ -50,10 +50,11 @@ the task opens in a full-page view.
 ## Create a task
 
 > - Ability to select which project to create the task in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project, or the project must be public.
+- You must have at least the Planner role for the project, or the project must be public.
 
 To create a task:
 
@@ -68,10 +69,11 @@ To create a task:
 ### From a task list item
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
@@ -101,9 +103,11 @@ To add a task:
 
 ## Edit a task
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To edit a task:
 
@@ -120,6 +124,7 @@ To edit a task:
 
 > - Rich text editing in the dialog view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363007) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
 > - Rich text editing in the full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104533) in GitLab 15.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 FLAG:
 On self-managed GitLab, by default the rich text feature is not available. To make it available per group, ask an
@@ -131,7 +136,7 @@ Use a rich text editor to edit a task's description.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To edit the description of a task:
 
@@ -146,10 +151,11 @@ To edit the description of a task:
 ## Promote a task to an issue
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To promote a task to an issue:
 
@@ -192,11 +198,13 @@ To remove a task from an issue:
 
 ## Delete a task
 
+> - [Allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) Planner role to delete a task in GitLab 17.7.
+
 Prerequisites:
 
 - You must either:
   - Be the author of the task and have at least the Guest role for the project.
-  - Have the Owner role for the project.
+  - Have the Planner or Owner role for the project.
 
 To delete a task:
 
@@ -209,10 +217,11 @@ To delete a task:
 ## Reorder tasks
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 By default, tasks are ordered by creation date.
 To reorder them, drag them around.
@@ -220,6 +229,7 @@ To reorder them, drag them around.
 ## Assign users to a task
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 To show who is responsible for a task, you can assign users to it.
 
@@ -229,7 +239,7 @@ See also [multiple assignees for issues](project/issues/multiple_assignees_for_i
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To change the assignee on a task:
 
@@ -244,10 +254,11 @@ To change the assignee on a task:
 ## Assign labels to a task
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add [labels](project/labels.md) to a task:
 
@@ -262,12 +273,13 @@ To add [labels](project/labels.md) to a task:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 You can set a [start and due date](project/issues/due_dates.md) on a task.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 You can set start and due dates on a task to show when work should begin and end.
 
@@ -295,6 +307,7 @@ To set a start date:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 You can add a task to a [milestone](project/milestones/index.md).
 You can see the milestone title when you view a task.
@@ -303,7 +316,7 @@ the new task inherits the milestone.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add a task to a milestone:
 

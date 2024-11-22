@@ -189,6 +189,7 @@ class Member < ApplicationRecord
   scope :has_access, -> { active.where('access_level > 0') }
 
   scope :guests, -> { active.where(access_level: GUEST) }
+  scope :planners, -> { active.where(access_level: PLANNER) }
   scope :reporters, -> { active.where(access_level: REPORTER) }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }

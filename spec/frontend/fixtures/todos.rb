@@ -22,6 +22,7 @@ RSpec.describe 'Todos (JavaScript fixtures)' do
 
     before do
       sign_in(user)
+      stub_feature_flags(todos_vue_application: false)
     end
 
     it 'todos/todos.html' do

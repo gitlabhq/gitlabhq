@@ -12,6 +12,7 @@ module Gitlab
     NO_ACCESS      = 0
     MINIMAL_ACCESS = 5
     GUEST          = 10
+    PLANNER        = 15
     REPORTER       = 20
     DEVELOPER      = 30
     MAINTAINER     = 40
@@ -45,6 +46,7 @@ module Gitlab
       def options
         {
           "Guest" => GUEST,
+          "Planner" => PLANNER,
           "Reporter" => REPORTER,
           "Developer" => DEVELOPER,
           "Maintainer" => MAINTAINER
@@ -67,6 +69,7 @@ module Gitlab
         {
           NO_ACCESS => s_('MemberRole|The None role is assigned to the invited group users of a shared project when project sharing is disabled in group setting.'),
           GUEST => s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
+          PLANNER => s_('The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code.'),
           REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
           DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
           MAINTAINER => s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
@@ -77,6 +80,7 @@ module Gitlab
       def sym_options
         {
           guest: GUEST,
+          planner: PLANNER,
           reporter: REPORTER,
           developer: DEVELOPER,
           maintainer: MAINTAINER
