@@ -257,7 +257,7 @@ export default {
       return this.query
         ? String(escape(text)).replace(
             new RegExp(this.query, 'i'),
-            (match) => `<strong class="!gl-text-primary">${match}</strong>`,
+            (match) => `<strong class="!gl-text-default">${match}</strong>`,
           )
         : escape(text);
     },

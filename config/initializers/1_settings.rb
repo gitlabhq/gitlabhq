@@ -978,6 +978,11 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
+    Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
+  end
+
+  Gitlab.jh do
+    Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
   end
 end
 

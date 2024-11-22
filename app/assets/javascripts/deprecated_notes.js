@@ -36,7 +36,7 @@ import {
   isInViewport,
   getPagePath,
   scrollToElement,
-  isMetaKey,
+  isModifierKey,
   isInMRPage,
 } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
@@ -256,7 +256,7 @@ export default class Notes {
     let newText;
     let originalText;
 
-    if (isMetaKey(e)) {
+    if (isModifierKey(e)) {
       return;
     }
 

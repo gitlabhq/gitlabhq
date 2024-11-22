@@ -66,7 +66,7 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20230721095222 # First 16-4-stable-ee migration
+    - bundle exec rake db:migrate VERSION=20230721095222  # First 16-4-stable-ee migration
     - bundle exec rake db:migrate
 
 db:rollback single-db:

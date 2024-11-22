@@ -17,7 +17,7 @@
 - if issuable.respond_to?(:confidential) && can?(current_user, :set_confidentiality, issuable)
   .form-group
     = form.gitlab_ui_checkbox_component :confidential,
-      _('This issue is confidential and should only be visible to team members with at least Reporter access.')
+      _('This issue is confidential and should only be visible to team members with at least the Planner role.')
 
 - if can?(current_user, :"set_#{issuable.to_ability_name}_metadata", issuable)
   .row.gl-pt-4

@@ -115,7 +115,7 @@ export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
 );
 export const I18N_WORK_ITEM_NO_MATCHES_FOUND = s__('WorkItem|No matches found');
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
-  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
+  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
 );
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
   'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',

@@ -210,5 +210,4 @@ Gitlab/FeatureFlagWithoutActor:
     - 'spec/lib/gitlab/lograge/custom_options_spec.rb'
     - 'spec/requests/api/features_spec.rb'
     - 'spec/support/db_cleaner.rb'
-    - 'spec/support/shared_examples/features/work_items_shared_examples.rb'
     - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'

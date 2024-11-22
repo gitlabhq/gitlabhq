@@ -269,7 +269,7 @@ export default {
             'js-no-trigger': !workItemDrawerEnabled,
             'js-no-trigger-title': workItemDrawerEnabled,
           }"
-          class="gl-text-primary hover:gl-text-gray-900"
+          class="gl-text-default hover:gl-text-default"
           data-testid="board-card-title-link"
           @mousemove.stop
           >{{ item.title }}</a

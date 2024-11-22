@@ -437,7 +437,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'qa/qa/tools/reliable_report.rb'
     - 'qa/qa/tools/revoke_user_personal_access_tokens.rb'
     - 'qa/qa/tools/test_resources_handler.rb'
-    - 'qa/spec/resource/user_spec.rb'
     - 'qa/spec/support/system_logs/kibana_spec.rb'
     - 'rubocop/check_graceful_task.rb'
     - 'rubocop/cop/api/base.rb'

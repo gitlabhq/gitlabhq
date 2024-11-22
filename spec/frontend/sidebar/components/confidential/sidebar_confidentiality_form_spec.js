@@ -102,7 +102,7 @@ describe('Sidebar Confidentiality Form', () => {
 
     it('renders a message about making an issue confidential', () => {
       expect(findWarningMessage().text()).toBe(
-        'You are going to turn on confidentiality. Only project members with at least the Reporter role, the author, and assignees can view or be notified about this issue.',
+        'You are going to turn on confidentiality. Only project members with at least the Planner role, the author, and assignees can view or be notified about this issue.',
       );
     });
 
@@ -194,7 +194,7 @@ describe('Sidebar Confidentiality Form', () => {
 
       it('renders a message about making a test case confidential', () => {
         expect(findWarningMessage().text()).toBe(
-          'You are going to turn on confidentiality. Only project members with at least the Reporter role can view or be notified about this test case.',
+          'You are going to turn on confidentiality. Only project members with at least the Planner role can view or be notified about this test case.',
         );
       });
 

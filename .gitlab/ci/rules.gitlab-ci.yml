@@ -1651,7 +1651,7 @@
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
       changes: *ruby-version-patterns
-     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
+    # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
     - <<: *if-merge-request

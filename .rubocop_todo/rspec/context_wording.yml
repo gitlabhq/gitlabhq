@@ -2825,7 +2825,6 @@ RSpec/ContextWording:
     - 'spec/validators/import/gitlab_projects/remote_file_validator_spec.rb'
     - 'spec/views/admin/application_settings/_ci_cd.html.haml_spec.rb'
     - 'spec/views/admin/application_settings/_package_registry.html.haml_spec.rb'
-    - 'spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'spec/views/admin/sessions/new.html.haml_spec.rb'
     - 'spec/views/admin/sessions/two_factor.html.haml_spec.rb'
     - 'spec/views/ci/status/_icon.html.haml_spec.rb'

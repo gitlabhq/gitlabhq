@@ -7,6 +7,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 # Group access tokens
 
 DETAILS:
+**Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With group access tokens, you can use a single token to:

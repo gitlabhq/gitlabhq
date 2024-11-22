@@ -90,10 +90,6 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
-  config.define_derived_metadata(file_path: %r{(ee)?/spec/presenters/(ee)?}) do |metadata|
-    metadata[:type] = :presenter
-  end
-
   # Add :full_backtrace tag to an example if full_backtrace output is desired
   config.before(:each, :full_backtrace) do |example|
     config.full_backtrace = true

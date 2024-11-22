@@ -44,7 +44,6 @@ RSpec/BeNil:
     - 'ee/spec/services/search/zoekt/callback_service_spec.rb'
     - 'ee/spec/workers/concerns/geo/skip_secondary_spec.rb'
     - 'ee/spec/workers/repository_update_mirror_worker_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/1_manage/integrations/jenkins/jenkins_build_status_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/scan_execution_policy_vulnerabilities_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/scan_result_policy_license_finding_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/scan_result_policy_vulnerabilities_spec.rb'

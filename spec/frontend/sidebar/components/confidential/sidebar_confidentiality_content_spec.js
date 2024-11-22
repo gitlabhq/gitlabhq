@@ -65,14 +65,14 @@ describe('Sidebar Confidentiality Content', () => {
         variant: 'warning',
       });
       expect(alertEl.text()).toBe(
-        'Only project members with at least the Reporter role, the author, and assignees can view or be notified about this issue.',
+        'Only project members with at least the Planner role, the author, and assignees can view or be notified about this issue.',
       );
     });
 
     it('displays a correct confidential text for epic', () => {
       createComponent({ confidential: true, issuableType: 'epic' });
       expect(findText().findComponent(GlAlert).text()).toBe(
-        'Only group members with at least the Reporter role can view or be notified about this epic.',
+        'Only group members with at least the Planner role can view or be notified about this epic.',
       );
     });
   });

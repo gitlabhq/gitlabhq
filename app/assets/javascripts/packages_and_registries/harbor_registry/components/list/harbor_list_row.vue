@@ -44,7 +44,7 @@ export default {
 <template>
   <list-item v-bind="$attrs">
     <template #left-primary>
-      <router-link class="gl-font-bold gl-text-primary" data-testid="details-link" :to="linkTo">
+      <router-link class="gl-font-bold gl-text-default" data-testid="details-link" :to="linkTo">
         {{ item.name }}
       </router-link>
       <clipboard-button

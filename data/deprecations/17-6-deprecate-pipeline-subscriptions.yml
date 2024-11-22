@@ -26,8 +26,8 @@
   announcement_milestone: "17.6"
   # Change breaking_change to false if needed.
   breaking_change: true
-  window: 2 # Can be [1, 2, or 3] - The window when the breaking change will be deployed on GitLab.com
-  reporter: rutshah # The GitLab username of the person reporting the change
+  window: 2  # Can be [1, 2, or 3] - The window when the breaking change will be deployed on GitLab.com
+  reporter: rutshah  # The GitLab username of the person reporting the change
   stage: verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501460
   # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?

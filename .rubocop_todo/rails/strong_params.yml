@@ -260,7 +260,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/ee/projects_controller.rb'
     - 'ee/app/controllers/ee/repositories/git_http_client_controller.rb'
     - 'ee/app/controllers/ee/repositories/git_http_controller.rb'
-    - 'ee/app/controllers/ee/sessions_controller.rb'
     - 'ee/app/controllers/ee/users_controller.rb'
     - 'ee/app/controllers/gitlab_subscriptions/subscriptions_controller.rb'
     - 'ee/app/controllers/groups/analytics/application_controller.rb'
@@ -323,4 +322,3 @@ Rails/StrongParams:
     - 'ee/app/controllers/smartcard_controller.rb'
     - 'ee/app/controllers/subscriptions/groups_controller.rb'
     - 'ee/app/controllers/users/base_identity_verification_controller.rb'
-    - 'ee/app/controllers/users/registrations_identity_verification_controller.rb'

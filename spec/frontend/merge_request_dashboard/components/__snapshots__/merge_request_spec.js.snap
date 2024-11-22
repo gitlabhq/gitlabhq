@@ -24,7 +24,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
     class="gl-align-top gl-px-3 gl-py-4"
   >
     <gl-link-stub
-      class="gl-font-bold gl-text-primary hover:gl-text-gray-900"
+      class="gl-font-bold gl-text-default hover:gl-text-gray-900"
     >
       Merge request title
     </gl-link-stub>

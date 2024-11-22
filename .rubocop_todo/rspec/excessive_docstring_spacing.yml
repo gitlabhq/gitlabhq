@@ -3,7 +3,6 @@
 RSpec/ExcessiveDocstringSpacing:
   Exclude:
     - 'ee/spec/controllers/ee/groups/usage_quotas_controller_spec.rb'
-    - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/creation_with_one_existing_namespace_flow_spec.rb'
     - 'ee/spec/features/projects_spec.rb'
     - 'ee/spec/features/protected_branches_spec.rb'
     - 'ee/spec/finders/ee/issuables/label_filter_spec.rb'

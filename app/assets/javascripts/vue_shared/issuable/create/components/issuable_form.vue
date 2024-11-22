@@ -58,7 +58,7 @@ export default {
     confidentialityText() {
       return sprintf(
         __(
-          'This %{issuableType} is confidential and should only be visible to team members with at least Reporter access.',
+          'This %{issuableType} is confidential and should only be visible to team members with at least the Planner role.',
         ),
         { issuableType: issuableTypeText[this.issuableType] },
       );

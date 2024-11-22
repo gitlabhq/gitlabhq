@@ -50,7 +50,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
             .and have_content("Milestone")
             .and have_content("Labels")
             .and have_content("Due date")
-            .and have_content("This issue is confidential and should only be visible to team members with at least Reporter access.")
+            .and have_content("This issue is confidential and should only be visible to team members with at least the Planner role.")
         end
       end
     end

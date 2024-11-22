@@ -250,7 +250,7 @@
   }
 
   .author-link {
-    @apply gl-text-primary;
+    @apply gl-text-default;
   }
 
   // Prevent flickering of link when hovering between `author-name-link` and `.author-username-link`

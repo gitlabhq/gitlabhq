@@ -56,7 +56,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/github_import/importer/issues_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/milestones_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/note_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/pull_request_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/releases_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/diff_note_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/issue_spec.rb'

@@ -11330,9 +11330,6 @@ msgstr ""
 msgid "Checking username availability..."
 msgstr ""
 
-msgid "Checkout|$%{pricePerUserPerYear} per user per year"
-msgstr ""
-
 msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage pack per year"
 msgstr ""
 
@@ -11345,9 +11342,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Checkout|%{cardType} ending in %{lastFourDigits}"
-msgstr ""
-
-msgid "Checkout|%{name}'s GitLab subscription"
 msgstr ""
 
 msgid "Checkout|%{name}'s compute minutes"
@@ -11367,22 +11361,13 @@ msgid_plural "Checkout|%{quantity} storage packs"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Checkout|%{selectedPlanText}"
-msgstr ""
-
 msgid "Checkout|%{startDate} - %{endDate}"
 msgstr ""
 
 msgid "Checkout|(may be %{linkStart}charged upon purchase%{linkEnd})"
 msgstr ""
 
-msgid "Checkout|(x%{numberOfUsers})"
-msgstr ""
-
 msgid "Checkout|(x%{quantity})"
-msgstr ""
-
-msgid "Checkout|Add active users before adding a coupon."
 msgstr ""
 
 msgid "Checkout|An unknown error has occurred. Please try again by refreshing this page."
@@ -11392,9 +11377,6 @@ msgid "Checkout|Billing address"
 msgstr ""
 
 msgid "Checkout|Billing contact"
-msgstr ""
-
-msgid "Checkout|Calculating your subscription..."
 msgstr ""
 
 msgid "Checkout|Checkout"
@@ -11430,24 +11412,6 @@ msgstr ""
 msgid "Checkout|Country"
 msgstr ""
 
-msgid "Checkout|Coupon code (optional)"
-msgstr ""
-
-msgid "Checkout|Coupon has been applied and by continuing with your purchase, you accept and agree to the %{linkStart}Coupon Terms%{linkEnd}."
-msgstr ""
-
-msgid "Checkout|Create a new group"
-msgstr ""
-
-msgid "Checkout|Credit card form failed to load. Please try again."
-msgstr ""
-
-msgid "Checkout|Credit card form failed to load: %{message}"
-msgstr ""
-
-msgid "Checkout|Discount"
-msgstr ""
-
 msgid "Checkout|Edit"
 msgstr ""
 
@@ -11466,70 +11430,25 @@ msgstr ""
 msgid "Checkout|Failed to load the payment form. Refresh the page and try again."
 msgstr ""
 
-msgid "Checkout|Failed to register credit card. Please try again."
-msgstr ""
-
 msgid "Checkout|GB"
-msgstr ""
-
-msgid "Checkout|GitLab group"
-msgstr ""
-
-msgid "Checkout|GitLab plan"
-msgstr ""
-
-msgid "Checkout|Group"
-msgstr ""
-
-msgid "Checkout|Invalid coupon code. Enter a valid coupon code."
 msgstr ""
 
 msgid "Checkout|Manage the subscription and billing contacts for your billing account in the %{customersPortalLinkStart}Customers Portal%{customersPortalLinkEnd}. Learn more about %{manageContactsLinkStart}how to manage your contacts%{manageContactsLinkEnd}."
 msgstr ""
 
-msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use) or more."
-msgstr ""
-
-msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use, plus all over limit members) or more. To buy fewer seats, remove members from the group."
-msgstr ""
-
 msgid "Checkout|Must be 1 or more. Cannot be a decimal."
-msgstr ""
-
-msgid "Checkout|Name of company or organization using GitLab"
-msgstr ""
-
-msgid "Checkout|Name: %{errorMessage}"
-msgstr ""
-
-msgid "Checkout|Need more users? Purchase GitLab for your %{company}."
-msgstr ""
-
-msgid "Checkout|Network Error: %{message}"
-msgstr ""
-
-msgid "Checkout|Number of users"
 msgstr ""
 
 msgid "Checkout|Payment method"
 msgstr ""
 
-msgid "Checkout|Pricing reflective of %{linkStart}limited-time offer%{linkEnd}."
-msgstr ""
-
 msgid "Checkout|Purchase details"
-msgstr ""
-
-msgid "Checkout|Select"
 msgstr ""
 
 msgid "Checkout|Select a country"
 msgstr ""
 
 msgid "Checkout|Select a state"
-msgstr ""
-
-msgid "Checkout|Something went wrong while loading price details."
 msgstr ""
 
 msgid "Checkout|State"
@@ -11544,22 +11463,13 @@ msgstr ""
 msgid "Checkout|Subscription contact"
 msgstr ""
 
-msgid "Checkout|Subscription details"
-msgstr ""
-
 msgid "Checkout|Subtotal"
-msgstr ""
-
-msgid "Checkout|Success: subscription"
 msgstr ""
 
 msgid "Checkout|Tax"
 msgstr ""
 
 msgid "Checkout|Tax ID"
-msgstr ""
-
-msgid "Checkout|The maximum amount of seats available to buy is %{maximumSeatLimit}. %{maxSeatLinkStart}Learn more.%{maxSeatLinkEnd}"
 msgstr ""
 
 msgid "Checkout|Total"
@@ -11571,21 +11481,6 @@ msgstr ""
 msgid "Checkout|Total storage: %{quantity} GB"
 msgstr ""
 
-msgid "Checkout|Users"
-msgstr ""
-
-msgid "Checkout|You can only buy a maximum of %{seatLimit} seats."
-msgstr ""
-
-msgid "Checkout|You must buy a minimum of %{seatLimit} seat."
-msgstr ""
-
-msgid "Checkout|You'll create your new group after checkout"
-msgstr ""
-
-msgid "Checkout|Your organization"
-msgstr ""
-
 msgid "Checkout|Your storage subscription has the same term as your main subscription, and the price is prorated accordingly."
 msgstr ""
 
@@ -11593,9 +11488,6 @@ msgid "Checkout|Your subscription will be applied to this group"
 msgstr ""
 
 msgid "Checkout|Zip code"
-msgstr ""
-
-msgid "Checkout|company or team"
 msgstr ""
 
 msgid "Checkout|compute minutes"
@@ -15133,9 +15025,6 @@ msgstr ""
 msgid "ContainerRegistry|Add rule"
 msgstr ""
 
-msgid "ContainerRegistry|Both keep and remove regex patterns are automatically surrounded with %{codeStart}\\A%{codeEnd} and %{codeStart}\\Z%{codeEnd} anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns."
-msgstr ""
-
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
@@ -15353,6 +15242,9 @@ msgid "ContainerRegistry|Published to the %{repositoryPath} image repository on 
 msgstr ""
 
 msgid "ContainerRegistry|Push an image"
+msgstr ""
+
+msgid "ContainerRegistry|Regular expression without the \\A and \\z anchors."
 msgstr ""
 
 msgid "ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."
@@ -22071,7 +21963,7 @@ msgstr ""
 msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
 msgstr ""
 
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least Reporter access."
+msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
 msgstr ""
 
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
@@ -36887,6 +36779,9 @@ msgstr ""
 msgid "Notes|Expand replies"
 msgstr ""
 
+msgid "Notes|Internal notes are only visible to members with the role of Planner or higher"
+msgstr ""
+
 msgid "Notes|Internal notes are only visible to members with the role of Reporter or higher"
 msgstr ""
 
@@ -50456,6 +50351,9 @@ msgstr ""
 msgid "SecurityOrchestration|Source"
 msgstr ""
 
+msgid "SecurityOrchestration|Standard roles"
+msgstr ""
+
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
@@ -56307,7 +56205,7 @@ msgstr ""
 msgid "This %{context} has been scheduled for deletion on %{strongStart}%{date}%{strongEnd}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources."
 msgstr ""
 
-msgid "This %{issuableType} is confidential and should only be visible to team members with at least Reporter access."
+msgid "This %{issuableType} is confidential and should only be visible to team members with at least the Planner role."
 msgstr ""
 
 msgid "This %{issuable} is hidden because its author has been banned."
@@ -56664,7 +56562,7 @@ msgstr ""
 msgid "This issue cannot be made public because it belongs to a confidential epic."
 msgstr ""
 
-msgid "This issue is confidential and should only be visible to team members with at least Reporter access."
+msgid "This issue is confidential and should only be visible to team members with at least the Planner role."
 msgstr ""
 
 msgid "This issue is currently blocked by the following issues:"
@@ -63244,10 +63142,10 @@ msgstr ""
 msgid "WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open."
 msgstr ""
 
-msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
+msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role"
 msgstr ""
 
-msgid "WorkItem|This %{workItemType} is confidential and should only be visible to users having at least Reporter access."
+msgid "WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role."
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is currently blocked by the following items:"
@@ -63688,9 +63586,6 @@ msgid "You are attempting to update a file that has changed since you started ed
 msgstr ""
 
 msgid "You are being redirected away from GitLab"
-msgstr ""
-
-msgid "You are billed if you exceed this number. %{qsrOverageLinkStart}How does billing work?%{qsrOverageLinkEnd}"
 msgstr ""
 
 msgid "You are currently offline, or the GitLab instance is not reachable."
@@ -64992,10 +64887,10 @@ msgstr ""
 msgid "at"
 msgstr ""
 
-msgid "at least the Reporter role"
+msgid "at least the Planner role"
 msgstr ""
 
-msgid "at least the Reporter role, the author, and assignees"
+msgid "at least the Planner role, the author, and assignees"
 msgstr ""
 
 msgid "attach a new file"

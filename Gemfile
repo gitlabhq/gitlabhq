@@ -325,7 +325,7 @@ gem 'redis-clustering', '~> 5.3.0', feature_category: :redis
 gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis session store
-gem 'redis-actionpack', '~> 5.4.0', feature_category: :redis
+gem 'redis-actionpack', '~> 5.5.0', feature_category: :redis
 
 # Discord integration
 gem 'discordrb-webhooks', '~> 3.5', require: false, feature_category: :integrations

@@ -1,5 +1,5 @@
 - name: "Live preview diagrams in the wiki WYSIWYG editor"  # Match the release post entry
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     GitLab Flavored Markdown includes extensions to support [Mermaid, PlantUML, and Kroki diagrams](https://docs.gitlab.com/ee/user/markdown.html#diagrams-and-flowcharts) but writing anything other than the most basic diagrams can be cumbersome without a live preview. You can toggle between the raw source and static preview and there are external tools you can use to write these diagrams, but the shift away from your content can be distracting.
 
     GitLab 15.2 introduces a live rendered preview of your diagram in the wiki's WYSIWYG editor. Now, as you write your diagram in a specialized code block we will detect the diagram type and display a preview icon. When enabled, the live preview renders above the code block and updates as you type, so you can ensure your formatting is correct and the output will be exactly what you expect.

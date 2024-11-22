@@ -216,9 +216,7 @@ module TabHelper
   end
 
   def gl_tab_link_to_active?(options, html_options)
-    if html_options.has_key?(:item_active)
-      return html_options[:item_active]
-    end
+    return html_options[:item_active] if html_options.has_key?(:item_active)
 
     current_page?(options)
   end

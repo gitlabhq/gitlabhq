@@ -110,7 +110,7 @@ include:
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~click_house --tag ~real_ai_request"
   after_script:
     - source scripts/utils.sh
-    - log_disk_usage # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
+    - log_disk_usage  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
     - bundle exec gem list gitlab_quality-test_tooling
     - |
       section_start "failed-test-issues" "Report test failures"
@@ -307,7 +307,7 @@ include:
     - .rspec-base-pg14
     - .rails:rules:rspec-ci-config-validation
   stage: test
-  after_script: [] # override after_script from .rspec-base
+  after_script: []  # override after_script from .rspec-base
 
 .db-job-base:
   extends:

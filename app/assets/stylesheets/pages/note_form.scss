@@ -32,7 +32,7 @@
 .note-textarea {
   display: block;
   padding: 10px 16px;
-  @apply gl-text-primary;
+  @apply gl-text-default;
   font-family: $regular-font;
   border: 0;
 
@@ -195,7 +195,7 @@
   padding: 16px;
 
   .text {
-    @apply gl-text-primary;
+    @apply gl-text-default;
   }
 
   .sidebar-item-warning-message-actions {
@@ -418,7 +418,7 @@ table {
 }
 
 .note-form-actions {
-  @apply gl-text-primary;
+  @apply gl-text-default;
 
   @include media-breakpoint-down(xs) {
     .btn {

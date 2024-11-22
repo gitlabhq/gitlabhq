@@ -43,12 +43,6 @@ $type-scale: (
   }
 }
 
-// This CSS Class definition will be removed in
-// https://gitlab.com/gitlab-org/gitlab/-/issues/479423.
-// More context: https://gitlab.com/gitlab-org/gitlab/-/issues/482689#note_2200591361
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-h-200\! { height: px-to-rem($grid-size * 25) !important; }
-
 // This utility is used to force the z-index to match that of dropdown menu's
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-z-dropdown-menu\! {

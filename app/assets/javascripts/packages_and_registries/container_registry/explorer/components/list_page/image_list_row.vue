@@ -154,7 +154,7 @@ export default {
       <router-link
         v-else
         ref="imageName"
-        class="gl-font-bold gl-text-primary"
+        class="gl-font-bold gl-text-default"
         data-testid="details-link"
         :to="{ name: 'details', params: { id } }"
       >

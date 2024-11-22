@@ -35,7 +35,7 @@ export default {
   i18n: {
     internal: s__('Notes|Make this an internal note'),
     internalVisibility: s__(
-      'Notes|Internal notes are only visible to members with the role of Reporter or higher',
+      'Notes|Internal notes are only visible to members with the role of Planner or higher',
     ),
     addInternalNote: __('Add internal note'),
     cancelButtonText: __('Cancel'),

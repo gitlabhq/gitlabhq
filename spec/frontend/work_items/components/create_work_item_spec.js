@@ -566,4 +566,26 @@ describe('Create work item component', () => {
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });
   });
+
+  describe('Keyboard submit events', () => {
+    beforeEach(async () => {
+      await initialiseComponentAndSelectWorkItem();
+
+      await updateWorkItemTitle();
+    });
+
+    it('should call handleKeydown method when keydown event is triggered with CTRL', () => {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true });
+      document.dispatchEvent(event);
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('should call handleKeydown method when keydown event is triggered with CMD', () => {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', metaKey: true });
+      document.dispatchEvent(event);
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+    });
+  });
 });

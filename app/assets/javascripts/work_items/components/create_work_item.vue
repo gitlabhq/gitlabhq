@@ -40,7 +40,7 @@ import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-
+import { isMetaEnterKeyPair } from '../../lib/utils/common_utils';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -278,7 +278,7 @@ export default {
     makeConfidentialText() {
       return sprintfWorkItem(
         s__(
-          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least Reporter access.',
+          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role.',
         ),
         this.selectedWorkItemTypeName,
       );
@@ -360,7 +360,21 @@ export default {
       );
     },
   },
+  mounted() {
+    // We need this event listener in the document because when
+    // updating widgets, the form may no be in focus and triggering
+    // a keyboard event in the form won't get caught
+    document.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleKeydown);
+  },
   methods: {
+    handleKeydown(e) {
+      if (isMetaEnterKeyPair(e)) {
+        this.createWorkItem();
+      }
+    },
     isWidgetSupported(widgetType) {
       const widgetDefinitions =
         this.selectedWorkItemType?.widgetDefinitions?.flatMap((i) => i.type) || [];
@@ -572,7 +586,6 @@ export default {
           :is-valid="isTitleValid"
           :title="workItemTitle"
           @updateDraft="updateDraftData('title', $event)"
-          @updateWorkItem="createWorkItem"
         />
         <div data-testid="work-item-overview" class="work-item-overview">
           <section>

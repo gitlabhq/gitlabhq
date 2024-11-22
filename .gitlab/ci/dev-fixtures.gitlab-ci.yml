@@ -14,7 +14,7 @@
     SEED_CI_CD_ANALYTICS: "true"
     VSA_ISSUE_COUNT: 1
     SIZE: 0  # number of external projects to fork, requires network connection
-    # SEED_NESTED_GROUPS: "false" # requires network connection
+    # SEED_NESTED_GROUPS: "false"  # requires network connection
 
 .run-dev-fixtures-script: &run-dev-fixtures-script
   - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here

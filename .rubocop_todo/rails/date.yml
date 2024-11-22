@@ -232,7 +232,6 @@ Rails/Date:
     - 'spec/services/notes/destroy_service_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/personal_access_tokens/create_service_spec.rb'
-    - 'spec/services/personal_access_tokens/rotate_service_spec.rb'
     - 'spec/services/projects/fetch_statistics_increment_service_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'
     - 'spec/services/resource_access_tokens/create_service_spec.rb'

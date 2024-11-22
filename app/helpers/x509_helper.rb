@@ -7,9 +7,7 @@ module X509Helper
     subjects = {}
 
     Net::LDAP::DN.new(subject).each_pair do |key, value|
-      if key.upcase.start_with?(*search_keys.map(&:upcase))
-        subjects[key.upcase] = value
-      end
+      subjects[key.upcase] = value if key.upcase.start_with?(*search_keys.map(&:upcase))
     end
 
     subjects

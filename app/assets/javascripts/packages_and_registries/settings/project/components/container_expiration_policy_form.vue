@@ -1,7 +1,6 @@
 <script>
-import { GlAlert, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlSprintf } from '@gitlab/ui';
 import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   SHOW_SETUP_SUCCESS_ALERT,
@@ -31,7 +30,6 @@ import ExpirationToggle from './expiration_toggle.vue';
 
 export default {
   components: {
-    GlAlert,
     GlButton,
     GlSprintf,
     ExpirationDropdown,
@@ -74,9 +72,6 @@ export default {
     NAME_REGEX_DESCRIPTION,
     CADENCE_LABEL,
     EXPIRATION_POLICY_FOOTER_NOTE,
-    EXPIRATION_POLICY_REGEX_NOTE: s__(
-      'ContainerRegistry|Both keep and remove regex patterns are automatically surrounded with %{codeStart}\\A%{codeEnd} and %{codeStart}\\Z%{codeEnd} anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.',
-    ),
   },
   data() {
     return {
@@ -220,13 +215,6 @@ export default {
         class="!gl-mb-0"
       />
     </div>
-    <gl-alert class="gl-mt-5" :dismissible="false">
-      <gl-sprintf :message="$options.i18n.EXPIRATION_POLICY_REGEX_NOTE">
-        <template #code="{ content }">
-          <code>{{ content }}</code>
-        </template>
-      </gl-sprintf>
-    </gl-alert>
     <crud-component :title="$options.i18n.KEEP_HEADER_TEXT" class="gl-mt-5">
       <p>
         <gl-sprintf :message="$options.i18n.KEEP_INFO_TEXT">

@@ -162,7 +162,7 @@ export default {
   <div>
     <gl-alert
       v-if="autocompleteError"
-      class="gl-mt-2 gl-text-primary"
+      class="gl-mt-2 gl-text-default"
       :dismissible="false"
       variant="danger"
     >

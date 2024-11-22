@@ -3,6 +3,6 @@
     = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha"
     &nbsp;
     %span.str-truncated
-      = link_to_markdown_field(commit, :title, project_commit_path(project, commit.id), class: "commit-row-message gl-text-primary")
+      = link_to_markdown_field(commit, :title, project_commit_path(project, commit.id), class: "commit-row-message gl-text-default")
     .gl-float-right
       #{time_ago_with_tooltip(commit.committed_date)}

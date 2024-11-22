@@ -1,5 +1,5 @@
 - name: Block merges unless external status checks pass
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     You can now configure projects to block merge request merges unless all external status checks pass. This allows you to confidently rely on external systems as part of your GitLab workflows and ensure that all required steps are completed before the code is merged.
 
     When configured, users can only merge merge requests if external status checks pass and the green checkmark is displayed on the merge request. If an external status check is pending or failed, merging the merge request is blocked.
@@ -13,7 +13,7 @@
   published_at: 2023-01-22
   release: 15.8
 - name: SCIM support for self-managed GitLab
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Self-managed GitLab now supports the open standard System for Cross-domain Identity Management (SCIM), which allows you to automatically:
 
         - Create users.
@@ -29,7 +29,7 @@
   published_at: 2023-01-22
   release: 15.8
 - name: Migrate projects when migrating groups using direct transfer
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     We are excited to announce the availability of migrating GitLab projects by direct transfer Beta. Now, you can migrate group and project resources together when using direct transfer. You can use direct transfers to migrate between GitLab instances or
     within the same GitLab instance.
 
@@ -57,7 +57,7 @@
   published_at: 2023-01-22
   release: 15.8
 - name: View estimated queuing time for runners in the Admin area
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     A key input in GitLab Runner fleet optimization is having deep insights into queue performance over time. While today there are historical queue duration metrics available for each job on a runner in the Admin area view, there is no simple mechanism to determine the current queue performance for runners.
 
     With the new estimated queue time feature, you are now able to, at a glance, determine the median estimated wait time for all instance runners. This data will enable you to proactively identify potential CI job execution issues for your organization's developers and provide insights to inform decisions on configuration or resource changes to optimize your runner fleet.

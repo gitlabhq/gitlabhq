@@ -408,7 +408,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/finders/packages/conan/package_file_finder_spec.rb'
     - 'spec/finders/packages/conan/package_finder_spec.rb'
     - 'spec/finders/packages/group_packages_finder_spec.rb'
-    - 'spec/finders/packages/npm/package_finder_spec.rb'
     - 'spec/finders/packages/package_file_finder_spec.rb'
     - 'spec/finders/packages/tags_finder_spec.rb'
     - 'spec/finders/projects/members/effective_access_level_finder_spec.rb'

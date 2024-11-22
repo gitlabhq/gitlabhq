@@ -79,6 +79,7 @@ workflow:
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     # save extra values to be available for after_script if created dynamically
@@ -91,6 +92,7 @@ workflow:
         --gitlab-domain "${GITLAB_DOMAIN}" \
         --timeout 5m \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
+        --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \
         --ci \
         ${EXTRA_DEPLOY_VALUES}
@@ -200,7 +202,7 @@ cng-qa-min-redis-version:
       export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
     - !reference [.cng-test, before_script]
   rules:
-    - *mr-code-patterns # run validation for minimal supported redis version only on application code changes
+    - *mr-code-patterns  # run validation for minimal supported redis version only on application code changes
 
 # ==========================================
 # Post test stage

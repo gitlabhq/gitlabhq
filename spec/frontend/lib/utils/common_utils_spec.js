@@ -499,6 +499,46 @@ describe('common_utils', () => {
     });
   });
 
+  describe('isMetaKey', () => {
+    it('should identify ctrlKey click on Windows/Linux', () => {
+      const e = {
+        metaKey: false,
+        ctrlKey: true,
+      };
+
+      expect(commonUtils.isMetaKey(e)).toBe(true);
+    });
+
+    it('should identify metaKey click on macOS', () => {
+      const e = {
+        metaKey: true,
+        ctrlKey: false,
+      };
+
+      expect(commonUtils.isMetaKey(e)).toBe(true);
+    });
+
+    it('should not identify shiftKey click as meta key', () => {
+      const e = {
+        metaKey: false,
+        ctrlKey: false,
+        shiftKey: true,
+      };
+
+      expect(commonUtils.isMetaKey(e)).toBe(false);
+    });
+
+    it('should not identify altKey click as meta key', () => {
+      const e = {
+        metaKey: false,
+        ctrlKey: false,
+        altKey: true,
+      };
+
+      expect(commonUtils.isMetaKey(e)).toBe(false);
+    });
+  });
+
   describe('isMetaClick', () => {
     it('should identify meta click on Windows/Linux', () => {
       const e = {
@@ -528,6 +568,46 @@ describe('common_utils', () => {
       };
 
       expect(commonUtils.isMetaClick(e)).toBe(true);
+    });
+  });
+
+  describe('isMetaEnterKeyPair', () => {
+    it('should identify meta + enter click on Windows/Linux', () => {
+      const e = {
+        metaKey: false,
+        ctrlKey: true,
+        key: 'Enter',
+      };
+
+      expect(commonUtils.isMetaEnterKeyPair(e)).toBe(true);
+    });
+
+    it('should identify meta + enter click on macOS', () => {
+      const e = {
+        metaKey: true,
+        ctrlKey: false,
+        key: 'Enter',
+      };
+
+      expect(commonUtils.isMetaEnterKeyPair(e)).toBe(true);
+    });
+
+    it('should not return true if meta click without enter on Windows/Linux', () => {
+      const e = {
+        metaKey: false,
+        ctrlKey: true,
+      };
+
+      expect(commonUtils.isMetaEnterKeyPair(e)).toBe(false);
+    });
+
+    it('should not return true if meta click without enter on macOS', () => {
+      const e = {
+        metaKey: true,
+        ctrlKey: false,
+      };
+
+      expect(commonUtils.isMetaEnterKeyPair(e)).toBe(false);
     });
   });
 

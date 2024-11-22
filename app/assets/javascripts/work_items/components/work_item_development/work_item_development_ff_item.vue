@@ -35,7 +35,7 @@ export default {
   >
     <gl-link
       :href="itemContent.path"
-      class="gl-truncate gl-text-primary hover:gl-text-primary hover:gl-underline"
+      class="gl-truncate gl-text-default hover:gl-text-default hover:gl-underline"
     >
       <gl-icon :name="icon(itemContent)" :class="iconColor(itemContent)" />
       {{ itemContent.name }}

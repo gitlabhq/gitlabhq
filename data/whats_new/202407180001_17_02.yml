@@ -1,4 +1,4 @@
-- name: Pipeline execution policy type # Match the release post entry
+- name: Pipeline execution policy type  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     The pipeline execution policy type is a new type of [security policy](https://docs.gitlab.com/ee/user/application_security/policies/) that allows users to support enforcement of generic CI jobs, scripts, and instructions.
 
@@ -8,62 +8,62 @@
 
     As with all GitLab policies, enforcement can be managed centrally by designated security and compliance team members who create and manage the policies. [Learn how to get started by creating your first scan execution policy](https://docs.gitlab.com/ee/tutorials/scan_execution_policy/)!
   stage: govern  # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/17_2/pipeline-execution-policy-rp.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2024-07-18 # YYYY-MM-DD
-  release: 17.2 # XX.Y
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/17_2/pipeline-execution-policy-rp.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-07-18  # YYYY-MM-DD
+  release: 17.2  # XX.Y
 
-- name: Document modules in the Terraform module registry # Match the release post entry
+- name: Document modules in the Terraform module registry  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     The Terraform module registry now displays Readme files! With this highly requested feature, you can transparently document the purpose, configuration, and requirements of each module.
 
     Previously, you had to search other sources for this critical information, which made it difficult to properly evaluate and use modules. Now, with the module documentation readily available, you can quickly understand a module's capabilities before you use it. This accessibility empowers you to confidently share and reuse Terraform code across your organization.
   stage: package  # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/terraform_module_registry/index.html#view-terraform-modules # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://img.youtube.com/vi/SWRwW4pS7Gk/hqdefault.jpg # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2024-07-18 # YYYY-MM-DD
-  release: 17.2 # XX.Y
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/packages/terraform_module_registry/index.html#view-terraform-modules  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://img.youtube.com/vi/SWRwW4pS7Gk/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-07-18  # YYYY-MM-DD
+  release: 17.2  # XX.Y
 
-- name: Log streaming for Kubernetes pods and containers # Match the release post entry
+- name: Log streaming for Kubernetes pods and containers  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     In GitLab 16.1, we introduced the Kubernetes pod list and detail views. However, you still had to use third-party tools for an in-depth analysis of your workloads.
 
     GitLab now ships with a log streaming view for pods and containers, so you can quickly check and troubleshoot issues across your environments without leaving your application delivery tool.
-  stage: deploy # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  stage: deploy  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html  # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/17_2/k8s-logs-view.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2024-07-18 # YYYY-MM-DD
-  release: 17.2 # XX.Y
+  image_url: https://about.gitlab.com/images/17_2/k8s-logs-view.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-07-18  # YYYY-MM-DD
+  release: 17.2  # XX.Y
 
 - name: Vulnerability Explanation are generally available  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     Vulnerability Explanation is now a part of GitLab Duo Chat and is generally available. With Vulnerability Explanation, you can open chat from any SAST vulnerability to better understand the vulnerability, see how it could be exploited, and review a potential fix.
   stage: Govern
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#explaining-a-vulnerability # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/17_2/vulnerability_explanation_duo_chat.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2024-07-18 # YYYY-MM-DD
-  release: 17.2 # XX.Y
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#explaining-a-vulnerability  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/17_2/vulnerability_explanation_duo_chat.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-07-18  # YYYY-MM-DD
+  release: 17.2  # XX.Y
 
-- name: GitLab Duo Chat and Code Suggestions available in workspaces # Match the release post entry
+- name: GitLab Duo Chat and Code Suggestions available in workspaces  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
           [GitLab Duo Chat](https://docs.gitlab.com/ee/user/gitlab_duo_chat/) and [Code Suggestions](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/) are now available in workspaces! Whether you're seeking quick answers or efficient code improvements, Duo Chat and Code Suggestions are designed to boost productivity and streamline your workflow, making remote development in workspaces more efficient and effective than ever.
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: true  # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo/ # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/17_2/workspaces_duo.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2024-07-18 # YYYY-MM-DD
-  release: 17.2 # XX.Y
+  image_url: https://about.gitlab.com/images/17_2/workspaces_duo.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-07-18  # YYYY-MM-DD
+  release: 17.2  # XX.Y

@@ -28,7 +28,7 @@ export default {
                 'left-primary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-min-w-0 gl-items-center gl-font-bold gl-text-primary"
+            class="gl-flex gl-min-h-6 gl-min-w-0 gl-items-center gl-font-bold gl-text-default"
           >
             <slot name="left-primary-text"></slot>
           </div>
@@ -52,7 +52,7 @@ export default {
                 'right-primary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-items-center sm:gl-font-bold sm:gl-text-primary"
+            class="gl-flex gl-min-h-6 gl-items-center sm:gl-font-bold sm:gl-text-default"
           >
             <slot name="right-primary-text"></slot>
           </div>

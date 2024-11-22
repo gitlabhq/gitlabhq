@@ -32,7 +32,6 @@ Rails/OutputSafety:
     - 'app/helpers/safe_format_helper.rb'
     - 'app/helpers/search_helper.rb'
     - 'app/helpers/sidebars_helper.rb'
-    - 'app/helpers/sourcegraph_helper.rb'
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/helpers/todos_helper.rb'

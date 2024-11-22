@@ -85,6 +85,7 @@ include:
     QA_DOCKER_NETWORK: host
     QA_DISABLE_RSPEC_RETRY: "true"
     QA_GITLAB_URL: http://gdk.test:3000
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     FF_NETWORK_PER_BUILD: "true"
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     COVERBAND_ENABLED: "$COVERBAND_ENABLED"  # explicitly define variable so it is passed in to gdk service container

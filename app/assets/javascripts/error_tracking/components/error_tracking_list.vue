@@ -441,7 +441,7 @@ export default {
           <template #cell(error)="errors">
             <div class="gl-flex gl-flex-col">
               <gl-link
-                class="gl-flex gl-max-w-full gl-text-primary"
+                class="gl-flex gl-max-w-full gl-text-default"
                 :href="getDetailsLink(errors.item.id)"
               >
                 <strong class="gl-truncate">{{ errors.item.title.trim() }}</strong>

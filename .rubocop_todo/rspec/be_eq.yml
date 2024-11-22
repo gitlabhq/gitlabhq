@@ -245,7 +245,6 @@ RSpec/BeEq:
     - 'ee/spec/models/ee/member_spec.rb'
     - 'ee/spec/models/ee/merge_request/metrics_spec.rb'
     - 'ee/spec/models/ee/namespace_spec.rb'
-    - 'ee/spec/models/ee/organizations/organization_spec.rb'
     - 'ee/spec/models/ee/pages_domain_spec.rb'
     - 'ee/spec/models/ee/project_member_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
