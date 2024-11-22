@@ -14,7 +14,7 @@ module Groups
       def index
         @integrations = Integration
           .find_or_initialize_all_non_project_specific(Integration.for_group(group))
-          .sort_by(&:title)
+          .sort_by { |int| int.title.downcase }
       end
 
       def edit

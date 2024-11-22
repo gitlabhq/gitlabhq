@@ -71,7 +71,15 @@ To do this:
 ### Ignore certificate errors
 
 If GitLab Duo still fails to connect, you might need to
-ignore certificate errors. By design, this setting represents a security risk:
+ignore certificate errors. You might see errors in the GitLab Language Server logs after enabling [debug mode](jetbrains_troubleshooting.md#enable-debug-mode):
+
+```plaintext
+2024-10-31T10:32:54:165 [error]: fetch: request to https://gitlab.com/api/v4/personal_access_tokens/self failed with:
+request to https://gitlab.com/api/v4/personal_access_tokens/self failed, reason: unable to get local issuer certificate
+FetchError: request to https://gitlab.com/api/v4/personal_access_tokens/self failed, reason: unable to get local issuer certificate
+```
+
+By design, this setting represents a security risk:
 these errors alert you to potential security breaches. You should enable this
 setting only if you are absolutely certain the proxy causes the problem.
 

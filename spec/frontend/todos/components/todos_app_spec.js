@@ -9,6 +9,7 @@ import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
+import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
@@ -43,6 +44,7 @@ describe('TodosApp', () => {
   const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
   const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
+  const findPagination = () => wrapper.findComponent(TodosPagination);
 
   it('should have a tracking event for each tab', () => {
     expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
@@ -61,6 +63,28 @@ describe('TodosApp', () => {
 
     expect(findTodoItems().length).toBe(todosResponse.data.currentUser.todos.nodes.length);
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+  });
+
+  it('shows pagination for the todos', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findPagination().exists()).toBe(true);
+  });
+
+  it('fetches the todos when pagination changes', async () => {
+    createComponent();
+    await waitForPromises();
+
+    const newCursor = { first: 50, after: 'cursor-1' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
+    await waitForPromises();
+
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        ...newCursor,
+      }),
+    );
   });
 
   it('fetches the todos and counts when filters change', async () => {

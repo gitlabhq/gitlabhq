@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlCollapsibleListbox, GlAlert } from '@gitlab/ui';
+import { GlFormGroup, GlCollapsibleListbox, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import fluxKustomizationsQuery from '../graphql/queries/flux_kustomizations.query.graphql';
 import fluxHelmReleasesQuery from '../graphql/queries/flux_helm_releases.query.graphql';
@@ -16,14 +16,18 @@ export default {
     GlCollapsibleListbox,
     GlAlert,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     configuration: {
       required: true,
       type: Object,
     },
     namespace: {
-      required: true,
+      required: false,
       type: String,
+      default: '',
     },
     fluxResourcePath: {
       required: false,
@@ -43,6 +47,7 @@ export default {
       'Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again:',
     ),
     reset: __('Reset'),
+    tooltipTitle: s__('Environments|Select a namespace to see available Flux resources.'),
   },
   data() {
     return {
@@ -176,6 +181,9 @@ export default {
       }
       return list;
     },
+    isDisabled() {
+      return !this.namespace;
+    },
   },
   methods: {
     onChange(event) {
@@ -202,8 +210,12 @@ export default {
 
     <gl-collapsible-listbox
       id="environment_flux_resource_path"
+      v-gl-tooltip.hover.top="{
+        title: isDisabled ? $options.i18n.tooltipTitle : '',
+      }"
       class="gl-w-full"
       block
+      :disabled="isDisabled"
       :selected="fluxResourcePath"
       :items="fluxResourcesList"
       :loading="loadingFluxResourcesList"

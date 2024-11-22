@@ -75,7 +75,6 @@ module Tooling
           \.babelrc |
           \.browserslistrc |
           \.eslintignore |
-          \.eslintrc(\.yml)? |
           \.nvmrc |
           \.prettierignore |
           \.prettierrc |
@@ -83,6 +82,7 @@ module Tooling
           \.haml-lint.yml |
           \.haml-lint_todo.yml |
           babel\.config\.js |
+          eslint\.config\.mjs |
           jest\.config\.js |
           package\.json |
           yarn\.lock |

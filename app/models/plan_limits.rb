@@ -10,7 +10,7 @@ class PlanLimits < ApplicationRecord
 
   ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
 
-  attribute :limits_history, :ind_jsonb, default: -> { {} }
+  attribute :limits_history, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :limits_history, json_schema: { filename: 'plan_limits_history' }
 
   LimitUndefinedError = Class.new(StandardError)

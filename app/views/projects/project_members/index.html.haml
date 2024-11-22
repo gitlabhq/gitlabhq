@@ -28,7 +28,7 @@
           = render 'projects/invite_groups_modal', project: @project, reload_page_on_submit: true
         - if can_admin_project_member?(@project)
           .js-invite-members-trigger{ data: { variant: 'confirm',
-            classes: 'md:gl-w-auto gl-w-full md:gl-mt-0 gl-mt-3',
+            classes: 'md:gl-w-auto gl-w-full',
             trigger_source: 'project_members_page',
             display_text: _('Invite members') } }
 

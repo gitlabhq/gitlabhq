@@ -4,6 +4,7 @@
 # that `MergeRequestsFinder` can handle, so you may need to use aliasing.
 module ResolvesMergeRequests
   extend ActiveSupport::Concern
+  include ::Gitlab::Utils::StrongMemoize
   include LooksAhead
 
   NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
@@ -25,7 +26,7 @@ module ResolvesMergeRequests
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
     rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
 
-    mr_finder = MergeRequestsFinder.new(current_user, args.compact)
+    mr_finder = MergeRequestsFinder.new(current_user, prepare_finder_params(args.compact))
     finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)
 
     merge_requests = select_result(finder.batching_find_all { |query| apply_lookahead(query) })
@@ -50,6 +51,10 @@ module ResolvesMergeRequests
   end
 
   private
+
+  def prepare_finder_params(args)
+    args
+  end
 
   def mr_parent
     project
@@ -93,6 +98,14 @@ module ResolvesMergeRequests
   def non_stable_cursor_sort?(sort)
     NON_STABLE_CURSOR_SORTS.include?(sort)
   end
+
+  def resource_parent
+    # The project could have been loaded in batch by `BatchLoader`.
+    # At this point we need the `id` of the project to query for issues, so
+    # make sure it's loaded and not `nil` before continuing.
+    object.respond_to?(:sync) ? object.sync : object
+  end
+  strong_memoize_attr :resource_parent
 end
 
 ResolvesMergeRequests.prepend_mod

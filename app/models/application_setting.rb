@@ -630,7 +630,7 @@ class ApplicationSetting < ApplicationRecord
       :users_get_by_id_limit
   end
 
-  attribute :resource_usage_limits, :ind_jsonb, default: -> { {} }
+  attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
   jsonb_accessor :rate_limits,

@@ -525,6 +525,18 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    it_behaves_like 'graphql query for searching issuables' do
+      let_it_be(:parent) { project }
+      let_it_be(:issuable1) { create(:merge_request, :unique_branches, title: 'Fixed a bug', **common_attrs) }
+      let_it_be(:issuable1) { create(:merge_request, :unique_branches, title: 'first created', **common_attrs) }
+      let_it_be(:issuable2) { create(:merge_request, :unique_branches, title: 'second created', description: 'text 1', **common_attrs) }
+      let_it_be(:issuable3) { create(:merge_request, :unique_branches, title: 'third', description: 'text 2', **common_attrs) }
+      let_it_be(:issuable4) { create(:merge_request, :unique_branches, **common_attrs) }
+
+      let_it_be(:finder_class) { MergeRequestsFinder }
+      let_it_be(:optimization_param) { :attempt_project_search_optimizations }
+    end
+
     context 'with negated milestone argument' do
       it 'filters out merge requests with given milestone title' do
         result = resolve_mr(project, not: { milestone_title: milestone.title })

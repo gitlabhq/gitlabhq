@@ -268,6 +268,15 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
         it_behaves_like 'returning response status', :not_found
       end
 
+      context 'with a persistence error' do
+        before do
+          allow(::VirtualRegistries::Packages::Maven::CachedResponse)
+            .to receive(:create_or_update_by!).and_raise(ActiveRecord::RecordInvalid)
+        end
+
+        it_behaves_like 'returning response status', :bad_request
+      end
+
       it_behaves_like 'disabled virtual_registry_maven feature flag'
       it_behaves_like 'maven virtual registry disabled dependency proxy'
     end

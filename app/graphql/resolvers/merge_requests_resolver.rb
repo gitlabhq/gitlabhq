@@ -3,6 +3,7 @@
 module Resolvers
   class MergeRequestsResolver < BaseResolver
     include ResolvesMergeRequests
+    include SearchArguments
     extend ::Gitlab::Graphql::NegatableArguments
 
     type ::Types::MergeRequestType.connection_type, null: true

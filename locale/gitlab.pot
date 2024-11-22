@@ -21696,6 +21696,9 @@ msgstr ""
 msgid "Environments|Select Flux resource (optional)"
 msgstr ""
 
+msgid "Environments|Select a namespace to see available Flux resources."
+msgstr ""
+
 msgid "Environments|Select agent"
 msgstr ""
 
@@ -25823,7 +25826,7 @@ msgstr ""
 msgid "Go to wiki"
 msgstr ""
 
-msgid "Go to your To-Do list"
+msgid "Go to your To-Do List"
 msgstr ""
 
 msgid "Go to your fork"
@@ -57576,9 +57579,6 @@ msgid "To widen your search, change or remove filters above."
 msgstr ""
 
 msgid "To-Do List"
-msgstr ""
-
-msgid "To-Do list"
 msgstr ""
 
 msgid "To-do item successfully marked as done."

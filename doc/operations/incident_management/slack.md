@@ -15,9 +15,9 @@ DETAILS:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/378072) in GitLab 15.10 in [beta](../../policy/experiment-beta-support.md#beta).
 
 FLAG:
-On self-managed GitLab, this feature is not available.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 Many teams receive alerts and collaborate in real time during incidents in Slack.
 Use the GitLab for Slack app to:

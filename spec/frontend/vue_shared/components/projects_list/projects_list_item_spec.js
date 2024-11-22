@@ -479,7 +479,7 @@ describe('ProjectsListItem', () => {
 
       describe('when deletion is confirmed', () => {
         describe('when API call is successful', () => {
-          it('calls deleteProject, properly sets loading state, and emits delete-complete event', async () => {
+          it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
             deleteProject.mockResolvedValueOnce();
 
             await deleteModalFirePrimaryEvent();
@@ -490,7 +490,7 @@ describe('ProjectsListItem', () => {
             await waitForPromises();
 
             expect(findDeleteModal().props('confirmLoading')).toBe(false);
-            expect(wrapper.emitted('delete-complete')).toEqual([[]]);
+            expect(wrapper.emitted('refetch')).toEqual([[]]);
             expect(renderDeleteSuccessToast).toHaveBeenCalledWith(projectWithActions, 'Project');
             expect(createAlert).not.toHaveBeenCalled();
           });
@@ -511,7 +511,7 @@ describe('ProjectsListItem', () => {
 
             expect(findDeleteModal().props('confirmLoading')).toBe(false);
 
-            expect(wrapper.emitted('delete-complete')).toBeUndefined();
+            expect(wrapper.emitted('refetch')).toBeUndefined();
             expect(createAlert).toHaveBeenCalledWith({
               message:
                 'An error occurred deleting the project. Please refresh the page to try again.',

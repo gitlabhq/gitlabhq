@@ -6,6 +6,7 @@ module Packages
       include FileStoreMounter
       include ShaAttribute
       include Packages::Destructible
+      include UpdateProjectStatistics
 
       # Used in destroying orphan symbols in worker
       enum :status, default: 0, processing: 1, error: 3
@@ -13,7 +14,7 @@ module Packages
       belongs_to :package, class_name: 'Packages::Nuget::Package', inverse_of: :nuget_symbols
       belongs_to :project
 
-      delegate :project_id, :project, to: :package, allow_nil: true
+      update_project_statistics project_statistics_name: :packages_size
 
       validates :file, :file_path, :signature, :object_storage_key, :size, presence: true
       validates :signature, uniqueness: { scope: %i[file_path package_id] }, if: -> { package }

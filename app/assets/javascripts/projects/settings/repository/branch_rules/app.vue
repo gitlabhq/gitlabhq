@@ -166,6 +166,7 @@ export default {
     icon="branch"
     :count="branchRules.length"
     class="gl-mb-5"
+    :is-loading="$apollo.queries.branchRules.loading"
   >
     <template #actions>
       <gl-disclosure-dropdown

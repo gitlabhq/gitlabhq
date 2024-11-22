@@ -258,7 +258,7 @@ export default {
 
       try {
         await deleteProject(this.project.id, deleteParams(this.project));
-        this.$emit('delete-complete');
+        this.$emit('refetch');
         renderDeleteSuccessToast(this.project, this.$options.i18n.project);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });

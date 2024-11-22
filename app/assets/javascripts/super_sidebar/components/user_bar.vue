@@ -51,7 +51,7 @@ export default {
       { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
       false,
     ),
-    todoList: __('To-Do list'),
+    todoList: __('To-Do List'),
     stopImpersonating: __('Stop impersonating'),
     searchBtnText: __('Search or go to…'),
   },

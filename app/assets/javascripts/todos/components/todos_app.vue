@@ -1,9 +1,8 @@
 <script>
 import { computed } from 'vue';
 import {
-  GlLoadingIcon,
   GlButton,
-  GlKeysetPagination,
+  GlLoadingIcon,
   GlLink,
   GlBadge,
   GlTab,
@@ -15,6 +14,7 @@ import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import {
+  DEFAULT_PAGE_SIZE,
   INSTRUMENT_TAB_LABELS,
   INSTRUMENT_TODO_FILTER_CHANGE,
   STATUS_BY_TAB,
@@ -29,15 +29,13 @@ import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
-
-const ENTRIES_PER_PAGE = 20;
+import TodosPagination from './todos_pagination.vue';
 
 export default {
   components: {
     GlLink,
     GlButton,
     GlLoadingIcon,
-    GlKeysetPagination,
     GlBadge,
     GlTabs,
     GlTab,
@@ -45,6 +43,7 @@ export default {
     TodosFilterBar,
     TodoItem,
     TodosMarkAllDoneButton,
+    TodosPagination,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -60,7 +59,7 @@ export default {
       updatePid: null,
       needsRefresh: false,
       cursor: {
-        first: ENTRIES_PER_PAGE,
+        first: DEFAULT_PAGE_SIZE,
         after: null,
         last: null,
         before: null,
@@ -129,9 +128,6 @@ export default {
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
-    showPagination() {
-      return !this.isLoading && (this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage);
-    },
     showEmptyState() {
       return !this.isLoading && this.todos.length === 0;
     },
@@ -160,29 +156,22 @@ export default {
     document.removeEventListener('visibilitychange', this.handleVisibilityChanged);
   },
   methods: {
-    nextPage(item) {
-      this.cursor = {
-        first: ENTRIES_PER_PAGE,
-        after: item,
-        last: null,
-        before: null,
-      };
-    },
-    prevPage(item) {
-      this.cursor = {
-        first: null,
-        after: null,
-        last: ENTRIES_PER_PAGE,
-        before: item,
-      };
+    updateCursor(cursor) {
+      this.cursor = cursor;
     },
     tabChanged(tabIndex) {
+      if (tabIndex === this.currentTab) {
+        return;
+      }
+
       this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
         label: INSTRUMENT_TAB_LABELS[tabIndex],
       });
       this.currentTab = tabIndex;
+
+      // Use the previous page size, but fetch the first N of the new tab
       this.cursor = {
-        first: ENTRIES_PER_PAGE,
+        first: this.cursor.first || this.cursor.last,
         after: null,
         last: null,
         before: null,
@@ -329,13 +318,7 @@ export default {
 
         <todos-empty-state v-if="showEmptyState" :is-filtered="isFiltered" />
 
-        <gl-keyset-pagination
-          v-if="showPagination"
-          v-bind="pageInfo"
-          class="gl-mt-3 gl-self-center"
-          @prev="prevPage"
-          @next="nextPage"
-        />
+        <todos-pagination v-if="!showEmptyState" v-bind="pageInfo" @cursor-changed="updateCursor" />
 
         <div class="gl-mt-5 gl-text-center">
           <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/498315" target="_blank">{{

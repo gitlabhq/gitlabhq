@@ -228,7 +228,7 @@ export default {
           </gl-link>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3"
+          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3 sm:gl-flex-row"
         >
           <gl-avatars-inline
             v-if="assignees.length"

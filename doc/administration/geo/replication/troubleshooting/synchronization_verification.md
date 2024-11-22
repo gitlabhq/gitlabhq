@@ -20,7 +20,7 @@ If you notice replication or verification failures in `Admin > Geo > Sites` or t
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to store relevant information and is replicated by Geo to secondary sites.
 
-The following Geo data types exist:
+### Geo data type classes
 
 - **Blob types:**
   - `Ci::JobArtifact`
@@ -66,25 +66,27 @@ console. The following sections describe how to use internal application
 commands in the Rails console to cause replication or verification for
 individual records synchronously or asynchronously.
 
+### Geo registry table models
+
 In the context of GitLab Geo, a **registry record** refers to registry tables in
 the Geo tracking database. Each record tracks a single replicable in the main
 GitLab database, such as an LFS file, or a project Git repository. The Rails
 models that correspond to Geo registry tables that can be queried are:
 
-- `CiSecureFileRegistry`
-- `ContainerRepositoryRegistry`
-- `DependencyProxyBlobRegistry`
-- `DependencyProxyManifestRegistry`
-- `JobArtifactRegistry`
-- `LfsObjectRegistry`
-- `MergeRequestDiffRegistry`
-- `PackageFileRegistry`
-- `PagesDeploymentRegistry`
-- `PipelineArtifactRegistry`
-- `ProjectWikiRepositoryRegistry`
-- `SnippetRepositoryRegistry`
-- `TerraformStateVersionRegistry`
-- `UploadRegistry`
+- `Geo::CiSecureFileRegistry`
+- `Geo::ContainerRepositoryRegistry`
+- `Geo::DependencyProxyBlobRegistry`
+- `Geo::DependencyProxyManifestRegistry`
+- `Geo::JobArtifactRegistry`
+- `Geo::LfsObjectRegistry`
+- `Geo::MergeRequestDiffRegistry`
+- `Geo::PackageFileRegistry`
+- `Geo::PagesDeploymentRegistry`
+- `Geo::PipelineArtifactRegistry`
+- `Geo::ProjectWikiRepositoryRegistry`
+- `Geo::SnippetRepositoryRegistry`
+- `Geo::TerraformStateVersionRegistry`
+- `Geo::UploadRegistry`
 
 You can use Rails to perform basic troubleshooting. Troubleshooting steps vary
 depending on the object type.
@@ -193,7 +195,9 @@ to cause bulk replication or verification.
 
 #### Reverify all components (or any SSF data type which supports verification)
 
-For GitLab 16.4 and earlier:
+You can reverify any [data type](#geo-data-type-classes) that supports verification from the Rails console.
+
+For example, to reverify the `Upload` class:
 
 1. SSH into a GitLab Rails node in the primary Geo site.
 1. Open the [Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).

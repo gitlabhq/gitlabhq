@@ -8,6 +8,10 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
   it { is_expected.to be_a FileStoreMounter }
   it { is_expected.to be_a ShaAttribute }
   it { is_expected.to be_a Packages::Destructible }
+  it { is_expected.to be_a UpdateProjectStatistics }
+
+  it_behaves_like 'having unique enum values'
+  it_behaves_like 'destructible', factory: :nuget_symbol
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package).class_name('Packages::Nuget::Package').inverse_of(:nuget_symbols) }
@@ -36,11 +40,6 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
         expect(new_symbol.errors.messages_for(:signature)).not_to include 'has already been taken'
       end
     end
-  end
-
-  describe 'delegations' do
-    it { is_expected.to delegate_method(:project_id).to(:package).allow_nil }
-    it { is_expected.to delegate_method(:project).to(:package).allow_nil }
   end
 
   describe 'scopes' do
@@ -186,6 +185,14 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
           end
         end
       end
+    end
+  end
+
+  context 'for project statistics' do
+    let_it_be_with_reload(:package) { create(:nuget_package) }
+
+    it_behaves_like 'UpdateProjectStatistics', :packages_size do
+      subject { build(:nuget_symbol, package: package) }
     end
   end
 end

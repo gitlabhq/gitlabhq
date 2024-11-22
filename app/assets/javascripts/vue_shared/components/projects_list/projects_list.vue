@@ -66,7 +66,7 @@ export default {
       :show-project-icon="showProjectIcon"
       :class="listItemClass"
       :timestamp-type="timestampType"
-      @delete-complete="$emit('delete-complete')"
+      @refetch="$emit('refetch')"
     />
   </ul>
 </template>

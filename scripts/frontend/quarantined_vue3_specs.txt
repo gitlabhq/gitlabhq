@@ -39,7 +39,6 @@ ee/spec/frontend/ci/pipeline_details/header/pipeline_header_spec.js
 ee/spec/frontend/ci/runner/components/runner_details_spec.js
 ee/spec/frontend/ci/runner/components/runner_header_spec.js
 ee/spec/frontend/ci/runner/components/stat/runner_upgrade_status_stats_spec.js
-ee/spec/frontend/ci/runner/group_runners_dashboard/group_runners_wait_times_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_app_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
 ee/spec/frontend/ci/secrets/router_spec.js
@@ -314,7 +313,6 @@ spec/frontend/projects/components/new_edit_form_spec.js
 spec/frontend/projects/new/components/new_project_url_select_spec.js
 spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js
-spec/frontend/projects/settings/repository/branch_rules/app_spec.js
 spec/frontend/projects/settings/topics/components/topics_token_selector_spec.js
 spec/frontend/projects/settings_service_desk/components/custom_email_form_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js

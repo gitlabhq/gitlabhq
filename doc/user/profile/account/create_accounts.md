@@ -1,11 +1,11 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-description: Passwords, user moderation, broadcast messages.
+description: Create user accounts in GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Creating users
+# Create users
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

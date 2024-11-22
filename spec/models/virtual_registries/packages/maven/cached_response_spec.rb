@@ -14,7 +14,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   describe 'validations' do
-    %i[group file file_sha1 relative_path content_type size].each do |attr|
+    %i[group file file_sha1 relative_path size].each do |attr|
       it { is_expected.to validate_presence_of(attr) }
     end
 

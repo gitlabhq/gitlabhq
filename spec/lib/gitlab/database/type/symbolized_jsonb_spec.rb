@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Database::Type::SymbolizedJsonb do
       Class.new(ApplicationRecord) do
         self.table_name = :_test_symbolized_jsonb
 
-        attribute :options, :sym_jsonb
+        attribute :options, ::Gitlab::Database::Type::SymbolizedJsonb.new
       end
     end
 

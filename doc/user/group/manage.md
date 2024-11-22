@@ -147,12 +147,8 @@ To disable email notifications:
 
 ### Disable diff previews in email notifications
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with the flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) the flag `diff_preview_in_email` on GitLab.com, self-managed, and GitLab Dedicated in GitLab 17.1.
-
-FLAG:
-A feature flag controls the availability of this feature.
-For more information, see the history.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
 
 When you comment on code in a merge request, GitLab
 includes a few lines of the diff in the email notification to participants.

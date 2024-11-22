@@ -35,7 +35,7 @@ describe('CustomNotificationsModal', () => {
     const { injectedProperties = {}, props = {} } = options;
     return extendedWrapper(
       shallowMount(CustomNotificationsModal, {
-        props: {
+        propsData: {
           ...props,
         },
         provide: {

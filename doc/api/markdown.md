@@ -19,10 +19,9 @@ Available only in APIv4.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `authenticate_markdown_api`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled and authentication is required.
-To remove the requirement to authenticate, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `authenticate_markdown_api`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is available.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 All API calls to the Markdown API must be [authenticated](rest/authentication.md).
 

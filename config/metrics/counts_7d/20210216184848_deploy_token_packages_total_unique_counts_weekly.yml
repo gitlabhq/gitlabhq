@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly
 description: A weekly count of distinct deploy tokens used for interacting with packages in the registry
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 time_frame: 7d

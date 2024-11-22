@@ -147,6 +147,28 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
     });
   });
 
+  describe('when the namespace is not selected', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        propsData: { namespace: '' },
+      });
+    });
+
+    it('flux resource selector has a disabled state', () => {
+      expect(findFluxResourceSelector().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('when the namespace is selected', () => {
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('flux resource selector does not have a disabled state', () => {
+      expect(findFluxResourceSelector().props('disabled')).toBe(false);
+    });
+  });
+
   describe('on error', () => {
     const error = new Error('Error from the cluster_client API');
 

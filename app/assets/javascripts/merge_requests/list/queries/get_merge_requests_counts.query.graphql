@@ -1,5 +1,6 @@
 query getMergeRequestsCount(
   $fullPath: ID!
+  $search: String
   $approvedBy: [String!]
   $assigneeUsernames: String
   $assigneeWildcardId: AssigneeWildcardId
@@ -24,6 +25,7 @@ query getMergeRequestsCount(
     id
     openedMergeRequests: mergeRequests(
       state: opened
+      search: $search
       approvedBy: $approvedBy
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
@@ -48,6 +50,7 @@ query getMergeRequestsCount(
     }
     mergedMergeRequests: mergeRequests(
       state: merged
+      search: $search
       approvedBy: $approvedBy
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
@@ -72,6 +75,7 @@ query getMergeRequestsCount(
     }
     closedMergeRequests: mergeRequests(
       state: closed
+      search: $search
       approvedBy: $approvedBy
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
@@ -96,6 +100,7 @@ query getMergeRequestsCount(
     }
     allMergeRequests: mergeRequests(
       state: all
+      search: $search
       approvedBy: $approvedBy
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId

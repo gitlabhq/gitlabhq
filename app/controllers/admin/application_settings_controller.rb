@@ -56,7 +56,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     @integrations = Integration.find_or_initialize_all_non_project_specific(
       Integration.for_instance, include_instance_specific: true
-    ).sort_by(&:title)
+    ).sort_by { |int| int.title.downcase }
   end
 
   def update

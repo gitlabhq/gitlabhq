@@ -6,7 +6,7 @@ import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projec
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
@@ -139,7 +139,7 @@ export default {
     },
   },
   methods: {
-    onDeleteComplete() {
+    onRefetch() {
       this.$apollo.queries.projects.refetch();
     },
     onNext(endCursor) {
@@ -166,7 +166,7 @@ export default {
       show-project-icon
       list-item-class="gl-px-5"
       :timestamp-type="$options.TIMESTAMP_TYPE_UPDATED_AT"
-      @delete-complete="onDeleteComplete"
+      @refetch="onRefetch"
     />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />

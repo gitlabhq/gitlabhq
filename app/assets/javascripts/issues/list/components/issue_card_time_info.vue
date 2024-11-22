@@ -1,19 +1,18 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { humanTimeframe, isInPast, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { STATE_CLOSED } from '~/work_items/constants';
 import { isMilestoneWidget, isStartAndDueDateWidget } from '~/work_items/utils';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 export default {
   components: {
-    GlIcon,
     IssuableMilestone,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    WorkItemAttribute,
+    GlIcon,
   },
   props: {
     issue: {
@@ -65,26 +64,30 @@ export default {
 <template>
   <span>
     <issuable-milestone v-if="milestone" :milestone="milestone" />
-    <span
+    <work-item-attribute
       v-if="dueDateText"
-      v-gl-tooltip
-      class="issuable-due-date gl-mr-3"
-      :title="dueDateTitle"
-      data-testid="issuable-due-date"
+      anchor-id="issuable-due-date"
+      :title="dueDateText"
+      title-component-class="issuable-due-date gl-mr-3"
+      :tooltip-text="dueDateTitle"
+      tooltip-placement="top"
     >
-      <gl-icon :variant="isOverdue ? 'danger' : 'current'" :name="dateIcon" :size="12" />
-      {{ dueDateText }}
-    </span>
-    <span
+      <template #icon>
+        <gl-icon :variant="isOverdue ? 'danger' : 'current'" :name="dateIcon" :size="12" />
+      </template>
+    </work-item-attribute>
+    <work-item-attribute
       v-if="timeEstimate"
-      v-gl-tooltip
-      class="gl-mr-3"
-      :title="__('Estimate')"
-      data-testid="time-estimate"
+      anchor-id="time-estimate"
+      :title="timeEstimate"
+      title-component-class="gl-mr-3"
+      :tooltip-text="__('Estimate')"
+      tooltip-placement="top"
     >
-      <gl-icon name="timer" :size="12" />
-      {{ timeEstimate }}
-    </span>
+      <template #icon>
+        <gl-icon name="timer" :size="12" />
+      </template>
+    </work-item-attribute>
     <slot></slot>
   </span>
 </template>

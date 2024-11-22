@@ -415,10 +415,10 @@ By default, users can create organizations. GitLab administrators can prevent us
 
 By default, new users can create top-level groups. GitLab administrators can prevent new users from creating top-level groups:
 
-- In GitLab 15.5 and later, using either:
-  - The GitLab UI using the steps in this section.
-  - The [application setting API](../../api/settings.md#change-application-settings).
-- In GitLab 15.4 and earlier, a [configuration file](../../administration/user_settings.md#use-configuration-files-to-prevent-new-users-from-creating-top-level-groups).
+- In GitLab 15.5 and later, use either:
+  - The GitLab UI with the steps in this section.
+  - The [Application settings API](../../api/settings.md#change-application-settings).
+- In GitLab 15.4 and earlier, modify a [configuration file](../../administration/user_settings.md#prevent-users-from-creating-top-level-groups).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

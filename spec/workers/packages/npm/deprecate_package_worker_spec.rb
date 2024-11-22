@@ -8,11 +8,11 @@ RSpec.describe Packages::Npm::DeprecatePackageWorker, feature_category: :package
     let(:worker) { described_class.new }
     let(:params) do
       {
-        package_name: 'package_name',
-        versions: {
+        'package_name' => 'package_name',
+        'versions' => {
           '1.0.1' => {
-            name: 'package_name',
-            deprecated: 'This version is deprecated'
+            'name' => 'package_name',
+            'deprecated' => 'This version is deprecated'
           }
         }
       }

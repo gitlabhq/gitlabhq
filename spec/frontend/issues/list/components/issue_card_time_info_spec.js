@@ -5,6 +5,7 @@ import { STATUS_CLOSED } from '~/issues/constants';
 import IssueCardTimeInfo from '~/issues/list/components/issue_card_time_info.vue';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_START_AND_DUE_DATE } from '~/work_items/constants';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 describe('CE IssueCardTimeInfo component', () => {
   useFakeDate(2020, 11, 11); // 2020 Dec 11
@@ -50,11 +51,15 @@ describe('CE IssueCardTimeInfo component', () => {
   });
 
   const findMilestone = () => wrapper.findComponent(IssuableMilestone);
-  const findDueDate = () => wrapper.find('[data-testid="issuable-due-date"]');
-  const findDateIcon = () => findDueDate().findComponent(GlIcon);
+  const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
 
   const mountComponent = ({ issue = issueObject() } = {}) =>
-    shallowMount(IssueCardTimeInfo, { propsData: { issue } });
+    shallowMount(IssueCardTimeInfo, {
+      propsData: { issue },
+      stubs: {
+        WorkItemAttribute,
+      },
+    });
 
   describe.each`
     type           | object
@@ -75,11 +80,10 @@ describe('CE IssueCardTimeInfo component', () => {
       describe('when upcoming', () => {
         it('renders', () => {
           wrapper = mountComponent({ issue: object({ dueDate: '2020-12-12' }) });
-          const dueDate = findDueDate();
-
-          expect(dueDate.text()).toBe('Dec 12, 2020');
-          expect(dueDate.attributes('title')).toBe('Due date');
-          expect(findDateIcon().props()).toMatchObject({
+          expect(findWorkItemAttribute().props('title')).toBe('Dec 12, 2020');
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date');
+          const datesEl = wrapper.find('[data-testid="issuable-due-date"]');
+          expect(datesEl.findComponent(GlIcon).props()).toMatchObject({
             variant: 'current',
             name: 'calendar',
           });
@@ -90,8 +94,8 @@ describe('CE IssueCardTimeInfo component', () => {
         describe('when issue is open', () => {
           it('renders in red with overdue icon', () => {
             wrapper = mountComponent({ issue: object({ dueDate: '2020-10-10' }) });
-
-            expect(findDateIcon().props()).toMatchObject({
+            const datesEl = wrapper.find('[data-testid="issuable-due-date"]');
+            expect(datesEl.findComponent(GlIcon).props()).toMatchObject({
               variant: 'danger',
               name: 'calendar-overdue',
             });
@@ -104,7 +108,8 @@ describe('CE IssueCardTimeInfo component', () => {
               issue: object({ dueDate: '2020-10-10', state: STATUS_CLOSED }),
             });
 
-            expect(findDateIcon().props()).toMatchObject({
+            const datesEl = wrapper.find('[data-testid="issuable-due-date"]');
+            expect(datesEl.findComponent(GlIcon).props()).toMatchObject({
               variant: 'current',
               name: 'calendar',
             });
@@ -119,9 +124,8 @@ describe('CE IssueCardTimeInfo component', () => {
           wrapper = mountComponent({
             issue: workItemObject({ startDate: '2020-11-30', dueDate: '2020-12-12' }),
           });
-          const dueDate = findDueDate();
 
-          expect(dueDate.text()).toBe('Nov 30 – Dec 12, 2020');
+          expect(findWorkItemAttribute().props('title')).toBe('Nov 30 – Dec 12, 2020');
         });
       });
 
@@ -130,9 +134,8 @@ describe('CE IssueCardTimeInfo component', () => {
           wrapper = mountComponent({
             issue: workItemObject({ startDate: '2020-11-30', dueDate: null }),
           });
-          const dueDate = findDueDate();
 
-          expect(dueDate.text()).toBe('Nov 30, 2020 – No due date');
+          expect(findWorkItemAttribute().props('title')).toBe('Nov 30, 2020 – No due date');
         });
       });
     });
@@ -142,8 +145,8 @@ describe('CE IssueCardTimeInfo component', () => {
     wrapper = mountComponent();
     const timeEstimate = wrapper.find('[data-testid="time-estimate"]');
 
-    expect(timeEstimate.text()).toBe('1w');
-    expect(timeEstimate.attributes('title')).toBe('Estimate');
+    expect(findWorkItemAttribute().props('title')).toBe('1w');
+    expect(findWorkItemAttribute().props('tooltipText')).toBe('Estimate');
     expect(timeEstimate.findComponent(GlIcon).props('name')).toBe('timer');
   });
 });

@@ -527,13 +527,13 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         subject(:request) { put api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}"), params: params, headers: headers }
 
-        context 'when the user is not authorized to destroy the package' do
+        context 'when the user is not authorized to deprecate the package' do
           before do
             project.add_developer(user)
           end
 
-          it 'does not call DeprecatePackageService' do
-            expect(::Packages::Npm::DeprecatePackageService).not_to receive(:new)
+          it 'does not enqueue the deprecate npm packages worker' do
+            expect(::Packages::Npm::DeprecatePackageWorker).not_to receive(:perform_async)
 
             request
 
@@ -541,21 +541,39 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           end
         end
 
-        context 'when the user is authorized to destroy the package' do
+        context 'when the user is authorized to deprecate the package' do
+          let(:filtered_params) do
+            params.deep_dup.tap { |p| p['versions'].slice!('1.0.1') }
+          end
+
           before do
             project.add_maintainer(user)
           end
 
-          it 'calls DeprecatePackageService with the correct arguments' do
-            expect(::Packages::Npm::DeprecatePackageService).to receive(:new).with(project, params) do
-              double.tap do |service|
-                expect(service).to receive(:execute).with(async: true)
-              end
-            end
+          it 'enqueues the deprecate npm packages worker with the correct arguments' do
+            expect(::Packages::Npm::DeprecatePackageWorker).to receive(:perform_async).with(project.id, filtered_params)
 
             request
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when no package versions contain `deprecate` attribute' do
+            let(:params) do
+              super().tap { |p| p['versions'].slice!('1.0.2') }
+            end
+
+            it 'does not enqueue the deprecate npm packages worker' do
+              expect(::Packages::Npm::DeprecatePackageWorker).not_to receive(:perform_async)
+
+              request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response.parsed_body).to eq(
+                'message' => '400 Bad request - "package versions to deprecate" not given',
+                'error' => '"package versions to deprecate" not given'
+              )
+            end
           end
         end
       end

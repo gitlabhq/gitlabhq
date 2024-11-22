@@ -11,9 +11,7 @@ module Packages
         @enqueue_metadata_cache_worker = false
       end
 
-      def execute(async: false)
-        return ::Packages::Npm::DeprecatePackageWorker.perform_async(project.id, params) if async
-
+      def execute
         packages.select(:id, :version, :package_type).each_batch(of: BATCH_SIZE) do |relation|
           deprecated_metadata = handle_batch(relation)
           update_or_create_metadata(deprecated_metadata)
@@ -31,9 +29,13 @@ module Packages
       attr_accessor :enqueue_metadata_cache_worker
 
       def packages
-        ::Packages::Npm::PackageFinder
-          .new(project: project, params: { package_name: params['package_name'] })
-          .execute
+        ::Packages::Npm::PackageFinder.new(
+          project: project,
+          params: {
+            package_name: params['package_name'],
+            package_version: params['versions'].keys
+          }
+        ).execute
       end
 
       def handle_batch(relation)

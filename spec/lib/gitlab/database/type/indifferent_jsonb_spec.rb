@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::Type::IndifferentJsonb do
       Class.new(ApplicationRecord) do
         self.table_name = :_test_indifferent_jsonb
 
-        attribute :options, :ind_jsonb
+        attribute :options, ::Gitlab::Database::Type::IndifferentJsonb.new
       end
     end
 

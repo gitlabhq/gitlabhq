@@ -5,9 +5,6 @@
 
 require 'active_record/connection_adapters/postgresql_adapter'
 
-ActiveRecord::Type.register(:ind_jsonb, Gitlab::Database::Type::IndifferentJsonb)
-ActiveRecord::Type.register(:sym_jsonb, Gitlab::Database::Type::SymbolizedJsonb)
-
 module ActiveRecord::ConnectionAdapters::PostgreSQL::OID # rubocop:disable Style/ClassAndModuleChildren
   # Add the class `DateTimeWithTimeZone` so we can map `timestamptz` to it.
   class DateTimeWithTimeZone < DateTime

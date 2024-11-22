@@ -145,14 +145,11 @@ export default {
         item.text.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    showNamespaceSelector() {
+    showNamespaceAndResourceSelectors() {
       return Boolean(this.selectedAgentId);
     },
-    showFluxResourceSelector() {
-      return Boolean(this.selectedNamespace && this.selectedAgentId);
-    },
     k8sAccessConfiguration() {
-      if (!this.showNamespaceSelector) {
+      if (!this.showNamespaceAndResourceSelectors) {
         return null;
       }
       return {
@@ -334,24 +331,24 @@ export default {
           </template>
         </gl-form-group>
 
-        <environment-namespace-selector
-          v-if="showNamespaceSelector"
-          :namespace="selectedNamespace"
-          :configuration="k8sAccessConfiguration"
-          @change="
-            onChange({ ...environment, kubernetesNamespace: $event, fluxResourcePath: null })
-          "
-        />
+        <template v-if="showNamespaceAndResourceSelectors">
+          <environment-namespace-selector
+            :namespace="selectedNamespace"
+            :configuration="k8sAccessConfiguration"
+            @change="
+              onChange({ ...environment, kubernetesNamespace: $event, fluxResourcePath: null })
+            "
+          />
 
-        <environment-flux-resource-selector
-          v-if="showFluxResourceSelector"
-          :namespace="selectedNamespace"
-          :configuration="k8sAccessConfiguration"
-          :flux-resource-path="environment.fluxResourcePath"
-          @change="onChange({ ...environment, fluxResourcePath: $event })"
-        />
+          <environment-flux-resource-selector
+            :namespace="selectedNamespace"
+            :configuration="k8sAccessConfiguration"
+            :flux-resource-path="environment.fluxResourcePath"
+            @change="onChange({ ...environment, fluxResourcePath: $event })"
+          />
+        </template>
 
-        <div class="gl-mr-6">
+        <div class="gl-flex gl-gap-3">
           <gl-button
             :loading="loading"
             type="submit"
