@@ -62615,6 +62615,9 @@ msgstr ""
 msgid "Work item not supported"
 msgstr ""
 
+msgid "Work item type %{work_item_type_name} can only have a maximum of %{limit} active custom fields."
+msgstr ""
+
 msgid "Work items"
 msgstr ""
 

@@ -3992,6 +3992,7 @@ Input type: `CustomFieldCreateInput`
 | <a id="mutationcustomfieldcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path where the custom field is created. |
 | <a id="mutationcustomfieldcreatename"></a>`name` | [`String!`](#string) | Name of the custom field. |
 | <a id="mutationcustomfieldcreateselectoptions"></a>`selectOptions` | [`[CustomFieldSelectOptionInput!]`](#customfieldselectoptioninput) | Available options for a select field. |
+| <a id="mutationcustomfieldcreateworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Work item type global IDs associated to the custom field. |
 
 #### Fields
 
@@ -4015,8 +4016,9 @@ Input type: `CustomFieldUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcustomfieldupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcustomfieldupdateid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
-| <a id="mutationcustomfieldupdatename"></a>`name` | [`String!`](#string) | Name of the custom field. |
+| <a id="mutationcustomfieldupdatename"></a>`name` | [`String`](#string) | Name of the custom field. |
 | <a id="mutationcustomfieldupdateselectoptions"></a>`selectOptions` | [`[CustomFieldSelectOptionInput!]`](#customfieldselectoptioninput) | Available options for a select field. |
+| <a id="mutationcustomfieldupdateworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Work item type global IDs associated to the custom field. |
 
 #### Fields
 
