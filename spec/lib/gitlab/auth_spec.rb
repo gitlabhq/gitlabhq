@@ -1047,16 +1047,37 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       let!(:build) { create(:ci_build, :running, user: user) }
 
       it 'executes query using primary database' do
-        expect(Ci::Build).to receive(:find_by_token).with(build.token).and_wrap_original do |m, *args|
-          expect(::Gitlab::Database::LoadBalancing::SessionMap.current(Ci::Build.load_balancer).use_primary?)
-            .to eq(true)
-          m.call(*args)
+        expect_next_instance_of(::Ci::JobToken::Jwt::Decode, build.token) do |decoded_token|
+          expect(decoded_token).to receive(:job).and_wrap_original do |m, *args|
+            expect(::Gitlab::Database::LoadBalancing::SessionMap.current(Ci::Build.load_balancer).use_primary?)
+              .to eq(true)
+            m.call(*args)
+          end
         end
 
         expect(subject).to be_a(Gitlab::Auth::Result)
         expect(subject.actor).to eq(user)
         expect(subject.project).to eq(build.project)
         expect(subject.type).to eq(:build)
+      end
+
+      context 'with a database token' do
+        before do
+          stub_feature_flags(ci_job_token_jwt: false)
+        end
+
+        it 'executes query using primary database' do
+          expect(Ci::Build).to receive(:find_by_token).with(build.token).and_wrap_original do |m, *args|
+            expect(::Gitlab::Database::LoadBalancing::SessionMap.current(Ci::Build.load_balancer).use_primary?)
+              .to eq(true)
+            m.call(*args)
+          end
+
+          expect(subject).to be_a(Gitlab::Auth::Result)
+          expect(subject.actor).to eq(user)
+          expect(subject.project).to eq(build.project)
+          expect(subject.type).to eq(:build)
+        end
       end
     end
   end

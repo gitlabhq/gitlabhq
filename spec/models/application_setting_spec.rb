@@ -1110,6 +1110,23 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         end
       end
 
+      describe '#ci_job_token_signing_key', :do_not_stub_ci_job_token_signing_key do
+        it { is_expected.not_to allow_value('').for(:ci_job_token_signing_key) }
+        it { is_expected.not_to allow_value('invalid RSA key').for(:ci_job_token_signing_key) }
+        it { is_expected.to allow_value(nil).for(:ci_job_token_signing_key) }
+        it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:ci_job_token_signing_key) }
+
+        it 'is encrypted' do
+          subject.ci_job_token_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+
+          aggregate_failures do
+            expect(subject.encrypted_ci_job_token_signing_key).to be_present
+            expect(subject.encrypted_ci_job_token_signing_key_iv).to be_present
+            expect(subject.encrypted_ci_job_token_signing_key).not_to eq(subject.ci_job_token_signing_key)
+          end
+        end
+      end
+
       describe '#customers_dot_jwt_signing_key' do
         it { is_expected.not_to allow_value('').for(:customers_dot_jwt_signing_key) }
         it { is_expected.not_to allow_value('invalid RSA key').for(:customers_dot_jwt_signing_key) }

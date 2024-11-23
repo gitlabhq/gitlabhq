@@ -33,7 +33,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         request_job(runner.token)
         expect(response).to have_gitlab_http_status(:created)
         expect(response.headers['Content-Type']).to eq('application/json')
-        expect(json_response).to include('id' => build.id, 'token' => build.token)
+        expect(json_response).to include('id' => build.id, 'token' => instance_of(String))
         expect(json_response).to include(request_response)
       end
     end

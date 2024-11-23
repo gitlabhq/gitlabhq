@@ -399,7 +399,8 @@ RSpec.describe JwtController, feature_category: :system_access do
     context 'with job token' do
       let_it_be_with_reload(:job) { create(:ci_build, user: user, status: :running, project: project) }
       let_it_be(:credential_user) { 'gitlab-ci-token' }
-      let_it_be(:credential_password) { job.token }
+
+      let(:credential_password) { job.token }
 
       it_behaves_like 'with valid credentials'
     end

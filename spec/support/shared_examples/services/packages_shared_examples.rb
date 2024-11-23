@@ -241,7 +241,8 @@ RSpec.shared_examples 'package workhorse uploads' do
     it_behaves_like 'returning response status', :forbidden
 
     it 'logs an error' do
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).once
+      allow(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(JWT::DecodeError)
 
       subject
     end

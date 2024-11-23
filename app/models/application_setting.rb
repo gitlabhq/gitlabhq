@@ -500,6 +500,9 @@ class ApplicationSetting < ApplicationRecord
   validates :ci_jwt_signing_key,
     rsa_key: true, allow_nil: true
 
+  validates :ci_job_token_signing_key,
+    rsa_key: true, allow_nil: true
+
   validates :customers_dot_jwt_signing_key,
     rsa_key: true, allow_nil: true
 
@@ -799,6 +802,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :slack_app_signing_secret, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :slack_app_verification_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :ci_jwt_signing_key, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :ci_job_token_signing_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :customers_dot_jwt_signing_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_32_aes_256_gcm

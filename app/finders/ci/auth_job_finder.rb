@@ -30,7 +30,8 @@ module Ci
     attr_reader :token
 
     def find_job_by_token
-      ::Ci::Build.find_by_token(token)
+      job_token = ::Ci::JobToken::Jwt::Decode.new(token)
+      job_token.jwt? ? job_token.job : ::Ci::Build.find_by_token(token)
     end
 
     def validate_job!(job)

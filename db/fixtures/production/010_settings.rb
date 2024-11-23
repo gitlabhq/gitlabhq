@@ -29,3 +29,7 @@ end
 settings = Gitlab::CurrentSettings.current_application_settings
 settings.ci_jwt_signing_key = OpenSSL::PKey::RSA.new(2048).to_pem
 save(settings, 'CI JWT signing key')
+
+settings = Gitlab::CurrentSettings.current_application_settings
+settings.ci_job_token_signing_key = OpenSSL::PKey::RSA.new(2048).to_pem
+save(settings, 'CI Job Token signing key')

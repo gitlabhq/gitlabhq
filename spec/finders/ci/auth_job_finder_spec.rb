@@ -16,6 +16,14 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
 
     it { is_expected.to eq(job) }
 
+    context 'with a database token' do
+      before do
+        stub_feature_flags(ci_job_token_jwt: false)
+      end
+
+      it { is_expected.to eq(job) }
+    end
+
     it 'raises error if the job is not running' do
       job.success!
 
@@ -23,14 +31,14 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     end
 
     it 'raises error if the job is erased' do
-      expect(::Ci::Build).to receive(:find_by_token).with(job.token).and_return(job)
+      expect(finder).to receive(:find_job_by_token).and_return(job)
       expect(job).to receive(:erased?).and_return(true)
 
       expect { execute }.to raise_error described_class::ErasedJobError, 'Job has been erased!'
     end
 
     it 'raises error if the the project is missing' do
-      expect(::Ci::Build).to receive(:find_by_token).with(job.token).and_return(job)
+      expect(finder).to receive(:find_job_by_token).and_return(job)
       expect(job).to receive(:project).and_return(nil)
 
       expect { execute }.to raise_error described_class::DeletedProjectError, 'Project has been deleted!'
@@ -39,7 +47,7 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     it 'raises error if the the project is being removed' do
       project = double(Project)
 
-      expect(::Ci::Build).to receive(:find_by_token).with(job.token).and_return(job)
+      expect(finder).to receive(:find_job_by_token).and_return(job)
       expect(job).to receive(:project).twice.and_return(project)
       expect(project).to receive(:pending_delete?).and_return(true)
 

@@ -19,6 +19,11 @@ unless settings.ci_jwt_signing_key.present?
   settings.ci_jwt_signing_key = OpenSSL::PKey::RSA.new(2048).to_pem
 end
 
+unless settings.ci_job_token_signing_key.present?
+  puts Rainbow("Generate CI Job Token signing key").green
+  settings.ci_job_token_signing_key = OpenSSL::PKey::RSA.new(2048).to_pem
+end
+
 settings.save!
 
 print '.'
