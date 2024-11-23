@@ -27,4 +27,10 @@ RSpec.shared_examples 'finding the valid revocable' do
       expect(token.revocable).to eq(valid_revocable)
     end
   end
+
+  describe '#present_with' do
+    it 'returns a constant that is a subclass of Grape::Entity' do
+      expect(token.present_with).to be <= Grape::Entity
+    end
+  end
 end

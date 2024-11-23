@@ -1,7 +1,9 @@
 PATH
   remote: .
   specs:
-    gitlab-secret_detection (0.1.0)
+    gitlab-secret_detection (0.1.1)
+      grpc (= 1.63.0)
+      grpc-tools (= 1.63.0)
       parallel (~> 1.22)
       re2 (~> 2.4)
       toml-rb (~> 2.2)
@@ -45,6 +47,13 @@ GEM
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
+    google-protobuf (3.25.5)
+    googleapis-common-protos-types (1.16.0)
+      google-protobuf (>= 3.18, < 5.a)
+    grpc (1.63.0)
+      google-protobuf (~> 3.25)
+      googleapis-common-protos-types (~> 1.0)
+    grpc-tools (1.63.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
@@ -154,4 +163,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.22)
 
 BUNDLED WITH
-   2.5.22
+   2.5.23

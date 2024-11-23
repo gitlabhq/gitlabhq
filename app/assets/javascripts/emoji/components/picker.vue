@@ -182,14 +182,14 @@ export default {
       <div
         v-if="isVisible"
         v-show="!searchValue"
-        class="award-list gl-flex gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
+        class="gl-flex gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
       >
         <gl-button
           v-for="(category, index) in categoryNames"
           :key="category.name"
           category="tertiary"
           :class="{ 'emoji-picker-category-active': index === currentCategory }"
-          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid"
+          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid focus:!gl-shadow-none focus:!gl-outline focus:!gl-outline-2 focus:-gl-outline-offset-2 focus:!gl-outline-focus"
           :icon="category.icon"
           :aria-label="category.name"
           @click="scrollToCategory(category.name)"

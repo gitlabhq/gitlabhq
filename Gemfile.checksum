@@ -304,6 +304,7 @@
 {"name":"grpc","version":"1.63.0","platform":"x86_64-darwin","checksum":"a814414ff178e89ee3ad0cc2a826ce1ca96c68063effb81affe3e5ceff7b44cc"},
 {"name":"grpc","version":"1.63.0","platform":"x86_64-linux","checksum":"41a90a597f44959c8dbb94619db2b0c0939a768569a5dfad41fffa227eb1287d"},
 {"name":"grpc-google-iam-v1","version":"1.5.0","platform":"ruby","checksum":"cea356d150dac69751f6a4c71f1571c8022c69d9f4ce9c18139200932c19374e"},
+{"name":"grpc-tools","version":"1.63.0","platform":"ruby","checksum":"133de88d6e8dbcbf846c22a5c693c1704092d9613c9ade6f749053e6a25bea40"},
 {"name":"gssapi","version":"1.3.1","platform":"ruby","checksum":"c51cf30842ee39bd93ce7fc33e20405ff8a04cda9dec6092071b61258284aee1"},
 {"name":"guard","version":"2.16.2","platform":"ruby","checksum":"71ba7abaddecc8be91ab77bbaf78f767246603652ebbc7b976fda497ebdc8fbb"},
 {"name":"guard-compat","version":"1.2.1","platform":"ruby","checksum":"3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe"},

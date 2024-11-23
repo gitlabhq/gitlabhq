@@ -17,6 +17,10 @@ module Authn
         @source = source
       end
 
+      def present_with
+        ::API::Entities::PersonalAccessToken
+      end
+
       def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 

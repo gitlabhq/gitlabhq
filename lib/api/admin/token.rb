@@ -11,7 +11,7 @@ module API
           token = ::Authn::AgnosticTokenIdentifier.token_for(plaintext, AUDIT_SOURCE)
           raise ArgumentError, 'Token type not supported.' if token.blank?
 
-          token.revocable
+          token
         end
       end
 
@@ -45,12 +45,11 @@ module API
         end
         post 'token' do
           identified_token = identify_token(params[:token])
-
-          render_api_error!({ error: 'Not found' }, :not_found) if identified_token.nil?
+          render_api_error!({ error: 'Not found' }, :not_found) if identified_token.revocable.nil?
 
           status :ok
 
-          present identified_token, with: "API::Entities::#{identified_token.class.name}".constantize
+          present identified_token.revocable, with: identified_token.present_with
         end
       end
     end

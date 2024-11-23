@@ -10,6 +10,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token) }
+  let_it_be(:oauth_application) { create(:oauth_application) }
+
   let(:plaintext) { nil }
   let(:params) { { token: plaintext } }
 
@@ -22,7 +24,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
           [
             [ref(:personal_access_token), lazy { personal_access_token.token }],
             [ref(:deploy_token), lazy { deploy_token.token }],
-            [ref(:user), lazy { user.feed_token }]
+            [ref(:user), lazy { user.feed_token }],
+            [ref(:oauth_application), lazy { oauth_application.plaintext_secret }]
           ]
         end
 

@@ -388,6 +388,15 @@ store.subscribe ::Security::RefreshProjectPoliciesWorker,
 
 The `handle_event` method in the subscriber worker is called for each of the events in the group.
 
+## Remove a subscriber
+
+As `Gitlab::EventStore` is backed by Sidekiq we follow the same guides for
+[removing Sidekiq workers](sidekiq/compatibility_across_updates.md#removing-worker-classes) starting
+with:
+
+- Removing the subscription in order to remove any code that enqueues the job
+- Making the subscriber worker no-op. For this we need to remove the `Gitlab::EventStore::Subscriber` module from the worker.
+
 ## Testing
 
 ### Testing the publisher

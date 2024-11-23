@@ -156,6 +156,10 @@ You can also remove (**{close}**) a merge request from the merge train details v
 > - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
 > - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) by default in GitLab 17.4.
 
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
 Prerequisites:
 
 - You must have [permissions](../../user/permissions.md) to merge or push to the target branch.

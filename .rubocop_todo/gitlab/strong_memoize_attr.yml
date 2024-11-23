@@ -174,8 +174,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/members/invitation_reminder_email_service.rb'
     - 'app/services/merge_requests/build_service.rb'
     - 'app/services/merge_requests/mergeability/detailed_merge_status_service.rb'
-    - 'app/services/merge_requests/mergeability/logger.rb'
-    - 'app/services/merge_requests/mergeability/run_checks_service.rb'
     - 'app/services/merge_requests/mergeability_check_service.rb'
     - 'app/services/merge_requests/outdated_discussion_diff_lines_service.rb'
     - 'app/services/merge_requests/pushed_branches_service.rb'
