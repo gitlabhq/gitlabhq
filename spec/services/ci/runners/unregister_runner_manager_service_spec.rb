@@ -74,7 +74,7 @@ RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', :freez
       it 'returns error and leaves runner_manager1', :aggregate_failures do
         expect do
           expect(execute).to be_error
-          expect(execute.message).to eq('`system_id` needs to be specified for runners created in the UI.')
+          expect(execute.message).to eq('`system_id` needs to be specified.')
         end.to not_change { Ci::Runner.count }
            .and not_change { Ci::RunnerManager.count }
       end

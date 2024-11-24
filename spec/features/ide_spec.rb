@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe 'IDE', :js, feature_category: :web_ide do
+RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_ide do
   include Features::WebIdeSpecHelpers
 
   let_it_be(:ide_iframe_selector) { '#ide iframe' }
   let_it_be(:normal_project) { create(:project, :repository) }
 
   let(:project) { normal_project }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, organizations: [current_organization]) }
 
   before do
     # TODO - We need to be able to handle requests to https://*.cdn.web-ide.gitlab-static.net

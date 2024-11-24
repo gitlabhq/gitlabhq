@@ -15,6 +15,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     stub_env('CI_API_V4_URL', 'https://gitlab.com/api/v4')
     stub_env('CI_MERGE_REQUEST_PROJECT_ID', '1234')
     stub_env('CI_MERGE_REQUEST_IID', '1234')
+    stub_env('CI_MERGE_REQUEST_LABELS', '')
     stub_env('CUSTOM_SAST_RULES_BOT_PAT', 'gl-pat-123')
     stub_env('BOT_USER_ID', '21564538')
     stub_request(:any, /gitlab.com/).to_return(status: 400)

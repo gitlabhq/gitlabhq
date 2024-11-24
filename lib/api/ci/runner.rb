@@ -98,11 +98,15 @@ module API
         delete '/managers', urgency: :low, feature_category: :fleet_visibility do
           authenticate_runner!(ensure_runner_manager: false)
 
-          destroy_conditionally!(current_runner) do
+          runner_manager = current_runner.runner_managers.find_by_system_xid(params[:system_id])
+          not_found!('Runner manager not found') unless runner_manager
+
+          destroy_conditionally!(runner_manager) do
             ::Ci::Runners::UnregisterRunnerManagerService.new(
               current_runner,
               params[:token],
-              system_id: params[:system_id]).execute
+              system_id: params[:system_id]
+            ).execute
           end
         end
 
