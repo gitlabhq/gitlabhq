@@ -160,6 +160,13 @@ PATH
     diff_match_patch (0.1.0)
 
 PATH
+  remote: vendor/gems/doorkeeper-openid_connect
+  specs:
+    doorkeeper-openid_connect (1.8.9)
+      doorkeeper (>= 5.5, < 5.9)
+      jwt (>= 2.5)
+
+PATH
   remote: vendor/gems/gitlab-duo-workflow-service-client
   specs:
     gitlab-duo-workflow-service-client (0.1)
@@ -534,13 +541,10 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.7.1)
+    doorkeeper (5.8.0)
       railties (>= 5)
     doorkeeper-device_authorization_grant (1.0.3)
       doorkeeper (~> 5.5)
-    doorkeeper-openid_connect (1.8.9)
-      doorkeeper (>= 5.5, < 5.8)
-      jwt (>= 2.5)
     dotenv (2.7.6)
     dry-cli (1.0.0)
     dry-core (1.0.1)
@@ -2027,9 +2031,9 @@ DEPENDENCIES
   diff_match_patch (~> 0.1.0)!
   diffy (~> 3.4)
   discordrb-webhooks (~> 3.5)
-  doorkeeper (~> 5.6, >= 5.6.6)
+  doorkeeper (~> 5.8, >= 5.8.0)
   doorkeeper-device_authorization_grant (~> 1.0.0)
-  doorkeeper-openid_connect (~> 1.8, >= 1.8.7)
+  doorkeeper-openid_connect (~> 1.8)!
   duo_api (~> 1.3)
   ed25519 (~> 1.3.0)
   elasticsearch-api (= 7.17.11)

@@ -1,0 +1,9 @@
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "doorkeeper-openid_connect"
+      gem_path_prefix: "vendor/gems/"
+      bundle_gemfiles: ['gemfiles/doorkeeper_master.gemfile']
+      bundle_version: "2.5.11"
+variables:
+  BUNDLE_FROZEN: "false"

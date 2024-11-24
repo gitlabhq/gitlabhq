@@ -1,0 +1,23 @@
+en:
+  doorkeeper:
+    scopes:
+      openid: 'Authenticate your account'
+      profile: 'View your profile information'
+      email: 'View your email address'
+      address: 'View your physical address'
+      phone: 'View your phone number'
+    errors:
+      messages:
+        login_required: 'The authorization server requires end-user authentication'
+        consent_required: 'The authorization server requires end-user consent'
+        interaction_required: 'The authorization server requires end-user interaction'
+        account_selection_required: 'The authorization server requires end-user account selection'
+    openid_connect:
+      errors:
+        messages:
+          # Configuration error messages
+          resource_owner_from_access_token_not_configured: 'Failure due to Doorkeeper::OpenidConnect.configure.resource_owner_from_access_token missing configuration.'
+          auth_time_from_resource_owner_not_configured: 'Failure due to Doorkeeper::OpenidConnect.configure.auth_time_from_resource_owner missing configuration.'
+          reauthenticate_resource_owner_not_configured: 'Failure due to Doorkeeper::OpenidConnect.configure.reauthenticate_resource_owner missing configuration.'
+          select_account_for_resource_owner_not_configured: 'Failure due to Doorkeeper::OpenidConnect.configure.select_account_for_resource_owner missing configuration.'
+          subject_not_configured: 'ID Token generation failed due to Doorkeeper::OpenidConnect.configure.subject missing configuration.'
