@@ -11,7 +11,7 @@ RSpec.describe Gitlab::SetupHelper::Gitaly, feature_category: :gitaly do
     subject(:config) do
       toml = described_class.configuration_toml(gitaly_dir, storages, options)
 
-      TomlRB.parse(toml)
+      Gitlab::Utils::TomlParser.safe_parse(toml)
     end
 
     it 'generates a gitaly configuration file' do
