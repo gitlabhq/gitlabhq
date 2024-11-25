@@ -6,6 +6,9 @@ module Gitlab
       Error = Class.new(StandardError)
       ConfigError = Class.new(Error)
 
+      RESPONSE_SIZE_LIMIT = 1.megabyte
+      RESPONSE_MEMORY_SIZE_LIMIT = RESPONSE_SIZE_LIMIT * 5
+
       attr_reader :integration
 
       def initialize(integration)
@@ -48,9 +51,27 @@ module Gitlab
         raise Gitlab::Harbor::Client::Error, 'request error' unless response.success?
 
         {
-          body: Gitlab::Json.parse(response.body),
+          body: parse_with_size_validation(response.body),
           total_count: response.headers['x-total-count'].to_i
         }
+      end
+
+      def parse_with_size_validation(response_body)
+        bytesize = response_body.bytesize
+
+        if bytesize > RESPONSE_SIZE_LIMIT
+          limit = ActiveSupport::NumberHelper.number_to_human_size(RESPONSE_SIZE_LIMIT)
+          message = "API response is too big. Limit is #{limit}. Got #{bytesize} bytes."
+          raise Gitlab::Harbor::Client::Error, message
+        end
+
+        parsed = Gitlab::Json.parse(response_body)
+        return parsed if Gitlab::Utils::DeepSize.new(parsed, max_size: RESPONSE_MEMORY_SIZE_LIMIT).valid?
+
+        limit = ActiveSupport::NumberHelper.number_to_human_size(RESPONSE_MEMORY_SIZE_LIMIT)
+        message = "API response memory footprint is too big. Limit is #{limit}."
+        raise Gitlab::Harbor::Client::Error, message
+
       rescue JSON::ParserError
         raise Gitlab::Harbor::Client::Error, 'invalid response format'
       end

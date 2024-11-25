@@ -2,10 +2,44 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Harbor::Client do
+RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
   let_it_be(:harbor_integration) { create(:harbor_integration) }
 
   subject(:client) { described_class.new(harbor_integration) }
+
+  shared_examples 'API response size limit' do
+    context 'when response body is within limit' do
+      it 'does not raise an exception' do
+        expect { client_request }.not_to raise_error
+      end
+    end
+
+    context 'when response body is too large' do
+      before do
+        stub_const('Gitlab::Harbor::Client::RESPONSE_SIZE_LIMIT', mock_response.to_json.bytesize - 1)
+      end
+
+      it 'raises an exception' do
+        expect { client_request }.to raise_error(
+          Gitlab::Harbor::Client::Error,
+          /API response is too big\. Limit is \d+(\.\d+)? \w+\. Got \d+ bytes\./
+        )
+      end
+    end
+
+    context 'when resulting memory size of the parsed response is too large' do
+      before do
+        stub_const('Gitlab::Harbor::Client::RESPONSE_MEMORY_SIZE_LIMIT', 1)
+      end
+
+      it 'raises an exception' do
+        expect { client_request }.to raise_error(
+          Gitlab::Harbor::Client::Error,
+          /API response memory footprint is too big. Limit is \d+(\.\d+)? \w+\./
+        )
+      end
+    end
+  end
 
   describe '#initialize' do
     context 'if integration is nil' do
@@ -24,6 +58,8 @@ RSpec.describe Gitlab::Harbor::Client do
   end
 
   describe '#get_repositories' do
+    subject(:client_request) { client.get_repositories({}) }
+
     context 'with valid params' do
       let(:mock_response) do
         [
@@ -57,8 +93,10 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'get repositories' do
-        expect(client.get_repositories({}).deep_stringify_keys).to eq(mock_repositories.deep_stringify_keys)
+        expect(client_request.deep_stringify_keys).to eq(mock_repositories.deep_stringify_keys)
       end
+
+      it_behaves_like 'API response size limit'
     end
 
     context 'when harbor project does not exist' do
@@ -73,9 +111,7 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
-        expect do
-          client.get_repositories({})
-        end.to raise_error(Gitlab::Harbor::Client::Error, 'request error')
+        expect { client_request }.to raise_error(Gitlab::Harbor::Client::Error, 'request error')
       end
     end
 
@@ -91,14 +127,14 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
-        expect do
-          client.get_repositories({})
-        end.to raise_error(Gitlab::Harbor::Client::Error, 'invalid response format')
+        expect { client_request }.to raise_error(Gitlab::Harbor::Client::Error, 'invalid response format')
       end
     end
   end
 
   describe '#get_artifacts' do
+    subject(:client_request) { client.get_artifacts({ repository_name: 'test' }) }
+
     context 'with valid params' do
       let(:mock_response) do
         [
@@ -146,9 +182,10 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'get artifacts' do
-        expect(client.get_artifacts({ repository_name: 'test' })
-          .deep_stringify_keys).to eq(mock_artifacts.deep_stringify_keys)
+        expect(client_request.deep_stringify_keys).to eq(mock_artifacts.deep_stringify_keys)
       end
+
+      it_behaves_like 'API response size limit'
     end
 
     context 'when harbor repository does not exist' do
@@ -163,9 +200,7 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
-        expect do
-          client.get_artifacts({ repository_name: 'test' })
-        end.to raise_error(Gitlab::Harbor::Client::Error, 'request error')
+        expect { client_request }.to raise_error(Gitlab::Harbor::Client::Error, 'request error')
       end
     end
 
@@ -181,14 +216,14 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
-        expect do
-          client.get_artifacts({ repository_name: 'test' })
-        end.to raise_error(Gitlab::Harbor::Client::Error, 'invalid response format')
+        expect { client_request }.to raise_error(Gitlab::Harbor::Client::Error, 'invalid response format')
       end
     end
   end
 
   describe '#get_tags' do
+    subject(:client_request) { client.get_tags({ repository_name: 'test', artifact_name: '1' }) }
+
     context 'with valid params' do
       let(:mock_response) do
         [
@@ -223,9 +258,11 @@ RSpec.describe Gitlab::Harbor::Client do
       end
 
       it 'get tags' do
-        expect(client.get_tags({ repository_name: 'test', artifact_name: '1' })
+        expect(client_request
           .deep_stringify_keys).to eq(mock_tags.deep_stringify_keys)
       end
+
+      it_behaves_like 'API response size limit'
     end
 
     context 'when harbor artifact does not exist' do
@@ -241,7 +278,7 @@ RSpec.describe Gitlab::Harbor::Client do
 
       it 'raises Gitlab::Harbor::Client::Error' do
         expect do
-          client.get_tags({ repository_name: 'test', artifact_name: '1' })
+          client_request
         end.to raise_error(Gitlab::Harbor::Client::Error, 'request error')
       end
     end
@@ -259,7 +296,7 @@ RSpec.describe Gitlab::Harbor::Client do
 
       it 'raises Gitlab::Harbor::Client::Error' do
         expect do
-          client.get_tags({ repository_name: 'test', artifact_name: '1' })
+          client_request
         end.to raise_error(Gitlab::Harbor::Client::Error, 'invalid response format')
       end
     end
