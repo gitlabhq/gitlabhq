@@ -20,6 +20,7 @@ class ProjectMember < Member
     joins('INNER JOIN projects ON projects.id = members.source_id')
       .where(projects: { namespace_id: groups.select(:id) })
   end
+  scope :with_roles, ->(roles) { where(access_level: roles) }
 
   class << self
     def truncate_teams(project_ids)

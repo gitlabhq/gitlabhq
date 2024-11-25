@@ -28,6 +28,19 @@ Please do not rely on this information for purchasing or planning purposes.
 The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
 sole discretion of GitLab Inc.
 
+Duo Workflow is an AI-powered coding agent in the VS Code IDE. It helps you solve coding tasks more quickly.
+Use it to speed up routine tasks, to improve your work, or to learn different approaches or technologies.
+
+Duo Workflow works in the project you have open in your IDE, and helps you with coding tasks like:
+
+- Draft code to implement your issue or improve your merge request, so you can get started more quickly.
+- Refactor or simplify your code, to improve its structure and make it easier to maintain.
+- Write or extend your tests, to improve test coverage and code reliability.
+
+After you describe your goal, Duo Workflow generates and executes on a plan to address it. While it executes, you can pause or ask it to adjust the plan.
+
+To improve its accuracy, be specific in your goal. Outline any changes you'd like to see. Reference related files, issues, or merge requests.
+
 ## Risks of Duo Workflow and AI Agents
 
 Duo Workflow is an experimental product and users should consider their

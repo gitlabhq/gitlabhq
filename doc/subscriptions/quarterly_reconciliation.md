@@ -85,10 +85,10 @@ You are excluded from quarterly reconciliation if you:
 - Purchased your subscription with a purchasing order.
 - Are a public sector customer.
 - Have an offline environment and used a license file to activate your subscription.
-- Are enrolled in a program that provides a free tier such as the GitLab for Education,
+- Are enrolled in a program that provides a Free tier such as the GitLab for Education,
 GitLab for Open Source Program, or GitLab for Startups.
 
-If you are excluded from quarterly reconciliation and not on a free tier, your true-ups are reconciled annually.
+If you are excluded from quarterly reconciliation and not on a Free tier, your true-ups are reconciled annually.
 
 ## Troubleshooting
 

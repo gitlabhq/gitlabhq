@@ -3405,6 +3405,9 @@ msgstr ""
 msgid "Add suggestion to batch"
 msgstr ""
 
+msgid "Add summary"
+msgstr ""
+
 msgid "Add tag"
 msgstr ""
 
@@ -8841,9 +8844,6 @@ msgstr ""
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
 msgstr ""
 
-msgid "BillingPlans|Start a free GitLab Duo Pro trial"
-msgstr ""
-
 msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-powered features."
 msgstr ""
 
@@ -13394,9 +13394,6 @@ msgstr ""
 msgid "CodeSuggestions|Before you can buy GitLab Duo seats, you'll need a Premium or Ultimate subscription."
 msgstr ""
 
-msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for 60 days, no credit card required."
-msgstr ""
-
 msgid "CodeSuggestions|Code Explanations"
 msgstr ""
 
@@ -13428,9 +13425,6 @@ msgid "CodeSuggestions|Helps you get up to speed quickly by explaining source co
 msgstr ""
 
 msgid "CodeSuggestions|Introducing GitLab Duo"
-msgstr ""
-
-msgid "CodeSuggestions|Introducing the GitLab Duo Pro add-on"
 msgstr ""
 
 msgid "CodeSuggestions|Manage seat assignments for %{addOnName} within your group."
@@ -24185,6 +24179,9 @@ msgid "Generated files are collapsed by default. To change this behavior, edit t
 msgstr ""
 
 msgid "Generated with JSON data"
+msgstr ""
+
+msgid "Generating review summary"
 msgstr ""
 
 msgid "Generic"
@@ -50022,6 +50019,9 @@ msgstr ""
 msgid "SecurityOrchestration|If any scanner finds a vulnerability that was previously detected but no longer found in a subsequent scan, then automatically set the status to Resolved."
 msgstr ""
 
+msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
+msgstr ""
+
 msgid "SecurityOrchestration|Individual users"
 msgstr ""
 
@@ -53186,7 +53186,7 @@ msgstr ""
 msgid "Source branch"
 msgstr ""
 
-msgid "Source branch (%{branch})"
+msgid "Source branch (%{branch}): %{pipelines}"
 msgstr ""
 
 msgid "Source branch does not exist"
@@ -54247,9 +54247,6 @@ msgstr ""
 msgid "Summarize comments"
 msgstr ""
 
-msgid "Summarize my pending comments"
-msgstr ""
-
 msgid "Summarize the comments in the current issue."
 msgstr ""
 
@@ -54706,7 +54703,7 @@ msgstr ""
 msgid "Target branch"
 msgstr ""
 
-msgid "Target branch (%{branch})"
+msgid "Target branch (%{branch}): %{pipelines}"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"

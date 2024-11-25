@@ -5125,6 +5125,7 @@ job4:
 
 **Additional details**:
 
+- The stage name must be 255 characters or fewer.
 - Jobs can run in parallel if they run on different runners.
 - If you have only one runner, jobs can run in parallel if the runner's
   [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)

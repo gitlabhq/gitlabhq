@@ -100,6 +100,28 @@ export const graphQLEmptyGroupImageListMock = {
   },
 };
 
+export const graphQLImageListNullContainerRepositoriesMock = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: '1',
+      containerRepositoriesCount: 0,
+      containerRepositories: null,
+    },
+  },
+};
+
+export const graphQLGroupImageListNullContainerRepositoriesMock = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: '1',
+      containerRepositoriesCount: 0,
+      containerRepositories: null,
+    },
+  },
+};
+
 export const deletedContainerRepository = {
   id: 'gid://gitlab/ContainerRepository/11',
   status: 'DELETE_SCHEDULED',

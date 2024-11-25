@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'shared/wikis/_sidebar.html.haml' do
+RSpec.describe 'shared/wikis/_sidebar.html.haml', feature_category: :wiki do
   let_it_be(:project) { create(:project) }
   let_it_be(:wiki) { Wiki.for_container(project, project.first_owner) }
 

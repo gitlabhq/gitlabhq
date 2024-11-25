@@ -392,7 +392,9 @@ export default {
       @showPreview="showPreview"
       @hidePreview="hidePreview"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
-    />
+    >
+      <template #header-buttons><slot name="header-buttons"></slot></template>
+    </markdown-header>
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
@@ -410,7 +412,9 @@ export default {
           :show-comment-tool-bar="showCommentToolBar"
           :show-content-editor-switcher="showContentEditorSwitcher"
           @enableContentEditor="$emit('enableContentEditor')"
-        />
+        >
+          <template #toolbar><slot name="toolbar"></slot></template>
+        </markdown-toolbar>
       </div>
     </div>
     <div

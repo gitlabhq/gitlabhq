@@ -263,7 +263,9 @@ export default {
           :supports-quick-actions="supportsQuickActions"
           :hide-attachment-button="disableAttachments"
           @enableMarkdownEditor="$emit('enableMarkdownEditor')"
-        />
+        >
+          <template #header-buttons><slot name="header-buttons"></slot></template>
+        </formatting-toolbar>
         <div v-if="showPlaceholder" class="gl-absolute gl-px-5 gl-pt-4 gl-text-gray-400">
           {{ placeholder }}
         </div>
@@ -283,6 +285,7 @@ export default {
         class="gl-border-t gl-flex gl-flex-row gl-items-center gl-justify-between gl-rounded-bl-base gl-rounded-br-base gl-border-gray-100 gl-px-2 gl-text-secondary"
       >
         <editor-mode-switcher size="small" value="richText" @switch="handleEditorModeChanged" />
+        <slot name="toolbar"></slot>
         <gl-button
           v-gl-tooltip
           icon="markdown-mark"

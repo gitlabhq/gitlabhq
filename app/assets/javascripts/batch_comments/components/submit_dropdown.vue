@@ -1,15 +1,24 @@
 <script>
-import { GlDisclosureDropdown, GlButton, GlIcon, GlForm, GlFormRadioGroup } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlButton,
+  GlIcon,
+  GlForm,
+  GlFormRadioGroup,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import MarkdownHeaderDivider from '~/vue_shared/components/markdown/header_divider.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { fetchPolicies } from '~/lib/graphql';
-import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT, CONTENT_EDITOR_PASTE } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import { updateText } from '~/lib/utils/text_markdown';
 import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 export default {
@@ -35,7 +44,9 @@ export default {
     GlIcon,
     GlForm,
     GlFormRadioGroup,
+    GlLoadingIcon,
     MarkdownEditor,
+    MarkdownHeaderDivider,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
@@ -46,6 +57,7 @@ export default {
   data() {
     return {
       isSubmitting: false,
+      summarizeReviewLoading: false,
       dropdownVisible: false,
       noteData: {
         noteable_type: '',
@@ -183,7 +195,18 @@ export default {
       }
     },
     updateNote(note) {
-      this.noteData.note = note;
+      const textArea = this.$el.querySelector('textarea');
+
+      if (textArea) {
+        updateText({
+          textArea,
+          tag: note,
+          cursorOffset: 0,
+          wrap: false,
+        });
+      } else {
+        markdownEditorEventHub.$emit(CONTENT_EDITOR_PASTE, note);
+      }
     },
     onBeforeClose({ originalEvent: { target }, preventDefault }) {
       if (
@@ -231,12 +254,6 @@ export default {
           <label for="review-note-body" class="gl-mb-0">
             {{ __('Summary comment (optional)') }}
           </label>
-          <summarize-my-review
-            v-if="canSummarize"
-            :id="getNoteableData.id"
-            class="gl-ml-auto"
-            @input="updateNote"
-          />
         </div>
         <div class="common-note-form gfm-form">
           <markdown-editor
@@ -257,7 +274,22 @@ export default {
             @input="$emit('input', $event)"
             @keydown.meta.enter="submitReview"
             @keydown.ctrl.enter="submitReview"
-          />
+          >
+            <template v-if="canSummarize" #header-buttons>
+              <markdown-header-divider class="gl-ml-2" />
+              <summarize-my-review
+                :id="getNoteableData.id"
+                v-model="summarizeReviewLoading"
+                @input="updateNote"
+              />
+            </template>
+            <template v-if="summarizeReviewLoading" #toolbar>
+              <div class="gl-ml-auto gl-mr-2 gl-inline-flex">
+                {{ __('Generating review summary') }}
+                <gl-loading-icon class="gl-ml-2 gl-mt-2" />
+              </div>
+            </template>
+          </markdown-editor>
         </div>
         <gl-form-radio-group
           v-model="noteData.reviewer_state"

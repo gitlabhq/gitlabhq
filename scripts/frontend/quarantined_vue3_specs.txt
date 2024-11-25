@@ -112,8 +112,6 @@ ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/conta
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js
-ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/action/action_section_spec.js
-ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/action/code_block_file_path_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/rule/rule_section_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filter_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filters_spec.js
@@ -281,7 +279,6 @@ spec/frontend/notes/components/timeline_toggle_spec.js
 spec/frontend/organizations/groups_and_projects/components/app_spec.js
 spec/frontend/organizations/shared/components/new_edit_form_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
-spec/frontend/packages_and_registries/container_registry/explorer/pages/list_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js

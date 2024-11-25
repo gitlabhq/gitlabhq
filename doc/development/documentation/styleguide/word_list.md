@@ -1006,6 +1006,11 @@ The **upstream project** (also known as the **source project**) and the **fork**
 If the **fork relationship** is removed, the
 **fork** is **unlinked** from the **upstream project**.
 
+## Free
+
+Use **Free**, in uppercase, for the subscription tier. When you refer to **Free**
+in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
+
 ## full screen
 
 Use two words for **full screen**.

@@ -19,6 +19,7 @@ import {
   GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
   SORT_FIELDS,
   SETTINGS_TEXT,
+  FETCH_IMAGES_LIST_ERROR_MESSAGE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import deleteContainerRepositoryMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
 import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
@@ -30,19 +31,24 @@ import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/c
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { createAlert } from '~/alert';
 
 import { $toast } from 'jest/packages_and_registries/shared/mocks';
 import {
   graphQLImageListMock,
+  graphQLImageListNullContainerRepositoriesMock,
   graphQLImageDeleteMock,
   deletedContainerRepository,
   graphQLEmptyImageListMock,
   graphQLEmptyGroupImageListMock,
+  graphQLGroupImageListNullContainerRepositoriesMock,
   pageInfo,
   graphQLProjectImageRepositoriesDetailsMock,
   dockerCommands,
 } from '../mock_data';
 import { GlEmptyState, DeleteModal } from '../stubs';
+
+jest.mock('~/alert');
 
 describe('List Page', () => {
   let wrapper;
@@ -105,6 +111,7 @@ describe('List Page', () => {
         RegistryHeader,
         TitleArea,
         DeleteImage,
+        ImageList,
         MetadataContainerScanning: true,
         ContainerScanningCounts: true,
       },
@@ -304,7 +311,7 @@ describe('List Page', () => {
 
       it('cli commands are not visible', async () => {
         mountComponent({ resolver });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         expect(findCliCommands().exists()).toBe(false);
@@ -312,7 +319,7 @@ describe('List Page', () => {
 
       it('project empty state is visible', async () => {
         mountComponent({ resolver });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         expect(findProjectEmptyState().exists()).toBe(true);
@@ -328,7 +335,7 @@ describe('List Page', () => {
 
       it('group empty state is visible', async () => {
         mountComponent({ resolver, config });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         expect(findGroupEmptyState().exists()).toBe(true);
@@ -336,7 +343,7 @@ describe('List Page', () => {
 
       it('cli commands are not visible', async () => {
         mountComponent({ resolver, config });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         expect(findCliCommands().exists()).toBe(false);
@@ -344,10 +351,42 @@ describe('List Page', () => {
 
       it('link to settings is not visible', async () => {
         mountComponent({ resolver, config });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         expect(findSettingsLink().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('GraphQL query returns null', () => {
+    describe.each`
+      pageType     | config                    | response                                              | emptyStateFinder
+      ${'project'} | ${{ isGroupPage: false }} | ${graphQLImageListNullContainerRepositoriesMock}      | ${findProjectEmptyState}
+      ${'group'}   | ${{ isGroupPage: true }}  | ${graphQLGroupImageListNullContainerRepositoriesMock} | ${findGroupEmptyState}
+    `('$pageType page', ({ pageType, config, response, emptyStateFinder }) => {
+      beforeEach(async () => {
+        mountComponent({
+          config,
+          detailsResolver: jest.fn().mockResolvedValue(response),
+          resolver: jest.fn().mockResolvedValue(response),
+        });
+        fireFirstSortUpdate();
+        await waitForApolloRequestRender();
+      });
+
+      it('cli commands are not visible', () => {
+        expect(findCliCommands().exists()).toBe(false);
+      });
+
+      it(`${pageType} empty state is visible`, () => {
+        expect(emptyStateFinder().exists()).toBe(true);
+      });
+
+      it('createAlert is not called', () => {
+        expect(createAlert).not.toHaveBeenCalledWith({
+          message: FETCH_IMAGES_LIST_ERROR_MESSAGE,
+        });
       });
     });
   });

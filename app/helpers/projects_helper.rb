@@ -439,7 +439,6 @@ module ProjectsHelper
   end
 
   def show_lfs_misconfiguration_banner?(project)
-    return false unless Feature.enabled?(:lfs_misconfiguration_banner)
     return false unless project.repository
     return false unless project.lfs_enabled?
 

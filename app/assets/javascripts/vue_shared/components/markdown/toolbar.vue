@@ -124,6 +124,7 @@ export default {
           {{ __('Cancel') }}
         </gl-button>
       </div>
+      <slot name="toolbar"></slot>
       <gl-button
         v-if="markdownDocsPath"
         v-gl-tooltip

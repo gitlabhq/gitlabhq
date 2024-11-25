@@ -347,6 +347,8 @@ export default {
       @enableContentEditor="onEditingModeChange('contentEditor')"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >
+      <template #header-buttons><slot name="header-buttons"></slot></template>
+      <template #toolbar><slot name="toolbar"></slot></template>
       <template #textarea>
         <textarea
           v-bind="formFieldProps"
@@ -383,7 +385,10 @@ export default {
         @change="updateMarkdownFromContentEditor"
         @keydown="onKeydown"
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
-      />
+      >
+        <template #header-buttons><slot name="header-buttons"></slot></template>
+        <template #toolbar><slot name="toolbar"></slot></template>
+      </content-editor>
       <input v-bind="formFieldProps" :value="markdown" type="hidden" />
     </div>
   </div>

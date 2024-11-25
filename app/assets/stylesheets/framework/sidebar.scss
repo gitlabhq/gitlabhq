@@ -597,7 +597,7 @@
       height: $sidebar-toggle-height;
       margin-top: 0;
       margin-left: 0;
-      border-bottom: 1px solid $border-color;
+      border-bottom: 1px solid $border-color !important;
       border-radius: 0;
     }
 

@@ -99,7 +99,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data[this.graphqlResource]?.containerRepositories.nodes;
+        return data[this.graphqlResource]?.containerRepositories?.nodes ?? [];
       },
       result({ data }) {
         if (!data) {
@@ -122,7 +122,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data[this.graphqlResource]?.containerRepositories.nodes;
+        return data[this.graphqlResource]?.containerRepositories?.nodes ?? [];
       },
       error() {
         createAlert({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });

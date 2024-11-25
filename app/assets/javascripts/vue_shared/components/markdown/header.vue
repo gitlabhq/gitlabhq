@@ -568,6 +568,7 @@ export default {
             <header-divider />
             <summarize-code-changes />
           </template>
+          <slot v-if="!previewMarkdown" name="header-buttons"></slot>
         </div>
         <div v-if="!previewMarkdown" class="full-screen gl-flex gl-grow gl-justify-end">
           <toolbar-button

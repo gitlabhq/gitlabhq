@@ -139,7 +139,7 @@ export default {
       :disabled="disabled"
       searchable
       class="dropdown-target-project gl-w-full"
-      :toggle-class="['!gl-items-start !gl-justify-start mr-compare-dropdown', toggleClass]"
+      :toggle-class="['mr-compare-dropdown', toggleClass]"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

@@ -7142,7 +7142,9 @@ CREATE TABLE approval_merge_request_rules (
     applicable_post_merge boolean,
     project_id bigint,
     approval_policy_rule_id bigint,
-    CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
+    role_approvers integer[] DEFAULT '{}'::integer[] NOT NULL,
+    CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255)),
+    CONSTRAINT check_approval_m_r_rules_allowed_role_approvers_valid_entries CHECK (((role_approvers = '{}'::integer[]) OR (role_approvers <@ ARRAY[20, 30, 40, 50, 60])))
 );
 
 CREATE TABLE approval_merge_request_rules_approved_approvers (

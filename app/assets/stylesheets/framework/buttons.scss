@@ -90,12 +90,6 @@
     outline: 0;
   }
 
-  &.btn-sm {
-    padding: 4px 10px;
-    font-size: $gl-btn-small-font-size;
-    line-height: $gl-btn-small-line-height;
-  }
-
   &.btn-inverted:not(.disabled):not(:disabled) {
     &.btn-danger {
       @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);

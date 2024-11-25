@@ -214,5 +214,6 @@ export default {
       <header-divider />
       <summarize-code-changes />
     </div>
+    <slot name="header-buttons"></slot>
   </div>
 </template>
