@@ -72,6 +72,22 @@ RSpec.describe API::API, feature_category: :system_access do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
+      it 'logs auth failure fields for post request' do
+        expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys).to include(
+            'correlation_id' => an_instance_of(String),
+            'meta.auth_fail_reason' => "insufficient_scope",
+            'meta.auth_fail_token_id' => "PersonalAccessToken/#{token.id}",
+            'meta.auth_fail_requested_scopes' => "api read_api",
+            'route' => '/api/:version/groups'
+          )
+        end
+
+        params = attributes_for_group_api
+
+        post api("/groups", personal_access_token: token), params: params
+      end
+
       it 'does not authorize user for put request' do
         group_param = { name: 'Test' }
 

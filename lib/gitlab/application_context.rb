@@ -32,6 +32,7 @@ module Gitlab
       :sidekiq_destination_shard_redis,
       :auth_fail_reason,
       :auth_fail_token_id,
+      :auth_fail_requested_scopes,
       :http_router_rule_action,
       :http_router_rule_type
     ].freeze
@@ -40,6 +41,7 @@ module Gitlab
     WEB_ONLY_KEYS = [
       :auth_fail_reason,
       :auth_fail_token_id,
+      :auth_fail_requested_scopes,
       :http_router_rule_action,
       :http_router_rule_type
     ].freeze
@@ -66,6 +68,7 @@ module Gitlab
       Attribute.new(:sidekiq_destination_shard_redis, String),
       Attribute.new(:auth_fail_reason, String),
       Attribute.new(:auth_fail_token_id, String),
+      Attribute.new(:auth_fail_requested_scopes, String),
       Attribute.new(:http_router_rule_action, String),
       Attribute.new(:http_router_rule_type, String)
     ].freeze
@@ -140,6 +143,7 @@ module Gitlab
         assign_hash_if_value(hash, :sidekiq_destination_shard_redis)
         assign_hash_if_value(hash, :auth_fail_reason)
         assign_hash_if_value(hash, :auth_fail_token_id)
+        assign_hash_if_value(hash, :auth_fail_requested_scopes)
         assign_hash_if_value(hash, :http_router_rule_action)
         assign_hash_if_value(hash, :http_router_rule_type)
         assign_hash_if_value(hash, :bulk_import_entity_id)

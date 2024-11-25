@@ -42900,6 +42900,9 @@ msgstr ""
 msgid "Project mismatch"
 msgstr ""
 
+msgid "Project must have GitLab Duo features enabled."
+msgstr ""
+
 msgid "Project must have default branch"
 msgstr ""
 
@@ -59973,6 +59976,9 @@ msgstr ""
 msgid "User map"
 msgstr ""
 
+msgid "User must have developer access to the project."
+msgstr ""
+
 msgid "User restrictions"
 msgstr ""
 
@@ -65572,6 +65578,12 @@ msgid "draft"
 msgid_plural "drafts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "duo_workflow feature flag must be enabled."
+msgstr ""
+
+msgid "duo_workflow licensed feature must be available for the project and experimental features must be enabled."
+msgstr ""
 
 msgid "e.g. %{token}"
 msgstr ""

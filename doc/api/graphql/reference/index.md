@@ -22977,6 +22977,29 @@ A Duo Workflow.
 | <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workflow was last updated. |
 | <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
 
+### `DuoWorkflowEnablement`
+
+Duo Workflow enablement status checks.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowenablementchecks"></a>`checks` | [`[DuoWorkflowEnablementCheck!]`](#duoworkflowenablementcheck) | Enablement checks. |
+| <a id="duoworkflowenablementenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether GitLab Duo Workflow is enabled for current user and the project. |
+
+### `DuoWorkflowEnablementCheck`
+
+Represents single Duo Workflow enablement check.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowenablementcheckmessage"></a>`message` | [`String`](#string) | Description of status check. |
+| <a id="duoworkflowenablementcheckname"></a>`name` | [`String!`](#string) | Name of the status check. |
+| <a id="duoworkflowenablementcheckvalue"></a>`value` | [`Boolean!`](#boolean) | Whether the check was successful or not. |
+
 ### `DuoWorkflowEvent`
 
 Events that describe the history and progress of a Duo Workflow.
@@ -31023,6 +31046,7 @@ Project-level settings for product analytics provider.
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` **{warning-solid}** | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether GitLab Duo Workflow is enabled for the project. |
 | <a id="projectexplorecatalogpath"></a>`exploreCatalogPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
 | <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
@@ -34562,9 +34586,9 @@ Duo Chat slash command.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="slashcommandcommand"></a>`command` | [`String!`](#string) | Full slash command including the leading `/`. |
 | <a id="slashcommanddescription"></a>`description` | [`String!`](#string) | Description of what the slash command does. |
 | <a id="slashcommandname"></a>`name` | [`String!`](#string) | Name of the slash command. |
+| <a id="slashcommandshouldsubmit"></a>`shouldSubmit` | [`Boolean!`](#boolean) | Indicates whether the command should be submitted automatically when clicked. |
 
 ### `Snippet`
 

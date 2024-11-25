@@ -194,18 +194,18 @@ module Gitlab
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          save_auth_failure_in_application_context(access_token, :insufficient_scope) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :insufficient_scope, scopes) if save_auth_context
           raise InsufficientScopeError, scopes
         when AccessTokenValidationService::EXPIRED
-          save_auth_failure_in_application_context(access_token, :token_expired) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :token_expired, scopes) if save_auth_context
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
-          save_auth_failure_in_application_context(access_token, :token_revoked) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :token_revoked, scopes) if save_auth_context
           revoke_token_family(access_token)
 
           raise RevokedError
         when AccessTokenValidationService::IMPERSONATION_DISABLED
-          save_auth_failure_in_application_context(access_token, :impersonation_disabled) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :impersonation_disabled, scopes) if save_auth_context
           raise ImpersonationDisabled
         end
 
@@ -224,10 +224,12 @@ module Gitlab
         request.env[API_TOKEN_ENV] = { token_id: access_token.id, token_type: access_token.class.to_s }
       end
 
-      def save_auth_failure_in_application_context(access_token, cause)
+      def save_auth_failure_in_application_context(access_token, cause, requested_scopes)
         Gitlab::ApplicationContext.push(
           auth_fail_reason: cause.to_s,
-          auth_fail_token_id: "#{access_token.class}/#{access_token.id}")
+          auth_fail_token_id: "#{access_token.class}/#{access_token.id}",
+          auth_fail_requested_scopes: requested_scopes.join(' ')
+        )
       end
 
       def find_user_from_job_bearer_token

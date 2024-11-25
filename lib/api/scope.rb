@@ -17,6 +17,10 @@ module API
       scopes.include?(self.name) && verify_if_condition(request)
     end
 
+    def to_s
+      name.to_s
+    end
+
     private
 
     def verify_if_condition(request)

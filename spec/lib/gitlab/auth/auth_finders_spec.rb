@@ -994,10 +994,11 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         it 'returns Gitlab::Auth::ExpiredError if token expired', :aggregate_failures do
           personal_access_token.update!(expires_at: 1.day.ago)
 
-          expect { validate_and_save_access_token! }.to raise_error(Gitlab::Auth::ExpiredError)
+          expect { validate_and_save_access_token!(scopes: %w[api read_api]) }.to raise_error(Gitlab::Auth::ExpiredError)
           expect(request.env).not_to have_key(described_class::API_TOKEN_ENV)
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('token_expired')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to eq("api read_api")
         end
 
         it 'returns Gitlab::Auth::RevokedError if token revoked', :aggregate_failures do
@@ -1007,6 +1008,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(request.env).not_to have_key(described_class::API_TOKEN_ENV)
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('token_revoked')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to be_nil
         end
 
         it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope', :aggregate_failures do
@@ -1014,6 +1016,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(request.env).not_to have_key(described_class::API_TOKEN_ENV)
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('insufficient_scope')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to eq('sudo')
         end
       end
     end
@@ -1031,6 +1034,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect { validate_and_save_access_token! }.to raise_error(Gitlab::Auth::ImpersonationDisabled)
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('impersonation_disabled')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to be_nil
         end
       end
     end
