@@ -283,7 +283,7 @@ export default {
           :href="editItem.href"
           :title="editItem.title"
           :disabled="editItem.disabled"
-          class="gl-hidden sm:gl-inline-block"
+          class="gl-hidden sm:gl-inline-flex"
           data-testid="snippet-action-button"
           :data-qa-action="editItem.text"
         >

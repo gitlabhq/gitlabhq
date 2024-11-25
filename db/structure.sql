@@ -15044,7 +15044,6 @@ CREATE TABLE namespace_details (
     description text,
     description_html text,
     creator_id bigint,
-    pending_delete boolean DEFAULT false NOT NULL,
     deleted_at timestamp with time zone
 );
 
@@ -38692,6 +38691,9 @@ ALTER TABLE p_catalog_resource_component_usages
 
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_rails_e1e2cf841a FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_builds_execution_configs
+    ADD CONSTRAINT fk_rails_e214655a86_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_emails
     ADD CONSTRAINT fk_rails_e2ee00a8f7 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

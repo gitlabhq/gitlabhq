@@ -203,7 +203,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       commits = project.repository.commits(branch_name, limit: 40)
 
       commits.each do |commit|
-        expect(page).to have_content("authored #{commit.authored_date.strftime("%b %d, %Y")}")
+        expect(page).to have_content("authored #{commit.authored_date.strftime('%b %d, %Y')}")
       end
     end
 
@@ -234,7 +234,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
     shared_examples 'show commits by author' do
       it "includes the author's commits" do
         commits.each do |commit|
-          expect(page).to have_content("#{author_commit.author_name} authored #{commit.authored_date.strftime("%b %d, %Y")}")
+          expect(page).to have_content("#{author_commit.author_name} authored #{commit.authored_date.strftime('%b %d, %Y')}")
         end
       end
     end

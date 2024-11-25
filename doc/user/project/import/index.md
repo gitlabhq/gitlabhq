@@ -85,8 +85,10 @@ difficult, but several tools exist including:
 DETAILS:
 **Offering:** GitLab.com, Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) to direct transfer migrations for self-managed instances in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
-> - [Introduced to Gitea project import](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) for direct transfer in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) for Gitea in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) for GitHub in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) for direct transfer in GitLab 17.7.
 
 FLAG:
 The availability of this feature is controlled by feature flags.

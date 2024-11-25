@@ -75,7 +75,7 @@ namespace :gitlab do
 
             - #{Gitlab::SidekiqConfig::FOSS_QUEUE_CONFIG_PATH}
             - #{Gitlab::SidekiqConfig::EE_QUEUE_CONFIG_PATH}
-            #{"- " + Gitlab::SidekiqConfig::JH_QUEUE_CONFIG_PATH if Gitlab.jh?}
+            #{'- ' + Gitlab::SidekiqConfig::JH_QUEUE_CONFIG_PATH if Gitlab.jh?}
 
           MSG
         end
@@ -131,7 +131,7 @@ namespace :gitlab do
             Then commit and push the changes from:
 
             - #{Gitlab::SidekiqConfig::SIDEKIQ_QUEUES_PATH}
-            #{"- " + Gitlab::SidekiqConfig::JH_SIDEKIQ_QUEUES_PATH if Gitlab.jh?}
+            #{'- ' + Gitlab::SidekiqConfig::JH_SIDEKIQ_QUEUES_PATH if Gitlab.jh?}
 
           MSG
         end

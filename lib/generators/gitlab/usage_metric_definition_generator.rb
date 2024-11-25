@@ -113,7 +113,7 @@ module Gitlab
     #
     # 20210201124931_g_project_management_issue_title_changed_weekly.yml
     def file_name(key_path)
-      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{metric_name(key_path)}"
+      "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{metric_name(key_path)}"
     end
 
     def directory

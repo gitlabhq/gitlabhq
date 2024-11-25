@@ -25,7 +25,6 @@ RSpec.shared_examples 'work items rolled up dates' do
 
   context 'when feature flag is enabled' do
     before do
-      stub_feature_flags(work_items_rolledup_dates: true)
       stub_licensed_features(epics: true, subepics: true, epic_colors: true)
 
       page.refresh

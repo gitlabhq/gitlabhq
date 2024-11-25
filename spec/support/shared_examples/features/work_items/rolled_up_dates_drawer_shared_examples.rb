@@ -7,22 +7,8 @@ RSpec.shared_examples 'work items rolled up dates in drawer' do
   let(:work_item_start_due_dates_selector) { '[data-testid="work-item-start-due-dates"]' }
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(work_items_rolledup_dates: false)
-
-      page.refresh
-      wait_for_all_requests
-    end
-
-    it 'does not show rolled up dates' do
-      expect(page).not_to have_selector(work_item_rolledup_dates_selector)
-    end
-  end
-
   context 'when feature flag is enabled' do
     before do
-      stub_feature_flags(work_items_rolledup_dates: true)
       stub_licensed_features(epics: true, subepics: true, epic_colors: true)
 
       page.refresh

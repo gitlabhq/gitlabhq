@@ -370,7 +370,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     end
 
     it 'link with trailing slash' do
-      doc = reference_filter("Fixed (#{issue_url + "/"}.)")
+      doc = reference_filter("Fixed (#{issue_url + '/'}.)")
 
       expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(issue.to_reference(project))}</a>\.\)})
     end

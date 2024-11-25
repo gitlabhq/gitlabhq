@@ -48,7 +48,7 @@ module ApplicationWorker
       # Prefix keys with class name to avoid conflicts in Elasticsearch types.
       # Also prefix with "extra." so that we know to log these new fields.
       @done_log_extra_metadata.transform_keys do |k|
-        "#{LOGGING_EXTRA_KEY}.#{self.class.name.gsub("::", "_").underscore}.#{k}"
+        "#{LOGGING_EXTRA_KEY}.#{self.class.name.gsub('::', '_').underscore}.#{k}"
       end
     end
   end

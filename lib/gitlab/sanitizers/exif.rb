@@ -173,7 +173,7 @@ module Gitlab
 
         allowed = ALLOWED_MIME_TYPES.include?(mime_type)
         if !allowed && raise_error
-          raise "File type #{mime_type} not supported. Only supports #{ALLOWED_MIME_TYPES.join(", ")}."
+          raise "File type #{mime_type} not supported. Only supports #{ALLOWED_MIME_TYPES.join(', ')}."
         end
 
         allowed

@@ -8,7 +8,8 @@ module Authn
       ::Authn::Tokens::DeployToken,
       ::Authn::Tokens::FeedToken,
       ::Authn::Tokens::PersonalAccessToken,
-      ::Authn::Tokens::OauthApplicationSecret
+      ::Authn::Tokens::OauthApplicationSecret,
+      ::Authn::Tokens::ClusterAgentToken
     ].freeze
 
     def self.token_for(plaintext, source)

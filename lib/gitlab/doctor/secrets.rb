@@ -74,7 +74,7 @@ module Gitlab
 
         logger.info Rainbow("- #{model} failures: #{failures.count}").color(status_color)
         failures.each do |row_id, attributes|
-          logger.debug Rainbow("  - #{model}[#{row_id}]: #{attributes.join(", ")}").red
+          logger.debug Rainbow("  - #{model}[#{row_id}]: #{attributes.join(', ')}").red
         end
       end
 

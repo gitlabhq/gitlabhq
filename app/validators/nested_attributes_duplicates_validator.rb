@@ -27,7 +27,7 @@ class NestedAttributesDuplicatesValidator < ActiveModel::EachValidator
       duplicates = values.reject(&:marked_for_destruction?).group_by(&:"#{child_attribute}").select { |_, v| v.many? }.map(&:first)
       next unless duplicates.any?
 
-      error_message = "have duplicate values (#{duplicates.join(", ")})"
+      error_message = "have duplicate values (#{duplicates.join(', ')})"
       error_message << " for #{values.first.send(options[:scope])} scope" if options[:scope] # rubocop:disable GitlabSecurity/PublicSend
       record.errors.add(attribute, error_message)
     end

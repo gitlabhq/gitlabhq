@@ -16,7 +16,7 @@ module DraftNotes
 
       success
     rescue ActiveRecord::RecordInvalid => e
-      message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(", ")} "
+      message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "
       error(message)
     end
 

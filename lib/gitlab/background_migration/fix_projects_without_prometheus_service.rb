@@ -165,7 +165,7 @@ module Gitlab
 
         <<~SQL
           EXISTS (
-            #{Migratable::Project.select(1).with_group_prometheus_installed.where("projects.id BETWEEN ? AND ?", Integer(from_id), Integer(to_id)).to_sql}
+            #{Migratable::Project.select(1).with_group_prometheus_installed.where('projects.id BETWEEN ? AND ?', Integer(from_id), Integer(to_id)).to_sql}
           )
         SQL
       end

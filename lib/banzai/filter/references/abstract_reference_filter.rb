@@ -286,7 +286,7 @@ module Banzai
           text = object.reference_link_text(parent)
 
           extras = object_link_text_extras(object, matches)
-          text += " (#{extras.join(", ")})" if extras.any?
+          text += " (#{extras.join(', ')})" if extras.any?
 
           text
         end

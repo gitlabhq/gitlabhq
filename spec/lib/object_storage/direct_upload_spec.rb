@@ -247,7 +247,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
           expect(subject[:GetURL]).to start_with(storage_url)
 
           uri = Addressable::URI.parse(subject[:GetURL])
-          expect(uri.path).to include("tmp/uploads/#{CGI.escape("テスト")}")
+          expect(uri.path).to include("tmp/uploads/#{CGI.escape('テスト')}")
         end
       end
     end

@@ -299,6 +299,8 @@ mapping:
     - 'ee/app/(controllers|services)/registrations/.*'
     - 'ee/app/presenters/ee/onboarding/status_presenter\.rb'
     - 'app/presenters/onboarding/status_presenter\.rb'
+    - 'ee/app/models/onboarding/.*_registration\.rb'
+    - 'ee/app/models/onboarding/user_status\.rb'
     test:
     - 'ee/spec/features/registrations/saas/*_spec.rb'
     - ee/spec/features/registrations/email_opt_in_registration_spec.rb

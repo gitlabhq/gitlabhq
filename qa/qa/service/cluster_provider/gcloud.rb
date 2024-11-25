@@ -186,7 +186,7 @@ module QA
 
           retry unless @attempts > 1
 
-          raise $!, "Tried and failed to provision the cluster #{@attempts} #{"time".pluralize(@attempts)}.", $!.backtrace
+          raise $!, "Tried and failed to provision the cluster #{@attempts} #{'time'.pluralize(@attempts)}.", $!.backtrace
         end
 
         def delete_cluster

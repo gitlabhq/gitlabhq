@@ -516,7 +516,7 @@ module Gitlab
               CREATE TABLE #{partitioned_table_name} (
                 LIKE #{source_table_name} INCLUDING ALL EXCLUDING INDEXES,
                 #{tmp_column_name} #{partition_column.sql_type} NOT NULL,
-                PRIMARY KEY (#{[primary_key, tmp_column_name].join(", ")})
+                PRIMARY KEY (#{[primary_key, tmp_column_name].join(', ')})
               ) PARTITION BY RANGE (#{tmp_column_name})
             SQL
 

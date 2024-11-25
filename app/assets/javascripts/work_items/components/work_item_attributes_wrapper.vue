@@ -144,9 +144,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
     showRolledupDates() {
-      return (
-        this.glFeatures.workItemsRolledupDates && this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
-      );
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
     },
     showParent() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? this.hasSubepicsFeature : true;

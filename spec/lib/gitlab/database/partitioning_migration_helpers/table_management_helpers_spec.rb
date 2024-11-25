@@ -1053,7 +1053,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       migration.create_hash_partitions(partitioned_table, partitions)
 
       (0..partitions - 1).each do |partition|
-        partition_name = "#{partitioned_table}_#{"%01d" % partition}"
+        partition_name = "#{partitioned_table}_#{'%01d' % partition}"
         expect_hash_partition_of(partition_name, partitioned_table, partitions, partition)
       end
     end
@@ -1064,7 +1064,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       migration.create_hash_partitions(partitioned_table, partitions)
 
       (0..partitions - 1).each do |partition|
-        partition_name = "#{partitioned_table}_#{"%02d" % partition}"
+        partition_name = "#{partitioned_table}_#{'%02d' % partition}"
         expect_hash_partition_of(partition_name, partitioned_table, partitions, partition)
       end
     end
