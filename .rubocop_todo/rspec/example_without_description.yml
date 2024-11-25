@@ -573,7 +573,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/support/shared_examples/mailers/notify_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/linkable_items_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/protected_ref_access_shared_examples.rb'
-    - 'spec/support/shared_examples/models/integrations/base_slash_commands_shared_examples.rb'
     - 'spec/support/shared_examples/models/issuable_link_shared_examples.rb'
     - 'spec/support/shared_examples/models/packages/debian/component_file_shared_example.rb'
     - 'spec/support/shared_examples/models/packages/debian/distribution_shared_examples.rb'

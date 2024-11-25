@@ -22,6 +22,12 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
 
         expect(response).to render_template(:index)
       end
+
+      it 'assigns todos global' do
+        get :index
+
+        expect(assigns(:todos)).not_to be_nil
+      end
     end
 
     context 'when the `todos_vue_application` feature flag is enabled' do
@@ -33,6 +39,12 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
         get :index
 
         expect(response).to render_template(:vue)
+      end
+
+      it 'does not assign todos global' do
+        get :index
+
+        expect(assigns(:todos)).to be_nil
       end
     end
 

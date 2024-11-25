@@ -20,10 +20,9 @@ DETAILS:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
 > - Enabled in GitLab 16.7 as a [beta](../../policy/experiment-beta-support.md#beta) feature.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
-> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) in GitLab 16.11.
 > - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
 > - Funnels support removed in GitLab 17.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flags `product_analytics_admin_settings` and [`product_analytics_features`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) added in GitLab 17.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flags `product_analytics_admin_settings` and [`product_analytics_features`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) added in GitLab 17.5. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

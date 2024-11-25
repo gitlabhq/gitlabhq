@@ -131,5 +131,22 @@ describe('JobActionButton', () => {
         });
       });
     });
+
+    it('passes correct props', () => {
+      expect(findActionButton().props()).toStrictEqual({
+        block: false,
+        buttonTextClasses: '',
+        category: 'primary',
+        disabled: false,
+        icon: '',
+        isUnsafeLink: false,
+        label: false,
+        loading: false,
+        selected: false,
+        size: 'small',
+        target: null,
+        variant: 'default',
+      });
+    });
   });
 });

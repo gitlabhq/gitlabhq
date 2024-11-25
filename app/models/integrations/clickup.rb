@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Clickup < BaseIssueTracker
+  class Clickup < Integration
+    include Base::IssueTracker
     include HasIssueTrackerFields
     include HasAvatar
 

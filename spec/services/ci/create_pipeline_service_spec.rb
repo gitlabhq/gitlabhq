@@ -2092,41 +2092,41 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
   end
 
   describe 'SEQUENCE ordering' do
-    it 'has AssignPartition before FindConfigs to be able to set consistent partition_id for policy jobs' do
+    it 'has AssignPartition before EvaluatePolicies to be able to set consistent partition_id for policy jobs' do
       assign_partition_index, find_configs_index = indexes_in_sequence(
         Gitlab::Ci::Pipeline::Chain::AssignPartition,
-        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::EvaluatePolicies
       )
       expect(assign_partition_index).to be < find_configs_index
     end
 
-    it 'has FindConfigs before Skip to disallow pipeline skipping with enforced policy jobs' do
+    it 'has EvaluatePolicies before Skip to disallow pipeline skipping with enforced policy jobs' do
       find_configs_index, skip_index = indexes_in_sequence(
-        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs,
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::EvaluatePolicies,
         Gitlab::Ci::Pipeline::Chain::Skip
       )
       expect(find_configs_index).to be < skip_index
     end
 
-    it 'has FindConfigs before Config::Content to force the pipeline creation without project CI config' do
+    it 'has EvaluatePolicies before Config::Content to force the pipeline creation without project CI config' do
       find_configs_index, config_content_index = indexes_in_sequence(
-        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs,
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::EvaluatePolicies,
         Gitlab::Ci::Pipeline::Chain::Config::Content
       )
       expect(find_configs_index).to be < config_content_index
     end
 
-    it 'has MergeJobs after Populate to ensure that pipeline stages are set' do
+    it 'has ApplyPolicies after Populate to ensure that pipeline stages are set' do
       merge_jobs_index, populate_index = indexes_in_sequence(
-        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::MergeJobs,
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::ApplyPolicies,
         Gitlab::Ci::Pipeline::Chain::Populate
       )
       expect(merge_jobs_index).to be > populate_index
     end
 
-    it 'has MergeJobs before StopDryRun to make policy jobs visible in dry run' do
+    it 'has ApplyPolicies before StopDryRun to make policy jobs visible in dry run' do
       merge_jobs_index, stop_dry_run_index = indexes_in_sequence(
-        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::MergeJobs,
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::ApplyPolicies,
         Gitlab::Ci::Pipeline::Chain::StopDryRun
       )
       expect(merge_jobs_index).to be < stop_dry_run_index

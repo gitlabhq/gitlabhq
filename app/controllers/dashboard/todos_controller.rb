@@ -7,7 +7,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   before_action :authorize_read_project!, only: :index
   before_action :authorize_read_group!, only: :index
-  before_action :find_todos, only: [:index, :destroy_all]
+  before_action :find_todos, only: [:destroy_all]
 
   feature_category :notifications
   urgency :low
@@ -20,6 +20,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
       render :vue
     else
       @sort = pagination_params[:sort]
+      find_todos
       @todos = @todos.page(pagination_params[:page])
       @todos = @todos.with_entity_associations
 

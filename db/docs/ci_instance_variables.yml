@@ -10,3 +10,4 @@ milestone: '13.0'
 gitlab_schema: gitlab_ci
 exempt_from_sharding: true
 notes: Exempted because table not used in .com nor Cells.
+table_size: small

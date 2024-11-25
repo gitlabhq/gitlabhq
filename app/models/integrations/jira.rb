@@ -2,7 +2,8 @@
 
 # Accessible as Project#external_issue_tracker
 module Integrations
-  class Jira < BaseIssueTracker
+  class Jira < Integration
+    include Base::IssueTracker
     include Gitlab::Routing
     include ApplicationHelper
     include SafeFormatHelper

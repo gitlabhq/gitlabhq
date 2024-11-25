@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Redmine < BaseIssueTracker
+  class Redmine < Integration
+    include Base::IssueTracker
     include Integrations::HasIssueTrackerFields
 
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?

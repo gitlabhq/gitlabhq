@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class MattermostSlashCommands < BaseSlashCommands
+  class MattermostSlashCommands < Integration
+    include Base::SlashCommands
     include Ci::TriggersHelper
 
     MATTERMOST_URL = '%{ORIGIN}/%{TEAM}/channels/%{CHANNEL}'

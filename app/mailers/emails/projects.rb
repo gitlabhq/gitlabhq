@@ -82,7 +82,7 @@ module Emails
       mail_with_locale(
         from: sender(@message.author_id, send_from_user_email: @message.send_from_committer_email?),
         reply_to: @message.reply_to,
-        subject: @message.subject
+        subject: subject_with_suffix([@message.subject])
       )
     end
 

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class SlackSlashCommands < BaseSlashCommands
+  class SlackSlashCommands < Integration
+    include Base::SlashCommands
     include Ci::TriggersHelper
 
     SLACK_REDIRECT_URL = 'slack://channel?team=%{TEAM}&id=%{CHANNEL}'

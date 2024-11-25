@@ -465,7 +465,7 @@ create custom stages in addition to those provided in the default template.
 1. Customize the default stages:
    - To re-order stages, select the up or down arrows.
    - To hide a stage, select **Hide** (**{eye-slash}**).
-1. To add a custom stage, select **Add another stage**.
+1. To add a custom stage, select **Add a stage**.
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
 1. Select **New value stream**.
@@ -483,7 +483,7 @@ When you create a value stream, you can create and add custom stages that align 
 1. For each stage:
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
-1. To add another stage, select **Add another stage**.
+1. To add another stage, select **Add a stage**.
 1. To re-order the stages, select the up or down arrows.
 1. Select **New value stream**.
 
@@ -531,7 +531,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
    - Rename the value stream.
    - Hide or re-order default stages.
    - Remove existing custom stages.
-   - To add new stages, select **Add another stage**.
+   - To add new stages, select **Add a stage**.
    - Select the start and end events for the stage.
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.

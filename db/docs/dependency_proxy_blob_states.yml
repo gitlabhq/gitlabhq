@@ -20,3 +20,4 @@ desired_sharding_key:
         sharding_key: group_id
         belongs_to: dependency_proxy_blob
 desired_sharding_key_migration_job_name: BackfillDependencyProxyBlobStatesGroupId
+table_size: small

@@ -8,3 +8,4 @@ description: Stores Amazon S3 configurations used for instance level audit event
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136492
 milestone: '16.7'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

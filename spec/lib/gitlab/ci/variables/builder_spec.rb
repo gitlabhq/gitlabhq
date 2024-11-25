@@ -585,8 +585,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     end
   end
 
-  # Move this to `describe` when the FF ci_variables_optimize_kubernetes_variables is removed
-  shared_examples 'kubernetes variables' do
+  describe '#kubernetes_variables' do
     let(:service) { double(execute: template) }
     let(:template) { double(to_yaml: 'example-kubeconfig', valid?: template_valid) }
     let(:template_valid) { true }
@@ -641,18 +640,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
         expect(subject['OTHER'].value).to eq('some value')
       end
-    end
-  end
-
-  describe '#kubernetes_variables' do
-    it_behaves_like 'kubernetes variables'
-
-    context 'when the FF ci_variables_optimize_kubernetes_variables is disabled' do
-      before do
-        stub_feature_flags(ci_variables_optimize_kubernetes_variables: false)
-      end
-
-      it_behaves_like 'kubernetes variables'
     end
   end
 

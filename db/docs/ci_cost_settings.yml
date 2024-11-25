@@ -11,3 +11,4 @@ milestone: '15.10'
 gitlab_schema: gitlab_ci
 exempt_from_sharding: true
 notes: Exempted because Cell-local table storing cost information for instance runners
+table_size: small

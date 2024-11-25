@@ -35,6 +35,11 @@ export default {
       required: false,
       default: 'default',
     },
+    iconClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     workItemTypeUppercase() {
@@ -69,6 +74,7 @@ export default {
       :name="iconName"
       :title="workItemTooltipTitle"
       :variant="iconVariant"
+      :class="iconClass"
     />
     <span v-if="workItemTypeName" :class="{ 'gl-sr-only': !showText }">{{ workItemTypeName }}</span>
   </span>

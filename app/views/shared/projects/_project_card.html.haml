@@ -38,10 +38,10 @@
         = visibility_level_content(project)
 
       - if show_last_commit_as_description
-        .description.gl-hidden.sm:gl-block.gl-mt-2.gl-text-sm
+        .description.gl-hidden.sm:gl-block.gl-mt-2.gl-text-sm.gl-text-subtle
           = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
       - elsif project.description.present?
-        .description.gl-hidden.sm:gl-block.gl-mt-2.gl-text-sm
+        .description.gl-hidden.sm:gl-block.gl-mt-2.gl-text-sm.gl-text-subtle
           = markdown_field(project, :description)
 
       - if project.topics.any?
@@ -83,7 +83,7 @@
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
           = render_if_exists 'shared/projects/badges', project: project
-      .updated-note.gl-text-sm.gl-whitespace-nowrap.gl-justify-start
+      .updated-note.gl-text-sm.gl-whitespace-nowrap.gl-justify-start.gl-text-subtle
         %span
           = _('Updated')
           = updated_tooltip

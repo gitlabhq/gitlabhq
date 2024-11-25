@@ -45,6 +45,11 @@ export const UPLOAD_DESIGN_ERROR_MESSAGE = s__(
   'DesignManagement|Error uploading a new design. Please try again.',
 );
 
+export const ALERT_VARIANTS = {
+  danger: 'danger',
+  info: 'info',
+};
+
 /**
  * Return warning message indicating that some (but not all) uploaded
  * files were skipped.

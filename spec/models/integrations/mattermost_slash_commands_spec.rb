@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::MattermostSlashCommands, feature_category: :integrations do
-  it_behaves_like Integrations::BaseSlashCommands
+  it_behaves_like Integrations::Base::SlashCommands
 
   describe 'Mattermost API' do
     let_it_be_with_reload(:project) { create(:project) }

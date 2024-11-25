@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Prometheus < BaseMonitoring
+  class Prometheus < Integration
+    include Base::Monitoring
     include PrometheusAdapter
     include Gitlab::Utils::StrongMemoize
 

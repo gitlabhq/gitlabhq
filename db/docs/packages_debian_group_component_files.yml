@@ -20,3 +20,4 @@ desired_sharding_key:
         sharding_key: group_id
         belongs_to: component
     awaiting_backfill_on_parent: true
+table_size: small

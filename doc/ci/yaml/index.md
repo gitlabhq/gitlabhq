@@ -5781,7 +5781,7 @@ delete_job:
   script:
     - make delete
   when: manual
-  manual_confirmation: 'Are you sure you want to delete $CI_ENVIRONMENT_SLUG?'
+  manual_confirmation: 'Are you sure you want to delete this environment?'
 ```
 
 ## Deprecated keywords

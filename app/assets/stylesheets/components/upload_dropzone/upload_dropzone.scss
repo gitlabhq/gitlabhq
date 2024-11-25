@@ -42,13 +42,21 @@
   }
 }
 
-.upload-dropzone-overlay {
-  background-color: $blue-50;
-  @include dropzone-background($blue-500);
+.upload-dropzone-overlay,
+.design-upload-dropzone-overlay {
   top: 0;
   left: 0;
   pointer-events: none;
   opacity: 1;
+}
+
+.upload-dropzone-overlay {
+  background-color: $blue-50;
+  @include dropzone-background($blue-500);
+}
+
+.design-upload-dropzone-overlay {
+  background-color: rgba($blue-500, 0.24);
 }
 
 // These are composite classes for use with Vue Transition

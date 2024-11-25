@@ -11,18 +11,11 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-You can create users:
-
-- [Manually through the sign-in page](#create-users-on-sign-in-page).
-- [Manually in the **Admin** area](#create-users-in-admin-area).
-- [Manually using the API](../../../api/users.md).
-- [Automatically through user authentication integrations](#create-users-through-authentication-integrations).
+You can direct users to create their own account, create an accounts yourself, or configure authentication integrations.
 
 ## Create users on sign-in page
 
-Prerequisites:
-
-- [Sign-up must be enabled](../../../administration/settings/sign_up_restrictions.md).
+By default, any user visiting your GitLab instance can register for an account. If you have previously disabled this setting, you must turn it back on. For information, see [Disable new sign ups](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
 
 Users can create their own accounts by either:
 

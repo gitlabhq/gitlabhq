@@ -38,13 +38,7 @@ module Integrations
       ].freeze
 
       # Base classes which aren't actual integrations.
-      BASE_CLASSES = %w[
-        Integrations::BaseCi
-        Integrations::BaseIssueTracker
-        Integrations::BaseMonitoring
-        Integrations::BaseSlashCommands
-        Integrations::BaseThirdPartyWiki
-      ].freeze
+      BASE_CLASSES = %w[].freeze
 
       BASE_ATTRIBUTES = %w[id instance project_id group_id created_at updated_at
         encrypted_properties encrypted_properties_iv properties].freeze

@@ -8,3 +8,4 @@ milestone: '15.0'
 gitlab_schema: gitlab_main
 exempt_from_sharding: true
 notes: Exempted because because this is a JiHu specific table
+table_size: small

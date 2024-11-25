@@ -81,8 +81,6 @@ Style/GuardClause:
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
     - 'app/models/generic_commit_status.rb'
     - 'app/models/grafana_integration.rb'
-    - 'app/models/integrations/base_issue_tracker.rb'
-    - 'app/models/integrations/base_third_party_wiki.rb'
     - 'app/models/integrations/confluence.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/emails_on_push.rb'

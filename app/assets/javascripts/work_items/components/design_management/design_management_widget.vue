@@ -6,7 +6,8 @@ import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { findDesignWidget } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { designArchiveError } from './constants';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import { designArchiveError, VALID_DESIGN_FILE_MIMETYPE, ALERT_VARIANTS } from './constants';
 import { updateStoreAfterDesignsArchive } from './cache_updates';
 import { findVersionId } from './utils';
 
@@ -25,6 +26,7 @@ export default {
     DesignVersionDropdown,
     ArchiveDesignButton,
     CrudComponent,
+    DesignDropzone,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,10 +43,20 @@ export default {
       required: false,
       default: null,
     },
+    isSaving: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     uploadError: {
       type: String,
       required: false,
       default: null,
+    },
+    uploadErrorVariant: {
+      type: String,
+      required: false,
+      default: ALERT_VARIANTS.danger,
     },
   },
   apollo: {
@@ -109,6 +121,13 @@ export default {
         this.allVersions.some((version) => version.id.endsWith(this.$route.query.version))
       );
     },
+    /**
+     * This is needed to increase size of dropzone when all
+     * designs are archived and only empty state is visible.
+     */
+    crudBodyClass() {
+      return this.hasDesigns ? '' : '!gl-m-0';
+    },
     designsVersion() {
       return this.hasValidVersion
         ? convertToGraphQLId(TYPENAME_DESIGN_VERSION, this.$route.query.version)
@@ -152,6 +171,12 @@ export default {
       return this.isDesignSelected(design)
         ? s__('DesignManagement|Unselect the design')
         : s__('DesignManagement|Select the design');
+    },
+    openDesignUpload() {
+      this.$refs.fileUpload.click();
+    },
+    onDesignUploadChange(e) {
+      this.$emit('upload', e.target.files);
     },
     changeSelectedDesigns(filename) {
       if (this.isDesignSelected(filename)) {
@@ -209,7 +234,9 @@ export default {
     ),
     archiveDesignText: s__('DesignManagement|Archive selected'),
     allDesignsArchived: s__('DesignManagement|All designs have been archived.'),
+    uploadDesignOverlayText: s__('DesignManagement|Drop your images to start the upload.'),
   },
+  VALID_DESIGN_FILE_MIMETYPE,
 };
 </script>
 
@@ -220,7 +247,8 @@ export default {
     anchor-id="designs"
     :title="s__('DesignManagement|Designs')"
     data-testid="designs-root"
-    class="gl-mt-5"
+    class="gl-relative gl-mt-5"
+    :body-class="crudBodyClass"
     is-collapsible
     persist-collapsed-state
   >
@@ -264,40 +292,68 @@ export default {
         :loading="isArchiving"
         @archive-selected-designs="onArchiveDesign"
       />
+      <gl-button
+        size="small"
+        data-testid="add-design"
+        :disabled="isSaving"
+        :loading="isSaving"
+        @click="openDesignUpload"
+        >{{ __('Add') }}</gl-button
+      >
+      <input
+        ref="fileUpload"
+        type="file"
+        name="design_file"
+        :accept="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
+        class="gl-hidden"
+        multiple
+        @change="onDesignUploadChange"
+      />
     </template>
 
     <template #default>
-      <gl-alert v-if="error || uploadError" variant="danger" @dismiss="dismissError()">
+      <gl-alert v-if="error || uploadError" :variant="uploadErrorVariant" @dismiss="dismissError()">
         {{ error || uploadError }}
       </gl-alert>
-
-      <p v-if="!hasDesigns" class="gl-mb-0 gl-text-subtle">
-        {{ $options.i18n.allDesignsArchived }}
-      </p>
-
-      <ol v-else class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5 gl-p-3">
-        <li
-          v-for="design in designs"
-          :key="design.id"
-          class="col-md-6 col-lg-3 js-design-tile gl-bg-transparent gl-px-3 gl-shadow-none"
+      <design-dropzone
+        show-upload-design-overlay
+        validate-design-upload-on-dragover
+        :accept-design-formats="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
+        :upload-design-overlay-text="$options.i18n.uploadDesignOverlayText"
+        @change="$emit('upload', $event)"
+        @error="$emit('error')"
+        @dragenter="dismissError"
+      >
+        <p v-if="!hasDesigns" class="gl-mb-0 gl-px-5 gl-py-4 gl-text-subtle">
+          {{ $options.i18n.allDesignsArchived }}
+        </p>
+        <ol
+          class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5"
+          :class="{ 'gl-p-3': hasDesigns, 'gl-hidden': !hasDesigns }"
         >
-          <design
-            v-bind="design"
-            class="gl-bg-default"
-            :is-uploading="false"
-            :work-item-iid="workItemIid"
-          />
+          <li
+            v-for="design in designs"
+            :key="design.id"
+            class="col-md-6 col-lg-3 js-design-tile gl-bg-transparent gl-px-3 gl-shadow-none"
+          >
+            <design
+              v-bind="design"
+              class="gl-bg-default"
+              :is-uploading="false"
+              :work-item-iid="workItemIid"
+            />
 
-          <gl-form-checkbox
-            v-if="isLatestVersion"
-            :checked="isDesignSelected(design.filename)"
-            class="gl-absolute gl-left-5 gl-top-4 gl-ml-2"
-            data-testid="design-checkbox"
-            :aria-label="checkboxAriaLabel(design.filename)"
-            @change="changeSelectedDesigns(design.filename)"
-          />
-        </li>
-      </ol>
+            <gl-form-checkbox
+              v-if="isLatestVersion"
+              :checked="isDesignSelected(design.filename)"
+              class="gl-absolute gl-left-5 gl-top-4 gl-ml-2"
+              data-testid="design-checkbox"
+              :aria-label="checkboxAriaLabel(design.filename)"
+              @change="changeSelectedDesigns(design.filename)"
+            />
+          </li>
+        </ol>
+      </design-dropzone>
       <router-view :key="$route.fullPath" :all-designs="designs" />
     </template>
   </crud-component>

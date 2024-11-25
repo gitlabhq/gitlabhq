@@ -9,3 +9,4 @@ description: Contains a queue-like structure for database foreign key validation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111293
 milestone: '15.9'
 gitlab_schema: gitlab_shared
+table_size: small

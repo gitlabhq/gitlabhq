@@ -10,3 +10,4 @@ milestone: '16.0'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   id: organizations
+table_size: small

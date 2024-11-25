@@ -24,7 +24,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching, fe
     )
   end
 
-  it_behaves_like Integrations::BaseCi
+  it_behaves_like Integrations::Base::Ci
 
   it_behaves_like Integrations::ResetSecretFields
 

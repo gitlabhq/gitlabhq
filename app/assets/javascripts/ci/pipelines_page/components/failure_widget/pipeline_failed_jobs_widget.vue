@@ -132,6 +132,7 @@ export default {
         v-if="isExpanded"
         href="https://gitlab.com/gitlab-org/gitlab/-/issues/502436"
         data-testid="feedback-button"
+        size="small"
       >
         {{ __('Leave feedback') }}
       </gl-button>

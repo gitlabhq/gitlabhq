@@ -288,7 +288,6 @@ RSpec/AnyInstanceOf:
     - 'spec/support/shared_examples/lib/gitlab/ci/ci_trace_shared_examples.rb'
     - 'spec/support/shared_examples/models/atomic_internal_id_shared_examples.rb'
     - 'spec/support/shared_examples/models/diff_note_after_commit_shared_examples.rb'
-    - 'spec/support/shared_examples/models/integrations/base_slash_commands_shared_examples.rb'
     - 'spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'spec/support/shared_examples/models/with_uploads_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/discussions_shared_examples.rb'

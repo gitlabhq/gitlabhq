@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::SlackSlashCommands, feature_category: :integrations do
-  it_behaves_like Integrations::BaseSlashCommands
+  it_behaves_like Integrations::Base::SlashCommands
 
   describe '#trigger' do
     context 'when an auth url is generated' do

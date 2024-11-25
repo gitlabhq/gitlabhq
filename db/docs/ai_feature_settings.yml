@@ -8,3 +8,4 @@ description: The table links an AI feature with the self-hosted model
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152380
 milestone: '17.1'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

@@ -306,22 +306,6 @@ blocked, banned, or deactivated, their access to GitLab Duo features is automati
 
 After the seat has been removed, it becomes available and can be re-assigned to a new user.
 
-## Changes to GitLab Duo Pro and GitLab Duo Enterprise access
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-Starting October 17, 2024, customers with a Premium or Ultimate subscription
-must have a GitLab Duo add-on to access AI-powered features.
-
-To [continue using](https://about.gitlab.com/gitlab-duo/) GitLab Duo Pro or GitLab Duo Enterprise features, you can either:
-
-- Start a free trial
-- Purchase GitLab Duo Pro or Duo Enterprise
-
-GitLab Duo Enterprise is available only for Ultimate subscriptions.
-
 ## Troubleshooting
 
 ### Unable to use the UI to assign seats to your users

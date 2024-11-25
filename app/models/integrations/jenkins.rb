@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Jenkins < BaseCi
+  class Jenkins < Integration
+    include Base::Ci
     include HasWebHook
 
     prepend EnableSslVerification

@@ -11,3 +11,4 @@ gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
 notes: Exempted because Cell local table storing instance DevOps metrics calculated
   from service ping
+table_size: small

@@ -20,3 +20,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: error
 desired_sharding_key_migration_job_name: BackfillErrorTrackingErrorEventsProjectId
+table_size: small

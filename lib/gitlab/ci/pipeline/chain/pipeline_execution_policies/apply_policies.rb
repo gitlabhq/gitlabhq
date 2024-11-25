@@ -5,7 +5,7 @@ module Gitlab
     module Pipeline
       module Chain
         module PipelineExecutionPolicies
-          class FindConfigs < Chain::Base
+          class ApplyPolicies < Chain::Base
             # rubocop:disable Gitlab/NoCodeCoverageComment -- EE module is tested
             # :nocov:
             def perform!
@@ -24,4 +24,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs.prepend_mod
+Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::ApplyPolicies.prepend_mod

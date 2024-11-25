@@ -170,6 +170,8 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
+Creates a new token valid for one week and revokes any previous tokens.
+
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
 ```plaintext

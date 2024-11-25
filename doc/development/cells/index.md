@@ -97,14 +97,23 @@ The following are examples of valid sharding keys:
 
 ### The sharding key must be immutable
 
-The choice of a `sharding_key` should always be immutable. Therefore, if your feature
-requires a user experience which allows data to be moved between projects or
-groups/namespaces, then you may need to redesign the move feature to create new rows. An
-example of this can be seen in the
+The choice of a `sharding_key` should always be immutable. This is because the
+sharding key column will be used as an index for the planned
+[Org Mover](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/migration/),
+and also the
+[enforcement of isolation](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/)
+of Organization data.
+Any mutation of the `sharding_key` could result in in-consistent data being read.
+
+Therefore, if your feature requires a user experience which allows data to be
+moved between projects or groups/namespaces, then you may need to redesign the
+move feature to create new rows.
+An example of this can be seen in the
 [move an issue feature](../../user/project/issues/managing_issues.md#move-an-issue).
 This feature does not actually change the `project_id` column for an existing
 `issues` row but instead creates a new `issues` row and creates a link in the
-database from the original `issues` row. If there is a particularly challenging
+database from the original `issues` row.
+If there is a particularly challenging
 existing feature that needs to allow moving data you will need to reach out to
 the Tenant Scale team early on to discuss options for how to manage the
 sharding key.

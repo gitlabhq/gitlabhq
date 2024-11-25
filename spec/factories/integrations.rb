@@ -509,14 +509,14 @@ FactoryBot.define do
     issue_tracker_data { nil }
     create_data { false }
 
-    after(:build) do
-      Integrations::BaseIssueTracker.skip_callback(:validation, :before, :handle_properties)
+    after(:build) do |integration|
+      integration.class.skip_callback(:validation, :before, :handle_properties)
     end
 
     to_create { |instance| instance.save!(validate: false) }
 
-    after(:create) do
-      Integrations::BaseIssueTracker.set_callback(:validation, :before, :handle_properties)
+    after(:create) do |integration|
+      integration.class.set_callback(:validation, :before, :handle_properties)
     end
   end
 

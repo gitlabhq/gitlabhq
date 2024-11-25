@@ -6,12 +6,17 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
 import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import DesignItem from '~/work_items/components/design_management/design_item.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import { createMockDirective } from 'helpers/vue_mock_directive';
-import { designArchiveError } from '~/work_items/components/design_management/constants';
+import {
+  designArchiveError,
+  ALERT_VARIANTS,
+  VALID_DESIGN_FILE_MIMETYPE,
+} from '~/work_items/components/design_management/constants';
 
 import {
   designCollectionResponse,
@@ -54,6 +59,7 @@ describe('DesignWidget', () => {
   const allDesignsArchivedQueryHandler = jest.fn().mockResolvedValue(allDesignsArchivedResponse());
 
   const findWidgetWrapper = () => wrapper.findComponent(CrudComponent);
+  const findDesignDropzoneComponent = () => wrapper.findComponent(DesignDropzone);
   const findAllDesignItems = () => wrapper.findAllComponents(DesignItem);
   const findArchiveButton = () => wrapper.findByTestId('archive-button');
   const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
@@ -65,6 +71,7 @@ describe('DesignWidget', () => {
     archiveDesignMutationHandler = archiveDesignSuccessMutationHandler,
     routeArg = MOCK_ROUTE,
     uploadError = null,
+    uploadErrorVariant = ALERT_VARIANTS.danger,
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
       apolloProvider: createMockApollo([
@@ -74,6 +81,7 @@ describe('DesignWidget', () => {
       propsData: {
         workItemId,
         uploadError,
+        uploadErrorVariant,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -94,6 +102,22 @@ describe('DesignWidget', () => {
     beforeEach(() => {
       createComponent();
       return waitForPromises();
+    });
+
+    it('renders widget header with add design button', () => {
+      expect(wrapper.findByTestId('add-design').exists()).toBe(true);
+      expect(wrapper.find('input[type="file"]').exists()).toBe(true);
+    });
+
+    it('renders design-dropzone component', () => {
+      const designDropzone = findDesignDropzoneComponent();
+      expect(designDropzone.exists()).toBe(true);
+      expect(designDropzone.props()).toMatchObject({
+        showUploadDesignOverlay: true,
+        validateDesignUploadOnDragover: true,
+        acceptDesignFormats: VALID_DESIGN_FILE_MIMETYPE.mimetype,
+        uploadDesignOverlayText: 'Drop your images to start the upload.',
+      });
     });
 
     it('calls design collection query without version by default', () => {
@@ -149,6 +173,17 @@ describe('DesignWidget', () => {
 
       expect(findAlert().exists()).toBe(true);
       expect(findAlert().text()).toBe(designArchiveError(2));
+    });
+
+    it('renders error alert based on provided uploadErrorVariant prop', async () => {
+      const uploadError = 'Design with same name already present, upload skipped.';
+      createComponent({ uploadError, uploadErrorVariant: ALERT_VARIANTS.info });
+      await waitForPromises();
+
+      const alertComponent = wrapper.findComponent(GlAlert);
+      expect(alertComponent.exists()).toBe(true);
+      expect(alertComponent.props('variant')).toBe(ALERT_VARIANTS.info);
+      expect(alertComponent.text()).toBe(uploadError);
     });
   });
 

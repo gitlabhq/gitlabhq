@@ -16488,9 +16488,6 @@ msgstr ""
 msgid "CreateValueStreamForm|Add a stage"
 msgstr ""
 
-msgid "CreateValueStreamForm|Add another stage"
-msgstr ""
-
 msgid "CreateValueStreamForm|All default stages are currently visible"
 msgstr ""
 
@@ -19374,6 +19371,9 @@ msgid "DesignManagement|Discussion"
 msgstr ""
 
 msgid "DesignManagement|Download design"
+msgstr ""
+
+msgid "DesignManagement|Drop your images to start the upload."
 msgstr ""
 
 msgid "DesignManagement|Edit description"
@@ -59772,6 +59772,9 @@ msgid "Use cURL"
 msgstr ""
 
 msgid "Use custom color #FF0000"
+msgstr ""
+
+msgid "Use existing commit message"
 msgstr ""
 
 msgid "Use experiment and beta GitLab Duo features"

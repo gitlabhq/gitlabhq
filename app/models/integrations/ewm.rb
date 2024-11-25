@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Ewm < BaseIssueTracker
+  class Ewm < Integration
+    include Base::IssueTracker
     include HasIssueTrackerFields
 
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?

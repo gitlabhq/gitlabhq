@@ -8,3 +8,4 @@ description: User statistics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26261
 milestone: '12.9'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

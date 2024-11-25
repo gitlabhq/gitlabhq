@@ -21,13 +21,13 @@ if you need clarification or spot any outdated information.
 
 1. Add a new model in `app/models/integrations` extending from `Integration`.
    - For example, `Integrations::FooBar` in `app/models/integrations/foo_bar.rb`.
-   - For certain types of integrations, you can include these base modules (or inherit from them if they are classes):
+   - For certain types of integrations, you can include these base modules:
      - `Integrations::Base::ChatNotification`
-     - `Integrations::BaseCi`
-     - `Integrations::BaseIssueTracker`
-     - `Integrations::BaseMonitoring`
-     - `Integrations::BaseSlashCommands`
-     - `Integrations::BaseThirdPartyWiki`
+     - `Integrations::Base::Ci`
+     - `Integrations::Base::IssueTracker`
+     - `Integrations::Base::Monitoring`
+     - `Integrations::Base::SlashCommands`
+     - `Integrations::Base::ThirdPartyWiki`
    - For integrations that primarily trigger HTTP calls to external services, you can
      also use the `Integrations::HasWebHook` concern. This reuses the [webhook functionality](../../user/project/integrations/webhooks.md)
      in GitLab through an associated `ServiceHook` model, and automatically records request logs

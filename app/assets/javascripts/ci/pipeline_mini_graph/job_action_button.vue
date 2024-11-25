@@ -120,6 +120,7 @@ export default {
       :title="jobAction.title"
       :aria-label="jobAction.title"
       :disabled="isLoading"
+      size="small"
       class="gl-h-6 gl-w-6 !gl-rounded-full !gl-p-0"
       data-testid="ci-action-button"
       @click.prevent="onActionButtonClick"

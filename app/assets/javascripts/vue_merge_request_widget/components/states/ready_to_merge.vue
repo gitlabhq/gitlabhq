@@ -531,9 +531,9 @@ export default {
       this.squashCommitMessage = val;
       this.squashCommitMessageIsTouched = true;
     },
-    appendCommitMessage(val) {
-      this.commitMessage = `${this.commitMessage}\n\n${val}`;
-      this.commitMessageIsTouched = true;
+    appendCommitMessage(messageType, val) {
+      this[`${messageType}Message`] = `${this[`${messageType}Message`]}\n\n${val}`;
+      this[`${messageType}MessageIsTouched`] = true;
     },
     updateRemoveSourceBranchSettings(checked) {
       this.removeSourceBranch = checked;
@@ -624,7 +624,13 @@ export default {
                     @input="setSquashCommitMessage"
                   >
                     <template #header>
-                      <commit-message-dropdown :commits="commits" @input="setSquashCommitMessage" />
+                      <commit-message-dropdown
+                        :ai-commit-message-enabled="mr.aiCommitMessageEnabled"
+                        :mr-id="mr.id"
+                        :commits="commits"
+                        @append="(val) => appendCommitMessage('squashCommit', val)"
+                        @input="setSquashCommitMessage"
+                      />
                     </template>
                   </commit-edit>
                   <commit-edit
@@ -640,7 +646,7 @@ export default {
                       <ai-commit-message
                         v-if="mr.aiCommitMessageEnabled"
                         :id="mr.id"
-                        @update="appendCommitMessage"
+                        @update="(val) => appendCommitMessage('commit', val)"
                       />
                     </template>
                   </commit-edit>

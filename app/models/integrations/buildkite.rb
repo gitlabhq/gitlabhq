@@ -3,7 +3,8 @@
 require "addressable/uri"
 
 module Integrations
-  class Buildkite < BaseCi
+  class Buildkite < Integration
+    include Base::Ci
     include HasWebHook
     include ReactivelyCached
     include HasAvatar

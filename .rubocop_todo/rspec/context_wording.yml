@@ -2717,7 +2717,6 @@ RSpec/ContextWording:
     - 'spec/support/shared_examples/models/concerns/repository_storage_movable_shared_examples.rb'
     - 'spec/support/shared_examples/models/cycle_analytics_stage_shared_examples.rb'
     - 'spec/support/shared_examples/models/diff_positionable_note_shared_examples.rb'
-    - 'spec/support/shared_examples/models/integrations/base_slash_commands_shared_examples.rb'
     - 'spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'spec/support/shared_examples/models/packages/debian/component_file_shared_example.rb'
     - 'spec/support/shared_examples/models/project_latest_successful_build_for_shared_examples.rb'

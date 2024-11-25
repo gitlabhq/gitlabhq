@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples Integrations::BaseSlashCommands do
+RSpec.shared_examples Integrations::Base::SlashCommands do
   describe "Associations" do
     it { is_expected.to respond_to :token }
   end
@@ -32,7 +32,7 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
   describe '#trigger' do
     subject { described_class.new }
 
-    context 'no token is passed' do
+    context 'when token is not passed' do
       let(:params) { {} }
 
       it 'returns nil' do
@@ -48,7 +48,7 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
         allow(subject).to receive(:token).and_return('token')
       end
 
-      context 'no user can be found' do
+      context 'when user does not exist' do
         context 'when no url can be generated' do
           it 'responds with the authorize url' do
             response = subject.trigger(params)
@@ -99,14 +99,14 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
           end
 
           it 'triggers the command' do
-            expect_any_instance_of(Gitlab::SlashCommands::Command).to receive(:execute)
+            expect_any_instance_of(Gitlab::SlashCommands::Command).to receive(:execute) # rubocop:disable RSpec/AnyInstanceOf -- Legacy use
 
             subject.trigger(params)
           end
 
           shared_examples_for 'blocks command execution' do
-            it do
-              expect_any_instance_of(Gitlab::SlashCommands::Command).not_to receive(:execute)
+            it 'blocks command execution' do
+              expect_any_instance_of(Gitlab::SlashCommands::Command).not_to receive(:execute) # rubocop:disable RSpec/AnyInstanceOf -- Legacy use
 
               result = subject.trigger(params)
               expect(result[:text]).to match(error_message)
@@ -154,7 +154,7 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
 
           it 'caches the slash command params and returns confirmation message' do
             expect(Rails.cache).to receive(:write).with(an_instance_of(String), params, { expires_in: 3.minutes })
-            expect_any_instance_of(Gitlab::SlashCommands::Presenters::Access).to receive(:confirm)
+            expect_any_instance_of(Gitlab::SlashCommands::Presenters::Access).to receive(:confirm) # rubocop:disable RSpec/AnyInstanceOf -- Legacy use
 
             subject.trigger(params)
           end

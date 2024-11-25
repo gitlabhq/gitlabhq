@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class DroneCi < BaseCi
+  class DroneCi < Integration
+    include Base::Ci
     include HasWebHook
     include HasAvatar
     include PushDataValidations

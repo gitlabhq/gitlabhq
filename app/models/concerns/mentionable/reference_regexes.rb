@@ -27,7 +27,7 @@ module Mentionable
 
     def self.external_pattern
       strong_memoize(:external_pattern) do
-        issue_pattern = Integrations::BaseIssueTracker.base_reference_pattern
+        issue_pattern = Integrations::Base::IssueTracker::REFERENCE_PATTERN_REGEXP
         link_patterns = URI::DEFAULT_PARSER.make_regexp(%w[http https])
         reference_pattern(link_patterns, issue_pattern)
       end

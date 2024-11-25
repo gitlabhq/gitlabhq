@@ -9,7 +9,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, fea
 
   let_it_be(:project) { create(:project, :repository, name: 'project') }
 
-  it_behaves_like Integrations::BaseCi
+  it_behaves_like Integrations::Base::Ci
 
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { subject }

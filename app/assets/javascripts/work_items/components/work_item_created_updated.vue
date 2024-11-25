@@ -92,7 +92,7 @@ export default {
   <div v-if="isLoading">
     <gl-loading-icon inline />
   </div>
-  <div v-else class="gl-mb-3 gl-mt-3 gl-text-gray-700">
+  <div v-else class="gl-mb-3 gl-mt-3 gl-text-subtle">
     <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
     <gl-loading-icon v-if="updateInProgress" inline />
     <confidentiality-badge
@@ -108,6 +108,7 @@ export default {
       :work-item-icon-name="workItemIconName"
       :work-item-type="workItemType"
       show-text
+      icon-class="gl-fill-icon-subtle"
     />
     <span data-testid="work-item-created" class="gl-align-middle">
       <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">

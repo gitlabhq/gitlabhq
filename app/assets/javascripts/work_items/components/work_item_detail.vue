@@ -48,6 +48,7 @@ import {
   MAXIMUM_FILE_UPLOAD_LIMIT_REACHED,
   designUploadSkippedWarning,
   UPLOAD_DESIGN_ERROR_MESSAGE,
+  ALERT_VARIANTS,
 } from './design_management/constants';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
@@ -168,6 +169,7 @@ export default {
       filesToBeSaved: [],
       allowedChildTypes: [],
       designUploadError: null,
+      designUploadErrorVariant: ALERT_VARIANTS.danger,
       workspacePermissions: defaultWorkspacePermissions,
     };
   },
@@ -617,6 +619,7 @@ export default {
         update: this.afterUploadDesign,
       };
 
+      this.designUploadErrorVariant = ALERT_VARIANTS.danger;
       return this.$apollo
         .mutate(mutationPayload)
         .then((res) => this.onUploadDesignDone(res))
@@ -634,6 +637,7 @@ export default {
       const skippedWarningMessage = designUploadSkippedWarning(this.filesToBeSaved, skippedFiles);
       if (skippedWarningMessage) {
         this.designUploadError = skippedWarningMessage;
+        this.designUploadErrorVariant = ALERT_VARIANTS.info;
       }
 
       // reset state
@@ -836,6 +840,7 @@ export default {
                   :is-saving="isSaving"
                   data-testid="design-upload-button"
                   @upload="onUploadDesign"
+                  @error="onUploadDesignError"
                 />
               </div>
             </section>
@@ -861,6 +866,9 @@ export default {
               :work-item-id="workItem.id"
               :work-item-iid="iid"
               :upload-error="designUploadError"
+              :upload-error-variant="designUploadErrorVariant"
+              :is-saving="isSaving"
+              @upload="onUploadDesign"
               @dismissError="designUploadError = null"
             />
 
