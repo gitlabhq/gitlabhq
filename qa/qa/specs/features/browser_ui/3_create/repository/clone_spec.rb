@@ -13,7 +13,7 @@ module QA
 
           repository.act do
             clone
-            configure_identity('GitLab QA', 'root@gitlab.com')
+            use_default_identity
             checkout(default_branch, new_branch: true)
             commit_file('test.rb', 'class Test; end', 'Add Test class')
             commit_file('README.md', '# Test', 'Add Readme')

@@ -37,7 +37,7 @@ module QA
           repository.init_repository
           repository.uri = "#{Runtime::Scenario.gitlab_address}/#{group.full_path}/#{project_name}"
           repository.use_default_credentials
-          repository.configure_identity('GitLab QA', 'root@gitlab.com')
+          repository.use_default_identity
           repository.checkout('trunk', new_branch: true)
           repository.commit_file('README.md', 'Created via the CLI', 'initial commit via CLI')
           repository.push_changes('trunk')

@@ -17,13 +17,10 @@ module QA
         # Use Git to clone the project, push a file to it, and then check the
         # supported Git protocol
         Git::Repository.perform do |repository|
-          username = 'GitLab QA'
-          email = 'root@gitlab.com'
-
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
           repository.clone
-          repository.configure_identity(username, email)
+          repository.use_default_identity
           repository.default_branch = project.default_branch
           repository.checkout(project.default_branch, new_branch: true)
 

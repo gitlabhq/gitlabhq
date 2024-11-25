@@ -25,6 +25,12 @@ const initSentry = () => {
     environment: gon.sentry_environment,
     autoSessionTracking: true,
 
+    ignoreErrors: [
+      // Network errors create noise in Sentry and can't be fixed, ignore them.
+      /Network Error/i,
+      /NetworkError/i,
+    ],
+
     // Browser tracing configuration
     enableTracing: true,
     tracePropagationTargets: [/^\//], // only trace internal requests
