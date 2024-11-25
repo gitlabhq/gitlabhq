@@ -37,6 +37,20 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
     end
 
+    context 'when authenticated as an admin using ai_workflows oauth access token' do
+      let(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      before do
+        allow(Ability).to receive(:allowed?).and_return(true)
+      end
+
+      it 'returns 403' do
+        get api(endpoint, oauth_access_token: oauth_access_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when authenticated as an admin using read_service_ping access token' do
       let(:scopes) { [Gitlab::Auth::READ_SERVICE_PING_SCOPE] }
       let(:personal_access_token) { create(:personal_access_token, user: user, scopes: scopes) }
@@ -199,6 +213,18 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
         post api(endpoint), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with personal access token that has read_service_ping scope' do
+      let(:scopes) { [Gitlab::Auth::READ_SERVICE_PING_SCOPE] }
+      let(:personal_access_token) { create(:personal_access_token, user: user, scopes: scopes) }
+      let(:params) { { event: known_event } }
+
+      it 'returns 403' do
+        post api(endpoint, personal_access_token: personal_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

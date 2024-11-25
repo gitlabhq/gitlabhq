@@ -183,7 +183,7 @@ module Gitlab
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
       end
 
-      def validate_and_save_access_token!(scopes: [], save_auth_context: true)
+      def validate_and_save_access_token!(scopes: [], save_auth_context: true, reset_token: false)
         # return early if we've already authenticated via a job token
         return if @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -191,6 +191,8 @@ module Gitlab
         return if @current_authenticated_deploy_token.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         return unless access_token
+
+        access_token.reset if reset_token
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE

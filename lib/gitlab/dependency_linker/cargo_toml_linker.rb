@@ -48,8 +48,8 @@ module Gitlab
 
       def toml
         @toml ||= begin
-          TomlRB.parse(plain_text)
-        rescue StandardError
+          Gitlab::Utils::TomlParser.safe_parse(plain_text)
+        rescue Gitlab::Utils::TomlParser::ParseError
           nil
         end
       end

@@ -8,7 +8,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
   let(:auth_failure) { { actor: nil, project: nil, type: nil, authentication_abilities: nil } }
   let(:gl_auth) { described_class }
 
-  let(:request) { instance_double(ActionDispatch::Request, ip: 'ip') }
+  let(:request) { instance_double(ActionDispatch::Request, ip: 'ip', path: path) }
+  let(:path) { '/some_path/example' }
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
@@ -294,7 +295,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         context 'when failure goes over threshold' do
-          let(:request) { instance_double(ActionDispatch::Request, fullpath: '/some/project.git/info/refs', request_method: 'GET', ip: 'ip') }
+          let(:request) { instance_double(ActionDispatch::Request, fullpath: '/some/project.git/info/refs', request_method: 'GET', ip: 'ip', path: '/some_path/example') }
 
           before do
             expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
@@ -408,6 +409,19 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     context 'while using LFS authenticate' do
+      let(:path) { '/namespace/project.git/info/lfs/objects/batch' }
+
+      context 'while using LFS token on non-LFS path' do
+        let(:path) { '/namespace/project.git/other/path' }
+
+        it 'does not authenticate with LFS token on non-LFS path' do
+          user = create(:user)
+          token = Gitlab::LfsToken.new(user, project).token
+
+          expect(gl_auth.find_for_git_client(user.username, token, project: nil, request: request)).to have_attributes(auth_failure)
+        end
+      end
+
       it 'recognizes user lfs tokens' do
         user = create(:user)
         token = Gitlab::LfsToken.new(user, project).token
