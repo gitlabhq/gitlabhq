@@ -51,7 +51,7 @@ You can group the compliance standards adherence dashboard on:
 
 ## GitLab standard
 
-The GitLab standard consists of three rules:
+The GitLab standard consists of the following rules:
 
 - Prevent authors as approvers.
 - Prevent committers as approvers.

@@ -5,13 +5,16 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { TYPENAME_FEATURE_FLAG } from '~/graphql_shared/constants';
 
 import WorkItemDevelopmentMrItem from './work_item_development_mr_item.vue';
-import WorkItemDevelopmentFfItem from './work_item_development_ff_item.vue';
 
 const DEFAULT_RENDER_COUNT = 3;
 
 export default {
   components: {
     WorkItemDevelopmentMrItem,
+    WorkItemDevelopmentFfItem: () =>
+      import(
+        'ee_component/work_items/components/work_item_development/work_item_development_ff_item.vue'
+      ),
     GlButton,
   },
   props: {
@@ -70,7 +73,7 @@ export default {
       if (this.isMergeRequest(item)) {
         component = WorkItemDevelopmentMrItem;
       } else if (this.isFeatureFlag(item)) {
-        component = WorkItemDevelopmentFfItem;
+        component = 'work-item-development-ff-item';
       } else {
         component = 'li';
       }

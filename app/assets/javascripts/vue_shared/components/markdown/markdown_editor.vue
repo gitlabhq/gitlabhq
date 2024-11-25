@@ -310,7 +310,7 @@ export default {
 };
 </script>
 <template>
-  <div class="!gl-px-0">
+  <div class="md-area-wrapper gl-rounded-lg !gl-px-0">
     <gl-alert
       v-if="alert"
       class="gl-mb-4"

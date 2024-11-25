@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import VueApollo from 'vue-apollo';
-import { isEmpty, map, pick, isEqual } from 'lodash';
+import { map, pick, isEqual } from 'lodash';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -529,7 +529,7 @@ export const setNewWorkItemCache = async (
     draftData?.workspace?.workItem &&
     getStorageDraftString &&
     draftData?.workspace?.workItem &&
-    isEmpty(draftWidgetsAreSameAsCacheDigits);
+    draftWidgetsAreSameAsCacheDigits;
 
   /** check in case of someone plays with the localstorage, we need to be sure */
   if (!isValidDraftData) {

@@ -62621,6 +62621,30 @@ msgstr ""
 msgid "Work items"
 msgstr ""
 
+msgid "WorkItemCustomField|Add option"
+msgstr ""
+
+msgid "WorkItemCustomField|An error occurred while saving the custom field"
+msgstr ""
+
+msgid "WorkItemCustomField|At least one option is required."
+msgstr ""
+
+msgid "WorkItemCustomField|Name"
+msgstr ""
+
+msgid "WorkItemCustomField|Name is required."
+msgstr ""
+
+msgid "WorkItemCustomField|Options"
+msgstr ""
+
+msgid "WorkItemCustomField|Remove"
+msgstr ""
+
+msgid "WorkItemCustomField|Type"
+msgstr ""
+
 msgid "WorkItems|An error occurred while fetching children"
 msgstr ""
 
@@ -62785,6 +62809,9 @@ msgstr ""
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
+msgid "WorkItem|Create field"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr ""
 
@@ -62902,6 +62929,9 @@ msgstr ""
 msgid "WorkItem|More actions"
 msgstr ""
 
+msgid "WorkItem|Multi select"
+msgstr ""
+
 msgid "WorkItem|Must be a valid hex code"
 msgstr ""
 
@@ -62912,6 +62942,9 @@ msgid "WorkItem|New %{workItemName}"
 msgstr ""
 
 msgid "WorkItem|New %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|New custom field"
 msgstr ""
 
 msgid "WorkItem|New related %{workItemType}"
@@ -62957,6 +62990,9 @@ msgid "WorkItem|Notifications turned off."
 msgstr ""
 
 msgid "WorkItem|Notifications turned on."
+msgstr ""
+
+msgid "WorkItem|Number"
 msgstr ""
 
 msgid "WorkItem|Objective"
@@ -63029,6 +63065,9 @@ msgid "WorkItem|Show closed items"
 msgstr ""
 
 msgid "WorkItem|Show labels"
+msgstr ""
+
+msgid "WorkItem|Single select"
 msgstr ""
 
 msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."
@@ -63128,6 +63167,9 @@ msgid "WorkItem|Teal"
 msgstr ""
 
 msgid "WorkItem|Test case"
+msgstr ""
+
+msgid "WorkItem|Text"
 msgstr ""
 
 msgid "WorkItem|The %{workItemType} was closed automatically when a branch was merged."

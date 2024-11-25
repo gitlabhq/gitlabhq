@@ -51,6 +51,10 @@
 }
 
 .common-note-form {
+  .md-area-wrapper {
+    @apply gl-bg-default;
+  }
+
   .md-area {
     @apply gl-rounded-lg;
     border: 1px solid var(--gl-control-border-color-default);
@@ -144,7 +148,6 @@
   color: $orange-600;
   background-color: $orange-50;
   @apply gl-rounded-t-base gl-rounded-b-none;
-
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -255,8 +258,12 @@ table {
 .note-edit-form {
   font-size: 14px;
 
+  .md-area-wrapper {
+    @apply gl-bg-subtle;
+  }
+
   .md-area {
-    @apply gl-bg-default gl-rounded-base;
+    @apply gl-rounded-base;
   }
 }
 

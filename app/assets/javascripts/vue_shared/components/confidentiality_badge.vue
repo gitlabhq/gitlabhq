@@ -32,7 +32,7 @@ export default {
     confidentialTextClass() {
       return {
         'gl-sr-only sm:gl-not-sr-only': this.hideTextInSmallScreens,
-        'gl-ml-2': true,
+        '!gl-ml-2': true,
       };
     },
   },

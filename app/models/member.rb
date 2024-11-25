@@ -229,7 +229,7 @@ class Member < ApplicationRecord
       user_id, invite_email,
       CASE WHEN source_id = #{for_object.id} and source_type = '#{obj_class}'
       THEN access_level + 1 ELSE access_level END DESC,
-      expires_at DESC, created_at ASC
+      member_role_id ASC, expires_at DESC, created_at ASC
     SQL
 
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')

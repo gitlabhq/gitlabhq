@@ -89,7 +89,7 @@ export default {
     ></div>
     <noteable-warning
       v-if="hasWarningAbove"
-      class="-gl-mb-3 gl-rounded-lg gl-rounded-bl-none gl-rounded-br-none gl-pb-5 gl-pt-4"
+      class="-gl-mb-3 gl-rounded-lg gl-rounded-b-none gl-pb-5 gl-pt-4"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
       :noteable-type="noteableType"
