@@ -127,6 +127,7 @@ export default {
       error: '',
       textInputAttrs: {
         class: '!gl-min-w-fit',
+        'aria-label': I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
       },
     };
   },

@@ -8,8 +8,6 @@ description: Approvers of given merge request
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3cc78d89984d9c9df8372c52b7bba38e6226f9f2
 milestone: '7.13'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 exempt_from_sharding: true
 notes: Exempted because Marked for drop - https://gitlab.com/gitlab-org/gitlab/-/issues/444234
 table_size: small

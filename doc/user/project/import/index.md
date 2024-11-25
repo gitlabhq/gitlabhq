@@ -97,14 +97,14 @@ For more information, see the history.
 NOTE:
 To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
 
-This method of user contributions and membership mapping is available for
+This method of user contribution and membership mapping is available for
 [direct transfer migrations](../../group/import/index.md) on:
 
 - GitLab.com
 - GitLab self-managed when two feature flags are enabled
 
 For information on the other method available for GitLab self-managed without enabled feature flags,
-see [User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
+see [user contribution and membership mapping](../../group/import/direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 
 With user contribution and membership mapping, you can assign imported contributions and memberships to users on the
 destination instance after import has completed. Unlike the previous method of user contribution and membership mapping,

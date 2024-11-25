@@ -20,7 +20,7 @@ module Gitlab
         sequences.each do |sequence|
           with_lock_retries do
             connection.execute(alter_sequence_query(sequence.seq_name))
-            logger.info("Altered cell sequence #{sequence}. Updated with (#{minval}, #{maxval})")
+            logger.info("Altered cell sequence #{sequence.seq_name}. Updated with (#{minval}, #{maxval})")
           end
         end
       end

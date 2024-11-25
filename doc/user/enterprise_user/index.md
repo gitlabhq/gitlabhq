@@ -248,6 +248,10 @@ Changing an enterprise user's primary email to an email from a non-verified doma
 
 A top-level group Owner can [disable password authentication for enterprise users](../group/saml_sso/index.md#disable-password-authentication-for-enterprise-users).
 
+## Related topics
+
+- [Group enterprise users API](../../api/group_enterprise_users.md)
+
 ## Troubleshooting
 
 ### Cannot disable two-factor authentication for an enterprise user

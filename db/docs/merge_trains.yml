@@ -9,8 +9,6 @@ description: Each record represents a single merge request which is or was part 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/827fc3ccb9335aa29fba0fc532b70015ec4c5186
 milestone: '11.11'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   target_project_id: projects
 table_size: small

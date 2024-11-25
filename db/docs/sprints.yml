@@ -9,8 +9,6 @@ description: Also called iterations, timeboxes to which issues can be assigned. 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30125
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   group_id: namespaces
 table_size: small

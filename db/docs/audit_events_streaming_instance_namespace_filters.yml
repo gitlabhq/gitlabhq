@@ -9,8 +9,6 @@ description: Stores audit event namespace filters for external audit event desti
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148448
 milestone: '17.0'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
 table_size: small

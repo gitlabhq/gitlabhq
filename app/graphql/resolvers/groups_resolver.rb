@@ -14,7 +14,7 @@ module Resolvers
     argument :top_level_only, GraphQL::Types::Boolean,
       required: false,
       default_value: false,
-      description: 'Only include top level groups.'
+      description: 'Only include top-level groups.'
 
     argument :search, GraphQL::Types::String,
       required: false,

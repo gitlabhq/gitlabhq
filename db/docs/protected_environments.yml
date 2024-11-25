@@ -10,8 +10,6 @@ description: Project or group-level record associated to one or more environment
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6672
 milestone: '11.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
   group_id: namespaces

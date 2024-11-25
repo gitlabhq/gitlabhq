@@ -9,8 +9,6 @@ description: Information about Designs, image files under management by the Desi
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9801
 milestone: '11.10'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   namespace_id:
     references: namespaces

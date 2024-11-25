@@ -8,8 +8,6 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b017947ac91655f8ae6593fb63c3423cd1b439f4
 milestone: '7.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   group_id: namespaces
 table_size: small

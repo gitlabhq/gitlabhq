@@ -36,6 +36,22 @@ describe('SidebarHoverPeek component', () => {
 
   const lastNChangeEvents = (n = 1) => wrapper.emitted('change').slice(-n).flat();
 
+  /**
+   * Simulates destroying the component. This is unusual! It's needed for tests
+   * that verify the clean up behavior of the component.
+   *
+   * Normally `wrapper.destroy()` would be the correct way to do this, but:
+   *
+   * - VTU@2 removes emitted event history on unmount/destroy:
+   *   https://github.com/vuejs/test-utils/blob/3207debb67591d63932f6a4228e2d21d7525450c/src/vueWrapper.ts#L271-L272
+   * - Attaching listeners via a harness/dummy component isn't sufficient, as
+   *   the listeners are removed anyway on destroy, so the tests would pass
+   *   whether or not the clean up behavior actually happens.
+   * - Spying on `EventTarget#removeEventListener` is another possible
+   *   approach, but that's brittle. Selectors/event names could change.
+   */
+  const simulateDestroy = () => SidebarHoverPeek.beforeDestroy.call(wrapper.vm);
+
   beforeEach(() => {
     toggle = document.createElement('button');
     toggle.classList.add(JS_TOGGLE_EXPAND_CLASS);
@@ -159,14 +175,14 @@ describe('SidebarHoverPeek component', () => {
 
       expect(lastNChangeEvents(1)).toEqual([STATE_OPEN]);
 
-      wrapper.destroy();
+      simulateDestroy();
       mouseLeave(toggle);
 
       expect(lastNChangeEvents(1)).toEqual([STATE_OPEN]);
     });
 
     it('cleans up its timers before destroy', () => {
-      wrapper.destroy();
+      simulateDestroy();
       jest.runOnlyPendingTimers();
 
       expect(lastNChangeEvents(1)).toEqual([STATE_WILL_OPEN]);
@@ -175,7 +191,7 @@ describe('SidebarHoverPeek component', () => {
     it('cleans up document mouseleave listener before destroy', () => {
       mouseEnter(toggle);
 
-      wrapper.destroy();
+      simulateDestroy();
 
       moveMouseOutOfDocument();
 
@@ -205,7 +221,7 @@ describe('SidebarHoverPeek component', () => {
 
     expect(lastNChangeEvents(1)).toEqual([STATE_CLOSED]);
 
-    wrapper.destroy();
+    simulateDestroy();
     mouseEnter(toggle);
 
     expect(lastNChangeEvents(1)).toEqual([STATE_CLOSED]);

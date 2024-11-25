@@ -9,8 +9,6 @@ description: The epic_ids used to create swimlanes on issue boards; stored per u
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40360
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   group_id:
     references: namespaces

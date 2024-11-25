@@ -8,8 +8,6 @@ description: Persists information about pending alert escalations for incidents
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64274
 milestone: '14.1'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects

@@ -650,6 +650,7 @@ Use **default role** when referring to the following predefined roles that have
 no customized permissions added:
 
 - Guest
+- Planner
 - Reporter
 - Developer
 - Maintainer
@@ -693,12 +694,15 @@ See also: [ancestor](#ancestor), [child](#child), and [subgroup](#subgroup).
 When writing about the Developer role:
 
 - Use a capital **D**.
-- Do not use bold.
-- Do not use the phrase, **if you are a developer** to mean someone who is assigned the Developer
-  role. Instead, write it out. For example, **if you are assigned the Developer role**.
-- To describe a situation where the Developer role is the minimum required:
+- Write it out.
+  - Use: if you are assigned the Developer role
+  - Instead of: if you are a Developer
+
+- When the Developer role is the minimum required role:
   - Use: at least the Developer role
   - Instead of: the Developer role or higher
+
+Do not use bold.
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
@@ -1831,6 +1835,23 @@ Permissions are not the same as [**access levels**](#access-level).
 Use sentence case for **personal access token**.
 
 Capitalize the first word when you refer to the UI.
+
+## Planner
+
+When writing about the Planner role:
+
+- Use a capital **P**.
+- Write it out.
+  - Use: if you are assigned the Planner role
+  - Instead of: if you are a Planner
+
+- When the Planner role is the minimum required role:
+  - Use: at least the Planner role
+  - Instead of: the Planner role or higher
+
+Do not use bold.
+
+Do not use **Planner permissions**. A user who is assigned the Planner role has a set of associated permissions.
 
 ## please
 

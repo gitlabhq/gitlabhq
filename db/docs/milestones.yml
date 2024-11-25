@@ -9,8 +9,6 @@ description: Information related to milestones, used by team planning features t
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/23d950855d6d2524d00b1f0618c008e2529f06a4
 milestone: "<6.0"
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
   group_id: namespaces

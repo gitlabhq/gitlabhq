@@ -9,8 +9,6 @@ description: Stores CA files used to verify which certificates are authorized to
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127856
 milestone: '16.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
 table_size: small

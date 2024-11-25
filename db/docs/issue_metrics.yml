@@ -8,8 +8,6 @@ description: Store various metrics for issues.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/516c838a1846d049814765afa85c28a3c14a5b9f
 milestone: '8.12'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   namespace_id:
     references: namespaces

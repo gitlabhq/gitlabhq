@@ -9,8 +9,6 @@ description: Information about package dependencies for a set of supported packa
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
 milestone: '12.6'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
 table_size: small

@@ -127,7 +127,7 @@ export default {
   },
   computed: {
     workItemChildIsEpic() {
-      return this.childrenTypeName === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.childrenTypeValue === WORK_ITEM_TYPE_VALUE_EPIC;
     },
     workItemInput() {
       let workItemInput = {

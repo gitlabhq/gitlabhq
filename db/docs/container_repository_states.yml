@@ -8,8 +8,6 @@ classes:
 feature_categories:
 - geo_replication
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects

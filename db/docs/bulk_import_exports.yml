@@ -8,8 +8,6 @@ description: Used to track the generation status of export files for groups or p
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59976
 milestone: '13.12'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
   group_id: namespaces

@@ -8,8 +8,6 @@ description: Users assigned to an issue
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1541
 milestone: '9.2'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   namespace_id:
     references: namespaces

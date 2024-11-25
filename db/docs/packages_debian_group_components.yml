@@ -8,8 +8,6 @@ description: Debian package group-level distribution components
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51732
 milestone: '13.9'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   group_id:
     references: namespaces

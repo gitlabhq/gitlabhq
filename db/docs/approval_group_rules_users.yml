@@ -8,8 +8,6 @@ description: Keeps connection between user and a group approval rule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132651
 milestone: '16.5'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   group_id: namespaces
 table_size: small

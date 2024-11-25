@@ -1283,6 +1283,7 @@ production: &base
   cell:
     # id: 1
     # name: cell-1
+    # skip_sequence_alteration: false
 
   gitlab_kas:
     # enabled: true

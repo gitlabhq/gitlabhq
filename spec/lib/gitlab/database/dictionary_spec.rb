@@ -223,7 +223,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         describe '#allow_cross_to_schemas' do
           it 'returns the list of allowed schemas' do
             expect(database_dictionary.allow_cross_to_schemas(:foreign_keys))
-              .to contain_exactly(:gitlab_main_clusterwide)
+              .to be_empty
           end
         end
       end

@@ -9,7 +9,5 @@ description: Stores Value Stream Analytics stage aggregation related metadata fo
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170988
 milestone: '17.6'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   group_id: namespaces

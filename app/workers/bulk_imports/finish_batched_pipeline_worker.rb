@@ -10,7 +10,7 @@ module BulkImports
 
     idempotent!
     deduplicate :until_executing
-    data_consistency :always
+    data_consistency :sticky
     feature_category :importers
 
     version 2

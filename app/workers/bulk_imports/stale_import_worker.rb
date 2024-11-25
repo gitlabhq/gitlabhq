@@ -8,7 +8,7 @@ module BulkImports
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     idempotent!
-    data_consistency :always
+    data_consistency :sticky
 
     feature_category :importers
 

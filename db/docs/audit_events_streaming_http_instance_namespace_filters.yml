@@ -11,6 +11,4 @@ milestone: '16.7'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   namespace_id: namespaces
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 table_size: small

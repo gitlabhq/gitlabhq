@@ -16,13 +16,14 @@ describe('New project push tip popover', () => {
   const findHelpLink = () => wrapper.find('a');
   const findTarget = () => document.getElementById(targetId);
 
-  const buildWrapper = () => {
+  const buildWrapper = ({ stubs = {} } = {}) => {
     wrapper = shallowMount(NewProjectPushTipPopover, {
       propsData: {
         target: findTarget(),
       },
       stubs: {
         GlFormInputGroup,
+        ...stubs,
       },
       provide: {
         pushToCreateProjectCommand,
@@ -52,6 +53,8 @@ describe('New project push tip popover', () => {
   });
 
   it('renders a readonly form input with the push to create command', () => {
+    buildWrapper({ stubs: { GlFormInputGroup: true } });
+
     expect(findFormInput().props()).toMatchObject({
       value: pushToCreateProjectCommand,
       selectOnClick: true,

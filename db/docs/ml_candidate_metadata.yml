@@ -8,8 +8,6 @@ gitlab_schema: gitlab_main_cell
 description: A Candidate Metadata record holds extra information about the candidate
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104267
 milestone: '15.7'
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects

@@ -56,6 +56,8 @@ describe('manifests empty state', () => {
   });
 
   it('renders a form input group', () => {
+    createComponent({ stubs: { GlFormInputGroup: true } });
+
     expect(findFormInputGroup().exists()).toBe(true);
     expect(findFormInputGroup().attributes('id')).toBe('code-example');
     expect(findFormInputGroup().props('value')).toBe(ManifestsEmptyState.codeExample);

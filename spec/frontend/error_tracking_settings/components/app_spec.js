@@ -33,6 +33,7 @@ describe('error tracking settings app', () => {
   function mountComponent({
     glFeatures = { integratedErrorTracking: false },
     props = defaultProps,
+    stubs = {},
   } = {}) {
     wrapper = extendedWrapper(
       shallowMount(ErrorTrackingSettings, {
@@ -43,6 +44,7 @@ describe('error tracking settings app', () => {
         },
         stubs: {
           GlFormInputGroup, // we need this non-shallow to query for a component within a slot
+          ...stubs,
         },
       }),
     );
@@ -165,14 +167,27 @@ describe('error tracking settings app', () => {
           expect(findDsnSettings().exists()).toBe(true);
         });
 
-        it('contains copy-to-clipboard functionality for the GitLab DSN string', async () => {
+        it('renders GitLab DSN string in readonly input', async () => {
+          mountComponent({
+            glFeatures: { integratedErrorTracking: true },
+            stubs: {
+              GlFormInputGroup: true,
+            },
+          });
+
           await enableGitLabErrorTracking();
 
           const clipBoardInput = findDsnSettings().findComponent(GlFormInputGroup);
-          const clipBoardButton = findDsnSettings().findComponent(ClipboardButton);
 
           expect(clipBoardInput.props('value')).toBe(TEST_GITLAB_DSN);
           expect(clipBoardInput.attributes('readonly')).toBe('');
+        });
+
+        it('contains copy-to-clipboard functionality for the GitLab DSN string', async () => {
+          await enableGitLabErrorTracking();
+
+          const clipBoardButton = findDsnSettings().findComponent(ClipboardButton);
+
           expect(clipBoardButton.props('text')).toBe(TEST_GITLAB_DSN);
         });
       });

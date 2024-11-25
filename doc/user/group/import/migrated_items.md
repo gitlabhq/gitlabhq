@@ -53,13 +53,13 @@ Group items that are migrated to the destination GitLab instance include:
 
 **Footnotes:**
 
-1. Epic resource state events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4, label
-   associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12, state and
-   state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7, and system note
-   metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
-1. Group Labels cannot retain any associated Label Priorities during import. These labels will need to be re-prioritized manually
-   once the relevant Project is migrated to the destination instance.
-1. See [User contributions and membership mapping](direct_transfer_migrations.md#user-contributions-and-membership-mapping).
+1. State and state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7.
+   Label associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12.
+   System note metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
+   Epic resource state events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4.
+1. Group labels cannot retain any associated label priorities during import.
+   You must prioritize these labels again manually after you migrate the relevant project to the destination instance.
+1. See [user contribution and membership mapping](direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
 
@@ -143,9 +143,9 @@ Project items that are migrated to the destination GitLab instance include:
 
 **Footnotes:**
 
-1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md)
-   of the destination group, which could cause an unprotected branch to be imported as protected.
-1. See [User contributions and membership mapping](direct_transfer_migrations.md#user-contributions-and-membership-mapping).
+1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
+   These settings might cause an unprotected branch to be imported as protected.
+1. See [user contribution and membership mapping](direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 
 ### Issue-related items
 

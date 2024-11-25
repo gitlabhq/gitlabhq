@@ -30,6 +30,8 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 
 ## Roles
 
+> - Planner role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482733) in GitLab 17.7.
+
 You can assign users a default role or a [custom role](custom_roles.md).
 
 The available default roles are:

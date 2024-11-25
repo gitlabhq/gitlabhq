@@ -10,8 +10,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c983e8eb3d9cac0
 milestone: '6.6'
 gitlab_schema: gitlab_main_cell
 desired_sharding_key_migration_job_name: BackfillMergeRequestDiffsProjectId
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
 table_size: over_limit

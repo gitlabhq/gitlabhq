@@ -8,8 +8,6 @@ description: Separate table for dependency proxy manifest verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102908
 milestone: '15.6'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   group_id:
     references: namespaces

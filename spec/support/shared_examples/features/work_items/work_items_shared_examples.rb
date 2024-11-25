@@ -762,3 +762,107 @@ RSpec.shared_examples 'work items health status' do
     end
   end
 end
+
+RSpec.shared_examples 'work items color' do
+  it 'updates and clears color', :aggregate_failures do
+    within_testid 'work-item-color' do
+      click_button 'Edit'
+      click_link 'Purple'
+
+      expect(page).to have_text 'Purple'
+
+      click_button 'Edit'
+      send_keys(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, 112233, :escape)
+
+      expect(page).to have_text 'Custom'
+
+      click_button 'Edit'
+      click_button 'Reset'
+
+      expect(page).to have_text('Blue')
+    end
+  end
+end
+
+RSpec.shared_examples 'work items hierarchy' do |testid, type|
+  it 'shows no child items by default and toggles card', :aggregate_failures do
+    within_testid testid do
+      expect(page).to have_css('h2', text: 'Child items')
+      expect(page).to have_text('No child items are currently assigned.')
+
+      click_button 'Collapse'
+
+      expect(page).not_to have_text('No child items are currently assigned.')
+
+      click_button 'Expand'
+
+      expect(page).to have_text('No child items are currently assigned.')
+    end
+  end
+
+  it 'creates, removes, and reverts removal of child item', :aggregate_failures do
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/467207
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(300)
+
+    within_testid testid do
+      create_child(type, 'Child 1')
+
+      expect(page).to have_link 'Child 1'
+
+      click_button 'Remove'
+
+      expect(page).not_to have_link 'Child 1'
+    end
+
+    within '.gl-toast' do
+      expect(page).to have_content(_('Child removed'))
+
+      find('a', text: 'Undo').click # click_link doesn't work here for some reason
+    end
+
+    within_testid testid do
+      expect(page).to have_link 'Child 1'
+    end
+  end
+
+  it 'adds an existing child item', :aggregate_failures do
+    within_testid testid do
+      click_button 'Add'
+      click_button "Existing #{type}"
+      fill_in 'Search existing items', with: child_item.title
+      click_button child_item.title
+      send_keys :escape
+      click_button "Add #{type}"
+
+      expect(page).to have_link child_item.title
+    end
+  end
+
+  it 'creates and reorders child items', :aggregate_failures do
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/467207
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(300)
+
+    within_testid testid do
+      create_child(type, 'Child 1')
+      create_child(type, 'Child 2')
+      create_child(type, 'Child 3')
+
+      expect(page).to have_css('.tree-item:nth-child(1) .item-title', text: 'Child 3')
+      expect(page).to have_css('.tree-item:nth-child(2) .item-title', text: 'Child 2')
+      expect(page).to have_css('.tree-item:nth-child(3) .item-title', text: 'Child 1')
+
+      drag_to(selector: '.sortable-container', from_index: 0, to_index: 2)
+
+      expect(page).to have_css('.tree-item:nth-child(1) .item-title', text: 'Child 2')
+      expect(page).to have_css('.tree-item:nth-child(2) .item-title', text: 'Child 1')
+      expect(page).to have_css('.tree-item:nth-child(3) .item-title', text: 'Child 3')
+    end
+  end
+
+  def create_child(type, title)
+    click_button 'Add'
+    click_button "New #{type}"
+    fill_in 'Add a title', with: title
+    click_button "Create #{type}"
+  end
+end

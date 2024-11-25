@@ -10,8 +10,6 @@ description: Stores badges records
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17082
 milestone: '10.6'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
   group_id: namespaces

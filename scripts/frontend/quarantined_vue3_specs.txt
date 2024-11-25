@@ -103,7 +103,6 @@ ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/components/expandable_section_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
-ee/spec/frontend/security_configuration/dast_profiles/dast_scanner_profiles_form/components/dast_scanner_profiles_form_spec.js
 ee/spec/frontend/security_dashboard/components/project/security_scanner_alert_spec.js
 ee/spec/frontend/security_dashboard/components/shared/empty_states/dashboard_has_no_vulnerabilities_spec.js
 ee/spec/frontend/security_dashboard/components/shared/filters/querystring_sync_spec.js
@@ -352,8 +351,6 @@ spec/frontend/super_sidebar/components/flyout_menu_spec.js
 spec/frontend/super_sidebar/components/global_search/components/frequent_items_spec.js
 spec/frontend/super_sidebar/components/nav_item_router_link_spec.js
 spec/frontend/super_sidebar/components/organization_switcher_spec.js
-spec/frontend/super_sidebar/components/sidebar_hover_peek_behavior_spec.js
-spec/frontend/super_sidebar/components/sidebar_peek_behavior_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
 spec/frontend/tags/components/delete_tag_modal_spec.js

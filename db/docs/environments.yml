@@ -9,8 +9,6 @@ description: Project-level deployment target and metadata. See https://docs.gitl
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/907c0e6796b69f9577c147dd489cf55748c749ac
 milestone: '8.9'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
 table_size: small

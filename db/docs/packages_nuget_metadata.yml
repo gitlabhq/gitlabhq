@@ -8,8 +8,6 @@ description: Nuget package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30994
 milestone: '13.1'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects
