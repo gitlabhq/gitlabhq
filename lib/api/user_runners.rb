@@ -4,12 +4,12 @@ module API
   class UserRunners < ::API::Base
     include APIGuard
 
+    allow_access_with_scope :create_runner, if: ->(request) { request.post? }
+
     resource :user do
       before do
         authenticate!
       end
-
-      allow_access_with_scope :create_runner, if: ->(request) { request.post? }
 
       desc 'Create a runner owned by currently authenticated user' do
         detail 'Create a new runner'
