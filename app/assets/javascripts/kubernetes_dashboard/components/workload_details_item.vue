@@ -71,7 +71,7 @@ export default {
       </div>
     </gl-collapse>
 
-    <div v-else class="gl-mb-0 gl-mt-2 gl-text-gray-500">
+    <div v-else class="gl-mb-0 gl-mt-2 gl-text-subtle">
       <slot></slot>
     </div>
   </li>

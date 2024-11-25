@@ -430,7 +430,7 @@ RSpec.describe 'Database schema',
       }.freeze
     end
 
-    it 'uses json schema validator', :eager_load do
+    it 'uses json schema validator', :eager_load, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
       columns_name_with_jsonb.each do |hash|
         next if models_by_table_name[hash["table_name"]].nil?
 

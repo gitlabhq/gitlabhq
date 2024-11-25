@@ -216,7 +216,7 @@ export default {
           <k8s-event-item v-for="(event, index) in k8sEvents" :key="index" :event="event" />
         </ul>
       </div>
-      <span v-else class="gl-text-gray-500">{{ $options.i18n.eventsEmptyText }}</span>
+      <span v-else class="gl-text-subtle">{{ $options.i18n.eventsEmptyText }}</span>
     </workload-details-item>
   </ul>
 </template>

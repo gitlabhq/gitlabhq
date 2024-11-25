@@ -27,7 +27,7 @@ describe('WorkItemDevelopmentFfItem', () => {
     it.each`
       state         | icon                       | featureFlag            | iconClass
       ${'Enabled'}  | ${'feature-flag'}          | ${enabledFeatureFlag}  | ${'gl-text-blue-500'}
-      ${'Disabled'} | ${'feature-flag-disabled'} | ${disabledFeatureFlag} | ${'gl-text-gray-500'}
+      ${'Disabled'} | ${'feature-flag-disabled'} | ${disabledFeatureFlag} | ${'gl-text-subtle'}
     `(
       'renders icon "$icon" when the state of the feature flag is "$state"',
       ({ icon, iconClass, featureFlag }) => {

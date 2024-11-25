@@ -527,7 +527,7 @@ export default {
             />
           </template>
         </div>
-        <div v-if="descriptions[variable.key]" class="gl-mb-3 gl-text-gray-500">
+        <div v-if="descriptions[variable.key]" class="gl-mb-3 gl-text-subtle">
           {{ descriptions[variable.key] }}
         </div>
       </div>
@@ -546,7 +546,7 @@ export default {
         }}</gl-link>
       </template>
     </gl-form-group>
-    <div class="gl-mb-4 gl-text-gray-500">
+    <div class="gl-mb-4 gl-text-subtle">
       <gl-sprintf :message="$options.i18n.overrideNoteText">
         <template #bold="{ content }">
           <strong>

@@ -1318,6 +1318,25 @@ PiOS Bullseye for continued support.
 
 <div class="deprecation " data-milestone="17.8">
 
+### Support for Red Hat Enterprise Linux 7
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">17.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8714).
+
+</div>
+
+Red Hat Enterprise Linux (RHEL) 7 reached [end of maintenance support in June 2024](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/rhel-7-end-of-maintenance).
+
+Therefore, we will longer publish Linux packages for RHEL 7 and RHEL 7 compatible operating systems.
+Users should upgrade to RHEL 8 for continued support.
+
+</div>
+
+<div class="deprecation " data-milestone="17.8">
+
 ### Support for Scientific Linux 7
 
 <div class="deprecation-notes">

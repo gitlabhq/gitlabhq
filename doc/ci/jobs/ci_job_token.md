@@ -47,6 +47,7 @@ The CI/CD job token can only access the following features and API endpoints:
 | [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)              | To update pipeline metadata. |
 | [Release links API](../../api/releases/links.md)                                                      |         |
 | [Releases API](../../api/releases/index.md)                                                           | `GET` requests are public by default. |
+| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Generates changelog data based on commits in a repository. |
 | [Secure files](../secure_files/index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
 | [Terraform plan](../../user/infrastructure/index.md)                                                  |         |
 

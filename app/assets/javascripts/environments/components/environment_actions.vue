@@ -106,7 +106,7 @@ export default {
     >
       <template #list-item>
         <span class="gl-grow">{{ item.text }}</span>
-        <span v-if="item.scheduledAt" class="gl-float-right gl-text-gray-500">
+        <span v-if="item.scheduledAt" class="gl-float-right gl-text-subtle">
           <gl-icon name="clock" />
           {{ remainingTime(item) }}
         </span>

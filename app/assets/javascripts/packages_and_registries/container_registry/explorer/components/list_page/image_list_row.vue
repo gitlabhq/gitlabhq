@@ -150,7 +150,7 @@ export default {
         :aria-label="$options.i18n.IMAGE_FULL_PATH_LABEL"
         @click="hideButton"
       />
-      <span v-if="deleting" class="gl-text-gray-500">{{ imageName }}</span>
+      <span v-if="deleting" class="gl-text-subtle">{{ imageName }}</span>
       <router-link
         v-else
         ref="imageName"

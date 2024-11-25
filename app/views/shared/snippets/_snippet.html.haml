@@ -14,7 +14,7 @@
         %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 gl-rounded-base gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }
           = sprite_icon('spam', size: '16')
 
-      .snippet-info.gl-text-sm{ class: '!gl-text-gray-500' }
+      .snippet-info.gl-text-sm{ class: '!gl-text-subtle' }
         .gl-inline{ data: { testid: 'snippet-created-at'} }
           - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
           - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id }, class: 'gl-text-default')

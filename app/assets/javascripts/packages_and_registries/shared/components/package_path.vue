@@ -52,7 +52,7 @@ export default {
 
     <gl-link
       data-testid="root-link"
-      class="gl-min-w-0 gl-text-gray-500"
+      class="gl-min-w-0 gl-text-subtle"
       :href="`/${rootLink}`"
       :disabled="disabled"
     >
@@ -75,7 +75,7 @@ export default {
 
       <gl-link
         data-testid="leaf-link"
-        class="gl-min-w-0 gl-text-gray-500"
+        class="gl-min-w-0 gl-text-subtle"
         :href="`/${path}`"
         :disabled="disabled"
       >

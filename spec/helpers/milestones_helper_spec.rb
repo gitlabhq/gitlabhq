@@ -35,7 +35,7 @@ RSpec.describe MilestonesHelper, feature_category: :team_planning do
     context 'when primary is set to false' do
       subject { helper.milestone_counter_class(false) }
 
-      it { is_expected.to eq('gl-text-gray-500') }
+      it { is_expected.to eq('gl-text-subtle') }
     end
   end
 end

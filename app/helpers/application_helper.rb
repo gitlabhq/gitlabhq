@@ -209,7 +209,7 @@ module ApplicationHelper
   def edited_time_ago_with_tooltip(editable_object, placement: 'top', html_class: 'time_ago', exclude_author: false)
     return unless editable_object.edited?
 
-    content_tag :div, class: 'edited-text gl-mt-4 gl-text-gray-500 gl-text-sm' do
+    content_tag :div, class: 'edited-text gl-mt-4 gl-text-subtle gl-text-sm' do
       timeago = time_ago_with_tooltip(editable_object.last_edited_at, placement: placement, html_class: html_class)
 
       if !exclude_author && editable_object.last_edited_by

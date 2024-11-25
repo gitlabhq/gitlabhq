@@ -182,7 +182,7 @@ export default {
     },
     dropdownToggleClass() {
       return {
-        '!gl-text-gray-500': this.toggleLabel === this.label,
+        '!gl-text-subtle': this.toggleLabel === this.label,
         [this.toggleClass]: true,
       };
     },

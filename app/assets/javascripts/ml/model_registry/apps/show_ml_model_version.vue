@@ -264,7 +264,7 @@ export default {
                 </template>
                 <template #author>
                   <gl-link
-                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    class="js-user-link gl-font-bold !gl-text-subtle"
                     :href="author.webUrl"
                     :data-user-id="authorId"
                   >
@@ -321,10 +321,10 @@ export default {
 
       <div class="gl-pt-6 md:gl-col-span-1">
         <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-        <div v-if="showAuthor" class="gl-mt-3 gl-text-gray-500">
+        <div v-if="showAuthor" class="gl-mt-3 gl-text-subtle">
           <gl-link
             data-testid="sidebar-author-link"
-            class="js-user-link gl-font-bold !gl-text-gray-500"
+            class="js-user-link gl-font-bold !gl-text-subtle"
             :href="author.webUrl"
           >
             <gl-avatar :label="author.name" :src="author.avatarUrl" :size="24" />

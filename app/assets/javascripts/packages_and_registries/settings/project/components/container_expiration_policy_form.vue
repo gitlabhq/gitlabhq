@@ -295,7 +295,7 @@ export default {
       >
         {{ __('Cancel') }}
       </gl-button>
-      <span class="gl-italic gl-text-gray-500">{{
+      <span class="gl-italic gl-text-subtle">{{
         $options.i18n.EXPIRATION_POLICY_FOOTER_NOTE
       }}</span>
     </div>

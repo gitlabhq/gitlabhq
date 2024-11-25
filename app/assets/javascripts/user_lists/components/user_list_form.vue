@@ -67,7 +67,7 @@ export default {
         <h4 class="gl-min-width-fit-content gl-whitespace-nowrap">
           {{ $options.translations.formLabel }}
         </h4>
-        <gl-sprintf :message="$options.translations.formSubtitle" class="gl-text-gray-500">
+        <gl-sprintf :message="$options.translations.formSubtitle" class="gl-text-subtle">
           <template #link="{ content }">
             <gl-link :href="userListsDocsPath" data-testid="user-list-docs-link">
               {{ content }}

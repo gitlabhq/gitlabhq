@@ -68,7 +68,7 @@ export default {
         class="gl-mb-2 gl-font-bold gl-text-gray-900"
         >{{ snippet.title }}</gl-link
       >
-      <span class="gl-text-gray-500">
+      <span class="gl-text-subtle">
         <gl-sprintf :message="$options.i18n.snippetInfo">
           <template #id>
             <span data-testid="snippet-id">{{ formattedId }}</span>
@@ -107,7 +107,7 @@ export default {
         </gl-link>
         <gl-icon data-testid="snippet-visibility" :name="visibilityIcon" />
       </div>
-      <span class="gl-text-gray-500">
+      <span class="gl-text-subtle">
         <gl-sprintf :message="$options.i18n.updatedInfo">
           <template #updated>
             <time-ago data-testid="snippet-updated-at" :time="snippet.updatedAt" />

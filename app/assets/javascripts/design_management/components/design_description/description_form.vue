@@ -191,7 +191,7 @@ export default {
         @keydown.ctrl.enter="updateDesignDescription"
         @keydown.exact.esc.stop="closeForm"
       />
-      <div class="gl-mt-3 gl-flex">
+      <div class="gl-mt-3 gl-flex gl-gap-3">
         <gl-button
           category="primary"
           variant="confirm"
@@ -200,7 +200,7 @@ export default {
           @click="updateDesignDescription"
           >{{ s__('DesignManagement|Save changes') }}
         </gl-button>
-        <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="closeForm"
+        <gl-button category="tertiary" data-testid="cancel" @click="closeForm"
           >{{ s__('DesignManagement|Cancel') }}
         </gl-button>
       </div>

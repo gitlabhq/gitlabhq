@@ -234,7 +234,7 @@ export default {
                 </template>
                 <template #author>
                   <gl-link
-                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    class="js-user-link gl-font-bold !gl-text-subtle"
                     :href="model.author.webUrl"
                     :data-user-id="authorId"
                   >
@@ -294,10 +294,10 @@ export default {
           <div class="gl-pt-6 md:gl-col-span-1">
             <div>
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-              <div v-if="showModelAuthor" class="gl-pt-2 gl-text-gray-500">
+              <div v-if="showModelAuthor" class="gl-pt-2 gl-text-subtle">
                 <gl-link
                   data-testid="sidebar-author-link"
-                  class="js-user-link gl-font-bold !gl-text-gray-500"
+                  class="js-user-link gl-font-bold !gl-text-subtle"
                   :href="model.author.webUrl"
                 >
                   <gl-avatar :label="model.author.name" :src="model.author.avatarUrl" :size="24" />
@@ -307,7 +307,7 @@ export default {
             </div>
             <div v-if="showModelLatestVersion" class="gl-mt-5" data-testid="latest-version-label">
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.latestVersionTitle }}</div>
-              <div class="gl-pt-2 gl-text-gray-500">
+              <div class="gl-pt-2 gl-text-subtle">
                 <gl-link
                   data-testid="sidebar-latest-version-link"
                   :href="model.latestVersion._links.showPath"
@@ -318,7 +318,7 @@ export default {
             </div>
             <div class="gl-mt-5">
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.versionCountTitle }}</div>
-              <div v-if="showCreatedDetail" class="gl-pt-2 gl-text-gray-500">
+              <div v-if="showCreatedDetail" class="gl-pt-2 gl-text-subtle">
                 <span data-testid="sidebar-version-count">
                   {{ versionCount }}
                 </span>

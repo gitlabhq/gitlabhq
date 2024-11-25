@@ -69,7 +69,7 @@ export default {
       <span class="dropdown-toggle-text">{{ __('Choose a template') }}</span>
       <gl-icon
         name="chevron-down"
-        class="dropdown-menu-toggle-icon gl-absolute gl-right-3 gl-top-3 gl-text-gray-500"
+        class="dropdown-menu-toggle-icon gl-absolute gl-right-3 gl-top-3 gl-text-subtle"
       />
     </button>
     <div class="dropdown-menu dropdown-select">

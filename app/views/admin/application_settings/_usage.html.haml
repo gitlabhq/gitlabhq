@@ -49,7 +49,7 @@
         help_text: tag.span(Gitlab.ee? ? optional_metrics_help_text : service_ping_help_text, id: 'service_ping_features_helper_text'),
         checkbox_options: { id: 'application_setting_usage_ping_features_enabled' },
         label_options: { id: 'service_ping_features_label' }
-      .form-text.gl-text-gray-500.gl-pl-6
+      .form-text.gl-text-subtle.gl-pl-6
         %p.gl-mb-3
           - registration_features_gitlab_path = help_page_path('administration/settings/usage_statistics.md', anchor: 'registration-features-program')
           - registration_features_gitlab_link = link_to('', registration_features_gitlab_path, target: '_blank', rel: 'noopener noreferrer')

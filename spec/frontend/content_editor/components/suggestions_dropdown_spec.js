@@ -190,8 +190,8 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
 
   it.each`
     query      | expectedHTML
-    ${''}      | ${'<small class="gl-text-gray-500">Administrator &lt;script&gt;alert("hello")&lt;/script&gt;</small></span></span>'}
-    ${'Admin'} | ${'<small class="gl-text-gray-500"><strong class="!gl-text-default">Admin</strong>istrator &lt;script&gt;alert("hello")&lt;/script&gt;</small></span></span>'}
+    ${''}      | ${'<small class="gl-text-subtle">Administrator &lt;script&gt;alert("hello")&lt;/script&gt;</small></span></span>'}
+    ${'Admin'} | ${'<small class="gl-text-subtle"><strong class="!gl-text-default">Admin</strong>istrator &lt;script&gt;alert("hello")&lt;/script&gt;</small></span></span>'}
   `('escapes stray html before appending to DOM', ({ query, expectedHTML }) => {
     buildWrapper({
       propsData: {

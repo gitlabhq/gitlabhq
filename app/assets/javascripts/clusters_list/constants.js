@@ -183,7 +183,7 @@ export const AGENT_STATUSES = {
   unused: {
     name: s__('ClusterAgents|Never connected'),
     icon: 'status-neutral',
-    class: 'gl-text-gray-500',
+    class: 'gl-text-subtle',
     tooltip: {
       title: s__('ClusterAgents|Agent never connected to GitLab'),
       body: s__('ClusterAgents|Make sure you are using a valid token.'),

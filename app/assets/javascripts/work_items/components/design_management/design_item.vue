@@ -190,7 +190,7 @@ export default {
           {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
         </span>
       </div>
-      <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-gray-500">
+      <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-subtle">
         <gl-icon name="comments" class="gl-ml-2" />
         <span :aria-label="notesLabel" class="gl-ml-2 gl-text-sm">
           {{ notesCount }}

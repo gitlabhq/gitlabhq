@@ -19,7 +19,7 @@ export default {
       return active ? 'feature-flag' : 'feature-flag-disabled';
     },
     iconColor({ active }) {
-      return active ? 'gl-text-blue-500' : 'gl-text-gray-500';
+      return active ? 'gl-text-blue-500' : 'gl-text-subtle';
     },
     flagStatus(flag) {
       return flag.active ? __('Enabled') : __('Disabled');

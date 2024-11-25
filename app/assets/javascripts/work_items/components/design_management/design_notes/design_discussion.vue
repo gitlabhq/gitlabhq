@@ -125,10 +125,10 @@ export default {
           />
         </template>
         <template v-if="discussion.resolved" #resolved-status>
-          <p class="gl-m-0 gl-mt-5 gl-text-sm gl-text-gray-500" data-testid="resolved-message">
+          <p class="gl-m-0 gl-mt-5 gl-text-sm gl-text-subtle" data-testid="resolved-message">
             {{ __('Resolved by') }}
             <gl-link
-              class="link-inherit-color gl-text-sm gl-text-gray-500 gl-no-underline"
+              class="link-inherit-color gl-text-sm gl-text-subtle gl-no-underline"
               :href="discussion.resolvedBy.webUrl"
               target="_blank"
               >{{ discussion.resolvedBy.name }}</gl-link

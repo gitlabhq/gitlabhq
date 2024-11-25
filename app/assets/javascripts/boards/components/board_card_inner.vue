@@ -334,7 +334,7 @@ export default {
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-gray-500"
+              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
             />
             <issue-iteration
               v-if="item.iteration"

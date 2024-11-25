@@ -9,7 +9,7 @@ exports[`MemberActivity with a member that does not have all of the fields rende
   >
     <svg
       aria-hidden="true"
-      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      class="gl-fill-current gl-icon gl-text-subtle s16"
       data-testid="check-icon"
       role="img"
       title="Access granted"
@@ -34,7 +34,7 @@ exports[`MemberActivity with a member that has all fields and "requestAcceptedAt
   >
     <svg
       aria-hidden="true"
-      class="-gl-mr-2 gl-fill-current gl-icon gl-ml-2 gl-text-gray-500 s16"
+      class="-gl-mr-2 gl-fill-current gl-icon gl-ml-2 gl-text-subtle s16"
       data-testid="assignee-icon"
       role="img"
       title="User created"
@@ -52,7 +52,7 @@ exports[`MemberActivity with a member that has all fields and "requestAcceptedAt
   >
     <svg
       aria-hidden="true"
-      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      class="gl-fill-current gl-icon gl-text-subtle s16"
       data-testid="check-icon"
       role="img"
       title="Access granted"
@@ -70,7 +70,7 @@ exports[`MemberActivity with a member that has all fields and "requestAcceptedAt
   >
     <svg
       aria-hidden="true"
-      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      class="gl-fill-current gl-icon gl-text-subtle s16"
       data-testid="hourglass-icon"
       role="img"
       title="Last activity"
@@ -95,7 +95,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
   >
     <svg
       aria-hidden="true"
-      class="-gl-mr-2 gl-fill-current gl-icon gl-ml-2 gl-text-gray-500 s16"
+      class="-gl-mr-2 gl-fill-current gl-icon gl-ml-2 gl-text-subtle s16"
       data-testid="assignee-icon"
       role="img"
       title="User created"
@@ -113,7 +113,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
   >
     <svg
       aria-hidden="true"
-      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      class="gl-fill-current gl-icon gl-text-subtle s16"
       data-testid="check-icon"
       role="img"
       title="Access granted"
@@ -131,7 +131,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
   >
     <svg
       aria-hidden="true"
-      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      class="gl-fill-current gl-icon gl-text-subtle s16"
       data-testid="hourglass-icon"
       role="img"
       title="Last activity"

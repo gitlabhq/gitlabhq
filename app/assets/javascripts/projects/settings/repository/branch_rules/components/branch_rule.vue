@@ -167,7 +167,7 @@ export default {
 
         <protected-badge v-if="isProtected" />
 
-        <ul v-if="hasApprovalDetails" class="gl-mb-0 gl-mt-2 gl-pl-6 gl-text-gray-500">
+        <ul v-if="hasApprovalDetails" class="gl-mb-0 gl-mt-2 gl-pl-6 gl-text-subtle">
           <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
         </ul>
       </div>

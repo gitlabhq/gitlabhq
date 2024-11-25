@@ -2,6 +2,7 @@
 
 require 'rainbow'
 require 'gitlab/utils/all'
+require 'digest'
 
 # rubocop:disable Rails/Output
 module Gitlab
@@ -151,6 +152,62 @@ module Gitlab
 
     def user_home
       Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
+    end
+
+    def download_package_file_version(
+      version:, repo:, package_name:, package_file:, package_checksums_sha256:,
+      target_path:)
+      version = CGI.escape(version)
+      project_path = repo
+        .delete_prefix('https://gitlab.com/')
+        .delete_suffix('.git')
+        .then { |path| CGI.escape(path) }
+      package_name = CGI.escape(package_name)
+      package_file = CGI.escape(package_file)
+
+      uri = URI("https://gitlab.com/api/v4/projects/#{project_path}/packages/generic/#{package_name}/#{version}/#{package_file}")
+
+      success = true
+
+      Tempfile.create(package_file, binmode: true) do |file|
+        Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+          request = Net::HTTP::Get.new uri
+
+          http.request(request) do |response|
+            if response.code == '302'
+              # Allow redirects
+            elsif response.code == '200'
+              response.read_body do |fragment|
+                file.write(fragment)
+              end
+            else
+              warn "HTTP Code: #{response.code} for #{uri}"
+              success = false
+              break
+            end
+          end
+
+          file.close
+
+          if success
+            expected = package_checksums_sha256[package_file]
+            actual = Digest::SHA256.file(file.path).hexdigest
+
+            unless expected == actual
+              raise <<~MESSAGE
+                ERROR: Checksum mismatch for `#{package_file}`:
+                  Expected: #{expected.inspect}
+                    Actual: #{actual.inspect}
+              MESSAGE
+            end
+
+            FileUtils.mkdir_p(File.dirname(target_path))
+            FileUtils.mv(file, target_path)
+          end
+        end
+      end
+
+      success
     end
 
     def checkout_or_clone_version(version:, repo:, target_dir:, clone_opts: [])

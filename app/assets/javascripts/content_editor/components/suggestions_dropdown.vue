@@ -297,7 +297,7 @@ export default {
                     <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.username)"></span>
                     <small
                       v-safe-html:[$options.safeHtmlConfig]="highlight(avatarSubLabel(item))"
-                      class="gl-text-gray-500"
+                      class="gl-text-subtle"
                     ></small>
                   </span>
                 </span>
@@ -309,21 +309,21 @@ export default {
                   />
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference || item.iid)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
                 <span v-if="isVulnerability || isSnippet">
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.id)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
                 <span v-if="isEpic">
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
@@ -337,7 +337,7 @@ export default {
                   <small
                     v-if="item.title.toLowerCase() !== item.slug.toLowerCase()"
                     v-safe-html:[$options.safeHtmlConfig]="highlight(`(${item.slug})`)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                 </span>
                 <span v-if="isLabel" class="gl-flex">
@@ -351,11 +351,11 @@ export default {
                 <div v-if="isCommand">
                   <div class="gl-mb-1">
                     /<span v-safe-html:[$options.safeHtmlConfig]="highlight(item.name)"></span>
-                    <span class="gl-text-sm gl-text-gray-500">{{ item.params[0] }}</span>
+                    <span class="gl-text-sm gl-text-subtle">{{ item.params[0] }}</span>
                   </div>
                   <em
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.description)"
-                    class="gl-text-sm gl-text-gray-500"
+                    class="gl-text-sm gl-text-subtle"
                   ></em>
                 </div>
                 <div v-if="isEmoji" class="gl-flex gl-items-center">

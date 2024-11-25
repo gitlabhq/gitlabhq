@@ -76,7 +76,7 @@ export default {
       v-gl-tooltip="{ title: counterTooltipText }"
       :title="counterTooltipText"
       :href="pipelinePath"
-      class="gl-inline-flex gl-h-6 gl-w-7 gl-items-center gl-justify-center gl-rounded-pill gl-bg-gray-50 gl-text-sm gl-text-gray-500 gl-no-underline"
+      class="gl-inline-flex gl-h-6 gl-w-7 gl-items-center gl-justify-center gl-rounded-pill gl-bg-gray-50 gl-text-sm gl-text-subtle gl-no-underline"
       data-testid="downstream-pipeline-counter"
     >
       {{ counterLabel }}

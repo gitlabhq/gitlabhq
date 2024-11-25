@@ -241,7 +241,7 @@ export default {
 
 <template>
   <div class="content discussion-form discussion-form-container discussion-notes">
-    <div class="gl-mb-3 gl-pb-3 gl-text-gray-500">
+    <div class="gl-mb-3 gl-pb-3 gl-text-subtle">
       <multiline-comment-form
         :line="line"
         :line-range="lines"

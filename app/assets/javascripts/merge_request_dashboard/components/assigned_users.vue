@@ -21,7 +21,7 @@ const REVIEW_STATE_ICONS = {
   },
   REVIEW_STARTED: {
     name: 'comment-dots',
-    class: 'gl-bg-gray-100 gl-text-gray-500',
+    class: 'gl-bg-gray-100 gl-text-subtle',
   },
 };
 const USER_TOOLTIP_TITLES = {

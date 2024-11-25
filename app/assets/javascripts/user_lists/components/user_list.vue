@@ -97,7 +97,7 @@ export default {
       <div :class="$options.classes.headerClasses">
         <div>
           <h3>{{ name }}</h3>
-          <h4 class="gl-text-gray-500">{{ $options.translations.userIdLabel }}</h4>
+          <h4 class="gl-text-subtle">{{ $options.translations.userIdLabel }}</h4>
         </div>
         <div class="gl-mt-6">
           <gl-button v-if="editPath" :href="editPath" data-testid="edit-user-list" class="gl-mr-3">

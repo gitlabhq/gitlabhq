@@ -181,9 +181,7 @@ export default {
           >
         </tooltip-on-truncate>
       </span>
-      <span v-else class="gl-text-gray-500">{{
-        __("Can't find HEAD commit for this branch")
-      }}</span>
+      <span v-else class="gl-text-subtle">{{ __("Can't find HEAD commit for this branch") }}</span>
     </div>
 
     <div class="gl-mb-2">

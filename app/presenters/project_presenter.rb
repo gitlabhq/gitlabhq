@@ -23,7 +23,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_default_class_list
-    'icon gl-mr-3 gl-text-gray-500'
+    'icon gl-mr-3 gl-text-subtle'
   end
 
   def statistic_icon(icon_name = 'plus', class_list = statistic_default_class_list)

@@ -290,6 +290,7 @@ module API
           documentation: { example: '.gitlab/changelog_config.yml' },
           desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/repository/changelog' do
         service = ::Repositories::ChangelogService.new(
           user_project,

@@ -153,7 +153,7 @@ export default {
             class="gl-ml-2"
           />
         </h2>
-        <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
+        <small v-if="updatedAt" class="gl-text-subtle">{{ updatedText }}</small>
       </div>
       <close-button class="gl-ml-auto md:gl-hidden" />
     </div>

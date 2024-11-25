@@ -111,7 +111,7 @@ describe('NewEditForm', () => {
       });
 
       it('renders the character counter correctly', () => {
-        expect(findDescriptionCharacterCounter().classes()).toStrictEqual(['gl-text-gray-500']);
+        expect(findDescriptionCharacterCounter().classes()).toStrictEqual(['gl-text-subtle']);
         expect(findDescriptionCharacterCounter().text()).toBe(
           `${charactersLeft} characters remaining`,
         );
