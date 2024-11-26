@@ -51,7 +51,8 @@ RSpec.shared_context 'with FOSS query type fields' do
       :audit_event_definitions,
       :abuse_report,
       :abuse_report_labels,
-      :feature_flag_enabled
+      :feature_flag_enabled,
+      :job_token_policies_by_category
     ]
   end
 end

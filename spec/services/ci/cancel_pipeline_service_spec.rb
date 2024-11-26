@@ -51,6 +51,7 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
           .to have_received(:info)
           .with(
             a_hash_including(
+              class: described_class.to_s,
               event: 'pipeline_cancel_running',
               pipeline_id: pipeline.id,
               auto_canceled_by_pipeline_id: nil,

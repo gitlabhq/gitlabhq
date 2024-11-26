@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AddRoleApproversToApprovalMergeRequestRules < Gitlab::Database::Migration[2.2]
-  milestone '17.6'
+  milestone '17.7'
   disable_ddl_transaction!
 
   CONSTRAINT_NAME = 'check_approval_m_r_rules_allowed_role_approvers_valid_entries'

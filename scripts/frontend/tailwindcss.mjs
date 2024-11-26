@@ -1,10 +1,7 @@
-/* eslint-disable import/extensions */
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createProcessor } from 'tailwindcss/lib/cli/build/plugin.js';
 
-// Note, in node > 21.2 we could replace the below with import.meta.dirname
-const ROOT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../');
+const ROOT_PATH = path.resolve(import.meta.dirname, '../../');
 
 export async function build({ shouldWatch = false, content = false } = {}) {
   const processorOptions = {
@@ -38,7 +35,7 @@ export async function build({ shouldWatch = false, content = false } = {}) {
 }
 
 function wasScriptCalledDirectly() {
-  return process.argv[1] === fileURLToPath(import.meta.url);
+  return process.argv[1] === import.meta.filename;
 }
 
 export function viteTailwindCompilerPlugin({ shouldWatch = true }) {

@@ -86,7 +86,11 @@ class Import::GiteaController < Import::GithubController
   def client_options
     verified_url, provider_hostname = verify_blocked_uri
 
-    { host: verified_url.scheme == 'https' ? provider_url : verified_url.to_s, api_version: 'v1', hostname: provider_hostname }
+    {
+      host: verified_url.scheme == 'https' ? provider_url : verified_url.to_s,
+      api_version: 'v1',
+      hostname: provider_hostname
+    }
   end
 
   def verify_blocked_uri

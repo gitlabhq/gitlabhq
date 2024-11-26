@@ -725,6 +725,16 @@ Returns [`Iteration`](#iteration).
 | ---- | ---- | ----------- |
 | <a id="queryiterationid"></a>`id` | [`IterationID!`](#iterationid) | Find an iteration by its ID. |
 
+### `Query.jobTokenPoliciesByCategory`
+
+List of job token policies for use with fine-grained permissions on CI/CD job allowlist.
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Returns [`[JobTokenPolicyCategory!]`](#jobtokenpolicycategory).
+
 ### `Query.jobs`
 
 All jobs on this GitLab instance. Returns an empty result for users without administrator access.
@@ -26868,6 +26878,32 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_job_artifacts` on this resource. |
 | <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_build` on this resource. |
 
+### `JobTokenPolicy`
+
+Job token policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobtokenpolicydescription"></a>`description` | [`String`](#string) | Description of the job token policy. |
+| <a id="jobtokenpolicytext"></a>`text` | [`String`](#string) | Display text of the job token policy. |
+| <a id="jobtokenpolicytype"></a>`type` | [`CiJobTokenScopePolicyTypes`](#cijobtokenscopepolicytypes) | Job token policy type. |
+| <a id="jobtokenpolicyvalue"></a>`value` | [`CiJobTokenScopePolicies`](#cijobtokenscopepolicies) | Value of the job token policy. |
+
+### `JobTokenPolicyCategory`
+
+Job token policy category type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobtokenpolicycategorydescription"></a>`description` | [`String`](#string) | Description of the category. |
+| <a id="jobtokenpolicycategorypolicies"></a>`policies` | [`[JobTokenPolicy!]`](#jobtokenpolicy) | Policies of the category. |
+| <a id="jobtokenpolicycategorytext"></a>`text` | [`String`](#string) | Display text of the category. |
+| <a id="jobtokenpolicycategoryvalue"></a>`value` | [`CiJobTokenScopePolicyCategoriesTypes`](#cijobtokenscopepolicycategoriestypes) | Value of the category. |
+
 ### `Kas`
 
 #### Fields
@@ -36088,6 +36124,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
 | <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, GENERIC). `Scan Type` in the UI. |
+| <a id="vulnerabilityrepresentationinformation"></a>`representationInformation` **{warning-solid}** | [`VulnerabilityRepresentationInformation`](#vulnerabilityrepresentationinformation) | **Introduced** in GitLab 17.7. **Status**: Experiment. Information about the representation of the vulnerability, such as resolved commit SHA. |
 | <a id="vulnerabilityresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to resolved. |
 | <a id="vulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User that resolved the vulnerability. |
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
@@ -36630,6 +36667,16 @@ Represents a vulnerability remediation type.
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityremediationtypediff"></a>`diff` | [`String`](#string) | Diff of the remediation. |
 | <a id="vulnerabilityremediationtypesummary"></a>`summary` | [`String`](#string) | Summary of the remediation. |
+
+### `VulnerabilityRepresentationInformation`
+
+Represents vulnerability information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityrepresentationinformationresolvedincommitsha"></a>`resolvedInCommitSha` | [`String`](#string) | SHA of the commit where the vulnerability was resolved. |
 
 ### `VulnerabilityRequest`
 
@@ -37999,41 +38046,46 @@ CI_JOB_TOKEN policy.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cijobtokenscopepoliciesadmin_container_image"></a>`ADMIN_CONTAINER_IMAGE` | Admin Container Image. |
-| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin Secure Files. |
-| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin Terraform State. |
-| <a id="cijobtokenscopepoliciesbuild_create_container_image"></a>`BUILD_CREATE_CONTAINER_IMAGE` | Build Create Container Image. |
-| <a id="cijobtokenscopepoliciesbuild_destroy_container_image"></a>`BUILD_DESTROY_CONTAINER_IMAGE` | Build Destroy Container Image. |
-| <a id="cijobtokenscopepoliciesbuild_download_code"></a>`BUILD_DOWNLOAD_CODE` | Build Download Code. |
-| <a id="cijobtokenscopepoliciesbuild_push_code"></a>`BUILD_PUSH_CODE` | Build Push Code. |
-| <a id="cijobtokenscopepoliciesbuild_read_container_image"></a>`BUILD_READ_CONTAINER_IMAGE` | Build Read Container Image. |
-| <a id="cijobtokenscopepoliciescreate_deployment"></a>`CREATE_DEPLOYMENT` | Create Deployment. |
-| <a id="cijobtokenscopepoliciescreate_environment"></a>`CREATE_ENVIRONMENT` | Create Environment. |
-| <a id="cijobtokenscopepoliciescreate_on_demand_dast_scan"></a>`CREATE_ON_DEMAND_DAST_SCAN` | Create On Demand Dast Scan. |
-| <a id="cijobtokenscopepoliciescreate_package"></a>`CREATE_PACKAGE` | Create Package. |
-| <a id="cijobtokenscopepoliciescreate_release"></a>`CREATE_RELEASE` | Create Release. |
-| <a id="cijobtokenscopepoliciesdestroy_container_image"></a>`DESTROY_CONTAINER_IMAGE` | Destroy Container Image. |
-| <a id="cijobtokenscopepoliciesdestroy_deployment"></a>`DESTROY_DEPLOYMENT` | Destroy Deployment. |
-| <a id="cijobtokenscopepoliciesdestroy_environment"></a>`DESTROY_ENVIRONMENT` | Destroy Environment. |
-| <a id="cijobtokenscopepoliciesdestroy_package"></a>`DESTROY_PACKAGE` | Destroy Package. |
-| <a id="cijobtokenscopepoliciesdestroy_release"></a>`DESTROY_RELEASE` | Destroy Release. |
-| <a id="cijobtokenscopepoliciesread_build"></a>`READ_BUILD` | Read Build. |
-| <a id="cijobtokenscopepoliciesread_container_image"></a>`READ_CONTAINER_IMAGE` | Read Container Image. |
-| <a id="cijobtokenscopepoliciesread_deployment"></a>`READ_DEPLOYMENT` | Read Deployment. |
-| <a id="cijobtokenscopepoliciesread_environment"></a>`READ_ENVIRONMENT` | Read Environment. |
-| <a id="cijobtokenscopepoliciesread_group"></a>`READ_GROUP` | Read Group. |
-| <a id="cijobtokenscopepoliciesread_job_artifacts"></a>`READ_JOB_ARTIFACTS` | Read Job Artifacts. |
-| <a id="cijobtokenscopepoliciesread_package"></a>`READ_PACKAGE` | Read Package. |
-| <a id="cijobtokenscopepoliciesread_pipeline"></a>`READ_PIPELINE` | Read Pipeline. |
-| <a id="cijobtokenscopepoliciesread_project"></a>`READ_PROJECT` | Read Project. |
-| <a id="cijobtokenscopepoliciesread_release"></a>`READ_RELEASE` | Read Release. |
-| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
-| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
-| <a id="cijobtokenscopepoliciesstop_environment"></a>`STOP_ENVIRONMENT` | Stop Environment. |
-| <a id="cijobtokenscopepoliciesupdate_deployment"></a>`UPDATE_DEPLOYMENT` | Update Deployment. |
-| <a id="cijobtokenscopepoliciesupdate_environment"></a>`UPDATE_ENVIRONMENT` | Update Environment. |
-| <a id="cijobtokenscopepoliciesupdate_pipeline"></a>`UPDATE_PIPELINE` | Update Pipeline. |
-| <a id="cijobtokenscopepoliciesupdate_release"></a>`UPDATE_RELEASE` | Update Release. |
+| <a id="cijobtokenscopepoliciesadmin_containers"></a>`ADMIN_CONTAINERS` | Admin container images in a project. |
+| <a id="cijobtokenscopepoliciesadmin_deployments"></a>`ADMIN_DEPLOYMENTS` | Admin deployments in a project. |
+| <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin + Stop environments in a project. |
+| <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Read job metadata, upload artifacts and update the pipeline status. |
+| <a id="cijobtokenscopepoliciesadmin_packages"></a>`ADMIN_PACKAGES` | Admin packages. |
+| <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin releases in a project. |
+| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin secure files in a project. |
+| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin terraform state files/versions. |
+| <a id="cijobtokenscopepoliciesread_containers"></a>`READ_CONTAINERS` | Read container images in a project. |
+| <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read deployments in a project. |
+| <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read environments in a project. |
+| <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read job metadata and artifacts. |
+| <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read packages. |
+| <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read releases in a project. |
+| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read secure files in a project. |
+| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read terraform state files/version. |
+
+### `CiJobTokenScopePolicyCategoriesTypes`
+
+CI_JOB_TOKEN policy category type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobtokenscopepolicycategoriestypescontainers"></a>`CONTAINERS` | Containers category. |
+| <a id="cijobtokenscopepolicycategoriestypesdeployments"></a>`DEPLOYMENTS` | Deployments category. |
+| <a id="cijobtokenscopepolicycategoriestypesenvironments"></a>`ENVIRONMENTS` | Environments category. |
+| <a id="cijobtokenscopepolicycategoriestypesjobs"></a>`JOBS` | Jobs category. |
+| <a id="cijobtokenscopepolicycategoriestypespackages"></a>`PACKAGES` | Packages category. |
+| <a id="cijobtokenscopepolicycategoriestypesreleases"></a>`RELEASES` | Releases category. |
+| <a id="cijobtokenscopepolicycategoriestypessecure_files"></a>`SECURE_FILES` | Secure files category. |
+| <a id="cijobtokenscopepolicycategoriestypesterraform_state"></a>`TERRAFORM_STATE` | Terraform state category. |
+
+### `CiJobTokenScopePolicyTypes`
+
+CI_JOB_TOKEN policy type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobtokenscopepolicytypesadmin"></a>`ADMIN` | Admin access to the resource. |
+| <a id="cijobtokenscopepolicytypesread"></a>`READ` | Read-only access to the resource. |
 
 ### `CiRunnerAccessLevel`
 

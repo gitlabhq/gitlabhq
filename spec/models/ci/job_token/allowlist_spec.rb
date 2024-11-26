@@ -67,7 +67,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
   describe 'add!' do
     let_it_be(:added_project) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_package read_project] }
+    let_it_be(:policies) { %w[read_containers read_packages] }
 
     subject(:add_project) { allowlist.add!(added_project, policies: policies, user: user) }
 
@@ -107,7 +107,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
   describe 'add_group!' do
     let_it_be(:added_group) { create(:group) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_package read_project] }
+    let_it_be(:policies) { %w[read_containers read_packages] }
 
     subject(:add_group) { allowlist.add_group!(added_group, policies: policies, user: user) }
 

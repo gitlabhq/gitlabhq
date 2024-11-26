@@ -70,7 +70,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
         {
           'addedBy' => { 'username' => current_user.username },
           'direction' => 'inbound',
-          'jobTokenPolicies' => ['READ_GROUP'],
+          'jobTokenPolicies' => ['READ_CONTAINERS'],
           'sourceProject' => { 'fullPath' => project.full_path },
           'target' => { 'fullPath' => target_group_1.full_path }
         }
@@ -85,14 +85,14 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
         {
           'addedBy' => { 'username' => current_user.username },
           'direction' => 'outbound',
-          'jobTokenPolicies' => ['READ_PROJECT'],
+          'jobTokenPolicies' => ['READ_CONTAINERS'],
           'sourceProject' => { 'fullPath' => project.full_path },
           'target' => { 'fullPath' => target_project_2.full_path }
         },
         {
           'addedBy' => { 'username' => current_user.username },
           'direction' => 'inbound',
-          'jobTokenPolicies' => ['READ_PROJECT'],
+          'jobTokenPolicies' => ['READ_CONTAINERS'],
           'sourceProject' => { 'fullPath' => project.full_path },
           'target' => { 'fullPath' => target_project_1.full_path }
         }
@@ -138,7 +138,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           :ci_job_token_project_scope_link,
           source_project: project,
           target_project: target_project_1,
-          job_token_policies: %w[read_project],
+          job_token_policies: %w[read_containers],
           added_by: current_user,
           direction: :inbound
         )
@@ -147,7 +147,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           :ci_job_token_project_scope_link,
           source_project: project,
           target_project: target_project_2,
-          job_token_policies: %w[read_project],
+          job_token_policies: %w[read_containers],
           added_by: current_user,
           direction: :outbound
         )
@@ -157,7 +157,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           source_project: project,
           target_group: target_group_1,
           added_by: current_user,
-          job_token_policies: %w[read_group]
+          job_token_policies: %w[read_containers]
         )
       end
 

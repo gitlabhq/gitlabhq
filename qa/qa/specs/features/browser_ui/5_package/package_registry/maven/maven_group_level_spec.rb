@@ -129,7 +129,7 @@ module QA
             Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_disabled)
           end
 
-          it 'prevents users from publishing duplicates',
+          it 'prevents users from publishing duplicates', :blocking,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377491' do
             create_package(package_project)
             package_project.visit_job('deploy')

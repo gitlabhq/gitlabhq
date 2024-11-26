@@ -3,52 +3,124 @@
 module Ci
   module JobToken
     module Policies
-      # policies that every CI job token needs
-      FIXED = [
-        :build_create_container_image,
-        :build_destroy_container_image,
-        :build_download_code,
-        :build_push_code,
-        :build_read_container_image,
-        :read_project
-      ].freeze
-
-      # policies that can be assigned to a CI job token
-      ALLOWED = [
-        :admin_container_image,
-        :admin_secure_files,
-        :admin_terraform_state,
-        :create_deployment,
-        :create_environment,
-        :create_on_demand_dast_scan,
-        :create_package,
-        :create_release,
-        :destroy_container_image,
-        :destroy_deployment,
-        :destroy_environment,
-        :destroy_package,
-        :destroy_release,
-        :read_build,
-        :read_container_image,
-        :read_deployment,
-        :read_environment,
-        :read_group,
-        :read_job_artifacts,
-        :read_package,
-        :read_pipeline,
-        :read_release,
-        :read_secure_files,
-        :read_terraform_state,
-        :stop_environment,
-        :update_deployment,
-        :update_environment,
-        :update_pipeline,
-        :update_release
+      POLICIES_BY_CATEGORY = [
+        {
+          value: :containers,
+          text: 'Containers',
+          description: 'Containers category',
+          policies: [
+            {
+              value: :read_containers,
+              type: :read,
+              text: 'Read',
+              description: 'Read container images in a project'
+            },
+            {
+              value: :admin_containers,
+              type: :admin,
+              text: 'Read and write',
+              description: 'Admin container images in a project'
+            }
+          ]
+        },
+        {
+          value: :deployments,
+          text: 'Deployments',
+          description: 'Deployments category',
+          policies: [
+            { value: :read_deployments, type: :read, text: 'Read', description: 'Read deployments in a project' },
+            {
+              value: :admin_deployments,
+              type: :admin,
+              text: 'Read and write',
+              description: 'Admin deployments in a project'
+            }
+          ]
+        },
+        {
+          value: :environments,
+          text: 'Environments',
+          description: 'Environments category',
+          policies: [
+            { value: :read_environments, type: :read, text: 'Read', description: 'Read environments in a project' },
+            {
+              value: :admin_environments,
+              type: :admin,
+              text: 'Read and write',
+              description: 'Admin + Stop environments in a project'
+            }
+          ]
+        },
+        {
+          value: :jobs,
+          text: 'Jobs',
+          description: 'Jobs category',
+          policies: [
+            { value: :read_jobs, type: :read, text: 'Read', description: 'Read job metadata and artifacts' },
+            {
+              value: :admin_jobs,
+              type: :admin,
+              text: 'Read and write',
+              description: 'Read job metadata, upload artifacts and update the pipeline status'
+            }
+          ]
+        },
+        {
+          value: :packages,
+          text: 'Packages',
+          description: 'Packages category',
+          policies: [
+            { value: :read_packages, type: :read, text: 'Read', description: 'Read packages' },
+            { value: :admin_packages, type: :admin, text: 'Read and write', description: 'Admin packages' }
+          ]
+        },
+        {
+          value: :releases,
+          text: 'Releases',
+          description: 'Releases category',
+          policies: [
+            { value: :read_releases, type: :read, text: 'Read', description: 'Read releases in a project' },
+            { value: :admin_releases, type: :admin, text: 'Read and write', description: 'Admin releases in a project' }
+          ]
+        },
+        {
+          value: :secure_files,
+          text: 'Secure files',
+          description: 'Secure files category',
+          policies: [
+            { value: :read_secure_files, type: :read, text: 'Read', description: 'Read secure files in a project' },
+            {
+              value: :admin_secure_files,
+              type: :admin,
+              text: 'Read and write',
+              description: 'Admin secure files in a project'
+            }
+          ]
+        },
+        {
+          value: :terraform_state,
+          text: 'Terraform state',
+          description: 'Terraform state category',
+          policies: [
+            {
+              value: :read_terraform_state,
+              type: :read,
+              text: 'Read',
+              description: 'Read terraform state files/version'
+            },
+            {
+              value: :admin_terraform_state,
+              type: :admin,
+              text: 'Read and write',
+              description: 'Admin terraform state files/versions'
+            }
+          ]
+        }
       ].freeze
 
       class << self
-        def all_values
-          (FIXED + ALLOWED).map(&:to_s)
+        def all_policies
+          POLICIES_BY_CATEGORY.flat_map { |category| category[:policies] }
         end
       end
     end

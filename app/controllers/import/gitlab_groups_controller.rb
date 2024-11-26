@@ -10,7 +10,8 @@ class Import::GitlabGroupsController < ApplicationController
 
   def create
     unless file_is_valid?(group_params[:file])
-      return redirect_to new_group_path(anchor: 'import-group-pane'), alert: s_('GroupImport|Unable to process group import file')
+      return redirect_to new_group_path(anchor: 'import-group-pane'),
+        alert: s_('GroupImport|Unable to process group import file')
     end
 
     group_data = group_params
@@ -36,7 +37,9 @@ class Import::GitlabGroupsController < ApplicationController
       end
     else
       redirect_to new_group_path(anchor: 'import-group-pane'),
-        alert: s_("GroupImport|Group could not be imported: %{errors}") % { errors: group.errors.full_messages.to_sentence }
+        alert: s_("GroupImport|Group could not be imported: %{errors}") % {
+          errors: group.errors.full_messages.to_sentence
+        }
     end
   end
 

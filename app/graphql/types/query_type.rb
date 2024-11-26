@@ -245,6 +245,10 @@ module Types
       description: 'Check if a feature flag is enabled',
       resolver: Resolvers::FeatureFlagResolver
 
+    field :job_token_policies_by_category, [::Types::Ci::JobTokenScope::JobTokenPolicyCategoryType],
+      description: 'List of job token policies for use with fine-grained permissions on CI/CD job allowlist.',
+      experiment: { milestone: '17.7' }
+
     def design_management
       DesignManagementObject.new(nil)
     end
@@ -297,6 +301,10 @@ module Types
       return unless authorized
 
       stage
+    end
+
+    def job_token_policies_by_category
+      ::Ci::JobToken::Policies::POLICIES_BY_CATEGORY
     end
   end
 end

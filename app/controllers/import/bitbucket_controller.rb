@@ -18,7 +18,10 @@ class Import::BitbucketController < Import::BaseController
     if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, params[:state])
       go_to_bitbucket_for_permissions
     else
-      response = oauth_client.auth_code.get_token(params[:code], redirect_uri: users_import_bitbucket_callback_url(namespace_id: params[:namespace_id]))
+      response = oauth_client.auth_code.get_token(
+        params[:code],
+        redirect_uri: users_import_bitbucket_callback_url(namespace_id: params[:namespace_id])
+      )
 
       session[:bitbucket_token]         = response.token
       session[:bitbucket_expires_at]    = response.expires_at
@@ -62,7 +65,13 @@ class Import::BitbucketController < Import::BaseController
       # Bitbucket::Connection class refreshes it.
       session[:bitbucket_token] = bitbucket_client.connection.token
 
-      project = Gitlab::BitbucketImport::ProjectCreator.new(repo, project_name, target_namespace, current_user, credentials).execute
+      project = Gitlab::BitbucketImport::ProjectCreator.new(
+        repo,
+        project_name,
+        target_namespace,
+        current_user,
+        credentials
+      ).execute
 
       if project.persisted?
         render json: ProjectSerializer.new.represent(project, serializer: :import)
@@ -70,7 +79,8 @@ class Import::BitbucketController < Import::BaseController
         render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
-      render json: { errors: s_('BitbucketImport|You are not allowed to import projects in this namespace.') }, status: :unprocessable_entity
+      render json: { errors: s_('BitbucketImport|You are not allowed to import projects in this namespace.') },
+        status: :unprocessable_entity
     end
   end
 
@@ -143,7 +153,10 @@ class Import::BitbucketController < Import::BaseController
   def go_to_bitbucket_for_permissions
     state = SecureRandom.base64(64)
     session[:bitbucket_auth_state] = state
-    redirect_to oauth_client.auth_code.authorize_url(redirect_uri: users_import_bitbucket_callback_url(namespace_id: params[:namespace_id]), state: state)
+    redirect_to oauth_client.auth_code.authorize_url(
+      redirect_uri: users_import_bitbucket_callback_url(namespace_id: params[:namespace_id]),
+      state: state
+    )
   end
 
   def bitbucket_unauthorized(exception)

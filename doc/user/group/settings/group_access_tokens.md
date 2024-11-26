@@ -123,6 +123,9 @@ If you are an administrator, you can create group access tokens in the Rails con
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 
+FLAG:
+The availability of being able to view revoked tokens is controlled by a feature flag. For more information, see the history.
+
 In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
 feature flag, you can view both active and inactive revoked group access tokens
 on the access tokens page. If you do not enable the feature flag, you can only view

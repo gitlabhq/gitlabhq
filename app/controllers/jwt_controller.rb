@@ -34,7 +34,12 @@ class JwtController < ApplicationController
   private
 
   def authenticate_project_or_user
-    @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_only_authentication_abilities)
+    @authentication_result = Gitlab::Auth::Result.new(
+      nil,
+      nil,
+      :none,
+      Gitlab::Auth.read_only_authentication_abilities
+    )
 
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, request: request)
@@ -70,10 +75,15 @@ class JwtController < ApplicationController
     )
 
     render(
-      json: { errors: [{
-        code: 'UNAUTHORIZED',
-        message: format(_("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See %{help_page_url}"), help_page_url: help_page)
-      }] },
+      json: {
+        errors: [{
+          code: 'UNAUTHORIZED',
+          message: format(_("HTTP Basic: Access denied. If a password was provided for Git authentication, the " \
+            "password was incorrect or you're required to use a token instead of a password. If a " \
+            "token was provided, it was either incorrect, expired, or improperly scoped. See " \
+            "%{help_page_url}"), help_page_url: help_page)
+        }]
+      },
       status: :unauthorized
     )
   end

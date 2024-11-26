@@ -78,12 +78,12 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           :ci_job_token_project_scope_link,
           source_project: project,
           target_project: target_project,
-          job_token_policies: %w[read_project],
+          job_token_policies: %w[read_containers],
           direction: :inbound
         )
       end
 
-      let(:policies) { %w[read_project read_package] }
+      let(:policies) { %w[read_containers read_packages] }
 
       it_behaves_like 'when user is not logged in'
 
@@ -106,7 +106,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
 
             expect(project_link.source_project).to eq(project)
             expect(project_link.target_project).to eq(target_project)
-            expect(project_link.job_token_policies).to eq(%w[read_project read_package])
+            expect(project_link.job_token_policies).to eq(%w[read_containers read_packages])
           end
 
           context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
@@ -117,7 +117,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             it 'does not update the policies' do
               project_link = Ci::JobToken::ProjectScopeLink.last
 
-              expect(project_link.job_token_policies).to eq(%w[read_project])
+              expect(project_link.job_token_policies).to eq(%w[read_containers])
             end
           end
         end
@@ -132,11 +132,11 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           :ci_job_token_group_scope_link,
           source_project: project,
           target_group: target_group,
-          job_token_policies: %w[read_group]
+          job_token_policies: %w[read_containers]
         )
       end
 
-      let(:policies) { %w[read_group read_package] }
+      let(:policies) { %w[read_containers read_packages] }
 
       it_behaves_like 'when user is not logged in'
 
@@ -159,7 +159,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
 
             expect(group_link.source_project).to eq(project)
             expect(group_link.target_group).to eq(target_group)
-            expect(group_link.job_token_policies).to eq(%w[read_group read_package])
+            expect(group_link.job_token_policies).to eq(%w[read_containers read_packages])
           end
 
           context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
@@ -170,7 +170,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             it 'does not update the policies' do
               group_link = Ci::JobToken::GroupScopeLink.last
 
-              expect(group_link.job_token_policies).to eq(%w[read_group])
+              expect(group_link.job_token_policies).to eq(%w[read_containers])
             end
           end
         end

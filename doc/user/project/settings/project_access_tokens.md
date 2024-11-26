@@ -77,6 +77,9 @@ all projects that have visibility level set to [Internal](../../public_access.md
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 
+FLAG:
+The availability of being able to view revoked tokens is controlled by a feature flag. For more information, see the history.
+
 To revoke a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.

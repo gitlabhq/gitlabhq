@@ -18,7 +18,8 @@ class Import::FogbugzController < Import::BaseController
       res = Gitlab::FogbugzImport::Client.new(import_params.to_h.symbolize_keys)
     rescue StandardError
       # If the URI is invalid various errors can occur
-      return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]), alert: _('Could not connect to FogBugz, check your URL')
+      return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]),
+        alert: _('Could not connect to FogBugz, check your URL')
     end
     session[:fogbugz_token] = res.get_token.to_s
     session[:fogbugz_uri] = params[:uri]

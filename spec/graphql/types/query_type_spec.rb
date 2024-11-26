@@ -177,4 +177,48 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_resolver(Resolvers::FeatureFlagResolver)
     end
   end
+
+  describe 'jobTokenPoliciesByCategory field' do
+    subject { described_class.fields['jobTokenPoliciesByCategory'] }
+
+    it 'returns job token policies', :aggregate_failures do
+      is_expected.to have_graphql_type(::Types::Ci::JobTokenScope::JobTokenPolicyCategoryType)
+
+      query = <<~GRAPHQL
+        query {
+          jobTokenPoliciesByCategory {
+            text
+            value
+            description
+            policies {
+              text
+              value
+              description
+              type
+            }
+          }
+        }
+      GRAPHQL
+
+      expected_result = ::Ci::JobToken::Policies::POLICIES_BY_CATEGORY.map do |category|
+        {
+          'text' => category[:text],
+          'value' => category[:value].upcase,
+          'description' => category[:description],
+          'policies' => category[:policies].map do |policy|
+            {
+              'text' => policy[:text],
+              'value' => policy[:value].upcase,
+              'description' => policy[:description],
+              'type' => policy[:type].upcase
+            }
+          end
+        }
+      end
+
+      result = GitlabSchema.execute(query).as_json.dig('data', 'jobTokenPoliciesByCategory')
+
+      expect(result).to eq(expected_result.as_json)
+    end
+  end
 end

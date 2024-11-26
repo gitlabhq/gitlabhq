@@ -158,31 +158,31 @@ function debug_rspec_variables() {
 function handle_retry_rspec_in_new_process() {
   local rspec_run_status="${1}"
   local rspec_retry_status=0
-  local auto_retry_status=1
+  local known_flaky_tests_exit_code=1
 
   if [[ $rspec_run_status -eq 3 ]]; then
     echoerr "Not retrying failing examples since we failed early on purpose!"
-    auto_retry_exit_code_if_known_flaky_tests || auto_retry_status=$?
-    exit "${auto_retry_status}"
+    change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
+    exit "${known_flaky_tests_exit_code}"
   fi
 
   if [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
-    auto_retry_exit_code_if_known_flaky_tests || auto_retry_status=$?
-    exit "${auto_retry_status}"
+    change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
+    exit "${known_flaky_tests_exit_code}"
   fi
 
   if [[ $rspec_run_status -eq 1 ]]; then
     if is_rspec_last_run_results_file_missing; then
-      auto_retry_exit_code_if_known_flaky_tests || auto_retry_status=$?
-      exit "${auto_retry_status}"
+      change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
+      exit "${known_flaky_tests_exit_code}"
     fi
 
     local failed_examples_count=$(grep -c " failed" "${RSPEC_LAST_RUN_RESULTS_FILE}")
     if [[ "${failed_examples_count}" -eq "${RSPEC_FAIL_FAST_THRESHOLD}" ]]; then
       echoerr "Not retrying failing examples since we reached the maximum number of allowed test failures!"
-      auto_retry_exit_code_if_known_flaky_tests || auto_retry_status=$?
-      exit "${auto_retry_status}"
+      change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
+      exit "${known_flaky_tests_exit_code}"
     fi
 
     retry_failed_rspec_examples || rspec_retry_status=$?
@@ -198,22 +198,17 @@ function handle_retry_rspec_in_new_process() {
 
   # At this stage, we know the CI/CD job will fail.
   #
-  # We'll change the exit code to auto-retry the CI job if the failure was due to a known flaky test.
-  auto_retry_exit_code_if_known_flaky_tests || auto_retry_status=$?
-  exit "${auto_retry_status}"
+  # We'll change the exit code of the CI job if the failure was due to a known flaky test.
+  change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
+  exit "${known_flaky_tests_exit_code}"
 }
 
-function auto_retry_exit_code_if_known_flaky_tests() {
+function change_exit_code_if_known_flaky_tests() {
   # Default exit status
-  rspec_retry_status=1
-
-  if [[ "${CI_AUTO_RETRY_JOBS_WITH_FLAKY_TESTS_ENABLED}" != "true" ]]; then
-    echoinfo "INFO: auto-retry of CI/CD job that failed due to a known flaky test is disabled because CI_AUTO_RETRY_JOBS_WITH_FLAKY_TESTS_ENABLED=${CI_AUTO_RETRY_JOBS_WITH_FLAKY_TESTS_ENABLED}."
-    return "${rspec_retry_status}"
-  fi
+  new_exit_code=1
 
   echo "*******************************************************"
-  echo "Retry CI job if known flaky tests failed the job"
+  echo "Checking whether known flaky tests failed the job"
   echo "*******************************************************"
 
   found_known_flaky_tests_status=0
@@ -222,34 +217,15 @@ function auto_retry_exit_code_if_known_flaky_tests() {
   echo "${found_known_flaky_tests_output}"
   if [[ $found_known_flaky_tests_status -eq 0 ]]; then
     echo
-    echo "We'll ensure this CI/CD job is auto-retried (i.e. setting exit code: 112)."
+    echo "Changing the CI/CD job exit code to 112."
 
-    if [[ "${CI_AUTO_RETRY_JOBS_WITH_FLAKY_TESTS_NOTIFICATIONS_ENABLED}" == "true" ]]; then
-      comment=$(cat <<-EOF
-Job ${CI_JOB_NAME} (${CI_JOB_URL}, ${CI_PIPELINE_URL}) failed because of a flaky test, and was auto-retried.
-
-${found_known_flaky_tests_output}
-EOF
-      )
-
-      echo
-      echo "Reporting to https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/573 (project id: 34408484)"
-      new_comment_in_issue \
-        "34408484" \
-        "573" \
-        "${comment}" || true
-    fi
-
-    # Exit code for auto-retrying a job that had known flaky tests in it
-    #
-    # See .gitlab/ci/global.gitlab-ci.yml for the list of custom exit codes we use to auto-retry jobs
-    rspec_retry_status=112
+    new_exit_code=112
   else
     echo
     echo "Not changing the CI/CD job exit code."
   fi
 
-  return "${rspec_retry_status}"
+  return "${new_exit_code}"
 }
 
 function found_known_flaky_tests() {
@@ -263,18 +239,6 @@ function found_known_flaky_tests() {
     --project "gitlab-org/gitlab" \
     --input-files "rspec/rspec-*${CI_JOB_ID}.json" \
     --health-problem-type failures;
-}
-
-function new_comment_in_issue() {
-  local project_id="${1}"
-  local issue_id="${2}"
-  local body="${3}"
-
-  curl --silent -o /dev/null --request POST \
-    --header "PRIVATE-TOKEN: ${TEST_FAILURES_PROJECT_TOKEN}" \
-    --header "Content-Type: application/x-www-form-urlencoded" \
-    --data "body=${body}" \
-    "${CI_API_V4_URL}/projects/${project_id}/issues/${issue_id}/notes" || true
 }
 
 function rspec_parallelized_job() {

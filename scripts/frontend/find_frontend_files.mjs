@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-import { relative, dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { relative, resolve } from 'node:path';
 
 import Runtime from 'jest-runtime';
 import { readConfig } from 'jest-config';
 
-import createJestConfig from '../../jest.config.base';
+import createJestConfig from '../../jest.config.base.js';
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../');
+const ROOT = resolve(import.meta.dirname, '../../');
 
 function resolveDependenciesRecursively(context, target, seen) {
   const dependencies = context.hasteFS.getDependencies(target);

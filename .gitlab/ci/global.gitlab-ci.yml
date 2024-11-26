@@ -10,7 +10,6 @@
       - unknown_failure
     exit_codes:
       - 111  # low free disk space https://gitlab.com/gitlab-org/gitlab/-/issues/498142
-      - 112  # Known flaky tests
 
 .default-utils-before_script:
   before_script:

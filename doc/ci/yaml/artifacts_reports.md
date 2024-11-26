@@ -349,7 +349,9 @@ artifact and existing [requirements](../../user/project/requirements/index.md) a
 GitLab can display the results of one or more reports in the
 [project requirements](../../user/project/requirements/index.md#view-a-requirement).
 
-## `artifacts:reports:repository_xray`
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+
+## `artifacts:reports:repository_xray` (deprecated)
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -357,6 +359,12 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
 
 The `repository_xray` report collects information about your repository for use by GitLab Duo Code Suggestions.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) in GitLab 17.6
+and is planned for removal in 18.0. Use [Enable Repository X-Ray](../../user/project/repository/code_suggestions/repository_xray.md#enable-repository-x-ray) instead.
+
+<!--- end_remove -->
 
 ## `artifacts:reports:sast`
 

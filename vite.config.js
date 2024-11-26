@@ -20,7 +20,6 @@ import {
   PDF_JS_CMAPS_V4_PUBLIC_PATH,
 } from './config/pdfjs.constants';
 
-/* eslint-disable import/extensions */
 import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
 import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
 import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
@@ -29,7 +28,6 @@ import { FixedRubyPlugin } from './config/helpers/vite_plugin_ruby_fixed.mjs';
 import { StylePlugin } from './config/helpers/vite_plugin_style.mjs';
 import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
-/* eslint-enable import/extensions */
 
 let viteGDKConfig;
 try {

@@ -64,6 +64,7 @@ module Ci
 
     def log_pipeline_being_canceled
       Gitlab::AppJsonLogger.info(
+        class: self.class.to_s,
         event: 'pipeline_cancel_running',
         pipeline_id: pipeline.id,
         auto_canceled_by_pipeline_id: @auto_canceled_by_pipeline&.id,

@@ -65,7 +65,12 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   end
 
   def create_service
-    JiraConnectSubscriptions::CreateService.new(current_jira_installation, current_user, namespace_path: params['namespace_path'], jira_user: jira_user)
+    JiraConnectSubscriptions::CreateService.new(
+      current_jira_installation,
+      current_user,
+      namespace_path: params['namespace_path'],
+      jira_user: jira_user
+    )
   end
 
   def destroy_service
