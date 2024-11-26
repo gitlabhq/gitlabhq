@@ -14,7 +14,7 @@ module Atlassian
         ALGORITHM = 'RS256'
         DEFAULT_PUBLIC_KEY_CDN_URL = 'https://connect-install-keys.atlassian.com'
         PROXY_PUBLIC_KEY_PATH = '/-/jira_connect/public_keys'
-        UUID4_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+        KEY_ID_REGEX = %r{\A[A-Za-z0-9_\-\/]+\z}
 
         def initialize(token, verification_claims)
           @token = token
@@ -61,7 +61,7 @@ module Atlassian
         end
 
         def retrieve_public_key(key_id)
-          raise KeyFetchError unless UUID4_REGEX.match?(key_id)
+          raise KeyFetchError unless KEY_ID_REGEX.match?(key_id)
 
           public_key = Gitlab::HTTP.try_get("#{public_key_cdn_url}/#{key_id}").try(:body)
 
