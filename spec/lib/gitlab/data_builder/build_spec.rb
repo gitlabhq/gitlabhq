@@ -36,7 +36,7 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it { expect(data[:retries_count]).to eq(ci_build.retries_count) }
     it { expect(data[:commit][:name]).to eq(pipeline.name) }
 
-    it {
+    it do
       expect(data[:user]).to eq(
         {
             id: user.id,
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
             avatar_url: user.avatar_url(only_path: false),
             email: user.email
             })
-    }
+    end
 
     it { expect(data[:commit][:id]).to eq(ci_build.pipeline.id) }
     it { expect(data[:runner][:id]).to eq(ci_build.runner.id) }

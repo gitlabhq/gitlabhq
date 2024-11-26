@@ -25,7 +25,7 @@ RSpec.describe Projects::ClusterAgentsHelper, feature_category: :deployment_mana
 
     subject { helper.js_cluster_agent_details_data(agent_name, project) }
 
-    it {
+    it do
       is_expected.to match({
         agent_name: agent_name,
         project_path: project.full_path,
@@ -36,7 +36,7 @@ RSpec.describe Projects::ClusterAgentsHelper, feature_category: :deployment_mana
         kas_install_version: Gitlab::Kas.install_version_info,
         can_admin_cluster: "false"
       })
-    }
+    end
 
     context 'user has admin cluster permissions' do
       let(:user_can_admin_cluster) { true }

@@ -34,6 +34,7 @@ describeSkipVue3(skipReason, () => {
   const mountComponent = ({
     props = {},
     resolver = jest.fn().mockResolvedValue(modelVersionsQuery()),
+    latestVersion = '1.0.0',
   } = {}) => {
     const requestHandlers = [[getModelVersionsQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
@@ -49,6 +50,7 @@ describeSkipVue3(skipReason, () => {
         mlflowTrackingUrl: 'path/to/mlflow',
         createModelVersionPath: 'versions/new',
         canWriteModelRegistry: true,
+        latestVersion,
       },
       stubs: {
         SearchableTable,
@@ -63,7 +65,7 @@ describeSkipVue3(skipReason, () => {
   describe('when list is loaded and has no data', () => {
     const resolver = jest.fn().mockResolvedValue(emptyModelVersionsQuery);
     beforeEach(async () => {
-      mountComponent({ resolver });
+      mountComponent({ resolver, latestVersion: null });
       await waitForPromises();
     });
 
@@ -74,6 +76,10 @@ describeSkipVue3(skipReason, () => {
         primaryText: 'Create model version',
         primaryLink: 'versions/new',
       });
+    });
+
+    it('search is hidden', () => {
+      expect(findSearchableTable().props('showSearch')).toBe(false);
     });
   });
 
@@ -116,6 +122,10 @@ describeSkipVue3(skipReason, () => {
 
     it('displays version rows', () => {
       expect(findSearchableTable().props('modelVersions')).toHaveLength(2);
+    });
+
+    it('search is displayed', () => {
+      expect(findSearchableTable().props('showSearch')).toBe(true);
     });
   });
 });

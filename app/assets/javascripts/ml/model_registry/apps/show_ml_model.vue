@@ -275,14 +275,15 @@ export default {
             <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
               <gl-tabs class="gl-mt-4" :value="tabIndex">
                 <gl-tab
-                  v-if="latestVersion"
                   :title="$options.i18n.tabModelCardTitle"
                   @click="goTo($options.ROUTE_DETAILS)"
                 />
-                <gl-tab v-if="latestVersion" @click="goTo($options.ROUTE_VERSIONS)">
+                <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
                   <template #title>
                     {{ $options.i18n.tabVersionsTitle }}
-                    <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
+                    <gl-badge v-if="versionCount" class="gl-tab-counter-badge">{{
+                      versionCount
+                    }}</gl-badge>
                   </template>
                 </gl-tab>
 

@@ -247,7 +247,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
     subject(:metadata) { project_file.metadata }
 
-    it {
+    it do
       is_expected.to eq(
         context_project: context_project.full_path,
         context_sha: project_sha,
@@ -257,7 +257,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
         raw: "http://localhost/#{project.full_path}/-/raw/#{project_sha}/file.yml",
         extra: { project: project.full_path, ref: 'HEAD' }
       )
-    }
+    end
 
     context 'when project name and ref include masked variables' do
       let_it_be(:project) { create(:project, :repository, path: 'my_project_path') }
@@ -276,7 +276,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
       let(:params) { { project: project.full_path, ref: branch_name, file: '/file.yml' } }
 
-      it {
+      it do
         is_expected.to eq(
           context_project: context_project.full_path,
           context_sha: project_sha,
@@ -286,7 +286,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
           raw: "http://localhost/#{namespace_path}/[MASKED]xxxxxxx/-/raw/#{included_project_sha}/file.yml",
           extra: { project: "#{namespace_path}/[MASKED]xxxxxxx", ref: '[MASKED]xxxxxxxxxxxxxxxxxx' }
         )
-      }
+      end
     end
   end
 

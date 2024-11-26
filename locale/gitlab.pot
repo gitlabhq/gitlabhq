@@ -20159,9 +20159,6 @@ msgstr ""
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 
-msgid "DuoChat|Delete all messages in this conversation."
-msgstr ""
-
 msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
@@ -20177,13 +20174,7 @@ msgstr ""
 msgid "DuoChat|Included references"
 msgstr ""
 
-msgid "DuoChat|Learn what Duo Chat can do."
-msgstr ""
-
 msgid "DuoChat|No results found"
-msgstr ""
-
-msgid "DuoChat|Reset conversation and ignore the previous messages."
 msgstr ""
 
 msgid "DuoChat|Search %{categoryLabel}..."

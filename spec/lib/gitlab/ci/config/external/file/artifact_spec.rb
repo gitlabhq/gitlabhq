@@ -202,7 +202,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
     subject(:metadata) { external_file.metadata }
 
-    it {
+    it do
       is_expected.to eq(
         context_project: project.full_path,
         context_sha: nil,
@@ -210,7 +210,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
         location: 'generated.yml',
         extra: { job_name: nil }
       )
-    }
+    end
 
     context 'when job name includes a masked variable' do
       let(:variables) do
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
       let(:params) { { artifact: 'generated.yml', job: 'a_secret_variable_value' } }
 
-      it {
+      it do
         is_expected.to eq(
           context_project: project.full_path,
           context_sha: nil,
@@ -227,7 +227,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
           location: 'generated.yml',
           extra: { job_name: '[MASKED]xxxxxxxxxxxxxxx' }
         )
-      }
+      end
     end
   end
 

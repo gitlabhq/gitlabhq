@@ -263,7 +263,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     subject(:metadata) { remote_file.metadata }
 
-    it {
+    it do
       is_expected.to eq(
         context_project: nil,
         context_sha: '12345',
@@ -273,7 +273,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         blob: nil,
         extra: {}
       )
-    }
+    end
   end
 
   describe '#to_hash' do

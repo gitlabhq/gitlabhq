@@ -64,24 +64,6 @@ RSpec.describe Commits::CherryPickService, feature_category: :source_code_manage
         expect(result[:status]).to eq(:success)
         expect(branch.dereferenced_target.message).to eq('foo')
       end
-
-      context 'when web_ui_commit_author_change feature flag is disabled' do
-        before do
-          stub_feature_flags(web_ui_commit_author_change: false)
-        end
-
-        it 'does not contain co authored by trailer' do
-          source_commit = project.commit(merge_commit_sha)
-
-          result = cherry_pick(merge_commit_sha, branch_name)
-          expect(result[:status]).to eq(:success), result[:message]
-
-          commit = repository.find_branch(branch_name).dereferenced_target
-          expect(commit.message).not_to include('Co-authored-by')
-          expect(commit.author_name).to eq(source_commit.author_name)
-          expect(commit.author_email).to eq(source_commit.author_email)
-        end
-      end
     end
 
     it_behaves_like 'successful cherry-pick'

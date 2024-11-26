@@ -207,12 +207,12 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
 
     subject(:metadata) { file.metadata }
 
-    it {
+    it do
       is_expected.to eq(
         context_project: project.full_path,
         context_sha: 'HEAD'
       )
-    }
+    end
   end
 
   describe '#eql?' do

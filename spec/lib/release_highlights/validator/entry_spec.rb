@@ -33,10 +33,10 @@ RSpec.describe ReleaseHighlights::Validator::Entry, type: :model, feature_catego
       it { is_expected.to validate_presence_of(:gitlab_com).with_message(/must be a boolean/) }
       it { is_expected.to allow_value(nil).for(:image_url) }
 
-      it {
+      it do
         is_expected.to validate_presence_of(:available_in)
           .with_message(/must be one of \["Free", "Premium", "Ultimate"\]/)
-      }
+      end
 
       it { is_expected.to validate_presence_of(:published_at).with_message(/must be valid Date/) }
       it { is_expected.to validate_numericality_of(:release).with_message(/is not a number/) }

@@ -69,13 +69,13 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors, feature_category: :gitaly do
       end
 
       context 'without Gitaly::LimitError detail' do
-        it("wraps in a Gitlab::Git::ResourceExhaustedError with default message") {
+        it "wraps in a Gitlab::Git::ResourceExhaustedError with default message" do
           expect { wrapper.wrapped_gitaly_errors { raise GRPC::ResourceExhausted } }.to raise_error do |wrapped_error|
             expect(wrapped_error).to be_a(Gitlab::Git::ResourceExhaustedError)
             expect(wrapped_error.message).to eql("Upstream Gitaly has been exhausted. Try again later")
             expect(wrapped_error.headers).to eql({})
           end
-        }
+        end
       end
     end
 

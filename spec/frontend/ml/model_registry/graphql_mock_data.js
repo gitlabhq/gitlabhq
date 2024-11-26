@@ -388,9 +388,35 @@ export const model = {
   latestVersion: modelVersionWithCandidateAndAuthor,
 };
 
+export const modelWithNoVersion = {
+  id: 'gid://gitlab/Ml::Model/3',
+  name: 'model_3',
+  versionCount: 0,
+  latestVersion: null,
+  createdAt: '2023-12-06T12:41:48Z',
+  description: 'A model description',
+  descriptionHtml: 'A model description',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'name',
+    avatarUrl: 'avatarUrl',
+    webUrl: 'webUrl',
+  },
+  _links: {
+    showPath: '/my_project/-/ml/models/3',
+  },
+  candidateCount: 0,
+};
+
 export const modelDetailQuery = {
   data: {
     mlModel: model,
+  },
+};
+
+export const modelWithNoVersionDetailQuery = {
+  data: {
+    mlModel: modelWithNoVersion,
   },
 };
 

@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
   describe '#metadata' do
     subject(:metadata) { template_file.metadata }
 
-    it {
+    it do
       is_expected.to eq(
         context_project: project.full_path,
         context_sha: '12345',
@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
         blob: nil,
         extra: {}
       )
-    }
+    end
   end
 
   describe '#to_hash' do

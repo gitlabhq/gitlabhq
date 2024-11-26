@@ -20,7 +20,12 @@ import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue
 import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 import DeleteModel from '~/ml/model_registry/components/functional/delete_model.vue';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
-import { destroyModelResponses, model, modelDetailQuery } from '../graphql_mock_data';
+import {
+  destroyModelResponses,
+  model,
+  modelDetailQuery,
+  modelWithNoVersionDetailQuery,
+} from '../graphql_mock_data';
 
 // Vue Test Utils `stubs` option does not stub components mounted
 // in <router-view>. Use mocking instead:
@@ -203,7 +208,24 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     });
 
     it('shows the number of versions in the tab', () => {
-      expect(findVersionsCountBadge().text()).toBe(model.versionCount.toString());
+      expect(findVersionsCountBadge().text()).toBe('1');
+    });
+  });
+
+  describe('Tabs for model no version', () => {
+    beforeEach(() =>
+      createWrapper({
+        modelDetailsResolver: jest.fn().mockResolvedValue(modelWithNoVersionDetailQuery),
+        latestVersion: null,
+      }),
+    );
+
+    it('does not show badge', () => {
+      expect(findVersionsCountBadge().exists()).toBe(false);
+    });
+
+    it('shows model card', () => {
+      expect(findDetailTab().exists()).toBe(true);
     });
   });
 
