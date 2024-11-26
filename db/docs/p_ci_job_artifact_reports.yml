@@ -1,0 +1,12 @@
+---
+table_name: p_ci_job_artifact_reports
+classes:
+- Ci::JobArtifactReport
+feature_categories:
+- continuous_integration
+description: Table containing metadata about job artifact reports
+introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4423
+milestone: '17.6'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

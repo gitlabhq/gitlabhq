@@ -33,6 +33,12 @@ module Ci
       partition_foreign_key: :partition_id,
       inverse_of: :job_artifacts
 
+    has_one :artifact_report,
+      ->(artifact) { in_partition(artifact) },
+      class_name: 'Ci::JobArtifactReport',
+      partition_foreign_key: :partition_id,
+      inverse_of: :job_artifact
+
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
     update_project_statistics project_statistics_name: :build_artifacts_size
 
@@ -232,6 +238,20 @@ module Ci
 
     def none_access?
       none_accessibility?
+    end
+
+    def each_blob(&blk)
+      if junit? && artifact_report.nil?
+        build_artifact_report(status: :validated, validation_error: nil, project_id: project_id)
+      end
+
+      super
+    rescue StandardError => e
+      artifact_report&.assign_attributes(status: :faulty, validation_error: e.message)
+
+      raise e
+    ensure
+      artifact_report&.save! if persisted?
     end
 
     private

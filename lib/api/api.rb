@@ -353,6 +353,8 @@ module API
         mount ::API::Topics
         mount ::API::Unleash
         mount ::API::UsageData
+        mount ::API::UsageDataServicePing
+        mount ::API::UsageDataTrack
         mount ::API::UsageDataNonSqlMetrics
         mount ::API::UsageDataQueries
         mount ::API::Users
@@ -393,6 +395,8 @@ module API
       mount ::API::Templates
       mount ::API::Todos
       mount ::API::UsageData
+      mount ::API::UsageDataServicePing
+      mount ::API::UsageDataTrack
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::VsCode::Settings::VsCodeSettingsSync
       mount ::API::Ml::Mlflow::Entrypoint

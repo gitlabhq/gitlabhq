@@ -1126,6 +1126,8 @@ module Ci
 
     def each_report(report_types)
       job_artifacts_for_types(report_types).each do |report_artifact|
+        next if report_artifact&.artifact_report&.faulty?
+
         report_artifact.each_blob do |blob|
           yield report_artifact.file_type, blob, report_artifact
         end
