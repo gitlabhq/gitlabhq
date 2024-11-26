@@ -12,7 +12,7 @@ module Integrations
       non_empty_password_title
     ].concat(BOOLEAN_ATTRIBUTES).freeze
 
-    TYPES = %i[text textarea password checkbox select].freeze
+    TYPES = %i[text textarea password checkbox number select].freeze
 
     attr_reader :name, :integration_class
 
@@ -63,7 +63,14 @@ module Integrations
     end
 
     def api_type
-      checkbox? ? ::API::Integrations::Boolean : String
+      case type
+      when :checkbox
+        ::API::Integrations::Boolean
+      when :number
+        Integer
+      else
+        String
+      end
     end
 
     private

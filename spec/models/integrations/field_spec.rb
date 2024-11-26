@@ -200,6 +200,16 @@ RSpec.describe ::Integrations::Field, feature_category: :integrations do
         expect(field.api_type).to eq(::API::Integrations::Boolean)
       end
     end
+
+    context 'when type is number' do
+      before do
+        attrs[:type] = :number
+      end
+
+      it 'returns Integer' do
+        expect(field.api_type).to eq(Integer)
+      end
+    end
   end
 
   describe '#key?' do

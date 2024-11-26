@@ -29964,6 +29964,9 @@ msgstr ""
 msgid "IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}"
 msgstr ""
 
+msgid "IrkerService|Comma-separated list of channels or email addresses."
+msgstr ""
+
 msgid "IrkerService|Default IRC URI (optional)"
 msgstr ""
 
@@ -29988,13 +29991,16 @@ msgstr ""
 msgid "IrkerService|URI to add before each recipient."
 msgstr ""
 
+msgid "IrkerService|URI to add before each recipient. The default value is `irc://irc.network.net:6697/`."
+msgstr ""
+
 msgid "IrkerService|irker (IRC gateway)"
 msgstr ""
 
-msgid "IrkerService|irker daemon hostname (defaults to localhost)."
+msgid "IrkerService|irker daemon hostname. The default value is `localhost`."
 msgstr ""
 
-msgid "IrkerService|irker daemon port (defaults to 6659)."
+msgid "IrkerService|irker daemon port. The default value is `6659`."
 msgstr ""
 
 msgid "Is blocked by"
@@ -48632,6 +48638,9 @@ msgid "ScanResultPolicy|No settings available for this policy"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 1 age criteria is allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Only 1 licence status criteria is allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 2 attribute criteria are allowed"

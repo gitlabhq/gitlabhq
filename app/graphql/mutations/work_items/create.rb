@@ -79,8 +79,9 @@ module Mutations
       def resolve(project_path: nil, namespace_path: nil, **attributes)
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
-        params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
-        type = ::WorkItems::Type.find(attributes[:work_item_type_id])
+        params = params_with_work_item_type(attributes).merge(author_id: current_user.id)
+        type = params[:work_item_type]
+        raise_resource_not_available_error! unless type
 
         check_feature_available!(container, type)
         widget_params = extract_widget_params!(type, params, container)
@@ -109,10 +110,13 @@ module Mutations
         raise_feature_not_available_error!(type)
       end
 
-      def global_id_compatibility_params(params)
-        params[:work_item_type_id] = params[:work_item_type_id]&.model_id
+      def params_with_work_item_type(attributes)
+        work_item_type_id = attributes.delete(:work_item_type_id)&.model_id
+        work_item_type = ::WorkItems::Type.find_by_correct_id_with_fallback(work_item_type_id)
 
-        params
+        attributes[:work_item_type] = work_item_type
+
+        attributes
       end
 
       # type is used in overridden EE method

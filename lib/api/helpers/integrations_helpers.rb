@@ -123,38 +123,7 @@ module API
           'google-play' => ::Integrations::GooglePlay.api_arguments,
           'hangouts-chat' => ::Integrations::HangoutsChat.api_arguments,
           'harbor' => ::Integrations::Harbor.api_arguments,
-          'irker' => [
-            {
-              required: true,
-              name: :recipients,
-              type: String,
-              desc: 'Recipients/channels separated by whitespaces'
-            },
-            {
-              required: false,
-              name: :default_irc_uri,
-              type: String,
-              desc: 'Default: irc://irc.network.net:6697'
-            },
-            {
-              required: false,
-              name: :server_host,
-              type: String,
-              desc: 'Server host. Default localhost'
-            },
-            {
-              required: false,
-              name: :server_port,
-              type: Integer,
-              desc: 'Server port. Default 6659'
-            },
-            {
-              required: false,
-              name: :colorize_messages,
-              type: ::Grape::API::Boolean,
-              desc: 'Colorize messages'
-            }
-          ],
+          'irker' => ::Integrations::Irker.api_arguments,
           'jenkins' => ::Integrations::Jenkins.api_arguments,
           'jira' => [
             {

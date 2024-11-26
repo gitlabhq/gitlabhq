@@ -216,7 +216,7 @@ This method should return an array of hashes for each field, where the keys can 
 
 | Key            | Type    | Required | Default                      | Description |
 |:---------------|:--------|:---------|:-----------------------------|:--|
-| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:textarea`, `:password`, `:checkbox`, or `:select`. |
+| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:number`, `:textarea`, `:password`, `:checkbox`, or `:select`. |
 | `section:`     | symbol  | false    |                              | Specify which section the field belongs to. |
 | `name:`        | string  | true     |                              | The property name for the form field. |
 | `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed. |
@@ -257,7 +257,8 @@ The most commonly used sections are pre-defined and already include some UI:
 - `SECTION_TYPE_CONFIGURATION`: Contains more advanced configuration and optional settings around how the integration works.
 - `SECTION_TYPE_TRIGGER`: Contains a list of events which will trigger an integration.
 
-`SECTION_TYPE_CONNECTION` & `SECTION_TYPE_CONFIGURATION` internally renders the `dynamic-field` component. The `dynamic-field` component renders either a `checkbox`, `input`, `select` or `textarea` based on integration `type`.
+`SECTION_TYPE_CONNECTION` and `SECTION_TYPE_CONFIGURATION` render the `dynamic-field` component internally.
+The `dynamic-field` component renders a `checkbox`, `number`, `input`, `select`, or `textarea` type for the integration.
 For example:
 
 ```ruby

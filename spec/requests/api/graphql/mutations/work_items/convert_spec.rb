@@ -45,6 +45,8 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
     end
 
     it 'converts the work item', :aggregate_failures do
+      expect(new_type.to_gid.model_id.to_i).to eq(new_type.correct_id)
+
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
       end.to change { work_item.reload.work_item_type }.to(new_type)
@@ -53,6 +55,28 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
       expect(work_item.reload.work_item_type.base_type).to eq('incident')
       expect(mutation_response['workItem']).to include('id' => work_item.to_global_id.to_s)
       expect(work_item.reload.milestone).to be_nil
+      expect(GlobalID.new(mutation_response.dig('workItem', 'workItemType', 'id')).model_id.to_i).to eq(
+        new_type.correct_id
+      )
+    end
+
+    context 'when an old ID is used' do
+      let(:work_item_type_id) { ::Gitlab::GlobalId.build(new_type, id: new_type.old_id).to_s }
+
+      it 'converts the work item' do
+        expect(new_type.old_id).not_to eq(new_type.correct_id)
+
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { work_item.reload.work_item_type }.to(new_type)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(work_item.reload.work_item_type.base_type).to eq('incident')
+        expect(mutation_response['workItem']).to include('id' => work_item.to_global_id.to_s)
+        expect(GlobalID.new(mutation_response.dig('workItem', 'workItemType', 'id')).model_id.to_i).to eq(
+          new_type.correct_id
+        )
+      end
     end
 
     it_behaves_like 'has spam protection' do

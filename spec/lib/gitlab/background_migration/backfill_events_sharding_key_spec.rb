@@ -18,10 +18,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEventsShardingKey, :migratio
       table(:design_management_designs).create!(project_id: project.id, filename: 'final_v2.jpg', iid: 42)
     end
 
-    let!(:issue) { table(:issues).create!(project_id: project.id, namespace_id: namespace.id, work_item_type_id: 1) }
     let!(:milestone) { table(:milestones).create!(title: 'Backlog', project_id: project.id) }
     let!(:wpm_project) { table(:wiki_page_meta).create!(title: 'Backlog', project_id: project.id) }
     let!(:wpm_group) { table(:wiki_page_meta).create!(title: 'Backlog', namespace_id: namespace.id) }
+    let(:issue_type) { table(:work_item_types).find_by(name: 'Issue') }
+    let!(:issue) do
+      table(:issues).create!(project_id: project.id, namespace_id: namespace.id, work_item_type_id: issue_type.id)
+    end
+
     let!(:epic) do
       table(:epics).create!(title: "epic", title_html: "epic", iid: 1, author_id: user.id, group_id: namespace.id,
         issue_id: issue.id)

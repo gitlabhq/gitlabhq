@@ -158,8 +158,8 @@ $profile-grid-flex: 1fr;
   display: inline-block;
   margin-right: 10px;
   margin-bottom: 10px;
-  border: 1px solid $border-color;
   border-radius: 3px;
+  @apply gl-border;
 
   &:last-child {
     margin-right: 0;
@@ -177,7 +177,7 @@ $profile-grid-flex: 1fr;
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;
-  border-right: 1px solid $border-color;
+  @apply gl-border-r gl-border-r-default;
 
   > img {
     width: 20px;
@@ -189,7 +189,7 @@ $profile-grid-flex: 1fr;
   padding: 5px 10px;
   margin-left: -3px;
   line-height: 22px;
-  background-color: var(--gl-gray-10);
+  @apply gl-bg-subtle;
 }
 
 .user-activity-content {
@@ -204,7 +204,7 @@ $profile-grid-flex: 1fr;
     height: 22px;
 
     svg {
-      fill: $gray-600 !important;
+      fill: var(--gl-status-neutral-icon-color) !important;
     }
   }
 }

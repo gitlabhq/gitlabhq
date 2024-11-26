@@ -1212,10 +1212,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `recipients` | string | yes | Recipients or channels separated by whitespaces. |
-| `default_irc_uri` | string | no | `irc://irc.network.net:6697/`. |
-| `server_host` | string | no | localhost. |
-| `server_port` | integer | no | 6659. |
+| `recipients` | string | yes | Comma-separated list of channels or email addresses. |
+| `default_irc_uri` | string | no | URI to add before each recipient. The default value is `irc://irc.network.net:6697/`. |
+| `server_host` | string | no | irker daemon hostname. The default value is `localhost`. |
+| `server_port` | integer | no | irker daemon port. The default value is `6659`. |
 | `colorize_messages` | boolean | no | Colorize messages. |
 | `use_inherited_settings` | boolean | no | Indicates whether to inherit the default settings. Defaults to `false`. |
 

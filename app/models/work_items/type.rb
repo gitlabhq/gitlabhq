@@ -86,6 +86,22 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
+    scope :with_correct_id_and_fallback, ->(correct_ids) {
+      return id_in(correct_ids) if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
+
+      # This shouldn't work for nil ids as we expect newer instances to have NULL values in old_id
+      correct_ids = Array(correct_ids).compact
+      return none if correct_ids.blank?
+
+      where(correct_id: correct_ids).or(where(old_id: correct_ids))
+    }
+
+    def self.find_by_correct_id_with_fallback(correct_id)
+      results = with_correct_id_and_fallback(correct_id)
+      return results.first if results.to_a.size <= 1 # Using to_a to avoid an additional query. Loads the relationship.
+
+      results.find { |type| type.correct_id == correct_id }
+    end
 
     def self.default_by_type(type)
       found_type = find_by(base_type: type)
@@ -119,6 +135,14 @@ module WorkItems
         []
       end
     end
+
+    def to_global_id
+      return super if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
+
+      ::Gitlab::GlobalId.build(self, id: correct_id)
+    end
+    # Alias necessary here as the Gem uses `alias` to define the `gid` method
+    alias_method :to_gid, :to_global_id
 
     # resource_parent is used in EE
     def widgets(_resource_parent)
