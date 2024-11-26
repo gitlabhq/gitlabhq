@@ -45,35 +45,6 @@ module API
     end
 
     namespace 'usage_data' do
-      resource :service_ping do
-        allow_access_with_scope :read_service_ping
-
-        before do
-          authenticated_as_admin!
-        end
-
-        desc 'Get the latest ServicePing payload' do
-          detail 'Introduces in Gitlab 16.9. Requires personal access token with read_service_ping scope.'
-          success code: 200
-          failure [
-            { code: 401, message: '401 Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
-          ]
-          tags %w[usage_data]
-          produces ['application/json']
-        end
-
-        get do
-          content_type 'application/json'
-
-          Gitlab::InternalEvents.track_event('request_service_ping_via_rest', user: current_user)
-
-          Rails.cache.fetch(Gitlab::Usage::ServicePingReport::CACHE_KEY) ||
-            ::RawUsageData.for_current_reporting_cycle.first&.payload || {}
-        end
-      end
-
       desc 'Track usage data event' do
         detail 'This feature was introduced in GitLab 13.4.'
         success code: 200
@@ -113,30 +84,6 @@ module API
         increment_unique_values(event_name, current_user.id)
 
         status :ok
-      end
-
-      resource :track_event do
-        allow_access_with_scope :ai_workflows
-
-        desc 'Track gitlab internal events' do
-          detail 'This feature was introduced in GitLab 16.2.'
-          success code: 200
-          failure [
-            { code: 401, message: 'Unauthorized' },
-            { code: 404, message: 'Not found' }
-          ]
-          tags %w[usage_data]
-        end
-
-        params do
-          use :event_params
-        end
-
-        post urgency: :low do
-          process_event(params)
-
-          status :ok
-        end
       end
 
       desc 'Track multiple gitlab internal events' do

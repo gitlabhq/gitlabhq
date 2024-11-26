@@ -1099,8 +1099,10 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         control = ActiveRecord::QueryRecorder.new { get_test_report_json }
 
-        create(:ci_build, name: 'karma', pipeline: pipeline).tap do |build|
-          create(:ci_job_artifact, :junit, job: build)
+        5.times do
+          create(:ci_build, name: 'karma', pipeline: pipeline).tap do |build|
+            create(:ci_job_artifact, :junit, job: build)
+          end
         end
 
         clear_controller_memoization

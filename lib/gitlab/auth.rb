@@ -83,7 +83,7 @@ module Gitlab
         result =
           service_request_check(login, password, project) ||
           build_access_token_check(login, password) ||
-          lfs_token_check(login, password, project) ||
+          lfs_token_check(login, password, project, request) ||
           oauth_access_token_check(password) ||
           personal_access_token_check(password, project) ||
           deploy_token_check(login, password, project) ||
@@ -314,8 +314,9 @@ module Gitlab
         end
       end
 
-      def lfs_token_check(login, encoded_token, project)
+      def lfs_token_check(login, encoded_token, project, request)
         return unless login
+        return unless git_lfs_request?(request)
 
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
@@ -432,6 +433,10 @@ module Gitlab
       end
 
       private
+
+      def git_lfs_request?(request)
+        Gitlab::PathRegex.repository_git_lfs_route_regex.match?(request.path)
+      end
 
       def available_scopes_for_resource(resource)
         case resource

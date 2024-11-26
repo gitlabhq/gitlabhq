@@ -908,4 +908,58 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       it_behaves_like 'returning attributes for object deletion'
     end
   end
+
+  describe '#each_blob' do
+    let(:job_artifact) { create(:ci_job_artifact, :junit) }
+
+    it 'creates a report artifact for junit reports' do
+      expect { job_artifact.each_blob { |b| } }.to change { Ci::JobArtifactReport.count }.by(1)
+      expect(job_artifact.artifact_report.status).to eq("validated")
+    end
+
+    context 'when job artifact is not junit' do
+      let(:job_artifact) { create(:ci_job_artifact, :codequality) }
+
+      it 'does not create an artifact report' do
+        expect { job_artifact.each_blob { |b| } }.not_to change { Ci::JobArtifactReport.count }
+      end
+    end
+
+    context 'when parsing the junit fails' do
+      before do
+        allow_next_instance_of(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator) do |instance|
+          allow(instance).to receive(:validate!).and_raise(StandardError)
+        end
+      end
+
+      it 'updates the artifact report to failed state' do
+        expect { job_artifact.each_blob { |b| } }.to raise_error(StandardError)
+        expect(job_artifact.artifact_report.status).to eq("faulty")
+      end
+    end
+
+    context 'when the job artifact is not saved' do
+      let(:job_artifact) { build(:ci_job_artifact, :junit) }
+
+      it 'creates a report artifact for junit reports and saves when job artifact saves' do
+        job_artifact.each_blob { |b| }
+        expect { job_artifact.save! }.to change { Ci::JobArtifactReport.count }.by(1)
+        expect(job_artifact.artifact_report.status).to eq("validated")
+      end
+
+      context 'and parsing the junit fails' do
+        before do
+          allow_next_instance_of(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator) do |instance|
+            allow(instance).to receive(:validate!).and_raise(StandardError)
+          end
+        end
+
+        it 'updates the artifact report to failed state and saves when job artifact saves' do
+          expect { job_artifact.each_blob { |b| } }.to raise_error(StandardError)
+          expect { job_artifact.save! }.to change { Ci::JobArtifactReport.count }.by(1)
+          expect(job_artifact.artifact_report.status).to eq("faulty")
+        end
+      end
+    end
+  end
 end

@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.5.3 (2024-11-26)
+
+### Fixed (1 change)
+
+- [Ensure auto_merge_enabled is set when validating merge trains](https://gitlab.com/gitlab-org/security/gitlab/-/commit/91ef505e1e984525a22a92fefc6e88bfd6b55a14) **GitLab Enterprise Edition**
+
+### Security (6 changes)
+
+- [Add size check for harbor registry](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7aea8120573400b49f7cf99dfa775604a2c8255f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4599))
+- [Adding JobArtifactReport class to pre-emptively validate job artifacts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6702ca1b2f320429abf67741b70a969b8dee4185) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4568))
+- [Fix: unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/793476f8556c7db20633093e993298e8247ed1d4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4550))
+- [Allow a LFS token to be used only for LFS related requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc1281f297568cffe9f9ef9c4ddfdeb819dbc319) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4582))
+- [Fix possible DOS with TOML file parsing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7938b04aeae9ed9b6f75429367613df4b57d12b3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4590))
+- [Move allow_access_with_scope to class level](https://gitlab.com/gitlab-org/security/gitlab/-/commit/31ee3de85aa7a92e6ade8cb3a6dab69505d3cee6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4611))
+
 ## 17.5.2 (2024-11-12)
 
 ### Fixed (4 changes)
