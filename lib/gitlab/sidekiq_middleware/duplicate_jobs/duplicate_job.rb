@@ -139,16 +139,6 @@ module Gitlab
           jid != existing_jid
         end
 
-        def set_deduplicated_flag!
-          return unless reschedulable?
-
-          Cookie.set_deduplicated_flag!(cookie_key)
-        end
-
-        def should_reschedule?
-          reschedulable? && get_cookie['deduplicated'].present?
-        end
-
         def scheduled_at
           job['at']
         end

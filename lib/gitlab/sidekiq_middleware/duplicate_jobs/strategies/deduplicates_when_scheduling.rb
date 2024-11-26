@@ -42,7 +42,6 @@ module Gitlab
             return false unless duplicate_job.idempotent? # only dedup idempotent jobs
 
             duplicate_job.update_latest_wal_location!
-            duplicate_job.set_deduplicated_flag!
 
             Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
               job, strategy_name, duplicate_job.options)

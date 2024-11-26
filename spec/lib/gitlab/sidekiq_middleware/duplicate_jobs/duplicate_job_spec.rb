@@ -255,54 +255,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
       end
     end
 
-    describe '#set_deduplicated_flag!' do
-      context 'when the job is reschedulable' do
-        before do
-          duplicate_job.check! # ensure cookie exists
-          allow(duplicate_job).to receive(:reschedulable?) { true }
-        end
-
-        it 'sets the key in Redis' do
-          duplicate_job.set_deduplicated_flag!
-
-          expect(cookie['deduplicated']).to eq('1')
-        end
-
-        it 'sets, gets and cleans up the deduplicated flag' do
-          expect(duplicate_job.should_reschedule?).to eq(false)
-
-          duplicate_job.set_deduplicated_flag!
-          expect(duplicate_job.should_reschedule?).to eq(true)
-
-          duplicate_job.delete!
-          expect(duplicate_job.should_reschedule?).to eq(false)
-        end
-      end
-
-      context 'when the job is not reschedulable' do
-        before do
-          allow(duplicate_job).to receive(:reschedulable?) { false }
-        end
-
-        it 'does not set the key in Redis' do
-          duplicate_job.check!
-          duplicate_job.set_deduplicated_flag!
-
-          expect(cookie['deduplicated']).to eq(nil)
-        end
-
-        it 'does not set the deduplicated flag' do
-          expect(duplicate_job.should_reschedule?).to eq(false)
-
-          duplicate_job.set_deduplicated_flag!
-          expect(duplicate_job.should_reschedule?).to eq(false)
-
-          duplicate_job.delete!
-          expect(duplicate_job.should_reschedule?).to eq(false)
-        end
-      end
-    end
-
     describe '#duplicate?' do
       it "raises an error if the check wasn't performed" do
         expect { duplicate_job.duplicate? }.to raise_error(/Call `#check!` first/)
@@ -362,44 +314,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
       expect(AuthorizedProjectsWorker).to receive_message_chain(:rescheduled_once, :perform_async)
 
       duplicate_job.reschedule
-    end
-  end
-
-  describe '#should_reschedule?' do
-    subject { duplicate_job.should_reschedule? }
-
-    context 'when the job is reschedulable' do
-      before do
-        allow(duplicate_job).to receive(:reschedulable?) { true }
-      end
-
-      it { is_expected.to eq(false) }
-
-      context 'with deduplicated flag' do
-        before do
-          duplicate_job.check! # ensure cookie exists
-          duplicate_job.set_deduplicated_flag!
-        end
-
-        it { is_expected.to eq(true) }
-      end
-    end
-
-    context 'when the job is not reschedulable' do
-      before do
-        allow(duplicate_job).to receive(:reschedulable?) { false }
-      end
-
-      it { is_expected.to eq(false) }
-
-      context 'with deduplicated flag' do
-        before do
-          duplicate_job.check! # ensure cookie exists
-          duplicate_job.set_deduplicated_flag!
-        end
-
-        it { is_expected.to eq(false) }
-      end
     end
   end
 

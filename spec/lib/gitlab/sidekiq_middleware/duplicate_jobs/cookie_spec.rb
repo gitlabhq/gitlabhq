@@ -172,18 +172,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Cookie,
     end
   end
 
-  describe '.set_deduplicated_flag!' do
-    subject(:set_deduplicated_flag!) { described_class.set_deduplicated_flag!(key) }
-
-    it 'sends eval command with DEDUPLICATED_SCRIPT to redis' do
-      Gitlab::Redis::QueuesMetadata.with do |redis|
-        expect(redis).to receive(:eval).with(described_class::DEDUPLICATED_SCRIPT, keys: [key])
-      end
-
-      set_deduplicated_flag!
-    end
-  end
-
   def with_redis(&block)
     Gitlab::Redis::QueuesMetadata.with(&block)
   end

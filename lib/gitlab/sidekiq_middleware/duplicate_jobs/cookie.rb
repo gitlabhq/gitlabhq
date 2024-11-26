@@ -44,16 +44,6 @@ module Gitlab
           redis.call("set", KEYS[1], cmsgpack.pack(cookie), "keepttl")
         LUA
 
-        DEDUPLICATED_SCRIPT = <<~LUA
-          local cookie_msgpack = redis.call("get", KEYS[1])
-          if not cookie_msgpack then
-            return
-          end
-          local cookie = cmsgpack.unpack(cookie_msgpack)
-          cookie.deduplicated = "1"
-          redis.call("set", KEYS[1], cmsgpack.pack(cookie), "keepttl")
-        LUA
-
         def self.read(key)
           cookie = with_redis { |r| MessagePack.unpack(r.get(key) || "\x80") }
           validate!(cookie)
@@ -65,10 +55,6 @@ module Gitlab
 
         def self.update_wal_locations!(key, argv)
           with_redis { |r| r.eval(UPDATE_WAL_COOKIE_SCRIPT, keys: [key], argv: argv) }
-        end
-
-        def self.set_deduplicated_flag!(key)
-          with_redis { |r| r.eval(DEDUPLICATED_SCRIPT, keys: [key]) }
         end
 
         def self.with_redis(&)
