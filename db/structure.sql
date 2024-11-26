@@ -3281,6 +3281,16 @@ CREATE TABLE p_ci_job_annotations (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_job_artifact_reports (
+    job_artifact_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    status smallint NOT NULL,
+    validation_error text,
+    CONSTRAINT check_1c55aee894 CHECK ((char_length(validation_error) <= 255))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_job_artifacts (
     project_id bigint NOT NULL,
     file_type integer NOT NULL,
@@ -24930,6 +24940,9 @@ ALTER TABLE workspaces
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE namespaces
+    ADD CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
@@ -26051,6 +26064,9 @@ ALTER TABLE ONLY p_ci_finished_pipeline_ch_sync_events
 
 ALTER TABLE ONLY p_ci_job_annotations
     ADD CONSTRAINT p_ci_job_annotations_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_ci_job_artifact_reports
+    ADD CONSTRAINT p_ci_job_artifact_reports_pkey PRIMARY KEY (job_artifact_id, partition_id);
 
 ALTER TABLE ONLY p_ci_pipelines_config
     ADD CONSTRAINT p_ci_pipelines_config_pkey PRIMARY KEY (pipeline_id, partition_id);
@@ -31280,6 +31296,8 @@ CREATE INDEX index_p_ci_finished_build_ch_sync_events_on_project_id ON ONLY p_ci
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
 
 CREATE INDEX index_p_ci_job_annotations_on_project_id ON ONLY p_ci_job_annotations USING btree (project_id);
+
+CREATE INDEX index_p_ci_job_artifact_reports_on_project_id ON ONLY p_ci_job_artifact_reports USING btree (project_id);
 
 CREATE INDEX index_p_ci_pipelines_config_on_project_id ON ONLY p_ci_pipelines_config USING btree (project_id);
 
@@ -38903,6 +38921,9 @@ ALTER TABLE ONLY security_trainings
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT fk_rails_f8540692be FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_job_artifact_reports
+    ADD CONSTRAINT fk_rails_f9b8550174 FOREIGN KEY (partition_id, job_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY banned_users
     ADD CONSTRAINT fk_rails_fa5bb598e5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

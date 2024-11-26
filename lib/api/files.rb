@@ -11,6 +11,8 @@ module API
 
     feature_category :source_code_management
 
+    allow_access_with_scope :read_repository, if: ->(request) { request.get? || request.head? }
+
     helpers ::API::Helpers::HeadersHelpers
 
     helpers do
@@ -125,8 +127,6 @@ module API
       requires :id, type: String, desc: 'The project ID', documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
-      allow_access_with_scope :read_repository, if: ->(request) { request.get? || request.head? }
-
       desc 'Get blame file metadata from repository'
       params do
         requires :file_path, type: String, file_path: true,

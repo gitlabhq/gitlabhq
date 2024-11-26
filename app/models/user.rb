@@ -362,6 +362,12 @@ class User < ApplicationRecord
   validates :project_view, presence: true
 
   after_initialize :set_projects_limit
+  # Ensures we get a user_detail on all new user records.
+  # We are not able to fully guard against all possible places where User.new
+  # is created, so we rely on the callback here at the model layer for our best
+  # chance at ensuring the user_detail is created.
+  # However, we need to skip all non- new records as after_initialize is called on basic finders as well.
+  after_initialize :build_default_user_detail, if: :new_record?
   before_validation :sanitize_attrs
   before_validation :ensure_namespace_correct
   after_validation :set_username_errors
@@ -1083,6 +1089,22 @@ class User < ApplicationRecord
 
   def to_param
     username
+  end
+
+  def build_default_user_detail
+    # We will need to ensure we keep checking to see if it exists logic since this runs from
+    # an after_initialize.
+    # In cases where user_detail params are added during a `User.new` or create call with user_detail
+    # attributes set through delegation of setters, we will already have some user_detail
+    # attributes created from a built user_detail that will then be removed by an
+    # initialization of a new user_detail.
+    # We can see one case of that in the Users::BuildService where it assigns user attributes that can
+    # have delegated user_detail attributes added by classes that inherit this class and add
+    # to the user attributes hash.
+    # Therefore we need to check for presence of an existing built user_detail here.
+    # TODO: Add lazy loading explicitly here when we remove the user_detail
+    # override in https://gitlab.com/gitlab-org/gitlab/-/issues/462919
+    user_detail
   end
 
   def to_reference(_from = nil, target_container: nil, full: nil)
@@ -2336,6 +2358,7 @@ class User < ApplicationRecord
   end
 
   def user_detail
+    # TODO: remove override in https://gitlab.com/gitlab-org/gitlab/-/issues/462919
     super.presence || build_user_detail
   end
 

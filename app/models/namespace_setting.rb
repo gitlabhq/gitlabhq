@@ -25,7 +25,8 @@ class NamespaceSetting < ApplicationRecord
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
   validates :remove_dormant_members, inclusion: { in: [false] }, if: :subgroup?
-  validates :remove_dormant_members_period, numericality: { only_integer: true, greater_than_or_equal_to: 90 }
+  validates :remove_dormant_members_period,
+    numericality: { only_integer: true, greater_than_or_equal_to: 90, less_than_or_equal_to: 1827 } # 90 days - ~5 years
   validates :allow_mfa_for_subgroups, presence: true, if: :subgroup?
   validates :resource_access_token_creation_allowed, presence: true, if: :subgroup?
 

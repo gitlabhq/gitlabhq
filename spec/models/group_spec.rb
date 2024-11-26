@@ -3947,7 +3947,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       sub_sub_group.shared_with_groups << shared_group_3
     end
 
-    describe '#shared_with_group_links.of_ancestors' do
+    describe '#shared_with_groups_of_ancestors' do
       where(:subject_group, :result) do
         ref(:group)         | []
         ref(:sub_group)     | lazy { [shared_group_1].map(&:id) }
@@ -3956,12 +3956,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       with_them do
         it 'returns correct group shares' do
-          expect(subject_group.shared_with_group_links.of_ancestors.map(&:shared_with_group_id)).to match_array(result)
+          expect(subject_group.shared_with_groups_of_ancestors.ids).to match_array(result)
         end
       end
     end
 
-    describe '#shared_with_group_links.of_ancestors_and_self' do
+    describe '#shared_with_groups_of_ancestors_and_self' do
       where(:subject_group, :result) do
         ref(:group)         | lazy { [shared_group_1].map(&:id) }
         ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
@@ -3970,7 +3970,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       with_them do
         it 'returns correct group shares' do
-          expect(subject_group.shared_with_group_links.of_ancestors_and_self.map(&:shared_with_group_id)).to match_array(result)
+          expect(subject_group.shared_with_groups_of_ancestors_and_self.ids).to match_array(result)
         end
       end
     end

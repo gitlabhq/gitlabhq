@@ -34642,7 +34642,10 @@ msgstr ""
 msgid "Missing or invalid configuration field: :smartcard_ad_cert_format"
 msgstr ""
 
-msgid "Missing/invalid scope"
+msgid "Missing/invalid group"
+msgstr ""
+
+msgid "Missing/invalid project"
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|Add SSH key"
@@ -62878,6 +62881,9 @@ msgid "WorkItem|Save and overwrite"
 msgstr ""
 
 msgid "WorkItem|Search existing items, paste URL, or enter reference ID"
+msgstr ""
+
+msgid "WorkItem|Select a group"
 msgstr ""
 
 msgid "WorkItem|Select a project"

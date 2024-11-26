@@ -112,7 +112,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       it 'shows Owner in the dropdown' do
         within_modal do
           toggle_listbox
-          expect_listbox_items(%w[Guest Reporter Developer Maintainer Owner])
+          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer Owner])
         end
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       it 'does not show the Owner option' do
         within_modal do
           toggle_listbox
-          expect_listbox_items(%w[Guest Reporter Developer Maintainer])
+          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer])
         end
       end
     end

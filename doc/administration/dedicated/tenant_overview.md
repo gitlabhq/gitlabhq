@@ -49,7 +49,7 @@ The **Maintenance windows** section displays the:
 - Upcoming GitLab version upgrade
 
 NOTE:
-Switchboard shows upcoming GitLab version upgrades one week before their scheduled maintenance window. For more information, see [Maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows).
+Each Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows).
 
 ## Hosted runners
 

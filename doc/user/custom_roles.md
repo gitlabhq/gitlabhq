@@ -48,7 +48,7 @@ with the permission to do all of the following:
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner role for the top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Roles and permissions**.
@@ -310,7 +310,7 @@ You can assign custom roles and permissions to the following:
 | Object       | Version       | Issue                                                  |
 | ----         | ----          | ----                                                   |
 | Users        | 15.9          | Released                                               |
-| Groups       | Not supported | [Issue 443369](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) |
+| Groups       | 17.7          | Partially supported. Further support for group assignment in projects is proposed in [Issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329)  |
 | Tokens       | Not supported | [Issue 434354](https://gitlab.com/gitlab-org/gitlab/-/issues/434354) |
 
 ## Supported group links

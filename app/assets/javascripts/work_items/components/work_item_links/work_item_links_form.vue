@@ -23,6 +23,7 @@ import {
   sprintfWorkItem,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
+import WorkItemGroupsListbox from './work_item_groups_listbox.vue';
 
 export default {
   components: {
@@ -34,6 +35,7 @@ export default {
     GlTooltip,
     WorkItemTokenInput,
     WorkItemProjectsListbox,
+    WorkItemGroupsListbox,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['hasIterationsFeature'],
@@ -120,6 +122,7 @@ export default {
       isInputValid: true,
       search: '',
       selectedProjectFullPath: this.isGroup ? null : this.fullPath,
+      selectedGroupFullPath: null,
       childToCreateTitle: null,
       confidential: this.parentConfidential,
       submitInProgress: false,
@@ -143,6 +146,11 @@ export default {
         workItemInput = {
           ...workItemInput,
           namespacePath: this.selectedProjectFullPath,
+        };
+      } else if (this.selectedGroupFullPath && this.workItemChildIsEpic) {
+        workItemInput = {
+          ...workItemInput,
+          namespacePath: this.selectedGroupFullPath,
         };
       } else {
         workItemInput = {
@@ -273,6 +281,12 @@ export default {
     workItemsToAdd() {
       this.unsetError();
     },
+    workItemChildIsEpic: {
+      handler(isEpic) {
+        this.selectedGroupFullPath = isEpic ? this.fullPath : null;
+      },
+      immediate: true,
+    },
   },
   methods: {
     getConfidentialityTooltipTarget() {
@@ -385,6 +399,7 @@ export default {
   i18n: {
     titleInputLabel: __('Title'),
     projectInputLabel: __('Project'),
+    groupInputLabel: __('Group'),
     addChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to add a child. Please try again.',
     ),
@@ -393,6 +408,7 @@ export default {
     ),
     titleInputPlaceholder: s__('WorkItem|Add a title'),
     projectInputPlaceholder: s__('WorkItem|Select a project'),
+    groupInputPlaceholder: s__('WorkItem|Select a group'),
     titleInputValidationMessage: __('Maximum of 255 characters'),
     maxItemsErrorMessage: I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   },
@@ -433,6 +449,21 @@ export default {
             :full-path="fullPath"
             :current-project-name="fullName"
             :is-group="isGroup"
+          />
+        </gl-form-group>
+        <gl-form-group
+          v-else
+          class="gl-w-full"
+          :label="$options.i18n.groupInputLabel"
+          :description="$options.i18n.groupValidationMessage"
+        >
+          <work-item-groups-listbox
+            v-model="selectedGroupFullPath"
+            class="gl-w-full"
+            :full-path="fullPath"
+            :current-group-name="fullName"
+            :is-group="isGroup"
+            @error="$emit('error', $event)"
           />
         </gl-form-group>
       </div>

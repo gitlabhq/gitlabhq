@@ -34,5 +34,16 @@ describe('Repository URL utilities', () => {
       expect(result.pathname).toBe('/-/commits/path/to/file%20with%20spaces.js');
       expect(result.searchParams.get('ref_type')).toBe('branch');
     });
+
+    it('skips refType when is undefined', () => {
+      const historyLink = '/-/commits';
+      const path = 'path/to/file.js';
+      const refType = undefined;
+
+      const result = generateHistoryUrl(historyLink, path, refType);
+
+      expect(result.pathname).toBe('/-/commits/path/to/file.js');
+      expect(result.searchParams.get('ref_type')).toBe(null);
+    });
   });
 });

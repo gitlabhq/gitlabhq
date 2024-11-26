@@ -59,6 +59,8 @@ export const initGitlabWebIDE = async (el) => {
         'X-Requested-With': 'XMLHttpRequest',
       };
 
+  const isLanguageServerEnabled = gon.features.webIdeLanguageServer || false;
+
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
     await start(rootEl, {
@@ -80,6 +82,7 @@ export const initGitlabWebIDE = async (el) => {
       },
       featureFlags: {
         crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(extensionsGallerySettings),
+        languageServerWebIDE: isLanguageServerEnabled,
       },
       editorFont,
       extensionsGallerySettings,

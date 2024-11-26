@@ -400,6 +400,7 @@ export default {
         :children-type="childType"
         :children-ids="childrenIds"
         :parent-confidential="confidential"
+        @error="error = $event"
         @success="hideAddForm"
         @cancel="hideAddForm"
         @addChild="$emit('addChild')"

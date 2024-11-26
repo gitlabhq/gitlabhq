@@ -30,7 +30,7 @@ You can use project access tokens:
 
 - On GitLab SaaS: If you have the Premium or Ultimate license tier, only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
 - On self-managed instances of GitLab: With any license tier. If you have the Free tier,
-  consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to lower potential abuse.
+  consider [restricting the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to lower potential abuse.
 
 You cannot use project access tokens to create other group, project, or personal access tokens.
 
@@ -124,16 +124,14 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                                                                                                                         |
 
-## Enable or disable project access token creation
+## Restrict the creation of project access tokens
 
-To enable or disable project access token creation for all projects in a top-level group:
+To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream project and subgroup. Any existing project access tokens remain valid until their expiration date or until manually revoked.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. In **Permissions**, select or clear the **Users can create project access tokens and group access tokens in this group** checkbox.
-
-Even when creation is disabled, you can still use and revoke existing project access tokens.
+1. In **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.
 
 ## Access token expiration
 

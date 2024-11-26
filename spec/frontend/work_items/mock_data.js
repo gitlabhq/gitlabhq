@@ -5189,6 +5189,40 @@ export const mockFrequentlyUsedProjects = [
   },
 ];
 
+export const namespaceGroupsList = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/33',
+      name: 'Group A',
+      avatarUrl: 'http://example.com/avatar-url',
+      path: 'group-a',
+      fullPath: 'group-a',
+      descendantGroups: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Group/99',
+            name: 'Group B',
+            avatarUrl: null,
+            path: 'group-b',
+            fullPath: 'group-a/group-b',
+            __typename: 'Group',
+          },
+          {
+            id: 'gid://gitlab/Group/97',
+            name: 'Group C',
+            avatarUrl: null,
+            path: 'group-c',
+            fullPath: 'group-a/group-c',
+            __typename: 'Group',
+          },
+        ],
+        __typename: 'GroupConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
 export const createWorkItemQueryResponse = {
   data: {
     workspace: {

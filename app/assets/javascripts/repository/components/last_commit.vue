@@ -67,6 +67,11 @@ export default {
       required: false,
       default: null,
     },
+    historyUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -108,17 +113,18 @@ export default {
 
 <template>
   <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto gl-min-h-8 gl-py-6" />
+
   <commit-info v-else-if="commit" :commit="commit">
-    <div class="commit-actions gl-flex-align gl-flex gl-flex-row gl-items-center">
+    <div class="commit-actions gl-flex gl-items-start">
       <signature-badge v-if="commit.signature" :signature="commit.signature" />
-      <div v-if="commit.pipeline" class="gl-ml-5">
+      <div v-if="commit.pipeline" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
         <ci-icon
           :status="commit.pipeline.detailedStatus"
           :aria-label="statusTitle"
           class="js-commit-pipeline"
         />
       </div>
-      <gl-button-group class="js-commit-sha-group gl-ml-4">
+      <gl-button-group class="js-commit-sha-group gl-ml-4 gl-flex gl-items-center">
         <gl-button label class="gl-font-monospace" data-testid="last-commit-id-label">{{
           showCommitId
         }}</gl-button>
@@ -128,6 +134,14 @@ export default {
           class="input-group-text"
         />
       </gl-button-group>
+      <gl-button
+        category="tertiary"
+        data-testid="last-commit-history"
+        :href="historyUrl"
+        class="gl-ml-4"
+      >
+        {{ __('History') }}
+      </gl-button>
     </div>
   </commit-info>
 </template>

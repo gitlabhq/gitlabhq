@@ -43,7 +43,6 @@ export default {
 
 <template>
   <gl-button-group>
-    {{ aiCommitMessageEnabled }}
     <ai-commit-message
       v-if="aiCommitMessageEnabled"
       :id="mrId"

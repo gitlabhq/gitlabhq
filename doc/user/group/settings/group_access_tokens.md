@@ -29,7 +29,7 @@ You can use a group access token to authenticate:
 > On GitLab Dedicated and self-managed instances, you can use group access tokens with any license tier. If you have the Free tier:
 >
 > - Review your security and compliance policies around [user self-enrollment](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
-> - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to lower potential abuse.
+> - Consider [restricting the creation of group access tokens](#restrict-the-creation-of-group-access-tokens) to lower potential abuse.
 
 Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
@@ -169,17 +169,17 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                                                                                                                                               |
 
-## Enable or disable group access token creation
+## Restrict the creation of group access tokens
 
-To enable or disable group access token creation for all subgroups in a top-level group:
+To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream subgroup and project. Any existing group access tokens remain valid until their expiration date or until manually revoked.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+To restrict the creation of group access tokens:
+
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
+1. Under **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.
 1. Select **Save changes**.
-
-Even when creation is disabled, you can still use and revoke existing group access tokens.
 
 ## Access token expiration
 

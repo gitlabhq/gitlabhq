@@ -284,12 +284,12 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#user_detail' do
-      it 'does not persist `user_detail` by default' do
-        expect(create(:user).user_detail).not_to be_persisted
+      it 'persists `user_detail` by default' do
+        expect(create(:user).user_detail).to be_persisted
       end
 
       shared_examples 'delegated field' do |field|
-        it 'creates `user_detail` when the field is given' do
+        it 'correctly stores the `user_detail` attribute when the field is given on user creation' do
           user = create(:user, field => 'my field')
 
           expect(user.user_detail).to be_persisted
@@ -300,12 +300,6 @@ RSpec.describe User, feature_category: :user_profile do
           user = create(:user, field => 'my field')
 
           expect(user.public_send(field)).to eq(user.user_detail[field])
-        end
-
-        it 'creates `user_detail` when first updated' do
-          user = create(:user)
-
-          expect { user.update!(field => 'my field') }.to change { user.user_detail.persisted? }.from(false).to(true)
         end
       end
 
@@ -327,12 +321,6 @@ RSpec.describe User, feature_category: :user_profile do
         user = create(:user, website_url: 'http://example.com')
 
         expect(user.website_url).to eq(user.user_detail.website_url)
-      end
-
-      it 'creates `user_detail` when `website_url` is first updated' do
-        user = create(:user)
-
-        expect { user.update!(website_url: 'https://example.com') }.to change { user.user_detail.persisted? }.from(false).to(true)
       end
 
       it 'delegates `pronouns` to `user_detail`' do
@@ -1635,6 +1623,14 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:external?) }
+  end
+
+  describe 'before_validation callbacks' do
+    it 'creates the user_detail record' do
+      user = create(:user)
+
+      expect(UserDetail.exists?(user.id)).to be(true)
+    end
   end
 
   describe 'before save hook' do

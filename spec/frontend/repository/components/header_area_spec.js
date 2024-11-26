@@ -43,7 +43,6 @@ describe('HeaderArea', () => {
 
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
-  const findHistoryButton = () => wrapper.findByTestId('tree-history-control');
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
   const findCompareButton = () => wrapper.findByTestId('tree-compare-control');
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -95,13 +94,6 @@ describe('HeaderArea', () => {
       wrapper = createComponent({}, 'treePathDecoded');
     });
 
-    describe('History button', () => {
-      it('renders History button with correct href', () => {
-        expect(findHistoryButton().exists()).toBe(true);
-        expect(findHistoryButton().attributes('href')).toContain('/history');
-      });
-    });
-
     describe('Find file button', () => {
       it('renders Find file button', () => {
         expect(findFindFileButton().exists()).toBe(true);
@@ -151,10 +143,9 @@ describe('HeaderArea', () => {
       wrapper = createComponent({}, 'treePathDecoded', { isReadmeView: true });
     });
 
-    it('does not render RefSelector, Breadcrumbs and History button', () => {
+    it('does not render RefSelector or Breadcrumbs', () => {
       expect(findRefSelector().exists()).toBe(false);
       expect(findBreadcrumbs().exists()).toBe(false);
-      expect(findHistoryButton().exists()).toBe(false);
     });
   });
 });

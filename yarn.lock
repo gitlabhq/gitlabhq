@@ -1462,10 +1462,10 @@
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0.tgz#ac877aa76a9c45368c979471e461b520d38e6cf5"
   integrity sha512-56VPujlHscP5q/e7Jlpqc40sja4vOhC4uJD1llBCWolVI8ND4+VzisDVkUMl+z5y0MpIImW6HjhNc+ZvuizgOw==
 
-"@gitlab/web-ide@^0.0.1-dev-20240909013227":
-  version "0.0.1-dev-20240909013227"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20240909013227.tgz#6ba20cabe4b3dee8eacbb0e3aa4d71b49b30fecc"
-  integrity sha512-fWkkQ3Vm03NmDrJVmEO7nteRzXHj2J4GGfKifILpMeWjKp2X7nPjatHsbOWS8TqEVQUTrL5SB6yV+p6242fAtA==
+"@gitlab/web-ide@^0.0.1-dev-20241112063543":
+  version "0.0.1-dev-20241112063543"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20241112063543.tgz#406c8d7ec7bf5a82de67d9ad2bdcaf08b2c7e4eb"
+  integrity sha512-M9yGCkYxb5Wry3o7tekYHbjgCr3muTaWn897Bvb5ic9k2FlgmOnrw+hx4r1F1YoH78dhklPFyBUPA6MopI6hGQ==
 
 "@graphiql/react@^0.26.2":
   version "0.26.2"

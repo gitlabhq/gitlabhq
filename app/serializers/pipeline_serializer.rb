@@ -30,7 +30,9 @@ class PipelineSerializer < BaseSerializer
 
   private
 
-  def preloaded_relations(preload_statuses: true, preload_downstream_statuses: true, **)
+  def preloaded_relations(preload_statuses: true, preload_downstream_statuses: true, **options)
+    disable_failed_builds = options.delete(:disable_failed_builds)
+
     [
       :pipeline_metadata,
       :pipeline_schedule,
@@ -40,10 +42,11 @@ class PipelineSerializer < BaseSerializer
       :trigger_requests,
       :user,
       (:latest_statuses if preload_statuses),
+      (:limited_failed_builds if disable_failed_builds),
       {
+        **(disable_failed_builds ? {} : { failed_builds: %i[project metadata] }),
         manual_actions: :metadata,
         scheduled_actions: :metadata,
-        failed_builds: %i[project metadata],
         merge_request: {
           source_project: [:route, { namespace: :route }],
           target_project: [:route, { namespace: :route }]

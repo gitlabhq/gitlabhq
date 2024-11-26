@@ -67,9 +67,9 @@ module Groups::GroupMembersHelper
                   when [:direct]
                     group.shared_with_group_links
                   when [:inherited]
-                    group.shared_with_group_links.of_ancestors
+                    group.shared_with_group_links_of_ancestors
                   else
-                    group.shared_with_group_links.of_ancestors_and_self
+                    group.shared_with_group_links_of_ancestors_and_self
                   end
 
     group_links.distinct_on_shared_with_group_id_with_group_access

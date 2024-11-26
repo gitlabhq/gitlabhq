@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_live_preview_edit
 description: Count of monthly unique users that successfully connect to Live Preview
 product_group: remote_development
+product_categories:
+- web_ide
 value_type: number
 status: removed
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85420

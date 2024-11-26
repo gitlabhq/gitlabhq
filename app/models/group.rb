@@ -63,31 +63,28 @@ class Group < Namespace
 
   has_many :milestones
   has_many :integrations
-  has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
-  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink' do
-    def of_ancestors
-      group = proxy_association.owner
 
-      return GroupGroupLink.none unless group.has_parent?
+  with_options class_name: 'GroupGroupLink' do
+    has_many :shared_group_links, foreign_key: :shared_with_group_id
 
-      GroupGroupLink.where(shared_group_id: group.ancestors.reorder(nil).select(:id))
-    end
-
-    def of_ancestors_and_self
-      group = proxy_association.owner
-
-      source_ids =
-        if group.has_parent?
-          group.self_and_ancestors.reorder(nil).select(:id)
-        else
-          group.id
-        end
-
-      GroupGroupLink.where(shared_group_id: source_ids)
+    with_options foreign_key: :shared_group_id do
+      has_many :shared_with_group_links
+      has_many :shared_with_group_links_of_ancestors, ->(group) do
+        unscope(where: :shared_group_id).where(shared_group: group.ancestors)
+      end
+      has_many :shared_with_group_links_of_ancestors_and_self, ->(group) do
+        unscope(where: :shared_group_id).where(shared_group: group.self_and_ancestors)
+      end
     end
   end
+
   has_many :shared_groups, through: :shared_group_links, source: :shared_group
-  has_many :shared_with_groups, through: :shared_with_group_links, source: :shared_with_group
+  with_options source: :shared_with_group do
+    has_many :shared_with_groups, through: :shared_with_group_links
+    has_many :shared_with_groups_of_ancestors, through: :shared_with_group_links_of_ancestors
+    has_many :shared_with_groups_of_ancestors_and_self, through: :shared_with_group_links_of_ancestors_and_self
+  end
+
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
 

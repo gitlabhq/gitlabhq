@@ -241,7 +241,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       it { is_expected.to validate_length_of(:discord).is_at_most(500) }
 
       context 'when discord is set' do
-        let_it_be(:user_detail) { create(:user_detail) }
+        let_it_be(:user_detail) { create(:user).user_detail }
 
         it 'accepts a valid discord user id' do
           user_detail.discord = '1234567890123456789'
@@ -306,7 +306,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       it { is_expected.to validate_length_of(:mastodon).is_at_most(500) }
 
       context 'when mastodon is set' do
-        let_it_be(:user_detail) { create(:user_detail) }
+        let_it_be(:user_detail) { create(:user).user_detail }
 
         it 'accepts a valid mastodon username' do
           user_detail.mastodon = '@robin@example.com'
@@ -336,7 +336,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       it { is_expected.to validate_length_of(:website_url).is_at_most(500) }
 
       it 'only validates the website_url if it is changed' do
-        user_detail = create(:user_detail)
+        user_detail = create(:user).user_detail
         # `update_attribute` required to bypass current validations
         # Validations on `User#website_url` were added after
         # there was already data in the database and `UserDetail#website_url` is
@@ -356,8 +356,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
   describe '#save' do
     let(:user_detail) do
-      create(
-        :user_detail,
+      attributes = {
         bio: 'bio',
         discord: '1234567890123456789',
         linkedin: 'linkedin',
@@ -368,7 +367,9 @@ RSpec.describe UserDetail, feature_category: :system_access do
         skype: 'skype',
         twitter: 'twitter',
         website_url: 'https://example.com'
-      )
+      }
+
+      create(:user, attributes).user_detail
     end
 
     shared_examples 'prevents `nil` value' do |attr|
@@ -436,7 +437,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         .at_least(:once)
         .and_call_original
 
-      details.save!
+      details.valid?
     end
   end
 end

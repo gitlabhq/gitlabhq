@@ -2878,7 +2878,7 @@
   :worker_name: Ci::CancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

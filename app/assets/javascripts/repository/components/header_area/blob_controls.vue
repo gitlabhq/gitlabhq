@@ -177,7 +177,12 @@ export default {
       {{ $options.i18n.blame }}
     </gl-button>
 
-    <gl-button data-testid="history" :href="blobInfo.historyPath" :class="$options.buttonClassList">
+    <gl-button
+      data-testid="history"
+      :href="blobInfo.historyPath"
+      :class="$options.buttonClassList"
+      class="gl-block sm:gl-hidden"
+    >
       {{ $options.i18n.history }}
     </gl-button>
 

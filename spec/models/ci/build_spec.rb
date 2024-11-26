@@ -539,7 +539,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'scopes for preloading' do
     let_it_be(:runner) { create(:ci_runner) }
-    let_it_be(:user) { create(:user).tap { |user| create(:user_detail, user: user) } }
+    let_it_be(:user) { create(:user) }
 
     before_all do
       build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
@@ -4633,6 +4633,30 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it 'yields job artifact blob that matches the type' do
       expect { |b| build.each_report(report_types, &b) }.to yield_with_args(coverage.file_type, String, coverage)
+    end
+
+    context 'when there are valid job artifact reports' do
+      let(:report_types) { Ci::JobArtifact.file_types_for_report(:test) }
+
+      before do
+        create(:ci_job_artifact_report, :validated, job_artifact: junit)
+      end
+
+      it 'yields them' do
+        expect { |b| build.each_report(report_types, &b) }.to yield_with_args(junit.file_type, String, junit)
+      end
+    end
+
+    context 'when there are invalid job artifact reports' do
+      let(:report_types) { Ci::JobArtifact.file_types_for_report(:test) }
+
+      before do
+        create(:ci_job_artifact_report, :faulty, job_artifact: junit)
+      end
+
+      it 'skips them' do
+        expect { |b| build.each_report(report_types, &b) }.not_to yield_control
+      end
     end
   end
 

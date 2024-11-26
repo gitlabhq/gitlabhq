@@ -9171,7 +9171,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:project) { create(:project, group: group) }
 
       it 'returns group links of group' do
-        expect(group).to receive_message_chain(:shared_with_group_links, :of_ancestors_and_self)
+        expect(group).to receive(:shared_with_group_links_of_ancestors_and_self)
 
         project.group_group_links
       end

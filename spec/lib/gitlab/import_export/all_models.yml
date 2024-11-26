@@ -326,6 +326,7 @@ ci_pipelines:
 - auto_canceled_jobs
 - pending_builds
 - failed_builds
+- limited_failed_builds
 - retryable_builds
 - cancelable_statuses
 - manual_actions

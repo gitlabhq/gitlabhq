@@ -20,7 +20,7 @@ module Ci
         end
 
         def validate_params
-          _('Missing/invalid scope') unless scope.present?
+          _('Missing/invalid group') unless scope.present?
         end
 
         def authorized_user?

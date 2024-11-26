@@ -7,6 +7,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:pipeline) { create(:ci_empty_pipeline, name: 'Build pipeline') }
 
   let(:request) { double('request', current_user: user) }
   let(:options) { {} }
@@ -16,8 +17,6 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     subject { entity.as_json }
 
     context 'when pipeline is empty' do
-      let(:pipeline) { create(:ci_empty_pipeline, name: 'Build pipeline') }
-
       it 'contains required fields' do
         expect(subject).to include :id, :iid, :user, :path, :coverage, :source
         expect(subject).to include :ref, :commit
@@ -263,6 +262,18 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
             expect(subject[:failed_builds_count]).to eq(2)
             expect(subject).not_to have_key(:failed_builds)
           end
+
+          context 'when over the limit' do
+            before do
+              stub_const('Ci::Pipeline::COUNT_FAILED_JOBS_LIMIT', 1)
+              pipeline.reload # reload the pipeline with the mocked constant code
+            end
+
+            it 'uses the limited scope and limits the return value' do
+              expect(subject[:failed_builds_count]).to eq(1)
+              expect(subject).not_to have_key(:failed_builds)
+            end
+          end
         end
 
         context 'when disable_failed_builds is false' do
@@ -271,6 +282,18 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
           it 'exposes the failed builds count but not the failed builds' do
             expect(subject[:failed_builds_count]).to eq(2)
             expect(subject[:failed_builds].map { |b| b[:id] }).to contain_exactly(failed_1.id, failed_2.id)
+          end
+
+          context 'when over the limit' do
+            before do
+              stub_const('Ci::Pipeline::COUNT_FAILED_JOBS_LIMIT', 1)
+              pipeline.reload
+            end
+
+            it 'uses the unlimited scope' do
+              expect(subject[:failed_builds_count]).to eq(2)
+              expect(subject).to have_key(:failed_builds)
+            end
           end
         end
 

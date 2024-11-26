@@ -80,6 +80,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
   beforeEach(() => {
     gon.current_username = TEST_USERNAME;
+    gon.features = { webIdeLanguageServer: true };
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
 
     createRootElement();
@@ -122,6 +123,7 @@ describe('ide/init_gitlab_web_ide', () => {
         },
         featureFlags: {
           crossOriginExtensionHost: false,
+          languageServerWebIDE: gon.features.webIdeLanguageServer,
         },
         editorFont: {
           fallbackFontFamily: 'monospace',
@@ -269,6 +271,7 @@ describe('ide/init_gitlab_web_ide', () => {
         expect.objectContaining({
           featureFlags: {
             crossOriginExtensionHost: true,
+            languageServerWebIDE: gon.features.webIdeLanguageServer,
           },
         }),
       );
@@ -290,6 +293,7 @@ describe('ide/init_gitlab_web_ide', () => {
           expect.objectContaining({
             featureFlags: {
               crossOriginExtensionHost: true,
+              languageServerWebIDE: gon.features.webIdeLanguageServer,
             },
           }),
         );

@@ -161,6 +161,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         expect(namespace_settings).to validate_numericality_of(:remove_dormant_members_period)
           .only_integer
           .is_greater_than_or_equal_to(90)
+          .is_less_than_or_equal_to(1827)
       end
     end
   end

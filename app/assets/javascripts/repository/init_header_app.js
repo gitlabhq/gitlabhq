@@ -8,7 +8,6 @@ export default function initHeaderApp(isReadmeView = false) {
   const headerEl = document.getElementById('js-repository-blob-header-app');
   if (headerEl) {
     const {
-      historyLink,
       ref,
       escapedRef,
       refType,
@@ -58,7 +57,6 @@ export default function initHeaderApp(isReadmeView = false) {
           props: {
             refType,
             currentRef: ref,
-            historyLink,
             // BlobControls:
             projectPath,
             // RefSelector:

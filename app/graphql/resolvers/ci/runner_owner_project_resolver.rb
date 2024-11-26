@@ -42,7 +42,7 @@ module Resolvers
               .to_h
           # rubocop: enable CodeReuse/ActiveRecord
 
-          projects = apply_lookahead(Project.id_in(runner_id_to_owner_id.values))
+          projects = apply_lookahead(Project.id_in(runner_id_to_owner_id.values.uniq))
           Preloaders::ProjectPolicyPreloader.new(projects, current_user).execute
           projects_by_id = projects.index_by(&:id)
 
