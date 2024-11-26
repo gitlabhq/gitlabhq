@@ -227,7 +227,6 @@ Layout/ClassStructure:
     - 'ee/app/models/work_items/widgets/rolledup_dates.rb'
     - 'ee/app/replicators/geo/lfs_object_replicator.rb'
     - 'ee/app/replicators/geo/terraform_state_version_replicator.rb'
-    - 'ee/app/services/ai/store_repository_xray_service.rb'
     - 'ee/app/services/analytics/value_stream_dashboard/top_level_group_counter_service.rb'
     - 'ee/app/services/app_sec/dast/scan_configs/build_service.rb'
     - 'ee/app/services/click_house/data_ingestion/ci_finished_builds_sync_service.rb'

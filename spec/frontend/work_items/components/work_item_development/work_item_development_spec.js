@@ -30,15 +30,21 @@ describe('WorkItemDevelopment CE', () => {
   });
   const workItemWithOneMR = workItemResponseFactory({
     developmentWidgetPresent: true,
-    developmentItems: workItemDevelopmentFragmentResponse(
-      [workItemDevelopmentMRNodes[0]],
-      true,
-      null,
-    ),
+    developmentItems: workItemDevelopmentFragmentResponse({
+      mrNodes: [workItemDevelopmentMRNodes[0]],
+      willAutoCloseByMergeRequest: true,
+      featureFlagNodes: null,
+      branchNodes: [],
+    }),
   });
   const workItemWithMRList = workItemResponseFactory({
     developmentWidgetPresent: true,
-    developmentItems: workItemDevelopmentFragmentResponse(workItemDevelopmentMRNodes, true, null),
+    developmentItems: workItemDevelopmentFragmentResponse({
+      mrNodes: workItemDevelopmentMRNodes,
+      willAutoCloseByMergeRequest: true,
+      featureFlagNodes: null,
+      branchNodes: [],
+    }),
   });
 
   const projectWorkItemResponseWithMRList = {
@@ -95,22 +101,33 @@ describe('WorkItemDevelopment CE', () => {
   };
 
   const successQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponseWithMRList);
-  const workItemWithEmptyMRList = workItemResponseFactory({
+  const workItemWithNoDevItems = workItemResponseFactory({
     canUpdate: true,
     developmentWidgetPresent: true,
-    developmentItems: workItemDevelopmentFragmentResponse([], false, null),
-  });
-  const workItemWithAutoCloseFlagEnabled = workItemResponseFactory({
-    developmentWidgetPresent: true,
-    developmentItems: workItemDevelopmentFragmentResponse(workItemDevelopmentMRNodes, true, null),
+    developmentItems: workItemDevelopmentFragmentResponse({
+      mrNodes: [],
+      willAutoCloseByMergeRequest: false,
+      featureFlagNodes: null,
+      branchNodes: [],
+    }),
   });
 
-  const successQueryHandlerWithEmptyMRList = jest.fn().mockResolvedValue({
+  const workItemWithAutoCloseFlagEnabled = workItemResponseFactory({
+    developmentWidgetPresent: true,
+    developmentItems: workItemDevelopmentFragmentResponse({
+      mrNodes: workItemDevelopmentMRNodes,
+      willAutoCloseByMergeRequest: true,
+      featureFlagNodes: null,
+      branchNodes: [],
+    }),
+  });
+
+  const successQueryHandlerWithNoDevItems = jest.fn().mockResolvedValue({
     data: {
       workspace: {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
-        workItem: workItemWithEmptyMRList.data.workItem,
+        workItem: workItemWithNoDevItems.data.workItem,
       },
     },
   });
@@ -217,11 +234,11 @@ describe('WorkItemDevelopment CE', () => {
       ${true}                 | ${true}
       ${false}                | ${false}
     `(
-      'when the list of MRs is empty and workItemsAlpha is `$workItemsAlphaFFEnabled`',
+      'when the list of dev items is empty and workItemsAlpha is `$workItemsAlphaFFEnabled`',
       ({ workItemsAlphaFFEnabled, shouldShowActionCtaButtons }) => {
         beforeEach(async () => {
           createComponent({
-            workItemQueryHandler: successQueryHandlerWithEmptyMRList,
+            workItemQueryHandler: successQueryHandlerWithNoDevItems,
             workItemsAlphaEnabled: workItemsAlphaFFEnabled,
           });
           await waitForPromises();

@@ -1136,17 +1136,35 @@ export const workItemDevelopmentFeatureFlagNodes = [
   },
 ];
 
-export const workItemDevelopmentFragmentResponse = (
+export const workItemRelatedBranchNodes = [
+  {
+    name: '178-issue',
+    comparePath: '/flightjs/Flight/-/compare/master...178-issue',
+    __typename: 'WorkItemRelatedBranch',
+  },
+  {
+    name: '178-issue-10',
+    comparePath: '/flightjs/Flight/-/compare/master...178-issue-10',
+    __typename: 'WorkItemRelatedBranch',
+  },
+];
+
+export const workItemDevelopmentFragmentResponse = ({
   mrNodes = workItemDevelopmentMRNodes,
   willAutoCloseByMergeRequest = false,
   featureFlagNodes = workItemDevelopmentFeatureFlagNodes,
-) => {
+  branchNodes = workItemRelatedBranchNodes,
+} = {}) => {
   return {
     type: 'DEVELOPMENT',
     willAutoCloseByMergeRequest,
     featureFlags: {
       nodes: featureFlagNodes,
       __typename: 'FeatureFlagConnection',
+    },
+    relatedBranches: {
+      nodes: branchNodes,
+      __typename: 'WorkItemRelatedBranchConnection',
     },
     closingMergeRequests: {
       nodes: mrNodes,

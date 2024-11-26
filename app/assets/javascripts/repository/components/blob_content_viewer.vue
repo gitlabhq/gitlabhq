@@ -402,7 +402,7 @@ export default {
       />
     </div>
     <ai-genie
-      v-if="explainCodeAvailable"
+      v-if="explainCodeAvailable && activeViewerType === 'simple'"
       container-selector=".file-content"
       :file-path="path"
       class="gl-ml-7"

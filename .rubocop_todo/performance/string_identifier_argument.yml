@@ -80,7 +80,6 @@ Performance/StringIdentifierArgument:
     - 'ee/spec/support/helpers/search_results_helpers.rb'
     - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
     - 'ee/spec/support/shared_examples/google_cloud_platform/artifact_registry/services_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/lib/gitlab/elastic/search_results_shared_examples.rb'
     - 'ee/spec/support/shared_examples/policies/monitor_feature_visibility_shared_examples.rb'
     - 'ee/spec/workers/concerns/elastic/migration_options_spec.rb'
     - 'ee/spec/workers/elastic_namespace_rollout_worker_spec.rb'

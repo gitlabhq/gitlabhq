@@ -88,6 +88,9 @@ export default {
     featureFlags() {
       return this.workItemDevelopment?.featureFlags?.nodes || [];
     },
+    relatedBranches() {
+      return this.workItemDevelopment?.relatedBranches?.nodes || [];
+    },
     shouldShowEmptyState() {
       return this.isRelatedDevelopmentListEmpty ? this.workItemsAlphaEnabled : true;
     },
@@ -95,7 +98,12 @@ export default {
       return this.workItemDevelopment && this.shouldShowEmptyState;
     },
     isRelatedDevelopmentListEmpty() {
-      return !this.error && this.linkedMergeRequests.length === 0 && this.featureFlags.length === 0;
+      return (
+        !this.error &&
+        this.linkedMergeRequests.length === 0 &&
+        this.featureFlags.length === 0 &&
+        this.relatedBranches.length === 0
+      );
     },
     showAutoCloseInformation() {
       return (

@@ -54,7 +54,7 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
     let_it_be(:project) { create(:project) }
 
     shared_examples 'failed user contribution mapping' do
-      it 'logs the failure and fails the import status record', :aggregate_failures do
+      it 'logs the failure and clears the placeholder cache', :aggregate_failures do
         exception = StandardError.new('Some error')
 
         expect(::Import::Framework::Logger).to receive(:error).with({
@@ -64,9 +64,11 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
           import_uid: uid
         })
 
-        described_class.sidekiq_retries_exhausted_block.call({ 'args' => [import_source, uid] }, exception)
+        expect_next_instance_of(Import::PlaceholderReferences::Store) do |store|
+          expect(store).to receive(:clear!)
+        end
 
-        expect(import_status_record.reload).to be_failed
+        described_class.sidekiq_retries_exhausted_block.call({ 'args' => [import_source, uid] }, exception)
       end
 
       # This case should not happen, but in case it does, there should still be a relevant error log anyway

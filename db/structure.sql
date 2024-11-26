@@ -21061,10 +21061,18 @@ CREATE TABLE virtual_registries_packages_maven_upstreams (
     encrypted_credentials bytea,
     encrypted_credentials_iv bytea,
     cache_validity_hours smallint DEFAULT 24 NOT NULL,
+    encrypted_username bytea,
+    encrypted_username_iv bytea,
+    encrypted_password bytea,
+    encrypted_password_iv bytea,
+    CONSTRAINT check_2366658457 CHECK ((octet_length(encrypted_username) <= 1020)),
     CONSTRAINT check_26c0572777 CHECK ((char_length(url) <= 255)),
     CONSTRAINT check_4af2999ab8 CHECK ((octet_length(encrypted_credentials_iv) <= 1020)),
     CONSTRAINT check_a3593dca3a CHECK ((cache_validity_hours >= 0)),
-    CONSTRAINT check_b9e3bfa31a CHECK ((octet_length(encrypted_credentials) <= 1020))
+    CONSTRAINT check_b9e3bfa31a CHECK ((octet_length(encrypted_credentials) <= 1020)),
+    CONSTRAINT check_c3977cdb0c CHECK ((octet_length(encrypted_username_iv) <= 1020)),
+    CONSTRAINT check_e4b6e651bf CHECK ((octet_length(encrypted_password_iv) <= 1020)),
+    CONSTRAINT check_e57d1f3005 CHECK ((octet_length(encrypted_password) <= 1020))
 );
 
 CREATE SEQUENCE virtual_registries_packages_maven_upstreams_id_seq
@@ -32556,6 +32564,10 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
 
 CREATE INDEX index_virtual_reg_pkgs_maven_upstreams_on_group_id ON virtual_registries_packages_maven_upstreams USING btree (group_id);
+
+CREATE UNIQUE INDEX index_virtual_reg_pkgs_maven_upstreams_on_uniq_enc_password_iv ON virtual_registries_packages_maven_upstreams USING btree (encrypted_password_iv);
+
+CREATE UNIQUE INDEX index_virtual_reg_pkgs_maven_upstreams_on_uniq_enc_username_iv ON virtual_registries_packages_maven_upstreams USING btree (encrypted_username_iv);
 
 CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
 

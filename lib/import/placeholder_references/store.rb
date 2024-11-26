@@ -34,6 +34,10 @@ module Import
         !empty?
       end
 
+      def clear!
+        cache.del(cache_key)
+      end
+
       private
 
       attr_reader :import_source, :import_uid

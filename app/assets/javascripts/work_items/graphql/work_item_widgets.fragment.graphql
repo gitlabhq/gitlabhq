@@ -96,6 +96,12 @@ fragment WorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetDevelopment {
     type
     willAutoCloseByMergeRequest
+    relatedBranches {
+      nodes {
+        name
+        comparePath
+      }
+    }
     closingMergeRequests {
       nodes {
         fromMrDescription

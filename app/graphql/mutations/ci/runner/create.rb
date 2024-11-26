@@ -81,3 +81,5 @@ module Mutations
     end
   end
 end
+
+Mutations::Ci::Runner::Create.prepend_mod

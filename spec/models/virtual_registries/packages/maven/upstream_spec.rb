@@ -36,6 +36,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
     it { is_expected.to validate_presence_of(:url) }
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:password) }
+    it { is_expected.to validate_uniqueness_of(:encrypted_username_iv).ignoring_case_sensitivity }
+    it { is_expected.to validate_uniqueness_of(:encrypted_password_iv).ignoring_case_sensitivity }
     it { is_expected.to validate_length_of(:url).is_at_most(255) }
     it { is_expected.to validate_length_of(:username).is_at_most(255) }
     it { is_expected.to validate_length_of(:password).is_at_most(255) }
@@ -101,12 +103,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
       end
 
       context 'when url is updated' do
-        where(:new_url, :new_user, :new_pwd, :expected_user, :expected_pwd, :expected_credentials) do
-          'http://original_url.test' | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
-          'http://update_url.test'   | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
-          'http://update_url.test'   | :none  | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
-          'http://update_url.test'   | 'test' | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
-          'http://update_url.test'   | :none  | 'test' | nil    | nil    | { 'username' => nil, 'password' => nil }
+        where(:new_url, :new_user, :new_pwd, :expected_user, :expected_pwd) do
+          'http://original_url.test' | 'test' | 'test' | 'test' | 'test'
+          'http://update_url.test'   | 'test' | 'test' | 'test' | 'test'
+          'http://update_url.test'   | :none  | :none  | nil    | nil
+          'http://update_url.test'   | 'test' | :none  | nil    | nil
+          'http://update_url.test'   | :none  | 'test' | nil    | nil
         end
 
         with_them do
@@ -121,7 +123,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
             expect(upstream.reload.url).to eq(new_url)
             expect(upstream.username).to eq(expected_user)
             expect(upstream.password).to eq(expected_pwd)
-            expect(upstream.credentials).to eq(expected_credentials)
           end
         end
       end

@@ -310,7 +310,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/requests/users/registrations_identity_verification_controller_spec.rb'
     - 'ee/spec/serializers/integrations/field_entity_spec.rb'
-    - 'ee/spec/services/ai/store_repository_xray_service_spec.rb'
     - 'ee/spec/services/boards/epic_lists/destroy_service_spec.rb'
     - 'ee/spec/services/ci/destroy_pipeline_service_spec.rb'
     - 'ee/spec/services/clusters/agent_tokens/create_service_audit_log_spec.rb'

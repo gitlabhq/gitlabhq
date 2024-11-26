@@ -42,6 +42,7 @@ end
 
 RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :user_management do
   include TermsHelper
+  using RSpec::Parameterized::TableSyntax
 
   let(:new_user) { build_stubbed(:user) }
 
@@ -364,6 +365,83 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
   context 'with invalid email' do
     it_behaves_like 'user email validation' do
       let(:path) { new_user_registration_path }
+    end
+
+    where(:email, :reason) do
+      '"A"@b.co'            | 'quoted emails'
+      'a @b.co'             | 'space in the local-part'
+      'ab.co'               | 'no @ symbol'
+      'a@b@c.co'            | 'several @ symbol'
+      'a@-b.co'             | 'domain starting with hyphen'
+      'a@b-.co'             | 'domain finishing with hyphen'
+      'a@example_me.co'     | 'domain with underscore'
+      'a@example .com' | 'space in the domain'
+      'a@[123.123.123.123]' | 'IP addresses'
+      'a@b.'                | 'invalid domain'
+    end
+
+    with_them do
+      cause = params[:reason]
+      it "doesn't accept emails with #{cause}" do
+        new_user.email = email
+        visit new_user_registration_path
+
+        fill_in_sign_up_form(new_user)
+
+        expect(page).to have_current_path new_user_registration_path
+        expect(page).to have_content(_("Please provide a valid email address."))
+      end
+    end
+  end
+
+  context 'with valid email with top-level-domain singularities' do
+    it_behaves_like 'user email validation' do
+      let(:path) { new_user_registration_path }
+    end
+
+    where(:email, :reason) do
+      'a@b'                 | 'no TLD'
+      'a@b.c'               | 'TLD less than two characters'
+    end
+
+    with_them do
+      cause = params[:reason]
+      it "accept emails with #{cause} but displays a warning" do
+        new_user_password_ori = new_user.password
+        new_user.email = email
+        new_user.password = ''
+        visit new_user_registration_path
+
+        fill_in_sign_up_form(new_user)
+
+        expect(page).to have_current_path new_user_registration_path
+        expect(page).to have_content(
+          _('Email address without top-level domain. Make sure that you have entered the correct email address.')
+        )
+
+        new_user.password = new_user_password_ori
+        expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+      end
+    end
+  end
+
+  context 'with valid email' do
+    where(:email, :reason) do
+      '6@b.co'                              | 'alphanumerical first character in the local-part'
+      '012345678901234567890123456789@b.co' | 'long local-part'
+      'a@wwww.internal-site.co.uk'          | 'several subdomains'
+      'a@3w.internal-site.co.uk'            | 'several subdomains'
+      'a@b.example'                         | 'valid TLD'
+    end
+
+    with_them do
+      cause = params[:reason]
+      it "accepts emails with #{cause}" do
+        new_user.email = email
+        visit new_user_registration_path
+
+        expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+      end
     end
   end
 end

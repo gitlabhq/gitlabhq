@@ -12,6 +12,10 @@ describe('WorkItemDevelopmentRelationshipList', () => {
       nodes: [workItemDevelopmentFragmentResponse().closingMergeRequests.nodes[0]],
       __typename: 'WorkItemClosingMergeRequestConnection',
     },
+    relatedBranches: {
+      nodes: [],
+      __typename: 'WorkItemRelatedBranchConnection',
+    },
     featureFlags: {
       nodes: [workItemDevelopmentFragmentResponse().featureFlags.nodes[0]],
       __typename: 'FeatureFlagConnection',
@@ -23,6 +27,10 @@ describe('WorkItemDevelopmentRelationshipList', () => {
     closingMergeRequests: {
       nodes: [workItemDevelopmentFragmentResponse().closingMergeRequests.nodes[0]],
       __typename: 'WorkItemClosingMergeRequestConnection',
+    },
+    relatedBranches: {
+      nodes: [],
+      __typename: 'WorkItemRelatedBranchConnection',
     },
     featureFlags: {
       nodes: [

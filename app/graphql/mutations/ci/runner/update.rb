@@ -78,4 +78,4 @@ module Mutations
   end
 end
 
-Mutations::Ci::Runner::Update.prepend_mod_with('Mutations::Ci::Runner::Update')
+Mutations::Ci::Runner::Update.prepend_mod

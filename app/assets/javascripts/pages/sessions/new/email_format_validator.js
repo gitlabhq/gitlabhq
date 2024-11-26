@@ -1,9 +1,8 @@
 import InputValidator from '~/validators/input_validator';
 
-// It checks if email contains at least one character, number or whatever except
-// another "@" or whitespace before "@", at least two characters except
-// another "@" or whitespace after "@" and one dot in between
-const emailRegexPattern = /[^@\s]+@[^@\s]+\.[^@\s]+/;
+// The format of the email is validated by the default `type="email"` input field.
+// In addition, the email should contain a top-level domain of at least two alphabetical characters.
+const emailRegexPattern = /.+\.[a-zA-Z]{2,}/;
 const hintMessageSelector = '.validation-hint';
 const warningMessageSelector = '.validation-warning';
 

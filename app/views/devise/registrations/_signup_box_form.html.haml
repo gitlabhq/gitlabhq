@@ -64,8 +64,8 @@
         title: _('Please provide a valid email address.')
       %p.validation-hint.text-secondary
         = _('We recommend a work email address.')
-      %p.validation-warning.gl-field-error-ignore.text-secondary.hide
-        = _('This email address does not look right, are you sure you typed it correctly?')
+      %p.validation-warning.gl-field-error-ignore.gl-text-red-500.hide
+        = _('Email address without top-level domain. Make sure that you have entered the correct email address.')
       -# This is used for providing entry to Jihu on email verification
       = render_if_exists 'devise/shared/signup_email_additional_info'
   .form-group.gl-mb-5
