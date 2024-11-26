@@ -41,6 +41,10 @@ export const DESIGN_SINGLE_ARCHIVE_ERROR = s__(
 const DESIGN_UPLOAD_SKIPPED_MESSAGE = s__('DesignManagement|Upload skipped. %{reason}');
 const MAX_SKIPPED_FILES_LISTINGS = 5;
 
+export const UPDATE_DESCRIPTION_ERROR = s__(
+  'DesignManagement|Could not update description. Please try again.',
+);
+
 export const UPLOAD_DESIGN_ERROR_MESSAGE = s__(
   'DesignManagement|Error uploading a new design. Please try again.',
 );

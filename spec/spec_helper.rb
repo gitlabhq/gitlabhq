@@ -356,10 +356,6 @@ RSpec.configure do |config|
       # Our test suite is setup to test plain text editor by default with separate tests just
       # for the rich text editor. Switch the flag off to continue testing the same way as before
       stub_feature_flags(rich_text_editor_as_default: false)
-
-      # TODO: temporary measure to unblock master
-      # issue: https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/9437
-      stub_feature_flags(ci_job_token_jwt: false)
     else
       unstub_all_feature_flags
     end

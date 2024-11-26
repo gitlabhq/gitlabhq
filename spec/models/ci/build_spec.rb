@@ -6125,7 +6125,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:token) { 'my-token' }
 
     before do
-      stub_feature_flags(ci_job_token_jwt: true)
       allow_next_instance_of(::Ci::JobToken::Jwt::Encode, build) do |encode|
         allow(encode).to receive(:jwt).and_return(token)
       end

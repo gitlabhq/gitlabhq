@@ -233,6 +233,10 @@ If you encounter issues:
    1. Search for the setting **GitLab: Debug** and enable it.
 1. Examine the [Duo Workflow Service production LangSmith trace](https://smith.langchain.com/o/477de7ad-583e-47b6-a1c4-c4a0300e7aca/projects/p/5409132b-2cf3-4df8-9f14-70204f90ed9b?timeModel=%7B%22duration%22%3A%227d%22%7D&tab=0).
 
+## Audit log
+
+Audit event is created for each API request done by Duo Workflow. View these events on the [instance audit events](../../administration/audit_event_reports.md#instance-audit-events) page.
+
 ## Give feedback
 
 Duo Workflow is an experiment and your feedback is crucial. To report issues or suggest improvements,

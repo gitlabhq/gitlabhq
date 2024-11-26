@@ -83,6 +83,23 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  shared_examples 'includes statistics when all_available is false' do
+    let(:params) { { all_available: false, statistics: true } }
+
+    before do
+      group1.add_developer(admin)
+      create(:group, parent: group1)
+    end
+
+    it 'returns the statistics', :aggregate_failures do
+      get api(api_endpoint, admin, admin_mode: true), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an Array
+      expect(json_response.first).to include('statistics')
+    end
+  end
+
   describe "GET /groups" do
     shared_examples 'groups list N+1' do
       it 'avoids N+1 queries', :use_sql_query_cache do
@@ -350,6 +367,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response).to be_an Array
 
         expect(json_response[0]["statistics"].keys).to match_array(stat_keys)
+      end
+
+      it_behaves_like 'includes statistics when all_available is false' do
+        let(:api_endpoint) { "/groups" }
       end
     end
 
@@ -2507,6 +2528,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response).to be_an Array
         expect(json_response.first).to include('statistics')
       end
+
+      it_behaves_like 'includes statistics when all_available is false' do
+        let(:api_endpoint) { "/groups/#{group1.id}/subgroups" }
+      end
     end
 
     it_behaves_like 'skips searching in full path' do
@@ -2645,6 +2670,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
         expect(json_response.first).to include('statistics')
+      end
+
+      it_behaves_like 'includes statistics when all_available is false' do
+        let(:api_endpoint) { "/groups/#{group1.id}/descendant_groups" }
       end
     end
 

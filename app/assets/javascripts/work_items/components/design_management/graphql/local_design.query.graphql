@@ -1,5 +1,6 @@
 #import "./fragments/design_file.fragment.graphql"
 #import "./fragments/discussion_resolved_status.fragment.graphql"
+#import "~/graphql_shared/fragments/author.fragment.graphql"
 #import "./fragments/design_note.fragment.graphql"
 
 query getLocalDesignQuery($atVersion: DesignManagementVersionID, $filenames: [String!]) {
@@ -15,6 +16,21 @@ query getLocalDesignQuery($atVersion: DesignManagementVersionID, $filenames: [St
             ...DesignNote
           }
         }
+      }
+    }
+    issue {
+      id
+      title
+      webPath
+      webUrl
+      participants {
+        nodes {
+          ...Author
+        }
+      }
+      userPermissions {
+        createDesign
+        updateDesign
       }
     }
   }

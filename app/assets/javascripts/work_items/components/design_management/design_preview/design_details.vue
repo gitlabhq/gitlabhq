@@ -131,6 +131,9 @@ export default {
     design() {
       return this.localDesign || {};
     },
+    markdownPreviewPath() {
+      return `/${this.fullPath}/-/preview_markdown?target_type=Issue`;
+    },
     designVariables() {
       return {
         fullPath: this.fullPath,
@@ -330,8 +333,10 @@ export default {
         </div>
         <design-sidebar
           :design="design"
+          :design-variables="designVariables"
           :is-loading="isLoading"
           :is-open="isSidebarOpen"
+          :markdown-preview-path="markdownPreviewPath"
           :resolved-discussions-expanded="resolvedDiscussionsExpanded"
           @toggleResolvedComments="toggleResolvedComments"
         />

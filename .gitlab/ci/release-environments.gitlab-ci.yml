@@ -1,6 +1,6 @@
 ---
 start-release-environments-security-pipeline:
-  allow_failure: false
+  allow_failure: true
   extends:
     - .release-environments:rules:start-release-environments-security-pipeline
   stage: release-environments

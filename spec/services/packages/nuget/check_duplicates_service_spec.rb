@@ -6,7 +6,6 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:file_name) { 'package.nupkg' }
-  let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, :group, namespace: project.namespace) }
 
   let(:params) do
     {
@@ -44,55 +43,11 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
 
       context 'with nuget_duplicate_exception_regex' do
         before do
-          package_settings.update!(nuget_duplicate_exception_regex: ".*#{existing_package.name.last(3)}.*")
+          package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
         end
 
         it_behaves_like 'returning success'
       end
-    end
-
-    shared_examples 'when package file is in object storage' do
-      let(:params) { super().merge(remote_url: 'https://example.com') }
-
-      before do
-        allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |instance|
-          allow(instance).to receive(:execute)
-            .and_return(ServiceResponse.success(payload: Nokogiri::XML::Document.new))
-        end
-        allow_next_instance_of(::Packages::Nuget::ExtractMetadataContentService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
-        end
-      end
-
-      it_behaves_like 'handling duplicates disallowed when package exists'
-
-      context 'when ExtractRemoteMetadataFileService raises ExtractionError' do
-        before do
-          allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |instance|
-            allow(instance).to receive(:execute).and_raise(
-              ::Packages::Nuget::ExtractRemoteMetadataFileService::ExtractionError, 'nuspec file not found'
-            )
-          end
-        end
-
-        it_behaves_like 'returning error', reason: :bad_request, message: 'nuspec file not found'
-      end
-
-      context 'when version is normalized' do
-        let(:metadata) { super().merge(package_version: '1.7.15') }
-
-        it_behaves_like 'handling duplicates disallowed when package exists'
-      end
-    end
-
-    shared_examples 'when package file is on disk' do
-      before do
-        allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
-        end
-      end
-
-      it_behaves_like 'handling duplicates disallowed when package exists'
     end
 
     context 'with existing package' do
@@ -106,67 +61,63 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
         }
       end
 
-      before do
-        allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
-        end
-      end
-
       context 'when nuget duplicates are allowed' do
         before do
-          package_settings.update!(nuget_duplicates_allowed: true)
+          allow_next_instance_of(Namespace::PackageSetting) do |instance|
+            allow(instance).to receive(:nuget_duplicates_allowed?).and_return(true)
+          end
         end
 
         it_behaves_like 'returning success'
-
-        context 'when the package name matches the exception regex' do
-          before do
-            package_settings.update!(nuget_duplicate_exception_regex: existing_package.name)
-          end
-
-          it_behaves_like 'returning error', reason: :conflict,
-            message: 'A package with the same name and version already exists'
-        end
-
-        context 'when the package version matches the exception regex' do
-          before do
-            package_settings.update!(nuget_duplicate_exception_regex: existing_package.version)
-          end
-
-          it_behaves_like 'returning error', reason: :conflict,
-            message: 'A package with the same name and version already exists'
-        end
       end
 
       context 'when nuget duplicates are not allowed' do
-        before do
-          package_settings.update!(nuget_duplicates_allowed: false)
+        let!(:package_settings) do
+          create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
         end
 
-        it_behaves_like 'when package file is in object storage'
-        it_behaves_like 'when package file is on disk'
-      end
+        context 'when package file is in object storage' do
+          let(:params) { super().merge(remote_url: 'https://example.com') }
 
-      context 'when packages_allow_duplicate_exceptions is disabled' do
-        before do
-          stub_feature_flags(packages_allow_duplicate_exceptions: false)
-        end
-
-        context 'when nuget duplicates are allowed' do
           before do
-            package_settings.update!(nuget_duplicates_allowed: true)
+            allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |instance|
+              allow(instance).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: Nokogiri::XML::Document.new))
+            end
+            allow_next_instance_of(::Packages::Nuget::ExtractMetadataContentService) do |instance|
+              allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
+            end
           end
 
-          it_behaves_like 'returning success'
-        end
+          it_behaves_like 'handling duplicates disallowed when package exists'
 
-        context 'when nuget duplicates are not allowed' do
-          before do
-            package_settings.update!(nuget_duplicates_allowed: false)
+          context 'when ExtractRemoteMetadataFileService raises ExtractionError' do
+            before do
+              allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |instance|
+                allow(instance).to receive(:execute).and_raise(
+                  ::Packages::Nuget::ExtractRemoteMetadataFileService::ExtractionError, 'nuspec file not found'
+                )
+              end
+            end
+
+            it_behaves_like 'returning error', reason: :bad_request, message: 'nuspec file not found'
           end
 
-          it_behaves_like 'when package file is in object storage'
-          it_behaves_like 'when package file is on disk'
+          context 'when version is normalized' do
+            let(:metadata) { super().merge(package_version: '1.7.15') }
+
+            it_behaves_like 'handling duplicates disallowed when package exists'
+          end
+        end
+
+        context 'when package file is on disk' do
+          before do
+            allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
+              allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
+            end
+          end
+
+          it_behaves_like 'handling duplicates disallowed when package exists'
         end
       end
     end
@@ -183,41 +134,19 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
       end
 
       context 'when nuget duplicates are allowed' do
-        before do
-          package_settings.nuget_duplicates_allowed = true
+        let_it_be(:package_settings) do
+          create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: true)
         end
 
         it_behaves_like 'returning success'
       end
 
       context 'when nuget duplicates are not allowed' do
-        before do
-          package_settings.nuget_duplicates_allowed = false
+        let_it_be(:package_settings) do
+          create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
         end
 
         it_behaves_like 'returning success'
-      end
-
-      context 'when packages_allow_duplicate_exceptions is disabled' do
-        before do
-          stub_feature_flags(packages_allow_duplicate_exceptions: false)
-        end
-
-        context 'when nuget duplicates are allowed' do
-          before do
-            package_settings.nuget_duplicates_allowed = true
-          end
-
-          it_behaves_like 'returning success'
-        end
-
-        context 'when nuget duplicates are not allowed' do
-          before do
-            package_settings.nuget_duplicates_allowed = false
-          end
-
-          it_behaves_like 'returning success'
-        end
       end
     end
   end

@@ -161,6 +161,8 @@ export default {
       }
     },
     allowDuplicateExceptions(item) {
+      if (item.format === NUGET_PACKAGE_FORMAT) return item.duplicatesAllowed;
+
       // We're also enabling the duplicate exceptions input when duplicates are allowed
       // But the change is behind the packagesAllowDuplicateExceptions feature flag
       return !this.glFeatures.packagesAllowDuplicateExceptions && item.duplicatesAllowed;

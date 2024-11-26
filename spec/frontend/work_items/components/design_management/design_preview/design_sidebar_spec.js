@@ -40,6 +40,13 @@ describe('DesignSidebar', () => {
     },
   });
 
+  const mockDesignVariables = {
+    fullPath: 'gitlab-org/gitlab-shell',
+    iid: '1',
+    filenames: ['image_name.png'],
+    atVersion: null,
+  };
+
   function createComponent({ design = mockDesign, isLoading = false, isLoggedIn = true } = {}) {
     if (isLoggedIn) {
       window.gon.current_user_id = 1;
@@ -49,8 +56,10 @@ describe('DesignSidebar', () => {
       propsData: {
         design,
         isLoading,
+        designVariables: mockDesignVariables,
         isOpen: true,
         resolvedDiscussionsExpanded: false,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
       },
       mocks: {
         $route,

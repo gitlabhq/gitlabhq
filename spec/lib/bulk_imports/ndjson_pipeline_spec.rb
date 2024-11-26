@@ -458,6 +458,61 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           subject.load(nil, [merge_request, original_users_map])
         end
       end
+
+      context 'when an exception is raised when saving a nested object' do
+        it 'still pushes a placeholder reference for the persisted objects' do
+          merge_request = build(:merge_request,
+            source_project: project,
+            target_project: project,
+            author: source_user_1.mapped_user
+          )
+
+          note = build(:note,
+            project: project,
+            author: source_user_1.mapped_user
+          )
+
+          diff_note = build(:diff_note_on_merge_request,
+            project: project,
+            author: source_user_1.mapped_user
+          )
+          allow(diff_note).to receive(:save).and_raise(DiffNote::NoteDiffFileCreationError)
+
+          merge_request.notes << note
+          merge_request.notes << diff_note
+
+          original_users_map = {}.compare_by_identity
+          original_users_map[merge_request] = {
+            'author_id' => source_user_1.source_user_identifier
+          }
+          original_users_map[note] = {
+            'author_id' => source_user_1.source_user_identifier
+          }
+          original_users_map[diff_note] = {
+            'author_id' => source_user_1.source_user_identifier
+          }
+
+          expect(Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+            import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+            import_uid: context.bulk_import_id,
+            record: merge_request,
+            user_reference_column: :author_id,
+            source_user: source_user_1
+          ).and_call_original
+
+          expect(Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+            import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+            import_uid: context.bulk_import_id,
+            record: note,
+            user_reference_column: :author_id,
+            source_user: source_user_1
+          ).and_call_original
+
+          expect { subject.load(nil, [merge_request, original_users_map]) }.to raise_error(
+            DiffNote::NoteDiffFileCreationError
+          )
+        end
+      end
     end
   end
 

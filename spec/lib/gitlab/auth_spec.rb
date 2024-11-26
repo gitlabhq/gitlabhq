@@ -1043,10 +1043,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
     let_it_be(:user) { create(:user) }
 
-    before do
-      stub_feature_flags(ci_job_token_jwt: true)
-    end
-
     context 'for running build' do
       let!(:build) { create(:ci_build, :running, user: user) }
 

@@ -29,12 +29,20 @@ export default {
       type: Boolean,
       required: true,
     },
+    designVariables: {
+      type: Object,
+      required: true,
+    },
     isOpen: {
       type: Boolean,
       required: true,
     },
     resolvedDiscussionsExpanded: {
       type: Boolean,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
       required: true,
     },
   },
@@ -44,8 +52,13 @@ export default {
     };
   },
   computed: {
-    showDescription() {
-      return !this.isLoading && Boolean(this.design.descriptionHtml);
+    showDescriptionForm() {
+      // user either has permission to add or update description,
+      // or the existing description should be shown read-only.
+      return (
+        !this.isLoading &&
+        (this.design.issue?.userPermissions?.updateDesign || Boolean(this.design.descriptionHtml))
+      );
     },
     discussions() {
       return this.design?.discussions ? extractDiscussions(this.design.discussions) : [];
@@ -99,7 +112,13 @@ export default {
   <design-disclosure :open="isOpen">
     <template #default>
       <div class="image-notes gl-h-full gl-pt-0" @click.self="handleSidebarClick">
-        <design-description v-if="showDescription" :design="design" class="gl-border-b gl-my-5" />
+        <design-description
+          v-if="showDescriptionForm"
+          :design="design"
+          :design-variables="designVariables"
+          :markdown-preview-path="markdownPreviewPath"
+          class="gl-border-b gl-my-5"
+        />
         <div v-if="isLoading" class="gl-my-5">
           <gl-skeleton-loader />
         </div>

@@ -249,17 +249,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(pipeline).to be_persisted
           expect(build_names).to contain_exactly('job1', 'job2', 'job4')
         end
-
-        context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-          before do
-            stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-          end
-
-          it 'creates all relevant jobs' do
-            expect(pipeline).to be_persisted
-            expect(build_names).to contain_exactly('job1', 'job2')
-          end
-        end
       end
     end
 
@@ -905,16 +894,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
                 it 'creates both jobs' do
                   expect(build_names).to contain_exactly('job1', 'job2')
-                end
-
-                context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-                  before do
-                    stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-                  end
-
-                  it 'does not create job1' do
-                    expect(build_names).to contain_exactly('job2')
-                  end
                 end
               end
             end

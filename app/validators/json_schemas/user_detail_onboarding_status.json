@@ -27,6 +27,10 @@
     "glm_source": {
       "description": "GitLab link management value for source on the link the user clicks to start onboarding",
       "type": "string"
+    },
+    "joining_project": {
+      "description": "Setting to understand if a user is joining a project or not during onboarding",
+      "type": "boolean"
     }
   },
   "additionalProperties": false

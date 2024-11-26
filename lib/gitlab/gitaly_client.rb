@@ -163,7 +163,6 @@ module Gitlab
                 { service: 'gitaly.RepositoryService', method: 'RepositorySize' },
                 { service: 'gitaly.RepositoryService', method: 'SearchFilesByContent' },
                 { service: 'gitaly.RepositoryService', method: 'SearchFilesByName' },
-                { service: 'gitaly.ServerService', method: 'ClockSynced' },
                 { service: 'gitaly.ServerService', method: 'DiskStatistics' },
                 { service: 'gitaly.ServerService', method: 'ReadinessCheck' },
                 { service: 'gitaly.ServerService', method: 'ServerInfo' },

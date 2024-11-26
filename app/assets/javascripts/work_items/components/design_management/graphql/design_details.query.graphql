@@ -1,5 +1,6 @@
 #import "./fragments/design_file.fragment.graphql"
 #import "./fragments/discussion_resolved_status.fragment.graphql"
+#import "~/graphql_shared/fragments/author.fragment.graphql"
 #import "./fragments/design_note.fragment.graphql"
 #import "./fragments/version.fragment.graphql"
 
@@ -32,6 +33,21 @@ query getDesignDetails(
                           ...DesignNote
                         }
                       }
+                    }
+                  }
+                  issue {
+                    id
+                    title
+                    webPath
+                    webUrl
+                    participants {
+                      nodes {
+                        ...Author
+                      }
+                    }
+                    userPermissions {
+                      createDesign
+                      updateDesign
                     }
                   }
                 }

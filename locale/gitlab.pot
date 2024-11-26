@@ -19307,6 +19307,9 @@ msgstr ""
 msgid "DesignManagement|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
+msgid "DesignManagement|Are you sure you want to cancel editing the description?"
+msgstr ""
+
 msgid "DesignManagement|Are you sure you want to cancel editing this comment?"
 msgstr ""
 

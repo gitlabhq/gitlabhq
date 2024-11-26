@@ -16,6 +16,32 @@ export const mockDesign = {
     nodes: [],
     __typename: 'DiscussionConnection',
   },
+  issue: {
+    id: 'gid:/gitlab/Issue/1',
+    title: 'My precious issue',
+    webPath: 'full-issue-path',
+    webUrl: 'full-issue-url',
+    participants: {
+      nodes: [
+        {
+          name: 'Administrator',
+          id: 'gid://gitlab/User/1"',
+          username: 'root',
+          webUrl: 'link-to-author',
+          webPath: '/root',
+          avatarUrl: 'link-to-avatar',
+          __typename: 'UserCore',
+        },
+      ],
+      __typename: 'UserCoreConnection',
+    },
+    userPermissions: {
+      createDesign: true,
+      updateDesign: true,
+      __typename: 'IssuePermissions',
+    },
+    __typename: 'Issue',
+  },
   __typename: 'Design',
 };
 
@@ -84,6 +110,53 @@ export const designCollectionResponse = (mockDesigns = [mockDesign]) => ({
   },
 });
 
+export const designDescriptionFactory = ({
+  updateDesign = true,
+  description = 'Description test',
+  descriptionHtml = '<p data-sourcepos="1:1-1:16" dir="auto">Description test</p>',
+} = {}) => ({
+  id: 'gid:/gitlab/Design/1',
+  iid: 1,
+  filename: 'test.jpg',
+  fullPath: 'full-design-path',
+  image: 'test.jpg',
+  description,
+  descriptionHtml,
+  updatedAt: '01-01-2019',
+  updatedBy: {
+    name: 'test',
+  },
+  issue: {
+    id: 'gid:/gitlab/Issue/1',
+    title: 'My precious issue',
+    webPath: 'full-issue-path',
+    webUrl: 'full-issue-url',
+    participants: {
+      nodes: [
+        {
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'link-to-author',
+          avatarUrl: 'link-to-avatar',
+          __typename: 'UserCore',
+        },
+      ],
+      __typename: 'UserCoreConnection',
+    },
+    userPermissions: {
+      updateDesign,
+      awardEmoji: true,
+      __typename: 'IssuePermissions',
+    },
+    __typename: 'Issue',
+  },
+  discussions: {
+    nodes: [],
+    __typename: 'DiscussionConnection',
+  },
+  __typename: 'Design',
+});
+
 export const allDesignsArchivedResponse = () => ({
   data: {
     workItem: {
@@ -132,6 +205,18 @@ export const getDesignResponse = {
       },
     },
   },
+};
+
+export const mockUpdateDesignDescriptionResponse = (options) => {
+  return {
+    data: {
+      designManagementUpdate: {
+        errors: [],
+        design: designDescriptionFactory(options),
+      },
+      __typename: 'DesignManagementUpdatePayload',
+    },
+  };
 };
 
 export const mockArchiveDesignMutationResponse = {

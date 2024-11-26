@@ -652,12 +652,6 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     )
   end
 
-  before do
-    allow_next_instance_of(::Packages::Nuget::CheckDuplicatesService) do |instance|
-      allow(instance).to receive(:execute).and_return(ServiceResponse.success)
-    end
-  end
-
   it { is_expected.to have_request_urgency(:low) }
 
   context 'with valid project' do
@@ -764,86 +758,30 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     it_behaves_like 'returning response status', :forbidden
   end
 
-  context 'when handling duplicates' do
+  context 'when package duplicates are not allowed' do
     let(:params) { { package: temp_file(file_name, content: File.open(expand_fixture_path('packages/nuget/package.nupkg'))) } }
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
     let_it_be(:existing_package) { create(:nuget_package, project: project) }
     let_it_be(:metadata) { { package_name: existing_package.name, package_version: existing_package.version } }
+    let_it_be(:package_settings) do
+      create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
+    end
 
     before do
       allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
         allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
       end
-      allow_next_instance_of(::Packages::Nuget::CheckDuplicatesService) do |instance|
-        allow(instance).to receive(:execute).and_call_original
-      end
     end
 
-    context 'when package duplicates are not allowed' do
-      let_it_be(:package_settings) do
-        create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
-      end
+    it_behaves_like 'returning response status', :conflict unless symbol_package
+    it_behaves_like 'returning response status', :created if symbol_package
 
-      it_behaves_like 'returning response status', :conflict unless symbol_package
-      it_behaves_like 'returning response status', :created if symbol_package
-
-      context 'when exception_regex is set' do
-        before do
-          package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
-        end
-
-        it_behaves_like 'returning response status', :created
-      end
-
-      context 'with packages_allow_duplicate_exceptions disabled' do
-        before do
-          stub_feature_flags(packages_allow_duplicate_exceptions: false)
-        end
-
-        it_behaves_like 'returning response status', :conflict unless symbol_package
-        it_behaves_like 'returning response status', :created if symbol_package
-
-        context 'when exception_regex is set' do
-          before do
-            package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
-          end
-
-          it_behaves_like 'returning response status', :created
-        end
-      end
-    end
-
-    context 'when package duplicates are allowed' do
-      let_it_be(:package_settings) do
-        create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: true)
+    context 'when exception_regex is set' do
+      before do
+        package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
       end
 
       it_behaves_like 'returning response status', :created
-
-      context 'when exception_regex is set' do
-        before do
-          package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
-        end
-
-        it_behaves_like 'returning response status', :conflict unless symbol_package
-        it_behaves_like 'returning response status', :created if symbol_package
-      end
-
-      context 'with packages_allow_duplicate_exceptions disabled' do
-        before do
-          stub_feature_flags(packages_allow_duplicate_exceptions: false)
-        end
-
-        it_behaves_like 'returning response status', :created
-
-        context 'when exception_regex is set' do
-          before do
-            package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
-          end
-
-          it_behaves_like 'returning response status', :created
-        end
-      end
     end
   end
 end

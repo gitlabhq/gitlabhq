@@ -19,6 +19,10 @@ module API
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
     INTEGER_ID_REGEX = /^-?\d+$/
 
+    # ai_workflows scope is used by Duo Workflow which is an AI automation tool, requests authenticated by token with
+    # this scope are audited to keep track of all actions done by Duo Workflow.
+    TOKEN_SCOPES_TO_AUDIT = [:ai_workflows].freeze
+
     def logger
       API.logger
     end
@@ -89,6 +93,7 @@ module API
 
       if @current_user
         load_balancer_stick_request(::ApplicationRecord, :user, @current_user.id)
+        audit_request_with_token_scope(@current_user)
       end
 
       @current_user
@@ -814,6 +819,29 @@ module API
       else
         check_rate_limit!(:search_rate_limit_unauthenticated, scope: [ip_address])
       end
+    end
+
+    def audit_request_with_token_scope(user)
+      return unless Feature.enabled?(:api_audit_requests_with_scope, user)
+
+      token_info = request.env[::Gitlab::Auth::AuthFinders::API_TOKEN_ENV]
+      return unless token_info
+      return unless TOKEN_SCOPES_TO_AUDIT.intersect?(Array.wrap(token_info[:token_scopes]))
+
+      context = {
+        name: 'api_request_access_with_scope',
+        author: user,
+        scope: user,
+        target: ::Gitlab::Audit::NullTarget.new,
+        message: "API request with token scopes #{token_info[:token_scopes]} - #{request.request_method} #{request.path}",
+        additional_details: {
+          request: request.path,
+          method: request.request_method,
+          token_scopes: token_info[:token_scopes]
+        }
+      }
+
+      ::Gitlab::Audit::Auditor.audit(context)
     end
 
     private

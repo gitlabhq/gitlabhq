@@ -1,0 +1,16 @@
+---
+description: Tracks when a CI build fails pipeline fails. Includes information about build_id, build_artifact_types, exit_code, failure_reason and project_id
+action: failed
+identifiers:
+- project
+- user
+product_group: pipeline_execution
+milestone: '15.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92637
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

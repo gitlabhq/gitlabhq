@@ -177,15 +177,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           end
 
           it { is_expected.to be_truthy }
-
-          context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-            before do
-              stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-              allow(context).to receive(:variables_hash).and_return(variables_hash)
-            end
-
-            it { is_expected.to be_falsey }
-          end
         end
       end
 
@@ -293,15 +284,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
         it { is_expected.to be_truthy }
 
-        context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-          before do
-            stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-            allow(context).to receive(:variables_hash).and_return(variables_hash)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-
         context 'when the variable is nested' do
           let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
           let(:variables_hash) do
@@ -322,19 +304,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           end
 
           it { is_expected.to be_truthy }
-
-          context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-            before do
-              stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-              allow(context).to receive(:variables_hash).and_return(variables_hash)
-            end
-
-            it 'raises ParseError' do
-              expect { satisfied_by }.to raise_error(
-                ::Gitlab::Ci::Build::Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref'
-              )
-            end
-          end
         end
       end
     end

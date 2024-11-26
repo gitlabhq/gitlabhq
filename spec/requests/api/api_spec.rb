@@ -516,4 +516,79 @@ RSpec.describe API::API, feature_category: :system_access do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
+
+  describe 'audit logging of requests with a specific token scope' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:path) { "/projects/#{issue.project.id}/issues/#{issue.iid}" }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    shared_examples 'audited request' do
+      it 'adds audit log' do
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with(hash_including({
+          name: 'api_request_access_with_scope',
+          message: "API request with token scopes [:ai_workflows] - GET /api/v4#{path}"
+        })).and_call_original
+
+        subject
+
+        expect(response).to have_gitlab_http_status(status)
+      end
+    end
+
+    shared_examples 'not audited request' do
+      it "doesn't add audit log" do
+        expect(::Gitlab::Audit::Auditor).not_to receive(:audit)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(status)
+      end
+    end
+
+    context 'when endpoint allows token with ai_workflow scope' do
+      subject { get api(path, oauth_access_token: token) }
+
+      context 'when token with ai_workflows scope is used' do
+        let(:status) { :ok }
+
+        it_behaves_like 'audited request'
+
+        context 'when request fails' do
+          let_it_be(:path) { "/projects/#{issue.project.id}/issues/#{non_existing_record_id}" }
+          let(:status) { :not_found }
+
+          it_behaves_like 'audited request'
+        end
+
+        context 'when api_audit_requests_with_scope flag is disabled' do
+          before do
+            stub_feature_flags(api_audit_requests_with_scope: false)
+          end
+
+          it_behaves_like 'not audited request'
+        end
+      end
+
+      context 'when token with ai_workflows scope is not used' do
+        let_it_be(:token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+        let(:status) { :ok }
+
+        it_behaves_like 'not audited request'
+      end
+    end
+
+    context "when endpoint doesn't allow token with ai_workflow scope" do
+      subject { delete api(path, oauth_access_token: token) }
+
+      let(:status) { :forbidden }
+
+      it_behaves_like 'not audited request'
+    end
+  end
 end

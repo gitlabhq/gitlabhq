@@ -33,7 +33,7 @@ namespace :tw do
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson @phillipwells'),
-      CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
+      CodeOwnerRule.new('Container Registry', '@lyspin'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Custom Models', '@jglassman1'),
       # CodeOwnerRule.new('Database', ''),

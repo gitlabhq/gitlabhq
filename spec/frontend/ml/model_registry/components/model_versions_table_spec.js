@@ -12,6 +12,7 @@ import ModelVersionActionsDropdown from '~/ml/model_registry/components/model_ve
 import { createAlert } from '~/alert';
 import {
   modelVersionWithCandidateAndAuthor,
+  modelVersionWithCandidateAndNullAuthor,
   deleteModelVersionResponses,
 } from '../graphql_mock_data';
 
@@ -36,6 +37,7 @@ describe('ModelVersionsTable', () => {
     deleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success),
     canWriteModelRegistry = true,
     mountFn = mountExtended,
+    tableItems = items,
   } = {}) => {
     const requestHandlers = [[deleteModelVersionMutation, deleteResolver]];
     apolloProvider = createMockApollo(requestHandlers);
@@ -45,7 +47,7 @@ describe('ModelVersionsTable', () => {
         canWriteModelRegistry,
       },
       propsData: {
-        items,
+        items: tableItems,
         canWriteModelRegistry,
       },
       apolloProvider,
@@ -106,6 +108,12 @@ describe('ModelVersionsTable', () => {
     const avatar = avatarLink.findComponent(GlAvatar);
     expect(avatar.props('src')).toBe(items[0].author.avatarUrl);
     expect(avatarLink.text()).toContain(items[0].author.name);
+  });
+
+  it('renders the author information correctly for items with no author', () => {
+    createWrapper({ tableItems: [modelVersionWithCandidateAndNullAuthor] });
+    const avatarLink = findTableRows().at(0).findComponent(GlAvatarLink);
+    expect(avatarLink.exists()).toBe(false);
   });
 
   it('renders actions dropdown if canWriteModelRegistry is true', () => {

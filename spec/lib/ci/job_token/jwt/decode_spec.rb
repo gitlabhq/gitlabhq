@@ -17,7 +17,6 @@ RSpec.describe ::Ci::JobToken::Jwt::Decode, feature_category: :continuous_integr
   end
 
   before do
-    stub_feature_flags(ci_job_token_jwt: true)
     allow(::Ci::JobToken::Jwt::Encode).to receive(:key).and_return(key)
     allow(described_class).to receive(:key).and_return(key)
   end

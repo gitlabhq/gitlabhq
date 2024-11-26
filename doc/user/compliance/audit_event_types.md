@@ -261,6 +261,12 @@ Audit event types belong to the following product categories.
 | [`cluster_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | Triggered when a user creates a cluster agent token | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 | [`cluster_agent_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | Triggered when a user revokes a cluster agent token | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 
+### Duo workflow
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A susbset of API requests authenticated by a token with an audited scope | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
+
 ### Dynamic application security testing
 
 | Name | Description | Saved to database | Introduced in | Scope |

@@ -262,7 +262,12 @@ FactoryBot.define do
 
     trait :trace_live do
       after(:create) do |build, evaluator|
-        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set('BUILD TRACE') }
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          # We can skip calling `Ci::Build#hide_secrets` because this content is safe.
+          # This allows not to call into potentialy unstubbed ApplicationSetting in specs.
+          # For example: `ci_job_token_signing_key` when in `let_it_be` context.
+          build.trace.send(:unsafe_set, 'BUILD TRACE')
+        end
       end
     end
 

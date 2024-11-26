@@ -221,7 +221,11 @@ module Gitlab
       private
 
       def save_current_token_in_env
-        request.env[API_TOKEN_ENV] = { token_id: access_token.id, token_type: access_token.class.to_s }
+        request.env[API_TOKEN_ENV] = {
+          token_id: access_token.id,
+          token_type: access_token.class.to_s,
+          token_scopes: access_token.scopes.map(&:to_sym)
+        }
       end
 
       def save_auth_failure_in_application_context(access_token, cause, requested_scopes)

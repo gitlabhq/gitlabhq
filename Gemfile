@@ -687,7 +687,7 @@ gem 'lockbox', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'valid_email', '~> 0.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # JSON
-gem 'jsonb_accessor', '~> 1.3.10' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'jsonb_accessor', '~> 1.4' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'json', '~> 2.7.2', feature_category: :shared
 gem 'json_schemer', '~> 2.3.0', feature_category: :shared
 gem 'oj', '~> 3.13.21' # rubocop:todo Gemfile/MissingFeatureCategory

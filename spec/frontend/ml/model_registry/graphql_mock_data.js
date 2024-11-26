@@ -146,6 +146,11 @@ export const modelVersionWithCandidateAndAuthor = {
   },
 };
 
+export const modelVersionWithCandidateAndNullAuthor = {
+  ...modelVersionWithCandidateAndAuthor,
+  author: null,
+};
+
 export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/1',

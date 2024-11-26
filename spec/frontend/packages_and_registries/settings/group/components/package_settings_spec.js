@@ -299,26 +299,6 @@ describe('Packages Settings', () => {
       });
     });
 
-    describe('with packagesAllowDuplicateExceptions FF enabled', () => {
-      it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
-        mountComponent({
-          mountFn: mountExtended,
-          features: { packagesAllowDuplicateExceptions: true },
-        });
-
-        const { nugetDuplicateExceptionRegex } = packageSettings;
-
-        expect(findNugetDuplicatedSettingsExceptionsInput().props()).toMatchObject({
-          duplicatesAllowed: false,
-          duplicateExceptionRegex: nugetDuplicateExceptionRegex,
-          duplicateExceptionRegexError: '',
-          loading: false,
-          name: 'nugetDuplicateExceptionRegex',
-          id: 'nuget-duplicated-settings-regex-input',
-        });
-      });
-    });
-
     it('on update event calls the mutation', () => {
       const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
       mountComponent({ mountFn: mountExtended, mutationResolver });

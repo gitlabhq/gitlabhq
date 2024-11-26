@@ -1,0 +1,9 @@
+---
+name: api_audit_requests_with_scope
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499461
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505974
+milestone: '17.7'
+group: group::duo workflow
+type: gitlab_com_derisk
+default_enabled: false
