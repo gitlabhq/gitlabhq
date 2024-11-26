@@ -111,14 +111,11 @@ ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/conta
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js
-ee/spec/frontend/security_orchestration/components/policy_editor/pipeline_execution/rule/rule_section_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filter_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filters_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/components/modal_create_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
-ee/spec/frontend/subscriptions/buy_addons_shared/components/checkout/addon_purchase_details_spec.js
-ee/spec/frontend/subscriptions/shared/privacy_and_terms_confirm_spec.js
 ee/spec/frontend/tracing/details/tracing_details_spec.js
 ee/spec/frontend/tracing/details/tracing_span_chart_spec.js
 ee/spec/frontend/usage_quotas/code_suggestions/components/add_on_eligible_user_list_spec.js
@@ -131,7 +128,6 @@ ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_containe
 ee/spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
-ee/spec/frontend/subscriptions/shared/components/purchase_flow/components/checkout/sprintf_with_links_spec.js
 ee/spec/frontend/vue_shared/security_reports/components/security_training_promo_spec.js
 ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js

@@ -157,15 +157,17 @@ module Gitlab
     def download_package_file_version(
       version:, repo:, package_name:, package_file:, package_checksums_sha256:,
       target_path:)
-      version = CGI.escape(version)
       project_path = repo
         .delete_prefix('https://gitlab.com/')
         .delete_suffix('.git')
-        .then { |path| CGI.escape(path) }
-      package_name = CGI.escape(package_name)
-      package_file = CGI.escape(package_file)
 
-      uri = URI("https://gitlab.com/api/v4/projects/#{project_path}/packages/generic/#{package_name}/#{version}/#{package_file}")
+      uri = URI(
+        format('https://gitlab.com/api/v4/projects/%{path}/packages/generic/%{name}/%{version}/%{file}',
+          path: CGI.escape(project_path),
+          name: CGI.escape(package_name),
+          version: CGI.escape(version),
+          file: CGI.escape(package_file)
+        ))
 
       success = true
 

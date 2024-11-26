@@ -1538,6 +1538,8 @@
   rules:
     - <<: *if-not-merge-request
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - !reference [.frontend:rules:jest, rules]
 
 ################

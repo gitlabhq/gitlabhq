@@ -688,7 +688,7 @@ lib/gitlab/checks/**
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil
 /doc/administration/snippets/ @brendan777
-/doc/administration/static_objects_external_storage.md @ashrafkhamis
+/doc/administration/static_objects_external_storage.md @brendan777
 /doc/administration/system_hooks.md @ashrafkhamis
 /doc/administration/terraform_state.md @phillipwells
 /doc/administration/timezone.md @axil
@@ -769,7 +769,7 @@ lib/gitlab/checks/**
 /doc/api/group_push_rules.md @brendan777
 /doc/api/group_relations_export.md @ashrafkhamis
 /doc/api/group_releases.md @phillipwells
-/doc/api/group_repository_storage_moves.md @ashrafkhamis
+/doc/api/group_repository_storage_moves.md @brendan777
 /doc/api/group_service_accounts.md @jglassman1
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
@@ -987,7 +987,7 @@ lib/gitlab/checks/**
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/exact_code_search/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @ashrafkhamis
-/doc/integration/gitpod.md @ashrafkhamis
+/doc/integration/gitpod.md @brendan777
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
 /doc/integration/index.md @ashrafkhamis
 /doc/integration/jenkins.md @lyspin
@@ -1160,11 +1160,10 @@ lib/gitlab/checks/**
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
-/doc/user/project/remote_development/ @ashrafkhamis
+/doc/user/project/remote_development/ @brendan777
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @jglassman1
 /doc/user/project/repository/code_suggestions/ @jglassman1
-/doc/user/project/repository/files/index.md @ashrafkhamis
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski
@@ -1177,7 +1176,7 @@ lib/gitlab/checks/**
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/troubleshooting.md @emily.sahlani
 /doc/user/project/use_project_as_go_package.md @emily.sahlani
-/doc/user/project/web_ide/ @ashrafkhamis
+/doc/user/project/web_ide/ @brendan777
 /doc/user/project/wiki/ @msedlakjakubowski
 /doc/user/project/working_with_projects.md @emily.sahlani
 /doc/user/public_access.md @emily.sahlani
@@ -1193,7 +1192,7 @@ lib/gitlab/checks/**
 /doc/user/storage_usage_quotas.md @lciutacu
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @sselhorn
-/doc/user/workspace/ @ashrafkhamis
+/doc/user/workspace/ @brendan777
 # End rake-managed-docs-block
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers

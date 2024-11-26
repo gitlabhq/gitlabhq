@@ -49,7 +49,9 @@ function identifier(file) {
   })[0];
 }
 
-export const isNotDiffable = (file) => file?.viewer?.name === viewerModes.not_diffable;
+export function isNotDiffable(file) {
+  return file?.viewer?.name === viewerModes.not_diffable;
+}
 
 export function prepareRawDiffFile({ file, allFiles, meta = false, index = -1 }) {
   const additionalProperties = {
@@ -150,7 +152,7 @@ export function stats(file) {
   };
 }
 
-export const countLinesInBetween = (lines, index) => {
+export function countLinesInBetween(lines, index) {
   if (index === 0 || !lines[index + 1]) {
     return -1;
   }
@@ -158,17 +160,21 @@ export const countLinesInBetween = (lines, index) => {
   const prev = lines[index - 1];
   const next = lines[index + 1];
   return Number((next.left || next).new_line) - Number((prev.left || prev).new_line);
-};
+}
 
-export const findClosestMatchLine = (lines, target) =>
-  lines.find((line, index) => {
-    if (!line.meta_data) return false;
-    const prevLine = lines[index - 1];
-    if (prevLine) {
-      return prevLine.new_line < target && target <= line.meta_data.new_pos;
-    }
-    return target <= line.meta_data.new_pos;
-  }) || lines[lines.length - 1];
+export function findClosestMatchLine(lines, target) {
+  return (
+    lines.find((line, index) => {
+      if (!line.meta_data) return false;
+      const prevLine = lines[index - 1];
+      if (prevLine) {
+        return prevLine.new_line < target && target <= line.meta_data.new_pos;
+      }
+      return target <= line.meta_data.new_pos;
+    }) || lines[lines.length - 1]
+  );
+}
 
-export const lineExists = (lines, oldLineNumber, newLineNumber) =>
-  lines.some((line) => line.old_line === oldLineNumber && line.new_line === newLineNumber);
+export function lineExists(lines, oldLineNumber, newLineNumber) {
+  return lines.some((line) => line.old_line === oldLineNumber && line.new_line === newLineNumber);
+}

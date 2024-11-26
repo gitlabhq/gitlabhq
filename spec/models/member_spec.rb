@@ -981,6 +981,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     it { is_expected.to contain_exactly(membership_without_custom_role) }
   end
 
+  describe '.coerce_to_no_access' do
+    let_it_be(:member) { create(:group_member) }
+
+    it 'returns NO_ACCESS for the member' do
+      members = described_class.id_in(member.id).coerce_to_no_access.to_a
+
+      expect(members.first.access_level).to eq(Gitlab::Access::NO_ACCESS)
+    end
+  end
+
   describe '.with_group_group_sharing_access' do
     let_it_be(:shared_group) { create(:group) }
     let_it_be(:invited_group) { create(:group) }

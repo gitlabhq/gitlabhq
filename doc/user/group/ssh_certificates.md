@@ -68,10 +68,6 @@ The user certificates can only be used to access the projects in the top-level g
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/488635) in GitLab 17.7. Feature flag `enforce_ssh_certificates_via_settings` removed.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
 You can enforce usage of SSH certificates and forbid users from authenticating using SSH
 keys and access tokens.
 

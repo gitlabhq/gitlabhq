@@ -6332,9 +6332,6 @@ msgstr[1] ""
 msgid "An unauthenticated user"
 msgstr ""
 
-msgid "An unexpected error occurred"
-msgstr ""
-
 msgid "An unexpected error occurred while checking the project environment."
 msgstr ""
 
@@ -11330,95 +11327,7 @@ msgstr ""
 msgid "Checking username availability..."
 msgstr ""
 
-msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage pack per year"
-msgstr ""
-
-msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 compute minutes"
-msgstr ""
-
-msgid "Checkout|%d compute pack"
-msgid_plural "Checkout|%d compute packs"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Checkout|%{cardType} ending in %{lastFourDigits}"
-msgstr ""
-
-msgid "Checkout|%{name}'s compute minutes"
-msgstr ""
-
-msgid "Checkout|%{name}'s storage subscription"
-msgstr ""
-
-msgid "Checkout|%{quantity} GB of storage"
-msgstr ""
-
-msgid "Checkout|%{quantity} compute minutes"
-msgstr ""
-
-msgid "Checkout|%{quantity} storage pack"
-msgid_plural "Checkout|%{quantity} storage packs"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Checkout|%{startDate} - %{endDate}"
-msgstr ""
-
-msgid "Checkout|(may be %{linkStart}charged upon purchase%{linkEnd})"
-msgstr ""
-
-msgid "Checkout|(x%{quantity})"
-msgstr ""
-
-msgid "Checkout|An unknown error has occurred. Please try again by refreshing this page."
-msgstr ""
-
-msgid "Checkout|Billing address"
-msgstr ""
-
-msgid "Checkout|Billing contact"
-msgstr ""
-
-msgid "Checkout|Checkout"
-msgstr ""
-
-msgid "Checkout|City"
-msgstr ""
-
-msgid "Checkout|Company information"
-msgstr ""
-
 msgid "Checkout|Compute pack"
-msgstr ""
-
-msgid "Checkout|Compute packs are only used after you've used your subscription's monthly quota. The additional compute minutes will roll over month to month and are valid for one year."
-msgstr ""
-
-msgid "Checkout|Confirm purchase"
-msgstr ""
-
-msgid "Checkout|Confirming..."
-msgstr ""
-
-msgid "Checkout|Contact information"
-msgstr ""
-
-msgid "Checkout|Continue to billing"
-msgstr ""
-
-msgid "Checkout|Continue to payment"
-msgstr ""
-
-msgid "Checkout|Country"
-msgstr ""
-
-msgid "Checkout|Edit"
-msgstr ""
-
-msgid "Checkout|Edit in Customers Portal"
-msgstr ""
-
-msgid "Checkout|Exp %{expirationMonth}/%{expirationYear}"
 msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
@@ -11433,70 +11342,13 @@ msgstr ""
 msgid "Checkout|GB"
 msgstr ""
 
-msgid "Checkout|Manage the subscription and billing contacts for your billing account in the %{customersPortalLinkStart}Customers Portal%{customersPortalLinkEnd}. Learn more about %{manageContactsLinkStart}how to manage your contacts%{manageContactsLinkEnd}."
-msgstr ""
-
-msgid "Checkout|Must be 1 or more. Cannot be a decimal."
-msgstr ""
-
-msgid "Checkout|Payment method"
-msgstr ""
-
-msgid "Checkout|Purchase details"
-msgstr ""
-
-msgid "Checkout|Select a country"
-msgstr ""
-
-msgid "Checkout|Select a state"
-msgstr ""
-
-msgid "Checkout|State"
-msgstr ""
-
 msgid "Checkout|Storage packs"
-msgstr ""
-
-msgid "Checkout|Street address"
-msgstr ""
-
-msgid "Checkout|Subscription contact"
-msgstr ""
-
-msgid "Checkout|Subtotal"
-msgstr ""
-
-msgid "Checkout|Tax"
-msgstr ""
-
-msgid "Checkout|Tax ID"
-msgstr ""
-
-msgid "Checkout|Total"
-msgstr ""
-
-msgid "Checkout|Total compute minutes: %{quantity}"
-msgstr ""
-
-msgid "Checkout|Total storage: %{quantity} GB"
-msgstr ""
-
-msgid "Checkout|Your storage subscription has the same term as your main subscription, and the price is prorated accordingly."
 msgstr ""
 
 msgid "Checkout|Your subscription will be applied to this group"
 msgstr ""
 
-msgid "Checkout|Zip code"
-msgstr ""
-
 msgid "Checkout|compute minutes"
-msgstr ""
-
-msgid "Checkout|x %{quantity} %{units} per pack"
-msgstr ""
-
-msgid "Checkout|x %{quantity} %{units} per pack ="
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -16093,9 +15945,6 @@ msgid "Could not find design."
 msgstr ""
 
 msgid "Could not find iteration"
-msgstr ""
-
-msgid "Could not get the data properly"
 msgstr ""
 
 msgid "Could not load the user chart. Please refresh the page to try again."
@@ -40840,10 +40689,10 @@ msgstr ""
 msgid "Pipelines|Take advantage of simple, scalable pipelines and CI/CD-enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!"
 msgstr ""
 
-msgid "Pipelines|The %{namespace_name} namespace has %{percentage}%% or less Shared Runner compute minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
+msgid "Pipelines|The %{namespace_name} namespace has %{current_balance} / %{total} (%{percentage}%%) shared runner compute minutes remaining. When all compute minutes are used up, no new jobs or pipelines will run in this namespace's projects."
 msgstr ""
 
-msgid "Pipelines|The %{namespace_name} namespace has exceeded its compute minutes quota. Buy additional compute minutes, or no new jobs or pipelines in its projects will run."
+msgid "Pipelines|The %{namespace_name} namespace has reached its shared runner compute minutes quota. To run new jobs and pipelines in this namespace's projects, buy additional compute minutes."
 msgstr ""
 
 msgid "Pipelines|The CI configuration was not loaded, please try again."
@@ -41429,9 +41278,6 @@ msgid "Please try again"
 msgstr ""
 
 msgid "Please try again or reach out to %{support_link_start}GitLab Support%{support_link_end}."
-msgstr ""
-
-msgid "Please try and refresh the page. If the problem persists please contact support."
 msgstr ""
 
 msgid "Please use an email address or domain you control."
@@ -44983,36 +44829,6 @@ msgid "Purchase more storage"
 msgstr ""
 
 msgid "Purchase seats"
-msgstr ""
-
-msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support at https://support.gitlab.com."
-msgstr ""
-
-msgid "Purchase|%{stripe3dsLinkStart}3D Secure authentication%{stripe3dsLinkEnd} failed. Please try the credit card again, or %{salesLinkStart}contact our sales team%{salesLinkEnd} to purchase."
-msgstr ""
-
-msgid "Purchase|%{stripe3dsLinkStart}3D Secure authentication%{stripe3dsLinkEnd} is not supported. Please %{salesLinkStart}contact our sales team%{salesLinkEnd} to purchase, or try a different credit card."
-msgstr ""
-
-msgid "Purchase|3D Secure authentication failed"
-msgstr ""
-
-msgid "Purchase|A full name in your profile is required to make a purchase. Check that the full name field in your %{userProfileLinkStart}user profile%{userProfileLinkEnd} has both a first and last name, then retry the purchase. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."
-msgstr ""
-
-msgid "Purchase|An error occurred with your purchase because your group is currently linked to an expired subscription. %{supportLinkStart}Open a support ticket%{supportLinkEnd}, and our support team will assist with a workaround."
-msgstr ""
-
-msgid "Purchase|An error occurred with your purchase. We detected a %{customersPortalLinkStart}Customers Portal%{customersPortalLinkEnd} account that matches your email address, but it has not been linked to your GitLab.com account. Follow the %{linkCustomersPortalHelpLinkStart}instructions to link your Customers Portal account%{linkCustomersPortalHelpLinkEnd}, and retry the purchase. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."
-msgstr ""
-
-msgid "Purchase|Authentication required for this transaction"
-msgstr ""
-
-msgid "Purchase|Your card was declined due to insufficient funds. Make sure you have sufficient funds, then retry the purchase or use a different card. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."
-msgstr ""
-
-msgid "Purchase|Your card was declined. Contact your card issuer for more information or %{salesLinkStart}contact our sales team%{salesLinkEnd} to pay with an alternative payment method."
 msgstr ""
 
 msgid "Purchasing more seats does not automatically approve %{strong_start}requested%{strong_end} users."
@@ -51139,6 +50955,9 @@ msgstr ""
 msgid "See the affected projects in the GitLab admin panel"
 msgstr ""
 
+msgid "See usage statistics"
+msgstr ""
+
 msgid "See vulnerability %{vulnerability_link} for any Remediation details."
 msgstr ""
 
@@ -54050,9 +53869,6 @@ msgid "Subscriptions|End date"
 msgstr ""
 
 msgid "Subscriptions|End date:"
-msgstr ""
-
-msgid "Subscriptions|I accept the %{privacyLinkStart}Privacy Statement%{privacyLinkEnd} and %{termsLinkStart}Terms of Service%{termsLinkEnd}."
 msgstr ""
 
 msgid "Subscriptions|Last sync"

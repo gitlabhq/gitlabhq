@@ -263,9 +263,9 @@ Audit event types belong to the following product categories.
 
 ### Duo workflow
 
-| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+| Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A susbset of API requests authenticated by a token with an audited scope | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
+| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A susbset of API requests authenticated by a token with an audited scope | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
 

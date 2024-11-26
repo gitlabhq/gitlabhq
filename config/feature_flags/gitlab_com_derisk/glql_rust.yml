@@ -1,0 +1,9 @@
+---
+name: glql_rust
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/issues/22
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173758
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506164
+milestone: '17.7'
+group: group::knowledge
+type: gitlab_com_derisk
+default_enabled: false

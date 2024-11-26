@@ -323,6 +323,10 @@
     border-color: $blue-500 !important;
     border-width: 2px;
   }
+
+  &:focus {
+    box-shadow: none !important;
+  }
 }
 
 .content-editor-switcher {

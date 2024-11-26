@@ -174,8 +174,8 @@ This setting limits search requests as follows:
 
 | Limit                | Default (requests per minute) |
 |----------------------|-------------------------------|
-| Authenticated user   | 300                           |
-| Unauthenticated user | 100                           |
+| Authenticated user   | 30                            |
+| Unauthenticated user | 10                            |
 
 Search requests that exceed the search rate limit per minute return the following error:
 

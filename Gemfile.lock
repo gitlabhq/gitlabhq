@@ -2076,7 +2076,7 @@ DEPENDENCIES
   gitlab-http!
   gitlab-kas-grpc (~> 17.5.0)
   gitlab-labkit (~> 0.36.0)
-  gitlab-license (~> 2.5)
+  gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
   gitlab-markup (~> 1.9.0)
   gitlab-net-dns (~> 0.9.2)

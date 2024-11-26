@@ -2163,8 +2163,13 @@ class Project < ApplicationRecord
     create_repository(force: true) unless repository_exists?
   end
 
+  # Overridden in EE
   def allowed_to_share_with_group?
-    !namespace.share_with_group_lock
+    share_with_group_enabled?
+  end
+
+  def share_with_group_enabled?
+    !parent.share_with_group_lock?
   end
 
   def latest_successful_pipeline_for_default_branch

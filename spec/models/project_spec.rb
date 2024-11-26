@@ -544,6 +544,35 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'member_namespace membership relationship'
     end
 
+    shared_examples 'share with group lock' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, group: group) }
+
+      context 'without share with group lock' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with share with group lock' do
+        before do
+          group.update!(share_with_group_lock: true)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    describe '#allowed_to_share_with_group?' do
+      subject { project.allowed_to_share_with_group? }
+
+      it_behaves_like 'share with group lock'
+    end
+
+    describe '#share_with_group_enabled?' do
+      subject { project.share_with_group_enabled? }
+
+      it_behaves_like 'share with group lock'
+    end
+
     describe '#namespace_members_and_requesters setters' do
       let_it_be(:requested_at) { Time.current }
       let_it_be(:project) { create(:project) }

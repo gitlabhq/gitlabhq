@@ -89,12 +89,12 @@ To update your fork from the GitLab UI:
 1. If your fork is **behind** the upstream repository, select **Update fork**
    to pull changes from the upstream repository.
 1. If your fork is **ahead and behind** the upstream repository, you can update from the UI
-   available only if no merge conflicts are detected:
+   only if no merge conflicts are detected:
    - If your fork contains no merge conflicts, you can select **Create merge request**
      to propose pushing your changes to the upstream repository, **Update fork**
      to pull changes down to your fork, or both. The type of changes in your fork
      determine which actions are appropriate.
-   - If your fork contains merge conflicts, update your fork from the command line.
+   - If your fork contains merge conflicts, a step-by-step guide to update your fork from the command line is shown.
 
 ### From the command line
 

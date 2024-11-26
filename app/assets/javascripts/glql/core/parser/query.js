@@ -1,16 +1,17 @@
 import { uniq, once } from 'lodash';
 import { GitLabQueryLanguage as QueryParser } from '@gitlab/query-language';
+import { GitLabQueryLanguage as QueryParserRust } from '@gitlab/query-language-rust';
 import { extractGroupOrProject } from '../../utils/common';
 
 const REQUIRED_QUERY_FIELDS = ['id', 'iid', 'title', 'webUrl', 'reference', 'state', 'type'];
 
 const initParser = once(async () => {
-  const parser = QueryParser();
+  const parser = gon.features.glqlRust ? QueryParserRust() : QueryParser();
   const { group, project } = extractGroupOrProject();
 
-  parser.group = group;
-  parser.project = project;
-  parser.username = gon.current_username;
+  parser.group = group || '';
+  parser.project = project || '';
+  parser.username = gon.current_username || '';
   await parser.initialize();
 
   return parser;

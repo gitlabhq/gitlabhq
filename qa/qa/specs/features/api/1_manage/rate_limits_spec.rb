@@ -13,7 +13,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347881' do
         with_application_settings(
           throttle_authenticated_api_requests_per_period: 100,
-          throttle_authenticated_api_period_in_seconds: 60,
+          throttle_authenticated_api_period_in_seconds: 7200,
           throttle_authenticated_api_enabled: true
         ) do
           100.times do

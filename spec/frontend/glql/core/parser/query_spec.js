@@ -8,6 +8,9 @@ describe('GLQL Query Parser', () => {
   describe('parseQuery', () => {
     beforeEach(() => {
       gon.current_username = 'foobar';
+      gon.features = {
+        glqlRust: true,
+      };
     });
 
     afterEach(() => {
@@ -97,7 +100,7 @@ describe('GLQL Query Parser', () => {
       const config = { fields: MOCK_FIELDS, limit: 100 };
 
       await expect(parseQuery(query, config)).rejects.toThrow(
-        'Unexpected `q`, expected operator (one of IN, =, !=, >, or <)',
+        'Unexpected `query syntax`, expected operator (one of IN, =, !=, >, or <)',
       );
     });
   });
