@@ -25,6 +25,8 @@ module Ci
       raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
     }.freeze
 
+    JUNIT_MAX_BYTES = 100.megabytes
+
     included do
       enum file_format: {
         raw: 1,
@@ -43,7 +45,7 @@ module Ci
       end
 
       ::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator
-        .new(file: file, file_format: file_format.to_sym).validate!
+        .new(file: file, file_format: file_format.to_sym, max_bytes: max_size_for_file_type).validate!
 
       log_artifacts_filesize(file.model)
 
@@ -56,6 +58,14 @@ module Ci
 
     def file_format_adapter_class
       FILE_FORMAT_ADAPTERS[file_format.to_sym]
+    end
+
+    def max_size_for_file_type
+      if defined?(file_type) && file_type == 'junit'
+        JUNIT_MAX_BYTES
+      else
+        Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::DEFAULT_MAX_BYTES
+      end
     end
   end
 end

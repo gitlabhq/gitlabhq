@@ -408,6 +408,10 @@ p_ci_finished_pipeline_ch_sync_events:
   - table: namespaces
     column: project_namespace_id
     on_delete: async_delete
+p_ci_job_artifact_reports:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_job_artifacts:
   - table: projects
     column: project_id

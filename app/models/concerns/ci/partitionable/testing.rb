@@ -21,6 +21,7 @@ module Ci
         Ci::DailyBuildGroupReportResult
         Ci::JobAnnotation
         Ci::JobArtifact
+        Ci::JobArtifactReport
         Ci::JobVariable
         Ci::Pipeline
         Ci::PendingBuild

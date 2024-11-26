@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.6.1 (2024-11-26)
+
+### Security (6 changes)
+
+- [Add size check for harbor registry](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48579cdb744f994dc0fb2b4f96b1ada3e94a59e6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4614))
+- [Adding JobArtifactReport class to pre-emptively validate job artifacts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/83f0e6c1ea1ea6a82e8cf7bdfec0944990f8ec23) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4616))
+- [Fix: unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/302ed663e0d9a68c413732e9d7a260b6be1b477d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4621))
+- [Allow a LFS token to be used only for LFS related requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/800c79606ab237536ea5cf9a29e541855fc01477) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4613))
+- [Fix possible DOS with TOML file parsing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b6057a43cd11aae5a5e8f2f91c76a90a4310ec2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4617))
+- [Move allow_access_with_scope to class level](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b70cb1e7d430bbbcd8da22b33e7d07cb136189d7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4610))
+
 ## 17.6.0 (2024-11-20)
 
 ### Added (181 changes)
