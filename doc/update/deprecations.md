@@ -901,6 +901,30 @@ Occurrences of the `active` identifier in the GitLab GraphQL API endpoints will 
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### RunnersRegistrationTokenReset GraphQL mutation is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/505703).
+
+</div>
+
+The support for runner registration tokens is deprecated. Consequently, the support for resetting a registration token has also been deprecated
+and will be removed in GitLab 18.0.
+
+A new method to bind runners to a GitLab instance has been implemented
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
+For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
+This new architecture introduces a new method for registering runners and eliminates the legacy
+[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+In GitLab 18.0, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Slack notifications integration
 
 <div class="deprecation-notes">

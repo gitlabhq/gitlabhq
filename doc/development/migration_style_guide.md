@@ -112,6 +112,10 @@ includes the timing information for migrations.
 | Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
 | Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
 
+## Large Tables Limitations
+
+For tables exceeding size thresholds, read our [large tables limitations](database/large_tables_limitations.md) before adding new columns or indexes.
+
 ## Decide which database to target
 
 GitLab connects to two different Postgres databases: `main` and `ci`. This split can affect migrations

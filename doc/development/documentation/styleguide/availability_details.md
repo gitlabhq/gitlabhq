@@ -156,8 +156,8 @@ For features introduced behind feature flags, add details about the feature flag
 Remove history items and inline text that refer to unsupported versions.
 
 GitLab supports the current major version and two previous major versions.
-For example, if 16.0 is the current major version, all major and minor releases of
-GitLab 16.0, 15.0, and 14.0 are supported.
+For example, if 17.0 is the current major version, all major and minor releases of
+GitLab 17.0, 16.0, and 15.0 are supported.
 
 For the list of current supported versions, see [Version support](https://about.gitlab.com/support/statement-of-support/#version-support).
 
