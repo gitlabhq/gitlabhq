@@ -49697,6 +49697,9 @@ msgstr ""
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Custom roles"
+msgstr ""
+
 msgid "SecurityOrchestration|Custom scan experiment has ended in 17.3"
 msgstr ""
 

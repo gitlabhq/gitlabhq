@@ -5,7 +5,7 @@ description: Support details.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Support for experiment, beta, and generally available features
+# Support for experiment, beta, and publicly available features
 
 GitLab sometimes releases features as experimental or beta, and users can opt in and test the new experience.
 Some reasons for these kinds of feature releases include:
@@ -14,10 +14,10 @@ Some reasons for these kinds of feature releases include:
 - Features not complete enough to be considered an [MVC](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-valuable-change-mvc),
   but added to the codebase as part of the development process.
 
-Please note that some features may not be aligned to these recommendations if they were developed before the recommendations were in place,
+Some features may not be aligned to these recommendations if they were developed before the recommendations were in place,
 or if a team determined an alternative implementation approach was needed.
 
-All other features are considered to be generally available (GA).
+All other features are considered to be publicly available.
 
 ## Experiment
 
@@ -47,7 +47,27 @@ Beta features:
 - Have a user experience that is complete or near completion.
 - Can be equivalent to partner "Public Preview" status.
 
-## Generally available (GA)
+## Public availability
+
+Two types of public releases are available:
+
+- Limited availability (LA)
+- Generally available (GA)
+
+Both types are production-ready, but have different scopes.
+
+### Limited availability (LA)
+
+Limited availability features:
+
+- Are ready for production use at a reduced scale.
+- Might initially be free, then become paid when generally available.
+- Might be offered at a discount before becoming generally available.
+- Might have commercial terms that change for new contracts when generally available.
+- Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
+- Have a complete user experience aligned with GitLab design standards.
+
+### Generally available (GA)
 
 Generally available features:
 
@@ -55,10 +75,9 @@ Generally available features:
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
 - Have a complete user experience aligned with GitLab design standards.
 
-## All features are in production
+## Production features
 
-All experimental, beta, and generally available features are available on GitLab.com,
-so they are all considered to be "in production".
+All experimental, beta, and publicly available features are available on GitLab.com and are considered in production.
 
 ## GitLab experiment and beta development guidelines
 
@@ -76,7 +95,7 @@ could create significant risks or friction for GitLab users or the platform, suc
 In addition to the [experiment details](#experiment) for users, experiments should:
 
 - Offer a way to opt in with minimal friction. For example, needing to flip a feature flag is too much friction,
-  but a group or project-level setting in the UI is not.
+  but a group or project setting in the UI is not.
 - Link out to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
 - Have documentation that reflects that the feature is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 - Have [UI that reflects the experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
@@ -107,11 +126,13 @@ All beta features that [meet the review criteria](https://handbook.gitlab.com/ha
 must complete all sections up to and including the [beta section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#beta)
 by following the [Production Readiness Review process](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#process).
 
-### GA features
+### Publicly available features
 
-Generally available features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
-must complete the [Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/)
-and complete all sections up to and including the [GA section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
+Publicly available features must:
+
+1. Meet the [review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review).
+1. Complete the [Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/).
+1. Complete all sections up to and including the [GA section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
 
 ### Provide earlier access
 
