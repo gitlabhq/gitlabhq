@@ -80,14 +80,23 @@ class Ability
 
       before_check(policy, ability.to_sym, user, subject, opts)
 
-      case opts[:scope]
-      when :user
-        DeclarativePolicy.user_scope { policy.allowed?(ability) }
-      when :subject
-        DeclarativePolicy.subject_scope { policy.allowed?(ability) }
+      result = case opts[:scope]
+               when :user
+                 DeclarativePolicy.user_scope { policy.allowed?(ability) }
+               when :subject
+                 DeclarativePolicy.subject_scope { policy.allowed?(ability) }
+               else
+                 policy.allowed?(ability)
+               end
+
+      identity = ::Gitlab::Auth::Identity.fabricate(user)
+
+      if identity.present? && identity.composite?
+        result && allowed?(identity.scoped_user, ability, subject, **opts)
       else
-        policy.allowed?(ability)
+        result
       end
+
     ensure
       # TODO: replace with runner invalidation:
       # See: https://gitlab.com/gitlab-org/declarative-policy/-/merge_requests/24

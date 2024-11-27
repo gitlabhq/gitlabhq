@@ -535,6 +535,8 @@ module TestEnv
   end
 
   def component_ahead_of_target?(component_folder, expected_version)
+    return false unless Dir.exist?(File.join(component_folder, '.git'))
+
     # The HEAD of the component_folder will be used as heuristic for the version
     # of the binaries, allowing to use Git to determine if HEAD is later than
     # the expected version. Note: Git considers HEAD to be an anchestor of HEAD.
@@ -555,6 +557,8 @@ module TestEnv
     return false unless ::Gitlab::Git::COMMIT_ID.match?(expected_version)
 
     return false unless Dir.exist?(component_folder)
+
+    return false unless Dir.exist?(File.join(component_folder, '.git'))
 
     sha, exit_status = Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} rev-parse HEAD], component_folder)
     return false if exit_status != 0

@@ -211,8 +211,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
           let(:new_projects) { [project3, project4] }
           let(:owner_project) { new_projects.first }
 
-          it 'assigns associated projects and returns success response',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/481411' do
+          it 'assigns associated projects and returns success response' do
             expect(execute).to be_success
 
             runner.reload

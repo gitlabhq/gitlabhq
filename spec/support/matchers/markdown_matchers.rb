@@ -299,7 +299,7 @@ module MarkdownMatchers
     end
   end
 
-  # PLantumlFilter
+  # PlantumlFilter
   matcher :parse_plantuml do
     set_default_markdown_messages
 

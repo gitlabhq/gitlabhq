@@ -26,7 +26,7 @@
 {"name":"asciidoctor","version":"2.0.23","platform":"ruby","checksum":"52208807f237dfa0ca29882f8b13d60b820496116ad191cf197ca56f2b7fddf3"},
 {"name":"asciidoctor-include-ext","version":"0.4.0","platform":"ruby","checksum":"406adb9d2fbfc25536609ca13b787ed704dc06a4e49d6709b83f3bad578f7878"},
 {"name":"asciidoctor-kroki","version":"0.10.0","platform":"ruby","checksum":"8e4225d88f120e2e7b5d3f5ddb67c5e69496d7344a16c57db5036ac900123062"},
-{"name":"asciidoctor-plantuml","version":"0.0.16","platform":"ruby","checksum":"407e47cd1186ded5ccc75f0c812e5524c26c571d542247c5132abb8f47bd1793"},
+{"name":"asciidoctor-plantuml","version":"0.1.1","platform":"ruby","checksum":"2bfa1a79349aa3fff611cdc54ade674e91423e38c20a21b24d8ca59006a0b0ae"},
 {"name":"ast","version":"2.4.2","platform":"ruby","checksum":"1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12"},
 {"name":"async","version":"2.12.1","platform":"ruby","checksum":"146fb3acf6d05ad40abb9ae659dd3b574067a3420fe7d6d5d6a3cf5413de3ea5"},
 {"name":"atlassian-jwt","version":"0.2.1","platform":"ruby","checksum":"2fd2d87418773f2e140c038cb22e049069708aff2bd0a423a7e1740574e97823"},

@@ -1,0 +1,9 @@
+---
+name: composite_identity
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/468370
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173006
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506473
+milestone: "17.7"
+group: group::authorization
+type: wip
+default_enabled: false

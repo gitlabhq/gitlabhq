@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Database::Count do
     create(:identity)
   end
 
-  let(:models) { [Project, Identity] }
+  let(:models) { [::Project, ::Identity] }
 
   describe '.approximate_counts' do
     context 'fallbacks' do
@@ -32,15 +32,15 @@ RSpec.describe Gitlab::Database::Count do
       end
 
       it 'gets more results from second strategy if some counts are missing' do
-        expect(first_strategy).to receive(:count).and_return({ Project => 3 })
-        expect(strategies[1]).to receive(:new).with([Identity]).and_return(second_strategy)
-        expect(second_strategy).to receive(:count).and_return({ Identity => 1 })
+        expect(first_strategy).to receive(:count).and_return({ ::Project => 3 })
+        expect(strategies[1]).to receive(:new).with([::Identity]).and_return(second_strategy)
+        expect(second_strategy).to receive(:count).and_return({ ::Identity => 1 })
 
-        expect(subject).to eq({ Project => 3, Identity => 1 })
+        expect(subject).to eq({ ::Project => 3, ::Identity => 1 })
       end
 
       it 'does not get more results as soon as all counts are present' do
-        expect(first_strategy).to receive(:count).and_return({ Project => 3, Identity => 1 })
+        expect(first_strategy).to receive(:count).and_return({ ::Project => 3, ::Identity => 1 })
         expect(strategies[1]).not_to receive(:new)
 
         subject

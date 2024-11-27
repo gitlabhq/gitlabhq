@@ -214,7 +214,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
         group.add_maintainer(user)
       end
 
-      it 'returns a bad request beacuse it is not a top level group' do
+      it 'returns a bad request because it is not a top level group' do
         api_request
 
         expect(response).to have_gitlab_http_status(:bad_request)

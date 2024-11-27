@@ -28996,7 +28996,7 @@ msgstr ""
 msgid "Insights|Configure a custom report for insights into your group processes such as amount of issues, bugs, and merge requests per month. %{linkStart}How do I configure an insights report?%{linkEnd}"
 msgstr ""
 
-msgid "Insights|Some items are not visible beacuse the project was filtered out in the insights.yml file (see the projects.only config in the YAML file or the enabled project features (issues, merge requests) in the project settings)."
+msgid "Insights|Some items are not visible because the project was filtered out in the insights.yml file (see the projects.only config in the YAML file or the enabled project features (issues, merge requests) in the project settings)."
 msgstr ""
 
 msgid "Insights|This project is filtered out in the insights.yml file (see the projects.only config for more information)."

@@ -108,6 +108,9 @@
 .if-merge-request-labels-run-observability-e2e-tests-current-branch: &if-merge-request-labels-run-observability-e2e-tests-current-branch
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-current-branch/'
 
+.if-merge-request-labels-skip-observability-e2e-tests: &if-merge-request-labels-skip-observability-e2e-tests
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-observability-e2e-tests/'
+
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
@@ -3397,6 +3400,8 @@
   rules:
     - <<: *if-observability-skip-e2e-jobs
       when: never
+    - <<: *if-merge-request-labels-skip-observability-e2e-tests
+      when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
@@ -3406,6 +3411,8 @@
 .observability-backend-current-branch:rules:
   rules:
     - <<: *if-observability-skip-e2e-jobs
+      when: never
+    - <<: *if-merge-request-labels-skip-observability-e2e-tests
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
       when: never

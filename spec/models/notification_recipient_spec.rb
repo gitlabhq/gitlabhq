@@ -14,6 +14,16 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
   describe '#notifiable?' do
     let(:recipient) { described_class.new(user, :mention, target: target, project: project) }
 
+    context 'when user has a composite identity' do
+      before do
+        allow(recipient).to receive(:has_composite_identity?).and_return(true)
+      end
+
+      it 'returns false' do
+        expect(recipient.notifiable?).to eq false
+      end
+    end
+
     context 'when emails are disabled' do
       it 'returns false if group disabled' do
         expect(project.namespace).to receive(:emails_enabled?).and_return(false)

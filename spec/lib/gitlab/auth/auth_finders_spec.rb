@@ -708,8 +708,22 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#find_oauth_access_token' do
-    let(:application) { Doorkeeper::Application.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
-    let(:doorkeeper_access_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api', organization_id: organization.id) }
+    let(:scopes) { 'api' }
+
+    let(:application) do
+      Doorkeeper::Application.create!(
+        name: 'MyApp',
+        redirect_uri: 'https://app.com',
+        owner: user)
+    end
+
+    let(:doorkeeper_access_token) do
+      Doorkeeper::AccessToken.create!(
+        application_id: application.id,
+        resource_owner_id: user.id,
+        scopes: scopes,
+        organization_id: organization.id)
+    end
 
     context 'passed as header' do
       before do
@@ -740,6 +754,48 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
       it 'returns exception if invalid oauth_access_token' do
         expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+    end
+
+    context 'with composite identity', :request_store do
+      let(:user) { create(:user, username: 'gitlab-duo') }
+
+      before do
+        allow_any_instance_of(::User).to receive(:has_composite_identity?) do |user|
+          user.username == 'gitlab-duo'
+        end
+
+        set_bearer_token(doorkeeper_access_token.plaintext_token)
+      end
+
+      context 'when scoped user is specified' do
+        let(:scopes) { "user:#{user.id}" }
+
+        context 'when linking composite identitiy succeeds' do
+          it 'returns the oauth token' do
+            expect(find_oauth_access_token.token).to eq(doorkeeper_access_token.token)
+          end
+        end
+
+        context 'when linking composite identity raises an error' do
+          before do
+            allow(Gitlab::Auth::Identity).to(
+              receive(:link_from_oauth_token).and_raise(::Gitlab::Auth::Identity::IdentityLinkMismatchError)
+            )
+          end
+
+          it 'raises an error' do
+            expect { find_oauth_access_token }.to raise_error(::Gitlab::Auth::Identity::IdentityLinkMismatchError)
+          end
+        end
+      end
+
+      context 'when composite identity link can not be created' do
+        let(:scopes) { 'api' }
+
+        it 'raises an exception' do
+          expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
       end
     end
   end

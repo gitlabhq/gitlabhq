@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ability do
+RSpec.describe Ability, feature_category: :system_access do
   describe '#policy_for' do
     subject(:policy) { described_class.policy_for(user, subject, **options) }
 
@@ -472,6 +472,89 @@ RSpec.describe Ability do
         expect(subject).not_to be_allowed(:create_wiki)
         expect(subject).not_to be_allowed(:update_wiki)
         expect(subject).not_to be_allowed(:admin_wiki)
+      end
+    end
+  end
+
+  describe '.allowed?' do
+    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:delegated_user) { create(:user) }
+    let(:request_store_key) { format(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_KEY_FORMAT, user.id) }
+
+    subject { described_class.allowed?(user, :read_group, group) }
+
+    context 'with composite identity', :request_store do
+      before do
+        ::Gitlab::SafeRequestStore[request_store_key] = delegated_user
+        allow(user).to receive(:has_composite_identity?).and_return(true)
+      end
+
+      context 'when both users are members' do
+        before_all do
+          group.add_developer(delegated_user)
+          group.add_developer(user)
+        end
+
+        it 'returns true' do
+          expect(subject).to be_truthy
+        end
+
+        context 'when delegating user is not set in RequestStore' do
+          before do
+            ::Gitlab::SafeRequestStore.delete(request_store_key)
+          end
+
+          it 'raises an exception' do
+            expect { subject }.to raise_exception(::Gitlab::Auth::Identity::MissingCompositeIdentityError)
+          end
+        end
+      end
+
+      context 'when only delegating user is a member' do
+        before_all do
+          group.add_developer(user)
+        end
+
+        it 'returns false' do
+          expect(subject).to be_falsey
+        end
+
+        context 'with disabled composite_identity feature flag' do
+          before do
+            stub_feature_flags(composite_identity: false)
+          end
+
+          it 'returns true' do
+            expect(subject).to be_truthy
+          end
+        end
+
+        context 'with unenforced composite identity' do
+          before do
+            allow(user).to receive(:has_composite_identity?).and_return(false)
+          end
+
+          it 'returns true' do
+            expect(subject).to be_truthy
+          end
+        end
+      end
+
+      context 'when only delegated user is a member' do
+        before_all do
+          group.add_developer(delegated_user)
+        end
+
+        it 'returns false' do
+          expect(subject).to be_falsey
+        end
+      end
+
+      context 'when neither user is a member' do
+        it 'returns false' do
+          expect(subject).to be_falsey
+        end
       end
     end
   end

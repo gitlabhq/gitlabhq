@@ -2522,6 +2522,10 @@ class User < ApplicationRecord
     true
   end
 
+  def has_composite_identity?
+    false
+  end
+
   protected
 
   # override, from Devise::Validatable

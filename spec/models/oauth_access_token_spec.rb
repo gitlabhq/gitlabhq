@@ -77,4 +77,66 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
       end
     end
   end
+
+  describe '#scope_user' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_refind(:oauth_access_token) { create(:oauth_access_token) }
+    let(:user_id) { user.id }
+
+    before do
+      allow(oauth_access_token).to receive(:scopes).and_return(scopes)
+    end
+
+    context 'when scopes match expected format' do
+      context 'when scopes only include the composite scope' do
+        let(:scopes) { "user:#{user_id}" }
+
+        it 'returns the user' do
+          expect(oauth_access_token.scope_user).to eq user
+        end
+      end
+
+      context 'when scopes include another scope before composite scope' do
+        let(:scopes) { "other:scope user:#{user_id}" }
+
+        it 'returns the user' do
+          expect(oauth_access_token.scope_user).to eq user
+        end
+      end
+
+      context "when scopes include another scope after composite scope" do
+        let(:scopes) { "user:#{user_id} other:scope" }
+
+        it 'returns the user' do
+          expect(oauth_access_token.scope_user).to eq user
+        end
+      end
+
+      context 'when scopes include another scope before and after composite scope' do
+        let(:scopes) { "api user:#{user_id} read_api" }
+
+        it 'returns the user' do
+          expect(oauth_access_token.scope_user).to eq user
+        end
+      end
+    end
+
+    context 'when scopes do not match composite scope format' do
+      where(:scopes) do
+        [
+          "user:#{non_existing_record_id}",
+          'user:not_a_number',
+          'some:other:scope',
+          nil,
+          ""
+        ]
+      end
+
+      with_them do
+        it 'returns false' do
+          expect(oauth_access_token.scope_user).to be_nil
+        end
+      end
+    end
+  end
 end
