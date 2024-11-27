@@ -3524,7 +3524,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'read_namespace_catalog' do
     let(:current_user) { owner }
 
-    specify { is_expected.to be_disallowed(:read_namespace_catalog) }
+    it { is_expected.to be_disallowed(:read_namespace_catalog) }
   end
 
   describe 'add_catalog_resource' do

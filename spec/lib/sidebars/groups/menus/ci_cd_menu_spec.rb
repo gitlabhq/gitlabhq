@@ -20,12 +20,12 @@ RSpec.describe Sidebars::Groups::Menus::CiCdMenu, feature_category: :navigation 
     describe 'Runners' do
       let(:item_id) { :runners }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
   end

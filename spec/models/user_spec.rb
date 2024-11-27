@@ -5092,7 +5092,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject { user.membership_groups }
 
-    specify { is_expected.to contain_exactly(parent_group, child_group) }
+    it { is_expected.to contain_exactly(parent_group, child_group) }
   end
 
   describe '#first_group_paths' do
@@ -8575,7 +8575,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject { user.send(:groups_with_developer_maintainer_project_access) }
 
-    specify { is_expected.to contain_exactly(developer_group2) }
+    it { is_expected.to contain_exactly(developer_group2) }
   end
 
   describe '.get_ids_by_ids_or_usernames' do

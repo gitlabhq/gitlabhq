@@ -6,7 +6,7 @@ module Ci
       include Gitlab::Utils::StrongMemoize
       include ExclusiveLeaseGuard
 
-      attr_reader :pipeline
+      attr_reader :pipeline, :collection
 
       DEFAULT_LEASE_TIMEOUT = 1.minute
       BATCH_SIZE = 20
@@ -128,12 +128,16 @@ module Ci
 
       def status_of_previous_jobs(job)
         if job.scheduling_type_dag?
-          # job uses DAG, get status of all dependent needs
-          @collection.status_of_jobs(job.aggregated_needs_names.to_a)
+          status_of_previous_jobs_dag(job)
         else
           # job uses Stages, get status of prior stage
           @collection.status_of_jobs_prior_to_stage(job.stage_idx.to_i)
         end
+      end
+
+      def status_of_previous_jobs_dag(job)
+        # job uses DAG, get status of all dependent needs
+        @collection.status_of_jobs(job.aggregated_needs_names.to_a)
       end
 
       # Gets the jobs that changed from stopped to alive status since the initial status collection
@@ -184,3 +188,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelineProcessing::AtomicProcessingService.prepend_mod

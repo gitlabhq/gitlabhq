@@ -39,7 +39,7 @@ module Gitlab
               jobs = next_batch_from_queue(redis, limit: limit)
               break if jobs.empty?
 
-              send_or_bulk_send_to_processing_queue(jobs)
+              bulk_send_to_processing_queue(jobs)
               remove_processed_jobs(redis, limit: jobs.length)
 
               jobs.length
@@ -67,26 +67,6 @@ module Gitlab
 
         def deserialize(json)
           Gitlab::Json.parse(json)
-        end
-
-        def send_or_bulk_send_to_processing_queue(jobs)
-          if Feature.enabled?(:bulk_push_concurrency_limit_resume_worker, :current_request)
-            bulk_send_to_processing_queue(jobs)
-          else
-            jobs.each { |job| send_to_processing_queue(deserialize(job)) }
-          end
-        end
-
-        def send_to_processing_queue(job)
-          context = job['context'] || {}
-
-          Gitlab::ApplicationContext.with_raw_context(context) do
-            args = job['args']
-            Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(worker_name, args)
-            next if worker_klass.nil?
-
-            worker_klass.concurrency_limit_resume(job['buffered_at']).perform_async(*args)
-          end
         end
 
         def bulk_send_to_processing_queue(jobs)

@@ -18,19 +18,19 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     subject { menu.renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'menu access rights' do
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
     describe 'List' do
       let(:item_id) { :issue_list }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       it_behaves_like 'menu access rights'
     end

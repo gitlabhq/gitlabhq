@@ -89,9 +89,6 @@ export default {
       }
       return '';
     },
-    showSettingsButton() {
-      return this.glFeatures.secretDetectionProjectLevelExclusions;
-    },
   },
   methods: {
     onError(message) {
@@ -211,7 +208,6 @@ export default {
           @change="togglePreReceiveSecretDetection"
         />
         <gl-button
-          v-if="showSettingsButton"
           v-gl-tooltip.left.viewport="$options.i18n.settingsButtonTooltip"
           icon="settings"
           category="secondary"

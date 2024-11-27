@@ -62,12 +62,12 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :naviga
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 

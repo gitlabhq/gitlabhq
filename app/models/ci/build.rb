@@ -757,9 +757,9 @@ module Ci
     end
 
     def valid_token?(token)
-      job_token = ::Ci::JobToken::Jwt::Decode.new(token)
-      if job_token.jwt?
-        job_token.job == self
+      jwt = ::Ci::JobToken::Jwt.decode(token)
+      if jwt
+        jwt.subject == self
       else
         self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
       end
@@ -1203,7 +1203,7 @@ module Ci
     def token
       return super unless Feature.enabled?(:ci_job_token_jwt, user)
 
-      jwt
+      encoded_jwt
     end
 
     protected
@@ -1216,10 +1216,10 @@ module Ci
 
     private
 
-    def jwt
-      ::Ci::JobToken::Jwt::Encode.new(self).jwt
+    def encoded_jwt
+      ::Ci::JobToken::Jwt.encode(self)
     end
-    strong_memoize_attr :jwt
+    strong_memoize_attr :encoded_jwt
 
     def matrix_build?
       options.dig(:parallel, :matrix).present?

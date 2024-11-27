@@ -31,7 +31,7 @@ module Ci
         # rubocop:disable CodeReuse/ActiveRecord
         runners_to_be_deleted =
           Ci::Runner
-            .where(id: authorized_runners_ids)
+            .id_in(authorized_runners_ids)
             .preload([:taggings, :runner_namespaces, :runner_projects])
         # rubocop:enable CodeReuse/ActiveRecord
         deleted_ids = runners_to_be_deleted.destroy_all.map(&:id) # rubocop:disable Cop/DestroyAll

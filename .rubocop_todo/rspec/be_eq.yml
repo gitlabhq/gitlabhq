@@ -761,7 +761,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/auth/saml/auth_hash_spec.rb'
     - 'spec/lib/gitlab/auth/saml/config_spec.rb'
     - 'spec/lib/gitlab/auth/saml/origin_validator_spec.rb'
-    - 'spec/lib/gitlab/auth_spec.rb'
     - 'spec/lib/gitlab/avatar_cache_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_vs_code_settings_version_spec.rb'
     - 'spec/lib/gitlab/background_migration/convert_credit_card_validation_data_to_hashes_spec.rb'

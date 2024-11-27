@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Color do
     context 'when generating color for nil value' do
       let(:value) { nil }
 
-      specify { is_expected.to be_valid }
+      it { is_expected.to be_valid }
 
       it_behaves_like 'deterministic'
     end
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Color do
     context 'when generating color for empty string value' do
       let(:value) { '' }
 
-      specify { is_expected.to be_valid }
+      it { is_expected.to be_valid }
 
       it_behaves_like 'deterministic'
     end
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Color do
     context 'when generating color for number value' do
       let(:value) { 1 }
 
-      specify { is_expected.to be_valid }
+      it { is_expected.to be_valid }
 
       it_behaves_like 'deterministic'
     end
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Color do
     context 'when generating color for string value' do
       let(:value) { "1" }
 
-      specify { is_expected.to be_valid }
+      it { is_expected.to be_valid }
 
       it_behaves_like 'deterministic'
     end

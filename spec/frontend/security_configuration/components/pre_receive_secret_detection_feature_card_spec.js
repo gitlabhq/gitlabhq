@@ -27,9 +27,6 @@ const defaultProvide = {
   userIsProjectAdmin: true,
   projectFullPath: 'flightjs/flight',
   secretDetectionConfigurationPath: 'flightjs/Flight/-/security/configuration/secret_detection',
-  glFeatures: {
-    secretDetectionProjectLevelExclusions: true,
-  },
 };
 
 describe('PreReceiveSecretDetectionFeatureCard component', () => {
@@ -211,21 +208,6 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
       it('should not render lock icon', () => {
         expect(findLockIcon().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('when FF `secretDetectionProjectLevelExclusions` is disabled', () => {
-    it('do not show the settings button', () => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            secretDetectionProjectLevelExclusions: false,
-          },
-        },
-      });
-
-      const button = findSettingsButton();
-      expect(button.exists()).toBe(false);
     });
   });
 });

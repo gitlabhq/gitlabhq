@@ -149,50 +149,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
-    context 'when bulk_push_concurrency_limit_resume_worker FF is disabled' do
-      before do
-        stub_feature_flags(bulk_push_concurrency_limit_resume_worker: false)
-      end
-
-      it 'puts jobs back into the queue and respects order' do
-        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
-          expect(el).to receive(:try_obtain).and_call_original
-        end
-
-        expect(worker_class).to receive(:concurrency_limit_resume)
-                                  .with(a_value_within(1).of(buffered_at.to_f)).twice.and_return(setter)
-
-        expect(setter).to receive(:perform_async).with(1).ordered
-        expect(setter).to receive(:perform_async).with(2).ordered
-        expect(setter).not_to receive(:perform_async).with(3).ordered
-
-        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
-          .to receive(:resumed_log)
-                .with(worker_class_name, [1])
-        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
-          .to receive(:resumed_log)
-                .with(worker_class_name, [2])
-
-        service.resume_processing!(limit: 2)
-      end
-
-      it 'drops a set after execution' do
-        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
-          expect(el).to receive(:try_obtain).and_call_original
-        end
-
-        expect(Gitlab::ApplicationContext).to receive(:with_raw_context)
-                                                .with(stored_context)
-                                                .exactly(jobs.count).times.and_call_original
-        expect(worker_class).to receive(:concurrency_limit_resume)
-                                  .with(a_value_within(1).of(buffered_at.to_f)).exactly(3).times.and_return(setter)
-        expect(setter).to receive(:perform_async).exactly(jobs.count).times
-
-        expect { service.resume_processing!(limit: jobs.count) }
-          .to change { service.has_jobs_in_queue? }.from(true).to(false)
-      end
-    end
-
     context 'when exclusive lease is already being held' do
       before do
         service.exclusive_lease.try_obtain

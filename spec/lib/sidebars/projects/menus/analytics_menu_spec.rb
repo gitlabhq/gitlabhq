@@ -64,14 +64,14 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu, feature_category: :navi
     describe 'CI/CD' do
       let(:item_id) { :ci_cd_analytics }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the project repository is empty' do
         before do
           allow(project).to receive(:empty_repo?).and_return(true)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when builds access level is DISABLED' do
@@ -79,51 +79,51 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu, feature_category: :navi
           project.project_feature.update!(builds_access_level: Featurable::DISABLED)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when the user does not have access' do
         let(:current_user) { guest }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
     describe 'Repository' do
       let(:item_id) { :repository_analytics }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the project repository is empty' do
         before do
           allow(project).to receive(:empty_repo?).and_return(true)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when a user does not have access to repository graphs' do
         let(:current_user) { guest }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when the user does not have access' do
         let(:current_user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
     describe 'Value Stream' do
       let(:item_id) { :cycle_analytics }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:current_user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when issues are disabled' do
@@ -132,7 +132,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu, feature_category: :navi
           project.save!
         end
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
       end
 
       describe 'when merge requests are disabled' do
@@ -141,7 +141,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu, feature_category: :navi
           project.save!
         end
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
       end
 
       describe 'when the issues and merge requests are disabled' do
@@ -151,7 +151,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu, feature_category: :navi
           project.save!
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
   end

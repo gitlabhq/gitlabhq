@@ -254,7 +254,7 @@ FactoryBot.define do
 
       after(:create) do |build, evaluator|
         Gitlab::ExclusiveLease.skipping_transaction_check do
-          build.trace.set("Coverage #{evaluator.trace_coverage}%")
+          build.trace.send(:unsafe_set, "Coverage #{evaluator.trace_coverage}%")
         end
         build.trace.archive! if build.complete?
       end
@@ -289,7 +289,9 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/trace_with_duplicate_sections')))
 
-        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set(trace) }
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          build.trace.send(:unsafe_set, trace)
+        end
       end
     end
 
@@ -299,7 +301,9 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/trace_with_sections')))
 
-        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set(trace) }
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          build.trace.send(:unsafe_set, trace)
+        end
       end
     end
 
@@ -309,7 +313,7 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/ansi-sequence-and-unicode')))
 
-        build.trace.set(trace)
+        build.trace.send(:unsafe_set, trace)
       end
     end
 

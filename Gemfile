@@ -743,3 +743,5 @@ gem 'openbao_client', path: 'gems/openbao_client' # rubocop:todo Gemfile/Missing
 gem 'paper_trail', '~> 15.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
+
+gem "gitlab-cloud-connector", "~> 0.2.1", require: 'cloud_connector', feature_category: :cloud_connector

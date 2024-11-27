@@ -10,7 +10,7 @@ RSpec.describe Subquery do
   subject { relation.subquery(:id) }
 
   shared_examples 'subquery as array values' do
-    specify { is_expected.to match_array project_ids }
+    it { is_expected.to match_array project_ids }
     specify { expect { subject }.not_to make_queries }
   end
 

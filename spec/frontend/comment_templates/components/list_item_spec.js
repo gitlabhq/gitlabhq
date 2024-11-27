@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
@@ -17,12 +17,12 @@ describe('Comment templates list item component', () => {
   let wrapper;
   let $router;
 
-  function createComponent(propsData = {}, apolloProvider = createMockApolloProvider) {
+  function createComponent(propsData = {}, apolloProvider = createMockApolloProvider()) {
     $router = {
       push: jest.fn(),
     };
 
-    return mount(ListItem, {
+    return shallowMount(ListItem, {
       propsData,
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -33,6 +33,10 @@ describe('Comment templates list item component', () => {
       },
       mocks: {
         $router,
+      },
+      stubs: {
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
       },
     });
   }
@@ -67,7 +71,7 @@ describe('Comment templates list item component', () => {
 
         const editItem = items.filter((item) => item.text() === 'Edit');
 
-        expect(editItem.exists()).toBe(true);
+        expect(editItem.at(0).exists()).toBe(true);
       });
 
       it('shows as first dropdown item', () => {
@@ -83,7 +87,7 @@ describe('Comment templates list item component', () => {
 
         const deleteItem = items.filter((item) => item.text() === 'Delete');
 
-        expect(deleteItem.exists()).toBe(true);
+        expect(deleteItem.at(0).exists()).toBe(true);
       });
 
       it('shows as first dropdown item', () => {

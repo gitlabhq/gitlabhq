@@ -2069,7 +2069,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         create(:jira_integration, project: project, category: 'issue_tracker')
       end
 
-      specify { is_expected.to eq(true) }
+      it { is_expected.to eq(true) }
 
       it 'becomes false when external issue tracker integration is destroyed' do
         expect do

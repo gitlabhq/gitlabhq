@@ -10,6 +10,6 @@ RSpec.configure do |config|
     end
 
     # Prevent CI Job Tokens from expiring during long running tests
-    stub_const('Ci::JobToken::Jwt::Encode::LEEWAY', 100.minutes)
+    stub_const('Ci::JobToken::Jwt::LEEWAY', 100.minutes)
   end
 end

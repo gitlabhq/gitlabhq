@@ -1661,60 +1661,60 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+        it { is_expected.to be_allowed(:read_group_all_available_runners) }
       end
 
       context 'when admin mode is disabled' do
-        specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+        it { is_expected.to be_disallowed(:read_group_all_available_runners) }
       end
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+      it { is_expected.to be_allowed(:read_group_all_available_runners) }
     end
 
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+      it { is_expected.to be_allowed(:read_group_all_available_runners) }
     end
 
     context 'with developer' do
       let(:current_user) { developer }
 
-      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+      it { is_expected.to be_allowed(:read_group_all_available_runners) }
     end
 
     context 'with reporter' do
       let(:current_user) { reporter }
 
-      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
 
     context 'with planner' do
       let(:current_user) { planner }
 
-      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
 
     context 'with guest' do
       let(:current_user) { guest }
 
-      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
 
     context 'with non member' do
       let(:current_user) { create(:user) }
 
-      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
 
     context 'with anonymous' do
       let(:current_user) { nil }
 
-      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
   end
 
@@ -1787,38 +1787,38 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   describe 'achievements' do
     let(:current_user) { owner }
 
-    specify { is_expected.to be_allowed(:read_achievement) }
-    specify { is_expected.to be_allowed(:admin_achievement) }
-    specify { is_expected.to be_allowed(:award_achievement) }
-    specify { is_expected.to be_allowed(:destroy_user_achievement) }
+    it { is_expected.to be_allowed(:read_achievement) }
+    it { is_expected.to be_allowed(:admin_achievement) }
+    it { is_expected.to be_allowed(:award_achievement) }
+    it { is_expected.to be_allowed(:destroy_user_achievement) }
 
     context 'with feature flag disabled' do
       before do
         stub_feature_flags(achievements: false)
       end
 
-      specify { is_expected.to be_disallowed(:read_achievement) }
-      specify { is_expected.to be_disallowed(:admin_achievement) }
-      specify { is_expected.to be_disallowed(:award_achievement) }
-      specify { is_expected.to be_disallowed(:destroy_user_achievement) }
+      it { is_expected.to be_disallowed(:read_achievement) }
+      it { is_expected.to be_disallowed(:admin_achievement) }
+      it { is_expected.to be_disallowed(:award_achievement) }
+      it { is_expected.to be_disallowed(:destroy_user_achievement) }
     end
 
     context 'when current user is not a group member' do
       let(:current_user) { non_group_member }
 
-      specify { is_expected.to be_disallowed(:read_achievement) }
+      it { is_expected.to be_disallowed(:read_achievement) }
 
       context 'when the group is public' do
         let_it_be(:group) { create(:group, :public) }
 
-        specify { is_expected.to be_allowed(:read_achievement) }
+        it { is_expected.to be_allowed(:read_achievement) }
       end
     end
 
     context 'when current user is not an owner' do
       let(:current_user) { maintainer }
 
-      specify { is_expected.to be_disallowed(:destroy_user_achievement) }
+      it { is_expected.to be_disallowed(:destroy_user_achievement) }
     end
   end
 
@@ -1826,13 +1826,13 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      specify { is_expected.to be_disallowed(:admin_package) }
+      it { is_expected.to be_disallowed(:admin_package) }
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      specify { is_expected.to be_allowed(:admin_package) }
+      it { is_expected.to be_allowed(:admin_package) }
     end
   end
 end

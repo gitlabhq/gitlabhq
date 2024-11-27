@@ -9,8 +9,6 @@ module Gitlab
         # This middleware updates the job payload with stored context and additional information needed by the
         # SidekiqMiddleware::ConcurrencyLimit::Middleware to resume the job.
         def call(worker_class_or_name, job, _queue, _redis_pool, &)
-          return yield if Feature.disabled?(:bulk_push_concurrency_limit_resume_worker, :current_request)
-
           worker_name = worker_class_or_name.is_a?(Class) ? worker_class_or_name.name : worker_class_or_name
           return yield unless worker_name
 

@@ -30,12 +30,12 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu, feature_category: :navigat
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -43,12 +43,12 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu, feature_category: :navigat
       let(:item_id) { :activity }
 
       context 'when user has access to the project' do
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
 
         describe 'when the user is not present' do
           let(:user) { nil }
 
-          specify { is_expected.not_to be_nil }
+          it { is_expected.not_to be_nil }
         end
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu, feature_category: :navigat
           allow(project).to receive(:empty_repo?).and_return(true)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       it_behaves_like 'access rights checks'
@@ -87,7 +87,7 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu, feature_category: :navigat
           allow(project).to receive(:empty_repo?).and_return(true)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       it_behaves_like 'access rights checks'

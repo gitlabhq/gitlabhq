@@ -14060,6 +14060,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Error fetching compliance requirements controls data. Please refresh the page."
+msgstr ""
+
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
 msgstr ""
 
@@ -18291,9 +18294,6 @@ msgstr ""
 msgid "DeletionSettings|Period that deleted groups and projects will remain restorable for. Personal projects are always deleted immediately."
 msgstr ""
 
-msgid "Deloyment|Something went wrong starting the deployment. Please try again later."
-msgstr ""
-
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
@@ -19029,6 +19029,9 @@ msgid "Deployment|Skipped"
 msgstr ""
 
 msgid "Deployment|Something went wrong approving or rejecting the deployment. Please try again later."
+msgstr ""
+
+msgid "Deployment|Something went wrong starting the deployment. Please try again later."
 msgstr ""
 
 msgid "Deployment|Started %{timeago} by %{username}"
