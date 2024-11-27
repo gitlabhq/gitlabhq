@@ -126,7 +126,7 @@ export default {
         getIconColor,
         {
           'system-note-icon -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
-          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-gray-50 gl-bg-gray-900':
+          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-subtle gl-bg-gray-900':
             !isAllowedIcon,
         },
       ]"

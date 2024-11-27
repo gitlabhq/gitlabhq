@@ -3244,7 +3244,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/epics/epic_links/list_service.rb'
     - 'ee/app/services/epics/epic_links/update_service.rb'
     - 'ee/app/services/epics/issue_promote_service.rb'
-    - 'ee/app/services/epics/related_epic_links/create_service.rb'
     - 'ee/app/services/epics/related_epic_links/destroy_service.rb'
     - 'ee/app/services/epics/related_epic_links/list_service.rb'
     - 'ee/app/services/epics/reopen_service.rb'

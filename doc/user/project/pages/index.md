@@ -240,6 +240,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/480195) from "multiple deployments" to "parallel deployments" in GitLab 17.4.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -272,14 +273,6 @@ branch named `username/testing_feature`, this parallel Pages deployment would be
 
 - When using a [unique domain](#unique-domains): `https://project-namespace-123456.gitlab.io/username-testing-feature`.
 - When not using a unique domain: `https://namespace.gitlab.io/project/username-testing-feature`.
-
-### Enable parallel deployments
-
-To enable parallel GitLab Pages deployments:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
-1. Select **Enable parallel deployments**.
 
 ### Limits
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-RSpec.describe Gitlab::BackgroundMigration::BackfillFindingIdInVulnerabilities, schema: 20230912105945, feature_category: :vulnerability_management do
+RSpec.describe Gitlab::BackgroundMigration::BackfillFindingIdInVulnerabilities, schema: 20230721095222, feature_category: :vulnerability_management do
   before(:all) do
     # This migration will not work if a sec database is configured. It should be finalized and removed prior to
     # sec db rollout.

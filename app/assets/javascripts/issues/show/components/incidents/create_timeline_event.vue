@@ -116,7 +116,7 @@ export default {
     </div>
     <timeline-events-form
       ref="eventForm"
-      :class="{ 'gl-border-t gl-border-gray-50 gl-pt-3': hasTimelineEvents }"
+      :class="{ 'gl-border-t gl-border-subtle gl-pt-3': hasTimelineEvents }"
       :is-event-processed="createTimelineEventActive"
       show-save-and-add
       @save-event="createIncidentTimelineEvent"

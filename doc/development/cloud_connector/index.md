@@ -233,8 +233,8 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 
    - `X-Gitlab-Duo-Seat-Count`: The number of either duo pro or duo enterprise seats the customer purchased. When both add-ons are present, it will take the highest number of seats.
 
-   Some of these headers can be injected by merging the result of the `Gitlab::CloudConnector#headers` method to your payload.
-   For AI uses cases and requests targeting the AI gateway, use `Gitlab::CloudConnector#ai_headers` instead.
+   Some of these headers can be injected by merging the result of the `::CloudConnector#headers` method to your payload.
+   For AI uses cases and requests targeting the AI gateway, use `::CloudConnector#ai_headers` instead.
 
 ###### Permission checks
 

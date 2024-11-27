@@ -140,6 +140,8 @@ file.md @group-x @group-x/subgroup-y
 NOTE:
 You cannot set a member of a group or subgroup as a Code Owner if [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled.
 
+If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
+
 #### Group inheritance and eligibility
 
 ```mermaid
@@ -456,3 +458,4 @@ All changes from users _without_ the **Allowed to push** permission must be rout
 
 - [Syntax reference](reference.md)
 - [Development guidelines](../../../development/code_owners/index.md)
+- [Troubleshooting Code Owners](troubleshooting.md)

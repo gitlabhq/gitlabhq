@@ -17642,6 +17642,7 @@ CREATE TABLE project_compliance_framework_settings (
     project_id bigint NOT NULL,
     framework_id bigint,
     id bigint NOT NULL,
+    created_at timestamp with time zone,
     CONSTRAINT check_d348de9e2d CHECK ((framework_id IS NOT NULL))
 );
 
@@ -28527,6 +28528,8 @@ CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_external_url ON ext
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_status_checks USING btree (project_id, name);
 
 CREATE UNIQUE INDEX idx_on_packages_conan_recipe_revisions_package_id_revision ON packages_conan_recipe_revisions USING btree (package_id, revision);
+
+CREATE INDEX idx_on_project_id_created_at_for_compliance_framework_settings ON project_compliance_framework_settings USING btree (project_id, created_at);
 
 CREATE INDEX idx_on_protected_branch ON approval_group_rules_protected_branches USING btree (protected_branch_id);
 

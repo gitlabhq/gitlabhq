@@ -567,7 +567,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/epics/create_service_spec.rb'
     - 'ee/spec/services/epics/epic_links/create_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
-    - 'ee/spec/services/epics/related_epic_links/create_service_spec.rb'
     - 'ee/spec/services/epics/related_epic_links/list_service_spec.rb'
     - 'ee/spec/services/epics/reopen_service_spec.rb'
     - 'ee/spec/services/epics/transfer_service_spec.rb'

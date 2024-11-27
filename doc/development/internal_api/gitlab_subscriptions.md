@@ -455,7 +455,7 @@ and Storage packs.
 Use a POST command to create, update, and deprovision multiple subscription add-on purchases. Possible add-on types are `duo_pro`, `duo_enterprise`, and `product_analytics`.
 
 ```plaintext
-POST /namespaces/:id/subscription_add_on_purchase
+POST /internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases
 ```
 
 Supported attributes:
@@ -629,17 +629,17 @@ Example response:
 }
 ```
 
-## Migrating Endpoints
+## Deprecated Endpoints
 
-These endpoints are going to be [migrated to internal endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/463741). After that, they will be
-deprecated and then [removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625).
+These endpoints have been [migrated to internal endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/463741). Now, they are
+deprecated and will be [removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625).
 
-### Add-On Purchases (being migrated)
+### [DEPRECATED] Add-On Purchases
 
 This API is used by CustomersDot to manage add-on purchases, excluding Compute Minutes
 and Storage packs.
 
-#### Create a subscription add-on purchase
+#### [DEPRECATED] Create a subscription add-on purchase
 
 Use a POST command to create a subscription add-on purchase.
 
@@ -676,7 +676,7 @@ Example response:
 }
 ```
 
-#### Update a subscription add-on purchase
+#### [DEPRECATED] Update a subscription add-on purchase
 
 Use a PUT command to update an existing subscription add-on purchase.
 
@@ -713,7 +713,7 @@ Example response:
 }
 ```
 
-#### Fetch a subscription add-on purchases
+#### [DEPRECATED] Fetch a subscription add-on purchases
 
 Use a GET command to view an existing subscription add-on purchase.
 
@@ -742,14 +742,14 @@ Example response:
 }
 ```
 
-### Compute quota provisioning (being migrated)
+### [DEPRECATED] Compute quota provisioning
 
 > - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
 
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.
 
-#### Create an additional pack
+#### [DEPRECATED] Create an additional pack
 
 Use a POST command to create additional packs.
 
@@ -795,7 +795,7 @@ Example response:
 ]
 ```
 
-#### Move additional packs
+#### [DEPRECATED] Move additional packs
 
 Use a `PATCH` command to move additional packs from one namespace to another.
 
@@ -824,13 +824,13 @@ Example response:
 }
 ```
 
-### Subscriptions (being migrated)
+### [DEPRECATED] Subscriptions
 
 The subscription endpoints are used by
 [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to
 apply subscriptions (including trials) to personal namespaces, or top-level groups on GitLab.com.
 
-#### Create a subscription
+#### [DEPRECATED] Create a subscription
 
 Use a POST command to create a subscription.
 
@@ -881,7 +881,7 @@ Example response:
 }
 ```
 
-#### Update a subscription
+#### [DEPRECATED] Update a subscription
 
 Use a PUT command to update an existing subscription.
 
@@ -932,16 +932,7 @@ Example response:
 }
 ```
 
-## Deprecated Endpoints
-
-These endpoints are no longer being used by CustomersDot as an internal version of these endpoints
-has already been created. They will be [removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625).
-
-### Subscriptions (deprecated)
-
-These endpoints have been replaced with the ones in the [Internal Subscriptions API](#subscriptions).
-
-#### Fetch a subscription (namespaces API)
+#### [DEPRECATED] Fetch a subscription
 
 Use a GET command to view an existing subscription.
 

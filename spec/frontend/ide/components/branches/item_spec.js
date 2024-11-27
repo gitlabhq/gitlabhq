@@ -1,7 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Item from '~/ide/components/branches/item.vue';
-import { createRouter } from '~/ide/ide_router';
+import { createRouter, EmptyRouterComponent } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { projectData } from '../../mock_data';
@@ -32,6 +32,10 @@ describe('IDE branch item', () => {
   beforeEach(() => {
     store = createStore();
     router = createRouter(store);
+    router.addRoute({
+      path: '/',
+      component: EmptyRouterComponent,
+    });
   });
 
   describe('if not active', () => {

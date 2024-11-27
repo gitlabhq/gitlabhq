@@ -87,7 +87,7 @@ export default {
             {{ s__('ValueStreamEvent|Only items that reached their stop event.') }}
           </div>
         </div>
-        <div class="gl-border-t-1 gl-border-gray-50 gl-px-4 gl-pt-4 gl-border-t-solid">
+        <div class="gl-border-t-1 gl-border-subtle gl-px-4 gl-pt-4 gl-border-t-solid">
           <div v-if="pathItem.startEventHtmlDescription" class="gl-flex gl-flex-row">
             <div class="metric-label gl-flex gl-flex-col gl-pb-3 gl-pr-4">
               {{ s__('ValueStreamEvent|Start') }}

@@ -334,3 +334,4 @@ the minimum number of approvals is `1`. Setting the number of approvals to
 - [Code Owners](index.md)
 - [Merge request approvals](../merge_requests/approvals/index.md)
 - [Protected branches](../repository/branches/protected.md)
+- [Troubleshooting Code Owners](troubleshooting.md)

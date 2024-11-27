@@ -2403,6 +2403,9 @@ msgstr ""
 msgid "API key"
 msgstr ""
 
+msgid "API token of the Packagist server."
+msgstr ""
+
 msgid "APIFuzzing|$VARIABLE_WITH_PASSWORD"
 msgstr ""
 
@@ -14690,9 +14693,6 @@ msgstr ""
 msgid "Configure your environments to be deployed to specific geographical regions"
 msgstr ""
 
-msgid "Configuring path_prefix is only allowed when using multiple pages deployments per project, which is disabled for your project."
-msgstr ""
-
 msgid "Confirm"
 msgstr ""
 
@@ -21257,15 +21257,6 @@ msgstr ""
 msgid "Enter verification code"
 msgstr ""
 
-msgid "Enter your Packagist server. Defaults to https://packagist.org."
-msgstr ""
-
-msgid "Enter your Packagist token."
-msgstr ""
-
-msgid "Enter your Packagist username."
-msgstr ""
-
 msgid "Enter your password to approve"
 msgstr ""
 
@@ -24892,9 +24883,6 @@ msgstr ""
 msgid "GitLabPages|Edit"
 msgstr ""
 
-msgid "GitLabPages|Enable parallel deployments"
-msgstr ""
-
 msgid "GitLabPages|Expired"
 msgstr ""
 
@@ -24956,9 +24944,6 @@ msgid "GitLabPages|When enabled, a unique domain is generated to access pages."
 msgstr ""
 
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
-msgstr ""
-
-msgid "GitLabPages|When enabled, you can create parallel deployments of your pages site. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
@@ -57227,6 +57212,9 @@ msgstr ""
 msgid "To avoid future interruption to notifications for %{project_or_group}, update your notification preferences."
 msgstr ""
 
+msgid "To configure a path_prefix, please add a license to your project."
+msgstr ""
+
 msgid "To connect an SVN repository, check out %{svn_link}."
 msgstr ""
 
@@ -58583,6 +58571,9 @@ msgid "URL of the Jenkins server."
 msgstr ""
 
 msgid "URL of the Mock CI integration."
+msgstr ""
+
+msgid "URL of the Packagist server. The default value is `https://packagist.org`."
 msgstr ""
 
 msgid "URL of the Squash TM webhook."
@@ -60354,6 +60345,9 @@ msgid "Username is already taken."
 msgstr ""
 
 msgid "Username is available."
+msgstr ""
+
+msgid "Username of a Packagist account."
 msgstr ""
 
 msgid "Username of the Jenkins server."

@@ -48,8 +48,7 @@ module Gitlab
         return false if project.blank?
 
         ::Feature.enabled?(:pages_multiple_versions_setting, project) &&
-          project.licensed_feature_available?(:pages_multiple_versions) &&
-          project.project_setting.pages_multiple_versions_enabled
+          project.licensed_feature_available?(:pages_multiple_versions)
       end
 
       private

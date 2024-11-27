@@ -340,7 +340,7 @@ export default {
     />
     <template v-if="workItemCrmContacts">
       <work-item-crm-contacts
-        class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
+        class="gl-border-t gl-mb-5 gl-border-subtle gl-pt-5"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"

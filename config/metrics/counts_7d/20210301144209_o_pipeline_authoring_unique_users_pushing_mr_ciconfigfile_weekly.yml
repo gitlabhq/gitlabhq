@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_weekly
 description: Weekly unique user count having merge requests which contains the CI config file
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 milestone: "13.10"

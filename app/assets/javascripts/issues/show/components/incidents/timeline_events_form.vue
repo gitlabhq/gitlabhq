@@ -173,7 +173,7 @@ export default {
 </script>
 
 <template>
-  <form class="gl-grow gl-border-gray-50">
+  <form class="gl-grow gl-border-subtle">
     <div class="gl-mt-3 gl-flex gl-flex-col sm:gl-flex-row">
       <gl-form-group :label="__('Date')" class="gl-mr-5">
         <gl-datepicker id="incident-date" ref="datepicker" v-model="datePickerInput" />

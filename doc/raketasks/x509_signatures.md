@@ -15,8 +15,12 @@ the trust anchor might change and the signatures stored in the database must be 
 
 ## Update all X.509 signatures
 
-This task loops through all X.509 signed commits and updates their verification based on current
-certificate store.
+This task:
+
+- Iterates through all X.509-signed commits.
+- Updates their verification status based on the current certificate store.
+- Modifies only the database entries for the signatures.
+- Leaves the commits unchanged.
 
 To update all X.509 signatures, run:
 

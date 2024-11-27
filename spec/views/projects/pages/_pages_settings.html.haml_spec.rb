@@ -18,32 +18,4 @@ RSpec.describe 'projects/pages/_pages_settings', feature_category: :pages do
       expect(rendered).to have_content('Use unique domain')
     end
   end
-
-  context 'for pages multiple versions' do
-    context 'when current user does not have access to pages parallel deployments toggle' do
-      it 'shows the multiple versions toggle' do
-        allow(view)
-          .to receive(:can?)
-          .with(user, :pages_multiple_versions, project)
-          .and_return(false)
-
-        render
-
-        expect(rendered).not_to have_content('Enable parallel deployments')
-      end
-    end
-
-    context 'when current user have access to pages multiple versions toggle' do
-      it 'shows the multiple versions toggle' do
-        allow(view)
-          .to receive(:can?)
-          .with(user, :pages_multiple_versions, project)
-          .and_return(true)
-
-        render
-
-        expect(rendered).to have_content('Enable parallel deployments')
-      end
-    end
-  end
 end

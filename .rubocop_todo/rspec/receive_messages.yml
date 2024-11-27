@@ -158,7 +158,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/ee/spam/spam_verdict_service_spec.rb'
     - 'ee/spec/services/ee/work_items/related_work_item_links/create_service_spec.rb'
     - 'ee/spec/services/epic_issues/create_service_spec.rb'
-    - 'ee/spec/services/epics/related_epic_links/create_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'

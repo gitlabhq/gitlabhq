@@ -1,15 +1,10 @@
 ---
 Migration/EnsureFactoryForTable:
   Exclude:
-    - 'db/migrate/20230915103259_create_ci_finished_build_ch_sync_events.rb'
     - 'db/migrate/20230926092914_add_approval_group_rules.rb'
     - 'db/migrate/20230926092944_add_approval_group_rules_groups.rb'
     - 'db/migrate/20230926093004_add_approval_group_rules_users.rb'
     - 'db/migrate/20230926093025_add_approval_group_rules_protected_branches.rb'
-    - 'db/migrate/20230926133801_create_value_stream_analytics_settings.rb'
-    - 'db/migrate/20230930094139_add_related_link_restrictions.rb'
-    - 'db/migrate/20231003073437_create_abuse_report_user_mentions.rb'
-    - 'db/migrate/20231004100000_create_container_registry_protection_rules.rb'
     - 'db/migrate/20231017095738_create_activity_pub_releases_subscriptions.rb'
     - 'db/migrate/20231017134349_create_ml_model_metadata.rb'
     - 'db/migrate/20231020095624_create_audit_events_streaming_http_group_namespace_filters.rb'

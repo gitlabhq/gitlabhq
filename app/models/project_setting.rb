@@ -9,6 +9,8 @@ class ProjectSetting < ApplicationRecord
 
   belongs_to :project, inverse_of: :project_setting
 
+  ignore_column :pages_multiple_versions_enabled, remove_with: '17.9', remove_after: '2025-02-20'
+
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
 

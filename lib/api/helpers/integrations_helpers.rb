@@ -202,34 +202,8 @@ module API
           'jira-cloud-app' => ::Integrations::JiraCloudApp.api_arguments,
           'matrix' => ::Integrations::Matrix.api_arguments,
           'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments,
-          'slack-slash-commands' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Slack token'
-            }
-          ],
-          'packagist' => [
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'The username'
-            },
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Packagist API token'
-            },
-            {
-              required: false,
-              name: :server,
-              type: String,
-              desc: 'The server'
-            }
-          ],
+          'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_arguments,
+          'packagist' => ::Integrations::Packagist.api_arguments,
           'phorge' => ::Integrations::Phorge.api_arguments,
           'pipelines-email' => [
             {

@@ -1624,9 +1624,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `username` | string | yes | The username of a Packagist account. |
-| `token` | string | yes | API token to the Packagist server. |
-| `server` | boolean | no | URL of the Packagist server. Leave blank for the default `<https://packagist.org>`. |
+| `username` | string | yes | Username of a Packagist account. |
+| `token` | string | yes | API token of the Packagist server. |
+| `server` | boolean | no | URL of the Packagist server. The default value is `https://packagist.org`. |
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
