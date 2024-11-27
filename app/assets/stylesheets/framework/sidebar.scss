@@ -774,7 +774,7 @@
 .reviewer-merge-icon,
 .assignee .merge-icon,
 .reviewer .merge-icon {
-  color: $orange-400;
+  color: var(--gl-status-warning-icon-color);
   position: absolute;
   bottom: -3px;
   right: -3px;

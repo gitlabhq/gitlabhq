@@ -99,23 +99,6 @@ Other risks to be aware of when using Duo Workflow:
    goals or messages, as there is a chance it might end up using those in code
    or other API calls.
 
-## Duo Workflow use cases
-
-Automate tasks and help increase productivity in your development workflow by using GitLab Duo Workflow.
-GitLab Duo Workflow, currently only in your IDE, takes the information you provide
-and uses AI to walk you through an implementation plan.
-
-GitLab Duo Workflow supports a wide variety of use cases. Here are a few examples:
-
-- Bootstrap a new project
-- Write tests
-- Fix a failed pipeline
-- Implement a proof of concept for an existing issue
-- Comment on a merge request with suggestions
-- Optimize CI configuration
-
-These are examples of successful use cases, but it can be used for many more.
-
 ## Prerequisites
 
 Before you can use GitLab Duo Workflow:

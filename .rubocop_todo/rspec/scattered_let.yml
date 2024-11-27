@@ -191,7 +191,6 @@ RSpec/ScatteredLet:
     - 'spec/services/ci/create_downstream_pipeline_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service/rules_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
-    - 'spec/services/ci/destroy_pipeline_service_spec.rb'
     - 'spec/services/design_management/delete_designs_service_spec.rb'
     - 'spec/services/design_management/save_designs_service_spec.rb'
     - 'spec/services/discussions/capture_diff_note_positions_service_spec.rb'

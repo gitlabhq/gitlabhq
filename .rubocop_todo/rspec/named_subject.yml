@@ -2937,7 +2937,6 @@ RSpec/NamedSubject:
     - 'spec/services/ci/create_pipeline_service/parameter_content_spec.rb'
     - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
     - 'spec/services/ci/deployments/destroy_service_spec.rb'
-    - 'spec/services/ci/destroy_pipeline_service_spec.rb'
     - 'spec/services/ci/destroy_secure_file_service_spec.rb'
     - 'spec/services/ci/drop_pipeline_service_spec.rb'
     - 'spec/services/ci/expire_pipeline_cache_service_spec.rb'

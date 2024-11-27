@@ -2361,7 +2361,6 @@ RSpec/ContextWording:
     - 'spec/services/ci/create_pipeline_service/tags_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
     - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
-    - 'spec/services/ci/destroy_pipeline_service_spec.rb'
     - 'spec/services/ci/destroy_secure_file_service_spec.rb'
     - 'spec/services/ci/expire_pipeline_cache_service_spec.rb'
     - 'spec/services/ci/find_exposed_artifacts_service_spec.rb'

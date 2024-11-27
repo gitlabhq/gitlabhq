@@ -209,8 +209,8 @@ This is one small step towards moving away from CI/CD templates in preference of
 </div>
 
 In GitLab 18.0, we will remove CodeClimate-based Code Quality scanning.
-However, you'll still be able to import results from quality tools by [providing a report as an artifact](https://docs.gitlab.com/ee/ci/testing/code_quality.html#implement-a-custom-tool), just as you can today.
-In addition, you can also see this [epic](https://gitlab.com/groups/gitlab-org/-/epics/8790) for new directions considered for Code Quality.
+In its place, you should use quality tools directly in your CI/CD pipeline and [provide the tool's report as an artifact](https://docs.gitlab.com/ee/ci/testing/code_quality.html#import-code-quality-results-from-a-cicd-job).
+Many tools already support the required report format, and you can integrate them by following the [documented steps](https://docs.gitlab.com/ee/ci/testing/code_quality.html#integrate-common-tools-with-code-quality).
 
 We expect to implement this change by:
 
@@ -221,7 +221,7 @@ Effective immediately, CodeClimate-based scanning will receive only [limited upd
 After End of Support in GitLab 18.0, we won't provide further updates.
 However, we won't delete previously published container images or remove the ability to run them by using custom CI/CD pipeline job definitions.
 
-For more details and required actions, see the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/471677#action-required).
+For more details, see [Scan code for quality violations](https://docs.gitlab.com/ee/ci/testing/code_quality.html#scan-code-for-quality-violations).
 
 </div>
 

@@ -14,6 +14,7 @@ DETAILS:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 > - The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 > - In GitLab 17.5 we introduced the ability to use a CycloneDX report artifact as a source of data for license information behind the feature flag `license_scanning_with_sbom_licenses`, disabled by default.
+> - In GitLab 17.6 the ability to use a CycloneDX report artifact as a source of data for license information has been enabled by default. The feature flag `license_scanning_with_sbom_licenses` is still present to disable the feature if necessary.
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),
@@ -210,13 +211,15 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 
 ## Use CycloneDX report as a source of license information
 
-The ability to use a CI report artifact as a source of license information data was introduced in GitLab 17.5 behind the feature flag `license_scanning_with_sbom_licenses`.
+The ability to use a CI report artifact as a source of license information data was introduced in GitLab 17.5 behind the feature flag `license_scanning_with_sbom_licenses` and enabled by default in 17.6.
 
 When the feature flag `license_scanning_with_sbom_licenses` is enabled, the License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used(current behavior).
 License information can be provided using a valid SPDX identifier or a license name. However, providing a license using an SPDX License Expression is not supported.
 More information about the license field format can be found on the [CycloneDX](https://cyclonedx.org/use-cases/#license-compliance) specification.
 
 Compatible CycloneDX SBOM generators that provide the licenses field can be found in the [CycloneDX Tool Center](https://cyclonedx.org/tool-center/).
+
+Only licenses providing an SPDX identifier are currently supported. Extending this feature beyond SDPX licenses is tracked in [issue 505677](https://gitlab.com/gitlab-org/gitlab/-/issues/505677).
 
 ## Troubleshooting
 

@@ -43,7 +43,9 @@ You can also [integrate multiple tools](#integrate-multiple-tools).
 Many development teams already use linters, style checkers, or other tools in their CI/CD pipelines to automatically detect violations of coding standards.
 You can make the findings from these tools easier to see and fix by integrating them with Code Quality.
 
-To integrate a tool with Code Quality:
+To see if your tool already has a documented integration, see [Integrate common tools with Code Quality](#integrate-common-tools-with-code-quality).
+
+To integrate a different tool with Code Quality:
 
 1. Add the tool to your CI/CD pipeline.
 1. Configure the tool to output a report as a file.
@@ -75,19 +77,6 @@ For more details, see [Configure CodeClimate-based Code Quality scanning](code_q
 You can capture results from multiple tools in a single pipeline.
 For example, you can run a code linter to scan your code along with a language linter to scan your documentation, or you can use a standalone tool along with CodeClimate-based scanning.
 Code Quality combines all of the reports so you see all of them when you [view results](#view-code-quality-results).
-
-Here is an example that returns ESLint output in the necessary format:
-
-```yaml
-eslint:
-  image: node:18-alpine
-  script:
-    - npm ci
-    - npx eslint --format gitlab .
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-```
 
 ## View Code Quality results
 
