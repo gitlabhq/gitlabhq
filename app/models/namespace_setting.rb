@@ -5,11 +5,12 @@ class NamespaceSetting < ApplicationRecord
   include Sanitizable
   include ChronicDurationAttribute
 
+  ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
   ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
 
-  cascading_attr :math_rendering_limits_enabled
+  cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited
 
   scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
 

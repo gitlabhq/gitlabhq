@@ -2109,9 +2109,6 @@ msgstr ""
 msgid "A non-confidential work item cannot have a confidential parent."
 msgstr ""
 
-msgid "A parent group has selected \"Only direct members.\" It cannot be overridden by this group."
-msgstr ""
-
 msgid "A parent must be provided when bulk updating issuables"
 msgstr ""
 
@@ -5642,9 +5639,6 @@ msgstr ""
 msgid "All child items must be confidential in order to turn on confidentiality."
 msgstr ""
 
-msgid "All direct and inherited members of the group or project"
-msgstr ""
-
 msgid "All environments"
 msgstr ""
 
@@ -8652,9 +8646,6 @@ msgstr ""
 msgid "Bi-weekly code coverage"
 msgstr ""
 
-msgid "Billable Users"
-msgstr ""
-
 msgid "Billable users"
 msgstr ""
 
@@ -11012,6 +11003,9 @@ msgstr ""
 msgid "CascadingSettings|Enforce for all subgroups"
 msgstr ""
 
+msgid "CascadingSettings|Enforce this setting for all groups on this instance."
+msgstr ""
+
 msgid "CascadingSettings|Lock tooltip icon"
 msgstr ""
 
@@ -11330,9 +11324,6 @@ msgstr ""
 msgid "Checking username availability..."
 msgstr ""
 
-msgid "Checkout|Compute pack"
-msgstr ""
-
 msgid "Checkout|Failed to load countries. Please try again."
 msgstr ""
 
@@ -11342,16 +11333,7 @@ msgstr ""
 msgid "Checkout|Failed to load the payment form. Refresh the page and try again."
 msgstr ""
 
-msgid "Checkout|GB"
-msgstr ""
-
-msgid "Checkout|Storage packs"
-msgstr ""
-
 msgid "Checkout|Your subscription will be applied to this group"
-msgstr ""
-
-msgid "Checkout|compute minutes"
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -22584,12 +22566,6 @@ msgid "Expires %{preposition} %{expires_at}"
 msgstr ""
 
 msgid "Expiring soon"
-msgstr ""
-
-msgid "Expiry notification emails about group and project access tokens should be sent to:"
-msgstr ""
-
-msgid "Expiry notification emails about group and project access tokens within this group should be sent to:"
 msgstr ""
 
 msgid "Explain current vulnerability."
@@ -38071,9 +38047,6 @@ msgstr ""
 msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted."
 msgstr ""
 
-msgid "Only direct members of the group or project"
-msgstr ""
-
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
 msgstr ""
 
@@ -51852,6 +51825,15 @@ msgstr ""
 msgid "Settings saved successfully."
 msgstr ""
 
+msgid "Settings|All direct and inherited members of the group or project"
+msgstr ""
+
+msgid "Settings|Expiry notification emails about group and project access tokens within this group should be sent to:"
+msgstr ""
+
+msgid "Settings|Only direct members of the group or project"
+msgstr ""
+
 msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
 msgstr ""
 
@@ -54978,9 +54960,6 @@ msgid "That's OK, I don't want to renew"
 msgstr ""
 
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
-msgstr ""
-
-msgid "The %{trueUpLinkStart}true-up model%{trueUpLinkEnd} allows having more users, and additional users will incur a retroactive charge on renewal."
 msgstr ""
 
 msgid "The %{type} contains the following error:"
@@ -59248,6 +59227,9 @@ msgstr ""
 msgid "UsageQuota|Code packages and container images."
 msgstr ""
 
+msgid "UsageQuota|Compute units usage is calculated based on shared runners duration with cost factors applied."
+msgstr ""
+
 msgid "UsageQuota|Compute usage"
 msgstr ""
 
@@ -60390,9 +60372,6 @@ msgid "Users can select 'Remember me' on sign-in to keep their session active be
 msgstr ""
 
 msgid "Users cannot be added to projects in this group"
-msgstr ""
-
-msgid "Users in License"
 msgstr ""
 
 msgid "Users in subscription"

@@ -1,0 +1,20 @@
+---
+description: Job token authorized while project has scope disabled
+internal_events: true
+action: authorize_job_token_with_disabled_scope
+identifiers:
+- project
+- namespace
+additional_properties:
+  label:
+    description: Distinguishes same-project vs cross-project authentications
+product_group: pipeline_security
+milestone: '17.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173400
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

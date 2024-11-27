@@ -441,6 +441,10 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :math_rendering_limits_enabled
   end
 
+  describe '#resource_access_token_notify_inherited' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :resource_access_token_notify_inherited
+  end
+
   describe 'default_branch_protection_defaults' do
     let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
 

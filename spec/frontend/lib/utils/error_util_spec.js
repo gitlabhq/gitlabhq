@@ -1,5 +1,4 @@
 import {
-  ActiveModelError,
   generateHelpTextWithLinks,
   mapSystemToFriendlyError,
   isKnownErrorCode,
@@ -132,32 +131,6 @@ describe('Error Alert Utils', () => {
         expect(mapSystemToFriendlyError(new Error(message), mockErrorDictionary)).toEqual(
           mockErrorDictionary[unfriendlyErrorOneKey.toLowerCase()],
         );
-      });
-    });
-
-    describe('when error is email:taken error_attribute_map', () => {
-      const errorAttributeMap = { email: ['taken'] };
-
-      it('maps the email friendly error', () => {
-        expect(
-          mapSystemToFriendlyError(
-            new ActiveModelError(errorAttributeMap, emailTakenError),
-            mockErrorDictionary,
-          ),
-        ).toEqual(mockErrorDictionary[emailTakenAttributeMap.toLowerCase()]);
-      });
-    });
-
-    describe('when there are multiple errors in the error_attribute_map', () => {
-      const errorAttributeMap = { email: ['taken', 'invalid'] };
-
-      it('maps the email friendly error', () => {
-        expect(
-          mapSystemToFriendlyError(
-            new ActiveModelError(errorAttributeMap, `${emailTakenError}, Email is invalid`),
-            mockErrorDictionary,
-          ),
-        ).toEqual(mockErrorDictionary[emailTakenAttributeMap.toLowerCase()]);
       });
     });
 

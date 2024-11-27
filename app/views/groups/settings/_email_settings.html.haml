@@ -12,11 +12,4 @@
                           disabled: !@group.emails_enabled? || !can_set_group_diff_preview_in_email?(@group) },
         help_text: s_('GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.')
 
-- if Feature.enabled?(:pat_expiry_inherited_members_notification, @group.root_ancestor)
-  - controlled_by_parent_group = !@group.can_modify_token_expiry_notify_inherited?
-  .form-group
-    = f.label :token_expiry_notify_inherited, _('Expiry notification emails about group and project access tokens within this group should be sent to:')
-    = f.gitlab_ui_radio_component :token_expiry_notify_inherited, true, _('All direct and inherited members of the group or project'), radio_options: { disabled: controlled_by_parent_group }
-    = f.gitlab_ui_radio_component :token_expiry_notify_inherited, false, _('Only direct members of the group or project'), radio_options: { disabled: controlled_by_parent_group }
-    - if controlled_by_parent_group
-      .form-text= _('A parent group has selected "Only direct members." It cannot be overridden by this group.')
+= render 'groups/settings/resource_access_token_notify_inherited_settings', f: f

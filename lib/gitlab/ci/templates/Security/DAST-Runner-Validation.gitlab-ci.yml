@@ -23,7 +23,7 @@ validation:
     GIT_STRATEGY: none
   allow_failure: false
   script:
-    - ~/validate.sh
+    - /home/dast/validate.sh
   rules:
     - if: $CI_GITLAB_FIPS_MODE == "true"
       variables:

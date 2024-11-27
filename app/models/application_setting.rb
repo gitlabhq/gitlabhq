@@ -672,14 +672,15 @@ class ApplicationSetting < ApplicationRecord
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
+  jsonb_accessor :transactional_emails,
+    resource_access_token_notify_inherited: [:boolean, { default: false }],
+    lock_resource_access_token_notify_inherited: [:boolean, { default: false }]
+
+  validates :transactional_emails, json_schema: { filename: "application_setting_transactional_emails" }
+
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
-
-  jsonb_accessor :transactional_emails,
-    resource_token_expiry_inherited_members: [:boolean, { default: true }]
-
-  validates :transactional_emails, json_schema: { filename: "application_setting_transactional_emails" }
 
   jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
 

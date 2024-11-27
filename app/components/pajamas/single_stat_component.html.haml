@@ -1,10 +1,10 @@
-.gl-single-stat.gl-flex.gl-flex-col.gl-p-2
-  .gl-flex.gl-items-center.gl-text-gray-700.gl-mb-2
+.gl-single-stat.gl-flex.gl-flex-col.gl-py-2
+  .gl-flex.gl-items-center.gl-text-gray-700.gl-mb-4
     - if title_icon?
       = sprite_icon(@title_icon, css_class: 'gl-mr-2')
-    %span.gl-text-base.gl-font-normal{ data: { testid: 'title-text' } }
+    %span.gl-text-base.gl-font-normal.gl-text-subtle{ data: { testid: 'title-text' } }
       = title || @title
-  .gl-single-stat-content.gl-flex.gl-items-baseline.gl-font-bold.gl-text-gray-900
+  .gl-single-stat-content.gl-flex.gl-items-baseline.gl-font-bold.gl-text-gray-900.gl-mb-4
     %span.gl-single-stat-number.gl-leading-1{ class: unit_class, data: { testid: 'displayValue' } }
       %span{ data: { testid: @stat_value_testid } }
         = stat_value || @stat_value

@@ -5,6 +5,8 @@ module Subscriptions
     object_class Types::BaseObject
     field_class Types::BaseField
 
+    UNAUTHORIZED_ERROR_MESSAGE = 'Unauthorized subscription'
+
     def initialize(object:, context:, field:)
       super
 
@@ -33,7 +35,7 @@ module Subscriptions
     def unauthorized!
       unsubscribe if context.query.subscription_update?
 
-      raise GraphQL::ExecutionError, 'Unauthorized subscription'
+      raise GraphQL::ExecutionError, UNAUTHORIZED_ERROR_MESSAGE
     end
 
     def current_user

@@ -7,7 +7,17 @@
     "resource_token_expiry_inherited_members": {
       "type": "boolean",
       "default": true,
+      "description": "Legacy field, no longer in use."
+    },
+    "resource_access_token_notify_inherited": {
+      "type": "boolean",
+      "default": false,
       "description": "Should expiry notification emails for project and group access tokens be sent to inherited members, or only direct members of the project or group."
+    },
+    "lock_resource_access_token_notify_inherited": {
+      "type": "boolean",
+      "default": false,
+      "description": "Should setting for token expiry emails be enforced for all groups on the instance."
     }
   }
 }

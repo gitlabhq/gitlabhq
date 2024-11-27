@@ -1542,6 +1542,200 @@ Example response:
 ]
 ```
 
+## Get merge request blocked MRs
+
+Shows information about the merge requests blocked by the current merge request.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/blockees
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required | Description |
+|---------------------|----------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blockees"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 18,
+    "blocking_merge_request": {
+      "id": 71,
+      "iid": 10,
+      "project_id": 7,
+      "title": "At quaerat occaecati voluptate ex explicabo nisi.",
+      "description": "Aliquid distinctio officia corrupti ad nemo natus ipsum culpa.",
+      "state": "merged",
+      "created_at": "2024-07-05T19:44:14.023Z",
+      "updated_at": "2024-07-05T19:44:14.023Z",
+      "merged_by": {
+        "id": 40,
+        "username": "i-user-0-1720208283",
+        "name": "I User0",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/8325417f0f7919e3724957543b4414fdeca612cade1e4c0be45685fdaa2be0e2?s=80&d=identicon",
+        "web_url": "http://127.0.0.1:3000/i-user-0-1720208283"
+      },
+      "merge_user": {
+        "id": 40,
+        "username": "i-user-0-1720208283",
+        "name": "I User0",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/8325417f0f7919e3724957543b4414fdeca612cade1e4c0be45685fdaa2be0e2?s=80&d=identicon",
+        "web_url": "http://127.0.0.1:3000/i-user-0-1720208283"
+      },
+      "merged_at": "2024-06-26T19:44:14.123Z",
+      "closed_by": null,
+      "closed_at": null,
+      "target_branch": "master",
+      "source_branch": "Brickwood-Brunefunc-417",
+      "user_notes_count": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "author": {
+        "id": 40,
+        "username": "i-user-0-1720208283",
+        "name": "I User0",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/8325417f0f7919e3724957543b4414fdeca612cade1e4c0be45685fdaa2be0e2?s=80&d=identicon",
+        "web_url": "http://127.0.0.1:3000/i-user-0-1720208283"
+      },
+      "assignees": [],
+      "assignee": null,
+      "reviewers": [],
+      "source_project_id": 7,
+      "target_project_id": 7,
+      "labels": [],
+      "draft": false,
+      "imported": false,
+      "imported_from": "none",
+      "work_in_progress": false,
+      "milestone": null,
+      "merge_when_pipeline_succeeds": false,
+      "merge_status": "can_be_merged",
+      "detailed_merge_status": "not_open",
+      "merge_after": null,
+      "sha": null,
+      "merge_commit_sha": null,
+      "squash_commit_sha": null,
+      "discussion_locked": null,
+      "should_remove_source_branch": null,
+      "force_remove_source_branch": null,
+      "prepared_at": null,
+      "reference": "!10",
+      "references": {
+        "short": "!10",
+        "relative": "!10",
+        "full": "flightjs/Flight!10"
+      },
+      "web_url": "http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/10",
+      "time_stats": {
+        "time_estimate": 0,
+        "total_time_spent": 0,
+        "human_time_estimate": null,
+        "human_total_time_spent": null
+      },
+      "squash": false,
+      "squash_on_merge": false,
+      "task_completion_status": {
+        "count": 0,
+        "completed_count": 0
+      },
+      "has_conflicts": false,
+      "blocking_discussions_resolved": true,
+      "approvals_before_merge": null
+    },
+    "blocked_merge_request": {
+      "id": 176,
+      "iid": 14,
+      "project_id": 7,
+      "title": "second_mr",
+      "description": "Signed-off-by: Lucas Zampieri <lzampier@redhat.com>",
+      "state": "opened",
+      "created_at": "2024-07-08T19:12:29.089Z",
+      "updated_at": "2024-08-27T19:27:17.045Z",
+      "merged_by": null,
+      "merge_user": null,
+      "merged_at": null,
+      "closed_by": null,
+      "closed_at": null,
+      "target_branch": "master",
+      "source_branch": "second_mr",
+      "user_notes_count": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "author": {
+        "id": 1,
+        "username": "root",
+        "name": "Administrator",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/fc3634394c590e212d964e8e0a34c4d9b8c17c992f4d6d145d75f9c21c1c3b6e?s=80&d=identicon",
+        "web_url": "http://127.0.0.1:3000/root"
+      },
+      "assignees": [],
+      "assignee": null,
+      "reviewers": [],
+      "source_project_id": 7,
+      "target_project_id": 7,
+      "labels": [],
+      "draft": false,
+      "imported": false,
+      "imported_from": "none",
+      "work_in_progress": false,
+      "milestone": null,
+      "merge_when_pipeline_succeeds": false,
+      "merge_status": "cannot_be_merged",
+      "detailed_merge_status": "commits_status",
+      "merge_after": null,
+      "sha": "3a576801e528db79a75fbfea463673054ff224fb",
+      "merge_commit_sha": null,
+      "squash_commit_sha": null,
+      "discussion_locked": null,
+      "should_remove_source_branch": null,
+      "force_remove_source_branch": true,
+      "prepared_at": null,
+      "reference": "!14",
+      "references": {
+        "short": "!14",
+        "relative": "!14",
+        "full": "flightjs/Flight!14"
+      },
+      "web_url": "http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/14",
+      "time_stats": {
+        "time_estimate": 0,
+        "total_time_spent": 0,
+        "human_time_estimate": null,
+        "human_total_time_spent": null
+      },
+      "squash": false,
+      "squash_on_merge": false,
+      "task_completion_status": {
+        "count": 0,
+        "completed_count": 0
+      },
+      "has_conflicts": true,
+      "blocking_discussions_resolved": true,
+      "approvals_before_merge": null
+    },
+    "project_id": 7
+  }
+]
+```
+
 ## Get single merge request changes
 
 WARNING:

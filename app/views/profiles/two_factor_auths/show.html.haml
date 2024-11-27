@@ -4,15 +4,16 @@
 - add_to_breadcrumbs _('Account'), profile_account_path
 - troubleshooting_link = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
 
-= render ::Layouts::PageHeadingComponent.new(title, options: { class: 'gl-mb-3' })
+- content_for :after_flash_content do
+  - if @error
+    .flash-container.flash-container-page.sticky
+      = render Pajamas::AlertComponent.new(title: @error[:message],
+        variant: :danger,
+        dismissible: false) do |c|
+        - c.with_body do
+          = troubleshooting_link
 
-- if @error
-  = render Pajamas::AlertComponent.new(title: @error[:message],
-    variant: :danger,
-    alert_options: { class: 'gl-mb-5' },
-    dismissible: false) do |c|
-    - c.with_body do
-      = troubleshooting_link
+= render ::Layouts::PageHeadingComponent.new(title, options: { class: 'gl-mb-3' })
 
 = render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
   - c.with_description do

@@ -1,0 +1,9 @@
+- if Feature.enabled?(:pat_expiry_inherited_members_notification, :instance)
+  .form-group
+    = f.label :resource_access_token_notify_inherited, s_('Settings|Expiry notification emails about group and project access tokens within this group should be sent to:')
+    = f.gitlab_ui_radio_component :resource_access_token_notify_inherited, true, s_('Settings|All direct and inherited members of the group or project')
+    = f.gitlab_ui_radio_component :resource_access_token_notify_inherited, false, s_('Settings|Only direct members of the group or project')
+
+  .form-group
+    = f.gitlab_ui_checkbox_component :lock_resource_access_token_notify_inherited,
+      s_('CascadingSettings|Enforce this setting for all groups on this instance.')

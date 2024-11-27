@@ -7,6 +7,10 @@ module Gitlab
       module InstrumentationTracer
         MUTATION_REGEXP = /^mutation/
 
+        IGNORED_ERRORS = [
+          ::Subscriptions::BaseSubscription::UNAUTHORIZED_ERROR_MESSAGE
+        ].freeze
+
         # All queries pass through a multiplex, even if only one query is executed
         # https://github.com/rmosolgo/graphql-ruby/blob/43e377b5b743a9102381d6ad3adaaed13ff5b6dd/lib/graphql/schema.rb#L1303
         #
@@ -31,15 +35,16 @@ module Gitlab
 
         def export_query_info(query:, duration_s:, exception:)
           operation = ::Gitlab::Graphql::KnownOperations.default.from_query(query)
-          has_errors = exception || query.result['errors'].present?
+
+          error_type = error_type(query: query, exception: exception)
 
           ::Gitlab::ApplicationContext.with_context(caller_id: operation.to_caller_id) do
             log_execute_query(query: query, duration_s: duration_s, exception: exception)
-            increment_query_sli(operation: operation, duration_s: duration_s, has_errors: has_errors)
+            increment_query_sli(operation: operation, duration_s: duration_s, error_type: error_type)
           end
         end
 
-        def increment_query_sli(operation:, duration_s:, has_errors:)
+        def increment_query_sli(operation:, duration_s:, error_type:)
           query_urgency = operation.query_urgency
           labels = {
             endpoint_id: operation.to_caller_id,
@@ -49,15 +54,27 @@ module Gitlab
 
           Gitlab::Metrics::RailsSlis.graphql_query_error_rate.increment(
             labels: labels,
-            error: has_errors
+            error: error_type == :error
           )
 
-          return if has_errors
+          return if error_type
 
           Gitlab::Metrics::RailsSlis.graphql_query_apdex.increment(
             labels: labels,
             success: duration_s <= query_urgency.duration
           )
+        end
+
+        def error_type(query:, exception:)
+          errors = query.result['errors']&.pluck('message')
+
+          return if errors.blank?
+
+          if exception || (errors - IGNORED_ERRORS).present?
+            :error
+          else
+            :ignored
+          end
         end
 
         def log_execute_query(query: nil, duration_s: 0, exception: nil)

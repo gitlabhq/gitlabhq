@@ -72,7 +72,7 @@ Possible response status codes:
 | Status | Description |
 |--------|-------------|
 | 200    | Serves the artifacts file. |
-| 404    | Build not found or no artifacts. |
+| 404    | Build not found, no artifacts, or all artifacts are reports. |
 
 ## Download the artifacts archive
 
@@ -147,7 +147,7 @@ Possible response status codes:
 | Status | Description |
 |--------|-------------|
 | 200    | Serves the artifacts file. |
-| 404    | Build not found or no artifacts. |
+| 404    | Build not found, no artifacts, or all artifacts are reports. |
 
 ## Download a single artifact file by job ID
 
@@ -184,9 +184,9 @@ Possible response status codes:
 
 | Status | Description |
 |--------|-------------|
-| 200    | Sends a single artifact file |
-| 400    | Invalid path provided |
-| 404    | Build not found or no file/artifacts |
+| 200    | Sends a single artifact file. |
+| 400    | Invalid path provided. |
+| 404    | Build not found, no artifacts, or all artifacts are reports. |
 
 ## Download a single artifact file from specific tag or branch
 
@@ -231,9 +231,9 @@ Possible response status codes:
 
 | Status | Description |
 |--------|-------------|
-| 200    | Sends a single artifact file |
-| 400    | Invalid path provided |
-| 404    | Build not found or no file/artifacts |
+| 200    | Sends a single artifact file. |
+| 400    | Invalid path provided. |
+| 404    | Build not found, no artifacts, or all artifacts are reports. |
 
 ## Keep artifacts
 
@@ -350,3 +350,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ```
 
 A response with status `202 Accepted` is returned.
+
+## Troubleshooting
+
+### Downloading `artifacts:reports` files
+
+You might get a `404 Not Found` error when trying to download reports using the job artifacts API.
+
+This issue occurs because [reports](../ci/yaml/index.md#artifactsreports) are not downloadable by default.
+
+To make reports downloadable, add their filenames or `gl-*-report.json` to [`artifacts:paths`](../ci/yaml/index.md#artifactspaths).

@@ -668,11 +668,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:math_rendering_limits_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
-    it { is_expected.to delegate_method(:token_expiry_notify_inherited).to(:namespace_settings) }
-    it { is_expected.to delegate_method(:token_expiry_notify_inherited=).to(:namespace_settings).with_arguments(:args) }
     it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
+    it { is_expected.to delegate_method(:resource_access_token_notify_inherited?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_ancestor?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_application_setting?).to(:namespace_settings) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
@@ -2241,74 +2243,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       group.emails_enabled = false
 
       expect(group.emails_disabled?).to be_truthy
-    end
-  end
-
-  context 'with token_expiry_notify_inherited settings' do
-    let_it_be_with_reload(:grandparent_namespace) { create(:group) }
-    let_it_be_with_reload(:parent_namespace) { create(:group, parent: grandparent_namespace) }
-    let_it_be_with_reload(:child_namespace) { create(:group, parent: parent_namespace) }
-
-    describe '.token_expiry_notify_inherited?' do
-      subject { child_namespace.token_expiry_notify_inherited? }
-
-      # setting defaults to true for all namespace settings
-      it { is_expected.to eq(true) }
-
-      context 'when parent namespace has setting disabled' do
-        before do
-          parent_namespace.namespace_settings.update!(token_expiry_notify_inherited: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when grandparent namespace has setting disabled' do
-        before do
-          grandparent_namespace.namespace_settings.update!(token_expiry_notify_inherited: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when current token_expiry_notify_inherited is set to false' do
-        before do
-          child_namespace.namespace_settings.update!(token_expiry_notify_inherited: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-    end
-
-    describe '.can_modify_token_expiry_notify_inherited?' do
-      subject { child_namespace.can_modify_token_expiry_notify_inherited? }
-
-      # setting defaults to true for all namespace settings
-      it { is_expected.to eq(true) }
-
-      context 'when parent namespace has setting disabled' do
-        before do
-          parent_namespace.namespace_settings.update!(token_expiry_notify_inherited: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when grandparent namespace has setting disabled' do
-        before do
-          grandparent_namespace.namespace_settings.update!(token_expiry_notify_inherited: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when current token_expiry_notify_inherited is set to false' do
-        before do
-          child_namespace.namespace_settings.update!(token_expiry_notify_inherited: false)
-        end
-
-        it { is_expected.to eq(true) }
-      end
     end
   end
 

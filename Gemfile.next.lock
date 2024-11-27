@@ -482,6 +482,7 @@ GEM
       addressable
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
+    csv (3.3.0)
     cvss-suite (3.0.1)
     danger (9.4.2)
       claide (~> 1.0)
@@ -1027,7 +1028,8 @@ GEM
     ice_nine (0.11.2)
     imagen (0.1.8)
       parser (>= 2.5, != 2.5.1.1)
-    influxdb-client (3.1.0)
+    influxdb-client (3.2.0)
+      csv
     invisible_captcha (2.1.0)
       rails (>= 5.2)
     io-console (0.7.2)
