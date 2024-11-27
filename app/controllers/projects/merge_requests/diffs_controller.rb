@@ -135,16 +135,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def commit
-    return unless commit_id = params[:commit_id].presence
-    return unless @merge_request.all_commits.exists?(sha: commit_id) ||
-      @merge_request.recent_context_commits.map(&:id).include?(commit_id)
-
-    @commit ||= @project.commit(commit_id)
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
   #
   # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def find_merge_request_diff_compare

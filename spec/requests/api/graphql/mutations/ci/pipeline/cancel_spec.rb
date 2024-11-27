@@ -36,7 +36,7 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
     expect(build).not_to be_canceled
   end
 
-  context 'when running build' do
+  context 'when a build is running' do
     let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
     context 'when supports canceling is true' do
@@ -52,7 +52,7 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
     end
 
     context 'when supports canceling is false' do
-      it 'cancels all running jobs to canceled', :sidekiq_inline do
+      it 'updates all running jobs to `canceled`', :sidekiq_inline do
         post_graphql_mutation(mutation, current_user: user)
 
         expect(response).to have_gitlab_http_status(:success)
