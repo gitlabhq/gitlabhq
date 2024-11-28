@@ -730,7 +730,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.5)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (0.2.1)
+    gitlab-cloud-connector (0.2.2)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
     gitlab-dangerfiles (4.8.0)

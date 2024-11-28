@@ -213,7 +213,6 @@ Lint/AssignmentInCondition:
     - 'rubocop/cop/migration/background_migration_missing_active_concern.rb'
     - 'rubocop/cop/prefer_class_methods_over_module.rb'
     - 'rubocop/cop/rspec/httparty_basic_auth.rb'
-    - 'scripts/lint-docs-blueprints.rb'
     - 'spec/factories/ci/processable.rb'
     - 'spec/models/packages/go/module_version_spec.rb'
     - 'spec/models/project_feature_spec.rb'

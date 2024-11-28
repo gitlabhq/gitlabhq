@@ -295,11 +295,6 @@
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"
 
-.docs-blueprints-patterns: &docs-blueprints-patterns
-  - "doc/architecture/blueprints/**/*"
-  - "scripts/lint-docs-blueprints.rb"
-  - ".gitlab/ci/docs.gitlab-ci.yml"
-
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
   - "data/deprecations/**/*"
@@ -1225,11 +1220,6 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-patterns
-
-.docs:rules:docs-blueprints-lint:
-  rules:
-    - <<: *if-default-refs
-      changes: *docs-blueprints-patterns
 
 .docs:rules:deprecations-and-removals:
   rules:

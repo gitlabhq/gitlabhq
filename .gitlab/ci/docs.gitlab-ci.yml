@@ -58,16 +58,6 @@ docs-lint markdown:
     - scripts/lint-doc.sh
     - scripts/lint/check_mermaid.mjs
 
-docs-lint blueprint:
-  extends:
-    - .default-retry
-    - .docs:rules:docs-blueprints-lint
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
-  stage: lint
-  needs: []
-  script:
-    - scripts/lint-docs-blueprints.rb
-
 docs code_quality:
   extends:
     - .reports:rules:docs_code_quality

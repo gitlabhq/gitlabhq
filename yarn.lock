@@ -1051,11 +1051,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bjorn3/browser_wasi_shim@^0.2.19":
-  version "0.2.21"
-  resolved "https://registry.yarnpkg.com/@bjorn3/browser_wasi_shim/-/browser_wasi_shim-0.2.21.tgz#2a7901f32a79c8c85375e41310a8517118307b05"
-  integrity sha512-ZD/Z4n3NV5abjDHtEbe/7bqJSyHsicURK+BxdykXuYJQowgHPhEcckeCrQ4ZWCXkF9saW1TjlYieEPVi7HQuEg==
-
 "@braintree/sanitize-url@^6.0.1":
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/@braintree/sanitize-url/-/sanitize-url-6.0.4.tgz#923ca57e173c6b232bbbb07347b1be982f03e783"
@@ -1402,7 +1397,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.0":
+"@gitlab/noop@^1.0.0", jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
   integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
@@ -1411,13 +1406,6 @@
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.1.2.tgz#e71a7f774c370e2cbd388886061c498ff8bda388"
   integrity sha512-53fjNFdF2j9RTeqROuZbfCIxn5d9Is4gnPAOSQSvsdNFEK5bFTiCo7fdMUcT6RGgCAf/C71F2WNe5Qs0F3N8dg==
-
-"@gitlab/query-language@^0.0.5-a-20241112":
-  version "0.0.5-a-20241112"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language/-/query-language-0.0.5-a-20241112.tgz#f442477e2728169fba4740a74d10cb887f9f0067"
-  integrity sha512-NZ+k2/DyR5XDW2vqISTg0WVxz3EQhDJzwq2btbPY5ZKcd4gsD9SIN4Xqquw/L5IfRia16wdy08YsdUImr81e7g==
-  dependencies:
-    "@bjorn3/browser_wasi_shim" "^0.2.19"
 
 "@gitlab/stylelint-config@6.2.2":
   version "6.2.2"
@@ -1433,10 +1421,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.121.0.tgz#57cacc895929aef4320632396373797a64b230ff"
   integrity sha512-ZekVjdMZrjrNEjdrOHsJYCu7A+ea3AkuNUxWIZ3FaNgJj4Oh21RlTP7bQKnRSXVhBbV1jg1PgzQ1ANEoCW8t4g==
 
-"@gitlab/ui@103.5.0":
-  version "103.5.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-103.5.0.tgz#8d954104213417c5fcc07e224bffc99f3dcc19f8"
-  integrity sha512-cHohuHX4Kp8yEfbOitN8rxMzgKrljscwrogco2yNhhyPEUayNGWE2TQoN5cabcCeXRoWIGViso7YWca92GLqCg==
+"@gitlab/ui@103.7.1":
+  version "103.7.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-103.7.1.tgz#7df2ab802aad48a946100d73d3fc9fa1733bb9bb"
+  integrity sha512-ThpGdWWLdWN0j2q3RhQ63625KbeK2BXinhk3iQyy//z08sxZJYXWwcdFF88TImPtBVV7p5e/01Mb6WhqI/H8wg==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -9291,11 +9279,6 @@ iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
-
-jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
-  integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
 
 jed@^1.1.1:
   version "1.1.1"

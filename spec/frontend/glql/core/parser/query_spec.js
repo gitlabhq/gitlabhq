@@ -8,9 +8,6 @@ describe('GLQL Query Parser', () => {
   describe('parseQuery', () => {
     beforeEach(() => {
       gon.current_username = 'foobar';
-      gon.features = {
-        glqlRust: true,
-      };
     });
 
     afterEach(() => {

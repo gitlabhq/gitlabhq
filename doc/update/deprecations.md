@@ -198,6 +198,69 @@ This is one small step towards moving away from CI/CD templates in preference of
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### CI/CD job token - **Authorized groups and projects** allowlist enforcement
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383084).
+
+</div>
+
+With the [**Authorized groups and projects** setting](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-group-or-project-to-the-job-token-allowlist)
+introduced in GitLab 15.9 (renamed from **Limit access _to_ this project** in GitLab 16.3), you can control CI/CD job token access to your project.
+When set to **Only this project and any groups and projects in the allowlist**,
+only groups or projects added to the allowlist can use job tokens to access your project.
+
+For projects created before GitLab 15.9, the allowlist was disabled by default
+([**All groups and projects**](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-any-project-to-access-your-project)
+access setting selected), allowing job token access from any project.
+The allowlist is now enabled by default in all new projects. In older
+projects, it might still be disabled or you might have manually selected
+the **All groups and projects** option to make access unrestricted.
+
+Starting in GitLab 17.6, administrators for Self-managed and GitLab Dedicated instances can optionally
+[enforce this more secure setting for all projects](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#job-token-permissions).
+This setting prevents project maintainers from selecting **All groups and projects**.
+This change ensures a higher level of security between projects.
+In GitLab 18.0, this setting will be enabled by default on GitLab.com, Self-managed, and GitLab Dedicated.
+
+To prepare for this change, project maintainers using job tokens for cross-project authentication
+should populate their project's **Authorized groups and projects** allowlists. They should then change
+the setting to **Only this project and any groups and projects in the allowlist**.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### CI/CD job token - **Limit access _from_ your project** setting removal
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/395708).
+
+</div>
+
+In GitLab 14.4, we introduced a setting to [limit access _from_ your project's CI/CD job tokens (`CI_JOB_TOKEN`)](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) to make it more secure.
+This setting was called **Limit CI_JOB_TOKEN access**. In GitLab 16.3, we renamed this setting to **Limit access _from_ this project** for clarity.
+
+In GitLab 15.9, we introduced an alternative setting called
+[**Authorized groups and projects**](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-group-or-project-to-the-job-token-allowlist).
+This setting controls job token access _to_ your project by using an allowlist.
+This new setting is a large improvement over the original. The first iteration is deprecated
+in GitLab 16.0 and scheduled for removal in GitLab 18.0.
+
+The **Limit access _from_ this project** setting is disabled by default for all new projects.
+In GitLab 16.0 and later, you cannot re-enable this this setting after it is disabled in any project.
+Instead, use the **Authorized groups and projects** setting to control job token access to your projects.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### CodeClimate-based Code Quality scanning will be removed
 
 <div class="deprecation-notes">
@@ -248,32 +311,6 @@ compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 18.0.
 Customers should migrate from compliance pipelines to the new
 [pipeline execution policy type](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html)
 as soon as possible.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Default CI/CD job token (`CI_JOB_TOKEN`) scope changed
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383084).
-
-</div>
-
-In GitLab 14.4 we introduced the ability to [limit your project's CI/CD job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) (`CI_JOB_TOKEN`) access to make it more secure. You can prevent job tokens **from your project's** pipelines from being used to **access other projects**. When enabled with no other configuration, your pipelines cannot access other projects. To use the job token to access other projects from your pipeline, you must list those projects explicitly in the **Limit CI_JOB_TOKEN access** setting's allowlist, and you must be a maintainer in all the projects.
-
-The job token functionality was updated in 15.9 with a better security setting to [allow access to your project with a job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-group-or-project-to-the-job-token-allowlist). When enabled with no other configuration, job tokens **from other projects** cannot **access your project**. Similar to the older setting, you can optionally allow other projects to access your project with a job token if you list those projects explicitly in the **Allow access to this project with a CI_JOB_TOKEN** setting's allowlist (now renamed, see below). With this new setting, you must be a maintainer in your own project, but only need to have the Guest role in the other projects.
-
-The **Limit** setting was deprecated in 16.0 in preference of the better **Allow access** setting (renamed to the **Authorized groups and projects** allowlist) and the **Limit** setting was disabled by default for all new projects. From this point forward, if the **Limit** setting is disabled in any project, it will not be possible to re-enable this setting in 16.0 or later.
-
-In 18.0, we will enforce the usage of the allowlist on GitLab.com. This change ensures a higher level of security between projects. If you currently use the **Limit** setting, you should update your projects to use the **Authorized groups and projects** allowlist instead. If other projects access your project with a job token, you must add them to the allowlist.
-
-To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later should set the **Authorized groups and projects** setting to **Only this project and any groups and projects in the allowlist**, and add projects and groups to the allowlist as needed. It will not be possible to disable the setting on GitLab.com in 18.0 or later. In FitLab 17.6, we added the option for Self-managed and Dedicated administrators to [optionally turn this enforcement off](https://gitlab.com/gitlab-org/gitlab/-/issues/440697), though this would not be the recommended default.
-
-We have gone through a few iterations for the naming of these settings. In 16.3, the deprecated **Limit CI_JOB_TOKEN access** setting updated to **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting was updated to **Limit access _to_ this project**. This was still proving to be confusing, and in 17.3 we updated this section to be the **Job token permissions > Authorized groups and projects** allowlist setting.
 
 </div>
 
@@ -3864,32 +3901,6 @@ These two variables will be removed in GitLab 16.0.
 With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_HTML_REPORT`, `DAST_XML_REPORT`, and `DAST_MARKDOWN_REPORT`. These reports relied on the legacy DAST analyzer and we do not plan to implement them in the new browser-based analyzer. As of GitLab 16.0, these report artifacts will no longer be generated.
 
 These three variables will be removed in GitLab 16.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Default CI/CD job token (`CI_JOB_TOKEN`) scope changed
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/395708).
-
-</div>
-
-In GitLab 14.4 we introduced the ability to [limit your project's CI/CD job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) (`CI_JOB_TOKEN`) access to make it more secure. You can prevent job tokens **from your project's** pipelines from being used to **access other projects**. When enabled with no other configuration, your pipelines cannot access other projects. To use the job token to access other projects from your pipeline, you must list those projects explicitly in the **Limit CI_JOB_TOKEN access** setting's allowlist, and you must be a maintainer in all the projects.
-
-The job token functionality was updated in 15.9 with a better security setting to [allow access to your project with a job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-group-or-project-to-the-job-token-allowlist). When enabled with no other configuration, job tokens **from other projects** cannot **access your project**. Similar to the older setting, you can optionally allow other projects to access your project with a job token if you list those projects explicitly in the **Allow access to this project with a CI_JOB_TOKEN** setting's allowlist. With this new setting, you must be a maintainer in your own project, but only need to have the Guest role in the other projects.
-
-As a result, the **Limit** setting is deprecated in preference of the better **Allow access** setting. In GitLab 16.0 the **Limit** setting will be disabled by default for all new projects. In projects with this setting currently enabled, it will continue to function as expected, but you will not be able to add any more projects to the allowlist. If the setting is disabled in any project, it will not be possible to re-enable this setting in 16.0 or later.
-
-In 18.0, we plan to remove the **Limit** setting completely, and set the **Allow access** setting to enabled for all projects. This change ensures a higher level of security between projects. If you currently use the **Limit** setting, you should update your projects to use the **Allow access** setting instead. If other projects access your project with a job token, you must add them to the **Allow access** allowlist.
-
-To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 18.0 or later.
-
-In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
 
 </div>
 

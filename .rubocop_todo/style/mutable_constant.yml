@@ -32,7 +32,6 @@ Style/MutableConstant:
     - 'lib/gitlab/sidekiq_signals.rb'
     - 'lib/gitlab/web_hooks/recursion_detection/uuid.rb'
     - 'lib/tasks/gitlab/backup.rake'
-    - 'scripts/lint-docs-blueprints.rb'
     - 'scripts/perf/gc/collect_gc_stats.rb'
     - 'spec/support/helpers/jira_integration_helpers.rb'
     - 'tooling/danger/stable_branch.rb'

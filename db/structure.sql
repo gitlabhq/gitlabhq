@@ -38749,8 +38749,8 @@ ALTER TABLE p_ci_job_annotations
 ALTER TABLE ONLY packages_rpm_repository_files
     ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_rails_d739f46384_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+ALTER TABLE p_ci_builds
+    ADD CONSTRAINT fk_rails_d739f46384_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

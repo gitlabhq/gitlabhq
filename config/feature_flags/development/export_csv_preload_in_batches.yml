@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85989
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389847
 milestone: '15.9'
 type: development
-group: group::import and integrate
+group: group::project management
 default_enabled: false
