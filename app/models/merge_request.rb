@@ -707,7 +707,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.use_locked_set?
-    Feature.enabled?(:unstick_locked_merge_requests_redis) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- no actor needed
+    Feature.enabled?(:unstick_locked_merge_requests_redis)
   end
 
   def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)

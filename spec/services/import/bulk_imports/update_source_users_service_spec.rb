@@ -60,9 +60,8 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
   let_it_be(:node_1) { graphql_response_node(gid: source_user_identifiers[1]) }
   let_it_be(:node_2) { graphql_response_node(gid: source_user_identifiers[2]) }
 
-  let(:minimum_batch_size) { 1 }
   let(:service_args) do
-    { bulk_import: bulk_import, namespace: portable, options: { minimum_batch_size: minimum_batch_size } }
+    { bulk_import: bulk_import, namespace: portable }
   end
 
   def graphql_response_node(gid:, name: 'Name', username: 'username')
@@ -77,12 +76,12 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
     instance_double(
       GraphQL::Client::Response,
       original_hash: {
-        'page_info' => {
-          'next_page' => next_page,
-          'has_next_page' => has_next_page
-        },
         'data' => {
           'users' => {
+            'pageInfo' => {
+              'next_page' => next_page,
+              'has_next_page' => has_next_page
+            },
             'nodes' => nodes
           }
         }
@@ -154,6 +153,13 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
           expect(client).to receive(:execute).and_return(graphql_response([]))
         end
 
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            message: 'No users present in response',
+            response: anything,
+            user_ids: source_user_identifiers)
+        end
+
         expect(fetch_users_data.each.to_a).to eq([])
       end
     end
@@ -179,7 +185,7 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
     end
 
     context 'when the number of source users is higher than the batch size' do
-      it 'makes a request for each batch in decending order' do
+      it 'makes a request for each batch in descending order' do
         stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
         expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
@@ -197,24 +203,6 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
         end
 
         expect(fetch_users_data.each.to_a).to match_array([node_0, node_1, node_2])
-      end
-    end
-
-    context 'when current batch size is smaller than minimum batch size' do
-      let(:minimum_batch_size) { 2 }
-
-      it 'does not request fewer user details than the minimum batch size' do
-        stub_const("#{described_class.name}::BATCH_SIZE", 2)
-
-        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          expect(client).to receive(:parse).and_return('query').ordered
-
-          expect(client).to receive(:execute)
-            .with('query', ids: [source_user_identifiers[1], source_user_identifiers[2]], after: nil)
-            .and_return(graphql_response([node_1, node_2]))
-        end
-
-        expect(fetch_users_data.each.to_a).to match_array([node_1, node_2])
       end
     end
   end
@@ -259,6 +247,12 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
       it 'does not update the source user attributes' do
         expect(Import::SourceUsers::UpdateService).not_to receive(:new)
 
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            hash_including(message: 'Missing source user identifier')
+          )
+        end
+
         update_source_user
       end
     end
@@ -273,6 +267,12 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
 
       it 'does not update the source user attributes' do
         expect(Import::SourceUsers::UpdateService).not_to receive(:new)
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            hash_including(message: 'Missing source user information')
+          )
+        end
 
         update_source_user
       end

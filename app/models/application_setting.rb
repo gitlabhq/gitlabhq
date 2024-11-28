@@ -49,7 +49,7 @@ class ApplicationSetting < ApplicationRecord
   # We won't add a prefix here as this token is deprecated and being
   # disabled in 17.0
   # https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
-  add_authentication_token_field :runners_registration_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix
+  add_authentication_token_field :runners_registration_token, encrypted: :required
   add_authentication_token_field :health_check_access_token # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
@@ -1007,7 +1007,7 @@ class ApplicationSetting < ApplicationRecord
       kroki_url, schemes: %w[http https],
       enforce_sanitization: true,
       deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist)[0] # rubocop:disable Naming/InclusiveLanguage -- existing setting
+      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist)[0]
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     self.errors.add(
       :kroki_url,

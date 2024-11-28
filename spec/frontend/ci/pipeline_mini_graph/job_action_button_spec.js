@@ -118,6 +118,7 @@ describe('JobActionButton', () => {
           await clickActionButton();
 
           expect(handler).toHaveBeenCalledWith({ id: defaultProps.jobId });
+          expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
         });
 
         it('displays the appropriate error message if mutation is not successful', async () => {

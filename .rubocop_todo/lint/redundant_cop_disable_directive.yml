@@ -1,10 +1,4 @@
 ---
 # Cop supports --autocorrect.
 Lint/RedundantCopDisableDirective:
-  # Offense count: 3
-  # Temporarily disabled due to too many offenses
-  Enabled: false
-  Exclude:
-    - 'ee/app/controllers/admin/gitlab_duo/configuration_controller.rb'
-    - 'ee/app/presenters/ee/onboarding/status_presenter.rb'
-    - 'ee/spec/helpers/admin/application_settings_helper_spec.rb'
+  Details: grace period

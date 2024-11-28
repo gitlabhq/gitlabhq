@@ -157,7 +157,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showBlobControls" class="gl-flex gl-items-baseline gl-gap-3">
+  <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
@@ -181,7 +181,7 @@ export default {
       data-testid="history"
       :href="blobInfo.historyPath"
       :class="$options.buttonClassList"
-      class="gl-block sm:gl-hidden"
+      class="sm:gl-hidden"
     >
       {{ $options.i18n.history }}
     </gl-button>

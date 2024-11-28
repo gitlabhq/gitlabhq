@@ -28,7 +28,7 @@ RSpec.describe Layouts::PageHeadingComponent, type: :component, feature_category
         c.with_description { description }
       end
 
-      expect(page).to have_css('.gl-w-full.gl-mt-2.gl-text-subtle', text: description)
+      expect(page).to have_css('.gl-w-full.gl-text-subtle', text: description)
     end
   end
 end

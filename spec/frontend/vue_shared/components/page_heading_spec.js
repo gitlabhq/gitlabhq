@@ -58,7 +58,7 @@ describe('Pagination links component', () => {
       it('renders its description slot content', () => {
         expect(description().text()).toBe('Description go here');
         expect(description().classes()).toEqual(
-          expect.arrayContaining(['gl-w-full', 'gl-mt-2', 'gl-text-subtle']),
+          expect.arrayContaining(['gl-w-full', 'gl-text-subtle']),
         );
       });
 

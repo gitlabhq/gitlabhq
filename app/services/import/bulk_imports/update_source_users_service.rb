@@ -6,10 +6,9 @@ module Import
       # Default API max page size
       BATCH_SIZE = GitlabSchema.default_max_page_size
 
-      def initialize(bulk_import:, namespace:, options: {})
+      def initialize(bulk_import:, namespace:)
         @bulk_import = bulk_import
         @namespace = namespace
-        @minimum_batch_size = options[:minimum_batch_size] || BATCH_SIZE
       end
 
       def execute
@@ -22,7 +21,7 @@ module Import
 
       private
 
-      attr_reader :bulk_import, :namespace, :force, :minimum_batch_size
+      attr_reader :bulk_import, :namespace, :force
 
       def graphql_client
         @graphql_client ||= ::BulkImports::Clients::Graphql.new(
@@ -61,18 +60,20 @@ module Import
             has_next_page = true
             next_page = nil
 
-            next if ids.size < minimum_batch_size
-
             # Make subsequent API calls if the API is configured with a max
             # page size smaller than the default value
             while has_next_page
               response = graphql_client.execute(parsed_query, ids: ids, after: next_page).original_hash
 
-              next_page = response.dig('page_info', 'next_page')
-              has_next_page = response.dig('page_info', 'has_next_page')
-              users = response.dig('data', 'users', 'nodes')
+              data = response.dig('data', 'users')
+              next_page = data.dig('pageInfo', 'next_page')
+              has_next_page = data.dig('pageInfo', 'has_next_page')
+              users = data['nodes']
 
-              next unless users.present?
+              unless users.present?
+                logger.error(message: 'No users present in response', response: response, user_ids: ids)
+                next
+              end
 
               users.each do |user|
                 yielder << user
@@ -84,13 +85,23 @@ module Import
 
       def update_source_user(user_data)
         source_user_identifier = GlobalID.parse(user_data['id'])&.model_id
-        return unless source_user_identifier
+
+        unless source_user_identifier
+          logger.error(message: 'Missing source user identifier', user_data: user_data)
+          return
+        end
 
         source_user = find_source_user(source_user_identifier)
         return unless source_user
 
         params = { source_name: user_data['name'], source_username: user_data['username'] }.compact
-        return if params.blank?
+
+        if params.blank?
+          logger.error(message: 'Missing source user information', user_data: user_data, source_user_id: source_user.id,
+            bulk_import_id: bulk_import.id,
+            importer: Import::SOURCE_DIRECT_TRANSFER)
+          return
+        end
 
         result = SourceUsers::UpdateService.new(source_user, params).execute
 

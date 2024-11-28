@@ -302,6 +302,21 @@ module BlobHelper
       can_download_code: can?(current_user, :download_code, project).to_s
     }
   end
+
+  def vue_blob_header_app_data(project, blob, ref)
+    {
+      blob_path: blob.path,
+      breadcrumbs: breadcrumb_data_attributes,
+      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
+      history_link: project_commits_path(project, ref),
+      project_id: project.id,
+      project_root_path: project_path(project),
+      project_path: project.full_path,
+      project_short_path: project.path,
+      ref_type: @ref_type.to_s,
+      ref: ref
+    }
+  end
 end
 
 BlobHelper.prepend_mod_with('BlobHelper')

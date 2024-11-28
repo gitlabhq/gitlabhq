@@ -144,11 +144,6 @@ label {
 }
 
 .input-group {
-  .input-group-prepend,
-  .input-group-append {
-    background-color: $input-group-addon-bg;
-  }
-
   .input-group-prepend:not(:first-child):not(:last-child),
   .input-group-append:not(:first-child):not(:last-child) {
     border-left: 0;

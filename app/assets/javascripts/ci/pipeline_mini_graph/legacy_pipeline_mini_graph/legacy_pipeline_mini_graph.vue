@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import { normalizeDownstreamPipelines, normalizeStages } from '../utils';
+import { normalizeDownstreamPipelines, normalizeStages } from '../utils/data_utils';
 import DownstreamPipelines from '../downstream_pipelines.vue';
 import PipelineStages from '../pipeline_stages.vue';
 /**

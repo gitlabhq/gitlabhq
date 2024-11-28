@@ -1,4 +1,3 @@
-= render "projects/blob/breadcrumb", blob: blob
 - project = @project.present(current_user: current_user)
 - ref = local_assigns[:ref] || @ref
 - expanded = params[:expanded].present?
@@ -6,6 +5,11 @@
 -# If the blob has a RichViewer we preload the content except for GeoJSON since it is handled by Vue
 - if blob.rich_viewer && blob.extension != 'geojson'
   - add_page_startup_api_call local_assigns.fetch(:viewer_url) { url_for(safe_params.merge(viewer: blob.rich_viewer.type, format: :json)) }
+
+- if params[:common_repository_blob_header_app] == 'true'
+  #js-repository-blob-header-app{ data: vue_blob_header_app_data(project, blob, ref) }
+- else
+  = render "projects/blob/breadcrumb", blob: blob
 
 - if project.forked?
   #js-fork-info{ data: vue_fork_divergence_data(project, ref) }

@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineStatus, { i18n } from '~/ci/pipeline_editor/components/header/pipeline_status.vue';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
+import getPipelineStatusQuery from '~/ci/pipeline_editor/graphql/queries/get_pipeline_status.query.graphql';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
@@ -19,7 +20,10 @@ describe('Pipeline Status', () => {
   let mockPipelineQuery;
 
   const createComponentWithApollo = ({ ciGraphqlPipelineMiniGraph = false } = {}) => {
-    const handlers = [[getPipelineQuery, mockPipelineQuery]];
+    const handlers = [
+      [getPipelineQuery, mockPipelineQuery],
+      [getPipelineStatusQuery, mockPipelineQuery],
+    ];
     mockApollo = createMockApollo(handlers);
 
     mockApollo.clients.defaultClient.cache.writeQuery({

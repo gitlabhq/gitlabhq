@@ -1,11 +1,13 @@
 <script>
 import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
+import { getIncreasedPollInterval } from '~/ci/utils/polling_utils';
+import { NETWORK_STATUS_READY, PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
-import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
-import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
+import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import getPipelineMiniGraphQuery from './graphql/queries/get_pipeline_mini_graph.query.graphql';
 import DownstreamPipelines from './downstream_pipelines.vue';
@@ -47,15 +49,11 @@ export default {
       required: false,
       default: false,
     },
-    pollInterval: {
-      type: Number,
-      required: false,
-      default: PIPELINE_MINI_GRAPH_POLL_INTERVAL,
-    },
   },
   emits: ['miniGraphStageClick'],
   data() {
     return {
+      pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
       pipeline: {},
     };
   },
@@ -65,14 +63,21 @@ export default {
         return getQueryHeaders(this.pipelineEtag);
       },
       query: getPipelineMiniGraphQuery,
-      pollInterval() {
-        return this.pollInterval;
-      },
+      notifyOnNetworkStatusChange: true,
       variables() {
         return {
           fullPath: this.fullPath,
           iid: this.iid,
         };
+      },
+      pollInterval() {
+        return this.pollInterval;
+      },
+      result({ networkStatus }) {
+        // We need this for handling the reactive poll interval while also using frontend cache
+        // a status of 7 = 'ready'
+        if (networkStatus !== NETWORK_STATUS_READY) return;
+        this.pollInterval = this.increasePollInterval();
       },
       update({ project }) {
         return project?.pipeline || {};
@@ -80,6 +85,7 @@ export default {
       error(error) {
         createAlert({ message: this.$options.i18n.pipelineMiniGraphFetchError });
         reportToSentry(this.$options.name, error);
+        this.pollInterval = 0;
       },
     },
   },
@@ -104,7 +110,28 @@ export default {
     },
   },
   mounted() {
-    toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
+    Visibility.change(() => {
+      this.handlePolling();
+    });
+  },
+  methods: {
+    /** Note: cannot use `toggleQueryPollingByVisibility` because interval is dynamic */
+    handlePolling() {
+      if (!Visibility.hidden()) {
+        this.resetPollInterval();
+      } else {
+        this.pollInterval = 0;
+      }
+    },
+    increasePollInterval() {
+      return getIncreasedPollInterval(this.pollInterval);
+    },
+    onJobActionExecuted() {
+      this.resetPollInterval();
+    },
+    resetPollInterval() {
+      this.pollInterval = PIPELINE_POLL_INTERVAL_DEFAULT;
+    },
   },
 };
 </script>
@@ -133,6 +160,7 @@ export default {
       <pipeline-stages
         :is-merge-train="isMergeTrain"
         :stages="pipelineStages"
+        @jobActionExecuted="onJobActionExecuted"
         @miniGraphStageClick="$emit('miniGraphStageClick')"
       />
       <gl-icon

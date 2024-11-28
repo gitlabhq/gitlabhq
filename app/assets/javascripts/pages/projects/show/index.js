@@ -28,7 +28,7 @@ if (document.querySelector('.blob-viewer')) {
   import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer')
     .then(({ BlobViewer }) => {
       new BlobViewer(); // eslint-disable-line no-new
-      initHeaderApp(true);
+      initHeaderApp({ isReadmeView: true });
     })
     .catch(() => {});
 }

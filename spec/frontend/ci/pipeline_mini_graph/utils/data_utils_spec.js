@@ -1,4 +1,7 @@
-import { normalizeDownstreamPipelines, normalizeStages } from '~/ci/pipeline_mini_graph/utils';
+import {
+  normalizeDownstreamPipelines,
+  normalizeStages,
+} from '~/ci/pipeline_mini_graph/utils/data_utils';
 
 const graphqlDownstream = [
   {
@@ -60,7 +63,7 @@ const restStage = [
   },
 ];
 
-describe('Utils', () => {
+describe('Data utils', () => {
   describe('stages', () => {
     it('Does not normalize GraphQL stages', () => {
       expect(normalizeStages(graphqlStage)).toEqual(graphqlStage);

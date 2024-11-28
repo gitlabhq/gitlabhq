@@ -4,6 +4,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
+import getPipelineStatusQuery from '~/ci/pipeline_editor/graphql/queries/get_pipeline_status.query.graphql';
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -59,31 +60,17 @@ export default {
       context() {
         return getQueryHeaders(this.pipelineEtag);
       },
-      query: getPipelineQuery,
+      query() {
+        return this.isUsingPipelineMiniGraphQueries ? getPipelineStatusQuery : getPipelineQuery;
+      },
       variables() {
         return {
           fullPath: this.projectFullPath,
           sha: this.commitSha,
         };
       },
-      update(data) {
-        const {
-          id,
-          iid,
-          commit = {},
-          detailedStatus = {},
-          stages,
-          status,
-        } = data.project?.pipeline || {};
-
-        return {
-          id,
-          iid,
-          commit,
-          detailedStatus,
-          stages,
-          status,
-        };
+      update({ project }) {
+        return project?.pipeline || {};
       },
       result(res) {
         if (res.data?.project?.pipeline) {

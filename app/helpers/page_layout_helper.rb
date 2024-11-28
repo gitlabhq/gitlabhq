@@ -151,7 +151,7 @@ module PageLayoutHelper
   end
 
   def full_content_class
-    "#{container_class} #{@content_class}" # rubocop:disable Rails/HelperInstanceVariable
+    "#{container_class} #{@content_class}"
   end
 
   def page_itemtype(itemtype = nil)

@@ -66,6 +66,7 @@ export default {
       required: true,
     },
   },
+  emits: ['jobActionExecuted'],
   data() {
     return {
       isLoading: false,
@@ -107,6 +108,7 @@ export default {
         reportToSentry(this.$options.name, error);
       } finally {
         this.isLoading = false;
+        this.$emit('jobActionExecuted');
       }
     },
   },
