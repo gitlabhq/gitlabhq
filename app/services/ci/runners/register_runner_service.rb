@@ -80,11 +80,12 @@ module Ci
 
       def token_scope
         case attrs_from_token[:runner_type]
+        when :instance_type
+          Gitlab::Audit::InstanceScope.new
         when :project_type
           attrs_from_token[:projects]&.first
         when :group_type
           attrs_from_token[:groups]&.first
-          # No scope for instance type
         end
       end
 

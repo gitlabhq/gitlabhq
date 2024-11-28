@@ -270,7 +270,7 @@ RSpec.describe Feature::Gitaly do
   end
 
   describe ".group_actor" do
-    let_it_be(:group) { create(:group ) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
 
     context 'when project is passed in' do
