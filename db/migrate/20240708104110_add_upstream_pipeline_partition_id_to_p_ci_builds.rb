@@ -5,7 +5,7 @@ class AddUpstreamPipelinePartitionIdToPCiBuilds < Gitlab::Database::Migration[2.
 
   # rubocop:disable Migration/AddColumnsToWideTables -- composable FK
   def change
-    add_column :p_ci_builds, :upstream_pipeline_partition_id, :bigint
+    add_column :p_ci_builds, :upstream_pipeline_partition_id, :bigint # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
   end
   # rubocop:enable Migration/AddColumnsToWideTables
 end

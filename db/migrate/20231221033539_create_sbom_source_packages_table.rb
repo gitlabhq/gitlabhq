@@ -13,7 +13,9 @@ class CreateSbomSourcePackagesTable < Gitlab::Database::Migration[2.2]
   # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     with_lock_retries do
+      # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
       add_column :sbom_occurrences, :source_package_id, :bigint, if_not_exists: true
+      # rubocop:enable Migration/PreventAddingColumns
     end
 
     create_table :sbom_source_packages, if_not_exists: true do |t|

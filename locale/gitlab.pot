@@ -14150,9 +14150,6 @@ msgstr ""
 msgid "ComplianceFrameworks|There can be only one default framework."
 msgstr ""
 
-msgid "ComplianceFrameworks|This project is covered by the rules defined in the compliance framework. Only admins of the parent group can edit the compliance framework."
-msgstr ""
-
 msgid "ComplianceFrameworks|To link this policy and framework,  edit  the policy's scope."
 msgstr ""
 

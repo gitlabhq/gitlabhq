@@ -4,6 +4,6 @@ class AddAutoCanceledByPartitionIdToCiPipelines < Gitlab::Database::Migration[2.
   milestone '17.2'
 
   def change
-    add_column :ci_pipelines, :auto_canceled_by_partition_id, :bigint
+    add_column :ci_pipelines, :auto_canceled_by_partition_id, :bigint # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
   end
 end

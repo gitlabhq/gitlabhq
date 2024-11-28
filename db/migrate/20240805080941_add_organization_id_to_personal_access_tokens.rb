@@ -9,7 +9,9 @@ class AddOrganizationIdToPersonalAccessTokens < Gitlab::Database::Migration[2.2]
 
   def up
     with_lock_retries do
+      # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
       add_column :personal_access_tokens, :organization_id, :bigint, default: DEFAULT_ORGANIZATION_ID, null: false,
+        # rubocop:enable Migration/PreventAddingColumns
         if_not_exists: true
     end
     # rubocop:disable Migration/PreventIndexCreation -- Legacy migration

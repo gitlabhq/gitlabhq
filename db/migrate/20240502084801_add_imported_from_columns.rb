@@ -17,27 +17,27 @@ class AddImportedFromColumns < Gitlab::Database::Migration[2.2]
     end
 
     with_lock_retries do
-      add_column :events,
+      add_column :events, # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
         :imported_from, :integer, default: 0, null: false, limit: 2, if_not_exists: true
     end
 
     with_lock_retries do
-      add_column :issues,
+      add_column :issues, # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
         :imported_from, :integer, default: 0, null: false, limit: 2, if_not_exists: true
     end
 
     with_lock_retries do
-      add_column :merge_requests,
+      add_column :merge_requests, # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
         :imported_from, :integer, default: 0, null: false, limit: 2, if_not_exists: true
     end
 
     with_lock_retries do
-      add_column :notes,
+      add_column :notes, # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
         :imported_from, :integer, default: 0, null: false, limit: 2, if_not_exists: true
     end
 
     with_lock_retries do
-      add_column :resource_label_events,
+      add_column :resource_label_events, # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
         :imported_from, :integer, default: 0, null: false, limit: 2, if_not_exists: true
     end
 

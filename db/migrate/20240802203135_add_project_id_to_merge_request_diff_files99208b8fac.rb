@@ -4,7 +4,7 @@ class AddProjectIdToMergeRequestDiffFiles99208b8fac < Gitlab::Database::Migratio
   milestone '17.3'
 
   def up
-    add_column :merge_request_diff_files_99208b8fac, :project_id, :bigint
+    add_column :merge_request_diff_files_99208b8fac, :project_id, :bigint # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
   end
 
   def down

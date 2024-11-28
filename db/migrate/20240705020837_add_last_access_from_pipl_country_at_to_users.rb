@@ -10,7 +10,9 @@ class AddLastAccessFromPiplCountryAtToUsers < Gitlab::Database::Migration[2.2]
   #
   # rubocop:disable Migration/AddColumnsToWideTables -- see previous lines
   def change
+    # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
     add_column :users, :last_access_from_pipl_country_at, :datetime_with_timezone, if_not_exists: true
+    # rubocop:enable Migration/PreventAddingColumns
   end
   # rubocop:enable Migration/AddColumnsToWideTables
 end

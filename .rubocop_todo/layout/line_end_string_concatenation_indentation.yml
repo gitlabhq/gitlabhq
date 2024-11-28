@@ -451,7 +451,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/graphql/graphql_name_position.rb'
     - 'rubocop/cop/graphql/json_type.rb'
     - 'rubocop/cop/inject_enterprise_edition_module.rb'
-    - 'rubocop/cop/migration/add_columns_to_wide_tables.rb'
     - 'rubocop/cop/migration/add_limit_to_text_columns.rb'
     - 'rubocop/cop/migration/avoid_finalize_background_migration.rb'
     - 'rubocop/cop/migration/background_migrations.rb'

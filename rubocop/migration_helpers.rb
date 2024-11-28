@@ -9,7 +9,7 @@ module RuboCop
       plan_limits
     ].freeze
 
-    # Tables with large number of columns (> 50 on GitLab.com as of 01/2021)
+    # Tables with large number of columns (> 50 on GitLab.com as of 2024-11-20)
     WIDE_TABLES = %i[
       ci_builds
       p_ci_builds

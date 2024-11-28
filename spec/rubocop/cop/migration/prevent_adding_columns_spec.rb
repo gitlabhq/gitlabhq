@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require_relative '../../../../rubocop/cop/migration/add_columns_to_wide_tables'
+require_relative '../../../../rubocop/cop/migration/prevent_adding_columns'
 
-RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
+RSpec.describe RuboCop::Cop::Migration::PreventAddingColumns, feature_category: :database do
   context 'when outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
 
     context 'with wide tables' do
       it 'registers an offense when adding a column to a wide table' do
-        offense = '`projects` is a wide table with several columns, [...]'
+        offense = '`projects` is a large table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
       end
 
       it 'registers an offense when adding a column with default to a wide table' do
-        offense = '`users` is a wide table with several columns, [...]'
+        offense = '`users` is a large table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
       end
 
       it 'registers an offense when adding a reference' do
-        offense = '`ci_builds` is a wide table with several columns, [...]'
+        offense = '`ci_builds` is a large table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
       end
 
       it 'registers an offense when adding timestamps' do
-        offense = '`projects` is a wide table with several columns, [...]'
+        offense = '`projects` is a large table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -74,10 +74,33 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
     end
 
     context 'with a regular table' do
-      it 'registers no offense for notes' do
+      it 'registers no offense for licenses' do
         expect_no_offenses(<<~RUBY)
           def up
-            add_column(:notes, :another_column, :boolean)
+            add_column(:licenses, :another_column, :boolean)
+          end
+        RUBY
+      end
+    end
+
+    context 'when targeting a large table' do
+      it 'registers an offense for audit_events' do
+        offense = '`audit_events` is a large table with several columns, [...]'
+
+        expect_offense(<<~RUBY)
+          def up
+            add_column(:audit_events, :another_column, :boolean, default: false)
+            ^^^^^^^^^^ #{offense}
+          end
+        RUBY
+      end
+    end
+
+    context 'when rolling back migration' do
+      it 'registers no offense' do
+        expect_no_offenses(<<~RUBY)
+          def down
+            add_column(:notes, :another_column, :boolean, default: false)
           end
         RUBY
       end
