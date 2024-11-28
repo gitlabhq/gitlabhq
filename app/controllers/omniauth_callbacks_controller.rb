@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include ActionView::Helpers::TextHelper
   include AuthenticatesWithTwoFactorForAdminMode
   include Devise::Controllers::Rememberable
   include AuthHelper
@@ -288,7 +289,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       )
     end
 
-    flash[:alert] = message.join(' ').html_safe # rubocop:disable Rails/OutputSafety -- Generated message is safe
+    flash[:alert] = sanitize(message.join(' '))
 
     redirect_to redirect_path
   end

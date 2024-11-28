@@ -32,8 +32,8 @@ RSpec.shared_examples 'enforcing job token policies' do |policy|
 
       it 'returns an error message containing the disallowed policy' do
         do_request
-        expect(json_response['message']).to eq("403 Forbidden - The #{policy} permission on #{accessed_project.path} " \
-          "is not authorized for this CI/CD job token.")
+        expect(json_response['message']).to eq("403 Forbidden - Insufficient permissions to access this resource " \
+          "in project #{accessed_project.path}. The following token permission is required: #{policy}.")
       end
 
       context 'when fine grained permissions are disabled' do

@@ -1008,7 +1008,8 @@ module API
     def job_token_policy_unauthorized_message(project)
       policy = job_token_policy
       if policy.present?
-        format("The %{permission} permission on %{project} is not authorized for this CI/CD job token.", permission: policy, project: project.path)
+        format("Insufficient permissions to access this resource in project %{project}. " \
+          "The following token permission is required: %{permission}.", project: project.path, permission: policy)
       else
         'This action is not authorized for CI/CD job tokens.'
       end

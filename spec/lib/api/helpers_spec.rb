@@ -300,7 +300,8 @@ RSpec.describe API::Helpers, feature_category: :shared do
           it 'returns forbidden' do
             expect(helper)
               .to receive(:forbidden!)
-              .with("The #{job_token_policy} permission on #{project.path} is not authorized for this CI/CD job token.")
+              .with("Insufficient permissions to access this resource in project #{project.path}. " \
+                "The following token permission is required: #{job_token_policy}.")
 
             find_project!
           end
