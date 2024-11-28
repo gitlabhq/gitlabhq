@@ -20086,6 +20086,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobdownstreampipeline"></a>`downstreamPipeline` | [`Pipeline`](#pipeline) | Downstream pipeline for a bridge. |
 | <a id="cijobduration"></a>`duration` | [`Int`](#int) | Duration of the job in seconds. |
 | <a id="cijoberasedat"></a>`erasedAt` | [`Time`](#time) | When the job was erased. |
+| <a id="cijobexitcode"></a>`exitCode` | [`Int`](#int) | Exit code of the job. Available for jobs that started after upgrading to GitLab 16.10 and failed with an exit code. |
 | <a id="cijobfailuremessage"></a>`failureMessage` | [`String`](#string) | Message on why the job failed. |
 | <a id="cijobfinishedat"></a>`finishedAt` | [`Time`](#time) | When a job has finished running. |
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |

@@ -128,10 +128,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   describe 'configure' do
     let(:topology_service_enabled) { true }
     let(:configured_cell) { true }
+    let(:skip_sequence_alteration) { false }
 
     before do
       allow(Settings).to receive(:topology_service_enabled?).and_return(topology_service_enabled)
       allow(Settings).to receive(:has_configured_cell?).and_return(configured_cell)
+      allow(Settings).to receive(:skip_sequence_alteration?).and_return(skip_sequence_alteration)
     end
 
     context 'with a single database' do
@@ -251,6 +253,22 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
               expect(rails_paths['db/migrate'].include?(File.join(Rails.root, 'db', 'post_migrate'))).to be(false)
             end
+          end
+        end
+
+        context 'when has cell configuration but config skips altering cell sequences' do
+          let(:skip_sequence_alteration) { true }
+
+          it 'loads the schema, seeds the database and skip altering cell sequences range' do
+            allow(connection).to receive(:tables).and_return([])
+
+            expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+            expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+            run_rake_task('gitlab:db:configure')
           end
         end
       end
@@ -377,6 +395,30 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
 
           it 'loads the schema, seeds all the databases but does not alter cell sequences range' do
+            expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
+            expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
+
+            expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
+            expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
+
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+            run_rake_task('gitlab:db:configure')
+          end
+        end
+
+        context 'when has cell configuration but config skips altering cell sequences' do
+          let(:skip_sequence_alteration) { true }
+
+          before do
+            allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
+            allow(ci_model.connection).to receive(:tables).and_return([])
+          end
+
+          it 'migrates the databases without seeding them and skip altering cell sequences range' do
             expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
 

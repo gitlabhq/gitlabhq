@@ -193,6 +193,137 @@ authentication using the [single-step](#configuration-for-a-single-step-login-fo
 DAST supports authentication processes where a user is redirected to an external Identity Provider's site to sign in.
 Check the [known limitations](#known-limitations) of DAST authentication to determine if your SSO authentication process is supported.
 
+### Configuration for Windows integrated authentication (Kerberos)
+
+Windows integrated authentication (Kerberos) is a common authentication mechanism for line of business (LOB) applications hosted inside a Windows domain. It provides promptless authentication using the user's computer login.
+
+To configure this form of authentication perform the following steps:
+
+1. Collect the necessary information with assistance from your IT/operations team.
+1. Create or update the `dast` job definition in your `.gitlab-ci.yml` file.
+1. Populate the example `krb5.conf` file using the information collected.
+1. Set the necessary job variables.
+1. Set the necessary secret variables by using the project **Settings** page.
+1. Test and verify authentication is functioning.
+
+Collect the following information with assistance from your IT/Operations department:
+
+- Name of Windows domain or Kerberos Realm (must have a period in the name like `EXAMPLE.COM`)
+- Hostname for Windows/Kerberos domain controller
+- For Kerberos the auth server name. For Windows domains this is the domain controller.
+
+Create the `krb5.conf` file:
+
+```ini
+[libdefaults]
+  # Realm is another name for domain name
+  default_realm = EXAMPLE.COM
+  # These settings are not needed for Windows Domains
+  # they support other Kerberos implementations
+  kdc_timesync = 1
+  ccache_type = 4
+  forwardable = true
+  proxiable = true
+  rdns = false
+  fcc-mit-ticketflags = true
+[realms]
+  EXAMPLE.COM = {
+    # Domain controller or KDC
+    kdc = kdc.example.com
+    # Domain controller or admin server
+    admin_server = kdc.example.com
+  }
+[domain_realm]
+  # Mapping DNS domains to realms/Windows domain
+  # DNS domains provided by DAST_AUTH_NEGOTIATE_DELEGATION
+  # should also be represented here (but without the wildcard)
+  .example.com = EXAMPLE.COM
+  example.com = EXAMPLE.COM
+```
+
+This configuration makes use of the `DAST_AUTH_NEGOTIATE_DELEGATION` variable.
+This variable sets the following Chromium policies needed to allow integrated authentication:
+
+- [AuthServerAllowlist](https://chromeenterprise.google/policies/#AuthServerAllowlist)
+- [AuthNegotiateDelegateAllowlist](https://chromeenterprise.google/policies/#AuthNegotiateDelegateAllowlist)
+
+The settings for this variable are the DNS domains associated with your Windows domain or Kerberos realm.
+You should provide them:
+
+- In both lower case and also upper case.
+- With a wildcard pattern and just the domain name.
+
+For our example the Windows domain is `EXAMPLE.COM` and the DNS domain is `example.com`.
+This gives us a value of `*.example.com,example.com,*.EXAMPLE.COM,EXAMPLE.COM` for `DAST_AUTH_NEGOTIATE_DELEGATION`.
+
+Pull it all together into a job definition:
+
+```yaml
+# This job will extend the dast job defined in
+# the DAST template which must also be included.
+dast:
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
+    docker:
+      user: root
+  variables:
+    DAST_TARGET_URL: https://target.example.com
+    DAST_AUTH_URL: https://target.example.com
+    DAST_AUTH_TYPE: basic-digest
+    DAST_AUTH_NEGOTIATE_DELEGATION: *.example.com,example.com,*.EXAMPLE.COM,EXAMPLE.COM
+    # Not shown -- DAST_AUTH_USERNAME, DAST_AUTH_PASSWORD set via Settings -> CI -> Variables
+  before_script:
+    - KRB5_CONF='
+[libdefaults]
+  default_realm = EXAMPLE.COM
+  kdc_timesync = 1
+  ccache_type = 4
+  forwardable = true
+  proxiable = true
+  rdns = false
+  fcc-mit-ticketflags = true
+[realms]
+  EXAMPLE.COM = {
+    kdc = ad1.example.com
+    admin_server = ad1.example.com
+  }
+[domain_realm]
+  .example.com = EXAMPLE.COM
+  example.com = EXAMPLE.COM
+'
+    - cat "$KRB5_CONF" > /etc/krb5.conf
+    - echo '$DAST_AUTH_PASSWORD' | kinit $DAST_AUTH_USERNAME
+    - klist
+```
+
+Expected output:
+
+The job console output contains the output from the `before` script. It will look similar to the following if authentication was successful. The job should fail if it was unsuccessful without running a scan.
+
+```plaintext
+Password for mike@EXAMPLE.COM:
+Ticket cache: FILE:/tmp/krb5cc_1000
+Default principal: mike@EXAMPLE.COM
+
+Valid starting       Expires              Service principal
+11/11/2024 21:50:50  11/12/2024 07:50:50  krbtgt/EXAMPLE.COM@EXAMPLE.COM
+        renew until 11/12/2024 21:50:50
+```
+
+The DAST scanner will also output the following, indicating success:
+
+```log
+2024-11-08T17:03:09.226 INF AUTH  attempting to authenticate find_auth_fields="basic-digest"
+2024-11-08T17:03:09.226 INF AUTH  loading login page LoginURL="https://target.example.com"
+2024-11-08T17:03:10.619 INF AUTH  verifying if login attempt was successful true_when="HTTP status code < 400 and has authentication token and no login form found (auto-detected)"
+2024-11-08T17:03:10.619 INF AUTH  requirement is satisfied, HTTP login request returned status code 200 want="HTTP status code < 400" url="https://target.example.com/"
+2024-11-08T17:03:10.623 INF AUTH  requirement is satisfied, did not detect a login form want="no login form found (auto-detected)"
+2024-11-08T17:03:10.623 INF AUTH  authentication token cookies names=""
+2024-11-08T17:03:10.623 INF AUTH  authentication token storage events keys=""
+2024-11-08T17:03:10.623 INF AUTH  requirement is satisfied, basic authentication detected want="has authentication token"
+2024-11-08T17:03:11.230 INF AUTH  login attempt succeeded
+```
+
 ### Clicking to go to the login form
 
 Define `DAST_AUTH_BEFORE_LOGIN_ACTIONS` to provide a path of elements to click on from the `DAST_AUTH_URL` so that DAST can access the

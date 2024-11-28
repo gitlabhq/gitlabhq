@@ -28,6 +28,10 @@ $diff-file-header: 41px;
       cursor: auto;
     }
 
+    &:has(.dropdown-menu.show) {
+      z-index: $zindex-dropdown-menu;
+    }
+
     @media (max-width: map-get($grid-breakpoints, sm)-1) {
       .file-header-content {
         width: 0;
