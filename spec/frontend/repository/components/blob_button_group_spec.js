@@ -147,7 +147,7 @@ describe('BlobButtonGroup component', () => {
     createComponent();
 
     const { targetBranch, originalBranch } = DEFAULT_INJECT;
-    const { name, canPushCode, deletePath, emptyRepo, isUsingLfs } = DEFAULT_PROPS;
+    const { name, canPushCode, emptyRepo, isUsingLfs } = DEFAULT_PROPS;
     const title = `Delete ${name}`;
 
     expect(findDeleteBlobModal().props()).toMatchObject({
@@ -155,9 +155,9 @@ describe('BlobButtonGroup component', () => {
       targetBranch,
       originalBranch,
       canPushCode,
-      deletePath,
       emptyRepo,
       isUsingLfs,
+      handleFormSubmit: expect.any(Function),
     });
   });
 });

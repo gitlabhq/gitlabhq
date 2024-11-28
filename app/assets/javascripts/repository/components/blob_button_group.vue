@@ -1,6 +1,8 @@
 <script>
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../mixins/get_ref';
@@ -105,6 +107,15 @@ export default {
 
       this.$refs[modalId].show();
     },
+    handleBlobDelete(formData) {
+      return axios({
+        method: 'post',
+        url: this.deletePath,
+        data: formData,
+      }).then((response) => {
+        visitUrl(response.data.filePath);
+      });
+    },
   },
   replaceBlobModalId: REPLACE_BLOB_MODAL_ID,
 };
@@ -144,7 +155,6 @@ export default {
     <commit-changes-modal
       :ref="deleteModalId"
       :modal-id="deleteModalId"
-      :delete-path="deletePath"
       :commit-message="deleteModalCommitMessage"
       :target-branch="targetBranch || ref"
       :original-branch="originalBranch || ref"
@@ -152,6 +162,11 @@ export default {
       :can-push-to-branch="canPushToBranch"
       :empty-repo="emptyRepo"
       :is-using-lfs="isUsingLfs"
-    />
+      :handle-form-submit="handleBlobDelete"
+    >
+      <template #form-fields>
+        <input type="hidden" name="_method" value="delete" />
+      </template>
+    </commit-changes-modal>
   </div>
 </template>

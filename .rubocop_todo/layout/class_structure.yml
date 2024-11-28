@@ -418,7 +418,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/query_limiting/transaction.rb'
     - 'lib/gitlab/repository_cache.rb'
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
-    - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/slash_commands/base_command.rb'
     - 'lib/gitlab/sql/set_operator.rb'
     - 'lib/gitlab/suggestions/commit_message.rb'

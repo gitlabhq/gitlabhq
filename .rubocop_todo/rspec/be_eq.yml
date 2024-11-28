@@ -345,8 +345,6 @@ RSpec/BeEq:
     - 'ee/spec/requests/api/graphql/merge_trains/trains_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/analytics/devops_adoption/enabled_namespaces/disable_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/audit_events/instance/amazon_s3_configurations/create_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/boards/epic_boards/create_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/boards/epic_boards/update_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/ci/namespace_ci_cd_settings_update_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/standards/refresh_adherence_checks_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/dast_scanner_profiles/create_spec.rb'

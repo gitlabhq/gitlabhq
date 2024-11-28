@@ -39,6 +39,7 @@ module API
         mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policy: :read_environments
       get ':id/environments' do
         authorize! :read_environment, user_project
 

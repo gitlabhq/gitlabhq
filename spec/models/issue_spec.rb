@@ -1888,11 +1888,12 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.service_desk' do
-    it 'returns the service desk issue' do
-      service_desk_issue = create(:issue, project: reusable_project, author: ::Users::Internal.support_bot)
-      regular_issue = create(:issue, project: reusable_project)
+    let_it_be(:service_desk_issue) { create(:issue, project: reusable_project, author: ::Users::Internal.support_bot) }
+    let_it_be(:regular_issue) { create(:issue, project: reusable_project) }
+    let_it_be(:ticket) { create(:work_item, :ticket, project: reusable_project, author: user) }
 
-      expect(described_class.service_desk).to include(service_desk_issue)
+    it 'returns the service desk issue and ticket work item' do
+      expect(described_class.service_desk).to contain_exactly(service_desk_issue, described_class.find(ticket.id))
       expect(described_class.service_desk).not_to include(regular_issue)
     end
   end

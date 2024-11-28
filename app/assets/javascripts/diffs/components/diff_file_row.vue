@@ -43,7 +43,7 @@ export default {
     fileClasses() {
       return this.file.type === 'blob' && !this.viewedFiles[this.file.fileHash]
         ? 'gl-font-bold'
-        : '';
+        : 'gl-text-subtle';
     },
     isActive() {
       return this.currentDiffFileId === this.file.fileHash;
@@ -62,7 +62,7 @@ export default {
     :file-classes="fileClasses"
     v-on="$listeners"
   >
-    <file-row-stats v-if="showFileRowStats" :file="file" class="mr-1" />
+    <file-row-stats v-if="showFileRowStats" :file="file" class="gl-mr-2" />
     <changed-file-icon :file="file" :size="16" :show-tooltip="true" />
   </file-row>
 </template>

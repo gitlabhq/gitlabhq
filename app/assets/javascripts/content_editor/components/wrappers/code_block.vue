@@ -290,8 +290,11 @@ export default {
       <node-view-content
         ref="nodeViewContent"
         as="code"
-        class="line_content new code gl-relative gl-z-1 !gl-break-words gl-text-sm"
-        :class="themeClass"
+        class="gl-relative gl-z-1 !gl-break-words"
+        :class="{
+          'line_content new code': isCodeSuggestion,
+          themeClass: isCodeSuggestion,
+        }"
         spellcheck="false"
         data-testid="suggestion-field"
       />

@@ -132,7 +132,6 @@ Style/FormatString:
     - 'ee/app/helpers/billing_plans_helper.rb'
     - 'ee/app/helpers/ee/application_helper.rb'
     - 'ee/app/helpers/ee/geo_helper.rb'
-    - 'ee/app/helpers/ee/groups/settings_helper.rb'
     - 'ee/app/helpers/ee/groups_helper.rb'
     - 'ee/app/helpers/ee/import_helper.rb'
     - 'ee/app/helpers/ee/profiles_helper.rb'

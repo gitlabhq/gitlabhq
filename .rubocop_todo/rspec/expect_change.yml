@@ -132,7 +132,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/security/orchestration/unassign_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/process_rule_service_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/rule_schedule_service_spec.rb'
     - 'ee/spec/services/security/store_findings_service_spec.rb'
     - 'ee/spec/services/users/email_verification/send_custom_confirmation_instructions_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/find_or_create_from_security_finding_service_spec.rb'

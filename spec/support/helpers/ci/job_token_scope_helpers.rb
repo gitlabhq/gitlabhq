@@ -48,6 +48,12 @@ module Ci
       end
     end
 
+    def create_inbound_accessible_project_for_policies(project, policies)
+      create(:project).tap do |accessible_project|
+        add_inbound_accessible_linkage(project, accessible_project, policies)
+      end
+    end
+
     def create_inbound_and_outbound_accessible_project(project)
       create(:project).tap do |accessible_project|
         make_project_fully_accessible(project, accessible_project)
@@ -68,12 +74,14 @@ module Ci
       )
     end
 
-    def add_inbound_accessible_linkage(project, accessible_project)
+    def add_inbound_accessible_linkage(project, accessible_project, policies = [])
       create(
         :ci_job_token_project_scope_link,
         source_project: accessible_project,
         target_project: project,
-        direction: :inbound
+        direction: :inbound,
+        default_permissions: policies.empty?,
+        job_token_policies: policies
       )
     end
   end

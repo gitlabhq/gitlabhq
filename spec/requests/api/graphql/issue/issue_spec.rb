@@ -48,7 +48,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
   end
 
   context 'when the user does have access' do
-    before do
+    before_all do
       project.add_guest(current_user)
     end
 

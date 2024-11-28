@@ -1989,7 +1989,6 @@ RSpec/ContextWording:
     - 'spec/models/identity_spec.rb'
     - 'spec/models/import_export_upload_spec.rb'
     - 'spec/models/import_failure_spec.rb'
-    - 'spec/models/integrations/base_chat_notification_spec.rb'
     - 'spec/models/integrations/chat_message/issue_message_spec.rb'
     - 'spec/models/integrations/chat_message/merge_message_spec.rb'
     - 'spec/models/integrations/chat_message/note_message_spec.rb'

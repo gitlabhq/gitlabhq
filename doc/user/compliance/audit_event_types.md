@@ -196,6 +196,7 @@ Audit event types belong to the following product categories.
 | [`smartcard_authentication_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8120) | Triggered when a user authenticates with smartcard | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/726) | User |
 | [`update_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89939) | Event triggered on updating a merge approval rule | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363092) | Project |
 | [`update_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74292) | Triggered when a compliance framework is updated | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) | Group |
+| [`update_compliance_requirement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169485) | Triggered when a compliance framework requirement is updated. | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/470695) | Group |
 | [`update_status_check`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | Event triggered when an external status check is updated | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
 
 ### Container registry

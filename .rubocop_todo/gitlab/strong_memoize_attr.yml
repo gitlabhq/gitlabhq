@@ -25,7 +25,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/finders/ci/pipelines_for_merge_request_finder.rb'
     - 'app/finders/cluster_ancestors_finder.rb'
     - 'app/finders/concerns/finder_with_group_hierarchy.rb'
-    - 'app/finders/crm/organizations_finder.rb'
     - 'app/finders/groups/accepting_group_transfers_finder.rb'
     - 'app/finders/issuable_finder.rb'
     - 'app/finders/issuable_finder/params.rb'

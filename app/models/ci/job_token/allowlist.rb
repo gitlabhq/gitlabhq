@@ -14,12 +14,12 @@ module Ci
       end
 
       def includes_group?(target_project)
-        allowlist_group_ids = group_links.pluck(:target_group_id)
-        target_project_group_path_ids = target_project.parent_groups.map(&:id)
+        group_links_for_target(target_project).any?
+      end
 
-        allowed_target_group_ids = allowlist_group_ids & target_project_group_path_ids
-
-        allowed_target_group_ids.any?
+      def nearest_scope_for_target_project(target_project)
+        source_links.with_target(target_project).first ||
+          group_links_for_target(target_project).first
       end
 
       def projects
@@ -68,6 +68,15 @@ module Ci
       def group_links
         Ci::JobToken::GroupScopeLink
           .with_source(@source_project)
+      end
+
+      def group_links_for_target(target_project)
+        target_group_ids = target_project.parent_groups.pluck(:id)
+        group_links.where(target_group_id: target_group_ids).order(
+          Arel.sql(
+            "array_position(ARRAY#{target_group_ids}::bigint[], ci_job_token_group_scope_links.target_group_id)"
+          )
+        )
       end
 
       def target_project_ids

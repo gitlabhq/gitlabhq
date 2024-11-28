@@ -11,3 +11,10 @@ tiers:
   - free
   - premium
   - ultimate
+additional_properties:
+  label:
+    description: not actually used - to be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/501387
+  property:
+    description: not actually used - to be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/501387
+  variant:
+    description: external or internal

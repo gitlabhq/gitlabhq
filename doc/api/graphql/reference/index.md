@@ -10056,6 +10056,30 @@ Input type: `UpdateComplianceFrameworkInput`
 | <a id="mutationupdatecomplianceframeworkcomplianceframework"></a>`complianceFramework` | [`ComplianceFramework`](#complianceframework) | Compliance framework after mutation. |
 | <a id="mutationupdatecomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.updateComplianceRequirement`
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Input type: `UpdateComplianceRequirementInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatecompliancerequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecompliancerequirementid"></a>`id` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID!`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Global ID of the compliance requirement to update. |
+| <a id="mutationupdatecompliancerequirementparams"></a>`params` | [`ComplianceRequirementInput!`](#compliancerequirementinput) | Parameters to update the compliance requirement with. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatecompliancerequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecompliancerequirementerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationupdatecompliancerequirementrequirement"></a>`requirement` | [`ComplianceRequirement`](#compliancerequirement) | Compliance requirement after updation. |
+
 ### `Mutation.updateContainerExpirationPolicy`
 
 Input type: `UpdateContainerExpirationPolicyInput`
@@ -39281,6 +39305,7 @@ Issue type.
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
 | <a id="issuetypetask"></a>`TASK` | Task issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
+| <a id="issuetypeticket"></a>`TICKET` | Ticket issue type. |
 
 ### `IterationSearchableField`
 

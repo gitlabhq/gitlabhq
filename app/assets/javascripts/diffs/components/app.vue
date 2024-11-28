@@ -4,6 +4,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { debounce, throttle } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
+import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import api from '~/api';
@@ -51,7 +52,6 @@ import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { updateChangesTabCount, extractFileHash } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
-import FindingsDrawer from './shared/findings_drawer.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import CompareVersions from './compare_versions.vue';

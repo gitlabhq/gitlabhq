@@ -341,7 +341,6 @@ RSpec/ExpectInHook:
     - 'spec/services/members/destroy_service_spec.rb'
     - 'spec/services/merge_requests/cleanup_refs_service_spec.rb'
     - 'spec/services/merge_requests/merge_service_spec.rb'
-    - 'spec/services/merge_requests/mergeability/check_ci_status_service_spec.rb'
     - 'spec/services/merge_requests/mergeability/check_draft_status_service_spec.rb'
     - 'spec/services/merge_requests/mergeability/check_open_status_service_spec.rb'
     - 'spec/services/merge_requests/mergeability/run_checks_service_spec.rb'

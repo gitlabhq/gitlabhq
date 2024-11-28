@@ -3899,6 +3899,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|An error occurred while loading self-hosted models. Please try again."
 msgstr ""
 
+msgid "AdminSelfHostedModels|An error occurred while loading the self-hosted model. Please try again."
+msgstr ""
+
 msgid "AdminSelfHostedModels|An error occurred while updating the sefl-hosted model, please try again."
 msgstr ""
 
@@ -23046,6 +23049,9 @@ msgstr ""
 msgid "Failed to update branch!"
 msgstr ""
 
+msgid "Failed to update compliance requirement"
+msgstr ""
+
 msgid "Failed to update environment!"
 msgstr ""
 
@@ -36536,6 +36542,9 @@ msgid "Not permitted to destroy requirement"
 msgstr ""
 
 msgid "Not permitted to reset user feed token"
+msgstr ""
+
+msgid "Not permitted to update requirement"
 msgstr ""
 
 msgid "Not ready yet. Try again later."
@@ -64337,6 +64346,9 @@ msgid "Your authorized applications"
 msgstr ""
 
 msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+)."
+msgstr ""
+
+msgid "Your changes can be committed to %{branchName} because a merge request is open."
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."

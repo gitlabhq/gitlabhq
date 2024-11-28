@@ -26,7 +26,6 @@ Layout/LineContinuationSpacing:
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/group_group_link.rb'
     - 'ee/app/models/ee/project_group_link.rb'
-    - 'ee/app/models/ee/vulnerability.rb'
     - 'ee/app/models/incident_management/oncall_shift.rb'
     - 'ee/app/services/audit_events/protected_branch_audit_event_service.rb'
     - 'ee/app/services/boards/epic_lists/destroy_service.rb'

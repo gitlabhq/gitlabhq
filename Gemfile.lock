@@ -777,8 +777,8 @@ GEM
     gitlab-security_report_schemas (0.1.2.min15.0.0.max15.2.1)
       activesupport (>= 6, < 8)
       json_schemer (~> 2.3.0)
-    gitlab-styles (13.0.1)
-      rubocop (~> 1.67.0)
+    gitlab-styles (13.0.2)
+      rubocop (~> 1.68.0)
       rubocop-capybara (~> 2.21.0)
       rubocop-factory_bot (~> 2.26.1)
       rubocop-graphql (~> 1.5.4)
@@ -1636,7 +1636,7 @@ GEM
       activerecord
       get_process_mem
       rails
-    rubocop (1.67.0)
+    rubocop (1.68.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)

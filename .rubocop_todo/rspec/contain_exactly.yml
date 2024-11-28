@@ -84,7 +84,6 @@ RSpec/ContainExactly:
     - 'spec/finders/ci/job_artifacts_finder_spec.rb'
     - 'spec/finders/ci/pipelines_finder_spec.rb'
     - 'spec/finders/merge_requests_finder_spec.rb'
-    - 'spec/finders/organizations/user_organizations_finder_spec.rb'
     - 'spec/finders/personal_access_tokens_finder_spec.rb'
     - 'spec/finders/projects_finder_spec.rb'
     - 'spec/finders/repositories/branch_names_finder_spec.rb'

@@ -269,6 +269,69 @@ RSpec.describe API::Helpers, feature_category: :shared do
           end
         end
       end
+
+      context 'user is authenticated with a job token from another project and fine grained policies are enabled' do
+        let_it_be(:runner_project) { create(:project) }
+        let_it_be(:job) { create(:ci_build, project: runner_project) }
+        let_it_be(:allowed_job_token_policy) { ::Ci::JobToken::Policies.all_policies.pick(:value) }
+        let_it_be(:job_token_policy) { allowed_job_token_policy }
+
+        before do
+          create(:ci_job_token_project_scope_link,
+            source_project: project,
+            target_project: runner_project,
+            direction: :inbound,
+            job_token_policies: [allowed_job_token_policy],
+            default_permissions: false
+          )
+
+          allow(helper).to receive(:route_authentication_setting).and_return({})
+          allow(helper).to receive(:route_setting).with(:authorization).and_return(job_token_policy: job_token_policy)
+          allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+        end
+
+        subject(:find_project!) { helper.find_project!(project.id) }
+
+        it { is_expected.to eq project }
+
+        context 'when the given policy is not allowed' do
+          let_it_be(:job_token_policy) { :not_allowed_policy }
+
+          it 'returns forbidden' do
+            expect(helper)
+              .to receive(:forbidden!)
+              .with("The #{job_token_policy} permission on #{project.path} is not authorized for this CI/CD job token.")
+
+            find_project!
+          end
+
+          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+            before do
+              stub_feature_flags(enforce_job_token_policies: false)
+            end
+
+            it { is_expected.to eq project }
+          end
+        end
+
+        context 'when no policy is given' do
+          let_it_be(:job_token_policy) { nil }
+
+          it 'returns forbidden' do
+            expect(helper).to receive(:forbidden!).with('This action is not authorized for CI/CD job tokens.')
+
+            find_project!
+          end
+
+          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+            before do
+              stub_feature_flags(enforce_job_token_policies: false)
+            end
+
+            it { is_expected.to eq project }
+          end
+        end
+      end
     end
 
     context 'when user is not authenticated' do

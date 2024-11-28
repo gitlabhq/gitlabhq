@@ -1,4 +1,4 @@
-- custom_settings_title = @integration.title == 'Beyond Identity' && Feature.enabled?(:beyond_identity_exclusions) ? s_('Integrations|Exclusions') : s_('Integrations|Projects using custom settings')
+- custom_settings_title = @integration.title == 'Beyond Identity' ? s_('Integrations|Exclusions') : s_('Integrations|Projects using custom settings')
 - if integration.instance_level?
   .tabs.gl-tabs
     %div

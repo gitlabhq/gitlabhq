@@ -418,8 +418,8 @@ Prerequisites:
 To configure a custom Service Desk email address with Google Workspace:
 
 1. [Configure a Google Workspace account](#configure-a-google-workspace-account).
-1. [Configure email forwarding](#configure-email-forwarding).
-1. [Configure custom email address](#configure-custom-email-address).
+1. [Configure email forwarding in Google Workspace](#configure-email-forwarding-in-google-workspace).
+1. [Configure custom email address using a Google Workspace account](#configure-custom-email-address-using-a-google-workspace-account).
 
 #### Configure a Google Workspace account
 
@@ -434,9 +434,9 @@ In Google Workspace:
    SMTP password.
    Store it in a secure place and remove spaces between the characters.
 
-Next, you must [configure email forwarding](#configure-email-forwarding).
+Next, you must [configure email forwarding in Google Workspace](#configure-email-forwarding-in-google-workspace).
 
-#### Configure email forwarding
+#### Configure email forwarding in Google Workspace
 
 The following steps require moving between GitLab and Google Workspace.
 
@@ -470,9 +470,10 @@ In Google Workspace:
    from the dropdown list.
 1. At the bottom of the page, select **Save Changes**.
 
-Next, [configure a custom email address](#configure-a-custom-email-address) to use with Service Desk.
+Next, [configure custom email address using a Google Workspace account](#configure-custom-email-address-using-a-google-workspace-account)
+to use with Service Desk.
 
-#### Configure custom email address
+#### Configure custom email address using a Google Workspace account
 
 In GitLab:
 
@@ -490,16 +491,144 @@ In GitLab:
 1. After the [verification process](#verification) you should be able to
    [enable the custom email address](#enable-or-disable-the-custom-email-address).
 
+### Use Microsoft 365 (Exchange online) with your own domain
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/496396) in GitLab 17.5.
+
+Set up a custom email address for Service Desk when using Microsoft 365 (Exchange) with your own domain.
+
+Prerequisites:
+
+- You already have a Microsoft 365 account.
+- You can create new accounts for your tenant.
+
+To configure a custom Service Desk email address with Microsoft 365:
+
+1. [Configure a Microsoft 365 account](#configure-a-microsoft-365-account).
+1. [Configure email forwarding in Microsoft 365](#configure-email-forwarding-in-microsoft-365).
+1. [Configure custom email address using a Microsoft 365 account](#configure-custom-email-address-using-a-microsoft-365-account).
+
+#### Configure a Microsoft 365 account
+
+First, you must create and configure a Microsoft 365 account.
+In this guide, use a licensed user for the custom email mailbox. 
+You can also experiment with other configuration options.
+
+In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/homepage):
+
+1. Create a new account for the custom email address you'd like to use (for example, `support@example.com`).
+   1. Expand the **Users** section and select **Active users** from the menu.
+   1. Select **Add a user** and follow the instructions on the screen.
+1. In Microsoft Entra (previously named Active Directory), enable two-factor authentication for the account.
+1. [Allow users to create app passwords](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-app-passwords).
+1. Enable **Authenticated SMTP** for the account.
+   1. Select the account from the list.
+   1. In the drawer select **Mail**.
+   1. Below **Email apps** select **Manage email apps**.
+   1. Check **Authenticated SMTP** and select **Save changes**.
+1. Depending on your overall Exchange online configuration you might need to configure the following:
+   1. Use Azure Cloud Shell to allow SMTP client authentication:
+
+      ```powershell
+      Set-TransportConfig -SmtpClientAuthenticationDisabled $false
+      ```
+
+   1. Use Azure Cloud Shell to allow
+      [legacy TLS clients using SMTP AUTH](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/opt-in-exchange-online-endpoint-for-legacy-tls-using-smtp-auth):
+
+      ```powershell
+      Set-TransportConfig -AllowLegacyTLSClients $true
+      ```
+
+   1. If you want to forward to an external recipient, please see this guide on how to enable
+      [external email forwarding](https://learn.microsoft.com/en-gb/defender-office-365/outbound-spam-policies-external-email-forwarding).
+      You might also want to [create an outbound anti-spam policy](https://security.microsoft.com/antispam)
+      to allow forwarding to external recipients only for users who need it.
+1. Sign in to that account and activate two-factor authentication.
+   <!-- vale gitlab_base.SubstitutionWarning = NO -->
+   1. From the menu in the upper-right corner, select **View account** and [browse to **Security Info**](https://mysignins.microsoft.com/security-info).
+   <!-- vale gitlab_base.SubstitutionWarning = YES -->
+   1. Select **Add sign-in method** and select a method that works for you (authenticator app, phone or email).
+   1. Follow the instructions on the screen.
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
+1. On the [**Security Info**](https://mysignins.microsoft.com/security-info) page,
+   create an app password that you can use as your SMTP password.
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
+   1. Select **Add sign-in method** and select **App password** from the dropdown list.
+   1. Set a descriptive name for the app password, such as `GitLab SD`.
+   1. Select **Next**.
+   1. Copy the displayed password and store it in a secure place.
+   1. Optional. Ensure you can send emails using SMTP using the [`swaks` command line tool](https://www.jetmore.org/john/code/swaks/).
+   1. Run the following command with your credentials and use the app password as the `auth-password`:
+
+      ```shell
+      swaks --to your-email@example.com \
+            --from custom-email@example.com \
+            --auth-user custom-email@example.com \
+            --server smtp.office365.com:587 \
+            -tls-optional \
+            --auth-password <your_app_password>
+      ```
+
+Next, you must [configure email forwarding in Microsoft 365](#configure-email-forwarding-in-microsoft-365).
+
+#### Configure email forwarding in Microsoft 365
+
+The following steps require moving between GitLab and Microsoft 365 admin center.
+
+In GitLab:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**
+1. Expand **Service Desk**.
+1. Note the email address below **Service Desk email address to forward emails to** without the
+   sub-address part.
+
+   Emails aren't forwarded if the recipient address contains a sub-address (for example reply
+   addresses generated by GitLab) and the forwarding email address contains a sub-address
+   (the **Service Desk email address to forward emails to**).
+
+   For example, `incoming+group-project-12346426-issue-@incoming.gitlab.com` becomes `incoming@incoming.gitlab.com`.
+   That's okay because Exchange online preserves the custom email address in the `To` header
+   after forwarding and GitLab can assign the correct project based on the custom email address.
+
+In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/homepage):
+
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
+1. Expand the **Users** section and select **Active users** from the menu.
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
+1. Select the account you'd like to use for the custom email from the list.
+1. In the drawer select **Mail**.
+1. Below **Email forwarding** select **Manage email forwarding**.
+1. Check **Forward all emails sent to this mailbox**.
+1. Enter the Service Desk address from the custom email form in **Forwarding email address** without the sub-address part. 
+1. Select **Save changes**.
+
+Next, [configure a custom email address using a Microsoft 365 account](#configure-custom-email-address-using-a-microsoft-365-account)
+to use with Service Desk.
+
+#### Configure custom email address using a Microsoft 365 account
+
+In GitLab:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**
+1. Expand **Service Desk** and find the custom email settings.
+1. Complete the fields:
+   - **Custom email address**: Your custom email address.
+   - **SMTP host**: `smtp.office365.com`.
+   - **SMTP port**: `587`.
+   - **SMTP username**: Prefilled with the custom email address.
+   - **SMTP password**: The app password you previously created for the custom email account.
+   - **SMTP authentication method**: Login
+1. Select **Save and test connection**
+1. After the [verification process](#verification) you should be able to
+   [enable the custom email address](#enable-or-disable-the-custom-email-address).
+
 ### Known issues
 
 - Some service providers don't allow SMTP connections any more.
   Often you can enable them on a per user basis and create an app password.
-- Microsoft Exchange doesn't preserve the `From` header, so you cannot use a custom email from the same tenant.
-  As a workaround:
-  - On GitLab SaaS, use a transport rule to forward emails from the custom email address to the Service Desk email
-    from GitLab SaaS. Forwarding to an email address outside the current tenant preserves the original `From` header.
-  - On GitLab self-managed, use a subdomain or a different domain from another service provider for the
-    custom email address or the GitLab instance `incoming_email` or `service_desk_email`.
 
 ## Use an additional Service Desk alias email
 

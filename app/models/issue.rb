@@ -245,7 +245,14 @@ class Issue < ApplicationRecord
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
-  scope :service_desk, -> { where(author: ::Users::Internal.support_bot) }
+  scope :service_desk, -> {
+    where(
+      "(author_id = ? AND work_item_type_id = ?) OR work_item_type_id = ?",
+      Users::Internal.support_bot.id,
+      WorkItems::Type.default_issue_type.id,
+      WorkItems::Type.default_by_type(:ticket).id
+    )
+  }
   scope :inc_relations_for_view, -> do
     includes(author: :status, assignees: :status)
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422155')

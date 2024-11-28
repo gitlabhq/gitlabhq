@@ -1,7 +1,7 @@
 ---
-description: User unprotects the branch.
+description: User changes require code owner approval protection.
 internal_events: true
-action: unprotect_branch
+action: change_require_codeowner_approval
 identifiers:
 - project
 - namespace
@@ -19,7 +19,3 @@ tiers:
 additional_properties:
   label:
     description: location where the event happened - repository_settings or branch_rule_details
-  property:
-    description: branch rules
-  value:
-    description: branch value

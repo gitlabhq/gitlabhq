@@ -169,6 +169,8 @@ module API
         return handle_job_token_failure!(project)
       end
 
+      return forbidden!(job_token_policy_unauthorized_message(project)) unless job_token_policy_authorized?(project)
+
       if project_moved?(id, project)
         return not_allowed!('Non GET methods are not allowed for moved projects') unless request.get?
 
@@ -994,6 +996,28 @@ module API
       else
         not_found!('Project')
       end
+    end
+
+    def job_token_policy_authorized?(project)
+      return true unless current_user&.from_ci_job_token?
+      return true unless Feature.enabled?(:enforce_job_token_policies, current_user)
+
+      current_user.ci_job_token_scope.policy_allowed?(project, job_token_policy)
+    end
+
+    def job_token_policy_unauthorized_message(project)
+      policy = job_token_policy
+      if policy.present?
+        format("The %{permission} permission on %{project} is not authorized for this CI/CD job token.", permission: policy, project: project.path)
+      else
+        'This action is not authorized for CI/CD job tokens.'
+      end
+    end
+
+    def job_token_policy
+      return unless respond_to?(:route_setting)
+
+      route_setting(:authorization).try(:fetch, :job_token_policy, nil)
     end
   end
 end

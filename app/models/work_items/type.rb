@@ -124,7 +124,7 @@ module WorkItems
     end
 
     def self.allowed_types_for_issues
-      base_types.keys.excluding('objective', 'key_result', 'epic', 'ticket')
+      base_types.keys.excluding('objective', 'key_result', 'epic')
     end
 
     # method overridden in EE to perform the corresponding checks for the Epic type

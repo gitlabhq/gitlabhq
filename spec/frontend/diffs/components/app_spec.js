@@ -17,7 +17,7 @@ import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
-import FindingsDrawer from '~/diffs/components/shared/findings_drawer.vue';
+import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import DiffAppControls from '~/diffs/components/diff_app_controls.vue';
 

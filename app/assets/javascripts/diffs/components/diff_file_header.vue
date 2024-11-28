@@ -340,7 +340,7 @@ export default {
         v-if="isModeChanged"
         ref="fileMode"
         v-gl-tooltip.hover.focus
-        class="mr-1"
+        class="gl-mr-2 gl-text-subtle"
         :title="$options.i18n.fileModeTooltip"
       >
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}

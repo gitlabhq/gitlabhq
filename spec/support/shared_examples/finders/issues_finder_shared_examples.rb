@@ -244,6 +244,40 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
       end
 
+      # Querying Service Desk issues uses `support-bot` `author_username`.
+      # This is a workaround that selects both legacy Service Desk issues and ticket work items
+      # until we migrated Service Desk issues to work items of type ticket.
+      # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/505024
+      context 'when filtering by Service Desk issues/tickets' do
+        # Use items only for this context because it's temporary. This way we don't need to modify other examples.
+        let_it_be_with_reload(:service_desk_issue) do
+          create(
+            :issue, # legacy Service Desk issues are always of type issue
+            author: Users::Internal.support_bot,
+            external_author: 'user@example.com',
+            project: project2,
+            description: 'Service Desk issue'
+          )
+        end
+
+        let_it_be_with_reload(:ticket) do
+          create(
+            :work_item,
+            :ticket,
+            author: user2, # don't use support bot because this isn't a req for ticket WIT
+            project: project2,
+            description: 'Ticket'
+          )
+        end
+
+        let(:params) { { author_username: 'support-bot' } }
+
+        it 'returns Service Desk issues and work items of type ticket' do
+          # Use the ids here because work item finder and issue finder return different types of objects.
+          expect(items.map(&:id)).to contain_exactly(service_desk_issue.id, ticket.id)
+        end
+      end
+
       context 'filtering by milestone' do
         let(:params) { { milestone_title: milestone.title } }
 
