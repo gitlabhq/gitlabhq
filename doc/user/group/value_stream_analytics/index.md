@@ -741,7 +741,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment).
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Improve your planning and decision-making by predicting productivity metrics and

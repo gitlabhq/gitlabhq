@@ -28,7 +28,7 @@ import {
   builtinDashboard,
   betaDashboard,
   mockDateRangeFilterChangePayload,
-  TEST_VISUALIZATION,
+  createVisualization,
   TEST_EMPTY_DASHBOARD_SVG_PATH,
 } from './mock_data';
 
@@ -533,7 +533,7 @@ describe('CustomizableDashboard', () => {
       describe('and the drawer emits a selected event', () => {
         beforeEach(async () => {
           await findAddVisualizationButton().trigger('click');
-          await findVisualizationDrawer().vm.$emit('select', [TEST_VISUALIZATION()]);
+          await findVisualizationDrawer().vm.$emit('select', [createVisualization()]);
         });
 
         it('closes the drawer', () => {

@@ -131,7 +131,7 @@ The following parameters are available:
   some assigned copies that are not available.
 
 NOTE:
-`dataloss` is still in [beta](../../policy/experiment-beta-support.md#beta) and the output format is subject to change.
+`dataloss` is still in [beta](../../policy/development_stages_support.md#beta) and the output format is subject to change.
 
 To check for repositories with outdated primaries or for unavailable repositories, run:
 

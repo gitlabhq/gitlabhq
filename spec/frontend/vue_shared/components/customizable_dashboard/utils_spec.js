@@ -1,5 +1,3 @@
-import getCustomizableDashboardQuery from '~/vue_shared/components/customizable_dashboard/graphql/queries/get_customizable_dashboard.query.graphql';
-import getAllCustomizableDashboardsQuery from '~/vue_shared/components/customizable_dashboard/graphql/queries/get_all_customizable_dashboards.query.graphql';
 import {
   buildDefaultDashboardFilters,
   dateRangeOptionToFilter,
@@ -8,7 +6,6 @@ import {
   isEmptyPanelData,
   availableVisualizationsValidator,
   getDashboardConfig,
-  updateApolloCache,
   getVisualizationCategory,
   parsePanelToGridItem,
   createNewVisualizationPanel,
@@ -19,7 +16,6 @@ import {
   DATE_RANGE_OPTIONS,
   DEFAULT_SELECTED_OPTION_INDEX,
 } from '~/vue_shared/components/customizable_dashboard/filters/constants';
-import { createMockClient } from 'helpers/mock_apollo_helper';
 import {
   CATEGORY_SINGLE_STATS,
   CATEGORY_CHARTS,
@@ -31,19 +27,14 @@ import {
   mockDateRangeFilterChangePayload,
   dashboard,
   mockPanel,
-  TEST_VISUALIZATION,
-  TEST_CUSTOM_DASHBOARDS_PROJECT,
-  TEST_ALL_DASHBOARDS_GRAPHQL_SUCCESS_RESPONSE,
-  getGraphQLDashboard,
-  TEST_DASHBOARD_GRAPHQL_SUCCESS_RESPONSE,
-  TEST_CUSTOM_DASHBOARD_GRAPHQL_SUCCESS_RESPONSE,
+  createVisualization,
 } from './mock_data';
 
 const option = DATE_RANGE_OPTIONS[0];
 
 describe('#createNewVisualizationPanel', () => {
   it('returns the expected object', () => {
-    const visualization = TEST_VISUALIZATION();
+    const visualization = createVisualization();
     expect(createNewVisualizationPanel(visualization)).toMatchObject({
       visualization: {
         ...visualization,
@@ -217,7 +208,7 @@ describe('getDashboardConfig', () => {
           },
           queryOverrides: {},
           title: 'Test A',
-          visualization: 'cube_line_chart',
+          visualization: 'test_visualization',
         },
         {
           gridAttributes: {
@@ -228,7 +219,7 @@ describe('getDashboardConfig', () => {
             limit: 200,
           },
           title: 'Test B',
-          visualization: 'cube_line_chart',
+          visualization: 'test_visualization',
         },
       ],
       title: 'Analytics Overview',
@@ -242,183 +233,6 @@ describe('getDashboardConfig', () => {
       const result = getDashboardConfig(dashboard);
 
       expect(result[omitted]).not.toBeDefined();
-    });
-  });
-});
-
-describe('updateApolloCache', () => {
-  let apolloClient;
-  let mockReadQuery;
-  let mockWriteQuery;
-  const dashboardSlug = 'analytics_overview';
-  const { fullPath } = TEST_CUSTOM_DASHBOARDS_PROJECT;
-  const isProject = true;
-
-  const setMockCache = (mockDashboardDetails, mockDashboardsList) => {
-    mockReadQuery.mockImplementation(({ query }) => {
-      if (query === getCustomizableDashboardQuery) {
-        return mockDashboardDetails;
-      }
-      if (query === getAllCustomizableDashboardsQuery) {
-        return mockDashboardsList;
-      }
-
-      return null;
-    });
-  };
-
-  beforeEach(() => {
-    apolloClient = createMockClient();
-
-    mockReadQuery = jest.fn();
-    mockWriteQuery = jest.fn();
-    apolloClient.readQuery = mockReadQuery;
-    apolloClient.writeQuery = mockWriteQuery;
-  });
-
-  describe('dashboard details cache', () => {
-    it('updates an existing dashboard', () => {
-      const existingDashboard = getGraphQLDashboard(
-        {
-          slug: 'some_existing_dash',
-          title: 'some existing title',
-        },
-        false,
-      );
-      const existingDetailsCache = {
-        ...TEST_CUSTOM_DASHBOARD_GRAPHQL_SUCCESS_RESPONSE.data,
-      };
-      existingDetailsCache.project.customizableDashboards.nodes = [existingDashboard];
-
-      setMockCache(existingDetailsCache, null);
-
-      updateApolloCache({
-        apolloClient,
-        slug: existingDashboard.slug,
-        dashboard: {
-          ...existingDashboard,
-          title: 'some new title',
-        },
-        fullPath,
-        isProject,
-      });
-
-      expect(mockWriteQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          query: getCustomizableDashboardQuery,
-          data: expect.objectContaining({
-            project: expect.objectContaining({
-              customizableDashboards: expect.objectContaining({
-                nodes: expect.arrayContaining([
-                  expect.objectContaining({
-                    title: 'some new title',
-                  }),
-                ]),
-              }),
-            }),
-          }),
-        }),
-      );
-    });
-
-    it('does not update for new dashboards where cache is empty', () => {
-      setMockCache(null, TEST_ALL_DASHBOARDS_GRAPHQL_SUCCESS_RESPONSE.data);
-
-      updateApolloCache({
-        apolloClient,
-        slug: dashboardSlug,
-        dashboard,
-        fullPath,
-        isProject,
-      });
-
-      expect(mockWriteQuery).not.toHaveBeenCalledWith(
-        expect.objectContaining({ query: getCustomizableDashboardQuery }),
-      );
-    });
-  });
-
-  describe('dashboards list', () => {
-    it('adds a new dashboard to the dashboards list', () => {
-      setMockCache(null, TEST_ALL_DASHBOARDS_GRAPHQL_SUCCESS_RESPONSE.data);
-
-      updateApolloCache({
-        apolloClient,
-        slug: dashboardSlug,
-        dashboard,
-        fullPath,
-        isProject,
-      });
-
-      expect(mockWriteQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          query: getAllCustomizableDashboardsQuery,
-          data: expect.objectContaining({
-            project: expect.objectContaining({
-              customizableDashboards: expect.objectContaining({
-                nodes: expect.arrayContaining([
-                  expect.objectContaining({
-                    slug: dashboardSlug,
-                  }),
-                ]),
-              }),
-            }),
-          }),
-        }),
-      );
-    });
-
-    it('updates an existing dashboard on the dashboards list', () => {
-      setMockCache(null, TEST_ALL_DASHBOARDS_GRAPHQL_SUCCESS_RESPONSE.data);
-
-      const existingDashboards =
-        TEST_CUSTOM_DASHBOARD_GRAPHQL_SUCCESS_RESPONSE.data.project.customizableDashboards.nodes;
-
-      const updatedDashboard = {
-        ...existingDashboards.at(0),
-        title: 'some new title',
-      };
-
-      updateApolloCache({
-        apolloClient,
-        slug: dashboardSlug,
-        dashboard: updatedDashboard,
-        fullPath,
-        isProject,
-      });
-
-      expect(mockWriteQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          query: getAllCustomizableDashboardsQuery,
-          data: expect.objectContaining({
-            project: expect.objectContaining({
-              customizableDashboards: expect.objectContaining({
-                nodes: expect.arrayContaining([
-                  expect.objectContaining({
-                    title: 'some new title',
-                  }),
-                ]),
-              }),
-            }),
-          }),
-        }),
-      );
-    });
-
-    it('does not update dashboard list cache when it has not yet been populated', () => {
-      setMockCache(TEST_DASHBOARD_GRAPHQL_SUCCESS_RESPONSE.data, null);
-
-      updateApolloCache({
-        apolloClient,
-        slug: dashboardSlug,
-        dashboard,
-        fullPath,
-        isProject,
-      });
-
-      expect(mockWriteQuery).not.toHaveBeenCalledWith(
-        expect.objectContaining({ query: getAllCustomizableDashboardsQuery }),
-      );
     });
   });
 });

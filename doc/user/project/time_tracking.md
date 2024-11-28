@@ -198,7 +198,7 @@ This feature is not ready for production use.
 
 View a report of time spent in issues, tasks, and merge requests across all of GitLab.
 
-This feature is an [experiment](../../policy/experiment-beta-support.md).
+This feature is an [experiment](../../policy/development_stages_support.md).
 If you find a bug, let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435222).
 
 To view the global time tracking report:

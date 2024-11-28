@@ -48,7 +48,7 @@ DETAILS:
 **Status:** Beta
 
 WARNING:
-This feature is in [beta](../../policy/experiment-beta-support.md#beta).
+This feature is in [beta](../../policy/development_stages_support.md#beta).
 You might get a string similar to the one you want to translate,
 so be sure to select the correct string and line of code.
 If you cannot find a string with code search, post a comment in Crowdin with that string.

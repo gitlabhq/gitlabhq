@@ -153,7 +153,7 @@ If you do not want to import all user memberships from the source instance, ensu
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not ready for production use.
+Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not ready for production use.
 
 ## Group import history
 

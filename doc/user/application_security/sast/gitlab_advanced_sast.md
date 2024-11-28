@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Introduced in GitLab 17.1 as an [experiment](../../../policy/experiment-beta-support.md) for Python.
+> - Introduced in GitLab 17.1 as an [experiment](../../../policy/development_stages_support.md) for Python.
 > - Support for Go and Java added in 17.2.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461859) to beta in GitLab 17.2.
 > - Support for JavaScript, TypeScript and C# added in 17.3.

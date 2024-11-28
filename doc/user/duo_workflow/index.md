@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is an [experiment](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is an [experiment](../../policy/development_stages_support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -19,7 +19,7 @@ For more information, see the history.
 This feature is available for internal GitLab team members for testing, but not ready for production use.
 
 WARNING:
-This feature is considered [experimental](../../policy/experiment-beta-support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+This feature is considered [experimental](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

@@ -114,7 +114,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/794) in GitLab 16.9 [with a flag](../../administration/feature_flags.md)
-> - named `support_sha256_repositories`. Disabled by default. This feature is an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - named `support_sha256_repositories`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

@@ -29,6 +29,6 @@ The package registry supports the following package manager types:
 | [PyPI](../pypi_repository/index.md)              | GA     |
 | [Ruby gems](../rubygems_registry/index.md)       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
 
-[View what each status means](../../../policy/experiment-beta-support.md).
+[View what each status means](../../../policy/development_stages_support.md).
 
 You can also use the [API](../../../api/packages.md) to administer the package registry.

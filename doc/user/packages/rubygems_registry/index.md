@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52147) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `rubygem_packages`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52147) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `rubygem_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -20,7 +20,7 @@ This feature is available for testing, but not ready for production use.
 
 You can publish Ruby gems to your project's package registry. Then, you can download them from the UI or with the API.
 
-This feature is an [experiment](../../../policy/experiment-beta-support.md).
+This feature is an [experiment](../../../policy/development_stages_support.md).
 For more information about the development of this feature, see [epic 3200](https://gitlab.com/groups/gitlab-org/-/epics/3200).
 
 ## Authenticate to the package registry

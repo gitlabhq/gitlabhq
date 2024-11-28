@@ -13,7 +13,7 @@ DETAILS:
 
 ## Create organization
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470613) in GitLab 17.5 with a [flag](../administration/feature_flags.md) named `allow_organization_creation`. Disabled by default. This feature is an [experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470613) in GitLab 17.5 with a [flag](../administration/feature_flags.md) named `allow_organization_creation`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -21,7 +21,7 @@ For more information, see the history.
 
 Creates a new organization.
 
-This endpoint is an [experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
+This endpoint is an [experiment](../policy/development_stages_support.md) and might be changed or removed without notice.
 
 ```plaintext
 POST /organizations

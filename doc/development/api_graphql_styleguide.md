@@ -906,7 +906,7 @@ The documentation mentions that the old Global ID style is now deprecated.
 ## Mark schema items as experiments
 
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
-[experiments](../policy/experiment-beta-support.md#experiment).
+[experiments](../policy/development_stages_support.md#experiment).
 
 An item marked as an experiment is
 [exempt from the deprecation process](../api/graphql/index.md#breaking-change-exemptions) and can be

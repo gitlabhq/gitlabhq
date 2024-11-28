@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://about.gitlab.com/blog/2024/01/31/hosted-runners-for-gitlab-dedicated-available-in-beta/) as [beta](../../policy/experiment-beta-support.md#beta) on GitLab Dedicated in GitLab on January 31, 2024.
+> - [Introduced](https://about.gitlab.com/blog/2024/01/31/hosted-runners-for-gitlab-dedicated-available-in-beta/) as [beta](../../policy/development_stages_support.md#beta) on GitLab Dedicated in GitLab on January 31, 2024.
 
 NOTE:
 To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the closed beta of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.

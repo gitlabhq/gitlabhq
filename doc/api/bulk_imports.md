@@ -16,7 +16,7 @@ With the group migration by direct transfer API, you can start and view the prog
 [group migration by direct transfer](../user/group/import/index.md).
 
 WARNING:
-Migrating projects with this API is in [beta](../policy/experiment-beta-support.md#beta). This feature is not
+Migrating projects with this API is in [beta](../policy/development_stages_support.md#beta). This feature is not
 ready for production use.
 
 ## Prerequisites

@@ -180,39 +180,16 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
     end
 
     context 'when auto_stop_in are used' do
-      let(:options) do
-        { name: 'production', auto_stop_in: '1 day' }
-      end
-
       before do
         environment.update_attribute(:auto_stop_at, nil)
+
+        allow(job).to receive(:expanded_auto_stop_in).and_return('1 day')
       end
 
       it 'renews auto stop at' do
         freeze_time do
           expect { subject.execute }
             .to change { environment.reset.auto_stop_at&.round }.from(nil).to(1.day.since.round)
-        end
-      end
-
-      context 'when value is a variable' do
-        let(:options) { { name: 'production', auto_stop_in: '$TTL' } }
-
-        let(:yaml_variables) do
-          [
-            { key: "TTL", value: '2 days', public: true }
-          ]
-        end
-
-        before do
-          job.update_attribute(:yaml_variables, yaml_variables)
-        end
-
-        it 'renews auto stop at with expanded variable value' do
-          freeze_time do
-            expect { subject.execute }
-              .to change { environment.reset.auto_stop_at&.round }.from(nil).to(2.days.since.round)
-          end
         end
       end
     end

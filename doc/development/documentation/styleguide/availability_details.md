@@ -128,7 +128,7 @@ For features that move to another subscription tier, use `moved`:
 For a feature status change from experiment to beta, use `changed`:
 
 ```markdown
-> - [Introduced](https://issue-link) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
+> - [Introduced](https://issue-link) as an [experiment](../../policy/development_stages_support.md) in GitLab 15.7.
 > - [Changed](https://issue-link) to beta in GitLab 16.0.
 ```
 

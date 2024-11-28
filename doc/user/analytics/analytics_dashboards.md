@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
 
-> - Introduced in GitLab 15.9 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
+> - Introduced in GitLab 15.9 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 > - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
 > - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
 
@@ -274,7 +274,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - Introduced in GitLab 16.11 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
+> - Introduced in GitLab 16.11 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Prerequisites:

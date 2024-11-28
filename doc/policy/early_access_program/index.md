@@ -10,15 +10,15 @@ ignore_in_report: true
 NOTE:
 Last status update 2024-10-02.
 
-These features may not be ready for production use and follow the [Experimental or Beta policy](../../policy/experiment-beta-support.md) of GitLab.
+These features may not be ready for production use and follow the [Experimental or Beta policy](../../policy/development_stages_support.md) of GitLab.
 
 ## Features included in the GitLab Early Access Program
 
 | Name                                                                                                                                              | Status                                                           | Included date | Provide feedback                                                       |
 |---------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|---------------|------------------------------------------------------------------------|
-| [GitLab Duo Vulnerability Resolution](../../user/application_security/vulnerabilities/index.md#vulnerability-resolution)                          | [Beta](../../policy/experiment-beta-support.md#beta)             | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476553) |
-| [GitLab Duo Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation)               | [Experiment](../../policy/experiment-beta-support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409844) |
-| [GitLab Duo Product Analytics](../../user/analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)                      | [Experiment](../../policy/experiment-beta-support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/455363) |
+| [GitLab Duo Vulnerability Resolution](../../user/application_security/vulnerabilities/index.md#vulnerability-resolution)                          | [Beta](../../policy/development_stages_support.md#beta)             | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476553) |
+| [GitLab Duo Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation)               | [Experiment](../../policy/development_stages_support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409844) |
+| [GitLab Duo Product Analytics](../../user/analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)                      | [Experiment](../../policy/development_stages_support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/455363) |
 
 Would you like to use a paid feature but don't have a subscription?
 You are more than welcome to [request a free trial](https://about.gitlab.com/free-trial/).

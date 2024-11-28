@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14878) as an [experiment](../../../policy/experiment-beta-support.md) in GitLab 17.5 [with a flag](../../feature_flags.md) named `secret_detection_project_level_exclusions`. Enabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14878) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5 [with a flag](../../feature_flags.md) named `secret_detection_project_level_exclusions`. Enabled by default.
 > - `secret_detection_project_level_exclusions` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/499059) in GitLab 17.7.
 
 Secret detection may detect something that's not actually a secret. For example, if you use

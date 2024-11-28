@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with several feature flags. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md#enable-and-disable-the-new-look-for-epics). This feature is an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with several feature flags. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md#enable-and-disable-the-new-look-for-epics). This feature is an [experiment](../../policy/development_stages_support.md#experiment).
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
 
 In GitLab 17.2, we introduced [epics as work items](../../user/group/epics/epic_work_items.md).

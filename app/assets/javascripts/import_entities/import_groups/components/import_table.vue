@@ -651,7 +651,9 @@ export default {
   gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
-  betaFeatureHelpPath: helpPagePath('policy/experiment-beta-support', { anchor: 'beta-features' }),
+  betaFeatureHelpPath: helpPagePath('policy/development_stages_support', {
+    anchor: 'beta-features',
+  }),
   popoverOptions: { title: __('What is listed here?') },
   learnMoreOptions: { title: s__('BulkImport|Import user memberships') },
   i18n,

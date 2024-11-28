@@ -23,8 +23,8 @@ Your jobs can run on:
 
 - [Hosted runners on Linux](hosted_runners/linux.md)
 - [GPU-enabled hosted runners](hosted_runners/gpu_enabled.md)
-- [Hosted runners on Windows](hosted_runners/windows.md) ([beta](../../policy/experiment-beta-support.md#beta))
-- [Hosted runners on macOS](hosted_runners/macos.md) ([beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on Windows](hosted_runners/windows.md) ([beta](../../policy/development_stages_support.md#beta))
+- [Hosted runners on macOS](hosted_runners/macos.md) ([beta](../../policy/development_stages_support.md#beta))
 
 ### How hosted runners for GitLab.com work
 

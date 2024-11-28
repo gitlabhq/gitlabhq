@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - Released in [v1.42.0 of the GitLab CLI](https://gitlab.com/gitlab-org/cli/-/releases/v1.42.0) as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - Released in [v1.42.0 of the GitLab CLI](https://gitlab.com/gitlab-org/cli/-/releases/v1.42.0) as an [experiment](../../../policy/development_stages_support.md#experiment).
 
 In the [GitLab CLI](https://gitlab.com/gitlab-org/cli), stacked diffs are a way of
 creating small changes that build upon each other to ultimately deliver a feature.
@@ -31,7 +31,7 @@ you then extend with other commands.
 </figure>
 <!-- Video published on 2024-06-18 -->
 
-This feature is an [experiment](../../../policy/experiment-beta-support.md).
+This feature is an [experiment](../../../policy/development_stages_support.md).
 We'd love to hear your feedback in [issue 7473](https://gitlab.com/gitlab-org/cli/-/issues/7473).
 
 ## Create a stacked diff

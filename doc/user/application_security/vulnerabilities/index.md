@@ -35,8 +35,8 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
-> - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
+> - Promoted to [beta](../../../policy/development_stages_support.md#beta) status in GitLab 16.2.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -95,7 +95,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
 > - Changed to beta in GitLab 17.3.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -226,7 +226,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 17.6. This is a [beta](../../../policy/experiment-beta-support.md#beta) feature.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 17.6. This is a [beta](../../../policy/development_stages_support.md#beta) feature.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
 resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.

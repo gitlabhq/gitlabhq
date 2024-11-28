@@ -251,7 +251,7 @@ Maintain brand identity and instill confidence among support requesters with a d
 For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
 <!-- Video published on 2023-09-12 -->
 
-This feature is in [beta](../../../policy/experiment-beta-support.md#beta).
+This feature is in [beta](../../../policy/development_stages_support.md#beta).
 A beta feature is not production-ready, but is unlikely to change drastically
 before it's released. We encourage users to try beta features and provide feedback
 in [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416637).

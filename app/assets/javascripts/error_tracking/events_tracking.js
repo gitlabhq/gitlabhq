@@ -1,13 +1,15 @@
-import Tracking from '~/tracking';
+import { InternalEvents } from '~/tracking';
 
 const category = 'Error Tracking'; // eslint-disable-line @gitlab/require-i18n-strings
 
 function sendTrackingEvents(action, integrated) {
-  Tracking.event(category, action, {
-    extra: {
+  InternalEvents.trackEvent(
+    action,
+    {
       variant: integrated ? 'integrated' : 'external',
     },
-  });
+    category,
+  );
 }
 
 /**

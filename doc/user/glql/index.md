@@ -25,7 +25,7 @@ GitLab.
 Use it to filter and embed content from anywhere in the platform, using familiar syntax.
 Embed queries in Markdown code blocks.
 
-This feature is an [experiment](../../policy/experiment-beta-support.md).
+This feature is an [experiment](../../policy/development_stages_support.md).
 Share your feedback in [epic 14939](https://gitlab.com/groups/gitlab-org/-/epics/14939),
 either as a comment on the epic, or by creating a new issue under the epic with labels
 `~"group::knowledge"` and `~"type::feature"` or `~"type::bug"`.

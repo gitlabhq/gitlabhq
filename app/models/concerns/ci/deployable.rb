@@ -15,6 +15,7 @@ module Ci
         after_transition any => [:success] do |job|
           job.run_after_commit do
             Environments::StopJobSuccessWorker.perform_async(id)
+            Environments::RecalculateAutoStopWorker.perform_async(id)
           end
         end
 
@@ -107,12 +108,32 @@ module Ci
       end
     end
 
+    def expanded_auto_stop_in
+      return unless environment_auto_stop_in
+
+      ExpandVariables.expand(environment_auto_stop_in, -> { variables.sort_and_expand_all })
+    end
+    strong_memoize_attr :expanded_auto_stop_in
+
     def has_environment_keyword?
       environment.present?
     end
 
     def deployment_job?
       has_environment_keyword? && environment_action == 'start'
+    end
+    alias_method :starts_environment?, :deployment_job?
+
+    def accesses_environment?
+      has_environment_keyword? && environment_action == 'access'
+    end
+
+    def prepares_environment?
+      has_environment_keyword? && environment_action == 'prepare'
+    end
+
+    def verifies_environment?
+      has_environment_keyword? && environment_action == 'verify'
     end
 
     def stops_environment?

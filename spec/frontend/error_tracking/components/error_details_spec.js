@@ -23,11 +23,10 @@ import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue';
 import { createAlert, VARIANT_WARNING } from '~/alert';
-import Tracking from '~/tracking';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
 
 jest.mock('~/alert');
-jest.mock('~/tracking');
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -484,6 +483,8 @@ describe('ErrorDetails', () => {
   });
 
   describe('Snowplow tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
     describe.each`
       integrated | variant
       ${true}    | ${'integrated'}
@@ -499,30 +500,54 @@ describe('ErrorDetails', () => {
       });
 
       it('should track detail page views', () => {
-        expect(Tracking.event).toHaveBeenCalledWith(category, 'view_error_details', {
-          extra: { variant },
-        });
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'view_error_details',
+          {
+            variant,
+          },
+          category,
+        );
       });
 
       it('should track IGNORE status update', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
         await findUpdateIgnoreStatusButton().trigger('click');
-        expect(Tracking.event).toHaveBeenCalledWith(category, 'update_ignored_status', {
-          extra: { variant },
-        });
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'update_ignored_status',
+          {
+            variant,
+          },
+          category,
+        );
       });
 
       it('should track RESOLVE status update', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
         await findUpdateResolveStatusButton().trigger('click');
-        expect(Tracking.event).toHaveBeenCalledWith(category, 'update_resolved_status', {
-          extra: { variant },
-        });
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'update_resolved_status',
+          {
+            variant,
+          },
+          category,
+        );
       });
 
       it('should track create issue button click', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
         await wrapper.find('[data-testid="create-issue-button"]').vm.$emit('click');
-        expect(Tracking.event).toHaveBeenCalledWith(category, 'click_create_issue_from_error', {
-          extra: { variant },
-        });
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_create_issue_from_error',
+          {
+            variant,
+          },
+          category,
+        );
       });
     });
   });

@@ -99,7 +99,7 @@ export default {
           <gl-badge class="gl-mr-2" :variant="badgeVariant">
             {{ stateHumanName }}
           </gl-badge>
-          <span class="gl-text-secondary">
+          <span class="gl-text-subtle">
             {{ __('Opened') }} <time v-text="formattedTime"></time
           ></span>
         </div>
@@ -107,7 +107,7 @@ export default {
       </div>
       <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <div class="gl-text-secondary">
+      <div class="gl-text-subtle">
         {{ `${namespacePath}!${iid}` }}
       </div>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->

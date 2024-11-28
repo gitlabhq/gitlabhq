@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [beta](../../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [beta](../../../../policy/development_stages_support.md).
 
 API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by the [API security testing analyzer](../../api_security_testing/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
 

@@ -77,7 +77,7 @@ Run a health check to test if your instance meets the requirements to use GitLab
 When the health check completes, it displays a pass or fail result and the types of issues.
 If the health check fails any of the tests, users might not be able to use GitLab Duo features in your instance.
 
-This is a [beta](../../policy/experiment-beta-support.md) feature.
+This is a [beta](../../policy/development_stages_support.md) feature.
 
 Prerequisites:
 

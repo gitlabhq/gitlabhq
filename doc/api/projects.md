@@ -2445,7 +2445,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/development_stages_support.md).
 
 Returns SAST scan results for a single file in real-time.
 

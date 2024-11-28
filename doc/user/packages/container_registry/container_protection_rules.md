@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `containers_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `containers_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

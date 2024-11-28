@@ -162,7 +162,7 @@ DETAILS:
 **Status:** Beta
 **Offering:** GitLab.com, Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/experiment-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -178,7 +178,7 @@ The idea is that the assignees are people responsible for the epic.
 If a user is not a member of a group, an epic can only be assigned to them if another group member
 assigns them.
 
-This feature is in [beta](../../../policy/experiment-beta-support.md).
+This feature is in [beta](../../../policy/development_stages_support.md).
 If you find a bug, use the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
 

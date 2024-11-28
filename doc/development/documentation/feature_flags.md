@@ -17,7 +17,7 @@ When the state of a feature flag changes, the developer who made the change
 
 Every feature introduced to the codebase, even if it's behind a disabled flag,
 must be documented. For more information, see
-[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment and beta](../../policy/experiment-beta-support.md) features are usually behind a flag and must also be documented. For more information, see [Document experiment or beta features](experiment_beta.md).
+[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment and beta](../../policy/development_stages_support.md) features are usually behind a flag and must also be documented. For more information, see [Document experiment or beta features](experiment_beta.md).
 
 When the feature is [implemented in multiple merge requests](../feature_flags/index.md#feature-flags-in-gitlab-development),
 discuss the plan with your technical writer.

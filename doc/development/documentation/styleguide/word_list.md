@@ -336,7 +336,7 @@ Use lowercase for **beta**. For example:
 - This is a beta feature.
 - This beta release is ready to test.
 
-You might also want to link to [this topic](../../../policy/experiment-beta-support.md#beta)
+You might also want to link to [this topic](../../../policy/development_stages_support.md#beta)
 when writing about beta features.
 
 ## blacklist
@@ -921,7 +921,7 @@ Use lowercase for **experiment**. For example:
 
 If you must, you can use **experimental**.
 
-You might also want to link to [this topic](../../../policy/experiment-beta-support.md#experiment)
+You might also want to link to [this topic](../../../policy/development_stages_support.md#experiment)
 when writing about experimental features.
 
 ## export

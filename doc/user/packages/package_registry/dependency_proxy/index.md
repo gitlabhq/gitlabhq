@@ -15,7 +15,7 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
 
 WARNING:
-The dependency proxy is in [beta](../../../../policy/experiment-beta-support.md#beta). Review the documentation carefully before you use this feature.
+The dependency proxy is in [beta](../../../../policy/development_stages_support.md#beta). Review the documentation carefully before you use this feature.
 
 The GitLab dependency proxy for packages is a local proxy for frequently pulled packages.
 It is implemented as a pull-through cache that works at the project level.

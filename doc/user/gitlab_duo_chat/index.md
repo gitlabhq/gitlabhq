@@ -10,11 +10,11 @@ DETAILS:
 **Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
-> - Changed to [beta](../../policy/experiment-beta-support.md#beta) for SaaS in GitLab 16.6.
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../../policy/experiment-beta-support.md#beta) for self-managed in GitLab 16.8.
-> - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/experiment-beta-support.md#beta).
-> - Changed to [generally available](../../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for SaaS in GitLab 16.0.
+> - Changed to [beta](../../policy/development_stages_support.md#beta) for SaaS in GitLab 16.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../../policy/development_stages_support.md#beta) for self-managed in GitLab 16.8.
+> - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
+> - Changed to [generally available](../../policy/development_stages_support.md#generally-available-ga) in GitLab 16.11.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
@@ -82,7 +82,7 @@ Only the last 50 messages are retained in the chat history. The chat history exp
 
 ## Use GitLab Duo Chat in the Web IDE
 
-> - Introduced in GitLab 16.6 as an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
 > - Changed to generally available in GitLab 16.11.
 
 To use GitLab Duo Chat in the Web IDE on GitLab:
@@ -102,7 +102,7 @@ If you have selected code in the editor, this selection is sent along with your 
 
 ## Use GitLab Duo Chat in VS Code
 
-> - Introduced in GitLab 16.6 as an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
 > - Changed to generally available in GitLab 16.11.
 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:

@@ -166,10 +166,10 @@ export default {
       <gl-badge v-if="!loading && showDetails" :variant="status.variant">{{
         status.text
       }}</gl-badge>
-      <span class="gl-flex gl-text-secondary" data-testid="milestone-label">
-        <gl-icon name="milestone" class="gl-mr-1" /> {{ __('Milestone') }}
+      <span class="gl-flex gl-text-subtle" data-testid="milestone-label">
+        <gl-icon name="milestone" class="gl-mr-1" variant="subtle" /> {{ __('Milestone') }}
       </span>
-      <span v-if="showTimeframe" class="gl-text-secondary" data-testid="milestone-timeframe"
+      <span v-if="showTimeframe" class="gl-text-subtle" data-testid="milestone-timeframe"
         >&middot; {{ milestoneTimeframe }}</span
       >
     </div>
@@ -191,7 +191,7 @@ export default {
       data-testid="milestone-path"
     >
       <gl-icon :name="milestoneParentIcon" class="gl-mr-1" />
-      <span class="gl-text-secondary">{{ milestoneParentFullPath }}</span>
+      <span class="gl-text-subtle">{{ milestoneParentFullPath }}</span>
     </div>
   </gl-popover>
 </template>

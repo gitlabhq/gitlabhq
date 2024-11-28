@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for self-managed GitLab instances.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including
@@ -650,7 +650,7 @@ and using AWS S3 as your storage backend:
 
 ```shell
 /opt/gitlab/embedded/bin/registry database import --step-one /var/opt/gitlab/registry/config.yml
-  [0s] step one: import manifests 
+  [0s] step one: import manifests
   [0s] step one: import manifests failed to import metadata: pre importing all repositories: AccessDenied: Access Denied
 ```
 

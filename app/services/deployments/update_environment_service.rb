@@ -62,12 +62,6 @@ module Deployments
       ExpandVariables.expand(environment_url, -> { variables.sort_and_expand_all })
     end
 
-    def expanded_auto_stop_in
-      return unless auto_stop_in
-
-      ExpandVariables.expand(auto_stop_in, -> { variables.sort_and_expand_all })
-    end
-
     def expanded_cluster_agent_path
       return unless cluster_agent_path
 
@@ -80,10 +74,6 @@ module Deployments
 
     def action
       environment_options[:action] || 'start'
-    end
-
-    def auto_stop_in
-      deployable&.environment_auto_stop_in
     end
 
     def cluster_agent_path
@@ -99,7 +89,7 @@ module Deployments
     def renew_auto_stop_in
       return unless deployable
 
-      if (value = expanded_auto_stop_in)
+      if (value = deployable.expanded_auto_stop_in)
         environment.auto_stop_in = value
       end
     end

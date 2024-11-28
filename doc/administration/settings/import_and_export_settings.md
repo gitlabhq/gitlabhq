@@ -48,7 +48,7 @@ WARNING:
 In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 WARNING:
-This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
 This feature is not ready for production use.
 
 Migration of groups and projects by direct transfer is disabled by default.

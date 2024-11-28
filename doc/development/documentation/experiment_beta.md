@@ -6,7 +6,7 @@ group: unassigned
 
 # Documenting experimental and beta features
 
-When you document an [experiment or beta](../../policy/experiment-beta-support.md) feature:
+When you document an [experiment or beta](../../policy/development_stages_support.md) feature:
 
 - Include the status in the [product availability details](styleguide/availability_details.md#status).
 - Include [feature flag details](feature_flags.md) if behind a feature flag.
@@ -33,7 +33,7 @@ For example:
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/experiment-beta-support.md).
+> - [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -42,7 +42,7 @@ This feature is available for testing, but not ready for production use.
 
 Use this new feature when you need to do this new thing.
 
-This feature is an [experiment](<link_to>/policy/experiment-beta-support.md). To join
+This feature is an [experiment](<link_to>/policy/development_stages_support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](https://link).
 ```
