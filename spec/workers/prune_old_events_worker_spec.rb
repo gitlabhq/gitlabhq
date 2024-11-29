@@ -43,4 +43,18 @@ RSpec.describe PruneOldEventsWorker, feature_category: :user_profile do
       end
     end
   end
+
+  describe '.pruning_enabled?' do
+    subject(:pruning_enabled) { described_class.pruning_enabled? }
+
+    it { is_expected.to be(true) }
+
+    context 'with ops_prune_old_events FF disabled' do
+      before do
+        stub_feature_flags(ops_prune_old_events: false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
 end

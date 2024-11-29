@@ -40,46 +40,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       context 'when path does not exist' do
         let(:path) { 'bogus' }
 
-        context 'when handle_structured_gitaly_errors feature is disabled' do
-          before do
-            stub_feature_flags(handle_structured_gitaly_errors: false)
-          end
-
-          it 'returns an empty array' do
-            get api("#{route}?path=#{path}", current_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an(Array)
-            expect(json_response).to be_an_empty
-          end
-        end
-
-        context 'when handle_structured_gitaly_errors feature is enabled' do
-          before do
-            stub_feature_flags(handle_structured_gitaly_errors: true)
-          end
-
-          it_behaves_like '404 response' do
-            let(:request) { get api("#{route}?path=#{path}", current_user) }
-            let(:message) { '404 invalid revision or path Not Found' }
-          end
-        end
-      end
-
-      context 'when path is empty directory ' do
-        context 'when handle_structured_gitaly_errors feature is disabled' do
-          before do
-            stub_feature_flags(handle_structured_gitaly_errors: false)
-          end
-
-          it 'returns an empty array' do
-            get api(route, current_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an(Array)
-          end
+        it_behaves_like '404 response' do
+          let(:request) { get api("#{route}?path=#{path}", current_user) }
+          let(:message) { '404 invalid revision or path Not Found' }
         end
       end
 

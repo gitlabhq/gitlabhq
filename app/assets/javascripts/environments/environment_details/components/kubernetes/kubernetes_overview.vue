@@ -158,7 +158,10 @@ export default {
       return Object.values(this.failedState).some((item) => item);
     },
     fluxResourceStatus() {
-      return this.fluxKustomization.conditions || this.fluxHelmRelease.conditions;
+      const conditions = this.fluxKustomization.conditions || this.fluxHelmRelease.conditions || [];
+      const spec = this.fluxKustomization.spec || this.fluxHelmRelease.spec || false;
+
+      return { conditions, suspend: spec?.suspend };
     },
     fluxNamespace() {
       return (
@@ -185,7 +188,7 @@ export default {
       return {
         name: item.metadata.name,
         namespace: item.metadata.namespace,
-        status: fluxSyncStatus(item.status.conditions).status,
+        status: fluxSyncStatus({ conditions: item.status.conditions }).status,
         labels: item.metadata.labels,
         annotations: item.metadata.annotations,
         kind: item.kind,

@@ -43,7 +43,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
   const createWrapper = ({
     clusterHealthStatus = '',
     fluxResourcePath = '',
-    fluxResourceStatus = [],
+    fluxResourceStatus = { conditions: [] },
     fluxApiError = '',
     namespace = kubernetesNamespace,
     resourceType = k8sResourceType.k8sPods,
@@ -189,14 +189,16 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
         'renders sync status as $statusText when status is $status, type is $type, and reason is $reason',
         ({ status, type, reason, statusText, statusPopover }) => {
           createWrapper({
-            fluxResourceStatus: [
-              {
-                status,
-                type,
-                reason,
-                message,
-              },
-            ],
+            fluxResourceStatus: {
+              conditions: [
+                {
+                  status,
+                  type,
+                  reason,
+                  message,
+                },
+              ],
+            },
           });
 
           expect(findSyncBadge().text()).toBe(statusText);
@@ -206,7 +208,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
 
       it('renders a clickable badge', () => {
         createWrapper({
-          fluxResourceStatus: [{ status: 'True', type: 'Ready' }],
+          fluxResourceStatus: { conditions: [{ status: 'True', type: 'Ready' }] },
         });
 
         expect(findSyncBadge().attributes('href')).toBe('#');
@@ -214,7 +216,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
 
       it('emits `show-flux-resource-details` event when badge is clicked', () => {
         createWrapper({
-          fluxResourceStatus: [{ status: 'True', type: 'Ready' }],
+          fluxResourceStatus: { conditions: [{ status: 'True', type: 'Ready' }] },
         });
 
         findSyncBadge().trigger('click');

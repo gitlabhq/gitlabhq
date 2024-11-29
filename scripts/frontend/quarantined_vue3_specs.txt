@@ -170,7 +170,6 @@ spec/frontend/ci/pipelines_page/components/pipeline_multi_actions_spec.js
 spec/frontend/ci/pipelines_page/components/pipelines_artifacts_spec.js
 spec/frontend/ci/runner/components/runner_details_spec.js
 spec/frontend/ci/runner/components/runner_form_fields_spec.js
-spec/frontend/ci/runner/components/runner_managers_table_spec.js
 spec/frontend/ci/runner/components/runner_platforms_radio_spec.js
 spec/frontend/ci/runner/group_runner_show/group_runner_show_app_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js

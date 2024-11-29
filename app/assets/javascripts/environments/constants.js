@@ -124,6 +124,12 @@ export const SYNC_STATUS_BADGES = {
     text: s__('Environment|Reconciling'),
     popoverText: s__('Deployment|Flux sync reconciling'),
   },
+  suspended: {
+    variant: 'warning',
+    icon: 'status-paused',
+    text: __('Paused'),
+    popoverText: s__('Deployment|Flux sync is suspended'),
+  },
   stalled: {
     variant: 'warning',
     icon: 'status-paused',

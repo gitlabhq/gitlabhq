@@ -41,14 +41,8 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
     context 'with an invalid ref' do
       let(:sha) { 'foobar-does-not-exist' }
 
-      context 'when handle_structured_gitaly_errors feature is disabled' do
-        before do
-          stub_feature_flags(handle_structured_gitaly_errors: false)
-        end
-
-        it { expect(entries).to eq([]) }
-        it { expect(cursor).to be_nil }
-      end
+      it { expect(entries).to eq([]) }
+      it { expect(cursor).to be_nil }
     end
 
     context 'when path is provided' do

@@ -16,10 +16,9 @@ OKRs are an [experiment](../policy/development_stages_support.md#experiment).
 For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project, an administrator can [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
-On GitLab.com, by default this feature is not available, but can be configured by GitLab.com administrators.
-On GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 [Objectives and key results](https://en.wikipedia.org/wiki/OKR) (OKRs) are a framework for setting
 and tracking goals that are aligned with your organization's overall strategy and vision.
@@ -113,6 +112,7 @@ To edit an OKR:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) to feature flag named `work_items_mvc` in GitLab 15.8. Disabled by default.
+> - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144141) from `work_items_mvc` to `work_items_beta` in GitLab 16.10.
 > - Changing activity sort order [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.8.
 > - Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
@@ -382,9 +382,9 @@ To reorder them, drag them around.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `okr_checkin_reminders`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 Schedule check-in reminders to remind your team to provide status updates on the key results you care
 about.
@@ -525,9 +525,9 @@ system note in the OKR's comments, for example:
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_beta`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 You can prevent public comments in an OKR.
 When you do, only project members can add and edit comments.

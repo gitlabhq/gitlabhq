@@ -13,6 +13,8 @@ module Gitlab
           private
 
           def create_event(issue_event)
+            return if event_outside_cutoff?(issue_event)
+
             created_event = Event.create!(
               project_id: project.id,
               author_id: author_id(issue_event),

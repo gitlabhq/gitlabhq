@@ -61,7 +61,9 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
         click_link("README.md")
       end
 
-      click_link("History")
+      page.within(".commit-actions") do
+        click_link("History")
+      end
 
       history_path = project_commits_path(project, "master/README.md")
       expect(page).to have_current_path(history_path)

@@ -60,9 +60,9 @@ export default {
       required: true,
     },
     fluxResourceStatus: {
-      type: Array,
+      type: Object,
       required: false,
-      default: () => [],
+      default: () => {},
     },
     fluxNamespace: {
       type: String,
@@ -144,6 +144,8 @@ export default {
       const fluxStatus = fluxSyncStatus(this.fluxResourceStatus);
 
       switch (fluxStatus.status) {
+        case 'suspended':
+          return SYNC_STATUS_BADGES.suspended;
         case 'failed':
           return {
             ...SYNC_STATUS_BADGES.failed,
@@ -171,7 +173,7 @@ export default {
       return Boolean(this.fluxConnectionParams.resourceType);
     },
     fluxResourcePresent() {
-      return Boolean(this.fluxResourceStatus?.length);
+      return Boolean(this.fluxResourceStatus?.conditions?.length);
     },
     fluxBadgeHref() {
       return this.fluxResourcePresent ? '#' : null;

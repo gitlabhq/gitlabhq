@@ -53,13 +53,13 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
 
     context 'when a version exist and no value is passed for version' do
       before do
-        create(:ml_model_versions, model: model, version: '3.0.0')
+        create(:ml_model_versions, model: model, version: '1.2.3')
         model.reload
       end
 
       it 'creates another model version and increments the version number' do
         expect { service }.to change { Ml::ModelVersion.count }.by(1).and change { Ml::Candidate.count }.by(1)
-        expect(model.reload.latest_version.version).to eq('4.0.0')
+        expect(model.reload.latest_version.version).to eq('1.2.4')
         expect(service).to be_success
 
         expect(Gitlab::InternalEvents).to have_received(:track_event).with(

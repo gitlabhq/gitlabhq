@@ -11,6 +11,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:commit_id) { nil }
+  let(:created_at) { 1.month.ago }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
@@ -19,7 +20,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
       'url' => 'https://api.github.com/repos/elhowm/test-import/issues/events/6501124486',
       'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => 'merged',
-      'created_at' => '2022-04-26 18:30:53 UTC',
+      'created_at' => created_at.iso8601,
       'commit_id' => commit_id,
       'issue' => { 'number' => merge_request.iid, pull_request: true }
     )
@@ -104,6 +105,29 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
         close_after_error_tracking_resolve: false,
         close_auto_resolve_prometheus_alert: false
       )
+    end
+
+    context 'when event is outside the cutoff date and would be pruned' do
+      let(:created_at) { (PruneOldEventsWorker::CUTOFF_DATE + 1.minute).ago }
+
+      it 'does not create the event, but does create the state event' do
+        importer.execute(issue_event)
+
+        expect(merge_request.events.count).to eq 0
+        expect(merge_request.resource_state_events.count).to eq 1
+      end
+
+      context 'when pruning events is disabled' do
+        before do
+          stub_feature_flags(ops_prune_old_events: false)
+        end
+
+        it 'creates the event' do
+          importer.execute(issue_event)
+
+          expect(merge_request.events.count).to eq 1
+        end
+      end
     end
 
     context 'when commit ID is present' do

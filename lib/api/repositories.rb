@@ -96,10 +96,6 @@ module API
             params
           ]
         end
-
-        def rescue_not_found?
-          Feature.disabled?(:handle_structured_gitaly_errors)
-        end
       end
 
       desc 'Get a project repository tree' do
@@ -128,7 +124,7 @@ module API
         end
       end
       get ':id/repository/tree', urgency: :low do
-        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false).merge(rescue_not_found: rescue_not_found?))
+        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false).merge(rescue_not_found: false))
 
         not_found!("Tree") unless tree_finder.commit_exists?
 

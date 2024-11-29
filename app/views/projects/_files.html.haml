@@ -10,7 +10,7 @@
 
 #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   - if params[:common_repository_blob_header_app] == 'true'
-    #js-repository-blob-header-app{ data: { project_id: @project.id, ref: ref, ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref), breadcrumbs: breadcrumb_data_attributes, project_root_path: project_path(@project), project_path: project.full_path, compare_path: compare_path, escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref) } }
+    #js-repository-blob-header-app{ data: { project_id: @project.id, ref: ref, ref_type: @ref_type.to_s, breadcrumbs: breadcrumb_data_attributes, project_root_path: project_path(@project), project_path: project.full_path, compare_path: compare_path, escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref) } }
 
   - else
     .nav-block.gl-flex.gl-flex-col.sm:gl-flex-row.gl-items-stretch
@@ -19,10 +19,10 @@
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
-  .info-well.gl-hidden.sm:gl-flex.project-last-commit.gl-flex-col.gl-mt-5
+  .info-well.project-last-commit.gl-flex-col.gl-mt-5
     #js-last-commit.gl-m-auto{ data: {ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref)} }
       = gl_loading_icon(size: 'md')
     - if project.licensed_feature_available?(:code_owners)
-      #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
+      #js-code-owners.gl-hidden.sm:gl-flex{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
   #js-tree-list{ data: vue_file_list_data(project, ref) }

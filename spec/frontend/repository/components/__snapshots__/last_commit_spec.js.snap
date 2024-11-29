@@ -1,60 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Repository last commit component renders commit widget 1`] = `
-<commit-info-stub
-  commit="[object Object]"
->
-  <div
-    class="commit-actions gl-flex gl-items-start"
+<div>
+  <commit-info-stub
+    class="gl-hidden sm:gl-flex"
+    commit="[object Object]"
   >
     <div
-      class="gl-flex gl-h-7 gl-items-center gl-ml-5"
+      class="commit-actions gl-flex gl-items-start"
     >
-      <ci-icon-stub
-        aria-label="Pipeline: failed"
-        class="js-commit-pipeline"
-        showtooltip="true"
-        status="[object Object]"
-        uselink="true"
-      />
-    </div>
-    <gl-button-group-stub
-      class="gl-flex gl-items-center gl-ml-4 js-commit-sha-group"
-    >
+      <div
+        class="gl-flex gl-h-7 gl-items-center gl-ml-5"
+      >
+        <ci-icon-stub
+          aria-label="Pipeline: failed"
+          class="js-commit-pipeline"
+          showtooltip="true"
+          status="[object Object]"
+          uselink="true"
+        />
+      </div>
+      <gl-button-group-stub
+        class="gl-flex gl-items-center gl-ml-4 js-commit-sha-group"
+      >
+        <gl-button-stub
+          buttontextclasses=""
+          category="primary"
+          class="gl-font-monospace"
+          data-testid="last-commit-id-label"
+          icon=""
+          label="true"
+          size="medium"
+          variant="default"
+        >
+          12345678
+        </gl-button-stub>
+        <clipboard-button-stub
+          category="secondary"
+          class="input-group-text"
+          size="medium"
+          text="123456789"
+          title="Copy commit SHA"
+          tooltipplacement="top"
+          variant="default"
+        />
+      </gl-button-group-stub>
       <gl-button-stub
         buttontextclasses=""
-        category="primary"
-        class="gl-font-monospace"
-        data-testid="last-commit-id-label"
+        category="tertiary"
+        class="gl-ml-4"
+        data-testid="last-commit-history"
+        href="/history"
         icon=""
-        label="true"
         size="medium"
         variant="default"
       >
-        12345678
+        History
       </gl-button-stub>
-      <clipboard-button-stub
-        category="secondary"
-        class="input-group-text"
-        size="medium"
-        text="123456789"
-        title="Copy commit SHA"
-        tooltipplacement="top"
-        variant="default"
-      />
-    </gl-button-group-stub>
-    <gl-button-stub
-      buttontextclasses=""
-      category="tertiary"
-      class="gl-ml-4"
-      data-testid="last-commit-history"
-      href="/history"
-      icon=""
-      size="medium"
-      variant="default"
-    >
-      History
-    </gl-button-stub>
-  </div>
-</commit-info-stub>
+    </div>
+  </commit-info-stub>
+  <collapsible-commit-info-stub
+    class="gl-block sm:gl-hidden"
+    commit="[object Object]"
+    historyurl="/history"
+  />
+</div>
 `;

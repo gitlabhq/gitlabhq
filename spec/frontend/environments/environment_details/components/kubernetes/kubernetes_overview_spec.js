@@ -162,7 +162,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         namespace: kubernetesNamespace,
         resourceType: k8sResourceType.k8sPods,
         fluxApiError: '',
-        fluxResourceStatus: [],
+        fluxResourceStatus: { conditions: [] },
       });
     });
 
@@ -240,7 +240,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         });
 
         it('provides empty `fluxResourceStatus` to KubernetesStatusBar', () => {
-          expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual([]);
+          expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual({ conditions: [] });
         });
 
         it('provides empty `fluxKustomization` to KubernetesTabs', () => {
@@ -305,9 +305,9 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             await waitForPromises();
           });
           it('provides correct `fluxResourceStatus` to KubernetesStatusBar', () => {
-            expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual(
-              fluxResourceStatus,
-            );
+            expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual({
+              conditions: fluxResourceStatus,
+            });
           });
 
           it('provides correct `fluxNamespace` to KubernetesStatusBar', () => {

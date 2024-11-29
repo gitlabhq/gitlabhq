@@ -72,7 +72,7 @@ export default {
     fluxKustomizationStatus() {
       if (!this.fluxKustomization.conditions?.length) return '';
 
-      return fluxSyncStatus(this.fluxKustomization.conditions).status;
+      return fluxSyncStatus({ conditions: this.fluxKustomization.conditions }).status;
     },
     fluxInventory() {
       return (

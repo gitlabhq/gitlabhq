@@ -221,6 +221,7 @@ class Namespace < ApplicationRecord
   scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
+  scope :project_namespaces, -> { where(type: Namespaces::ProjectNamespace.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
   scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }

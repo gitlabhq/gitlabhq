@@ -18951,6 +18951,9 @@ msgstr ""
 msgid "Deployment|Flux sync failed"
 msgstr ""
 
+msgid "Deployment|Flux sync is suspended"
+msgstr ""
+
 msgid "Deployment|Flux sync reconciled successfully"
 msgstr ""
 

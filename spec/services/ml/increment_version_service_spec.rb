@@ -39,8 +39,8 @@ RSpec.describe ::Ml::IncrementVersionService, feature_category: :mlops do
 
       where(:version, :increment_type, :result) do
         nil | nil | '1.0.0'
-        '0.0.1' | nil | '1.0.1'
-        '1.0.0' | nil | '2.0.0'
+        '0.0.1' | nil | '0.0.2'
+        '1.0.0' | nil | '1.0.1'
         '1.0.0' | :major | '2.0.0'
         '1.0.0' | :minor | '1.1.0'
         '1.0.0' | :patch | '1.0.1'
