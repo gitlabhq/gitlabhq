@@ -9,23 +9,18 @@ module Banzai
     #
     class PlantumlFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
-      include ActionView::Helpers::TagHelper
-      include Gitlab::Utils::StrongMemoize
 
       def call
         return doc unless settings.plantuml_enabled? && doc.at_xpath(lang_tag)
-        return doc unless plantuml_url_valid?
 
         Gitlab::Plantuml.configure
 
         doc.xpath(lang_tag).each do |node|
-          next if node.content.blank?
+          img_tag = Nokogiri::HTML::DocumentFragment.parse(
+            Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {})).css('img').first
 
-          image_src = create_image_src('png', node.content)
-          img_tag = Nokogiri::HTML::DocumentFragment.parse(content_tag(:img, nil, src: image_src))
-          img_tag = img_tag.children.first
+          next if img_tag.nil?
 
-          img_tag.add_class('plantuml')
           img_tag.set_attribute('data-diagram', 'plantuml')
           img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
 
@@ -44,15 +39,6 @@ module Banzai
 
       def settings
         Gitlab::CurrentSettings.current_application_settings
-      end
-      strong_memoize_attr :settings
-
-      def create_image_src(format, text)
-        Asciidoctor::PlantUml::Processor.gen_url(text, format)
-      end
-
-      def plantuml_url_valid?
-        ::Gitlab::UrlSanitizer.valid_web?(settings.plantuml_url)
       end
     end
   end

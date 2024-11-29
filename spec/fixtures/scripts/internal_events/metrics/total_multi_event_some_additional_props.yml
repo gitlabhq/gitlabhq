@@ -2,6 +2,8 @@
 key_path: counts.count_total_failed_usage_attempts
 description: Total count of when someone tried and failed to define an internal event using the CLI
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active

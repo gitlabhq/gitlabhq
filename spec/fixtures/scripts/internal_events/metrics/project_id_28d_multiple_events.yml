@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly
 description: Monthly count of unique projects where a defition file was created with the CLI
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active

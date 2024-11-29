@@ -58,6 +58,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "analytics_instrumentation\n", # Input group
+          "service_ping \n", # Select product category
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
           "4\n" # Exit
@@ -84,6 +85,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Submit weekly description for monthly
           "2\n", # Select: Modify attributes
           "\n", # Accept group
+          "\n", # Accept product categories
           "\n", # Skip URL
           "1\n", # Select: [free, premium, ultimate]
           "y\n", # Create file
@@ -131,6 +133,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "instrumentation\n", # Filter & select group
+          " \n", # Select product category
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
           "4\n" # Exit

@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_label_from_internal_events_cli_used_weekly
 description: Weekly count of unique values provided for label
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active

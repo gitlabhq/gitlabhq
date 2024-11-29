@@ -192,8 +192,7 @@
   }
 
   hr {
-    border-color: rgba($black, 0.15);
-
+    @apply gl-border-default;
     margin: 10px 0;
   }
 

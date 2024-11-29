@@ -7,6 +7,8 @@ identifiers:
 - namespace
 - user
 product_group: import_and_integrate
+product_categories:
+- acquisition
 milestone: '16.6'
 introduced_by_url: TODO
 tiers:

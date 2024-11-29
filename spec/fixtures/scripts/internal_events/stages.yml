@@ -63,8 +63,15 @@ stages:
     groups:
       package_registry:
         name: Package Registry
+        categories:
+        - package_registry
+        - helm_chart_registry
       container_registry:
         name: Container Registry
+        categories:
+        - container_registry
+        - virtual_registry
+        - dependency_firewall
 
   monitor:
     display_name: Monitor
@@ -72,6 +79,8 @@ stages:
     groups:
       analytics_instrumentation:
         name: Analytics Instrumentation
+        categories:
+          - service_ping
       product_analytics:
         name: Product Analytics
       observability:

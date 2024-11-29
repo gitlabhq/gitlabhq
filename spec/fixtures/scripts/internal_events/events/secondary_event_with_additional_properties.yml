@@ -12,6 +12,8 @@ additional_properties:
   value:
     description: Time the CLI ran before closing (seconds)
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 milestone: '16.6'
 introduced_by_url: TODO
 tiers:

@@ -3,6 +3,8 @@ description: Internal Event CLI is opened
 internal_events: true
 action: internal_events_cli_opened
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 milestone: '16.6'
 introduced_by_url: TODO
 tiers:

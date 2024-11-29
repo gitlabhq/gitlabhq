@@ -65,7 +65,7 @@ export default {
   >
     <gl-button
       ref="toggle"
-      class="gl-my-2 gl-mr-3 !gl-p-0"
+      class="gl-my-2 -gl-ml-3 gl-mr-2 !gl-p-0"
       :class="{ '!gl-text-link': !collapsed }"
       category="tertiary"
       :icon="buttonIcon"

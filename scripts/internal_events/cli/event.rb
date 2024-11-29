@@ -11,6 +11,7 @@ module InternalEventsCli
     :identifiers,
     :additional_properties,
     :product_group,
+    :product_categories,
     :milestone,
     :introduced_by_url,
     :tiers

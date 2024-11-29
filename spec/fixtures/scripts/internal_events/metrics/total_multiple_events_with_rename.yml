@@ -2,6 +2,9 @@
 key_path: counts.count_total_cli_interactions
 description: Total count of CLI interations
 product_group: analytics_instrumentation
+product_categories:
+- acquisition
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active

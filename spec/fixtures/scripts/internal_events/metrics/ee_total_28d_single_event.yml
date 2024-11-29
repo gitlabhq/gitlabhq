@@ -2,6 +2,8 @@
 key_path: counts.count_total_internal_events_cli_used_monthly
 description: Monthly count of when an event was defined using the CLI
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active

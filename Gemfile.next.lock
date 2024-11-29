@@ -340,7 +340,7 @@ GEM
       asciidoctor (>= 1.5.6, < 3.0.0)
     asciidoctor-kroki (0.10.0)
       asciidoctor (~> 2.0)
-    asciidoctor-plantuml (0.1.1)
+    asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
     ast (2.4.2)
     async (2.12.1)
@@ -2012,7 +2012,7 @@ DEPENDENCIES
   asciidoctor (~> 2.0.18)
   asciidoctor-include-ext (~> 0.4.0)
   asciidoctor-kroki (~> 0.10.0)
-  asciidoctor-plantuml (~> 0.1.1)
+  asciidoctor-plantuml (~> 0.0.16)
   async (~> 2.12.1)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 3.2.4)!

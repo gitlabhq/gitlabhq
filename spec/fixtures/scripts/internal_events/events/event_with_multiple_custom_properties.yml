@@ -20,6 +20,8 @@ additional_properties:
   custom_key4:
     description: The extra custom property name 3
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 milestone: '16.6'
 introduced_by_url: TODO
 tiers:

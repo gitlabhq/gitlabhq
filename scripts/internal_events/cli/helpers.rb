@@ -21,10 +21,10 @@ module InternalEventsCli
     MILESTONE = File.read('VERSION').strip.match(/(\d+\.\d+)/).captures.first
     NAME_REGEX = /\A[a-z0-9_]+\z/
 
-    def new_page!(page = nil, total = nil, steps = [])
+    def new_page!(on_step: nil, steps: [])
       cli.say TTY::Cursor.clear_screen
       cli.say TTY::Cursor.move_to(0, 0)
-      cli.say "#{progress_bar(page, total, steps)}\n" if page && total
+      cli.say "#{progress_bar(on_step, steps)}\n" if on_step && steps&.any?
     end
 
     def feedback_notice

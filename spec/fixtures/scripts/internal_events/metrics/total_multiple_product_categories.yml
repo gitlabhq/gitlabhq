@@ -1,15 +1,16 @@
 ---
-key_path: redis_hll_counters.count_distinct_user_id_from_random_name_weekly
-description: Weekly count of unique users random metric string
-product_group: import_and_integrate
+key_path: counts.count_total_internal_events_cli_closed
+description: Total count of when the CLI is gracefully closed
+product_group: package_registry
 product_categories:
-- acquisition
+- helm_chart_registry
+- package_registry
 performance_indicator_type: []
 value_type: number
 status: active
 milestone: '16.6'
 introduced_by_url: TODO
-time_frame: 7d
+time_frame: all
 data_source: internal_events
 data_category: optional
 distribution:
@@ -20,5 +21,4 @@ tiers:
 - premium
 - ultimate
 events:
-- name: random_name
-  unique: user.id
+- name: internal_events_cli_closed

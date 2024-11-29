@@ -5,6 +5,7 @@ module InternalEventsCli
     :key_path,
     :description,
     :product_group,
+    :product_categories,
     :performance_indicator_type,
     :value_type,
     :status,
@@ -13,7 +14,6 @@ module InternalEventsCli
     :time_frame,
     :data_source,
     :data_category,
-    :product_categories,
     :distribution,
     :tiers,
     :events

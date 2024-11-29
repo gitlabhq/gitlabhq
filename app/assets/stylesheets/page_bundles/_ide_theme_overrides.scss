@@ -126,7 +126,7 @@
   }
 
   hr {
-    border-color: var(--ide-border-color, $gray-100);
+    border-color: var(--ide-border-color, var(--gl-border-color-default));
   }
 
   .md h1,

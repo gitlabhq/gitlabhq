@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_failed_usage_attempts_monthly
 description: Monthly count of unique users who tried and failed to define an internal event using the CLI
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active
