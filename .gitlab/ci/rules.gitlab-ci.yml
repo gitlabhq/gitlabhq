@@ -1002,7 +1002,7 @@
         ARCH: amd64,arm64
     - !reference [".build-images:rules:build-qa-image-merge-requests", rules]
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
-    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only-setup-test-env", rules]
+    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
 
 # When new minor release tag is pushed, re-tag gdk image with pattern ignored by registry cleanup
 .build-images:rules:retag-gdk-image:
@@ -2601,13 +2601,6 @@
     - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
       when: never
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
-
-.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only-setup-test-env:
-  rules:
-    - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
-      when: never
-    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
-      changes: *setup-test-env-patterns
 
 #################
 # Reports rules #
