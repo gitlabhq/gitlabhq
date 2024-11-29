@@ -51,29 +51,47 @@ Prerequisites:
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Add new**.
-1. Enter a **Git repository URL**. For security reasons, the URL to the original
-   repository is only displayed to users with the Maintainer role
-   or the Owner role for the mirrored project.
-1. Select a **Mirror direction**.
-1. If you entered a `ssh://` URL, select either:
+1. Enter a **Git repository URL**. The repository must be accessible over `http://`, `https://`, `ssh://`, or `git://`.
+1. Select a **Mirror direction**. For more information, see [Pull mirroring](pull.md) and [Push mirroring](push.md).
+1. If you entered an `ssh://` URL, select either:
    - **Detect host keys**: GitLab fetches the host keys from the server and displays the fingerprints.
    - **Input host keys manually**, and enter the host key into **SSH host key**.
 
-   When mirroring the repository, GitLab confirms at least one of the stored host keys
-   matches before connecting. This check can protect your mirror from malicious code injections,
+   When mirroring the repository, GitLab confirms that at least one of the stored host keys
+   matches before connecting. This check protects your mirror from malicious code injections,
    or your password from being stolen.
+
+   - To create a repository mirror with SSH authentication, see the [following example](#example-create-mirror-with-ssh-authentication).
+
 1. Select an **Authentication method**. For more information, see
    [Authentication methods for mirrors](#authentication-methods-for-mirrors).
 1. If you authenticate with SSH host keys, [verify the host key](#verify-a-host-key)
    to ensure it is correct.
-1. To prevent force-pushing over diverged refs, select [**Keep divergent refs**](push.md#keep-divergent-refs).
+1. To prevent force-pushing over diverged refs, select **Keep divergent refs**. For more information, see [Keep divergent refs](push.md#keep-divergent-refs).
 1. Optional. To limit the number of branches mirrored, select
    **Mirror only protected branches** or enter a regex in **Mirror specific branches**.
 1. Select **Mirror repository**.
 
+### Example: Create mirror with SSH authentication
+
 If you select `SSH public key` as your authentication method, GitLab generates a
 public key for your GitLab repository. You must provide this key to the non-GitLab server.
 For more information, see [Get your SSH public key](#get-your-ssh-public-key).
+
+To mirror a repository with SSH authentication:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Repository**.
+1. Expand **Mirroring repositories**.
+1. Select **Add new**.
+1. Enter a **Git repository URL**. Provide a URL in the following format: `ssh://gitlab.com/gitlab-org/gitlab.git`
+1. Select a **Mirror direction**. For more information, see [Pull mirroring](pull.md) and [Push mirroring](push.md).
+1. Select either **Detect host keys** or **Input host keys manually**.
+1. In the **Authentication method** field, select **SSH public key**
+1. In the **Username** field, add `git`.
+1. Optional. Configure the **Mirror user** and **Mirror branches** settings.
+1. Select **Mirror repository**.
+1. Copy the SSH public key and provide it to your non-GitLab server.
 
 ### Mirror only protected branches
 

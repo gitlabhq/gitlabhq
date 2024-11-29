@@ -34,11 +34,24 @@ class ProjectCiCdSetting < ApplicationRecord
     },
     allow_nil: true
 
+  validates :delete_pipelines_in_seconds,
+    allow_nil: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 1.day.seconds,
+      less_than_or_equal_to: 1.year.seconds,
+      message: N_('must be between 1 day and 1 year')
+    }
+
   attribute :forward_deployment_enabled, default: true
   attribute :separated_caches, default: true
   validates :merge_trains_skip_train_allowed, inclusion: { in: [true, false] }
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
+  chronic_duration_attr_writer :delete_pipelines_in_human_readable, :delete_pipelines_in_seconds
+
+  scope :configured_to_delete_old_pipelines, -> { where.not(delete_pipelines_in_seconds: nil) }
+  scope :with_project, -> { preload(:project) }
 
   def keep_latest_artifacts_available?
     # The project level feature can only be enabled when the feature is enabled instance wide

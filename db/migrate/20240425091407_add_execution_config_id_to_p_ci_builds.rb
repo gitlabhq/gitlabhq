@@ -3,11 +3,11 @@
 class AddExecutionConfigIdToPCiBuilds < Gitlab::Database::Migration[2.2]
   milestone '17.0'
 
-  # rubocop:disable Migration/AddColumnsToWideTables -- We need this to store run step config
   def up
-    add_column :p_ci_builds, :execution_config_id, :bigint # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
+    # rubocop:disable Migration/PreventAddingColumns -- We need this to store run step config
+    add_column :p_ci_builds, :execution_config_id, :bigint
+    # rubocop:enable Migration/PreventAddingColumns
   end
-  # rubocop:enable Migration/AddColumnsToWideTables
 
   def down
     remove_column :p_ci_builds, :execution_config_id

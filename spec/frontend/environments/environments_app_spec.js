@@ -1,10 +1,18 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlPagination, GlSkeletonLoader } from '@gitlab/ui';
+import {
+  GlPagination,
+  GlSkeletonLoader,
+  GlTabs,
+  GlTab,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { sprintf } from '~/locale';
 import EnvironmentsApp from '~/environments/components/environments_app.vue';
 import EnvironmentsFolder from '~/environments/components/environment_folder.vue';
@@ -24,6 +32,10 @@ describe('~/environments/components/environments_app.vue', () => {
   let environmentToStopMock;
   let environmentToChangeCanaryMock;
   let weightMock;
+
+  const GlTabStub = stubComponent(GlTab, {
+    template: '<li><slot name="title" /></li>',
+  });
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -52,6 +64,9 @@ describe('~/environments/components/environments_app.vue', () => {
         projectId: '1',
         projectPath: '/1',
         ...provide,
+      },
+      stubs: {
+        GlTab: GlTabStub,
       },
       apolloProvider,
     });
@@ -111,18 +126,49 @@ describe('~/environments/components/environments_app.vue', () => {
     );
   });
 
-  it('should show loading state while loading data', () => {
-    createWrapperWithMocked({});
+  describe('loading state', () => {
+    it('should show loading state while loading data', () => {
+      createWrapperWithMocked({});
 
-    const loader = wrapper.findComponent(GlSkeletonLoader);
-    expect(loader.exists()).toBe(true);
-  });
+      const loader = wrapper.findComponent(GlSkeletonLoader);
+      expect(loader.exists()).toBe(true);
+    });
 
-  it('should hide loading state once received data', async () => {
-    await createWrapperWithMocked({ environmentsApp: resolvedEnvironmentsApp });
+    it('should show tabs while loading data', () => {
+      createWrapperWithMocked({});
 
-    const loader = wrapper.findComponent(GlSkeletonLoader);
-    expect(loader.exists()).toBe(false);
+      const findTabs = wrapper.findComponent(GlTabs);
+      expect(findTabs.exists()).toBe(true);
+    });
+
+    it('should hide loading state once received data', async () => {
+      await createWrapperWithMocked({ environmentsApp: resolvedEnvironmentsApp });
+
+      const loader = wrapper.findComponent(GlSkeletonLoader);
+      expect(loader.exists()).toBe(false);
+    });
+
+    it('should show tabs title as loading when performing search', async () => {
+      await createWrapperWithMocked({
+        environmentsApp: resolvedEnvironmentsApp,
+      });
+
+      const searchBox = wrapper.findByRole('searchbox', {
+        name: 'Search by environment name',
+      });
+      searchBox.setValue('hello');
+      await nextTick();
+
+      const [active, stopped] = wrapper.findAllComponents(GlTab).wrappers;
+
+      expect(active.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(stopped.findComponent(GlLoadingIcon).exists()).toBe(true);
+
+      await waitForPromises();
+
+      expect(active.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(stopped.findComponent(GlLoadingIcon).exists()).toBe(false);
+    });
   });
 
   it('should show all the folders that are fetched', async () => {
@@ -239,13 +285,13 @@ describe('~/environments/components/environments_app.vue', () => {
   });
 
   describe('tabs', () => {
-    it('should show tabs for active and stopped environmets', async () => {
+    it('should show tabs for active and stopped environments', async () => {
       await createWrapperWithMocked({
         environmentsApp: resolvedEnvironmentsApp,
         folder: resolvedFolder,
       });
 
-      const [active, stopped] = wrapper.findAllByRole('tab').wrappers;
+      const [active, stopped] = wrapper.findAllComponents(GlTab).wrappers;
 
       expect(active.text()).toContain('Active');
       expect(active.text()).toContain(resolvedEnvironmentsApp.activeCount.toString());
@@ -258,11 +304,10 @@ describe('~/environments/components/environments_app.vue', () => {
         environmentsApp: resolvedEnvironmentsApp,
         folder: resolvedFolder,
       });
-      const stopped = wrapper.findByRole('tab', {
-        name: `${'Stopped'} ${resolvedEnvironmentsApp.stoppedCount}`,
-      });
 
-      stopped.trigger('click');
+      const stopped = wrapper.findAllComponents(GlTab).at(1);
+
+      stopped.vm.$emit('click');
 
       await nextTick();
       await waitForPromises();
@@ -410,15 +455,11 @@ describe('~/environments/components/environments_app.vue', () => {
         environmentsApp: resolvedEnvironmentsApp,
         folder: resolvedFolder,
       });
-      searchBox = wrapper.findByRole('searchbox', {
-        name: 'Search by environment name',
-      });
+      searchBox = wrapper.findComponent(GlSearchBoxByType);
     });
 
-    it('should sync the query params to the new search', async () => {
-      searchBox.setValue('hello');
-
-      await waitForDebounce();
+    it('should sync the query params to the new search', () => {
+      searchBox.vm.$emit('input', 'hello');
 
       expect(window.location.search).toBe('?scope=active&page=1&search=hello');
     });
@@ -426,7 +467,7 @@ describe('~/environments/components/environments_app.vue', () => {
     it('should query for the entered parameter', async () => {
       const search = 'hello';
 
-      searchBox.setValue(search);
+      searchBox.vm.$emit('input', search);
 
       await waitForDebounce();
       await waitForPromises();
@@ -440,7 +481,7 @@ describe('~/environments/components/environments_app.vue', () => {
     });
 
     it('should sync search term from query params on load', () => {
-      expect(searchBox.element.value).toBe('prod');
+      expect(searchBox.props('value')).toBe('prod');
     });
   });
 });

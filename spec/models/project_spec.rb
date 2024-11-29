@@ -1306,7 +1306,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'inbound_job_token_scope_enabled' => 'ci_',
           'push_repository_for_job_token_allowed' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_',
-          'id_token_sub_claim_components' => 'ci_'
+          'id_token_sub_claim_components' => 'ci_',
+          'delete_pipelines_in_seconds' => 'ci_'
         }
       end
 

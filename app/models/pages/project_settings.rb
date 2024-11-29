@@ -14,6 +14,8 @@ module Pages
 
     def force_https? = project.pages_https_only?
 
+    def pages_default_domain_redirect = project.project_setting.pages_default_domain_redirect
+
     private
 
     attr_reader :project

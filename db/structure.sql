@@ -17616,7 +17616,8 @@ CREATE TABLE project_ci_cd_settings (
     restrict_pipeline_cancellation_role smallint DEFAULT 0 NOT NULL,
     pipeline_variables_minimum_override_role smallint DEFAULT 3 NOT NULL,
     push_repository_for_job_token_allowed boolean DEFAULT false NOT NULL,
-    id_token_sub_claim_components character varying[] DEFAULT '{project_path,ref_type,ref}'::character varying[] NOT NULL
+    id_token_sub_claim_components character varying[] DEFAULT '{project_path,ref_type,ref}'::character varying[] NOT NULL,
+    delete_pipelines_in_seconds integer
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -18153,11 +18154,13 @@ CREATE TABLE project_settings (
     observability_alerts_enabled boolean DEFAULT true NOT NULL,
     spp_repository_pipeline_access boolean,
     max_number_of_vulnerabilities integer,
+    pages_default_domain_redirect text,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
     CONSTRAINT check_4b142e71f3 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),
     CONSTRAINT check_67292e4b99 CHECK ((char_length(mirror_branch_regex) <= 255)),
+    CONSTRAINT check_999e5f0aaa CHECK ((char_length(pages_default_domain_redirect) <= 255)),
     CONSTRAINT check_acb7fad2f9 CHECK ((char_length(product_analytics_instrumentation_key) <= 255)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
@@ -28924,6 +28927,8 @@ CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id_and_note_id ON alert_m
 
 CREATE UNIQUE INDEX index_alert_user_mentions_on_note_id ON alert_management_alert_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
+CREATE INDEX index_alerts_on_project_id_domain_status ON alert_management_alerts USING btree (project_id, domain, status);
+
 CREATE INDEX index_allowed_email_domains_on_group_id ON allowed_email_domains USING btree (group_id);
 
 CREATE INDEX index_analytics_ca_group_stages_on_end_event_label_id ON analytics_cycle_analytics_group_stages USING btree (end_event_label_id);
@@ -31667,6 +31672,8 @@ CREATE UNIQUE INDEX index_project_authorizations_on_project_user_access_level ON
 CREATE UNIQUE INDEX index_project_auto_devops_on_project_id ON project_auto_devops USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_build_artifacts_size_refreshes_on_project_id ON project_build_artifacts_size_refreshes USING btree (project_id);
+
+CREATE INDEX index_project_ci_cd_settings_on_id_partial ON project_ci_cd_settings USING btree (id) WHERE (delete_pipelines_in_seconds IS NOT NULL);
 
 CREATE UNIQUE INDEX index_project_ci_cd_settings_on_project_id ON project_ci_cd_settings USING btree (project_id);
 

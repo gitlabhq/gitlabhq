@@ -675,11 +675,12 @@ module API
 
     # file helpers
 
-    def present_disk_file!(path, filename, content_type = 'application/octet-stream')
+    def present_disk_file!(path, filename, content_type: nil, extra_response_headers: {})
       filename ||= File.basename(path)
+      extra_response_headers.compact_blank.each { |k, v| header[k] = v }
       header['Content-Disposition'] = ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: filename)
       header['Content-Transfer-Encoding'] = 'binary'
-      content_type content_type
+      content_type(content_type || 'application/octet-stream')
 
       # Support download acceleration
       case headers['X-Sendfile-Type']
@@ -697,7 +698,19 @@ module API
       present_carrierwave_file!(file, **args)
     end
 
-    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil)
+    # Return back the given file depending on the object storage configuration.
+    # For disabled mode, the disk file is returned.
+    # For enabled mode, the response depends on the direct download support:
+    #   * direct download supported by the uploader class: a redirect to the file signed url is returned.
+    #   * direct download not supported: a workhorse send_url response is returned.
+    #
+    # Params:
+    # @file the carrierwave file.
+    # @supports_direct_download set to false to force a workhorse send_url response. true by default.
+    # @content_disposition controls the Content-Disposition response header. nil by default. Forced to attachment for object storage disabled mode.
+    # @content_type controls the Content-Type response header. By default, it will rely on the 'application/octet-stream' value or the content type detected by carrierwave.
+    # @extra_response_headers. Set additional response headers. Not used in the direct download supported case.
+    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil, extra_response_headers: {})
       return not_found! unless file&.exists?
 
       if content_disposition
@@ -705,8 +718,7 @@ module API
       end
 
       if file.file_storage?
-        file_content_type = content_type || 'application/octet-stream'
-        present_disk_file!(file.path, file.filename, file_content_type)
+        present_disk_file!(file.path, file.filename, content_type: content_type, extra_response_headers: extra_response_headers)
       elsif supports_direct_download && file.direct_download_enabled?
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
@@ -718,7 +730,8 @@ module API
         file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address, redirect_params: redirect_params)
         redirect(file_url.url)
       else
-        response_headers = { 'Content-Type' => content_type, 'Content-Disposition' => response_disposition }.compact_blank
+        response_headers = extra_response_headers.merge('Content-Type' => content_type, 'Content-Disposition' => response_disposition).compact_blank
+
         header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware

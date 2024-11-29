@@ -59,6 +59,7 @@ describe('Branch rule', () => {
     expect(findProtectionDetailsListItems()).toHaveLength(wrapper.vm.approvalDetails.length);
     expect(findProtectionDetailsListItems().at(0).text()).toBe('Allowed to force push');
     expect(findProtectionDetailsListItems().at(1).text()).toBe(wrapper.vm.pushAccessLevelsText);
+    expect(findProtectionDetailsListItems().at(1).text()).toContain('Maintainers');
   });
 
   it('renders branches count for wildcards', () => {

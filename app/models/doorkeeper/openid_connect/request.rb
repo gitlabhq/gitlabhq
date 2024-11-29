@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Doorkeeper # rubocop:disable Gitlab/NamespacedClass,Gitlab/BoundedContexts -- Override from a gem
+module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a gem
   module OpenidConnect
     class Request < ApplicationRecord
       self.table_name = :"#{table_name_prefix}oauth_openid_requests#{table_name_suffix}"

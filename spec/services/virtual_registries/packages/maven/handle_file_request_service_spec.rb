@@ -33,6 +33,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           action_params = execute.payload[:action_params]
           expect(action_params[:file]).to be_instance_of(VirtualRegistries::CachedResponseUploader)
           expect(action_params[:content_type]).to eq(cached_response.content_type)
+          expect(action_params[:file_sha1]).to be_instance_of(String)
+          expect(action_params[:file_md5]).to be_instance_of(String)
         when :download_digest
           expect(execute.payload[:action_params]).to eq(digest: expected_digest)
         else

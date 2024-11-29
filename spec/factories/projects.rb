@@ -73,6 +73,7 @@ FactoryBot.define do
       runners_token { nil }
       runner_token_expiration_interval { nil }
       runner_token_expiration_interval_human_readable { nil }
+      ci_delete_pipelines_in_seconds { nil }
 
       # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
       guests {}
@@ -152,6 +153,8 @@ FactoryBot.define do
       project.ci_inbound_job_token_scope_enabled = evaluator.ci_inbound_job_token_scope_enabled unless evaluator.ci_inbound_job_token_scope_enabled.nil?
       project.runner_token_expiration_interval = evaluator.runner_token_expiration_interval unless evaluator.runner_token_expiration_interval.nil?
       project.runner_token_expiration_interval_human_readable = evaluator.runner_token_expiration_interval_human_readable unless evaluator.runner_token_expiration_interval_human_readable.nil?
+      project.ci_delete_pipelines_in_seconds = evaluator.ci_delete_pipelines_in_seconds unless evaluator.ci_delete_pipelines_in_seconds.nil?
+      project.ci_cd_settings.save!
 
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state

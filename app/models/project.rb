@@ -564,6 +564,7 @@ class Project < ApplicationRecord
       delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
       delegate :separated_caches, :separated_caches=
       delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
+      delegate :delete_pipelines_in_seconds, :delete_pipelines_in_seconds=
     end
   end
 
@@ -3339,6 +3340,10 @@ class Project < ApplicationRecord
     return true if Gitlab::CurrentSettings.max_pages_custom_domains_per_project == 0
 
     pages_domains.count < Gitlab::CurrentSettings.max_pages_custom_domains_per_project
+  end
+
+  def pages_domain_present?(domain_url)
+    pages_url == domain_url || pages_domains.exists?(domain: domain_url)
   end
 
   # overridden in EE

@@ -5129,6 +5129,9 @@ msgstr ""
 msgid "AiImpactAnalytics|%{duoChatContributorsCount} out of %{duoAssignedUsersCount} GitLab Duo users interacted with Duo Chat in the last 30 days. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "AiImpactAnalytics|%{duoUsedCount} out of %{duoAssignedUsersCount} GitLab Duo assigned seats used at least one AI feature in the last 30 days. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AiImpactAnalytics|Code Suggestions acceptance usage"
 msgstr ""
 
@@ -5136,6 +5139,9 @@ msgid "AiImpactAnalytics|Code Suggestions usage"
 msgstr ""
 
 msgid "AiImpactAnalytics|Duo Chat: Unique users"
+msgstr ""
+
+msgid "AiImpactAnalytics|Duo seats: Assigned and used"
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors in the last 30 days. %{linkStart}Learn more%{linkEnd}."
@@ -10613,6 +10619,9 @@ msgstr ""
 msgid "CICD|Default to Auto DevOps pipeline for all projects"
 msgstr ""
 
+msgid "CICD|Delete old pipelines"
+msgstr ""
+
 msgid "CICD|Deployment strategy"
 msgstr ""
 
@@ -10659,6 +10668,9 @@ msgid "CICD|Paste a group or project path to authorize access into this project.
 msgstr ""
 
 msgid "CICD|Pipelines and jobs cannot be cancelled"
+msgstr ""
+
+msgid "CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Minimum value is 1 day and maximum value is 1 year."
 msgstr ""
 
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
@@ -60907,6 +60919,9 @@ msgstr[1] ""
 msgid "View replaced file @ "
 msgstr ""
 
+msgid "View report"
+msgstr ""
+
 msgid "View seat usage"
 msgstr ""
 
@@ -66306,6 +66321,9 @@ msgid "must be at least 1 day"
 msgstr ""
 
 msgid "must be before %{expiry_date}"
+msgstr ""
+
+msgid "must be between 1 day and 1 year"
 msgstr ""
 
 msgid "must be enabled."

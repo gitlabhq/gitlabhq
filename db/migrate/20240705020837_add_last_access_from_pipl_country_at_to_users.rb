@@ -7,12 +7,9 @@ class AddLastAccessFromPiplCountryAtToUsers < Gitlab::Database::Migration[2.2]
   # This column prevents additional queries (e.g. 'SELECT ... FROM
   # country_access_logs ...') when checking if the user's access from a specific
   # country should be tracked (insert/update to country_access_logs table).
-  #
-  # rubocop:disable Migration/AddColumnsToWideTables -- see previous lines
+  # rubocop:disable Migration/PreventAddingColumns -- see previous lines
   def change
-    # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
     add_column :users, :last_access_from_pipl_country_at, :datetime_with_timezone, if_not_exists: true
-    # rubocop:enable Migration/PreventAddingColumns
   end
-  # rubocop:enable Migration/AddColumnsToWideTables
+  # rubocop:enable Migration/PreventAddingColumns
 end

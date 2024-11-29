@@ -30,7 +30,12 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findDynamicScroller = () => wrapper.findByTestId('dynamic-content-scroller');
 
-  const createComponent = async ({ propsData, slots, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = async ({
+    propsData,
+    slots,
+    mountFn = shallowMountExtended,
+    provide = {},
+  } = {}) => {
     wrapper = mountFn(Widget, {
       propsData: {
         isCollapsible: false,
@@ -44,6 +49,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         ...propsData,
       },
       slots,
+      provide,
       stubs: {
         StatusIcon,
         ActionButtons,
@@ -475,6 +481,61 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       findToggleButton().vm.$emit('click');
       await waitForPromises();
       expect(wrapper.findByText('Main text for the row').exists()).toBe(true);
+    });
+  });
+
+  describe('when mrReportsTab is enabled', () => {
+    beforeEach(() => {
+      window.gl = { mrWidgetData: { reportsTabPath: 'reportsTabPath' } };
+      window.mrTabs = { tabShown: jest.fn() };
+      jest.spyOn(window.history, 'replaceState');
+    });
+
+    it('does not render toggle button', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          summary: { title: 'Hello world' },
+        },
+        provide: { glFeatures: { mrReportsTab: true } },
+      });
+
+      expect(findToggleButton().exists()).toBe(false);
+    });
+
+    it('renders view reports action button', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          summary: { title: 'Hello world' },
+        },
+        provide: { glFeatures: { mrReportsTab: true } },
+      });
+
+      expect(findActionButtons().props('tertiaryButtons')).toEqual([
+        expect.objectContaining({ href: 'reportsTabPath?type=Test', text: 'View report' }),
+      ]);
+    });
+
+    it('calls mrTabs.tabShown when clicking action button', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          summary: { title: 'Hello world' },
+        },
+        provide: { glFeatures: { mrReportsTab: true } },
+      });
+
+      wrapper.findByTestId('extension-actions-button').vm.$emit('click', { preventDefault() {} });
+
+      await nextTick();
+
+      expect(window.mrTabs.tabShown).toHaveBeenCalledWith('reports');
+      expect(window.history.replaceState).toHaveBeenCalledWith(
+        null,
+        null,
+        'reportsTabPath?type=Test',
+      );
     });
   });
 });

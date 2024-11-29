@@ -150,7 +150,12 @@ module VirtualRegistries
           ServiceResponse.success(
             payload: {
               action: :download_file,
-              action_params: { file: cached_response.file, content_type: cached_response.content_type }
+              action_params: {
+                file: cached_response.file,
+                file_sha1: cached_response.file_sha1,
+                file_md5: cached_response.file_md5,
+                content_type: cached_response.content_type
+              }
             }
           )
         end

@@ -33,6 +33,23 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       expect(subject.errors[:id_token_sub_claim_components])
         .to include("not_existing_claim is not an allowed sub claim component")
     end
+
+    it 'validates delete_pipelines_in_seconds' do
+      is_expected.to validate_numericality_of(:delete_pipelines_in_seconds)
+        .only_integer
+        .is_greater_than_or_equal_to(1.day.seconds.to_i)
+        .is_less_than_or_equal_to(1.year.seconds.to_i)
+        .with_message('must be between 1 day and 1 year')
+    end
+  end
+
+  describe '.configured_to_delete_old_pipelines' do
+    let_it_be(:project) { create(:project, ci_delete_pipelines_in_seconds: 2.weeks.to_i) }
+    let_it_be(:other_project) { create(:project, group_runners_enabled: true) }
+
+    it 'includes settings with values present' do
+      expect(described_class.configured_to_delete_old_pipelines).to contain_exactly(project.ci_cd_settings)
+    end
   end
 
   describe '#pipeline_variables_minimum_override_role' do

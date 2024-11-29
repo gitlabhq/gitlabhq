@@ -7,11 +7,9 @@ class AddColorModeIdToUsers < Gitlab::Database::Migration[2.2]
   # From lib/gitlab/color_modes.rb
   DEFAULT_COLOR_MODE = 1
 
-  # rubocop:disable Migration/AddColumnsToWideTables -- consistent with theme_id
   def change
-    # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
+    # rubocop:disable Migration/PreventAddingColumns -- consistent with theme_id
     add_column :users, :color_mode_id, :smallint, default: DEFAULT_COLOR_MODE, null: false, if_not_exists: true
     # rubocop:enable Migration/PreventAddingColumns
   end
-  # rubocop:enable Migration/AddColumnsToWideTables
 end

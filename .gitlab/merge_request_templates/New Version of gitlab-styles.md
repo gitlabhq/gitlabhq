@@ -21,7 +21,7 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
       - Use `grep --perl-regexp -o ":\d+\d+: \w: \[\S+\] ([\w/]+)" raw_job_output.log | awk '{print $4}' | sort | uniq -c` to get a list of cop rules with offenses. Where `raw_job_output.log` is the raw output of the `rubocop` job
     - [ ] (Optional) Autocorrect offenses (only if the changeset is small)
     - [ ] Compare the total runtime of `rubocop --parallel` scan with previous runs
-  - [ ] Make sure CI passes :green_heart: 
+  - [ ] Make sure CI passes and does not have "silenced offenses" :green_heart:
   - [ ] Don't merge this MR yet!
   - [ ] Wait for `gitlab-styles` to be released
 - [ ] Upgrade released version of `gitlab-styles`
@@ -32,7 +32,7 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
     - [ ] Update [bundler's checksum file](https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file) via `bundle install && bundle exec bundler-checksum init`
     - [ ] Update `Gemfile.next` via `bundle install --gemfile Gemfile.next && cp Gemfile.lock Gemfile.next.lock && BUNDLE_GEMFILE=Gemfile.next bundle lock && BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init`
   - [ ] (Optional) Regenerate TODOs for new/changed cop rules
-  - [ ] Make sure CI passes :green_heart: 
+  - [ ] Make sure CI passes and does not have "silenced offenses" :green_heart:
   - [ ] Let the MR being reviewed again and merged
   - [ ] (Optional) Refine this [MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/New%20Version%20of%20gitlab-styles.md).
 

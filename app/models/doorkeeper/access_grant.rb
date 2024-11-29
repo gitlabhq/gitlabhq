@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Doorkeeper # rubocop:disable Gitlab/NamespacedClass,Gitlab/BoundedContexts -- Override from a gem
+module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a gem
   class AccessGrant < ApplicationRecord
     include ::Doorkeeper::Orm::ActiveRecord::Mixins::AccessGrant
     include SafelyChangeColumnDefault

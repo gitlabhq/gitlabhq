@@ -9,6 +9,9 @@ module API
         feature_category :virtual_registry
         urgency :low
 
+        SHA1_CHECKSUM_HEADER = 'x-checksum-sha1'
+        MD5_CHECKSUM_HEADER = 'x-checksum-md5'
+
         authenticate_with do |accept|
           accept.token_types(:personal_access_token).sent_through(:http_private_token_header)
           accept.token_types(:deploy_token).sent_through(:http_deploy_token_header)
@@ -74,6 +77,15 @@ module API
 
           namespace ':id/*path' do
             include ::API::Concerns::VirtualRegistries::Packages::Endpoint
+
+            helpers do
+              def download_file_extra_response_headers(action_params:)
+                {
+                  SHA1_CHECKSUM_HEADER => action_params[:file_sha1],
+                  MD5_CHECKSUM_HEADER => action_params[:file_md5]
+                }
+              end
+            end
 
             desc 'Download endpoint of the Maven virtual registry.' do
               detail 'This feature was introduced in GitLab 17.3. \

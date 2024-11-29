@@ -44,6 +44,7 @@ module BulkImports
         end
       end
 
+      object.importing = true
       object.assign_attributes(body_field(object) => body)
       object.save!(touch: false) if object_body_changed?(object)
 

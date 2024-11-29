@@ -2,10 +2,12 @@
 import { GlBadge, GlButton } from '@gitlab/ui';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
+import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
 import { getAccessLevels } from '../../../utils';
 
 export default {
   name: 'BranchRule',
+  accessLevelsConfig,
   i18n: {
     defaultLabel: s__('BranchRules|default'),
     detailsButtonLabel: s__('BranchRules|View details'),
@@ -137,7 +139,10 @@ export default {
     getAccessLevelsText(beginString = '', accessLevels) {
       const textParts = [];
       if (accessLevels.roles.length) {
-        textParts.push(n__('1 role', '%d roles', accessLevels.roles.length));
+        const roles = accessLevels.roles.map(
+          (roleInteger) => accessLevelsConfig[roleInteger].accessLevelLabel,
+        );
+        textParts.push(roles.join(', '));
       }
       if (accessLevels.groups.length) {
         textParts.push(n__('1 group', '%d groups', accessLevels.groups.length));

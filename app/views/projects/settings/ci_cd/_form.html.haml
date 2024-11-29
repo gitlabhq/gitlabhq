@@ -85,6 +85,14 @@
               = _("The maximum file size in megabytes for individual job artifacts.")
               = link_to sprite_icon('question-o'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
 
+        - if Feature.enabled?(:ci_delete_old_pipelines, :instance, type: :beta)
+          .form-group
+            = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
+              = form.label :delete_pipelines_in_human_readable, s_('CICD|Delete old pipelines'), class: 'label-bold'
+              = form.text_field :delete_pipelines_in_human_readable, { class: 'form-control gl-form-input' }
+              %p.form-text.text-muted
+                = html_escape(s_("CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Minimum value is 1 day and maximum value is 1 year.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+
         = f.submit _('Save changes'), pajamas_button: true
 
 %hr

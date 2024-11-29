@@ -102,6 +102,7 @@ ci_cd_settings:
     - restrict_pipeline_cancellation_role
     - push_repository_for_job_token_allowed
     - id_token_sub_claim_components
+    - delete_pipelines_in_seconds
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed
@@ -112,6 +113,7 @@ ci_cd_settings:
     job_token_scope_enabled: ci_job_token_scope_enabled
     separated_caches: ci_separated_caches
     allow_fork_pipelines_to_run_in_parent_project: ci_allow_fork_pipelines_to_run_in_parent_project
+    delete_pipelines_in_seconds: ci_delete_pipelines_in_seconds
 
 build_import_state: # import_state
   unexposed_attributes:
@@ -174,6 +176,7 @@ project_setting:
     - allow_pipeline_trigger_approve_deployment
     - pages_unique_domain_enabled
     - pages_unique_domain
+    - pages_default_domain_redirect
     - pages_multiple_versions_enabled
     - runner_registration_enabled
     - product_analytics_instrumentation_key

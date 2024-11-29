@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::BackfillSoftwareLicenseSpdxIdentifierForSoftwareLicensePolicies.prepend_mod_with('Gitlab::BackgroundMigration::BackfillSoftwareLicenseSpdxIdentifierForSoftwareLicensePolicies') # rubocop:disable Layout/LineLength -- ignore
+Gitlab::BackgroundMigration::BackfillSoftwareLicenseSpdxIdentifierForSoftwareLicensePolicies.prepend_mod

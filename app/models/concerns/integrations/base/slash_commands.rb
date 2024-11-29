@@ -54,11 +54,11 @@ module Integrations
       private
 
       def find_chat_user(params)
-        ChatNames::FindUserService.new(params[:team_id], params[:user_id]).execute # rubocop: disable CodeReuse/ServiceClass -- Legacy use
+        ChatNames::FindUserService.new(params[:team_id], params[:user_id]).execute
       end
 
       def authorize_chat_name_url(params)
-        ChatNames::AuthorizeUserService.new(params).execute # rubocop: disable CodeReuse/ServiceClass -- Legacy use
+        ChatNames::AuthorizeUserService.new(params).execute
       end
 
       def unknown_user_message(params)

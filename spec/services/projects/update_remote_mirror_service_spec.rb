@@ -182,32 +182,14 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
           end
         end
 
-        context 'when remote_mirror_fail_on_lfs feature flag enabled' do
-          it 'fails update' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              hash_including(message: "Error synching remote mirror")).and_call_original
+        it 'does not fail update' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            hash_including(message: "Error synching remote mirror")).and_call_original
 
-            execute!
+          execute!
 
-            expect(remote_mirror.update_status).to eq('failed')
-            expect(remote_mirror.last_error).to eq("Error synchronizing LFS files:\n\nunauthorized\n\n")
-          end
-        end
-
-        context 'when remote_mirror_fail_on_lfs feature flag is disabled' do
-          before do
-            stub_feature_flags(remote_mirror_fail_on_lfs: false)
-          end
-
-          it 'does not fail update' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              hash_including(message: "Error synching remote mirror")).and_call_original
-
-            execute!
-
-            expect(remote_mirror.update_status).to eq('finished')
-            expect(remote_mirror.last_error).to be_nil
-          end
+          expect(remote_mirror.update_status).to eq('finished')
+          expect(remote_mirror.last_error).to be_nil
         end
       end
 

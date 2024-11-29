@@ -4,9 +4,11 @@ import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui'
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
@@ -47,6 +49,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     loadingText: {
       type: String,
@@ -204,6 +207,23 @@ export default {
     },
     contentWithKeyField() {
       return this.content?.map((item, index) => ({ ...item, id: item.id || index }));
+    },
+    reportsTabActionButtons() {
+      return [
+        {
+          text: __('View report'),
+          href: mergeUrlParams(
+            { type: this.widgetName.replace(WIDGET_PREFIX, '') },
+            window.gl?.mrWidgetData?.reportsTabPath || '',
+          ),
+          onClick(action, e) {
+            e.preventDefault();
+
+            window.history.replaceState(null, null, action.href);
+            window.mrTabs.tabShown('reports');
+          },
+        },
+      ];
     },
   },
   watch: {
@@ -365,7 +385,10 @@ export default {
               >
             </template>
           </help-popover>
-          <slot name="action-buttons">
+          <div v-if="glFeatures.mrReportsTab">
+            <action-buttons :tertiary-buttons="reportsTabActionButtons" />
+          </div>
+          <slot v-else name="action-buttons">
             <action-buttons
               v-if="actionButtons.length > 0"
               :tertiary-buttons="actionButtons"
@@ -373,7 +396,10 @@ export default {
             />
           </slot>
         </div>
-        <div v-if="isCollapsible && !isSummaryLoading" class="gl-border-l gl-ml-3 gl-h-6 gl-pl-3">
+        <div
+          v-if="!glFeatures.mrReportsTab && isCollapsible && !isSummaryLoading"
+          class="gl-border-l gl-ml-3 gl-h-6 gl-pl-3"
+        >
           <gl-button
             v-gl-tooltip
             :title="collapseButtonLabel"
@@ -389,7 +415,7 @@ export default {
       </div>
     </div>
     <div
-      v-if="!isCollapsed || contentError"
+      v-if="!glFeatures.mrReportsTab && (!isCollapsed || contentError)"
       class="gl-border-t gl-relative gl-border-t-section gl-bg-subtle"
       data-testid="widget-extension-collapsed-section"
     >
