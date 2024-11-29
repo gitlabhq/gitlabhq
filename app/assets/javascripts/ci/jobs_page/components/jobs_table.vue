@@ -75,7 +75,7 @@ export default {
 
     <template #cell(stage)="{ item }">
       <div class="gl-truncate">
-        <span v-if="item.stage" data-testid="job-stage-name" class="gl-text-secondary">{{
+        <span v-if="item.stage" data-testid="job-stage-name" class="gl-text-subtle">{{
           item.stage.name
         }}</span>
       </div>

@@ -1,7 +1,7 @@
 %div
   %label.label-bold.gl-mb-0
     = s_('Profiles|Connected Accounts')
-  %p.gl-text-secondary= s_('Profiles|Select a service to sign in with.')
+  %p.gl-text-subtle= s_('Profiles|Select a service to sign in with.')
   .gl-flex.gl-flex-wrap.gl-gap-3
     - providers.each do |provider|
       - unlink_allowed = unlink_provider_allowed?(provider)

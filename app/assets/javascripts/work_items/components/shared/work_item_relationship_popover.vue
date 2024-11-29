@@ -80,7 +80,7 @@ export default {
     :css-classes="['gl-max-w-sm']"
   >
     <template #title>
-      <span class="gl-text-sm gl-text-secondary">{{ title }}</span>
+      <span class="gl-text-sm gl-text-subtle">{{ title }}</span>
     </template>
     <gl-loading-icon v-if="loading" size="sm" />
 

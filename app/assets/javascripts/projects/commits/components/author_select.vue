@@ -156,7 +156,7 @@ export default {
           />
           <span class="gl-flex gl-flex-col gl-overflow-hidden gl-hyphens-auto gl-break-words">
             {{ item.text }}
-            <span v-if="item.secondaryText" class="gl-text-secondary">
+            <span v-if="item.secondaryText" class="gl-text-subtle">
               {{ item.secondaryText }}
             </span>
           </span>

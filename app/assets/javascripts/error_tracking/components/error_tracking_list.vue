@@ -446,7 +446,7 @@ export default {
               >
                 <strong class="gl-truncate">{{ errors.item.title.trim() }}</strong>
               </gl-link>
-              <span class="gl-max-w-full gl-truncate gl-text-secondary">
+              <span class="gl-max-w-full gl-truncate gl-text-subtle">
                 {{ errors.item.culprit }}
               </span>
             </div>
@@ -469,7 +469,7 @@ export default {
           </template>
 
           <template #cell(lastSeen)="errors">
-            <time-ago :time="errors.item.lastSeen" class="gl-text-secondary" />
+            <time-ago :time="errors.item.lastSeen" class="gl-text-subtle" />
           </template>
 
           <template #cell(status)="errors">

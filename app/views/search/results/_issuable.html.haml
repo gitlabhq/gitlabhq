@@ -4,17 +4,17 @@
   .col-sm-9
     %span.gl-flex.gl-items-center
       = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable)
-      = sprite_icon('eye-slash', css_class: 'gl-text-secondary gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
+      = sprite_icon('eye-slash', css_class: 'gl-fill-icon-subtle gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
       = link_to issuable_path(issuable), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }, class: 'gl-w-full' do
         %span.term.str-truncated.gl-font-bold.gl-ml-2= simple_search_highlight_and_truncate(issuable.title, @search_term)
-    .gl-text-secondary.gl-mb-3.gl-mt-2.gl-text-sm
+    .gl-text-subtle.gl-mb-3.gl-mt-2.gl-text-sm
       = issuable_project_reference(issuable)
       &middot;
       = sprintf(s_('created %{issuable_created} by %{author}'), { issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(issuable.author, avatar: false) }).html_safe
       - if (target_branch = issuable_visible_target_branch(issuable))
         %span.project-ref-path.has-tooltip.gl-inline-block.gl-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: target_branch} }
           &nbsp;
-          = link_to project_ref_path(issuable.project, target_branch), class: 'ref-name !gl-text-secondary' do
+          = link_to project_ref_path(issuable.project, target_branch), class: 'ref-name !gl-text-subtle' do
             = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
             = target_branch
     .description.term.gl-px-0.gl-text-sm
@@ -30,4 +30,4 @@
         %span.has-tooltip{ title: _('Upvotes') }
           = sprite_icon('thumb-up', css_class: "gl-align-middle")
           = issuable.upvotes_count
-    %span.gl-text-secondary.gl-text-sm= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe
+    %span.gl-text-subtle.gl-text-sm= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe

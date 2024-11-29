@@ -233,7 +233,7 @@ export default {
           >{{ $options.i18n.updateEmail }}</gl-button
         >
       </section>
-      <p class="gl-mt-3 gl-text-secondary">
+      <p class="gl-mt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.helpText">
           <template #sendToSecondaryEmailButton>
             <gl-button

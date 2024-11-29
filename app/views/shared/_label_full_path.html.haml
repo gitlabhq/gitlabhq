@@ -1,8 +1,8 @@
 - full_path = label.subject_full_name
 
-.gl-text-sm.gl-font-semibold.gl-text-secondary
+.gl-text-sm.gl-font-semibold.gl-text-subtle
   - if label.project_label?
-    = sprite_icon('project', size: 12, css_class: 'gl-text-subtle')
+    = sprite_icon('project', size: 12, css_class: 'gl-fill-icon-subtle')
   - else
-    = sprite_icon('group', size: 12, css_class: 'gl-text-subtle')
+    = sprite_icon('group', size: 12, css_class: 'gl-fill-icon-subtle')
   = full_path

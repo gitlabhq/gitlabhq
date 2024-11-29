@@ -71,7 +71,7 @@ export default {
       </gl-form-radio-group>
     </gl-form-group>
 
-    <div class="gl-text-secondary" data-testid="restricted-levels-info">
+    <div class="gl-text-subtle" data-testid="restricted-levels-info">
       <template v-if="!defaultVisibilityLevels.length">{{
         $options.SNIPPET_LEVELS_DISABLED
       }}</template>

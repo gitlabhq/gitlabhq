@@ -24,7 +24,7 @@
       - c.with_body do
         %h2.gl-text-lg.gl-my-0= _('The repository for this project is empty')
         - if @project.can_current_user_push_code?
-          %p.gl-m-0.gl-mt-2.gl-text-secondary= _('To get started, clone the repository or upload some files.')
+          %p.gl-m-0.gl-mt-2.gl-text-subtle= _('To get started, clone the repository or upload some files.')
 
     - if can?(current_user, :push_code, @project)
       = render Pajamas::CardComponent.new(header_options: { class: 'gl-py-4' }) do |c|

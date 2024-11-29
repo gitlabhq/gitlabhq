@@ -59,7 +59,7 @@ export default {
       return true;
     },
     editedAtClasses() {
-      return this.showReplyButton ? 'gl-text-secondary gl-pl-3' : 'gl-text-secondary gl-pl-8';
+      return this.showReplyButton ? 'gl-text-subtle gl-pl-3' : 'gl-text-subtle gl-pl-8';
     },
   },
   methods: {

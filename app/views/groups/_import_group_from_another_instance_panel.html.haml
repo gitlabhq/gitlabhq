@@ -38,7 +38,7 @@
         title: s_('GroupsNew|Enter the URL for the source instance.'),
         id: 'import_gitlab_url',
         data: { testid: 'import-gitlab-url' }
-      %small.form-text.gl-text-secondary
+      %small.form-text.gl-text-subtle
         = s_('Import|Must only contain the base URL of the source GitLab instance.')
     .form-group.gl-form-group.gl-flex.gl-flex-col
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token', class: 'col-form-label'

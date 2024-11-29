@@ -61,7 +61,7 @@ export default {
     </strong>
 
     <template #body>
-      <p class="gl-mb-0 gl-ml-3 gl-mt-2 gl-pb-3 gl-text-secondary" :class="bodyClass">
+      <p class="gl-mb-0 gl-ml-3 gl-mt-2 gl-pb-3 gl-text-subtle" :class="bodyClass">
         <gl-sprintf :message="eventDetails.body">
           <template #userName>
             <span class="gl-font-bold gl-text-default">{{ eventDetails.user.name }}</span>

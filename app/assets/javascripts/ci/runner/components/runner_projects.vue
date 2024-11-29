@@ -134,7 +134,7 @@ export default {
         :is-owner="isOwner(project.id)"
       />
     </template>
-    <div v-else class="gl-py-5 gl-text-secondary">{{ $options.I18N_NO_PROJECTS_FOUND }}</div>
+    <div v-else class="gl-py-5 gl-text-subtle">{{ $options.I18N_NO_PROJECTS_FOUND }}</div>
 
     <runner-pagination
       :disabled="loading"

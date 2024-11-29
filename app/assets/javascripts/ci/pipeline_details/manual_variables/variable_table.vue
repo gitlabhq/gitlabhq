@@ -70,10 +70,10 @@ export default {
     </div>
     <gl-table-lite :fields="$options.TABLE_FIELDS" :items="items">
       <template #cell(key)="{ value }">
-        <gl-truncate :text="value" class="gl-text-secondary" />
+        <gl-truncate :text="value" class="gl-text-subtle" />
       </template>
       <template #cell(value)="{ value }">
-        <div class="gl-text-secondary" data-testid="manual-variable-value">
+        <div class="gl-text-subtle" data-testid="manual-variable-value">
           <span v-if="revealed">{{ value }}</span>
           <span v-else>****</span>
         </div>

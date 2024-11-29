@@ -14,7 +14,7 @@
         %code= fp.fingerprint_sha256 || fp.fingerprint
     - if verified_at
       .form-text.gl-text-subtle.js-fingerprint-verification
-        = sprite_icon('check', css_class: 'gl-text-green-500')
+        = sprite_icon('check', css_class: 'gl-fill-icon-success')
         Verified by
         - if verified_by
           = link_to verified_by.name, user_path(verified_by)

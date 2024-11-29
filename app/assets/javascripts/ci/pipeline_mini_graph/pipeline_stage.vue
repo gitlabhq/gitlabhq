@@ -161,7 +161,7 @@ export default {
     <template #footer>
       <div
         v-if="!isLoading && isMergeTrain"
-        class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-secondary"
+        class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-subtle"
         data-testid="merge-train-message"
       >
         {{ $options.i18n.mergeTrainMessage }}

@@ -75,7 +75,7 @@ export default {
     >
       {{ s__('Wiki|View all pages') }}
     </gl-button>
-    <div v-else class="gl-ml-3 gl-mt-3 gl-text-secondary">
+    <div v-else class="gl-ml-3 gl-mt-3 gl-text-subtle">
       {{ s__('Wiki|There are no pages in this wiki yet') }}
     </div>
   </ul>

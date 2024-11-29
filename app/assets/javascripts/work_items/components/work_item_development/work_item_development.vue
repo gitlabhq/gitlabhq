@@ -187,7 +187,7 @@ export default {
       :work-item-dev-widget="workItemDevelopment"
     />
     <template v-else>
-      <span v-if="!canUpdate" class="gl-text-secondary">{{ __('None') }}</span>
+      <span v-if="!canUpdate" class="gl-text-subtle">{{ __('None') }}</span>
       <template v-else>
         <gl-button category="secondary" size="small" data-testid="create-mr-button">{{
           $options.i18n.createMergeRequest

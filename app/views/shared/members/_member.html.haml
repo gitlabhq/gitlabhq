@@ -17,7 +17,7 @@
         %span
           = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }
           = user_status(user)
-          %span.gl-text-secondary= user.to_reference
+          %span.gl-text-subtle= user.to_reference
 
         .gl-inline-flex.gl-flex-wrap.gl-gap-2
           = render_if_exists 'shared/members/ee/sso_badge', member: member
@@ -36,7 +36,7 @@
           &middot;
           = link_to source.full_name, source, class: "gl-inline-block inline-link"
 
-        .gl-text-secondary.gl-text-sm
+        .gl-text-subtle.gl-text-sm
           - if member.request?
             = _("Requested %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.requested_at) }
           - else
@@ -52,7 +52,7 @@
       = render Pajamas::AvatarComponent.new(Pajamas::AvatarEmail.new(member.invite_email), size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
       .user-info
         .member= member.invite_email
-        .gl-text-secondary
+        .gl-text-subtle
           Invited
           - if member.created_by
             by

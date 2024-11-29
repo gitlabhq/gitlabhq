@@ -31,7 +31,7 @@ export default {
       :id="$options.richTextEditorButtonId"
       size="small"
       category="tertiary"
-      class="!gl-px-4 !gl-text-sm !gl-text-secondary"
+      class="!gl-px-4 !gl-text-sm !gl-text-subtle"
       data-testid="editing-mode-switcher"
       @click="$emit('switch')"
       >{{ text }}</gl-button

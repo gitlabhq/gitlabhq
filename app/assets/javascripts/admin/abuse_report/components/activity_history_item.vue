@@ -36,7 +36,7 @@ export default {
         <template #name>{{ reporterName }}</template>
         <template #category>{{ report.category }}</template>
       </gl-sprintf>
-      <time-ago-tooltip :time="report.reportedAt" class="gl-text-secondary sm:gl-ml-3" />
+      <time-ago-tooltip :time="report.reportedAt" class="gl-text-subtle sm:gl-ml-3" />
     </div>
   </history-item>
 </template>

@@ -568,7 +568,7 @@ export default {
         </template>
         <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
           {{ $options.i18n.protectedField }}
-          <p class="gl-text-secondary">
+          <p class="gl-text-subtle">
             {{ $options.i18n.protectedDescription }}
           </p>
         </gl-form-checkbox>
@@ -578,8 +578,8 @@ export default {
           @change="setRaw"
         >
           {{ $options.i18n.expandedField }}
-          <p class="gl-text-secondary">
-            <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-secondary">
+          <p class="gl-text-subtle">
+            <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-subtle">
               <template #code="{ content }">
                 <code>{{ content }}</code>
               </template>
@@ -615,7 +615,7 @@ export default {
       >
         {{ $options.i18n.keyFeedback }}
       </p>
-      <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-secondary">
+      <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.keyHelpText">
           <template #link="{ content }"
             ><gl-link

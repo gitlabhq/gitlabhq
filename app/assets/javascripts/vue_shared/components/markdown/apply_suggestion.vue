@@ -86,7 +86,7 @@ export default {
         @submit="onApply"
       />
 
-      <span class="gl-mt-2 gl-text-secondary">
+      <span class="gl-mt-2 gl-text-subtle">
         {{ helperText }}
       </span>
 

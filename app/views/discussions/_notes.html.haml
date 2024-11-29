@@ -20,7 +20,7 @@
         .discussion-with-resolve-btn
           = link_to_reply_discussion(discussion)
       - elsif !current_user
-        .disabled-comment.gl-text-center.gl-text-secondary
+        .disabled-comment.gl-text-center.gl-text-subtle
           Please
           = link_to _("register"), new_session_path(:user, redirect_to_referer: 'yes')
           or

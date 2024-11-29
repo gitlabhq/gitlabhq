@@ -55,7 +55,7 @@ export default {
 
 <template>
   <div
-    class="shrink-0 gl-mt-1 gl-flex gl-w-fit gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2 gl-text-sm gl-text-secondary"
+    class="shrink-0 gl-mt-1 gl-flex gl-w-fit gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2 gl-text-sm gl-text-subtle"
   >
     <span v-gl-tooltip :title="fullReference">{{ directNamespaceReference }}</span>
     <slot name="weight-metadata"></slot>

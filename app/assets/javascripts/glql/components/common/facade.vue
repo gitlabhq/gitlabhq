@@ -133,7 +133,7 @@ export default {
       />
       <pre
         :class="preClasses"
-      ><code :class="{ 'gl-text-secondary gl-opacity-5': loading }">{{ query.trim() }}</code></pre>
+      ><code :class="{ 'gl-text-subtle gl-opacity-5': loading }">{{ query.trim() }}</code></pre>
     </div>
   </div>
 </template>

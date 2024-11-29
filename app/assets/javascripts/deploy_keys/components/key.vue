@@ -181,7 +181,7 @@ export default {
             <span class="gl-truncate">{{ projectName(deployKeysProject) }}</span>
           </gl-badge>
         </template>
-        <span v-else class="gl-text-secondary">{{ __('None') }}</span>
+        <span v-else class="gl-text-subtle">{{ __('None') }}</span>
       </div>
     </div>
     <div class="table-section section-15">

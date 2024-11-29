@@ -217,7 +217,7 @@ export default {
     >
       <gl-button-group v-if="!isEditing" class="gl-flex gl-items-center">
         <gl-loading-icon v-if="uploading" class="gl-pl-4 gl-pr-3" />
-        <span v-if="uploading" class="gl-pr-3 gl-text-secondary">
+        <span v-if="uploading" class="gl-pr-3 gl-text-subtle">
           <gl-sprintf :message="__('Uploading: %{progress}')">
             <template #progress>{{ uploadProgress }}&percnt;</template>
           </gl-sprintf>

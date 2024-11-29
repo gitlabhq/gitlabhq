@@ -5,7 +5,7 @@
   .form-group
     = f.label :email
     = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', title: _('Please provide a valid email address.'), value: nil
-    .form-text.gl-text-secondary
+    .form-text.gl-text-subtle
       - emails_link = link_to('', profile_emails_url, target: '_blank', rel: 'noopener noreferrer')
       = safe_format(s_('Requires your primary GitLab email address. If you want to confirm a secondary email address, go to %{emails_link_start}Emails%{emails_link_end}'), tag_pair(emails_link, :emails_link_start, :emails_link_end))
 

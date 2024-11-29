@@ -7,10 +7,10 @@
 
 .search-result-row
   .note-search-caption.gl-max-w-full
-    .gl-text-sm.gl-text-secondary.gl-float-right= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+    .gl-text-sm.gl-text-subtle.gl-float-right= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
     .gl-inline-block.gl-truncate.search-max-w-inherit.gl-align-bottom
       .gl-font-bold= link_to_member(note.author, avatar: true, extra_class: 'gl-text-default')
-      .gl-text-secondary
+      .gl-text-subtle
         = _("Commented on %{link_to_project}").html_safe % { link_to_project: link_to(project.full_name, project) }
     &middot;
 

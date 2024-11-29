@@ -40,7 +40,7 @@ export default {
   >
     <gl-icon :name="kindIcon" data-testid="resource-kind-icon" />
     <div class="gl-ml-4">
-      <span class="gl-mb-2 gl-block gl-text-secondary">{{ kind }}:</span>
+      <span class="gl-mb-2 gl-block gl-text-subtle">{{ kind }}:</span>
       <div class="gl-flex gl-items-center">
         <span class="gl-line-clamp-1 gl-break-all" :title="name">{{ name }}</span>
         <gl-icon

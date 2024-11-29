@@ -757,7 +757,7 @@ export default {
         <!-- for supporting previous structure with intersection observer -->
         <li
           v-if="showCount"
-          class="board-list-count gl-py-4 gl-text-center gl-text-secondary"
+          class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
           data-issue-id="-1"
         >
           <gl-loading-icon

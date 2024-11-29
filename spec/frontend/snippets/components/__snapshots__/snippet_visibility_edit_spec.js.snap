@@ -98,7 +98,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
     </gl-form-radio-group-stub>
   </gl-form-group-stub>
   <div
-    class="gl-text-secondary"
+    class="gl-text-subtle"
     data-testid="restricted-levels-info"
   />
 </div>

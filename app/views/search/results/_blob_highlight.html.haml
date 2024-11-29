@@ -4,7 +4,7 @@
 #search-blob-content.file-content.code.js-syntax-highlight
   - if blob.present?
     .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight } }
-      - blob_highlight = blob.present.highlight_and_trim(trim_length: 1024, ellipsis_svg: sprite_icon('ellipsis_h', size: 12, css_class: "gl-text-gray-700"))
+      - blob_highlight = blob.present.highlight_and_trim(trim_length: 1024, ellipsis_svg: sprite_icon('ellipsis_h', size: 12, css_class: "gl-fill-icon-default"))
       - blob_highlight.lines.each_with_index do |line, index|
         - i = index + offset
         .line_holder.code-search-line.gl-flex

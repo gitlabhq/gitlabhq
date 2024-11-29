@@ -30,10 +30,10 @@
       %summary.gl-py-3.gl-px-5.gl-font-semibold
         = _("View trigger token usage examples")
       .gl-p-5
-        %p.gl-text-secondary
+        %p.gl-text-subtle
           = _("These examples show common methods of triggering a pipeline with a pipeline trigger token. The URL and ID for this project is prefilled.")
 
-        %p.gl-text-secondary
+        %p.gl-text-subtle
           = _('In each example, replace %{code_start}TOKEN%{code_end} with the trigger token you generated and replace %{code_start}REF_NAME%{code_end} with the branch or tag name.').html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
 
         %h5.gl-mt-3
@@ -62,10 +62,10 @@
         %h5.gl-mt-3
           = _('Pass job variables')
 
-        %p.gl-text-secondary
+        %p.gl-text-subtle
           = _('To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request.').html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
 
-        %p.gl-text-secondary
+        %p.gl-text-subtle
           = _('cURL:')
 
         %pre

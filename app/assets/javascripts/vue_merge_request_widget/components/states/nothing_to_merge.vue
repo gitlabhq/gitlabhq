@@ -27,7 +27,7 @@ export default {
       <p class="media-body gl-mb-1 gl-mt-1 gl-font-bold !gl-text-gray-900">
         {{ s__('mrWidgetNothingToMerge|Merge request contains no changes') }}
       </p>
-      <p class="!gl-m-0 gl-text-secondary" data-testid="nothing-to-merge-body">
+      <p class="!gl-m-0 gl-text-subtle" data-testid="nothing-to-merge-body">
         <gl-sprintf
           :message="
             s__(

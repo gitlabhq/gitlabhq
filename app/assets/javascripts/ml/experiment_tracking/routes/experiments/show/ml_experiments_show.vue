@@ -266,7 +266,7 @@ export default {
           </tbody>
         </table>
 
-        <div v-else class="gl-text-secondary">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
+        <div v-else class="gl-text-subtle">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
       </div>
     </section>
   </div>

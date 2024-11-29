@@ -40,7 +40,7 @@ export default {
     },
     classes() {
       return {
-        'retried gl-text-secondary': this.job.retried,
+        'retried gl-text-subtle': this.job.retried,
         'gl-font-bold': this.isActive,
       };
     },

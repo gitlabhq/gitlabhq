@@ -92,7 +92,7 @@ export default {
         <gl-link
           v-if="commitPath"
           :href="commitPath"
-          class="gl-mr-0 gl-text-secondary gl-font-monospace"
+          class="gl-mr-0 gl-text-subtle gl-font-monospace"
         >
           {{ commit.shortId }}
         </gl-link>
@@ -103,26 +103,22 @@ export default {
     <div v-if="tagName" class="js-tag-info gl-flex gl-items-center gl-gap-2">
       <gl-icon name="tag" variant="subtle" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
-        <gl-link v-if="tagPath" :href="tagPath" class="gl-mr-0 gl-text-secondary gl-font-monospace">
+        <gl-link v-if="tagPath" :href="tagPath" class="gl-mr-0 gl-text-subtle gl-font-monospace">
           {{ tagName }}
         </gl-link>
         <span v-else>{{ tagName }}</span>
       </div>
     </div>
     <div v-if="timeAt || author" class="js-author-date-info gl-flex gl-items-center">
-      <span class="gl-text-secondary">{{ createdTime }}&nbsp;</span>
+      <span class="gl-text-subtle">{{ createdTime }}&nbsp;</span>
       <template v-if="timeAt">
-        <span
-          v-gl-tooltip.bottom
-          :title="tooltipTitle(timeAt)"
-          class="gl-shrink-0 gl-text-secondary"
-        >
+        <span v-gl-tooltip.bottom :title="tooltipTitle(timeAt)" class="gl-shrink-0 gl-text-subtle">
           {{ atTimeAgo }}&nbsp;
         </span>
       </template>
 
       <div v-if="author" class="gl-flex gl-items-center gl-gap-1">
-        <span class="gl-text-secondary">{{ __('by') }}&nbsp;</span>
+        <span class="gl-text-subtle">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
           :link-href="author.webUrl"
           :img-src="author.avatarUrl"

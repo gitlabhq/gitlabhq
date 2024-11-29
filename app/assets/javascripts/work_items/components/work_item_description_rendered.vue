@@ -354,7 +354,7 @@ export default {
 
 <template>
   <div class="gl-my-5">
-    <div v-if="isDescriptionEmpty" class="gl-text-secondary">{{ __('No description') }}</div>
+    <div v-if="isDescriptionEmpty" class="gl-text-subtle">{{ __('No description') }}</div>
     <div
       v-else
       ref="description"

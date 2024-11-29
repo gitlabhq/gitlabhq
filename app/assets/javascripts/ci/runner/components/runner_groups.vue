@@ -32,6 +32,6 @@ export default {
         :avatar-url="group.avatarUrl"
       />
     </template>
-    <span v-else class="gl-text-secondary">{{ __('None') }}</span>
+    <span v-else class="gl-text-subtle">{{ __('None') }}</span>
   </div>
 </template>

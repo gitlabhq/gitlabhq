@@ -252,7 +252,7 @@ export default {
             :href="newWorkItemPath"
             :title="__('Open in full page')"
             category="tertiary"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             icon="maximize"
             size="small"
             :aria-label="__('Open in full page')"

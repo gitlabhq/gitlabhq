@@ -189,7 +189,7 @@ export default {
           >
             <div
               v-safe-html="group.descriptionHtml"
-              class="md gl-text-sm gl-text-secondary"
+              class="md md-child-content-text-subtle gl-text-sm"
               data-testid="group-description"
             ></div>
           </gl-truncate-text>
@@ -204,7 +204,7 @@ export default {
           <div
             v-gl-tooltip="$options.i18n.subgroups"
             :aria-label="$options.i18n.subgroups"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="subgroups-count"
           >
             <gl-icon name="subgroup" />
@@ -213,7 +213,7 @@ export default {
           <div
             v-gl-tooltip="$options.i18n.projects"
             :aria-label="$options.i18n.projects"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="projects-count"
           >
             <gl-icon name="project" />
@@ -222,7 +222,7 @@ export default {
           <div
             v-gl-tooltip="$options.i18n.directMembers"
             :aria-label="$options.i18n.directMembers"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="members-count"
           >
             <gl-icon name="users" />
@@ -231,7 +231,7 @@ export default {
         </div>
         <div
           v-if="timestamp"
-          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-secondary md:-gl-mt-2"
+          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-subtle md:-gl-mt-2"
         >
           <span>{{ timestampText }}</span>
           <time-ago-tooltip :time="timestamp" />

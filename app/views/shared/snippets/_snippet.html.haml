@@ -34,4 +34,4 @@
         = snippet_file_count(snippet)
         %span.has-tooltip{ title: visibility_level_label(snippet.visibility_level), data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
           = visibility_level_icon(snippet.visibility_level)
-      .gl-whitespace-nowrap.gl-text-sm.gl-text-secondary= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }
+      .gl-whitespace-nowrap.gl-text-sm.gl-text-subtle= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

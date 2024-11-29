@@ -109,7 +109,7 @@ export default {
 </script>
 <template>
   <gl-tab :title="$options.i18n.summaryTitle">
-    <p class="gl-mt-3 gl-text-secondary">{{ $options.i18n.treeView }}</p>
+    <p class="gl-mt-3 gl-text-subtle">{{ $options.i18n.treeView }}</p>
     <gl-alert v-if="errorMessage" :dismissible="false" variant="danger" class="gl-mb-4">{{
       errorMessage
     }}</gl-alert>

@@ -161,7 +161,7 @@ export default {
           </template>
         </gl-sprintf>
       </p>
-      <p class="gl-text-center gl-text-secondary">
+      <p class="gl-text-center gl-text-subtle">
         {{ s__('JiraService|This feature requires a Premium plan.') }}
       </p>
     </div>

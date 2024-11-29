@@ -15,5 +15,5 @@
           - if starrer.user == current_user
             = gl_badge_tag _("It's you"), variant: :success, class: 'gl-ml-2'
 
-        .block-truncated.gl-text-secondary.gl-text-sm
+        .block-truncated.gl-text-subtle.gl-text-sm
           = time_ago_with_tooltip(starrer.starred_since)

@@ -7,7 +7,7 @@
       - if hook.name?
         %p.gl-font-semibold.gl-mb-0
           = hook.name
-      %p.gl-mb-2{ class: hook.name ? 'gl-text-secondary' : 'gl-font-semibold' }
+      %p.gl-mb-2{ class: hook.name ? 'gl-text-subtle' : 'gl-font-semibold' }
         = hook.url
 
         - if hook.rate_limited?

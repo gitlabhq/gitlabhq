@@ -86,8 +86,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) for direct transfer in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) for Gitea in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`. Disabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) for GitHub in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+> - Introduced in GitLab 17.6 [for Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`, and [for GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) for direct transfer in GitLab 17.7.
 
 FLAG:
@@ -127,13 +126,14 @@ Each user on the destination instance that is assigned a mapping can:
 ### Placeholder users
 
 Instead of immediately assigning contributions and memberships to users on the destination instance, a
-placeholder user is created for any user whose contributions or memberships were imported.
+placeholder user is created for any active, inactive, or bot user with imported contributions or memberships.
 
 Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
 to existing users on the destination instance.
-
 Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
 do not display in member lists.
+
+Placeholder users do not count towards license limits.
 
 #### Exceptions
 
@@ -176,6 +176,7 @@ Placeholder users are created on the destination instance while a group or proje
 To view placeholder users created during imports to a top-level group and its subgroups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 
@@ -212,8 +213,9 @@ The above limits are for GitLab.com. Self-managed GitLab has no placeholder limi
 
 ### Reassign contributions and memberships
 
-Reassignment of contributions and memberships from placeholder users to existing active (non-bot) users occurs on
-the destination instance. On the destination instance, you can:
+Users with the Owner role for a top-level group can reassign contributions and memberships
+from placeholder users to existing active (non-bot) users.
+On the destination instance, users with the Owner role for a top-level group can:
 
 - Request users to accept reassignment of contributions and membership [in the UI](#request-reassignment-in-ui).
   The reassignment process starts only after the selected user [accepts the reassignment request](#accept-contribution-reassignment),
@@ -234,8 +236,8 @@ Users that receive a reassignment request can:
 - [Reject the request](#reject-contribution-reassignment) or report it as spam. This option is available in the reassignment
   request email.
 
-In subsequent imports, contributions and memberships that belong to the same source user are automatically mapped to the
-user who previously accepted reassignments for that source user.
+In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
+are mapped automatically to the user who previously accepted reassignments for that source user.
 
 The reassignment process must be fully completed before you:
 
@@ -278,9 +280,11 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To request a user accept reassignment of contributions and memberships:
+You can reassign contributions and memberships in the top-level group.
+To request reassignment of contributions and memberships:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
@@ -313,6 +317,7 @@ You can keep contributions assigned to placeholder users either one at a time or
 To keep placeholder users one at a time:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
@@ -323,6 +328,7 @@ To keep placeholder users one at a time:
 To keep placeholder users in bulk:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 1. Above the list, select the vertical ellipsis (**{ellipsis_v}**) > **Keep all as placeholder**.
@@ -333,6 +339,7 @@ To keep placeholder users in bulk:
 Before a user accepts a reassignment request, you can cancel the request:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
@@ -343,6 +350,7 @@ Before a user accepts a reassignment request, you can cancel the request:
 If a user is not acting on a reassignment request, you can prompt them again by sending another email:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
@@ -353,6 +361,7 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 You can review statuses of all placeholder users for which the reassignment process haven't been completed yet:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.

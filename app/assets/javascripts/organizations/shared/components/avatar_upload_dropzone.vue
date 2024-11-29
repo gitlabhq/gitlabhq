@@ -93,7 +93,7 @@ export default {
         <gl-button @click="$emit('input', null)">{{ $options.i18n.removeAvatar }}</gl-button>
         <gl-truncate
           v-if="isValueAFile"
-          class="gl-min-w-0 gl-max-w-48 gl-text-secondary"
+          class="gl-min-w-0 gl-max-w-48 gl-text-subtle"
           position="middle"
           :text="value.name"
         />
@@ -107,7 +107,7 @@ export default {
           </gl-sprintf>
         </template>
       </upload-dropzone>
-      <p class="gl-mb-0 gl-mt-3 gl-text-secondary">
+      <p class="gl-mb-0 gl-mt-3 gl-text-subtle">
         {{ $options.i18n.imageDimensions }}
         {{ $options.i18n.maxFileSize }}
       </p>

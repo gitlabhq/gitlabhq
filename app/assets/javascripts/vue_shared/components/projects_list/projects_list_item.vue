@@ -328,7 +328,7 @@ export default {
           >
             <div
               v-safe-html="project.descriptionHtml"
-              class="md gl-text-sm gl-text-secondary"
+              class="md md-child-content-text-subtle gl-text-sm"
               data-testid="project-description"
             ></div>
           </gl-truncate-text>
@@ -336,7 +336,7 @@ export default {
             <div
               class="-gl-mx-2 -gl-my-2 gl-inline-flex gl-w-full gl-flex-wrap gl-items-center gl-text-base gl-font-normal"
             >
-              <span class="gl-p-2 gl-text-sm gl-text-secondary">{{ $options.i18n.topics }}:</span>
+              <span class="gl-p-2 gl-text-sm gl-text-subtle">{{ $options.i18n.topics }}:</span>
               <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
                 <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
                   {{ topicTitle(topic) }}
@@ -345,7 +345,7 @@ export default {
               <template v-if="popoverTopics.length">
                 <div
                   :id="topicsPopoverTarget"
-                  class="gl-p-2 gl-text-sm gl-text-secondary"
+                  class="gl-p-2 gl-text-sm gl-text-subtle"
                   role="button"
                   tabindex="0"
                 >
@@ -377,7 +377,7 @@ export default {
             v-gl-tooltip="$options.i18n.stars"
             :href="starsHref"
             :aria-label="$options.i18n.stars"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="stars-btn"
           >
             <gl-icon name="star-o" />
@@ -388,7 +388,7 @@ export default {
             v-gl-tooltip="$options.i18n.forks"
             :href="forksHref"
             :aria-label="$options.i18n.forks"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="forks-btn"
           >
             <gl-icon name="fork" />
@@ -399,7 +399,7 @@ export default {
             v-gl-tooltip="$options.i18n.mergeRequests"
             :href="mergeRequestsHref"
             :aria-label="$options.i18n.mergeRequests"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="mrs-btn"
           >
             <gl-icon name="merge-request" />
@@ -410,7 +410,7 @@ export default {
             v-gl-tooltip="$options.i18n.issues"
             :href="issuesHref"
             :aria-label="$options.i18n.issues"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="issues-btn"
           >
             <gl-icon name="issues" />
@@ -419,7 +419,7 @@ export default {
         </div>
         <div
           v-if="timestamp"
-          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-secondary md:-gl-mt-2"
+          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-subtle md:-gl-mt-2"
         >
           <span>{{ timestampText }}</span>
           <time-ago-tooltip :time="timestamp" />

@@ -61,7 +61,7 @@ describe('MlExperimentsShow', () => {
   const findMetadataTableRow = (idx) => wrapper.findAll('.experiment-metadata tbody > tr').at(idx);
   const findMetadataTableColumn = (row, col) => findMetadataTableRow(row).findAll('td').at(col);
   const findMetadataHeader = () => wrapper.find('.experiment-metadata h3');
-  const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-secondary');
+  const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-subtle');
 
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;

@@ -9,4 +9,4 @@
         = link_to user.name, user_path(user), class: 'js-user-link', data: { user_id: user.id, testid: 'user-link', qa_username: user.username }
 
       .gl-line-clamp-1.gl-break-all
-        %span.gl-text-secondary= user.to_reference
+        %span.gl-text-subtle= user.to_reference

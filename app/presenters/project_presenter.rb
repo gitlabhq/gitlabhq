@@ -231,7 +231,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         title: s_('Terraform|Support for periods (`.`) in Terraform state names might break existing states.'),
         class: 'gl-ml-2',
         data: { toggle: 'tooltip' }
-      ) { sprite_icon('error', css_class: 'gl-text-subtle') }
+      ) { sprite_icon('error', css_class: 'gl-fill-icon-subtle') }
 
       AnchorData.new(
         true,

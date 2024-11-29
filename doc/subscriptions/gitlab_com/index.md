@@ -434,7 +434,7 @@ state for all projects is removed, and their excess usage is deducted from the a
 If you're using GitLab.com, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your
 main quota. You can find pricing for additional storage on the
-[GitLab Pricing page](https://about.gitlab.com/pricing/).
+[GitLab Pricing page](https://about.gitlab.com/pricing/#storage).
 
 To purchase additional storage for your group on GitLab.com:
 

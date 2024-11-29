@@ -152,7 +152,7 @@ export default {
         <registration-token input-id="token-value" :value="currentRegistrationToken" @copy="onCopy">
           <template #label-description>
             <gl-icon name="warning" variant="warning" />
-            <span class="gl-text-secondary">
+            <span class="gl-text-subtle">
               {{ s__('Runners|Support for registration tokens is deprecated') }}
             </span>
           </template>

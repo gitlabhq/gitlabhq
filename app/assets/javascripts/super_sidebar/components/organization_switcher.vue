@@ -16,7 +16,7 @@ export default {
   ITEM_EMPTY: {
     id: 'empty',
     text: s__('Organization|No organizations available to switch to.'),
-    extraAttrs: { disabled: true, class: '!gl-shadow-none gl-text-secondary' },
+    extraAttrs: { disabled: true, class: '!gl-shadow-none gl-text-subtle' },
   },
   i18n: {
     currentOrganization: s__('Organization|Current organization'),
@@ -168,7 +168,7 @@ export default {
           {{ $options.i18n.switchOrganizations }}
         </div>
         <div class="gl-py-3">
-          <p class="gl-m-0 gl-text-sm gl-text-secondary">
+          <p class="gl-m-0 gl-text-sm gl-text-subtle">
             {{ $options.i18n.switchingNotSupportedMessage }}
             <gl-link class="gl-text-sm" :href="$options.switchingOrganizationsDocsPath">{{
               $options.i18n.learnMore

@@ -50,7 +50,7 @@
                           = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip gl-mr-3', 'title': _('Edit'), 'aria-label': _('Edit') })
                           = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
           - else
-            .gl-text-secondary= _("You don't have any applications.")
+            .gl-text-subtle= _("You don't have any applications.")
 
     - else
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
@@ -92,4 +92,4 @@
                         - else
                           = render 'doorkeeper/authorized_applications/delete_form', token: token
           - else
-            .gl-text-secondary= _("You don't have any authorized applications.")
+            .gl-text-subtle= _("You don't have any authorized applications.")

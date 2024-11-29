@@ -52,7 +52,7 @@ export default {
           :size="24"
         />
       </gl-avatar-link>
-      <time-ago-tooltip :time="event.created_at" class="gl-mt-2 gl-text-sm gl-text-secondary" />
+      <time-ago-tooltip :time="event.created_at" class="gl-mt-2 gl-text-sm gl-text-subtle" />
     </div>
     <div class="gl-pl-7" data-testid="event-body">
       <div class="gl-text-sm gl-text-subtle">

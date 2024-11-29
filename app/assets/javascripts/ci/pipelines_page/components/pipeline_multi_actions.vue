@@ -179,7 +179,7 @@ export default {
     <template #footer>
       <p
         v-if="hasError && hasArtifacts"
-        class="gl-border-t gl-mb-0 gl-px-5 gl-py-4 gl-text-sm gl-text-secondary"
+        class="gl-border-t gl-mb-0 gl-px-5 gl-py-4 gl-text-sm gl-text-subtle"
         data-testid="artifacts-fetch-warning"
       >
         {{ $options.i18n.artifactsFetchWarningMessage }}

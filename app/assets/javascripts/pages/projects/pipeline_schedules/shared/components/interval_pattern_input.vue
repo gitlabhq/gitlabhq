@@ -182,7 +182,7 @@ export default {
       required="true"
       @input="onCustomInput"
     />
-    <p class="gl-mb-0 gl-mt-1 gl-text-secondary">
+    <p class="gl-mb-0 gl-mt-1 gl-text-subtle">
       {{ $options.i18n.learnCronSyntax }}
       <gl-link :href="cronSyntaxUrl" target="_blank">
         {{ $options.i18n.cronSyntaxLink }}

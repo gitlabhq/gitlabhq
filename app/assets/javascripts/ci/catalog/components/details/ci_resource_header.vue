@@ -123,7 +123,7 @@ export default {
           />
         </gl-avatar-link>
         <div class="gl-flex gl-flex-col gl-items-start gl-justify-center">
-          <div class="gl-text-sm gl-text-secondary">
+          <div class="gl-text-sm gl-text-subtle">
             {{ webPath }}
           </div>
           <span class="gl-flex gl-items-center gl-gap-3">

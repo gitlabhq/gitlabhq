@@ -333,7 +333,7 @@ export default {
               :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
             />
           </div>
-          <div v-if="hasInvalidRules" class="gl-mt-2 gl-text-secondary" data-testid="invalid-rules">
+          <div v-if="hasInvalidRules" class="gl-mt-2 gl-text-subtle" data-testid="invalid-rules">
             <gl-sprintf :message="pluralizedRuleText">
               <template #danger="{ content }">
                 <span class="gl-font-bold gl-text-danger">{{ content }}</span>

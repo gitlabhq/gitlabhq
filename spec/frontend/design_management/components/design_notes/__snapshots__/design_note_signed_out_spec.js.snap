@@ -2,7 +2,7 @@
 
 exports[`DesignNoteSignedOut renders message containing register and sign-in links while user wants to reply to a discussion 1`] = `
 <div
-  class="disabled-comment gl-text-center gl-text-secondary"
+  class="disabled-comment gl-text-center gl-text-subtle"
 >
   Please
   <gl-link-stub
@@ -22,7 +22,7 @@ exports[`DesignNoteSignedOut renders message containing register and sign-in lin
 
 exports[`DesignNoteSignedOut renders message containing register and sign-in links while user wants to start a new discussion 1`] = `
 <div
-  class="disabled-comment gl-text-center gl-text-secondary"
+  class="disabled-comment gl-text-center gl-text-subtle"
 >
   Please
   <gl-link-stub

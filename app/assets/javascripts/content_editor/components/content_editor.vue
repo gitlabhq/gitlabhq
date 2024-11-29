@@ -282,7 +282,7 @@ export default {
         <reference-bubble-menu />
       </div>
       <div
-        class="gl-border-t gl-flex gl-flex-row gl-items-center gl-justify-between gl-rounded-bl-base gl-rounded-br-base gl-border-gray-100 gl-px-2 gl-text-secondary"
+        class="gl-border-t gl-flex gl-flex-row gl-items-center gl-justify-between gl-rounded-bl-base gl-rounded-br-base gl-border-gray-100 gl-px-2 gl-text-subtle"
       >
         <editor-mode-switcher size="small" value="richText" @switch="handleEditorModeChanged" />
         <slot name="toolbar"></slot>

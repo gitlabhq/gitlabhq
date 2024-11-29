@@ -299,13 +299,13 @@ export default {
     <template v-else>
       <p class="gl-m-0 gl-pb-1">
         <span class="gl-inline-block gl-min-w-8">{{ $options.i18n.startDate }}:</span>
-        <span data-testid="start-date-value" :class="{ 'gl-text-secondary': !startDate }">
+        <span data-testid="start-date-value" :class="{ 'gl-text-subtle': !startDate }">
           {{ startDateValue }}
         </span>
       </p>
       <p class="gl-m-0 gl-pt-1">
         <span class="gl-inline-block gl-min-w-8">{{ $options.i18n.dueDate }}:</span>
-        <span data-testid="due-date-value" :class="{ 'gl-text-secondary': !dueDate }">
+        <span data-testid="due-date-value" :class="{ 'gl-text-subtle': !dueDate }">
           {{ dueDateValue }}
         </span>
       </p>
