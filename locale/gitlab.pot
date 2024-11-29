@@ -19165,6 +19165,9 @@ msgstr ""
 msgid "DesignManagement|Could not add a new comment. Please try again."
 msgstr ""
 
+msgid "DesignManagement|Could not award emoji. Please try again."
+msgstr ""
+
 msgid "DesignManagement|Could not create new discussion. Please try again."
 msgstr ""
 
@@ -19172,6 +19175,9 @@ msgid "DesignManagement|Could not delete comment. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Could not find design."
+msgstr ""
+
+msgid "DesignManagement|Could not resolve comment. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Could not update comment. Please try again."
@@ -19240,6 +19246,9 @@ msgid "DesignManagement|Resolve thread"
 msgstr ""
 
 msgid "DesignManagement|Resolved Comments"
+msgstr ""
+
+msgid "DesignManagement|Resolved threads"
 msgstr ""
 
 msgid "DesignManagement|Save changes"

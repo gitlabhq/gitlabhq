@@ -38,7 +38,7 @@ Each event is defined in a separate YAML file consisting of the following fields
 
 ## Changing the `action` property in event definitions
 
-When considering changing the `action` field in an event definition, it is important to know that: 
+When considering changing the `action` field in an event definition, it is important to know that:
 
 - Renaming an event is equivalent to deleting the existing event and creating a new one. This is acceptable if the event is not used in any metrics.
 

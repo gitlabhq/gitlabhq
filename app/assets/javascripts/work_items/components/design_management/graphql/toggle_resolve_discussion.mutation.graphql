@@ -1,0 +1,23 @@
+#import "./fragments/design_note.fragment.graphql"
+#import "./fragments/discussion_resolved_status.fragment.graphql"
+#import "./fragments/design_todo_item.fragment.graphql"
+
+mutation toggleResolveWorkItemDesignDiscussion($id: DiscussionID!, $resolve: Boolean!) {
+  discussionToggleResolve(input: { id: $id, resolve: $resolve }) {
+    discussion {
+      id
+      ...ResolvedStatus
+      noteable {
+        ... on Design {
+          ...DesignTodoItem
+        }
+      }
+      notes {
+        nodes {
+          ...DesignNote
+        }
+      }
+    }
+    errors
+  }
+}

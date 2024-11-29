@@ -1,14 +1,17 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { isNull } from 'lodash';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import getLocalDesignQuery from '../graphql/local_design.query.graphql';
 import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
+import createImageDiffNoteMutation from '../graphql/create_image_diff_note.mutation.graphql';
 import archiveDesignMutation from '../graphql/archive_design.mutation.graphql';
 import {
   extractDesign,
@@ -20,13 +23,17 @@ import {
 import {
   updateStoreAfterDesignsArchive,
   updateWorkItemDesignCurrentTodosWidget,
+  updateStoreAfterAddImageDiffNote,
 } from '../cache_updates';
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
   DESIGN_SINGLE_ARCHIVE_ERROR,
+  UPDATE_IMAGE_DIFF_NOTE_ERROR,
+  DELETE_NOTE_ERROR,
 } from '../constants';
+import DesignReplyForm from '../design_notes/design_reply_form.vue';
 import DesignPresentation from './design_presentation.vue';
 import DesignToolbar from './design_toolbar.vue';
 import DesignSidebar from './design_sidebar.vue';
@@ -41,6 +48,7 @@ export default {
     DesignSidebar,
     DesignToolbar,
     DesignScaler,
+    DesignReplyForm,
     GlAlert,
   },
   inject: ['fullPath'],
@@ -142,6 +150,24 @@ export default {
         atVersion: this.designsVersion,
       };
     },
+    mutationVariables() {
+      const { x, y, width, height } = this.annotationCoordinates;
+      return {
+        noteableId: this.design.id,
+        position: {
+          headSha: this.design.diffRefs.headSha,
+          baseSha: this.design.diffRefs.baseSha,
+          startSha: this.design.diffRefs.startSha,
+          x,
+          y,
+          width,
+          height,
+          paths: {
+            newPath: this.design.fullPath,
+          },
+        },
+      };
+    },
     hasValidVersion() {
       return this.$route.query.version;
     },
@@ -182,6 +208,9 @@ export default {
       }
       return true;
     },
+    isAnnotating() {
+      return Boolean(this.annotationCoordinates);
+    },
   },
   watch: {
     resolvedDiscussions(val) {
@@ -194,6 +223,17 @@ export default {
     Mousetrap.bind(keysFor(ISSUE_CLOSE_DESIGN), this.closeDesign);
   },
   methods: {
+    addImageDiffNoteToStore({ store, data }) {
+      const { createImageDiffNote } = data;
+
+      updateStoreAfterAddImageDiffNote(
+        store,
+        createImageDiffNote,
+        getLocalDesignQuery,
+        this.designVariables,
+      );
+      this.closeCommentForm(data);
+    },
     onDesignQueryResult({ data, loading }) {
       // On the initial load with cache-and-network policy data is undefined while loading is true
       // To prevent throwing an error, we don't perform any logic until loading is false
@@ -224,11 +264,21 @@ export default {
         });
       }
     },
+    onError(message, e) {
+      this.errorMessage = message;
+      if (e) throw e;
+    },
     onQueryError(message) {
       // because we redirect user to work item page,
       // we want to create these alerts on the work item page
       createAlert({ message });
       this.$router.push({ name: ROUTES.workItem });
+    },
+    onDeleteNoteError(e) {
+      this.onError(DELETE_NOTE_ERROR, e);
+    },
+    onResolveDiscussionError(e) {
+      this.onError(UPDATE_IMAGE_DIFF_NOTE_ERROR, e);
     },
     closeDesign() {
       this.$router.push({
@@ -286,7 +336,19 @@ export default {
         [this.design.filename],
       );
     },
+    openCommentForm(annotationCoordinates) {
+      this.annotationCoordinates = annotationCoordinates;
+    },
+    closeCommentForm(data) {
+      this.annotationCoordinates = null;
+
+      if (data?.data && !isNull(this.prevCurrentUserTodos)) {
+        updateGlobalTodoCount(this.currentUserTodos - this.prevCurrentUserTodos);
+        this.prevCurrentUserTodos = this.currentUserTodos;
+      }
+    },
   },
+  createImageDiffNoteMutation,
 };
 </script>
 
@@ -319,10 +381,13 @@ export default {
             :image="design.image"
             :image-name="design.filename"
             :discussions="discussions"
+            :is-annotating="isAnnotating"
             :scale="scale"
             :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+            :is-sidebar-open="isSidebarOpen"
             :is-loading="isLoading"
-            disable-commenting
+            :disable-commenting="!isSidebarOpen"
+            @openCommentForm="openCommentForm"
             @setMaxScale="setMaxScale"
           />
         </div>
@@ -338,8 +403,25 @@ export default {
           :is-open="isSidebarOpen"
           :markdown-preview-path="markdownPreviewPath"
           :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+          :is-comment-form-present="isAnnotating"
+          @deleteNoteError="onDeleteNoteError"
+          @resolveDiscussionError="onResolveDiscussionError"
           @toggleResolvedComments="toggleResolvedComments"
-        />
+        >
+          <template #reply-form>
+            <design-reply-form
+              v-if="isAnnotating"
+              ref="newDiscussionForm"
+              :design-note-mutation="$options.createImageDiffNoteMutation"
+              :mutation-variables="mutationVariables"
+              :markdown-preview-path="markdownPreviewPath"
+              :noteable-id="design.id"
+              :iid="iid"
+              @note-submit-complete="addImageDiffNoteToStore"
+              @cancel-form="closeCommentForm"
+            />
+          </template>
+        </design-sidebar>
       </div>
     </div>
   </div>

@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design reply form component renders button text as "Comment" when creating a comment 1`] = `
+<button
+  class="!gl-w-auto btn btn-confirm btn-md disabled gl-button gl-mr-3"
+  data-track-action="click_button"
+  disabled=""
+  type="submit"
+>
+  <span
+    class="gl-button-text"
+  >
+    Comment
+  </span>
+</button>
+`;
+
+exports[`Design reply form component renders button text as "Save comment" when creating a comment 1`] = `
+<button
+  class="!gl-w-auto btn btn-confirm btn-md disabled gl-button gl-mr-3"
+  data-track-action="click_button"
+  disabled=""
+  type="submit"
+>
+  <span
+    class="gl-button-text"
+  >
+    Save comment
+  </span>
+</button>
+`;

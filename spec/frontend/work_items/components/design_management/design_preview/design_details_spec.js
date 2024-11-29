@@ -9,23 +9,34 @@ import waitForPromises from 'helpers/wait_for_promises';
 import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
 import getLocalDesignQuery from '~/work_items/components/design_management/graphql/local_design.query.graphql';
 import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
+import createImageDiffNoteMutation from '~/work_items/components/design_management/graphql/create_image_diff_note.mutation.graphql';
+import DesignReplyForm from '~/work_items/components/design_management/design_notes/design_reply_form.vue';
 import DesignDetails from '~/work_items/components/design_management/design_preview/design_details.vue';
 import DesignPresentation from '~/work_items/components/design_management/design_preview/design_presentation.vue';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
 import DesignSidebar from '~/work_items/components/design_management/design_preview/design_sidebar.vue';
 import DesignScaler from '~/work_items/components/design_management/design_preview/design_scaler.vue';
 import * as utils from '~/work_items/components/design_management/utils';
-import { updateWorkItemDesignCurrentTodosWidget } from '~/work_items/components/design_management/cache_updates';
+import {
+  updateWorkItemDesignCurrentTodosWidget,
+  updateStoreAfterAddImageDiffNote,
+} from '~/work_items/components/design_management/cache_updates';
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_SINGLE_ARCHIVE_ERROR,
 } from '~/work_items/components/design_management/constants';
-import { getDesignResponse, mockDesign, mockArchiveDesignMutationResponse } from '../mock_data';
+import {
+  getDesignResponse,
+  mockDesign,
+  mockArchiveDesignMutationResponse,
+  mockCreateImageNoteDiffResponse,
+} from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/work_items/components/design_management/cache_updates', () => ({
   updateWorkItemDesignCurrentTodosWidget: jest.fn(),
+  updateStoreAfterAddImageDiffNote: jest.fn(),
 }));
 Vue.use(VueApollo);
 
@@ -53,8 +64,12 @@ describe('DesignDetails', () => {
   const findDesignToolbar = () => wrapper.findComponent(DesignToolbar);
   const findDesignSidebar = () => wrapper.findComponent(DesignSidebar);
   const findDesignScaler = () => wrapper.findComponent(DesignScaler);
+  const findDesignReplyForm = () => wrapper.findComponent(DesignReplyForm);
 
   const getDesignQueryHandler = jest.fn().mockResolvedValue(getDesignResponse);
+  const createImageDiffNoteMutationSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(mockCreateImageNoteDiffResponse);
   const archiveDesignSuccessMutationHandler = jest
     .fn()
     .mockResolvedValue(mockArchiveDesignMutationResponse);
@@ -72,6 +87,7 @@ describe('DesignDetails', () => {
       apolloProvider: createMockApollo([
         [getDesignQuery, queryHandler],
         [archiveDesignMutation, archiveDesignMutationHandler],
+        [createImageDiffNoteMutation, createImageDiffNoteMutationSuccessHandler],
       ]),
       data() {
         return data;
@@ -228,6 +244,46 @@ describe('DesignDetails', () => {
           },
         },
       });
+    });
+  });
+
+  describe('when annotating', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await waitForPromises();
+      findDesignPresentation().vm.$emit('openCommentForm', { x: 0, y: 0 });
+    });
+
+    it('updates storeand closes the form when mutation is completed', async () => {
+      const mockDesignVariables = {
+        fullPath: 'gitlab-org/gitlab-shell',
+        iid: '1',
+        filenames: ['image_name.png'],
+        atVersion: null,
+      };
+
+      findDesignReplyForm().vm.$emit('note-submit-complete', {
+        store: expect.anything(),
+        data: mockCreateImageNoteDiffResponse.data,
+      });
+
+      await nextTick();
+      expect(updateStoreAfterAddImageDiffNote).toHaveBeenCalledWith(
+        expect.anything(),
+        mockCreateImageNoteDiffResponse.data.createImageDiffNote,
+        getLocalDesignQuery,
+        mockDesignVariables,
+      );
+
+      expect(findDesignReplyForm().exists()).toBe(false);
+    });
+
+    it('closes the form and clears the comment on canceling form', async () => {
+      findDesignReplyForm().vm.$emit('cancel-form');
+
+      await nextTick();
+      expect(findDesignReplyForm().exists()).toBe(false);
     });
   });
 });

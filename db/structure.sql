@@ -7169,6 +7169,7 @@ CREATE TABLE approval_merge_request_rules (
     project_id bigint,
     approval_policy_rule_id bigint,
     role_approvers integer[] DEFAULT '{}'::integer[] NOT NULL,
+    approval_policy_action_idx smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255)),
     CONSTRAINT check_approval_m_r_rules_allowed_role_approvers_valid_entries CHECK (((role_approvers = '{}'::integer[]) OR (role_approvers <@ ARRAY[20, 30, 40, 50, 60])))
 );
@@ -7279,7 +7280,8 @@ CREATE TABLE approval_project_rules (
     applies_to_all_protected_branches boolean DEFAULT false NOT NULL,
     security_orchestration_policy_configuration_id bigint,
     scan_result_policy_id bigint,
-    approval_policy_rule_id bigint
+    approval_policy_rule_id bigint,
+    approval_policy_action_idx smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE approval_project_rules_groups (
@@ -19240,6 +19242,7 @@ CREATE TABLE scan_result_policies (
     send_bot_message jsonb DEFAULT '{}'::jsonb NOT NULL,
     fallback_behavior jsonb DEFAULT '{}'::jsonb NOT NULL,
     policy_tuning jsonb DEFAULT '{}'::jsonb NOT NULL,
+    action_idx smallint DEFAULT 0 NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
 );

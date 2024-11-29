@@ -3,6 +3,7 @@
 #import "~/graphql_shared/fragments/author.fragment.graphql"
 #import "./fragments/design_note.fragment.graphql"
 #import "./fragments/version.fragment.graphql"
+#import "./fragments/diff_refs.fragment.graphql"
 
 query getDesignDetails(
   $fullPath: ID!
