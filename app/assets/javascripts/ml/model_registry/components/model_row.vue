@@ -44,7 +44,7 @@ export default {
     </template>
 
     <template #left-secondary>
-      <div class="gl-text-secondary">
+      <div class="gl-text-subtle">
         <gl-link v-if="hasVersions" :href="model.latestVersion._links.showPath">{{
           model.latestVersion.version
         }}</gl-link>

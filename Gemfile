@@ -511,7 +511,7 @@ group :development, :test do
   gem 'spring', '~> 4.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'spring-commands-rspec', '~> 1.0.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'gitlab-styles', '~> 13.0.1', feature_category: :tooling
+  gem 'gitlab-styles', '~> 13.0.2', feature_category: :tooling
   gem 'haml_lint', '~> 0.58', feature_category: :tooling
 
   gem 'bundler-audit', '~> 0.9.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory

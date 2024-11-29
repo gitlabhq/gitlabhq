@@ -24,6 +24,12 @@
       max-width: 900px;
       margin: 0 auto 10px;
     }
+    
+    .div-dropzone {
+      textarea.note-textarea {
+        resize: none !important;
+      }
+    }
 
     .zen-control-leave {
       display: block;

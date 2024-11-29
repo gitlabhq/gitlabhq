@@ -78,7 +78,7 @@ This query should render a table like the one below:
 GLQL syntax consists primarily of logical expressions.
 These expressions follow the syntax of `<field name> [< | > | = | != | in] <value> [AND] ...`.
 
-**Field names** include `assignee`, `author`, `label`, and `epic`.
+**Field names** include `assignee`, `author`, `label`, and `milestone`.
 For a full list of supported fields, see the table at the bottom of this section.
 
 **Comparison operators**:
@@ -107,7 +107,6 @@ The following table lists all supported fields and their value types:
 | Field                                             | Operators                    | Values                                                                     | Examples |
 | ------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------- | -------- |
 | `assignee` <br>`author`                           | `=` <br>`!=` <br>`in`        | `String` <br>`Collection<String>` <br>`currentUser()` <br>`any` <br>`none` | `assignee = "foobar"` <br>`assignee in ("foobar", "baz")` <br>`author = currentUser()` <br>`author = any` <br>`assignee = none` |
-| `epic` <br>`reaction`                             | `=` <br>`!=`                 | `String` <br>`any` <br>`none`                                              | `epic = any` <br>`reaction = ":thumbsup:"` |
 | `project` <br>`group`                             | `=` <br>`!=`                 | `String`                                                                   | `project = "gitlab-org/gitlab"` <br>`group = "gitlab-org"` |
 | `closed` <br>`opened` <br>`confidential`          | `=` <br>`!=`                 | `Boolean`                                                                  | `closed = true` <br>`opened = true` <br>`confidential = true` |
 | `closed` <br>`opened` <br>`created` <br>`updated` | `=` <br>`!=` <br>`<` <br>`>` | `Date` <br>`String` <br>`today()`                                          | `updated = today()` <br>`created > -28d` (created in the last 28 days)<br>`created < -7d` (created at least a week ago)<br>`created > 2024-08-12` <br>`updated < "2024-08-12"` |
@@ -151,7 +150,6 @@ Supported fields to display:
 - `created`
 - `description`
 - `due`
-- `epic`
 - `health`
 - `iteration`
 - `cadence`
@@ -222,5 +220,4 @@ In the initial version, only the `labels` function is supported.
 
 ## Known issues
 
-For a full list of known issues, see [epic 14437](https://gitlab.com/groups/gitlab-org/-/epics/14437 "GitLab Query Language (GLQL) | Strategy") and
-[GLQL issues](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/).
+For a full list of known issues, see [epic 14437](https://gitlab.com/groups/gitlab-org/-/epics/14437 "GitLab Query Language (GLQL) | Strategy").

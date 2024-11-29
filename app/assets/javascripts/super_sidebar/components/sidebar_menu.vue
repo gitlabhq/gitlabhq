@@ -79,7 +79,7 @@ export default {
         return !this.isAsyncSidebarCountsFlagEnabled || !this.currentPath;
       },
       update(data) {
-        return data.namespace.sidebar ?? {};
+        return data?.namespace?.sidebar ?? {};
       },
       error(error) {
         Sentry.captureException(error);

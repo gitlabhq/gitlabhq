@@ -304,7 +304,8 @@ export default {
                 <span v-if="isIssue || isMergeRequest">
                   <gl-icon
                     v-if="item.icon_name"
-                    class="gl-mr-2 gl-text-secondary"
+                    class="gl-mr-2"
+                    variant="subtle"
                     :name="item.icon_name"
                   />
                   <small

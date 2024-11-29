@@ -43,6 +43,7 @@
 
 .gfm-form .note-textarea, .md .ProseMirror {
   resize: vertical !important;
+  max-height: unset !important;
 }
 
 .note-image-attach {

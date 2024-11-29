@@ -79,7 +79,7 @@ describe('Issue Due Date component', () => {
     wrapper = createComponent(date, closed);
 
     expect(findIcon(wrapper).props()).toMatchObject({
-      variant: 'current',
+      variant: 'subtle',
       name: 'calendar',
     });
   });

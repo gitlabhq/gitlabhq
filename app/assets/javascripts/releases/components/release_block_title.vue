@@ -49,7 +49,7 @@ export default {
             'Private - Guest users are not allowed to view detailed release information like title and source code.',
           )
         "
-        class="gl-text-secondary"
+        variant="subtle"
       />
     </template>
     <ci-cd-catalog-wrapper :release-path="release.tagPath">

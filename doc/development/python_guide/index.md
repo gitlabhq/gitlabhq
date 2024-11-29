@@ -6,16 +6,60 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Python development guidelines
 
-GitLab requires Python as a dependency for [reStructuredText](https://docutils.sourceforge.io/rst.html)
-markup rendering. It requires Python 3.
+This document describes conventions and practices we adopt at GitLab when developing Python code. While GitLab is built
+primarily on Ruby on Rails, we use Python when needed to leverage the ecosystem.
 
-## Installation
+Some examples of Python in our codebase:
+
+- [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway)
+- [Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
+- [Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+- [CloudConnector Python library](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/tree/main/src/python)
+
+## Design principles
+
+- Tooling should help contributors achieve their goals, both on short and long term.
+- A developer familiar with a Python codebase in GitLab should feel familiar with any other Python codebase at GitLab.
+- This documentation should support all contributors, regardless of their goals and incentives: from Python experts to one-off contributors.
+- We strive to follow external guidelines, but if needed we will choose conventions that better support GitLab contributors.
+
+## When should I consider Python for development
+
+Ruby should always be the first choice for development at GitLab, as we have a larger community, better support, and easier deployment. However, there are occasions where using Python is worth breaking the pattern. For example,
+when working with AI and ML, most of the open source uses Python, and using Ruby would require building and maintaining
+large codebases.
+
+## Creating a new Python application
+
+Scaffolding, libraries and pipelines for a new codebase.
+
+## Conventions Style Guidelines
+
+Writing consistent codebases.
+
+## Contributing to a Python codebase
+
+Resources to get started, examples and tips.
+
+## Code review and Maintainership guidelines
+
+How to create a merge request that minimizes review time and things to pay attention to when reviewing code.
+
+## Deploying a Python codebase
+
+Deploying libraries, utilities and services.
+
+## Python as part of the Monorepo
+
+GitLab requires Python as a dependency for [reStructuredText](https://docutils.sourceforge.io/rst.html) markup rendering. It requires Python 3.
+
+### Installation
 
 There are several ways of installing Python on your system. To be able to use the same version we use in production,
 we suggest you use [`pyenv`](https://github.com/pyenv/pyenv). It works and behaves similarly to its counterpart in the
 Ruby world: [`rbenv`](https://github.com/rbenv/rbenv).
 
-### macOS
+#### macOS
 
 To install `pyenv` on macOS, you can use [Homebrew](https://brew.sh/) with:
 
@@ -23,7 +67,7 @@ To install `pyenv` on macOS, you can use [Homebrew](https://brew.sh/) with:
 brew install pyenv
 ```
 
-### Windows
+#### Windows
 
 `pyenv` does not officially support Windows and does not work in Windows outside the Windows Subsystem for Linux. If you are a Windows user, you can use `pyenv-win`.
 
@@ -35,7 +79,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 
 [Learn more about `pyenv-win`](https://github.com/pyenv-win/pyenv-win).
 
-### Linux
+#### Linux
 
 To install `pyenv` on Linux, you can run the command below:
 
@@ -47,7 +91,7 @@ Alternatively, you may find `pyenv` available as a system package via your distr
 
 You can read more about it in [the `pyenv` prerequisites](https://github.com/pyenv/pyenv-installer#prerequisites).
 
-### Shell integration
+#### Shell integration
 
 `Pyenv` installation adds required changes to Bash. If you use a different shell,
 check for any additional steps required for it.
@@ -64,7 +108,7 @@ Or for [Oh My Fish](https://github.com/oh-my-fish/oh-my-fish):
 omf install pyenv
 ```
 
-## Dependency management
+#### Dependency management
 
 While GitLab doesn't directly contain any Python scripts, because we depend on Python to render
 [reStructuredText](https://docutils.sourceforge.io/rst.html) markup, we need to keep track on dependencies
@@ -81,7 +125,7 @@ pipenv install
 
 Running this command installs both the required Python version as well as required pip dependencies.
 
-## Use instructions
+#### Use instructions
 
 To run any Python code under the Pipenv environment, you need to first start a `virtualenv` based on the dependencies
 of the application. With Pipenv, this is a simple as running:
@@ -102,12 +146,12 @@ learning the language.
 A comprehensive reference covering essential Python syntax, built-in functions, and useful libraries.
 This is ideal for both beginners and experienced users who want a quick, organized summary of Python's key features.
 
-1. **[A Whirlwind Tour of Python (Jupyter Notebook)](https://github.com/jakevdp/WhirlwindTourOfPython)**  
+1. **[A Whirlwind Tour of Python (Jupyter Notebook)](https://github.com/jakevdp/WhirlwindTourOfPython)**
 A fast-paced introduction to Python fundamentals, tailored especially for data science practitioners but works well for everyone who wants to get just the basic understanding of the language.
 This is a Jupiter Notebook which makes this guide an interactive resource as well as a good introduction to Jupiter Notebook itself.
 
-1. **[100-page Python Intro](https://learnbyexample.github.io/100_page_python_intro)**  
+1. **[100-page Python Intro](https://learnbyexample.github.io/100_page_python_intro)**
 Brief guide provides a straightforward introduction to Python, covering all the essentials needed to start programming effectively. It’s a beginner-friendly option that covers everything from syntax to debugging and testing.
 
-1. **[Learn X in Y Minutes: Python](https://learnxinyminutes.com/docs/python)**  
+1. **[Learn X in Y Minutes: Python](https://learnxinyminutes.com/docs/python)**
 A very brief, high-level introduction cuts directly to the core syntax and features of Python, making it a valuable quick start for developers transitioning to Python.

@@ -113,11 +113,17 @@ export default {
         :filtered-roll-up-counts-by-type="filteredRollUpCountsByType"
       />
       <div
-        class="gl-text-secondary"
+        class="gl-text-subtle"
         :class="{ 'gl-mt-3': totalCountAllByType > 0 }"
         data-testid="badge-warning"
       >
-        <gl-icon v-if="totalCountAllByType > 0" name="information-o" class="gl-mr-2" :size="16" />{{
+        <gl-icon
+          v-if="totalCountAllByType > 0"
+          name="information-o"
+          class="gl-mr-2"
+          :size="16"
+          variant="subtle"
+        />{{
           totalCountAllByType > 0
             ? $options.i18n.countPermissionText
             : $options.i18n.noChildItemsText

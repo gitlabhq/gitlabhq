@@ -94,11 +94,11 @@ export default {
   <work-item-attribute
     anchor-id="board-card-due-date"
     wrapper-component="span"
-    :wrapper-component-class="`${cssClass} board-card-info gl-mr-3 gl-cursor-help gl-text-secondary`"
+    :wrapper-component-class="`${cssClass} board-card-info gl-mr-3 gl-cursor-help gl-text-subtle`"
   >
     <template #icon>
       <gl-icon
-        :variant="isOverdue ? 'danger' : 'current'"
+        :variant="isOverdue ? 'danger' : 'subtle'"
         class="board-card-info-icon gl-mr-2"
         :name="iconName"
       />

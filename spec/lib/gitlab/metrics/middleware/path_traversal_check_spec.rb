@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Metrics::Middleware::PathTraversalCheck, feature_category
   end
 
   describe '.increment' do
-    let(:labels) { { path_traversal_attempt_rejected: true } }
+    let(:labels) { { request_rejected: true } }
     let(:duration) { 1.5 }
 
     subject(:increment) { described_class.increment(labels: labels, duration: 1.5) }

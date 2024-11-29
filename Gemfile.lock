@@ -2094,7 +2094,7 @@ DEPENDENCIES
   gitlab-secret_detection!
   gitlab-security_report_schemas (= 0.1.2.min15.0.0.max15.2.1)
   gitlab-sidekiq-fetcher!
-  gitlab-styles (~> 13.0.1)
+  gitlab-styles (~> 13.0.2)
   gitlab-topology-service-client (~> 0.1)!
   gitlab-utils!
   gitlab_chronic_duration (~> 0.12)

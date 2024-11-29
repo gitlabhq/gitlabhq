@@ -75,7 +75,7 @@ module Emails
         @reason_text = _('You are receiving this email because you are either an Owner or Maintainer of the project.')
       end
 
-      mail_with_locale(
+      email_with_layout(
         to: recipient.notification_email_or_default,
         subject: subject(
           safe_format(

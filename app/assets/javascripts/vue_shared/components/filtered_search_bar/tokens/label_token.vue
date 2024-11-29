@@ -177,7 +177,8 @@ export default {
           <gl-icon
             v-if="selections.includes(label.title)"
             name="check"
-            class="gl-mr-3 gl-shrink-0 gl-text-secondary"
+            class="gl-mr-3 gl-shrink-0"
+            variant="subtle"
           />
           <span
             :style="{ backgroundColor: label.color }"

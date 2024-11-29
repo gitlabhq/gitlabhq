@@ -50,11 +50,12 @@ export default {
         <gl-icon
           v-gl-tooltip="visibilityTooltip"
           :name="visibilityIcon"
-          class="gl-ml-3 gl-text-secondary"
+          class="gl-ml-3"
+          variant="subtle"
         />
       </div>
       <div class="gl-flex gl-items-center">
-        <span class="gl-text-sm gl-text-secondary"
+        <span class="gl-text-sm gl-text-subtle"
           >{{ $options.i18n.orgId }}: {{ organization.id }}</span
         >
         <clipboard-button

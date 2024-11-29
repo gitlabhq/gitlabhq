@@ -1173,7 +1173,9 @@ GfmAutoComplete.Issues = {
   templateFunction({ id, title, reference, iconName }) {
     const mappedIconName =
       iconName === ISSUABLE_EPIC ? WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon : iconName;
-    const icon = mappedIconName ? spriteIcon(mappedIconName, 'gl-text-secondary s16 gl-mr-2') : '';
+    const icon = mappedIconName
+      ? spriteIcon(mappedIconName, 'gl-fill-icon-subtle s16 gl-mr-2')
+      : '';
     return `<li>${icon}<small>${escape(reference || id)}</small> ${escape(title)}</li>`;
   },
 };
