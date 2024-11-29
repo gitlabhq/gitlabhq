@@ -6,17 +6,17 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Large tables limitations
 
-GitLab implements some limitations on large database tables to improve manageability for both GitLab and its customers. The list of tables subject to these limitations is defined in [`rubocop/rubocop-migrations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml).
+GitLab enforces some limitations on large database tables schema changes to improve manageability for both GitLab and its customers. The list of tables subject to these limitations is defined in [`rubocop/rubocop-migrations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml).
 
 ## Table size restrictions
 
-The following limitations apply to table modifications on GitLab.com:
+The following limitations apply to table schema changes on GitLab.com:
 
-| Action | Maximum size (including indexes) |
+| Limitation | Maximum size after the action (including indexes and column size) |
 | ------ | ------------------------------- |
-| Add an index | 50 GB |
-| Add a column with foreign key | 50 GB |
-| Add a new column | 100 GB |
+| Can not add an index | 50 GB |
+| Can not add a column with foreign key | 50 GB |
+| Can not add a new column | 100 GB |
 
 These limitations align with our goal to maintain [all tables under 100 GB](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/) for improved [stability and performance](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/#motivation-gitlabcom-stability-and-performance).
 
@@ -61,6 +61,11 @@ This approach is particularly effective when:
 
 - The new column applies to a subset of the main table
 - Only specific queries need the new data
+
+Disadvantages
+
+1. More tables may result in more "joins" which will complicate queries
+1. Queries with multiple joins may end up being hard to optimize
 
 ## Related links
 

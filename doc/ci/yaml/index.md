@@ -4262,8 +4262,6 @@ In this example:
 - You can use the `$` character for both variables and paths. For example, if the
   `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
   as being part of a path.
-- You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
-  with `changes`. See [issue 425803](hhttps://gitlab.com/gitlab-org/gitlab/-/issues/425803) for more details.
 
 **Related topics**:
 
@@ -4388,11 +4386,6 @@ In this example:
 
 **Additional details**:
 
-- CI/CD variables used with `rules:exists` have some limitations:
-  - You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
-    with `exists`. See [issue 411344](https://gitlab.com/gitlab-org/gitlab/-/issues/411344) for more details.
-  - In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
-    See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
