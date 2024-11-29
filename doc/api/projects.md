@@ -209,6 +209,7 @@ Example response:
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
   "warn_about_potentially_unwanted_characters": true,
+  "pre_receive_secret_detection_enabled": false,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -561,6 +562,7 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
     "requirements_enabled": false,
     "requirements_access_level": "enabled",
     "security_and_compliance_enabled": false,
+    "pre_receive_secret_detection_enabled": false,
     "compliance_frameworks": [],
     "warn_about_potentially_unwanted_characters": true,
     "permissions": {
@@ -731,6 +733,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "pre_receive_secret_detection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
     "marked_for_deletion_on": "2020-04-03",
@@ -868,6 +871,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "pre_receive_secret_detection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
@@ -997,6 +1001,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "pre_receive_secret_detection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 37,
@@ -1119,6 +1124,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "pre_receive_secret_detection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
@@ -1919,6 +1925,7 @@ Example response:
   "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "pre_receive_secret_detection_enabled": false,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
@@ -2063,6 +2070,7 @@ Example response:
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
+  "pre_receive_secret_detection_enabled": false,
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -2261,7 +2269,8 @@ Example response:
   "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
   "mirror": false,
   "compliance_frameworks": [],
-  "warn_about_potentially_unwanted_characters": true
+  "warn_about_potentially_unwanted_characters": true,
+  "pre_receive_secret_detection_enabled": false
 }
 ```
 
@@ -2540,4 +2549,38 @@ Supported attributes:
     "repository_storage": "default"
   }
 ]
+```
+
+## Secret push protection status
+
+DETAILS:
+**Tier:** Ultimate
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+
+If you have at least the Developer role, the following requests could also return the `pre_receive_secret_detection_enabled` value.
+Note that some of these requests have stricter requirements about roles. Refer to the endpoints above for clarification.
+Use this information to determine whether secret push protection is enabled for a project.
+To modify the `pre_receive_secret_detection_enabled` value, please use the [Project Security Settings API](project_security_settings.md).
+
+- `GET /projects`
+- `GET /projects/:id`
+- `GET /users/:user_id/projects`
+- `GET /users/:user_id/contributed_projects`
+- `PUT /projects/:project_id/transfer?namespace=:namespace_id`
+- `PUT /projects/:id`
+- `POST /projects`
+- `POST /projects/user/:user_id`
+- `POST /projects/:id/archive`
+- `POST /projects/:id/unarchive`
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "pre_receive_secret_detection_enabled": true,
+  ...
+}
 ```
