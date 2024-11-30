@@ -130,6 +130,7 @@
 {"name":"domain_name","version":"0.5.20190701","platform":"ruby","checksum":"000a600454cb4a344769b2f10b531765ea7bd3a304fe47ed12e5ca1eab969851"},
 {"name":"doorkeeper","version":"5.8.0","platform":"ruby","checksum":"5abc747ee0eaa3140e165b41e937941f05d5ce5bcd8b8ed6718e6711623a8105"},
 {"name":"doorkeeper-device_authorization_grant","version":"1.0.3","platform":"ruby","checksum":"94c3ac12a0d50942850ecd58ed64298b397a5e903e8880cb68d4085600932679"},
+{"name":"doorkeeper-openid_connect","version":"1.8.10","platform":"ruby","checksum":"b28efaa9b52cbe9aca4efc825a7ef63cc950ae6a96f4a72ed8362f278a453742"},
 {"name":"dotenv","version":"2.7.6","platform":"ruby","checksum":"2451ed5e8e43776d7a787e51d6f8903b98e446146c7ad143d5678cc2c409d547"},
 {"name":"dry-cli","version":"1.0.0","platform":"ruby","checksum":"28ead169f872954dd08910eb8ead59cf86cd18b4aab321e8eeefe945749569f0"},
 {"name":"dry-core","version":"1.0.1","platform":"ruby","checksum":"f32f4245e0f54e787f3708584ed8f7545aaf8dd99072e36f169312468ec5450d"},
