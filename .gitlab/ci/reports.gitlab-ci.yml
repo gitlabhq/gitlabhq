@@ -1,24 +1,7 @@
 include:
-  - template: Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-code_quality:
-  extends:
-    - .default-retry
-    - .use-docker-in-docker
-    - .code-quality-cache-push
-  stage: lint
-  # P95 duration for this job has been 15min from 2024-06-10 until 2024-07-22
-  timeout: 20m
-  artifacts:
-    paths:
-      - gl-code-quality-report.json  # GitLab-specific
-  # extends generated values cannot overwrite values from included files
-  # Use !reference as a workaround here
-  rules: !reference [".reports:rules:code_quality", rules]
-  allow_failure: true
 
 code_quality cache:
   image: busybox

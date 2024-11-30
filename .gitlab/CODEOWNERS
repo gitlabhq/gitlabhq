@@ -127,7 +127,6 @@ Dangerfile
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/remote_development/ @gitlab-org/maintainers/workspaces/backend
 /scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
-/.codeclimate.yml
 /.dockerignore
 /.editorconfig
 /.gitpod.yml
