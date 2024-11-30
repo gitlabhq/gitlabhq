@@ -260,7 +260,6 @@ export default {
       <gl-button
         v-if="isLatestVersion"
         category="tertiary"
-        class="!gl-text-gray-900"
         size="small"
         variant="link"
         :disabled="!hasDesigns"

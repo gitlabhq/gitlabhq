@@ -41,7 +41,7 @@ export default {
             <h3 class="gl-text-size-h2 gl-text-inherit">
               {{ panel.title }}
             </h3>
-            <p class="gl-text-gray-900">
+            <p class="gl-text-default">
               {{ panel.description }}
             </p>
           </div>

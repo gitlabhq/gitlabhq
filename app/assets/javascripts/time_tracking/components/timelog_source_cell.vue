@@ -31,7 +31,7 @@ export default {
   <div class="gl-flex gl-flex-col gl-gap-2 !gl-text-left">
     <gl-link
       :href="subject.webUrl"
-      class="gl-font-bold gl-text-gray-900 hover:gl-text-gray-900"
+      class="gl-font-bold gl-text-default hover:gl-text-default"
       data-testid="title-container"
     >
       {{ subject.title }}
@@ -39,7 +39,7 @@ export default {
     <span>
       <gl-link
         :href="subject.webUrl"
-        class="gl-text-gray-900 hover:gl-text-gray-900"
+        class="gl-text-default hover:gl-text-default"
         data-testid="reference-container"
       >
         {{ issuableFullReference }}

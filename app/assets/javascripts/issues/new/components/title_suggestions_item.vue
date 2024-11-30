@@ -77,7 +77,7 @@ export default {
       <gl-link
         :href="suggestion.webUrl"
         target="_blank"
-        class="suggestion str-truncated-100 gl-font-bold !gl-text-gray-900"
+        class="suggestion str-truncated-100 gl-font-bold !gl-text-default"
       >
         {{ suggestion.title }}
       </gl-link>

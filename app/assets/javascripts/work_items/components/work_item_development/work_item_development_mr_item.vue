@@ -64,7 +64,7 @@ export default {
   <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
     <gl-link
       :href="itemContent.webUrl"
-      class="gfm-merge_request gl-truncate gl-text-gray-900 hover:gl-text-gray-900 hover:gl-underline"
+      class="gfm-merge_request gl-truncate gl-text-default hover:gl-text-default hover:gl-underline"
       data-reference-type="merge_request"
       :data-project-path="projectPath"
       :data-iid="itemContent.iid"

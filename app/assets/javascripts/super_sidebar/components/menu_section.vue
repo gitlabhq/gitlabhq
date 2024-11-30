@@ -141,7 +141,7 @@ export default {
         </slot>
       </span>
 
-      <span class="gl-truncate-end gl-grow gl-text-gray-900">
+      <span class="gl-truncate-end gl-grow gl-text-default">
         {{ item.title }}
       </span>
 

@@ -38,7 +38,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-text-gray-900">
+  <div class="gl-text-default">
     <gl-icon name="kubernetes-agent" variant="subtle" />
     <gl-link :href="clusterAgent.webPath" class="gl-mr-3">
       <gl-sprintf :message="$options.i18n.agentId"

@@ -136,7 +136,7 @@ export default {
         data-testid="terraform-states-table-name"
         class="gl-align-center gl-flex gl-justify-end gl-gap-3 md:gl-justify-start"
       >
-        <p class="gl-m-0 gl-text-gray-900">
+        <p class="gl-m-0 gl-text-default">
           {{ item.name }}
         </p>
 

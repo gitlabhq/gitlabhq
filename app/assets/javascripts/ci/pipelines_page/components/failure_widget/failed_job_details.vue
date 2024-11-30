@@ -109,10 +109,10 @@ export default {
       class="row gl-my-3 gl-flex gl-flex-wrap gl-items-center gl-gap-y-4"
       data-testid="widget-row"
     >
-      <div class="align-items-center col-4 gl-flex gl-text-gray-900">
+      <div class="align-items-center col-4 gl-flex gl-text-default">
         <ci-icon :status="job.detailedStatus" />
         <gl-link
-          class="gl-ml-2 !gl-text-gray-900 !gl-no-underline"
+          class="gl-ml-2 !gl-text-default !gl-no-underline"
           :href="detailsPath"
           data-testid="job-name-link"
           >{{ job.name }}</gl-link

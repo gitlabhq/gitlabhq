@@ -128,7 +128,7 @@ export default {
           </div>
           <span class="gl-flex gl-items-center gl-gap-3">
             <gl-link
-              class="gl-text-lg gl-font-bold gl-text-gray-900 hover:gl-text-gray-900"
+              class="gl-text-lg gl-font-bold gl-text-default hover:gl-text-default"
               :href="resource.webPath"
             >
               {{ resource.name }}

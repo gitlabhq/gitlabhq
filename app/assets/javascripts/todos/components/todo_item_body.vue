@@ -164,7 +164,7 @@ export default {
     </div>
     <div>
       <div v-if="showAuthorOnNote" class="gl-inline-flex gl-font-bold">
-        <gl-link v-if="todo.author" :href="todo.author.webUrl" class="!gl-text-gray-900">{{
+        <gl-link v-if="todo.author" :href="todo.author.webUrl" class="!gl-text-default">{{
           authorOnNote
         }}</gl-link>
         <span v-else>{{ $options.i18n.removed }}</span>

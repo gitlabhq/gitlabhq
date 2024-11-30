@@ -15,7 +15,7 @@ export const LABEL_DEFAULT_CLASSES = [
   'gl-flex',
   'gl-flex-row',
   'gl-flex-nowrap',
-  'gl-text-gray-900',
+  'gl-text-default',
 ];
 export const NAV_LINK_DEFAULT_CLASSES = [...LABEL_DEFAULT_CLASSES, 'gl-justify-between'];
 export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-text-sm', 'gl-font-normal'];

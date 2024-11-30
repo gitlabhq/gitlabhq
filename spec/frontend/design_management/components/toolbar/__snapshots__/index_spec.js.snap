@@ -14,7 +14,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
         class="gl-flex gl-items-center gl-m-0 gl-overflow-hidden gl-text-base"
       >
         <span
-          class="gl-no-underline gl-text-gray-900 gl-truncate"
+          class="gl-no-underline gl-text-heading gl-truncate"
         >
           My precious issue
         </span>

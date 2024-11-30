@@ -783,7 +783,7 @@ export default {
               class="mr-widget-merge-details -gl-order-1 gl-w-full"
               data-testid="merged-status-content"
             >
-              <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">
+              <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-default">
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-subtle">

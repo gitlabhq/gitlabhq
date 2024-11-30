@@ -50,7 +50,7 @@ export default {
       :href="targetUrl"
       :data-track-label="trackingLabel"
       :data-track-action="$options.TRACK_ACTION"
-      class="gl-flex gl-flex-wrap gl-gap-x-2 !gl-text-gray-900 !gl-no-underline !gl-outline-none sm:gl-flex-nowrap sm:gl-items-center"
+      class="gl-flex gl-flex-wrap gl-gap-x-2 !gl-text-default !gl-no-underline !gl-outline-none sm:gl-flex-nowrap sm:gl-items-center"
     >
       <div
         class="gl-w-64 gl-flex-grow-2 gl-self-center gl-overflow-hidden gl-overflow-x-auto sm:gl-w-auto"

@@ -373,7 +373,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-gray-900"
+          class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-default"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

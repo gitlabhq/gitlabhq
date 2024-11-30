@@ -178,7 +178,7 @@ export default {
   <div>
     <gl-form>
       <h2 data-testid="title">{{ $options.i18n.title }}</h2>
-      <p data-testid="description" class="gl-text-gray-900">{{ $options.i18n.description }}</p>
+      <p data-testid="description" class="gl-text-default">{{ $options.i18n.description }}</p>
       <gl-form-group
         data-testid="versionDescriptionId"
         :label="$options.i18n.versionLabelText"

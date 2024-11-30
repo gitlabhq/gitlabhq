@@ -98,7 +98,7 @@ export default {
           />
           <gl-link
             :href="workItem.webUrl"
-            class="gl-link gl-hyphens-auto gl-break-words gl-text-base gl-font-semibold gl-text-default hover:gl-text-gray-900"
+            class="gl-link gl-hyphens-auto gl-break-words gl-text-base gl-font-semibold gl-text-default hover:gl-text-default"
             @click.exact="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"

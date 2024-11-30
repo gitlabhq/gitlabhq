@@ -83,7 +83,7 @@ export default {
       <div class="gl-flex gl-items-center gl-justify-end lg:gl-justify-start">
         <ci-icon :status="item.detailedStatus" class="gl-mr-3" />
         <div class="gl-truncate">
-          <gl-link :href="item.detailedStatus.detailsPath" class="gl-font-bold !gl-text-gray-900">
+          <gl-link :href="item.detailedStatus.detailsPath" class="gl-font-bold !gl-text-default">
             {{ item.name }}
           </gl-link>
         </div>

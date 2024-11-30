@@ -140,7 +140,7 @@ export default {
           </template>
         </gl-sprintf>
       </gl-alert>
-      <div class="row gl-my-4 gl-text-gray-900">
+      <div class="row gl-my-4 gl-text-default">
         <div
           v-for="col in $options.columns"
           :key="col.text"

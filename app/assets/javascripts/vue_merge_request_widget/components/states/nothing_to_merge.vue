@@ -24,7 +24,7 @@ export default {
   <div class="mr-widget-body media">
     <status-icon :status="statusEmpty" />
     <div>
-      <p class="media-body gl-mb-1 gl-mt-1 gl-font-bold !gl-text-gray-900">
+      <p class="media-body gl-mb-1 gl-mt-1 gl-font-bold !gl-text-default">
         {{ s__('mrWidgetNothingToMerge|Merge request contains no changes') }}
       </p>
       <p class="!gl-m-0 gl-text-subtle" data-testid="nothing-to-merge-body">

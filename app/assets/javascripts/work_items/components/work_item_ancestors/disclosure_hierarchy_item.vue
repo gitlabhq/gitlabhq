@@ -45,7 +45,7 @@ export default {
     <gl-link
       :id="itemId"
       :href="item.webUrl"
-      class="disclosure-hierarchy-button gl-text-gray-900 hover:gl-no-underline active:!gl-no-underline"
+      class="disclosure-hierarchy-button hover:gl-no-underline active:!gl-no-underline"
       :class="{ 'gl-cursor-help': item.ancestorNotAvailable }"
     >
       <gl-icon v-if="shouldDisplayIcon(item.icon)" :name="item.icon" class="gl-mx-2 gl-shrink-0" />

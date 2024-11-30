@@ -196,7 +196,7 @@ export default {
               data-testid="group-name"
               :href="group.relativePath"
               :title="group.fullName"
-              class="no-expand gl-mr-3 !gl-text-gray-900 gl-break-anywhere"
+              class="no-expand gl-mr-3 !gl-text-default gl-break-anywhere"
               :itemprop="microdata.nameItemprop"
             >
               <!-- ending bracket must be by closing tag to prevent -->

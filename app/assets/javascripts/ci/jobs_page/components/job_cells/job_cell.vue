@@ -86,9 +86,7 @@ export default {
       <span v-else data-testid="job-id-limited-access">{{ jobId }}: {{ job.name }}</span>
     </div>
 
-    <div
-      class="gl-mt-1 gl-flex gl-items-center gl-justify-end gl-text-gray-700 lg:gl-justify-start"
-    >
+    <div class="gl-mt-1 gl-flex gl-items-center gl-justify-end gl-text-subtle lg:gl-justify-start">
       <div v-if="jobRef" class="gl-max-w-26 gl-truncate gl-rounded-base gl-bg-gray-50 gl-px-2">
         <gl-icon
           v-if="createdByTag"
@@ -98,7 +96,7 @@ export default {
         />
         <gl-icon v-else name="fork" :size="$options.iconSize" data-testid="fork-icon" />
         <gl-link
-          class="gl-text-sm gl-text-gray-700 gl-font-monospace hover:gl-text-gray-900"
+          class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
           :href="job.refPath"
           data-testid="job-ref"
           >{{ job.refName }}</gl-link
@@ -108,7 +106,7 @@ export default {
       <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-gray-50 gl-px-2">
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
         <gl-link
-          class="gl-text-sm gl-text-gray-700 gl-font-monospace hover:gl-text-gray-900"
+          class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
           :href="job.commitPath"
           data-testid="job-sha"
           >{{ job.shortSha }}</gl-link
