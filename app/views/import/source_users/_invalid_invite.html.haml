@@ -1,6 +1,6 @@
 = render Pajamas::AlertComponent.new(variant: :danger, title: s_('UserMapping|Reassignment not available'), alert_options: { class: 'gl-mt-4' }) do |c|
   - c.with_body do
-    = s_('UserMapping|You might have already accepted or rejected the reassignment, or it might have been canceled by the group owner.')
+    = s_('UserMapping|You might have already accepted or rejected the reassignment, or the assignment might have been canceled.')
   - c.with_actions do
     = render Pajamas::ButtonComponent.new(variant: :default,
       href: help_page_path('user/project/import/index.md', anchor: 'accept-contribution-reassignment'),

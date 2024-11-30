@@ -87,12 +87,14 @@ end
 RSpec.shared_examples 'disable an integration' do |endpoint:, integration:|
   include_context 'with integration'
 
+  subject(:request) { delete api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user) }
+
   before do
     project_integrations_map[integration].activate!
   end
 
   it "deletes #{integration}" do
-    delete api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
+    request
 
     expect(response).to have_gitlab_http_status(:no_content)
     project.send(integration_method).reload
@@ -111,6 +113,8 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
   include_context 'with integration'
 
   let(:initialized_integration) { project_integrations_map[integration] }
+
+  subject(:request) { get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user) }
 
   def deactive_integration!
     return initialized_integration.deactivate! unless initialized_integration.is_a?(::Integrations::Prometheus)
@@ -134,7 +138,7 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
     end
 
     it "returns all properties of inactive integration #{integration}, except password fields" do
-      get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
+      request
 
       expect(initialized_integration).not_to be_active
       expect(response).to have_gitlab_http_status(:ok)
@@ -152,7 +156,7 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
     end
 
     it "returns all properties of active integration #{integration}, except password fields" do
-      get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
+      request
 
       expect(initialized_integration).to be_active
       expect(response).to have_gitlab_http_status(:ok)
@@ -181,7 +185,7 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
       allow(project).to receive(:disabled_integrations).and_return([integration])
     end
 
-    get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
+    request
 
     expect(response).to have_gitlab_http_status(:not_found)
     expect(json_response['message']).to eq('404 Integration Not Found')

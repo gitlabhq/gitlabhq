@@ -55,8 +55,8 @@ module Authn
           payload, _header = ::JSONWebToken::RSAToken.decode(token, signing_public_key)
 
           new(payload: payload, subject_type: subject_type)
-        rescue JWT::DecodeError, Gitlab::Graphql::Errors::ArgumentError => error
-          Gitlab::ErrorTracking.track_exception(error)
+        rescue JWT::DecodeError, Gitlab::Graphql::Errors::ArgumentError
+          # The token received is not a JWT
           nil
         end
       end

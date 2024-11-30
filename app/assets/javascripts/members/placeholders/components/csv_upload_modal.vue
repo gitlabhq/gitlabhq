@@ -74,10 +74,10 @@ export default {
   }),
   i18n: {
     description: s__(
-      'UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. This can be done in a few steps. %{linkStart}Learn more about matching users by CSV%{linkEnd}.',
+      'UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. For more information, see %{linkStart}reassign contributions and memberships%{linkEnd}.',
     ),
     errorMessage: s__(
-      'UserMapping|Unable to upload the file. Check that the file follows the CSV template and try again.',
+      'UserMapping|Could not upload the file. Check that the file follows the CSV template and try again.',
     ),
     dropzoneDescriptionText: s__(
       'UserMapping|Drop your file here or %{linkStart}click to upload%{linkEnd}.',
@@ -114,11 +114,11 @@ export default {
           icon="download"
           data-testid="csv-download-button"
           class="vertical-align-text-top"
-          >{{ s__('UserMapping|Download the pre-filled CSV template.') }}</gl-button
+          >{{ s__('UserMapping|Download the prefilled CSV template.') }}</gl-button
         >
       </li>
-      <li>{{ s__('UserMapping|Review and complete filling out the CSV file.') }}</li>
-      <li>{{ s__('UserMapping|Upload reviewed and completed CSV file.') }}</li>
+      <li>{{ s__('UserMapping|Review and complete the CSV file.') }}</li>
+      <li>{{ s__('UserMapping|Upload the completed CSV file.') }}</li>
     </ol>
     <upload-dropzone
       class="gl-my-5"
@@ -154,7 +154,7 @@ export default {
     <gl-alert variant="warning" :dismissible="false">
       {{
         s__(
-          'UserMapping|Once you select "Reassign", the processing will start and users will receive an email to accept the contribution reassignment. Once a user has accepted the reassignment, it cannot be undone. Check all data is correct before continuing.',
+          'UserMapping|After you select "Reassign", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue.',
         )
       }}
     </gl-alert>

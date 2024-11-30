@@ -43,7 +43,7 @@ export default {
         })
         .catch(() => {
           createAlert({
-            message: s__('UserMapping|There was a problem keeping all placeholder users.'),
+            message: s__('UserMapping|Keeping all as placeholders could not be done.'),
           });
         })
         .finally(() => {
@@ -74,7 +74,7 @@ export default {
   >
     {{
       s__(
-        'UserMapping|If you keep all remaining placeholders, you cannot reassign their contributions to users in the future. Ensure all required reassignments are completed before choosing to keep remaining placeholders.',
+        'UserMapping|If you keep all as placeholders, you cannot reassign their contributions to users at a later time. Ensure all required reassignments are completed before you keep all as placeholders.',
       )
     }}
   </gl-modal>

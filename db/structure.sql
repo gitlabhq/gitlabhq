@@ -28717,6 +28717,8 @@ CREATE INDEX idx_streaming_instance_namespace_filters_on_namespace_id ON audit_e
 
 CREATE INDEX idx_subscription_add_on_purchases_on_started_on_and_expires_on ON subscription_add_on_purchases USING btree (started_at, expires_on);
 
+CREATE INDEX idx_subscription_seat_assignments_namespace_last_activity_on ON subscription_seat_assignments USING btree (namespace_id, last_activity_on, created_at);
+
 CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
 
 CREATE INDEX idx_unarchived_occurrences_for_aggregation_severity_nulls_first ON sbom_occurrences USING btree (traversal_ids, highest_severity NULLS FIRST, component_id, component_version_id) WHERE (archived = false);

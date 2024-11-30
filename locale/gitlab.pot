@@ -59927,22 +59927,22 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
-msgid "UserMapping|%{count} placeholders were kept as placeholders."
+msgid "UserMapping|%{count} placeholder users were kept as placeholders."
 msgstr ""
 
-msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has declined your request to reassign contributions of %{source_name} (%{source_username}) on %{source_hostname} to them on %{destination_group}. To reassign these contributions to another user, visit the Members page of %{destination_group}."
+msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has declined your request to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to them in %{destination_group}. To reassign these contributions to another user, go to the \"Members\" page of %{destination_group}."
 msgstr ""
 
-msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
+msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
+msgstr ""
+
+msgid "UserMapping|After you select \"Reassign\", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue."
 msgstr ""
 
 msgid "UserMapping|Approve reassignment"
 msgstr ""
 
-msgid "UserMapping|Approve reassignments only from users that you trust. After approval, contributions will be assigned to you. The assignment is permanent."
-msgstr ""
-
-msgid "UserMapping|As part of the import, placeholder users were created on %{group_names} and these users were assigned group membership and contributions from %{source_hostname}. To reassign contributions from placeholder users to GitLab users, visit the Members page of %{group_links}."
+msgid "UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you permanently."
 msgstr ""
 
 msgid "UserMapping|Awaiting reassignment"
@@ -59951,16 +59951,28 @@ msgstr ""
 msgid "UserMapping|Contribution and membership reassignment cannot be undone. Incorrect reassignment %{linkStart}poses a security risk%{linkEnd}, so check carefully before you reassign."
 msgstr ""
 
-msgid "UserMapping|Don't reassign"
+msgid "UserMapping|Could not upload the file. Check that the file follows the CSV template and try again."
 msgstr ""
 
-msgid "UserMapping|Download the pre-filled CSV template."
+msgid "UserMapping|Do not reassign"
+msgstr ""
+
+msgid "UserMapping|Download the prefilled CSV template."
 msgstr ""
 
 msgid "UserMapping|Drop your file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
-msgid "UserMapping|If you keep all remaining placeholders, you cannot reassign their contributions to users in the future. Ensure all required reassignments are completed before choosing to keep remaining placeholders."
+msgid "UserMapping|For more information, see %{link_start}accept contribution reassignment%{link_end}. %{strong_open}If you do not recognize this request, %{report_link_start}report abuse%{report_link_end}.%{strong_close}"
+msgstr ""
+
+msgid "UserMapping|For more information, see accept contribution reassignment (%{help_link}). If you do not recognize this request, report abuse (%{report_link})."
+msgstr ""
+
+msgid "UserMapping|How do I accept reassignments?"
+msgstr ""
+
+msgid "UserMapping|If you keep all as placeholders, you cannot reassign their contributions to users at a later time. Ensure all required reassignments are completed before you keep all as placeholders."
 msgstr ""
 
 msgid "UserMapping|Import details:"
@@ -59972,16 +59984,19 @@ msgstr ""
 msgid "UserMapping|Imported to: %{destination_group}"
 msgstr ""
 
-msgid "UserMapping|Keep all as placeholder"
+msgid "UserMapping|Keep all as placeholders"
 msgstr ""
 
 msgid "UserMapping|Keep all as placeholders?"
 msgstr ""
 
+msgid "UserMapping|Keeping all as placeholders could not be done."
+msgstr ""
+
 msgid "UserMapping|Kept as placeholder"
 msgstr ""
 
-msgid "UserMapping|Learn more about reassignments"
+msgid "UserMapping|Notification email could not be sent again."
 msgstr ""
 
 msgid "UserMapping|Notification email sent."
@@ -59990,16 +60005,13 @@ msgstr ""
 msgid "UserMapping|Notify again"
 msgstr ""
 
-msgid "UserMapping|Once you select \"Reassign\", the processing will start and users will receive an email to accept the contribution reassignment. Once a user has accepted the reassignment, it cannot be undone. Check all data is correct before continuing."
-msgstr ""
-
 msgid "UserMapping|Original user: %{source_name} (%{source_username})"
 msgstr ""
 
 msgid "UserMapping|Pending approval"
 msgstr ""
 
-msgid "UserMapping|Placeholder %{name} (@%{username}) kept as placeholder."
+msgid "UserMapping|Placeholder %{name} (@%{username}) was kept as a placeholder."
 msgstr ""
 
 msgid "UserMapping|Placeholder deleted"
@@ -60008,22 +60020,31 @@ msgstr ""
 msgid "UserMapping|Placeholder user"
 msgstr ""
 
-msgid "UserMapping|Placeholder user was made permanent."
+msgid "UserMapping|Placeholder user could not be reassigned."
+msgstr ""
+
+msgid "UserMapping|Placeholder user made permanent."
 msgstr ""
 
 msgid "UserMapping|Placeholder users awaiting reassignment"
 msgstr ""
 
-msgid "UserMapping|Placeholders"
+msgid "UserMapping|Placeholder users could not be fetched."
 msgstr ""
 
-msgid "UserMapping|Re-assign to"
+msgid "UserMapping|Placeholder users were created in %{group_names}. These users were assigned group memberships and contributions from %{source_hostname}. To reassign contributions from placeholder users to GitLab users, go to the \"Members\" page of %{group_links}."
+msgstr ""
+
+msgid "UserMapping|Placeholders"
 msgstr ""
 
 msgid "UserMapping|Reassign"
 msgstr ""
 
 msgid "UserMapping|Reassign placeholder to"
+msgstr ""
+
+msgid "UserMapping|Reassign to"
 msgstr ""
 
 msgid "UserMapping|Reassign with CSV file"
@@ -60044,6 +60065,9 @@ msgstr ""
 msgid "UserMapping|Reassigning"
 msgstr ""
 
+msgid "UserMapping|Reassigning placeholder user could not be canceled."
+msgstr ""
+
 msgid "UserMapping|Reassignment approved"
 msgstr ""
 
@@ -60053,16 +60077,19 @@ msgstr ""
 msgid "UserMapping|Reassignment failed."
 msgstr ""
 
-msgid "UserMapping|Reassignment has not started."
-msgstr ""
-
 msgid "UserMapping|Reassignment in progress."
 msgstr ""
 
 msgid "UserMapping|Reassignment not available"
 msgstr ""
 
+msgid "UserMapping|Reassignment not started."
+msgstr ""
+
 msgid "UserMapping|Reassignment rejected"
+msgstr ""
+
+msgid "UserMapping|Reassignment rejected by user."
 msgstr ""
 
 msgid "UserMapping|Reassignment status"
@@ -60074,13 +60101,10 @@ msgstr ""
 msgid "UserMapping|Reassignment waiting on user approval."
 msgstr ""
 
-msgid "UserMapping|Reassignment was rejected by user."
+msgid "UserMapping|Reassignments in %{group} rejected"
 msgstr ""
 
-msgid "UserMapping|Reassignments on %{group} rejected"
-msgstr ""
-
-msgid "UserMapping|Reassignments on %{group} waiting for review"
+msgid "UserMapping|Reassignments in %{group} waiting for review"
 msgstr ""
 
 msgid "UserMapping|Reject"
@@ -60089,7 +60113,7 @@ msgstr ""
 msgid "UserMapping|Rejected"
 msgstr ""
 
-msgid "UserMapping|Review and complete filling out the CSV file."
+msgid "UserMapping|Review and complete the CSV file."
 msgstr ""
 
 msgid "UserMapping|Review reassignment details"
@@ -60110,34 +60134,10 @@ msgstr ""
 msgid "UserMapping|The invitation could not be declined."
 msgstr ""
 
-msgid "UserMapping|There was a problem cancelling placeholder user reassignment."
+msgid "UserMapping|Upload the completed CSV file."
 msgstr ""
 
-msgid "UserMapping|There was a problem fetching placeholder users."
-msgstr ""
-
-msgid "UserMapping|There was a problem keeping all placeholder users."
-msgstr ""
-
-msgid "UserMapping|There was a problem reassigning placeholder user."
-msgstr ""
-
-msgid "UserMapping|There was a problem resending notification email."
-msgstr ""
-
-msgid "UserMapping|To learn more about reassignments, %{link_start}visit the docs%{link_end}. %{strong_open}If you don't recognize this request, %{report_link_start}report abuse%{report_link_end}.%{strong_close}"
-msgstr ""
-
-msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link})."
-msgstr ""
-
-msgid "UserMapping|Unable to upload the file. Check that the file follows the CSV template and try again."
-msgstr ""
-
-msgid "UserMapping|Upload reviewed and completed CSV file."
-msgstr ""
-
-msgid "UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. This can be done in a few steps. %{linkStart}Learn more about matching users by CSV%{linkEnd}."
+msgid "UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. For more information, see %{linkStart}reassign contributions and memberships%{linkEnd}."
 msgstr ""
 
 msgid "UserMapping|You can assign only active users with regular or auditor access. To assign users with administrator access, ask your GitLab administrator to enable the \"Allow contribution mapping to admins\" setting."
@@ -60146,13 +60146,13 @@ msgstr ""
 msgid "UserMapping|You can assign users with regular, auditor, or administrator access only."
 msgstr ""
 
-msgid "UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}. Reassignment processing is in progress."
+msgid "UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself in %{strong_open}%{destination_group}%{strong_close}. The reassignment is in progress."
 msgstr ""
 
-msgid "UserMapping|You have rejected the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}."
+msgid "UserMapping|You have rejected the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself in %{strong_open}%{destination_group}%{strong_close}."
 msgstr ""
 
-msgid "UserMapping|You might have already accepted or rejected the reassignment, or it might have been canceled by the group owner."
+msgid "UserMapping|You might have already accepted or rejected the reassignment, or the assignment might have been canceled."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"

@@ -90,7 +90,7 @@ export const placeholderUserBadges = {
   [PLACEHOLDER_STATUS_PENDING_REASSIGNMENT]: {
     text: __('Not started'),
     variant: 'muted',
-    tooltip: s__('UserMapping|Reassignment has not started.'),
+    tooltip: s__('UserMapping|Reassignment not started.'),
   },
   [PLACEHOLDER_STATUS_AWAITING_APPROVAL]: {
     text: s__('UserMapping|Pending approval'),
@@ -100,7 +100,7 @@ export const placeholderUserBadges = {
   [PLACEHOLDER_STATUS_REJECTED]: {
     text: s__('UserMapping|Rejected'),
     variant: 'danger',
-    tooltip: s__('UserMapping|Reassignment was rejected by user.'),
+    tooltip: s__('UserMapping|Reassignment rejected by user.'),
   },
   [PLACEHOLDER_STATUS_REASSIGNING]: {
     text: s__('UserMapping|Reassigning'),
@@ -115,7 +115,7 @@ export const placeholderUserBadges = {
   [PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER]: {
     text: s__('UserMapping|Kept as placeholder'),
     variant: 'success',
-    tooltip: s__('UserMapping|Placeholder user was made permanent.'),
+    tooltip: s__('UserMapping|Placeholder user made permanent.'),
   },
   [PLACEHOLDER_STATUS_COMPLETED]: {
     text: __('Success'),

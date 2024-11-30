@@ -104,7 +104,7 @@ export default {
 
     toggleText() {
       if (this.dontReassignSelected) {
-        return s__("UserMapping|Don't reassign");
+        return s__('UserMapping|Do not reassign');
       }
 
       if (this.selectedUserToReassign) {
@@ -206,8 +206,7 @@ export default {
         .catch((error) => {
           createAlert({
             message:
-              error?.message ||
-              s__('UserMapping|There was a problem resending notification email.'),
+              error?.message || s__('UserMapping|Notification email could not be sent again.'),
           });
         })
         .finally(() => {
@@ -231,9 +230,7 @@ export default {
         })
         .catch(() => {
           createAlert({
-            message: s__(
-              'UserMapping|There was a problem cancelling placeholder user reassignment.',
-            ),
+            message: s__('UserMapping|Reassigning placeholder user could not be canceled.'),
           });
         })
         .finally(() => {
@@ -266,7 +263,7 @@ export default {
           })
           .catch(() => {
             createAlert({
-              message: s__('UserMapping|There was a problem reassigning placeholder user.'),
+              message: s__('UserMapping|Placeholder user could not be reassigned.'),
             });
           })
           .finally(() => {
@@ -287,7 +284,7 @@ export default {
         is-check-centered
         toggle-class="!gl-w-28"
         :class="{ 'is-invalid': userSelectInvalid || sourceUser.reassignmentError }"
-        :header-text="s__('UserMapping|Re-assign to')"
+        :header-text="s__('UserMapping|Reassign to')"
         :toggle-text="toggleText"
         :disabled="statusIsAwaitingApproval || statusIsReassigning"
         :loading="isLoadingInitial"
@@ -321,7 +318,7 @@ export default {
               data-testid="dont-reassign-button"
               @click="onSelect('')"
             >
-              {{ s__("UserMapping|Don't reassign") }}
+              {{ s__('UserMapping|Do not reassign') }}
             </gl-button>
           </div>
         </template>

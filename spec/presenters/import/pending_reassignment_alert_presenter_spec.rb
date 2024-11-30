@@ -30,10 +30,10 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
     it do
       is_expected.to eq(
         safe_format(
-          s_('UserMapping|As part of the import, placeholder users were created on ' \
-            '%{group_names} and these users were assigned group membership and ' \
+          s_('UserMapping|Placeholder users were created in ' \
+            '%{group_names}. These users were assigned group memberships and ' \
             'contributions from %{source_hostname}. To reassign contributions from ' \
-            'placeholder users to GitLab users, visit the Members page of %{group_links}.'),
+            'placeholder users to GitLab users, go to the "Members" page of %{group_links}.'),
           group_names: '',
           source_hostname: 'gitlab.example',
           group_links: ''

@@ -1410,6 +1410,32 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '.all_integration_names' do
+    subject(:names) { described_class.all_integration_names }
+
+    it 'includes project-specific integrations' do
+      expect(names).to include(*described_class::PROJECT_LEVEL_ONLY_INTEGRATION_NAMES)
+    end
+
+    it 'includes group-specific integrations' do
+      expect(names).to include(*described_class::PROJECT_AND_GROUP_LEVEL_ONLY_INTEGRATION_NAMES)
+    end
+
+    it 'includes instance-specific integrations' do
+      expect(names).to include(*described_class::INSTANCE_LEVEL_ONLY_INTEGRATION_NAMES)
+    end
+
+    it 'includes development-specific integrations' do
+      expect(names).to include(*described_class::DEV_INTEGRATION_NAMES)
+    end
+
+    it 'includes disabled integrations' do
+      allow(described_class).to receive(:disabled_integration_names).and_return(Integrations::Asana.to_param)
+
+      expect(names).to include(Integrations::Asana.to_param)
+    end
+  end
+
   describe '#secret_fields' do
     it 'returns all fields with type `password`' do
       allow(integration).to receive(:fields).and_return(
@@ -1744,6 +1770,18 @@ RSpec.describe Integration, feature_category: :integrations do
     context 'when the Gitlab::SilentMode is enabled' do
       before do
         allow(Gitlab::SilentMode).to receive(:enabled?).and_return(true)
+      end
+
+      it 'does not queue a worker' do
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
+
+    context 'when integration is not active' do
+      before do
+        integration.active = false
       end
 
       it 'does not queue a worker' do

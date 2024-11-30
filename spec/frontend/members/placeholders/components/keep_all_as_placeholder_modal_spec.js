@@ -100,7 +100,7 @@ describe('KeepAllAsPlaceholderModal', () => {
     it('creates an alert', async () => {
       await waitForPromises();
       expect(createAlert).toHaveBeenCalledWith({
-        message: 'There was a problem keeping all placeholder users.',
+        message: 'Keeping all as placeholders could not be done.',
       });
     });
   });

@@ -1367,7 +1367,6 @@ lib/gitlab/checks/**
 /ee/app/assets/javascripts/pages/passwords/
 /ee/app/assets/javascripts/pages/profiles/passwords/
 /ee/app/assets/javascripts/password/
-/ee/app/assets/javascripts/requirements/components/tokens/
 /ee/app/assets/javascripts/saml_providers/scim_token_service.js
 /ee/app/assets/javascripts/saml_sso/components/
 /ee/app/assets/javascripts/vue_merge_request_widget/components/approvals/approvals_auth.vue

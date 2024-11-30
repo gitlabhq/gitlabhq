@@ -9,7 +9,7 @@
 <% destination_group = "#{@source_user.namespace.name} (/#{@source_user.namespace.full_path})" %>
 <% help_link = help_page_url('user/project/import/index.md', anchor: 'accept-contribution-reassignment') %>
 <% report_link = help_page_url('user/report_abuse.md') %>
-<%= s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.') % { reassigned_by_name: reassigned_by_name,
+<%= s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.') % { reassigned_by_name: reassigned_by_name,
     reassigned_by_username: reassigned_by_username,
     source_name: source_name,
     source_username: source_username,
@@ -27,4 +27,4 @@
 <%= safe_format(s_('UserMapping|Reassigned to: %{reassign_to_name} (%{reassign_to_username})'), reassign_to_name: reassign_to_name, reassign_to_username: reassign_to_username) %>
 <%= safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username) %>
 
-<%= s_("UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link}).") % { help_link: help_link, report_link: report_link } %>
+<%= s_("UserMapping|For more information, see accept contribution reassignment (%{help_link}). If you do not recognize this request, report abuse (%{report_link}).") % { help_link: help_link, report_link: report_link } %>

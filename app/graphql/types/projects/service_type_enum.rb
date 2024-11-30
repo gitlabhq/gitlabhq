@@ -12,14 +12,18 @@ module Types
         def type_description(name, type)
           "#{type} type"
         end
+
+        def integration_names
+          Integration.available_integration_names(
+            include_instance_specific: false, include_dev: false, include_disabled: true
+          )
+        end
       end
 
       # This prepend must stay here because the dynamic block below depends on it.
       prepend_mod
 
-      ::Integration.available_integration_names(
-        include_instance_specific: false, include_dev: false, include_disabled: true
-      ).each do |name|
+      integration_names.each do |name|
         type = "#{name.camelize}Service"
         domain_value = Integration.integration_name_to_type(name)
         value type.underscore.upcase, value: domain_value, description: type_description(name, type)
@@ -27,3 +31,5 @@ module Types
     end
   end
 end
+
+Types::Projects::ServiceTypeEnum.prepend_mod

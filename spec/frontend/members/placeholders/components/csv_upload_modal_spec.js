@@ -59,7 +59,7 @@ describe('CsvUploadModal', () => {
 
       expect(findUploadErrorAlert().exists()).toBe(true);
       expect(findUploadErrorAlert().text()).toBe(
-        'Unable to upload the file. Check that the file follows the CSV template and try again.',
+        'Could not upload the file. Check that the file follows the CSV template and try again.',
       );
     });
 

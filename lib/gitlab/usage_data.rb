@@ -217,7 +217,7 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def integrations_usage
         # rubocop: disable UsageData/LargeTable:
-        Integration.available_integration_names(include_dev: false, include_disabled: true).each_with_object({}) do |name, response|
+        available_integrations.each_with_object({}) do |name, response|
           type = Integration.integration_name_to_type(name)
 
           response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
@@ -502,6 +502,11 @@ module Gitlab
 
       def omniauth_provider_names
         ::Gitlab.config.omniauth.providers.map(&:name)
+      end
+
+      # Overridden in EE
+      def available_integrations
+        Integration.available_integration_names(include_dev: false, include_disabled: true) # rubocop: disable UsageData/LargeTable -- not counting data
       end
 
       # LDAP provider names are set by customers and could include

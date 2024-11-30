@@ -18,7 +18,7 @@
 - report_link_tag_pair = tag_pair(link_to('', help_page_url('user/report_abuse.md'), target: '_blank', rel: 'noopener noreferrer'), :report_link_start, :report_link_end)
 
 %p{ style: text_style }
-  = safe_format(s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.'),
+  = safe_format(s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.'),
     reassigned_by_name: reassigned_by_name,
     reassigned_by_username: reassigned_by_username,
     source_name: source_name,
@@ -32,7 +32,7 @@
       = s_('UserMapping|Review reassignment details')
 
 %p{ style: text_style }
-  = safe_format(s_("UserMapping|To learn more about reassignments, %{link_start}visit the docs%{link_end}. %{strong_open}If you don't recognize this request, %{report_link_start}report abuse%{report_link_end}.%{strong_close}"), strong_tag_pair, help_link_tag_pair, report_link_tag_pair)
+  = safe_format(s_("UserMapping|For more information, see %{link_start}accept contribution reassignment%{link_end}. %{strong_open}If you do not recognize this request, %{report_link_start}report abuse%{report_link_end}.%{strong_close}"), strong_tag_pair, help_link_tag_pair, report_link_tag_pair)
 
 %hr
 

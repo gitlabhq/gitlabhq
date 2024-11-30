@@ -94,7 +94,7 @@ export default {
       },
       error() {
         createAlert({
-          message: s__('UserMapping|There was a problem fetching placeholder users.'),
+          message: s__('UserMapping|Placeholder users could not be fetched.'),
         });
       },
     },

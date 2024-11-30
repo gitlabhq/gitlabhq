@@ -113,7 +113,7 @@ describe('PlaceholdersTable', () => {
 
     it('creates an alert', () => {
       expect(createAlert).toHaveBeenCalledWith({
-        message: 'There was a problem fetching placeholder users.',
+        message: 'Placeholder users could not be fetched.',
       });
     });
   });
@@ -181,7 +181,7 @@ describe('PlaceholdersTable', () => {
       const badgeTooltip = getBinding(badge.element, 'gl-tooltip');
 
       expect(badge.text()).toBe('Not started');
-      expect(badgeTooltip.value).toBe('Reassignment has not started.');
+      expect(badgeTooltip.value).toBe('Reassignment not started.');
     });
 
     it('renders avatar for placeholderUser when item status is KEEP_AS_PLACEHOLDER', async () => {

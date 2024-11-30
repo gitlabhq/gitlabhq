@@ -295,10 +295,10 @@ module Integrations
         # Example: "asana" => "Integrations::Asana"
         def integration_name_to_type(name)
           name = name.to_s
-          if available_integration_names(include_disabled: true).exclude?(name)
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownType.new(name.inspect))
-          else
+          if all_integration_names.include?(name)
             "Integrations::#{name.camelize}"
+          else
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownType.new(name.inspect))
           end
         end
 
@@ -320,6 +320,15 @@ module Integrations
 
         def instance_exists_for?(type)
           exists?(instance: true, type: type)
+        end
+
+        # Returns the names of all integrations, including:
+        #
+        # - All project, group and instance-level only integrations
+        # - Integrations that are not available on the instance
+        # - Development-only integrations
+        def all_integration_names
+          available_integration_names(include_disabled: true)
         end
 
         def default_integration(type, scope)
@@ -535,23 +544,23 @@ module Integrations
           where(instance: true, type: types)
         }
 
-        scope :push_hooks, -> { where(push_events: true, active: true) }
-        scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
-        scope :issue_hooks, -> { where(issues_events: true, active: true) }
-        scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
-        scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
-        scope :note_hooks, -> { where(note_events: true, active: true) }
-        scope :confidential_note_hooks, -> { where(confidential_note_events: true, active: true) }
-        scope :job_hooks, -> { where(job_events: true, active: true) }
-        scope :archive_trace_hooks, -> { where(archive_trace_events: true, active: true) }
-        scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
-        scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
-        scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
-        scope :alert_hooks, -> { where(alert_events: true, active: true) }
-        scope :incident_hooks, -> { where(incident_events: true, active: true) }
+        scope :push_hooks, -> { where(push_events: true).active }
+        scope :tag_push_hooks, -> { where(tag_push_events: true).active }
+        scope :issue_hooks, -> { where(issues_events: true).active }
+        scope :confidential_issue_hooks, -> { where(confidential_issues_events: true).active }
+        scope :merge_request_hooks, -> { where(merge_requests_events: true).active }
+        scope :note_hooks, -> { where(note_events: true).active }
+        scope :confidential_note_hooks, -> { where(confidential_note_events: true).active }
+        scope :job_hooks, -> { where(job_events: true).active }
+        scope :archive_trace_hooks, -> { where(archive_trace_events: true).active }
+        scope :pipeline_hooks, -> { where(pipeline_events: true).active }
+        scope :wiki_page_hooks, -> { where(wiki_page_events: true).active }
+        scope :deployment_hooks, -> { where(deployment_events: true).active }
+        scope :alert_hooks, -> { where(alert_events: true).active }
+        scope :incident_hooks, -> { where(incident_events: true).active }
         scope :deployment, -> { where(category: 'deployment') }
-        scope :group_mention_hooks, -> { where(group_mention_events: true, active: true) }
-        scope :group_confidential_mention_hooks, -> { where(group_confidential_mention_events: true, active: true) }
+        scope :group_mention_hooks, -> { where(group_mention_events: true).active }
+        scope :group_confidential_mention_hooks, -> { where(group_confidential_mention_events: true).active }
         scope :exclusions_for_project, ->(project) { where(project: project, active: false) }
 
         private_class_method :boolean_accessor
@@ -761,6 +770,7 @@ module Integrations
 
       def async_execute(data)
         return if ::Gitlab::SilentMode.enabled?
+        return unless active?
 
         # Temporarily log when we return within this method to gather data for
         # https://gitlab.com/gitlab-org/gitlab/-/issues/382999

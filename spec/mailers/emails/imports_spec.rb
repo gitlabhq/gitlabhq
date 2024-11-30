@@ -103,7 +103,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     it 'sends reassign email' do
-      is_expected.to have_subject("Reassignments on #{group.full_path} waiting for review")
+      is_expected.to have_subject("Reassignments in #{group.full_path} waiting for review")
       is_expected.to have_content("Imported from: #{source_user.source_hostname}")
       is_expected.to have_content("Original user: #{source_user.source_name} (@#{source_user.source_username})")
       is_expected.to have_content("Imported to: #{group.name}")
@@ -134,7 +134,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
     it 'sends rejected email' do
       is_expected.to deliver_to(owner.email)
-      is_expected.to have_subject("Reassignments on #{group.full_path} rejected")
+      is_expected.to have_subject("Reassignments in #{group.full_path} rejected")
       is_expected.to have_content('Reassignment rejected')
       is_expected.to have_content("#{user.name} (@#{user.username}) has declined your request")
       is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders'))
