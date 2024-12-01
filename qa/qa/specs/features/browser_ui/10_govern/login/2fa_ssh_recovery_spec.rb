@@ -4,8 +4,8 @@ module QA
   RSpec.describe 'Govern', :blocking, :requires_admin, :skip_live_env,
     product_group: :authentication do
     describe '2FA' do
-      let!(:user) { create(:user) }
-      let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }
+      let!(:user) { Runtime::UserStore.test_user }
+      let!(:user_api_client) { user.api_client }
       let(:address) { QA::Runtime::Scenario.gitlab_address }
       let(:uri) { URI.parse(address) }
       let(:ssh_port) { uri.port == 80 ? '' : '2222' }

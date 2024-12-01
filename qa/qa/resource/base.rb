@@ -70,8 +70,6 @@ module QA
 
           raise NotImplementedError unless resource.api_support?
 
-          resource.eager_load_api_client!
-
           do_fabricate!(resource: resource, prepare_block: prepare_block) do
             log_and_record_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
           end
@@ -81,8 +79,6 @@ module QA
           options = args.extract_options!
           resource = options.fetch(:resource) { new }
           parents = options.fetch(:parents) { [] }
-
-          resource.eager_load_api_client!
 
           do_fabricate!(resource: resource, prepare_block: prepare_block) do
             log_and_record_fabrication(:api, resource, parents, args) { resource.remove_via_api! }

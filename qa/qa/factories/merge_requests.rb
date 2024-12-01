@@ -7,5 +7,7 @@ module QA
         no_preparation { true }
       end
     end
+
+    factory :merge_request_from_fork, class: 'QA::Resource::MergeRequestFromFork'
   end
 end

@@ -3,16 +3,15 @@
 module QA
   RSpec.describe 'Data Stores' do
     describe 'User', :requires_admin, product_group: :tenant_scale do
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-
-      let(:followed_user_api_client) { Runtime::API::Client.new(:gitlab, user: followed_user) }
+      let(:admin_api_client) { Runtime::UserStore.admin_api_client }
+      let(:followed_user_api_client) { followed_user.api_client }
 
       let(:followed_user) do
-        create(:user, name: "QA User followed_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
+        create(:user, :with_personal_access_token, name: "QA User followed_user_#{SecureRandom.hex(8)}")
       end
 
       let(:following_user) do
-        create(:user, name: "QA User following_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
+        create(:user, :with_personal_access_token, name: "QA User following_user_#{SecureRandom.hex(8)}")
       end
 
       let(:group) do
@@ -37,12 +36,6 @@ module QA
           issue: issue,
           body: 'This is a comment',
           api_client: followed_user_api_client)
-      end
-
-      before do
-        # Create both tokens before logging in the first time so that we don't need to log out in the middle of the test
-        admin_api_client.personal_access_token
-        followed_user_api_client.personal_access_token
       end
 
       it 'can be followed and their activity seen', :blocking,

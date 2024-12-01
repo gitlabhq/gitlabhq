@@ -51,8 +51,8 @@ module QA
         username: Runtime::Env.admin_username || 'root')
     end
 
-    let!(:user) { create(:user, api_client: admin_api_client, username: "target-user-#{SecureRandom.hex(6)}") }
-    let!(:api_client) { Runtime::API::Client.new(user: user) }
+    let!(:user) { create(:user, :with_personal_access_token, username: "target-user-#{SecureRandom.hex(6)}") }
+    let!(:api_client) { user.api_client }
     let!(:target_sandbox) { create(:sandbox, api_client: admin_api_client) }
 
     let(:destination_group_path) { source_group.path }

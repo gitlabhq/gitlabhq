@@ -40,12 +40,6 @@ module QA
         api_delete
       end
 
-      def eager_load_api_client!
-        # Eager-load the API client so that if personal token creation is required
-        # it isn't taken in account in the actual resource creation timing.
-        api_client
-      end
-
       # Checks if a resource already exists
       #
       # @return [Boolean] true if the resource returns HTTP status code 200

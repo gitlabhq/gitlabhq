@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', :runner, :requires_admin, product_group: :pipeline_authoring do
     describe 'Pipeline with protected variable' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:protected_value) { Faker::Alphanumeric.alphanumeric(number: 8) }
@@ -22,13 +22,8 @@ module QA
         ])
       end
 
-      let(:developer) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
-
-      let(:maintainer) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2)
-      end
+      let(:developer) { create(:user, :with_personal_access_token) }
+      let(:maintainer) { create(:user, :with_personal_access_token) }
 
       before do
         Flow::Login.sign_in
@@ -51,7 +46,7 @@ module QA
         create_protected_branch
 
         [developer, maintainer].each do |user|
-          user_commit_to_protected_branch(Runtime::API::Client.new(:gitlab, user: user))
+          user_commit_to_protected_branch(user.api_client)
           go_to_pipeline_job(user)
 
           Page::Project::Job::Show.perform do |show|
@@ -64,7 +59,7 @@ module QA
       it 'does not expose variable on unprotected branch', :smoke, :skip_live_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347664' do
         [developer, maintainer].each do |user|
-          create_merge_request(Runtime::API::Client.new(:gitlab, user: user))
+          create_merge_request(user.api_client)
           go_to_pipeline_job(user)
 
           Page::Project::Job::Show.perform do |show|

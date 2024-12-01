@@ -101,7 +101,7 @@ module QA
       end
 
       def fetch_kas_address
-        api_client = Runtime::API::Client.new(:gitlab)
+        api_client = Runtime::UserStore.user_api_client
 
         Support::Retrier.retry_until do
           response = get(Runtime::API::Request.new(api_client, '/metadata').url)

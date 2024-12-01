@@ -15,6 +15,10 @@ module QA
       trait :hard_delete do
         hard_delete_on_api_removal { true }
       end
+
+      trait :with_personal_access_token do
+        with_personal_access_token { true }
+      end
     end
 
     # https://docs.gitlab.com/ee/api/members.html

@@ -3,8 +3,6 @@
 module QA
   RSpec.describe 'Data Stores' do
     describe 'User', :requires_admin, product_group: :tenant_scale do
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-
       let!(:parent_group) do
         create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}")
       end
@@ -14,11 +12,8 @@ module QA
       end
 
       context 'when added to parent group' do
-        let!(:parent_group_user) { create(:user, api_client: admin_api_client) }
-
-        let!(:parent_group_user_api_client) do
-          Runtime::API::Client.new(:gitlab, user: parent_group_user)
-        end
+        let!(:parent_group_user) { create(:user, :with_personal_access_token) }
+        let!(:parent_group_user_api_client) { parent_group_user.api_client }
 
         let!(:sub_group_project) do
           create(:project, :with_readme, name: 'sub-group-project-to-test-user-access', group: sub_group)
@@ -52,11 +47,8 @@ module QA
           create(:project, :with_readme, name: 'parent-group-project-to-test-user-access', group: parent_group)
         end
 
-        let!(:sub_group_user) { create(:user, api_client: admin_api_client) }
-
-        let!(:sub_group_user_api_client) do
-          Runtime::API::Client.new(:gitlab, user: sub_group_user)
-        end
+        let!(:sub_group_user) { create(:user, :with_personal_access_token) }
+        let!(:sub_group_user_api_client) { sub_group_user.api_client }
 
         before do
           sub_group.add_member(sub_group_user)
