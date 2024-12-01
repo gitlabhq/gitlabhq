@@ -69,7 +69,11 @@ RSpec.describe Environments::RecalculateAutoStopService, feature_category: :envi
 
             if can_reset_timer
               it 'updates the environment auto_stop_at' do
-                expected_stop_at = be_like_time(1.month.from_now)
+                expected_stop_at = be_like_time(
+                  ::Gitlab::Ci::Build::DurationParser
+                    .new(previous_auto_stop_in)
+                    .seconds_from_now
+                )
 
                 expect { recalculate }.to change { environment.reload.auto_stop_at }.from(nil).to(expected_stop_at)
               end
