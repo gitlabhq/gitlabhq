@@ -37,8 +37,6 @@ export const FAILURE_REASONS = {
   approvals_syncing: __('The merge request approvals are currently syncing.'),
   locked_paths: __('All paths must be unlocked'),
   locked_lfs_files: __('All LFS files must be unlocked.'),
-  // TODO: Remove this in 17.7
-  security_policy_evaluation: __('All security policies must be evaluated.'),
   security_policy_violations: __('All policy rules must be satisfied.'),
   merge_time: __('Cannot merge until this date and time.'),
 };

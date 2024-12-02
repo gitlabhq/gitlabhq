@@ -63,7 +63,7 @@ section, make note of that as well. For example:
 ### Possible inputs
 
 List all the possible inputs, and any extra details about the inputs, such as defaults
-or changes due to different GitLab versions, for example:
+or changes due to different GitLab versions. For example:
 
 ```markdown
 **Possible inputs**:
@@ -86,6 +86,18 @@ or changes due to different GitLab versions, for example:
   - The file location must be relative to the project directory (`$CI_PROJECT_DIR`).
   - If the file is a symbolic link, it must be in the `$CI_PROJECT_DIR`.
   - The `./path/to/file` and filename can't contain spaces.
+```
+
+#### CI/CD variables with keywords
+
+If CI/CD variables can be used with the keyword, add a line to the **Possible inputs**
+section. For example:
+
+```markdown
+**Possible inputs**:
+
+- A string with the long description.
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 ```
 
 ### Example of `keyword-name`
@@ -114,6 +126,15 @@ dast:
 In this example, the `dast` job extends the `dast` configuration added with the `include:` keyword
 to select a specific site profile and scanner profile.
 ````
+
+If the example uses a CI/CD variable, like `new_keyword: "Description of $CI_COMMIT_BRANCH"`,
+the **Possible inputs** section must explain that CI/CD variables are supported.
+If this entry is missing from the possible inputs, check with the author to see if
+variables are supported, then:
+
+- [Add CI/CD variables to the **possible inputs** section](#cicd-variables-with-keywords)
+  if variables are supported.
+- Remove the CI/CD variable from the example if variables are not supported.
 
 ### Additional details
 

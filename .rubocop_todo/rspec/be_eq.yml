@@ -1000,7 +1000,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/seeders/project_environment_seeder_spec.rb'
     - 'spec/lib/gitlab/session_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/concurrency_limit/worker_execution_tracker_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/set_ip_address_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/size_limiter/validator_spec.rb'
     - 'spec/lib/gitlab/sidekiq_sharding/scheduled_enq_spec.rb'

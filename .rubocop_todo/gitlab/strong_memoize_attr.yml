@@ -371,7 +371,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/gitlab/ci/parsers/security/container_scanning.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/reports_comparer.rb'
     - 'ee/lib/gitlab/ci/reports/metrics/reports_comparer.rb'
-    - 'ee/lib/gitlab/code_owners/entry.rb'
     - 'ee/lib/gitlab/code_owners/loader.rb'
     - 'ee/lib/gitlab/custom_file_templates.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'

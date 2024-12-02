@@ -113,7 +113,6 @@ RSpec/BeNil:
     - 'spec/models/diff_note_spec.rb'
     - 'spec/models/grafana_integration_spec.rb'
     - 'spec/models/group_spec.rb'
-    - 'spec/models/integrations/base_issue_tracker_spec.rb'
     - 'spec/models/ml/experiment_spec.rb'
     - 'spec/models/ml/model_spec.rb'
     - 'spec/models/ml/model_version_spec.rb'

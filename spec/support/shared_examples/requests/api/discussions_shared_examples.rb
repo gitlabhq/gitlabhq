@@ -106,6 +106,26 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       expect(json_response['notes'].first['author']['username']).to eq(user.username)
     end
 
+    it "creates a quick action" do
+      next unless %w[issues merge_requests].include?(noteable_type)
+
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: '/spend 1d' }
+
+      expect(response).to have_gitlab_http_status(:accepted)
+      expect(json_response['commands_changes']).to be_present
+      expect(json_response['commands_changes']).to include('spend_time')
+      expect(json_response['summary']).to eq(['Added 1d spent time.'])
+    end
+
+    it "returns a 400 bad request error if quick action is invalid" do
+      next unless %w[issues merge_requests].include?(noteable_type)
+
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: '/spend something' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq('400 Bad request - Failed to apply commands.')
+    end
+
     it "returns a 400 bad request error if body not given" do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user)
 

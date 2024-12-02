@@ -111,7 +111,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/models/geo/container_repository_registry_spec.rb'
     - 'ee/spec/models/geo/design_management_repository_state_spec.rb'
     - 'ee/spec/models/geo/wiki_repository_state_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/add_on_purchase_spec.rb'
     - 'ee/spec/models/groups/saved_reply_spec.rb'
     - 'ee/spec/models/incident_management/issuable_resource_link_spec.rb'

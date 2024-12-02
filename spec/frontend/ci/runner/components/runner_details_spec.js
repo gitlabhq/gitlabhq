@@ -93,7 +93,8 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDdContent('Tags')).toBe('tag-1 tag-2');
+        expect(findDdContent('Tags')).toContain('tag-1');
+        expect(findDdContent('Tags')).toContain('tag-2');
       });
 
       it('displays "None" when runner has no tags', () => {

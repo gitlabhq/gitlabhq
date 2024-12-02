@@ -222,7 +222,6 @@ Rails/StrongParams:
     - 'app/controllers/users/terms_controller.rb'
     - 'app/controllers/users/unsubscribes_controller.rb'
     - 'app/controllers/users_controller.rb'
-    - 'ee/app/controllers/admin/ai/self_hosted_models_controller.rb'
     - 'ee/app/controllers/admin/elasticsearch_controller.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'
     - 'ee/app/controllers/admin/geo/application_controller.rb'

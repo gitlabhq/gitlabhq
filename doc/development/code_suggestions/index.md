@@ -13,7 +13,7 @@ The recommended setup for locally developing and debugging Code Suggestions is t
 
 - IDE Extension (e.g. GitLab Workflow extension for VS Code).
 - Main application configured correctly (e.g. GDK).
-- [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
+- [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 
 This should enable everyone to see locally any change in an IDE being sent to the main application transformed to a prompt which is then sent to the respective model.
 
@@ -36,17 +36,17 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the Code Suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
-   1. [Setup AI Gateway](../ai_features/index.md#required-install-ai-gateway).
+   1. [Setup AI gateway](../ai_features/index.md#required-install-ai-gateway).
    1. Run your GDK server with `gdk start` if it's not already running.
 
-### Setup instructions to use staging AI Gateway
+### Setup instructions to use staging AI gateway
 
-When testing interactions with the AI Gateway, you might want to integrate your local GDK
-with the deployed staging AI Gateway. To do this:
+When testing interactions with the AI gateway, you might want to integrate your local GDK
+with the deployed staging AI gateway. To do this:
 
 1. You need a cloud staging license that has the Code Suggestions add-on,
    because add-ons are enabled on staging. Follow [these instructions](#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on) to add the add-on to your license (you can reach out to `#s_fulfillment_engineering` if you have any problems). See this [handbook page](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
-1. Set environment variables to point customers-dot to staging, and the AI Gateway to staging:
+1. Set environment variables to point customers-dot to staging, and the AI gateway to staging:
 
    ```shell
    export GITLAB_LICENSE_MODE=test

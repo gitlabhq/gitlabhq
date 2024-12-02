@@ -36,9 +36,9 @@ terms:
   backend service. It can be scoped to either a GitLab instance or a user.
 - **JWT issuer:** A GitLab-operated web service providing endpoints to issue JWTs. The OAuth specification refers to this as an `Authorization Server`.
   and/or endpoints to provide the public keys necessary to validate such a token.
-  GitLab.com, CustomersDot and AI Gateway are all JWT issuers.
+  GitLab.com, CustomersDot and AI gateway are all JWT issuers.
 - **JWT validator:** A backend service that validates GitLab instance requests carrying a JWT. The OAuth specification refers to this as a `Resource Server`.
-  using public keys obtained from a JWT issuer. The AI Gateway is one example of a JWT validator.
+  using public keys obtained from a JWT issuer. The AI gateway is one example of a JWT validator.
 - **IJWT:** An Instance JSON Web Token, a JWT created for a GitLab instance.
 - **UJWT:** A User JSON Web Token, a JWT created for a GitLab user with a shorter lifespan and less permissions than a IJWT.
 - **JWKS:** [JSON Web Key Set](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets),
@@ -77,8 +77,8 @@ Technically, Cloud Connector consists of the following pieces:
    deployments with private keys only GitLab Inc. has access to. We use these keys to issue cryptographically
    signed IJWT a GitLab Rails instance can use to make requests upstream to a connected service
    backend. The public validation keys are published using OIDC discovery API endpoints.
-1. **Electing AI Gateway as a UJWT issuer and validator.** Similar to the above mentioned IJWT issuers,
-   except with the purpose of issuing tokens for users only. The AI Gateway is its own validator, so the validation
+1. **Electing AI gateway as a UJWT issuer and validator.** Similar to the above mentioned IJWT issuers,
+   except with the purpose of issuing tokens for users only. The AI gateway is its own validator, so the validation
    keys are not published on OIDC discovery API endpoints.
 1. **Electing backend services as IJWT validators.** Backend services synchronize regularly
    with GitLab.com or CustomersDot to obtain the public keys used to validate the signature of a service
@@ -261,20 +261,20 @@ such as whether the service is considered fully launched or in beta stage. This 
 useful for self-managed instances whose upgrade cadence we do not control, because it allows us to
 sync in data that are subject to change and control access to some GitLab features remotely.
 
-### AI Gateway
+### AI gateway
 
-AI Gateway is able to issue UJWTs which are meant for users to directly communicate with the AI Gateway,
+AI gateway is able to issue UJWTs which are meant for users to directly communicate with the AI gateway,
 i.e. not having to make a call to a GitLab instance first. This is in addition to using a IJWT.
 Only GitLab instances can request a UJWT, which is done by making a request with the IJWT.
-AI Gateway will then return a short-lived UJWT that the instance can pass over to the user.
-The client can use this UJWT to directly communicate with the AI Gateway.
+AI gateway will then return a short-lived UJWT that the instance can pass over to the user.
+The client can use this UJWT to directly communicate with the AI gateway.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant U as User
     participant GL as SM/Dedicated GitLab or GitLab.com
-    participant AIGW as AI Gateway
+    participant AIGW as AI gateway
 
     U->>GL: Authorize with GitLab instance
     GL-->>U: PAT or Cookie

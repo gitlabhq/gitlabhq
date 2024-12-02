@@ -5709,9 +5709,6 @@ msgstr ""
 msgid "All required approvals must be given."
 msgstr ""
 
-msgid "All security policies must be evaluated."
-msgstr ""
-
 msgid "All threads resolved!"
 msgstr ""
 
@@ -61231,6 +61228,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Name is a required field"
 msgstr ""
 
+msgid "VulnerabilityManagement|No longer detected %{timeago} as of commit %{commitShaLink}"
+msgstr ""
+
 msgid "VulnerabilityManagement|Read more about related issues"
 msgstr ""
 
@@ -61316,6 +61316,9 @@ msgid "VulnerabilityStatusTypes|Resolved"
 msgstr ""
 
 msgid "Vulnerability|%{file} was not found in commit %{ref}"
+msgstr ""
+
+msgid "Vulnerability|%{file} was not found in ref %{ref}"
 msgstr ""
 
 msgid "Vulnerability|%{scannerName} (version %{scannerVersion})"

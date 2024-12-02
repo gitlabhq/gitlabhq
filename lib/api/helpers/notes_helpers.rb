@@ -134,6 +134,21 @@ module API
         ::Notes::CreateService.new(project, current_user, opts).execute
       end
 
+      def process_note_creation_result(note, &block)
+        quick_action_status = note.quick_actions_status
+
+        if quick_action_status&.commands_only? && quick_action_status.success?
+          status 202
+          present note, with: Entities::NoteCommands
+        elsif note.persisted?
+          yield
+        elsif quick_action_status&.error?
+          bad_request!(quick_action_status.error_messages.join(', '))
+        else
+          bad_request!("Note #{note.errors.messages}")
+        end
+      end
+
       def resolve_discussion(noteable, discussion_id, resolved)
         discussion = noteable.find_discussion(discussion_id)
 

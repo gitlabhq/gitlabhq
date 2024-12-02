@@ -23,7 +23,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/lib/gitlab/llm/ai_gateway/client_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/concerns/ai_dependent_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/embeddings_completion_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/completions/resolve_vulnerability_spec.rb'
     - 'ee/spec/lib/gitlab/llm/concerns/logger_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/client_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/configuration_spec.rb'

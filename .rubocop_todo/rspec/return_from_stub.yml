@@ -108,7 +108,6 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/prometheus_client_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/structured_logger_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/until_executed_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/safe_zip/entry_spec.rb'

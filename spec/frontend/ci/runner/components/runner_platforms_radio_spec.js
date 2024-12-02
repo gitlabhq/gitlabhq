@@ -54,10 +54,8 @@ describe('RunnerPlatformsRadio', () => {
     });
 
     it('shows image', () => {
-      expect(findImg().attributes()).toMatchObject({
-        src: mockImg,
-        'aria-hidden': 'true',
-      });
+      expect(findImg().element.src).toBe(mockImg);
+      expect(findImg().attributes('aria-hidden')).toBe('true');
     });
 
     it('shows slot', () => {
@@ -105,10 +103,8 @@ describe('RunnerPlatformsRadio', () => {
     });
 
     it('shows image', () => {
-      expect(findImg().attributes()).toMatchObject({
-        src: mockImg,
-        'aria-hidden': 'true',
-      });
+      expect(findImg().element.src).toBe(mockImg);
+      expect(findImg().attributes('aria-hidden')).toBe('true');
     });
 
     it('shows slot', () => {

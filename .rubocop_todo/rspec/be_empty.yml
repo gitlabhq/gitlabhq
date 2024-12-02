@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/BeEmpty:
   Exclude:
-    - 'ee/spec/controllers/subscriptions/groups_controller_spec.rb'
     - 'ee/spec/finders/groups/users_finder_spec.rb'
     - 'ee/spec/finders/merge_requests/by_approvers_finder_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/update_approval_rules_spec.rb'

@@ -397,9 +397,9 @@ export default {
         >
           {{ $options.i18n.deleteButtonText }}</gl-button
         >
-        <div>
-          <gl-button @click="cancel">{{ cancelProps.text }}</gl-button>
-          <gl-button v-bind="primaryProps.attributes" @click="submit">{{
+        <div class="gl-flex gl-gap-3">
+          <gl-button class="!gl-m-0" @click="cancel">{{ cancelProps.text }}</gl-button
+          ><gl-button v-bind="primaryProps.attributes" class="!gl-m-0" @click="submit">{{
             primaryProps.text
           }}</gl-button>
         </div>

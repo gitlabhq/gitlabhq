@@ -352,7 +352,7 @@ If the feature is delivered as part of the existing service, like `Duo Chat`,
 calling `CloudConnector::AvailableServices.find_by_name(:duo_chat).access_token(user_or_namespace)` would return an **IJWT** with
 access scopes including all authorized features (**unit primitives**).
 
-The **backend service** (AI Gateway) would prevent access to the specific feature (**unit primitive**) if the token scope is not included in the **JWT**.
+The **backend service** (AI gateway) would prevent access to the specific feature (**unit primitive**) if the token scope is not included in the **JWT**.
 
 ###### Permission checks
 
@@ -369,7 +369,7 @@ GitLab Rails calls a backend service to deliver functionality that would otherwi
 Dedicated instances. For GitLab Rails to be able to call this, there has to be an endpoint exposed.
 The backend service must verify each JWT sent by GitLab Rails in the Authorization header.
 
-For more information and examples on the AI Gateway authorization process, check the [Authorization in AI Gateway documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md?ref_type=heads#authorization-in-ai-gateway).
+For more information and examples on the AI gateway authorization process, check the [Authorization in AI gateway documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md?ref_type=heads#authorization-in-ai-gateway).
 
 ### The new feature is introduced via new backend service
 

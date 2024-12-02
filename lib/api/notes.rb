@@ -99,17 +99,9 @@ module API
           }
 
           note = create_note(noteable, opts)
-          quick_action_status = note.quick_actions_status
 
-          if quick_action_status&.commands_only? && quick_action_status.success?
-            status 202
-            present note, with: Entities::NoteCommands
-          elsif note.persisted?
+          process_note_creation_result(note) do
             present note, with: Entities.const_get(note.class.name, false)
-          elsif quick_action_status&.error?
-            bad_request!(quick_action_status.error_messages.join(', '))
-          elsif note.errors.present?
-            bad_request!("Note #{note.errors.messages}")
           end
         end
 

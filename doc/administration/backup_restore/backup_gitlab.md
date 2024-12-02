@@ -605,6 +605,18 @@ sudo gitlab-backup create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STOR
 sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
 ```
 
+:::TabTitle Helm chart (Kubernetes)
+
+```yaml 
+toolbox:
+#...
+    extra: {}
+    extraEnv:
+      GITLAB_BACKUP_MAX_CONCURRENCY: 4
+      GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY: 1
+   
+```
+
 ::EndTabs
 
 #### Incremental repository backups
@@ -688,15 +700,21 @@ and skip the **Project D** in **Group A** (`group-a/project-d`):
 
 :::TabTitle Linux package (Omnibus)
 
-  ```shell
-  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
-  ```
+```shell
+sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+```
 
 :::TabTitle Self-compiled
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
-  ```
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+```
+
+:::TabTitle Helm chart (Kubernetes)
+
+```shell
+REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,pages
+```
 
 ::EndTabs
 

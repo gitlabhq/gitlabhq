@@ -28,7 +28,7 @@ graph LR
   E[cron worker every minute] <-->|pull from queue| N
   E --> G[deserialize reference]
   G --> H[generate embedding]
-  H <--> I[AI Gateway]
+  H <--> I[AI gateway]
   I <--> J[Vertex API]
   H --> K[upsert document with embedding]
   K --> L[Elasticsearch]
@@ -56,7 +56,7 @@ graph LR
   D -->|no| E[fetch 19 references from queue]
   E ..->|each reference| F[increment endpoint]
   F --> G{endpoint throttled?}
-  G -->|no| H[call AI Gateway to generate embedding]
+  G -->|no| H[call AI gateway to generate embedding]
 ```
 
 Therefore we always make sure that we don't exceed the rate limit setting of 450 embeddings per minute even with 16 concurrent processes generating embeddings at the same time.

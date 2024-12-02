@@ -13,17 +13,12 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/development_stages_support.md) for GitLab Dedicated customers.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
-> - `pre_receive_secret_detection_beta_release` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472418) in GitLab 17.4.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/13107) in GitLab 17.5.
+> - Feature flag `pre_receive_secret_detection_beta_release` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472418) in GitLab 17.4.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/13107) in GitLab 17.5. Feature flag `pre_receive_secret_detection_push_check` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
-named `pre_receive_secret_detection_push_check`.
-
-Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
-The content of each commit is checked for secrets when pushed to GitLab. If any secrets are
-detected, the push is blocked.
+Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab. The
+content of each [file or commit](#coverage) is checked for secrets when pushed to GitLab. By
+default, the push is blocked if a secret is found.
 
 Use [pipeline secret detection](../index.md) together with secret push protection to further strengthen your security.
 
@@ -54,11 +49,12 @@ If secret push protection does not detect any secrets in your commits, no messag
 
 ## Detected secrets
 
-Secret push protection scans commits for specific patterns. Each pattern matches a specific type of
-secret. To confirm which secrets are detected by secret push protection, see
-[Detected secrets](../detected_secrets.md). Only high-confidence patterns were chosen for secret
-push protection, to minimize delay when pushing your code and minimize the number of false alerts.
-You cannot customize the ruleset used by secret push protection.
+Secret push protection scans [files or commits](#coverage) for specific patterns. Each pattern
+matches a specific type of secret. To confirm which secrets are detected by secret push protection,
+see [Detected secrets](../detected_secrets.md). Only high-confidence patterns were chosen for secret
+push protection, to minimize the delay when pushing your commits and minimize the number of false
+alerts. You can [exclude](../exclusions.md) selected secrets from detection by secret push
+protection.
 
 ## Enable secret push protection
 
@@ -76,6 +72,8 @@ see [enable secret push protection in a project](#enable-secret-push-protection-
 Prerequisites:
 
 - You must be an administrator for your GitLab instance.
+
+To allow the use of secret push protection in your GitLab instance:
 
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -96,35 +94,44 @@ To enable secret push protection in a project:
 
 ## Coverage
 
-Secret push protection checks the content of each commit when it is pushed to GitLab.
-However, the following conditions apply:
+By default, secret push protection checks the content of each file modified in a commit. If you
+have [diff scanning](#diff-scanning) enabled for the project, only the changes (diff) to each file
+are checked for secrets. The commit is blocked from being pushed to GitLab if a secret is detected
+in the commit.
 
-Secret push protection does not block a secret being pushed when either the following apply:
+Secret push protection does not block a secret when:
 
-- When pushing commits you specified that [secret push protection is to be skipped](#skip-secret-push-protection).
-- A [secret detection exclusion](../exclusions.md) defines the secret as being out of scope.
+- You used the [skip secret push protection](#skip-secret-push-protection) option when you pushed
+  the commits.
+- The secret is [excluded](../exclusions.md) from secret push protection.
+- The secret is in a path defined as an [exclusion](../exclusions.md).
 
 Secret push protection does not check a file in a commit when:
 
 - The file is a binary file.
 - The file is larger than 1 MiB.
-- The diff patch for the file is larger than 1 MiB (when using _[diff scanning](#diff-scanning)_).
+- The diff patch for the file is larger than 1 MiB (when using [diff scanning](#diff-scanning)).
 - The file was renamed, deleted, or moved without changes to the content.
 - The content of the file is identical to the content of another file in the source code.
 - The file is contained in the initial push that created the repository.
 
-## Diff scanning
+### Diff scanning
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) in GitLab 17.5 [with a project-level flag](../../../../administration/feature_flags.md) named `spp_scan_diffs`.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `spp_scan_diffs`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/480092) in GitLab 17.6.
 
-Secret Push Protection scans all contents of modified files by default.
-This can cause a [push to be blocked unexpectedly](#push-blocked-unexpectedly) when a file containing a secret is scanned.
-You can enable the `spp_scan_diffs` [feature flag](../../../../administration/feature_flags.md) for your project,
-which modifies Secret Push Protection to only scan newly committed changes (or diffs), and not the rest of the file.
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
-When `spp_scan_diffs` is enabled, Secret Push Protection scans the diffs for CLI-based pushes via HTTP/SSH.
-Changes committed via the WebIDE still result in the entire file being scanned due to a technical limitation.
-[Issue 491282](https://gitlab.com/gitlab-org/gitlab/-/issues/491282) addresses the limitation so only the diffs are scanned for WebIDE changes.
+By default, secret push protection checks the content of each file modified in a commit. This can
+cause a [push to be blocked unexpectedly](#push-blocked-unexpectedly) even though your commits don't
+contain a secret. To instead have only the changes (diff) scanned for secrets when pushing by using
+the Git CLI client, enable diff scanning.
+
+Changes committed by using the Web IDE still result in the entire file being scanned due to a
+technical limitation. Support for improvements are proposed in
+[issue 491282](https://gitlab.com/gitlab-org/gitlab/-/issues/491282).
 
 ## Resolve a blocked push
 
@@ -215,12 +222,14 @@ When working with secret push protection, you may encounter the following situat
 
 ### Push blocked unexpectedly
 
-Secret Push Protection scans all contents of modified files. This can cause a push to be unexpectedly blocked
-if a modified file contains a secret, even if the secret is not part of the diff.
+Secret push protection scans all contents of modified files. This can cause a push to be
+unexpectedly blocked if a modified file contains a secret, even if the secret is not part of the
+diff.
 
-[Enable the `spp_scan_diffs` feature flag](#diff-scanning) to ensure that only newly committed changes are scanned.
-To push a WebIDE change to a file that contains a secret, you need to [skip secret push protection](#skip-secret-push-protection).
+[Enable the `spp_scan_diffs` feature flag](#diff-scanning) to ensure that only newly committed
+changes are scanned. To push a Web IDE change to a file that contains a secret, you need to
+[skip secret push protection](#skip-secret-push-protection).
 
 ### File was not scanned
 
-Some files are excluded from scanning. For a list of exclusions, see [coverage](#coverage).
+Some files are excluded from scanning. For details see [coverage](#coverage).

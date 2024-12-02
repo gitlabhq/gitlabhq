@@ -98,11 +98,23 @@ RSpec.shared_examples Integrations::Actions do
           allow(integration).to receive(:testable?).and_return(true)
           allow(integration).to receive(:test).and_return({ success: true, data: [] })
         end
+      end
 
-        put :test, params: routing_params
+      it 'does not persist assigned attributes when testing the integration' do
+        original_api_url = integration.api_url
+        new_api_url = 'http://example.net'
+        params = { api_url: new_api_url }
+
+        put :test, params: routing_params.merge(integration: params)
+
+        integration.reload
+
+        expect(integration.api_url).to eq(original_api_url)
       end
 
       it 'returns 200' do
+        put :test, params: routing_params
+
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
