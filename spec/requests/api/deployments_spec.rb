@@ -241,6 +241,23 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       )
     end
 
+    it_behaves_like 'enforcing job token policies', [:admin_deployments, :admin_environments] do
+      # let(:accessed_project) { project }
+      let(:request) do
+        post(
+          api("/projects/#{project.id}/deployments"),
+          params: {
+            job_token: job.token,
+            environment: 'production',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+      end
+    end
+
     context 'as a maintainer' do
       it 'creates a new deployment' do
         post(

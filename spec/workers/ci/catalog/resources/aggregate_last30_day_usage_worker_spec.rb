@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageWorker, feature_category: :pipeline_composition do
   subject(:worker) { described_class.new }
 
+  before do
+    stub_feature_flags(ci_catalog_ranking_from_new_usage_table: false)
+  end
+
   include_examples 'an idempotent worker'
 
   it 'has the `until_executed` deduplicate strategy' do

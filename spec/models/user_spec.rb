@@ -1607,6 +1607,27 @@ RSpec.describe User, feature_category: :user_profile do
         expect(described_class.by_ids(user_ids)).to contain_exactly(first_user, second_user)
       end
     end
+
+    describe '.by_bot_namespace_ids' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project_namespace) { create(:project_namespace) }
+      let_it_be(:other_group) { create(:group) }
+
+      let_it_be(:other_user) { create(:user, user_type: :project_bot) }
+      let_it_be(:user_with_group) { create(:user, user_type: :project_bot) }
+      let_it_be(:user_with_project) { create(:user, user_type: :project_bot) }
+
+      before do
+        user_with_group.update!(bot_namespace: group)
+        user_with_project.update!(bot_namespace: project_namespace)
+        other_user.update!(bot_namespace: other_group)
+      end
+
+      it 'returns users for the given bot_namespace_ids' do
+        expect(described_class.by_bot_namespace_ids([group, project_namespace]))
+          .to contain_exactly(user_with_group, user_with_project)
+      end
+    end
   end
 
   context 'strip attributes' do

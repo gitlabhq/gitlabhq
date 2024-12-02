@@ -159,12 +159,15 @@ module InternalEventsCli
     # Automatically prepended to all new descriptions
     # ex) Total count of
     # ex) Weekly/Monthly count of unique
+    # ex) Count of
     def description_prefix
-      [
+      description_components = [
         time_frame.description,
         identifier.prefix,
         *(identifier.plural if identifier.default?)
-      ].join(' ')
+      ].compact
+
+      description_components.join(' ').capitalize
     end
 
     # Provides simplified but technically accurate description
@@ -172,8 +175,10 @@ module InternalEventsCli
     def technical_description
       event_name = actions.first if events.length == 1 && !filtered?
       event_name ||= 'the selected events'
-
-      "#{time_frame.description} #{identifier.description % event_name}"
+      [
+        time_frame.description,
+        (identifier.description % event_name).to_s
+      ].compact.join(' ').capitalize
     end
 
     def bulk_assign(key_value_pairs)
@@ -185,21 +190,25 @@ module InternalEventsCli
     TimeFrame = Struct.new(:value) do
       def description
         case value
+        when Array
+          nil # array time_frame metrics have no description prefix
         when '7d'
-          'Weekly'
+          'weekly'
         when '28d'
-          'Monthly'
+          'monthly'
         when 'all'
-          'Total'
+          'total'
         end
       end
 
       def directory_name
+        return "counts_all" if value.is_a? Array
+
         "counts_#{value}"
       end
 
       def key_path
-        description&.downcase if value != 'all'
+        description&.downcase if %w[7d 28d].include?(value)
       end
     end
 

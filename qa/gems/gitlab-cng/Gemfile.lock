@@ -34,8 +34,8 @@ GEM
     diff-lcs (1.5.1)
     docile (1.4.0)
     drb (2.2.1)
-    gitlab-styles (13.0.1)
-      rubocop (~> 1.67.0)
+    gitlab-styles (13.0.2)
+      rubocop (~> 1.68.0)
       rubocop-capybara (~> 2.21.0)
       rubocop-factory_bot (~> 2.26.1)
       rubocop-graphql (~> 1.5.4)
@@ -56,7 +56,7 @@ GEM
       racc
     pastel (0.8.0)
       tty-color (~> 0.5)
-    pry (0.14.2)
+    pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.8.1)
@@ -77,7 +77,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
-    rubocop (1.67.0)
+    rubocop (1.68.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -141,8 +141,8 @@ PLATFORMS
 DEPENDENCIES
   climate_control (~> 1.2.0)
   gitlab-cng!
-  gitlab-styles (~> 13.0.1)
-  pry (~> 0.14.2)
+  gitlab-styles (~> 13.0.2)
+  pry (~> 0.15.0)
   rspec (~> 3.13)
   simplecov (~> 0.22.0)
 

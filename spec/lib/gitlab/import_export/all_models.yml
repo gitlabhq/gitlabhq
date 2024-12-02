@@ -903,6 +903,7 @@ project:
 - observability_logs
 - security_exclusions
 - security_statistics
+- vulnerability_management_policies
 award_emoji:
 - awardable
 - user

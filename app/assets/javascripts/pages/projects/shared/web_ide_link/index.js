@@ -18,7 +18,7 @@ export default ({ el, router }) => {
   const { projectPath, ref, isBlob, webIdeUrl, ...options } = convertObjectPropsToCamelCase(
     JSON.parse(el.dataset.options),
   );
-  const { webIdePromoPopoverImg, cssClasses, defaultBranch } = el.dataset;
+  const { cssClasses, defaultBranch } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -33,7 +33,6 @@ export default ({ el, router }) => {
       return h(WebIdeButton, {
         props: {
           isBlob,
-          webIdePromoPopoverImg,
           webIdeUrl: isBlob
             ? webIdeUrl
             : webIDEUrl(

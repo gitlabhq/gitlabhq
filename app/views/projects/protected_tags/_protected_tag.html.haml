@@ -1,4 +1,4 @@
 = render layout: 'projects/protected_tags/shared/protected_tag', locals: { protected_tag: protected_tag } do
   %td.create_access_levels-container
-    = render 'projects/protected_tags/protected_tag_create_access_levels', protected_tag: protected_tag, create_access_level: protected_tag.create_access_levels.for_role
+    = render 'projects/protected_tags/protected_tag_create_access_levels', protected_tag: protected_tag, create_access_level: protected_tag.create_access_levels
     = render_if_exists 'projects/protected_tags/protected_tag_extra_create_access_levels', protected_tag: protected_tag

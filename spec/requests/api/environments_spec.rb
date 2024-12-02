@@ -125,7 +125,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
     it_behaves_like 'enforcing job token policies', :read_environments do
       let(:request) do
-        get api("/projects/#{accessed_project.id}/environments"), params: { job_token: job.token }
+        get api("/projects/#{project.id}/environments"), params: { job_token: job.token }
       end
     end
   end

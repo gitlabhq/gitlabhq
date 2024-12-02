@@ -124,11 +124,6 @@ export default {
       required: false,
       default: '',
     },
-    webIdePromoPopoverImg: {
-      type: String,
-      required: false,
-      default: '',
-    },
     cssClasses: {
       type: String,
       required: false,

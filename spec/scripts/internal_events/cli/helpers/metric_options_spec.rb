@@ -41,7 +41,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
   context 'when option is for a supported and not yet defined metric' do
     it 'highlights key words in the name' do
       expect(option.formatted).to eq({
-        name: "<cyan>time frame</cyan> count of <cyan>unique users</cyan> who triggered a list of events",
+        name: "<cyan>Time frame</cyan> count of <cyan>unique users</cyan> who triggered a list of events",
         value: metrics
       })
     end
@@ -51,7 +51,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
       it 'highlights key words in the name' do
         expect(option.formatted).to eq({
-          name: "<cyan>time frame</cyan> count of <cyan>unique users</cyan> who triggered a list of events " \
+          name: "<cyan>Time frame</cyan> count of <cyan>unique users</cyan> who triggered a list of events " \
             "<cyan>where label/prop/anything</cyan> is...",
           value: metrics
         })
@@ -64,7 +64,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
     it 'formats the option as disabled' do
       expect(option.formatted).to eq({
-        name: "<bright_black>time frame count of unique users who triggered a list of events</bright_black>",
+        name: "<bright_black>Time frame count of unique users who triggered a list of events</bright_black>",
         value: metrics,
         disabled: "<bold><bright_black>(already defined)</bright_black></bold>"
       })
@@ -75,7 +75,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
       it 'highlights key words in the name' do
         expect(option.formatted).to eq({
-          name: "<bright_black>time frame count of unique users who triggered " \
+          name: "<bright_black>Time frame count of unique users who triggered " \
             "a list of events where filtered</bright_black>",
           value: metrics,
           disabled: "<bold><bright_black>(already defined)</bright_black></bold>"
@@ -89,7 +89,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
     it 'formats the option as disabled' do
       expect(option.formatted).to eq({
-        name: "<bright_black>time frame count of unique users who triggered a list of events</bright_black>",
+        name: "<bright_black>Time frame count of unique users who triggered a list of events</bright_black>",
         value: metrics,
         disabled: "<bold><bright_black>(user unavailable)</bright_black></bold>"
       })
@@ -100,7 +100,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
       it 'highlights key words in the name' do
         expect(option.formatted).to eq({
-          name: "<bright_black>time frame count of unique users who triggered " \
+          name: "<bright_black>Time frame count of unique users who triggered " \
             "a list of events where filtered</bright_black>",
           value: metrics,
           disabled: "<bold><bright_black>(user unavailable)</bright_black></bold>"
@@ -114,7 +114,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
     it 'highlights key words in the name' do
       expect(option.formatted).to eq({
-        name: "<cyan>time frame</cyan> count of <cyan>unique values for 'label'</cyan> " \
+        name: "<cyan>Time frame</cyan> count of <cyan>unique values for 'label'</cyan> " \
           "from a list of events occurrences",
         value: metrics
       })
@@ -126,7 +126,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
     it 'highlights key words in the name' do
       expect(option.formatted).to eq({
-        name: "<cyan>time frame</cyan> count of a list of events occurrences",
+        name: "<cyan>Time frame</cyan> count of a list of events occurrences",
         value: metrics
       })
     end
@@ -144,7 +144,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
     it 'highlights key words in the name' do
       expect(option.formatted).to eq({
-        name: "<cyan>time frame 1/time frame 2</cyan> count of <cyan>unique users</cyan> " \
+        name: "<cyan>Time frame 1/Time frame 2</cyan> count of <cyan>unique users</cyan> " \
           "who triggered a list of events",
         value: metrics
       })

@@ -6,7 +6,7 @@
 # `16-9-deprecated-feature.yml`, where `16-9` is the announcement milestone,
 # not the removal milestone.
 #
-# See the deprecation guidelines to confirm your understanding of GitLab's definitions:
+# See the deprecation guidelines to confirm your understanding of the terminology:
 # https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
 #
 # If an End of Support period applies, see the OPTIONAL section below.

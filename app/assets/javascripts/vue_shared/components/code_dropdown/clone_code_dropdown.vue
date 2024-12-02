@@ -13,19 +13,25 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    sshLink: {
+    sshUrl: {
       type: String,
       required: false,
       default: '',
     },
-    httpLink: {
+    httpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    kerberosUrl: {
       type: String,
       required: false,
       default: '',
     },
     url: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     embeddable: {
       type: Boolean,
@@ -35,16 +41,24 @@ export default {
   },
   computed: {
     httpLabel() {
-      const protocol = this.httpLink ? getHTTPProtocol(this.httpLink)?.toUpperCase() : '';
+      const protocol = this.httpUrl ? getHTTPProtocol(this.httpUrl)?.toUpperCase() : '';
       return sprintf(__('Clone with %{protocol}'), { protocol });
     },
     sections() {
       const sections = [
-        { label: __('Clone with SSH'), link: this.sshLink, testId: 'copy-ssh-url' },
-        { label: this.httpLabel, link: this.httpLink, testId: 'copy-http-url' },
+        { label: __('Clone with SSH'), link: this.sshUrl, testId: 'copy-ssh-url' },
+        { label: this.httpLabel, link: this.httpUrl, testId: 'copy-http-url' },
       ];
 
-      if (this.embeddable) {
+      if (this.kerberosUrl) {
+        sections.push({
+          label: __('Clone with KRB5'),
+          link: this.kerberosUrl,
+          testId: 'copy-kerberos-url',
+        });
+      }
+
+      if (this.embeddable && this.url) {
         sections.push(
           {
             label: __('Embed'),

@@ -15,6 +15,7 @@ require_relative './cli/flows/flow_advisor'
 require_relative './cli/flows/metric_definer'
 require_relative './cli/flows/usage_viewer'
 require_relative './cli/global_state'
+require_relative './cli/time_framed_key_path'
 require_relative './cli/metric'
 require_relative './cli/event'
 

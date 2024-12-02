@@ -46,6 +46,8 @@ describe('autocompleteDataSources', () => {
       mergeRequests:
         '/foobar/project/group/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=2',
       epics: '/foobar/project/group/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=2',
+      milestones:
+        '/foobar/project/group/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=2',
     });
   });
 
@@ -58,6 +60,7 @@ describe('autocompleteDataSources', () => {
       mergeRequests:
         '/foobar/project/group/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=2',
       epics: '/foobar/project/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
+      milestones: '/foobar/project/group/-/autocomplete_sources/milestones?type=WorkItem&type_id=2',
     });
   });
 
@@ -81,6 +84,8 @@ describe('autocompleteDataSources', () => {
       mergeRequests:
         '/foobar/groups/group/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=2',
       epics: '/foobar/groups/group/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=2',
+      milestones:
+        '/foobar/groups/group/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=2',
     });
   });
 
@@ -99,6 +104,7 @@ describe('autocompleteDataSources', () => {
       mergeRequests:
         '/foobar/groups/group/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=2',
       epics: '/foobar/groups/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
+      milestones: '/foobar/groups/group/-/autocomplete_sources/milestones?type=WorkItem&type_id=2',
     });
   });
 });

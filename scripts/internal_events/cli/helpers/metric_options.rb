@@ -203,7 +203,7 @@ module InternalEventsCli
 
         # ex) "Monthly/Weekly"
         def time_frame_phrase
-          phrase = metrics.map { |metric| metric.time_frame.description }.join('/')
+          phrase = metrics.map { |metric| metric.time_frame.description.capitalize }.join('/')
 
           disabled ? phrase : format_info(phrase)
         end

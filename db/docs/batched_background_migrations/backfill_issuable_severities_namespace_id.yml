@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillIssuableSeveritiesNamespaceId
+description: Backfills sharding key `issuable_severities.namespace_id` from `issues`.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173728
+milestone: '17.7'
+queued_migration_version: 20241125145009
+finalized_by: # version of the migration that finalized this BBM

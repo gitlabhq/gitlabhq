@@ -107,7 +107,7 @@ export default {
           :disabled="btn.disabled || btn.loading"
           category="tertiary"
           size="small"
-          class="gl-float-left md:gl-block"
+          class="gl-float-left md:gl-inline-flex"
           @click="onClickAction(btn)"
         >
           {{ btn.text }}
@@ -160,7 +160,7 @@ export default {
           :disabled="btn.disabled || btn.loading"
           category="tertiary"
           size="small"
-          class="gl-float-left gl-hidden md:gl-block"
+          class="gl-float-left gl-hidden md:gl-inline-flex"
           @click="onClickAction(btn)"
         >
           {{ btn.text }}

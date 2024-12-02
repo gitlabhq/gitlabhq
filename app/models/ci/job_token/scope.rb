@@ -34,12 +34,12 @@ module Ci
         true
       end
 
-      def policy_allowed?(accessed_project, policy)
+      def policies_allowed?(accessed_project, policies)
         return true if self_referential?(accessed_project)
         return true unless accessed_project.ci_inbound_job_token_scope_enabled?
         return false unless inbound_accessible?(accessed_project)
 
-        policy_allowed_for_accessed_project?(accessed_project, policy)
+        policies_allowed_for_accessed_project?(accessed_project, policies)
       end
 
       def outbound_projects
@@ -91,11 +91,13 @@ module Ci
         end
       end
 
-      def policy_allowed_for_accessed_project?(accessed_project, policy)
+      def policies_allowed_for_accessed_project?(accessed_project, policies)
         scope = nearest_scope(accessed_project)
         return true if scope.default_permissions?
+        return false if policies.empty?
 
-        policy.to_s.in?(scope.job_token_policies)
+        allowed_policies = scope.job_token_policies.map(&:to_sym)
+        (policies - allowed_policies).empty?
       end
 
       def nearest_scope(accessed_project)

@@ -55,7 +55,7 @@ module Authn
           payload, _header = ::JSONWebToken::RSAToken.decode(token, signing_public_key)
 
           new(payload: payload, subject_type: subject_type)
-        rescue JWT::DecodeError, Gitlab::Graphql::Errors::ArgumentError
+        rescue JWT::DecodeError
           # The token received is not a JWT
           nil
         end
@@ -70,6 +70,9 @@ module Authn
         return unless payload
 
         GitlabSchema.parse_gid(payload['sub'], expected_type: subject_type)&.find
+      rescue Gitlab::Graphql::Errors::ArgumentError
+        # The subject doesn't exist anymore
+        nil
       end
       strong_memoize_attr :subject
 

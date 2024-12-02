@@ -131,6 +131,111 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     end
   end
 
+  context 'for an event with multiple metrics' do
+    let(:expected_rails_example) do
+      <<~TEXT.chomp
+      --------------------------------------------------
+      # RAILS
+
+      include Gitlab::InternalEventsTracking
+
+      track_internal_event(
+        'internal_events_cli_used',
+        project: project,
+        user: user
+      )
+
+      --------------------------------------------------
+      TEXT
+    end
+
+    let(:expected_rspec_example) do
+      <<~TEXT.chomp
+      --------------------------------------------------
+      # RSPEC
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'internal_events_cli_used' }
+        let(:project) { create(:project) }
+        let(:user) { create(:user) }
+      end
+
+      --------------------------------------------------
+      TEXT
+    end
+
+    let(:expected_gdk_example) do
+      <<~TEXT.chomp
+      --------------------------------------------------
+      # RAILS CONSOLE -- generate service ping payload, including most recent usage data
+
+      require_relative 'spec/support/helpers/service_ping_helpers.rb'
+
+      # Get current value of a metric
+      ServicePingHelpers.get_current_usage_metric_value('redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly')
+      ServicePingHelpers.get_current_usage_metric_value('redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly')
+
+      # View entire service ping payload
+      ServicePingHelpers.get_current_service_ping_payload
+      --------------------------------------------------
+      TEXT
+    end
+
+    let(:expected_tableau_example) do
+      <<~TEXT.chomp
+      --------------------------------------------------
+      # GROUP DASHBOARDS -- view all service ping metrics for a specific group
+
+      analytics_instrumentation: https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricExplorationbyGroup?Group%20Name=analytics_instrumentation&Stage%20Name=monitor
+
+      --------------------------------------------------
+      # METRIC TRENDS -- view data for a service ping metric for internal_events_cli_used
+
+      redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly: https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly
+      redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly: https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly
+
+      --------------------------------------------------
+      Note: The metric dashboard links can also be accessed from https://metrics.gitlab.com/
+
+      Not what you're looking for? Check this doc:
+        - https://docs.gitlab.com/ee/development/internal_analytics/#data-discovery
+      TEXT
+    end
+
+    before do
+      File.write(event1_filepath, File.read(event1_content))
+      File.write(
+        'config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml',
+        File.read('spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml')
+      )
+    end
+
+    it 'shows backend examples for all metrics' do
+      queue_cli_inputs([
+        "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+        'internal_events_cli_used', # Filters to this event
+        "\n", # Select: config/events/internal_events_cli_used.yml
+        "\n", # Select: ruby/rails
+        "\e[B", # Arrow down to: rspec
+        "\n", # Select: rspec
+        "7\n", # Select: Manual testing: check current values of metrics from rails console (any data source)
+        "8\n", # Select: Data verification in Tableau
+        "Exit", # Filters to this item
+        "\n" # select: Exit
+      ])
+
+      with_cli_thread do
+        expect { plain_last_lines(200) }.to eventually_include_cli_text(
+          expected_example_prompt,
+          expected_rails_example,
+          expected_rspec_example,
+          expected_gdk_example,
+          expected_tableau_example
+        )
+      end
+    end
+  end
+
   context 'for an event without identifiers' do
     let(:expected_rails_example) do
       <<~TEXT.chomp

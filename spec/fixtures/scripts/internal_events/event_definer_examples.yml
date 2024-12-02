@@ -121,10 +121,8 @@
     files:
     - path: config/events/random_name.yml
       content: spec/fixtures/scripts/internal_events/events/keyboard_smashed_event.yml
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_random_name_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric_28d.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_random_name_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric_7d.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_random_name.yml
+      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric.yml
 
 - description: Creates an event after helping the user figure out next steps
   inputs:

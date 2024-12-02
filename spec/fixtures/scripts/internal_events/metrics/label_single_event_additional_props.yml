@@ -1,6 +1,6 @@
 ---
-key_path: redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly
-description: Monthly count of unique users who defined an internal event using the CLI
+key_path: redis_hll_counters.count_distinct_label_from_internal_events_cli_used
+description: Count of unique values provided for label
 product_group: analytics_instrumentation
 product_categories:
 - service_ping
@@ -9,7 +9,9 @@ value_type: number
 status: active
 milestone: '16.6'
 introduced_by_url: TODO
-time_frame: 28d
+time_frame:
+- 28d
+- 7d
 data_source: internal_events
 data_category: optional
 distribution:
@@ -21,4 +23,4 @@ tiers:
 - ultimate
 events:
 - name: internal_events_cli_used
-  unique: user.id
+  unique: label

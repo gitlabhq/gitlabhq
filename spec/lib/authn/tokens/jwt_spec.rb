@@ -113,9 +113,7 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
     context 'with wrong subject type' do
       let(:subject_type) { Project }
 
-      it 'raises a Gitlab::Graphql::Errors::ArgumentError' do
-        expect { jwt_subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
-      end
+      it { is_expected.to be_nil }
     end
   end
 end

@@ -1004,7 +1004,10 @@ _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-To prevent malicious activity, GitLab renders only the first 50 inline math instances.
+To prevent malicious activity, GitLab renders only the first 50 inline math instances. 
+You can disable this limit [for a group](../api/graphql/reference/index.md#mutationgroupupdate)
+or for the entire [self-managed instance](../administration/instance_limits.md#math-rendering-limits).
+
 The number of math blocks is also limited based on render time. If the limit is exceeded,
 GitLab renders the excess math instances as text. Wiki and repository files do not have
 these limits.

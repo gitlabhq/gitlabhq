@@ -683,6 +683,10 @@ class User < ApplicationRecord
   scope :left_join_user_detail, -> { left_joins(:user_detail) }
   scope :preload_user_detail, -> { preload(:user_detail) }
 
+  scope :by_bot_namespace_ids, ->(namespace_ids) do
+    project_bot.joins(:user_detail).where(user_detail: { bot_namespace_id: namespace_ids })
+  end
+
   def self.supported_keyset_orderings
     {
       id: [:asc, :desc],

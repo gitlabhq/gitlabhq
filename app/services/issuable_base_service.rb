@@ -282,13 +282,9 @@ class IssuableBaseService < ::BaseContainerService
 
     change_additional_attributes(issuable)
 
-    assign_requested_assignees(issuable)
-    assign_requested_crm_contacts(issuable)
-    widget_params = filter_widget_params
-
     initialize_callbacks!(issuable)
 
-    if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
+    if issuable.changed? || params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
 
       before_update(issuable)
@@ -447,6 +443,9 @@ class IssuableBaseService < ::BaseContainerService
     change_subscription(issuable)
     change_todo(issuable)
     toggle_award(issuable)
+
+    assign_requested_assignees(issuable)
+    assign_requested_crm_contacts(issuable)
   end
 
   def change_state(issuable)
@@ -625,10 +624,6 @@ class IssuableBaseService < ::BaseContainerService
     return unless issuable_sla = issuable.issuable_sla
 
     issuable_sla.update(issuable_closed: issuable.closed?)
-  end
-
-  def filter_widget_params
-    params.delete(:widget_params)
   end
 
   def filter_contact_params(issuable)

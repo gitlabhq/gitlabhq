@@ -169,7 +169,7 @@ module API
         return handle_job_token_failure!(project)
       end
 
-      return forbidden!(job_token_policy_unauthorized_message(project)) unless job_token_policy_authorized?(project)
+      return forbidden!(job_token_policies_unauthorized_message(project)) unless job_token_policies_authorized?(project)
 
       if project_moved?(id, project)
         return not_allowed!('Non GET methods are not allowed for moved projects') unless request.get?
@@ -1011,27 +1011,33 @@ module API
       end
     end
 
-    def job_token_policy_authorized?(project)
+    def job_token_policies_authorized?(project)
       return true unless current_user&.from_ci_job_token?
       return true unless Feature.enabled?(:enforce_job_token_policies, current_user)
 
-      current_user.ci_job_token_scope.policy_allowed?(project, job_token_policy)
+      current_user.ci_job_token_scope.policies_allowed?(project, job_token_policies)
     end
 
-    def job_token_policy_unauthorized_message(project)
-      policy = job_token_policy
-      if policy.present?
+    def job_token_policies_unauthorized_message(project)
+      policies = job_token_policies
+      case policies.size
+      when 0
+        'This action is unauthorized for CI/CD job tokens.'
+      when 1
         format("Insufficient permissions to access this resource in project %{project}. " \
-          "The following token permission is required: %{permission}.", project: project.path, permission: policy)
+          "The following token permission is required: %{policy}.",
+          project: project.path, policy: policies[0])
       else
-        'This action is not authorized for CI/CD job tokens.'
+        format("Insufficient permissions to access this resource in project %{project}. " \
+          "The following token permissions are required: %{policies}.",
+          project: project.path, policies: policies.to_sentence)
       end
     end
 
-    def job_token_policy
-      return unless respond_to?(:route_setting)
+    def job_token_policies
+      return [] unless respond_to?(:route_setting)
 
-      route_setting(:authorization).try(:fetch, :job_token_policy, nil)
+      Array(route_setting(:authorization).try(:fetch, :job_token_policies, nil))
     end
   end
 end

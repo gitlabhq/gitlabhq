@@ -1,19 +1,19 @@
 import { GlFormInputGroup } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
-import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
+import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import CodeDropdownItem from '~/vue_shared/components/code_dropdown/code_dropdown_item.vue';
 
-describe('SnippetCodeDropdown', () => {
+describe('CloneCodeDropdown', () => {
   let wrapper;
-  const sshLink = 'ssh://foo.bar';
-  const httpLink = 'http://foo.bar';
-  const httpsLink = 'https://foo.bar';
+  const sshUrl = 'ssh://foo.bar';
+  const httpUrl = 'http://foo.bar';
+  const httpsUrl = 'https://foo.bar';
   const embedUrl = 'http://link.to.snippet';
   const embedCode = `<script src="${embedUrl}.js"></script>`;
   const defaultPropsData = {
-    sshLink,
-    httpLink,
+    sshUrl,
+    httpUrl,
     url: embedUrl,
     embeddable: true,
   };
@@ -24,13 +24,14 @@ describe('SnippetCodeDropdown', () => {
   const findCopyHttpUrlButton = () => wrapper.findComponentByTestId('copy-http-url');
   const findCopyEmbeddedCodeButton = () => wrapper.findComponentByTestId('copy-embedded-code');
   const findCopyShareUrlButton = () => wrapper.findComponentByTestId('copy-share-url');
+  const findCopyKRB5UrlButton = () => wrapper.findComponentByTestId('copy-kerberos-url');
 
   const createComponent = (propsData = defaultPropsData) => {
-    wrapper = shallowMountExtended(SnippetCodeDropdown, {
+    wrapper = shallowMountExtended(CloneCodeDropdown, {
       propsData,
       stubs: {
         GlFormInputGroup,
-        SnippetCodeDropdown: stubComponent(SnippetCodeDropdown),
+        CloneCodeDropdown: stubComponent(CloneCodeDropdown),
       },
     });
   };
@@ -38,8 +39,8 @@ describe('SnippetCodeDropdown', () => {
   describe('rendering', () => {
     it.each`
       name       | index | link
-      ${'SSH'}   | ${0}  | ${sshLink}
-      ${'HTTP'}  | ${1}  | ${httpLink}
+      ${'SSH'}   | ${0}  | ${sshUrl}
+      ${'HTTP'}  | ${1}  | ${httpUrl}
       ${'Embed'} | ${2}  | ${embedCode}
       ${'Share'} | ${3}  | ${embedUrl}
     `('renders correct link and a copy-button for $name', ({ index, link }) => {
@@ -50,9 +51,9 @@ describe('SnippetCodeDropdown', () => {
     });
 
     it.each`
-      name          | finder                   | value
-      ${'sshLink'}  | ${findCopySshUrlButton}  | ${sshLink}
-      ${'httpLink'} | ${findCopyHttpUrlButton} | ${httpLink}
+      name         | finder                   | value
+      ${'sshUrl'}  | ${findCopySshUrlButton}  | ${sshUrl}
+      ${'httpUrl'} | ${findCopyHttpUrlButton} | ${httpUrl}
     `('does not fail if only $name is set', ({ name, finder, value }) => {
       createComponent({ [name]: value, url: embedCode });
 
@@ -67,11 +68,30 @@ describe('SnippetCodeDropdown', () => {
       expect(findCopyEmbeddedCodeButton().exists()).toBe(false);
       expect(findCopyShareUrlButton().exists()).toBe(false);
     });
+
+    it('does not render Embed and Share items, if url is not provided', () => {
+      createComponent({ ...defaultPropsData, url: '' });
+
+      expect(findCopyEmbeddedCodeButton().exists()).toBe(false);
+      expect(findCopyShareUrlButton().exists()).toBe(false);
+    });
+
+    it('does not render KRB5 link, if kerberosUrl is not provided', () => {
+      createComponent();
+
+      expect(findCopyKRB5UrlButton().exists()).toBe(false);
+    });
+
+    it('renders KRB5 link, if kerberosUrl is provided', () => {
+      createComponent({ ...defaultPropsData, kerberosUrl: 'http://:@gitlab.com/project-2.git' });
+
+      expect(findCopyKRB5UrlButton().exists()).toBe(true);
+    });
   });
 
   describe('functionality', () => {
     it('correctly calculates httpLabel for HTTPS protocol', () => {
-      createComponent({ ...defaultPropsData, httpLink: httpsLink });
+      createComponent({ ...defaultPropsData, httpUrl: httpsUrl });
 
       expect(findCopyHttpUrlButton().props('label')).toContain('HTTPS');
     });

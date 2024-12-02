@@ -139,6 +139,7 @@ module InternalEventsCli
           per_page: 20,
           &disabled_format_callback
         )
+        @metrics = reduce_metrics_by_time_frame(@metrics)
 
         assign_shared_attrs(:actions, :milestone) do
           {
@@ -221,8 +222,21 @@ module InternalEventsCli
       def file_saved_context_message(attributes)
         format_prefix "  ", <<~TEXT.chomp
           - Visit #{format_info('https://metrics.gitlab.com')} to find dashboard links for this metric
-          - Metric trend dashboard: #{format_info(metric_trend_path(attributes['key_path']))}
+          #{metric_dashboard_links(attributes)}
         TEXT
+      end
+
+      def metric_dashboard_links(attributes)
+        time_frames = attributes['time_frame']
+        unless time_frames.is_a?(Array)
+          return "- Metric trend dashboard: #{format_info(metric_trend_path(attributes['key_path']))}"
+        end
+
+        dashboards = time_frames.map do |time_frame|
+          key_path = TimeFramedKeyPath.build(attributes['key_path'], time_frame)
+          "  - #{format_info(metric_trend_path(key_path))}"
+        end
+        ["- Metric trend dashboards:", *dashboards].join("\n")
       end
 
       # Check existing event files for attributes to copy over
@@ -387,6 +401,19 @@ module InternalEventsCli
 
           "  - #{event.action}#{format_help(filter_phrase)}\n"
         end
+      end
+
+      def reduce_metrics_by_time_frame(metrics)
+        # MetricOptions class returns one metric per time_frame value,
+        # here we merge them into a singular metric including all the time_frame values
+        return metrics unless metrics.length > 1
+
+        time_frames = metrics.map do |metric|
+          metric.time_frame.value
+        end
+
+        attributes = metrics.first.to_h.merge(time_frame: time_frames)
+        [Metric.new(**attributes)]
       end
 
       # Helper for #prompt_for_event_filters

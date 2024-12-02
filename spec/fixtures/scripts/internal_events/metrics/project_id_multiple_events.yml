@@ -1,6 +1,6 @@
 ---
-key_path: redis_hll_counters.count_distinct_label_from_internal_events_cli_used_weekly
-description: Weekly count of unique values provided for label
+key_path: redis_hll_counters.count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used
+description: Count of unique projects where a defition file was created with the CLI
 product_group: analytics_instrumentation
 product_categories:
 - service_ping
@@ -9,7 +9,9 @@ value_type: number
 status: active
 milestone: '16.6'
 introduced_by_url: TODO
-time_frame: 7d
+time_frame:
+- 28d
+- 7d
 data_source: internal_events
 data_category: optional
 distribution:
@@ -20,5 +22,7 @@ tiers:
 - premium
 - ultimate
 events:
+- name: internal_events_cli_closed
+  unique: project.id
 - name: internal_events_cli_used
-  unique: label
+  unique: project.id

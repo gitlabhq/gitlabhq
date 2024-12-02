@@ -81,6 +81,7 @@ describe('Protected Tag Edit', () => {
         { user_id: 1, id: 1 },
         { group_id: 1, id: 2 },
         { access_level: 3, id: 3 },
+        { deploy_key_id: 1, id: 4 },
       ];
       mockAxios.onPatch().replyOnce(HTTP_STATUS_OK, { [ACCESS_LEVELS.CREATE]: updatedPermissions });
       findAccessDropdown().vm.$emit('hidden', [{ user_id: 1 }]);
@@ -92,6 +93,7 @@ describe('Protected Tag Edit', () => {
         { user_id: 1, id: 1, type: LEVEL_TYPES.USER },
         { group_id: 1, id: 2, type: LEVEL_TYPES.GROUP },
         { access_level: 3, id: 3, type: LEVEL_TYPES.ROLE },
+        { deploy_key_id: 1, id: 4, type: LEVEL_TYPES.DEPLOY_KEY },
       ];
       expect(findAccessDropdown().props('preselectedItems')).toEqual(newPreselected);
     });

@@ -60,5 +60,28 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         end
       end
     end
+
+    context 'when deploy key is already selected for protected branch' do
+      let(:protected_tag) { create(:protected_tag, :no_one_can_create, project: project, name: 'v1.0.0') }
+      let(:write_access_key) { create(:deploy_key, user: user, write_access_to: project) }
+
+      before do
+        create(:protected_tag_create_access_level, protected_tag: protected_tag, deploy_key: write_access_key)
+      end
+
+      it 'displays a preselected deploy key' do
+        visit project_protected_tags_path(project)
+
+        within(".js-protected-tag-edit-form") do
+          find(".js-allowed-to-create").click
+          wait_for_requests
+
+          within('[data-testid="deploy_key-dropdown-item"]') do
+            deploy_key_checkbox = find('[data-testid="dropdown-item-checkbox"]')
+            expect(deploy_key_checkbox).to have_no_css("gl-invisible")
+          end
+        end
+      end
+    end
   end
 end

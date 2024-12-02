@@ -10,17 +10,13 @@
     - "\n" # Select: config/events/internal_events_cli_used.yml
     - "\n" # Select: Weekly count of unique users
     - "who defined an internal event using the CLI\n" # Input description
-    - "\n" # Submit weekly description for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml
 
 - description: Create a weekly/monthly metric for a multiple events, but select only one event
   inputs:
@@ -35,17 +31,13 @@
     - "\n" # Submit selections
     - "\n" # Select: Weekly count of unique projects
     - "who defined an internal event using the CLI\n" # Input description
-    - "\n" # Submit weekly description for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml
 
 - description: Create a weekly/monthly metric for multiple events
   inputs:
@@ -65,17 +57,13 @@
     - "\e[B" # Arrow down to: Weekly count of unique projects
     - "\n" # Select: Weekly count of unique projects
     - "where a defition file was created with the CLI\n" # Input description
-    - "\n" # Submit weekly description for monthly
     - "1\n" # Select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/project_id_28d_multiple_events.yml
-    - path: config/metrics/counts_7d/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/project_id_7d_multiple_events.yml
+    - path: config/metrics/counts_all/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/project_id_multiple_events.yml
 
 - description: Create an all time total metric for a single event
   inputs:
@@ -129,6 +117,33 @@
     - path: ee/config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/ee_total_single_event.yml
 
+- description: Create a weekly metric for a single event that already has a monthly metric
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    - path: config/metrics/counts_28d/count_internal_events_cli_used_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/ee_total_28d_single_event.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - 'internal_events_cli_used' # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[A\e[A" # Arrow up to: Monthly/Weekly count of events
+    - "\n" # Select: Monthly/Weekly count of events
+    - "when an event was defined using the CLI\n" # Input description
+    - "2\n" # Enum-select: Modify attributes
+    - "\n" # Accept group from event definition
+    - "\n" # Accept product categories from event definition
+    - "\n" # Accept URL from event definition
+    - "2\n" # Override tier -> Select: [premium, ultimate]
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: ee/config/metrics/counts_7d/count_total_internal_events_cli_used_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/ee_total_7d_single_event.yml
+
 - description: Create a metric after helping the user figure out next steps
   inputs:
     files:
@@ -153,6 +168,7 @@
     files:
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+
 - description: Create a metric and then another metric with copied events
   inputs:
     files:
@@ -165,9 +181,7 @@
     - "\n" # Select: config/events/internal_events_cli_used.yml
     - "\n" # Select: Weekly count of unique users
     - "who defined an internal event using the CLI\n" # Input description
-    - "\n" # Submit weekly description for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "2\n" # Create another metric with the same events
     - "\e[A" # Arrow up to: Total count of events
@@ -178,10 +192,8 @@
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
 
@@ -197,9 +209,7 @@
     - "\n" # Select: config/events/internal_events_cli_used.yml
     - "\n" # Select: Weekly count of unique users
     - "who defined an internal event using the CLI\n" # Input description
-    - "\n" # Submit weekly description for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "3\n" # Create another metric
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
@@ -213,10 +223,8 @@
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
 
@@ -232,9 +240,7 @@
     - "\n" # Select: config/events/internal_events_cli_used.yml
     - "\n" # Select: Weekly count of unique users
     - "who defined an internal event using the CLI\n" # Input description
-    - "\n" # Submit weekly description for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "2\n" # Create another metric
     - "\e[A" # Arrow up to: Total count of events
@@ -256,10 +262,8 @@
     - "4\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
     - path: ee/config/events/internal_events_cli_opened.yml
@@ -324,18 +328,13 @@
     - "\n" # Skip "Add extra property" filter
     - "who tried and failed to define an internal event using the CLI\n" # Input description
     - "failed_usage_attempts\n" # Input metric key path
-    - "\n" # Submit monthly description for weekly
-    - "\n" # Submit monthly name for weekly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_failed_usage_attempts_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event_additional_props.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_additional_props.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_failed_usage_attempts.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event_additional_props.yml
 
 - description: Create a weekly/monthly metric for a single event with all additional properties
   inputs:
@@ -355,18 +354,13 @@
     - "60\n" # Input valid "value"
     - "who tried and failed to define an internal event using the CLI\n" # Input description
     - "failed_usage_attempts_under_60s\n" # Input metric key path
-    - "\n" # Submit weekly description for monthly
-    - "\n" # Submit weekly name for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_failed_usage_attempts_under_60s_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event_all_additional_props.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_under_60s_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_all_additional_props.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_failed_usage_attempts_under_60s.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event_all_additional_props.yml
 
 - description: Create a weekly/monthly metric for a single event with custom additional properties filters
   inputs:
@@ -388,18 +382,13 @@
     - "12.4\n" # Input value for "custom_key4" filter
     - "who tried and failed to define an internal event using the CLI\n" # Input description
     - "failed_usage_attempts_under_60s\n" # Input metric key path
-    - "\n" # Submit weekly description for monthly
-    - "\n" # Submit weekly name for monthly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_failed_usage_attempts_under_60s_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event_custom_key_filter.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_under_60s_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_custom_key_filter.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_failed_usage_attempts_under_60s.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_single_event_custom_key_filter.yml
 
 - description: Create a weekly/monthly metric for multiple events with and without additional properties
   inputs:
@@ -479,17 +468,13 @@
     - "\e[A\e[A\e[A\e[A" # Arrow up to: Weekly count of unique values for label
     - "\n" # Select: Weekly count of unique values for label
     - "values provided for label\n" # Input description
-    - "\n" # Submit monthly description for weekly
     - "1\n" # Enum-select: Copy & continue
-    - "y\n" # Create file
     - "y\n" # Create file
     - "5\n" # Exit
   outputs:
     files:
-    - path: config/metrics/counts_28d/count_distinct_label_from_internal_events_cli_used_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/label_28d_single_event_additional_props.yml
-    - path: config/metrics/counts_7d/count_distinct_label_from_internal_events_cli_used_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/label_7d_single_event_additional_props.yml
+    - path: config/metrics/counts_all/count_distinct_label_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/label_single_event_additional_props.yml
 
 - description: Creates metrics with explicitly no product category
   inputs:

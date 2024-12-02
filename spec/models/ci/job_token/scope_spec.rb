@@ -229,32 +229,39 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
   end
 
-  describe '#policy_allowed?' do
-    subject { scope.policy_allowed?(accessed_project, policy) }
+  describe '#policies_allowed?' do
+    subject { scope.policies_allowed?(accessed_project, policies) }
 
     let(:scope) { described_class.new(target_project) }
     let_it_be(:target_project) { create(:project) }
     let_it_be(:allowed_policy) { ::Ci::JobToken::Policies.all_policies.pick(:value) }
-    let_it_be(:policy) { allowed_policy }
-    let_it_be(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
+    let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
 
-    context 'when the policy is defined in the scope' do
+    context 'when no policies are given' do
+      let_it_be(:policies) { [] }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the policies are defined in the scope' do
+      let_it_be(:policies) { [allowed_policy] }
+
       it { is_expected.to be(true) }
 
       context 'when the accessed project is not inbound accessible' do
-        let_it_be(:accessed_project) { create(:project) }
+        let(:accessed_project) { create(:project) }
 
         it { is_expected.to be(false) }
       end
     end
 
-    context 'when the policy is not defined in the scope' do
-      let_it_be(:policy) { :not_allowed_policy }
+    context 'when the policy are not defined in the scope' do
+      let_it_be(:policies) { [:not_allowed_policy] }
 
       it { is_expected.to be(false) }
 
       context 'when the accessed project is the target project' do
-        let_it_be(:accessed_project) { target_project }
+        let(:accessed_project) { target_project }
 
         it { is_expected.to be(true) }
       end
@@ -268,7 +275,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
       end
 
       context 'when the accessed project has not enabled fine grained permissions' do
-        let_it_be(:accessed_project) { create_inbound_accessible_project(target_project) }
+        let(:accessed_project) { create_inbound_accessible_project(target_project) }
 
         it { is_expected.to be(true) }
       end

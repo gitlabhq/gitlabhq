@@ -286,7 +286,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
           )
 
           allow(helper).to receive(:route_authentication_setting).and_return({})
-          allow(helper).to receive(:route_setting).with(:authorization).and_return(job_token_policy: job_token_policy)
+          allow(helper).to receive(:route_setting).with(:authorization).and_return(job_token_policies: job_token_policy)
           allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
         end
 
@@ -301,9 +301,22 @@ RSpec.describe API::Helpers, feature_category: :shared do
             expect(helper)
               .to receive(:forbidden!)
               .with("Insufficient permissions to access this resource in project #{project.path}. " \
-                "The following token permission is required: #{job_token_policy}.")
+                'The following token permission is required: not_allowed_policy.')
 
             find_project!
+          end
+
+          context 'when multiple policies are required' do
+            let_it_be(:job_token_policy) { [:policy_1, :policy_2] }
+
+            it 'returns forbidden' do
+              expect(helper)
+                .to receive(:forbidden!)
+                .with("Insufficient permissions to access this resource in project #{project.path}. " \
+                  'The following token permissions are required: policy_1 and policy_2.')
+
+              find_project!
+            end
           end
 
           context 'when the `enforce_job_token_policies` feature flag is disabled' do
@@ -319,7 +332,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
           let_it_be(:job_token_policy) { nil }
 
           it 'returns forbidden' do
-            expect(helper).to receive(:forbidden!).with('This action is not authorized for CI/CD job tokens.')
+            expect(helper).to receive(:forbidden!).with('This action is unauthorized for CI/CD job tokens.')
 
             find_project!
           end
@@ -330,6 +343,18 @@ RSpec.describe API::Helpers, feature_category: :shared do
             end
 
             it { is_expected.to eq project }
+          end
+        end
+
+        context "when route settings don't exist" do
+          before do
+            allow(helper).to receive(:respond_to?).with(:route_setting).and_return(false)
+          end
+
+          it 'returns forbidden' do
+            expect(helper).to receive(:forbidden!).with('This action is unauthorized for CI/CD job tokens.')
+
+            find_project!
           end
         end
       end
