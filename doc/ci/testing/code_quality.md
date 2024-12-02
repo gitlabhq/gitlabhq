@@ -285,3 +285,26 @@ You can also use or adapt an open source job definition to run the scan and inte
 
 - The [Vale linting step](https://gitlab.com/gitlab-org/gitlab/-/blob/94f870b8e4b965a41dd2ad576d50f7eeb271f117/.gitlab/ci/docs.gitlab-ci.yml#L71-87) used to check GitLab documentation.
 - The community [`gitlab-ci-utils` Vale project](https://gitlab.com/gitlab-ci-utils/container-images/vale#usage).
+
+#### markdownlint-cli2
+
+If you already have a [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
+To integrate its output:
+
+1. Add [`markdownlint-cli2-formatter-codequality`](https://www.npmjs.com/package/markdownlint-cli2-formatter-codequality) as a development dependency in your project.
+1. If you don't already have one, create a `.markdownlint-cli2.jsonc` file at the top level of your repository.
+1. Add an `outputFormatters` directive to `.markdownlint-cli2.jsonc`:
+
+   ```json
+   {
+     "outputFormatters": [
+       [ "markdownlint-cli2-formatter-codequality" ]
+     ]
+   }
+   ```
+
+1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
+   By default, the report file is named `markdownlint-cli2-codequality.json`.
+   1. Recommended. Add the report's filename to the repository's `.gitignore` file.
+
+For more details and an example CI/CD job definition, see the [documentation for `markdownlint-cli2-formatter-codequality`](https://www.npmjs.com/package/markdownlint-cli2-formatter-codequality).

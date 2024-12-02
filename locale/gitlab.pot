@@ -14360,6 +14360,18 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Enable DAST scanner"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enable DAST scanner in the project's security configuration to satisfy this requirement."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enable SAST scanner"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enable SAST scanner in the project's security configuration to satisfy this requirement."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Failure reason"
 msgstr ""
 
@@ -14378,13 +14390,13 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author-approved merge requests from being merged"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests with less than one non-author approval from being merged"
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests with fewer than one non-author approval from being merged"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests with less than two approvals from being merged"
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests with fewer than two approvals from being merged"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Have a valid rule that prevents users from approving merge requests where they’ve added commits"
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents users from approving merge requests that they've added commits to"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|How to fix"
@@ -32719,6 +32731,9 @@ msgid "Manage branch rules"
 msgstr ""
 
 msgid "Manage comment templates"
+msgstr ""
+
+msgid "Manage configuration"
 msgstr ""
 
 msgid "Manage git repositories with fine-grained access controls that keep your code secure."
