@@ -77,7 +77,7 @@ export default {
       v-for="list in userLists"
       :key="list.id"
       data-testid="ffUserList"
-      class="gl-flex gl-w-full gl-justify-between gl-border-b-1 gl-border-gray-100 gl-py-4 gl-border-b-solid"
+      class="gl-flex gl-w-full gl-justify-between gl-border-b-1 gl-border-default gl-py-4 gl-border-b-solid"
     >
       <div class="gl-flex gl-grow gl-flex-col">
         <span data-testid="ffUserListName" class="gl-mb-2 gl-font-bold">

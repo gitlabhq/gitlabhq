@@ -44,7 +44,7 @@ export default {
 </script>
 <template>
   <div>
-    <header class="gl-my-5 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+    <header class="gl-my-5 gl-border-b-1 gl-border-b-default gl-border-b-solid">
       <h2 class="gl-text-size-h1">{{ formTitle }}</h2>
       <p>{{ formDescription }}</p>
     </header>

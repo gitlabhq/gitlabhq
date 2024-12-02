@@ -40,7 +40,7 @@ export default {
   emptyHelpLink: helpPagePath('user/clusters/agent/work_with_agent', {
     anchor: 'view-an-agents-activity-information',
   }),
-  borderClasses: 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100',
+  borderClasses: 'gl-border-b-1 gl-border-b-solid gl-border-b-default',
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     agentEvents: {

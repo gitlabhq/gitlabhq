@@ -15,5 +15,5 @@
     sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
     new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json } }
 - else
-  .gl-border-solid.gl-border-1.gl-border-gray-100.gl-rounded-base.gl-mt-5.gl-p-3.gl-text-center
+  .gl-border-solid.gl-border-1.gl-border-default.gl-rounded-base.gl-mt-5.gl-p-3.gl-text-center
     = enable_lfs_message

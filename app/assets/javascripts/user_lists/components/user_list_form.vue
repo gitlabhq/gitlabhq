@@ -35,7 +35,7 @@ export default {
       'gl-justify-between',
       'gl-px-4',
       'gl-border-t-solid',
-      'gl-border-gray-100',
+      'gl-border-default',
       'gl-border-1',
       'gl-bg-gray-10',
     ],

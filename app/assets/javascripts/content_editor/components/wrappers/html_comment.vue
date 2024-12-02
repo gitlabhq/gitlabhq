@@ -25,7 +25,7 @@ export default {
     class="content-editor-placeholder-container gl-relative !gl-cursor-pointer gl-rounded-base gl-border-1 gl-p-3"
     :class="{
       'gl-border-solid gl-border-blue-400': selected,
-      'gl-border-dashed gl-border-gray-100': !selected,
+      'gl-border-dashed gl-border-default': !selected,
     }"
   >
     <span contenteditable="false" class="!gl-whitespace-pre-wrap gl-italic gl-text-subtle">{{

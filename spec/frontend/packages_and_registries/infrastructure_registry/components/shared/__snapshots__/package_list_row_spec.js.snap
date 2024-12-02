@@ -2,7 +2,7 @@
 
 exports[`packages_list_row renders 1`] = `
 <div
-  class="gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-flex gl-flex-col"
+  class="gl-border-b-1 gl-border-b-default gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-flex gl-flex-col"
   data-testid="package-row"
 >
   <div

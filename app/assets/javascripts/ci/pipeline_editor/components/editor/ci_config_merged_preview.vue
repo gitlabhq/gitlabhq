@@ -40,7 +40,7 @@ export default {
       <gl-icon class="gl-mr-3" :size="16" name="lock" variant="subtle" />
       {{ $options.i18n.viewOnlyMessage }}
     </div>
-    <div class="gl-mt-3 gl-border-1 gl-border-solid gl-border-gray-100">
+    <div class="gl-mt-3 gl-border-1 gl-border-solid gl-border-default">
       <source-editor
         ref="editor"
         :value="mergedYaml"

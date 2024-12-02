@@ -26,7 +26,7 @@ describe('content/components/wrappers/html_comment', () => {
 
     const classList = wrapper.findComponent(NodeViewWrapper).attributes('class');
 
-    expect(classList).toContain('gl-border-dashed gl-border-gray-100');
+    expect(classList).toContain('gl-border-dashed gl-border-default');
     expect(classList).not.toContain('gl-border-solid gl-border-blue-400');
   });
 
@@ -36,6 +36,6 @@ describe('content/components/wrappers/html_comment', () => {
     const classList = wrapper.findComponent(NodeViewWrapper).attributes('class');
 
     expect(classList).toContain('gl-border-solid gl-border-blue-400');
-    expect(classList).not.toContain('gl-border-dashed gl-border-gray-100');
+    expect(classList).not.toContain('gl-border-dashed gl-border-default');
   });
 });

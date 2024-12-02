@@ -79,17 +79,19 @@ export default {
         </gl-button>
       </div>
       <div class="gl-grow">
-        <h2
-          role="button"
+        <button
+          class="gl-w-full gl-border-0 gl-bg-transparent gl-p-0 gl-text-left"
           tabindex="-1"
-          class="gl-heading-2 !gl-mb-2 gl-cursor-pointer"
+          type="button"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
           data-testid="settings-block-title"
           @click="toggleExpanded"
         >
-          {{ title }}
-        </h2>
+          <h2 class="gl-heading-2 !gl-mb-2">
+            {{ title }}
+          </h2>
+        </button>
         <p class="gl-m-0 gl-text-subtle"><slot name="description"></slot></p>
       </div>
     </div>

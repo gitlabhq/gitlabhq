@@ -104,7 +104,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid">
+  <div class="gl-border-t-1 gl-border-t-default gl-border-t-solid">
     <h3 class="gl-mt-5 gl-text-lg">
       {{ heading }}
     </h3>
@@ -125,7 +125,7 @@ export default {
       <runner-assigned-item
         v-for="(project, i) in projects.items"
         :key="project.id"
-        :class="{ 'gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid': i !== 0 }"
+        :class="{ 'gl-border-t-1 gl-border-t-default gl-border-t-solid': i !== 0 }"
         :href="project.webUrl"
         :name="project.name"
         :full-name="project.nameWithNamespace"

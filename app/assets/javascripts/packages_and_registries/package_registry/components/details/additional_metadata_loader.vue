@@ -18,7 +18,7 @@ export default {
     <div
       v-for="index in $options.loader.repeat"
       :key="index"
-      class="gl-flex gl-items-center gl-border-b-1 gl-border-gray-100 gl-p-4"
+      class="gl-flex gl-items-center gl-border-b-1 gl-border-default gl-p-4"
     >
       <div class="md:gl-max-w-3/10">
         <gl-skeleton-loader :width="$options.loader.width" :height="$options.loader.height">

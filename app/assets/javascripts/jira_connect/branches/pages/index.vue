@@ -46,7 +46,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-mb-5 gl-mt-7 gl-border-1 gl-border-gray-100 gl-border-b-solid">
+    <div class="gl-mb-5 gl-mt-7 gl-border-1 gl-border-default gl-border-b-solid">
       <h1 data-testid="page-title" class="page-title gl-text-size-h-display">{{ pageTitle }}</h1>
     </div>
 

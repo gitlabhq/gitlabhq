@@ -42,7 +42,7 @@ export default {
 
 <template>
   <div class="gl-mt-6">
-    <h3 class="gl-mb-0 gl-border-b-1 gl-border-gray-100 gl-pb-3 gl-text-base gl-border-b-solid">
+    <h3 class="gl-mb-0 gl-border-b-1 gl-border-default gl-pb-3 gl-text-base gl-border-b-solid">
       {{ $options.i18n.listTitle }}
     </h3>
 

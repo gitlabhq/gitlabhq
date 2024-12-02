@@ -130,7 +130,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-mt-3 gl-border-b-1 gl-border-t-1 gl-border-gray-100 gl-bg-gray-10 gl-px-3 gl-py-5 gl-border-b-solid gl-border-t-solid"
+    class="gl-mt-3 gl-border-b-1 gl-border-t-1 gl-border-default gl-bg-gray-10 gl-px-3 gl-py-5 gl-border-b-solid gl-border-t-solid"
   >
     <filter-bar
       data-testid="vsa-filter-bar"

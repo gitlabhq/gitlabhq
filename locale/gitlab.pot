@@ -35069,6 +35069,9 @@ msgstr ""
 msgid "MlModelRegistry|Version"
 msgstr ""
 
+msgid "MlModelRegistry|Version candidates"
+msgstr ""
+
 msgid "MlModelRegistry|Version card"
 msgstr ""
 

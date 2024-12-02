@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+  <li class="gl-border-b-1 gl-border-b-default gl-border-b-solid">
     <div class="gl-flex gl-items-center gl-py-3">
       <div class="gl-flex-shrink-1 gl-flex gl-min-w-0 gl-grow gl-items-center">
         <div class="gl-flex-shrink-1 gl-min-w-0 gl-grow">

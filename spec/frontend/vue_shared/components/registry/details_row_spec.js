@@ -52,7 +52,7 @@ describe('DetailsRow', () => {
   });
 
   describe('dashed prop', () => {
-    const borderClasses = ['gl-border-b-solid', 'gl-border-gray-100', 'gl-border-b-1'];
+    const borderClasses = ['gl-border-b-solid', 'gl-border-default', 'gl-border-b-1'];
     it('by default component has no border', () => {
       mountComponent();
       expect(wrapper.classes).not.toEqual(expect.arrayContaining(borderClasses));

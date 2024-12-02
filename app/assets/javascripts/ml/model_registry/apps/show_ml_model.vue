@@ -13,12 +13,14 @@ import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.g
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import DeleteModelDisclosureDropdownItem from '../components/delete_model_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
 
 const ROUTE_DETAILS = 'details';
 const ROUTE_VERSIONS = 'versions';
+const ROUTE_CANDIDATES = 'candidates';
 
 const deletionSuccessfulAlert = {
   id: 'ml-model-deleted-successfully',
@@ -36,6 +38,11 @@ const routes = [
     path: '/versions',
     name: ROUTE_VERSIONS,
     component: ModelVersionList,
+  },
+  {
+    path: '/candidates',
+    name: ROUTE_CANDIDATES,
+    component: CandidateList,
   },
   { path: '*', redirect: { name: ROUTE_DETAILS } },
 ];
@@ -149,6 +156,9 @@ export default {
     versionCount() {
       return this.model?.versionCount || 0;
     },
+    candidateCount() {
+      return this.model?.candidateCount || 0;
+    },
     tabIndex() {
       return routes.findIndex(({ name }) => name === this.$route.name);
     },
@@ -213,6 +223,7 @@ export default {
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
   ROUTE_VERSIONS,
+  ROUTE_CANDIDATES,
 };
 </script>
 
@@ -284,6 +295,12 @@ export default {
                     <gl-badge v-if="versionCount" class="gl-tab-counter-badge">{{
                       versionCount
                     }}</gl-badge>
+                  </template>
+                </gl-tab>
+                <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
+                  <template #title>
+                    {{ s__('MlModelRegistry|Version candidates') }}
+                    <gl-badge class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
                   </template>
                 </gl-tab>
 

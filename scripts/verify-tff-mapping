@@ -81,6 +81,14 @@ tests = [
     changed_file: 'tooling/danger/specs/project_factory_suggestion.rb',
     expected: ['spec/tooling/danger/specs/project_factory_suggestion_spec.rb']
   },
+  {
+    explanation: 'tests.yml map to related tooling specs',
+    changed_file: 'tests.yml',
+    expected: [
+      'spec/tooling/lib/tooling/find_tests_spec.rb',
+      'spec/tooling/lib/tooling/predictive_tests_spec.rb'
+    ]
+  },
 
   {
     explanation: 'Map RuboCop related files to respective specs',
@@ -203,13 +211,19 @@ tests = [
   {
     explanation: 'Spec for FOSS model',
     changed_file: 'app/models/uploads/base.rb',
-    expected: ['spec/models/every_model_spec.rb']
+    expected: [
+      'spec/models/every_model_spec.rb',
+      'spec/lib/gitlab/import_export/model_configuration_spec.rb'
+    ]
   },
 
   {
     explanation: 'Spec for EE model',
     changed_file: 'ee/app/models/geo/base_registry.rb',
-    expected: ['spec/models/every_model_spec.rb']
+    expected: [
+      'spec/models/every_model_spec.rb',
+      'spec/lib/gitlab/import_export/model_configuration_spec.rb'
+    ]
   },
 
   {
@@ -687,6 +701,11 @@ tests = [
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
       spec/lib/gitlab/database/sharding_key_spec.rb
     ]
+  },
+  {
+    explanation: 'Verify attributes to be imported/exported',
+    changed_file: 'spec/lib/gitlab/import_export/all_models.yml',
+    expected: ['spec/lib/gitlab/import_export/model_configuration_spec.rb']
   }
 ]
 

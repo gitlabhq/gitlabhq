@@ -40,7 +40,7 @@ export default {
   >
     <div class="gl-relative gl-inline-flex gl-items-center">
       <div
-        class="gl-box-sizing-content-box -gl-mt-2 gl-mr-6 gl-inline gl-rounded-full gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-white gl-p-3 gl-text-gray-200"
+        class="gl-box-sizing-content-box -gl-mt-2 gl-mr-6 gl-inline gl-rounded-full gl-border-1 gl-border-solid gl-border-default gl-bg-white gl-p-3 gl-text-gray-200"
       >
         <gl-icon :name="note.systemNoteIconName" />
       </div>

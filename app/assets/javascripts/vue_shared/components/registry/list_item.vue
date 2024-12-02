@@ -35,8 +35,8 @@ export default {
     optionalClasses() {
       return {
         'gl-border-t-transparent': !this.first && !this.selected,
-        'gl-border-t-gray-100': this.first && !this.selected,
-        'gl-border-b-gray-100': !this.selected,
+        'gl-border-t-default': this.first && !this.selected,
+        'gl-border-b-default': !this.selected,
         '!gl-border-t-transparent': this.selected && !this.first,
         'gl-bg-blue-50 gl-border-blue-200': this.selected,
       };
@@ -150,7 +150,7 @@ export default {
           :key="detailIndex"
           class="gl-px-5 gl-py-2"
           :class="{
-            'gl-border-t-1 gl-border-gray-100 gl-border-t-solid': detailIndex !== 0,
+            'gl-border-t-1 gl-border-default gl-border-t-solid': detailIndex !== 0,
           }"
         >
           <slot :name="row"></slot>

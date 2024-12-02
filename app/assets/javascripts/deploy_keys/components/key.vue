@@ -115,7 +115,7 @@ export default {
 
 <template>
   <div
-    class="gl-responsive-table-row deploy-key gl-items-start !gl-border-gray-100 gl-bg-gray-10 md:gl-pl-5 md:gl-pr-5"
+    class="gl-responsive-table-row deploy-key gl-items-start !gl-border-default gl-bg-gray-10 md:gl-pl-5 md:gl-pr-5"
   >
     <div class="table-section section-40">
       <div role="rowheader" class="table-mobile-header gl-self-start gl-font-bold gl-text-gray-700">

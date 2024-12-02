@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-b-1 gl-border-b-gray-100 gl-px-6 gl-py-6 gl-border-b-solid">
+  <div class="gl-border-b-1 gl-border-b-default gl-px-6 gl-py-6 gl-border-b-solid">
     <gl-link
       v-if="feature.image_url"
       :href="feature.documentation_link"

@@ -169,7 +169,7 @@ export default {
     },
   },
   deploymentClasses: [
-    'gl-border-gray-100',
+    'gl-border-default',
     'gl-border-t-solid',
     'gl-border-1',
     'gl-py-5',
@@ -177,7 +177,7 @@ export default {
     'gl-bg-gray-10',
   ],
   deployBoardClasses: [
-    'gl-border-gray-100',
+    'gl-border-default',
     'gl-border-t-solid',
     'gl-border-1',
     'gl-py-4',

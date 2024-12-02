@@ -39,7 +39,7 @@ export default {
 <template>
   <div
     v-show="showHighlightBar"
-    class="gl-mb-3 gl-flex gl-flex-col gl-justify-between gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-p-5 sm:gl-flex-row"
+    class="gl-mb-3 gl-flex gl-flex-col gl-justify-between gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-p-5 sm:gl-flex-row"
   >
     <div v-if="alert" class="gl-mr-3">
       <span class="gl-font-bold">{{ s__('HighlightBar|Original alert:') }}</span>

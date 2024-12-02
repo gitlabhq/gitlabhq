@@ -132,7 +132,7 @@ export default {
       {{ $options.i18n.considerFlexibleRollout }}
     </gl-alert>
 
-    <div class="gl-border-t-1 gl-border-t-gray-100 gl-py-6 gl-border-t-solid">
+    <div class="gl-border-t-1 gl-border-t-default gl-py-6 gl-border-t-solid">
       <div class="flex-md-wrap gl-flex gl-flex-col md:gl-flex-row">
         <div class="mr-5">
           <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">

@@ -195,7 +195,7 @@ export default {
         :key="index"
         class="gl-flex gl-items-center gl-justify-between gl-px-5 gl-py-3"
         :class="{
-          'gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid': index > 0,
+          'gl-border-t-1 gl-border-t-default gl-border-t-solid': index > 0,
         }"
       >
         {{ container.name }}

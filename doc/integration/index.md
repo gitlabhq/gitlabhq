@@ -44,7 +44,7 @@ You can also integrate GitLab with the following security partners:
 - [Jscrambler](https://docs.jscrambler.com/code-integrity/documentation/gitlab-ci-integration)
 - [Mend](https://www.mend.io/gitlab/)
 - [Semgrep](https://semgrep.dev/for/gitlab/)
-- [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)
+- [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab/)
 - [Tenable](https://docs.tenable.com/vulnerability-management/Content/ContainerSecurity/Dashboard.htm)
 - [Venafi](https://marketplace.venafi.com/xchange/620d2d6ed419fb06a5c5bd36/solution/6292c2ef7550f2ee553cf223)
 - [Veracode](https://docs.veracode.com/r/c_integration_buildservs#gitlab)

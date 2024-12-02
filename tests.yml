@@ -37,6 +37,12 @@ mapping:
   - source: 'tooling/(?<rest>.+)\.rb'
     test: 'spec/tooling/%{rest}_spec.rb'
 
+  # Trigger tooling related specs when this file changes
+  - source: 'tests\.yml'
+    test:
+      - 'spec/tooling/lib/tooling/find_tests_spec.rb'
+      - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
+
   # RuboCop related specs
   - source: 'rubocop/(?<rest>.+)\.rb'
     test: 'spec/rubocop/%{rest}_spec.rb'
@@ -318,3 +324,9 @@ mapping:
   # duo enterprise trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller\.rb'
     test: 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/*_spec.rb'
+
+  # Import/Export checks
+  - source:
+      - 'spec/lib/gitlab/import_export/all_models\.yml'
+      - '(?<prefix>ee/)?app/models/.+\.rb'
+    test: 'spec/lib/gitlab/import_export/model_configuration_spec.rb'

@@ -30,7 +30,7 @@ export default {
 <template>
   <div class="edit-timeline-event gl-relative gl-flex gl-items-center">
     <div
-      class="gl-z-1 gl-mt-2 gl-flex gl-h-8 gl-w-8 gl-items-center gl-justify-center gl-self-start gl-rounded-full gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-white gl-text-gray-200"
+      class="gl-z-1 gl-mt-2 gl-flex gl-h-8 gl-w-8 gl-items-center gl-justify-center gl-self-start gl-rounded-full gl-border-1 gl-border-solid gl-border-default gl-bg-white gl-text-gray-200"
     >
       <gl-icon name="comment" class="note-icon" />
     </div>

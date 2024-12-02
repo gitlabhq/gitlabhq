@@ -1,7 +1,7 @@
 - bulk_imports_enabled = Gitlab::CurrentSettings.bulk_import_enabled? || Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
 
 = gitlab_ui_form_with url: configure_import_bulk_imports_path(namespace_id: params[:parent_id]), class: 'gl-show-field-errors' do |f|
-  .gl-border-l-solid.gl-border-r-solid.gl-border-t-solid.gl-border-gray-100.gl-border-1.gl-p-5.gl-mt-4
+  .gl-border-l-solid.gl-border-r-solid.gl-border-t-solid.gl-border-default.gl-border-1.gl-p-5.gl-mt-4
     .gl-flex.gl-items-center.gl-justify-between
       %h4.gl-flex
         = s_('GroupsNew|Import groups by direct transfer')
@@ -53,5 +53,5 @@
         title: s_('GroupsNew|Please fill in your personal access token.'),
         id: 'import_gitlab_token',
         data: { testid: 'import-gitlab-token' }
-  .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
+  .gl-border-default.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
     = f.submit s_('GroupsNew|Connect instance'), disabled: !bulk_imports_enabled, pajamas_button: true, data: { testid: 'connect-instance-button' }

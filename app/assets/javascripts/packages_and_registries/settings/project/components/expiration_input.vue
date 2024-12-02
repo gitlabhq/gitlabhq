@@ -70,7 +70,7 @@ export default {
     },
     inputGroupTextClass() {
       return {
-        'gl-border-gray-100 gl-text-gray-400': this.disabled,
+        'gl-border-default gl-text-gray-400': this.disabled,
       };
     },
   },

@@ -30,7 +30,7 @@ $command-palette-spacing: px-to-rem(14px);
 
   --super-sidebar-user-bar-button-bg: var(--gl-background-color-subtle);
   --super-sidebar-user-bar-button-color: var(--gl-text-color-default);
-  --super-sidebar-user-bar-button-border-color: var(--gl-color-alpha-dark-8);
+  --super-sidebar-user-bar-button-border-color: var(--gl-color-alpha-dark-16);
   --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-dark-8);
   --super-sidebar-user-bar-button-hover-color: var(--gl-text-color-default);
   --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-dark-16);
@@ -46,7 +46,7 @@ $command-palette-spacing: px-to-rem(14px);
     --super-sidebar-user-bar-bg: var(--gl-color-alpha-light-4);
 
     --super-sidebar-user-bar-button-bg: var(--gl-color-alpha-light-16);
-    --super-sidebar-user-bar-button-border-color: var(--gl-color-alpha-light-16);
+    --super-sidebar-user-bar-button-border-color: transparent;
     --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-light-24);
     --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-light-36);
 
@@ -73,7 +73,7 @@ $command-palette-spacing: px-to-rem(14px);
 
     --super-sidebar-user-bar-button-bg: var(--gl-color-alpha-light-16);
     --super-sidebar-user-bar-button-color: #{$user-bar-button-color};
-    --super-sidebar-user-bar-button-border-color: var(--gl-color-alpha-light-16);
+    --super-sidebar-user-bar-button-border-color: transparent;
     --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-light-24);
     --super-sidebar-user-bar-button-hover-color: #{$user-bar-button-color};
     --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-light-36);
@@ -294,6 +294,8 @@ $command-palette-spacing: px-to-rem(14px);
     }
 
     .organization-switcher-button {
+      border: 0 !important;
+
       &:not(:active),
       &:not(:hover),
       &:not(:focus) {
@@ -351,7 +353,7 @@ $command-palette-spacing: px-to-rem(14px);
 
     .user-bar-button {
       background-color: var(--super-sidebar-user-bar-button-bg);
-      border-color: var(--super-sidebar-user-bar-button-border-color);
+      border: 1px solid var(--super-sidebar-user-bar-button-border-color);
 
       &[aria-expanded='true'] {
         background-color: var(--super-sidebar-user-bar-button-hover-bg);

@@ -81,10 +81,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="gl-py-4"
-    :class="{ 'gl-border-b-1 gl-border-gray-100 gl-border-b-solid': !isLastRow }"
-  >
+  <div class="gl-py-4" :class="{ 'gl-border-b-1 gl-border-default gl-border-b-solid': !isLastRow }">
     <div class="gl-inline-flex gl-w-full gl-items-center">
       <span v-if="canBulkDestroyArtifacts" class="gl-pl-5">
         <gl-form-checkbox

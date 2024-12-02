@@ -12,7 +12,7 @@ import { s__, __ } from '~/locale';
 import { states, ADD_USER_MODAL_ID } from '../constants/show';
 import AddUserModal from './add_user_modal.vue';
 
-const commonTableClasses = ['gl-py-5', 'gl-border-b-1', 'gl-border-b-solid', 'gl-border-gray-100'];
+const commonTableClasses = ['gl-py-5', 'gl-border-b-1', 'gl-border-b-solid', 'gl-border-default'];
 
 export default {
   components: {
@@ -49,7 +49,7 @@ export default {
       'gl-pb-5',
       'gl-border-b-1',
       'gl-border-b-solid',
-      'gl-border-gray-100',
+      'gl-border-default',
     ].join(' '),
     tableHeaderClasses: commonTableClasses.join(' '),
     tableRowClasses: [

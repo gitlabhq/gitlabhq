@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-b-2 gl-border-b-gray-100 gl-py-3 gl-leading-20 gl-border-b-solid">
+  <li class="gl-border-b-2 gl-border-b-default gl-py-3 gl-leading-20 gl-border-b-solid">
     <div
       :class="{
         'gl-flex gl-flex-wrap gl-items-center gl-justify-between': collapsible,

@@ -196,7 +196,7 @@ export default {
 <template>
   <div
     class="alert-assignees gl-w-7/10 gl-py-5"
-    :class="{ 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid': !sidebarCollapsed }"
+    :class="{ 'gl-border-b-1 gl-border-b-default gl-border-b-solid': !sidebarCollapsed }"
   >
     <template v-if="sidebarCollapsed">
       <div

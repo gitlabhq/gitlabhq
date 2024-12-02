@@ -56,7 +56,7 @@ export default {
   <gl-tab :title="$options.i18n.title">
     <div class="gl-mt-5 gl-flex gl-flex-wrap">
       <div class="gl-w-full" data-testid="activity-section">
-        <div class="gl-flex gl-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+        <div class="gl-flex gl-items-center gl-border-b-1 gl-border-b-default gl-border-b-solid">
           <h4 class="gl-grow">{{ $options.i18n.activity }}</h4>
           <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
         </div>
@@ -65,7 +65,7 @@ export default {
         <contribution-events v-else :events="events" />
       </div>
       <div class="gl-w-full" data-testid="personal-projects-section">
-        <div class="gl-flex gl-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+        <div class="gl-flex gl-items-center gl-border-b-1 gl-border-b-default gl-border-b-solid">
           <h4 class="gl-grow">{{ $options.i18n.personalProjects }}</h4>
           <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
         </div>
