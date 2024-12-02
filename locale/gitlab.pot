@@ -35952,6 +35952,9 @@ msgstr ""
 msgid "New incident has been created"
 msgstr ""
 
+msgid "New integration"
+msgstr ""
+
 msgid "New issue"
 msgid_plural "New issues"
 msgstr[0] ""
@@ -41247,6 +41250,9 @@ msgstr ""
 msgid "Please reach out if you have any questions and we'll be happy to assist."
 msgstr ""
 
+msgid "Please reach out to %{support_link_start}GitLab Support%{support_link_end} for assistance"
+msgstr ""
+
 msgid "Please review the %{strong_start}%{contribution_guidelines_start}contribution guidelines%{contribution_guidelines_end}%{strong_end} for this project."
 msgstr ""
 
@@ -41284,9 +41290,6 @@ msgid "Please solve the captcha"
 msgstr ""
 
 msgid "Please try again"
-msgstr ""
-
-msgid "Please try again or reach out to %{support_link_start}GitLab Support%{support_link_end}."
 msgstr ""
 
 msgid "Please use an email address or domain you control."

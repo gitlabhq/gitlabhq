@@ -31,4 +31,7 @@ Doorkeeper::DeviceAuthorizationGrant.configure do
   # verification_uri_complete ->(verification_uri, host_name, device_grant) do
   #   "#{verification_uri}?user_code=#{CGI.escape(device_grant.user_code)}"
   # end
+  Doorkeeper::DeviceAuthorizationGrant::DeviceGrant.class_eval do
+    belongs_to :organization, class_name: 'Organizations::Organization'
+  end
 end

@@ -1298,9 +1298,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               context "when an oauth token is provided" do
                 before do
                   application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                  @token = Doorkeeper::AccessToken.create!(
-                    application_id: application.id, resource_owner_id: user.id,
-                    scopes: "api", organization: project.organization)
+                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api")
                 end
 
                 let(:path) { "#{project.full_path}.git" }

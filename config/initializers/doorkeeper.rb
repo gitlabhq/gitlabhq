@@ -135,47 +135,4 @@ Doorkeeper.configure do
   application_secret_generator 'Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken'
 
   custom_access_token_attributes [:organization_id]
-
-  # Following doorkeeper monkey patches are to identify the organization on best effort basis
-  Doorkeeper::Server.class_eval do
-    def parameters
-      { organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID }.with_indifferent_access.merge(context.request.parameters)
-    end
-  end
-
-  Doorkeeper::OAuth::PasswordAccessTokenRequest.class_eval do
-    private
-
-    def before_successful_response
-      organization = Gitlab::Current::Organization.new(user: resource_owner).organization
-
-      find_or_create_access_token(client, resource_owner, scopes, { organization_id: organization.id }, server)
-      super
-    end
-  end
-
-  Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceAuthorizationRequest.class_eval do
-    # @return [Hash]
-    def device_grant_attributes
-      {
-        application_id: client.id,
-        expires_in: configuration.device_code_expires_in,
-        scopes: scopes.to_s,
-        user_code: generate_user_code,
-        organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID
-      }
-    end
-  end
-
-  Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceCodeRequest.class_eval do
-    def generate_access_token
-      find_or_create_access_token(
-        device_grant.application,
-        device_grant.resource_owner_id,
-        device_grant.scopes,
-        { organization_id: device_grant.organization_id },
-        server
-      )
-    end
-  end
 end

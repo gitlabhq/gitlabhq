@@ -26,9 +26,9 @@ With self-hosted models, you can:
 
 - Choose any GitLab-approved LLM.
 - Retain full control over data by keeping all request/response logs within your domain, ensuring complete privacy and security with no external API calls.
-- Isolate the GitLab instance, AI Gateway, and models within your own environment.
+- Isolate the GitLab instance, AI gateway, and models within your own environment.
 - Select specific GitLab Duo features tailored to your users.
-- Eliminate reliance on the shared GitLab AI Gateway.
+- Eliminate reliance on the shared GitLab AI gateway.
 
 This setup ensures enterprise-level privacy and flexibility, allowing seamless integration of your LLMs with GitLab Duo features.
 
@@ -38,8 +38,8 @@ Before setting up a self-hosted model infrastructure, you must have:
 
 - A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
 - A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
-- A locally hosted or GitLab.com AI Gateway.
-- GitLab Ultimate + [Duo Enterprise license](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
+- A locally hosted or GitLab.com AI gateway.
+- [Ultimate with GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
 
 ## Choose a configuration type
 
@@ -79,8 +79,8 @@ To set up a fully isolated self-hosted model infrastructure:
 
    - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
-1. **Install the GitLab AI Gateway**
-   [Install the AI Gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
+1. **Install the GitLab AI gateway**
+   [Install the AI gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
 
 1. **Configure GitLab Duo features**
    See the [Configure GitLab Duo features documentation](configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.

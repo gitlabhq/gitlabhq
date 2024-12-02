@@ -47,10 +47,6 @@ ee/spec/frontend/compliance_dashboard/components/standards_adherence_report/base
 ee/spec/frontend/dependencies/components/app_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js
 ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
-ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
-ee/spec/frontend/dependencies/components/filtered_search/tokens/license_token_spec.js
-ee/spec/frontend/dependencies/components/filtered_search/tokens/package_manager_token_spec.js
-ee/spec/frontend/dependencies/components/filtered_search/tokens/project_token_spec.js
 ee/spec/frontend/environments_dashboard/components/project_header_spec.js
 ee/spec/frontend/geo_sites/components/details/secondary_site/geo_site_replication_details_responsive_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
@@ -99,7 +95,6 @@ ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/components/expandable_section_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
-ee/spec/frontend/security_dashboard/components/project/security_scanner_alert_spec.js
 ee/spec/frontend/security_dashboard/components/shared/empty_states/dashboard_has_no_vulnerabilities_spec.js
 ee/spec/frontend/security_dashboard/components/shared/filters/querystring_sync_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_graphql/details_section_spec.js

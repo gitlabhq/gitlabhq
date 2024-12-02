@@ -15454,7 +15454,7 @@ CREATE TABLE oauth_access_grants (
     scopes character varying,
     code_challenge text,
     code_challenge_method text,
-    organization_id bigint NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT oauth_access_grants_code_challenge CHECK ((char_length(code_challenge) <= 128)),
     CONSTRAINT oauth_access_grants_code_challenge_method CHECK ((char_length(code_challenge_method) <= 5))
 );
@@ -15478,7 +15478,7 @@ CREATE TABLE oauth_access_tokens (
     revoked_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     scopes character varying,
-    organization_id bigint NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_70f294ef54 CHECK ((expires_in IS NOT NULL))
 );
 
@@ -15526,7 +15526,7 @@ CREATE TABLE oauth_device_grants (
     scopes text DEFAULT ''::text NOT NULL,
     device_code text NOT NULL,
     user_code text,
-    organization_id bigint NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_a6271f2c07 CHECK ((char_length(device_code) <= 255)),
     CONSTRAINT check_b0459113c7 CHECK ((char_length(scopes) <= 255)),
     CONSTRAINT check_b36370c6df CHECK ((char_length(user_code) <= 255))
@@ -15545,7 +15545,7 @@ CREATE TABLE oauth_openid_requests (
     id bigint NOT NULL,
     access_grant_id bigint NOT NULL,
     nonce character varying NOT NULL,
-    organization_id bigint NOT NULL
+    organization_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE oauth_openid_requests_id_seq

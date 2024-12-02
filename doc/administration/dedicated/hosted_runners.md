@@ -97,6 +97,8 @@ Prerequisites:
 
 ### Create hosted runners in Switchboard
 
+For each instance, you can create one runner of each type and size combination. Switchboard displays the available runner options.
+
 To create hosted runners:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com).

@@ -191,11 +191,102 @@ the only jobs that run are the pipeline execution policy jobs.
 
 ### `override_project_ci`
 
-This strategy completely replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, such as enforcing organization-wide CI/CD standards or compliance requirements.
+This strategy replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, like when you want to enforce organization-wide CI/CD standards or compliance requirements in a highly regulated industry. To override the pipeline configuration, define the CI/CD jobs and do not use `include:project`.
 
 The strategy takes precedence over other policies using the `inject_ci` strategy. If any policy with `override_project_ci` applies, the project CI configuration will be ignored. Other security policy configurations will not be overridden.
 
-This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling them to customize the policy jobs. For example, by combining policy and project CI/CD configuration into one YAML file, users can override `before_script` configuration.
+Alternatively, you can merge the project's CI/CD configuration with the project's `.gitlab-ci.yml` instead of overriding it. To merge the configuration, use `include:project`. This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling the users to customize the policy jobs. For example, they can combine the policy and project CI/CD configuration into one YAML file to override the `before_script` configuration or define required variables, such as `CS_IMAGE`, to define the required path to the container to scan. Here's a [short demo](https://youtu.be/W8tubneJ1X8) of this behavior.
+The following diagram illustrates how variables defined at the project and policy levels are selected in the resulting pipeline:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TB
+
+classDef yaml text-align:left
+
+ActualPolicyYAML["<pre>
+variables:
+  MY_VAR: 'policy'
+policy-job:
+  stage: test
+</pre>"]
+
+class ActualPolicyYAML yaml
+
+ActualProjectYAML["<pre>
+variables:
+  MY_VAR: 'project'
+project-job:
+  stage: test
+</pre>"]
+
+class ActualProjectYAML yaml
+
+PolicyVariablesYAML["<pre>
+variables:
+  MY_VAR: 'policy'
+</pre>"]
+
+class PolicyVariablesYAML yaml
+
+ProjectVariablesYAML["<pre>
+variables:
+  MY_VAR: 'project'
+</pre>"]
+
+class ProjectVariablesYAML yaml
+
+ResultingPolicyVariablesYAML["<pre>
+variables:
+  MY_VAR: 'policy'
+</pre>"]
+
+class ResultingPolicyVariablesYAML yaml
+
+ResultingProjectVariablesYAML["<pre>
+variables:
+  MY_VAR: 'project'
+</pre>"]
+
+class ResultingProjectVariablesYAML yaml
+
+PolicyCiYAML(Policy CI YAML) --> ActualPolicyYAML
+ProjectCiYAML(<code>.gitlab-ci.yml</code>) --> ActualProjectYAML
+
+subgraph "Policy Pipeline"
+  subgraph "Test stage"
+    subgraph "<code>policy-job</code>"
+      PolicyVariablesYAML
+    end
+  end
+end
+
+subgraph "Project Pipeline"
+  subgraph "Test stage"
+    subgraph "<code>project-job</code>"
+      ProjectVariablesYAML
+    end
+  end
+end
+
+ActualPolicyYAML -- "Used as source" --> PolicyVariablesYAML
+ActualProjectYAML -- "Used as source" --> ProjectVariablesYAML
+
+subgraph "Resulting Pipeline"
+  subgraph "Test stage"
+    subgraph "<code>policy-job</code> "
+      ResultingPolicyVariablesYAML
+    end
+
+    subgraph "<code>project-job</code> "
+      ResultingProjectVariablesYAML
+    end
+  end
+end
+
+PolicyVariablesYAML -- "Inject <code>policy-job</code> if Test Stage exists" --> ResultingPolicyVariablesYAML
+ProjectVariablesYAML -- "Basis of the resulting pipeline" --> ResultingProjectVariablesYAML
+```
 
 NOTE:
 When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the
