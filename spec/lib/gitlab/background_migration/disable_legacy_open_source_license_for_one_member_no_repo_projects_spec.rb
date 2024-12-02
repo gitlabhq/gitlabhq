@@ -5,12 +5,15 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForOneMemberNoRepoProjects,
   :migration,
   schema: 20230721095222 do
+  let(:organizations_table) { table(:organizations) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:project_settings_table) { table(:project_settings) }
   let(:project_statistics_table) { table(:project_statistics) }
   let(:users_table) { table(:users) }
   let(:project_authorizations_table) { table(:project_authorizations) }
+
+  let(:organization) { organizations_table.create!(name: "organization", path: "organization") }
 
   subject(:perform_migration) do
     described_class.new(start_id: projects_table.minimum(:id),
@@ -41,14 +44,24 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForOne
   end
 
   def create_legacy_license_public_project(path, repo_size: 0, members: 1)
-    namespace = namespaces_table.create!(name: "namespace-#{path}", path: "namespace-#{path}")
-    project_namespace =
-      namespaces_table.create!(name: "-project-namespace-#{path}", path: "project-namespace-#{path}", type: 'Project')
+    namespace = namespaces_table.create!(
+      organization_id: organization.id,
+      name: "namespace-#{path}",
+      path: "namespace-#{path}"
+    )
+
+    project_namespace = namespaces_table.create!(
+      organization_id: organization.id,
+      name: "-project-namespace-#{path}",
+      path: "project-namespace-#{path}",
+      type: 'Project'
+    )
+
     project = projects_table
-                .create!(
-                  name: path, path: path, namespace_id: namespace.id,
-                  project_namespace_id: project_namespace.id, visibility_level: 20
-                )
+      .create!(
+        name: path, path: path, namespace_id: namespace.id, organization_id: organization.id,
+        project_namespace_id: project_namespace.id, visibility_level: 20
+      )
 
     members.times do |member_id|
       user = users_table.create!(email: "user#{member_id}-project-#{project.id}@gitlab.com", projects_limit: 100)

@@ -147,6 +147,12 @@ describe('newWorkItemPath', () => {
       }),
     ).toBe('/foobar/groups/group/-/epics/new');
   });
+
+  it('appends a query string to the path', () => {
+    expect(newWorkItemPath({ fullPath: 'project', query: '?foo=bar' })).toBe(
+      '/foobar/project/-/work_items/new?foo=bar',
+    );
+  });
 });
 
 describe('getWorkItemIcon', () => {

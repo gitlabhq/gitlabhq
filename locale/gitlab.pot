@@ -6548,6 +6548,9 @@ msgstr ""
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
+msgid "Analytics|Learn more about %{docsLinkStart}AI Impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo Pro seats usage%{subscriptionLinkEnd}."
+msgstr ""
+
 msgid "Analytics|Line chart"
 msgstr ""
 
@@ -6651,9 +6654,6 @@ msgid "Analytics|Visualization title"
 msgstr ""
 
 msgid "Analytics|Visualization was saved successfully"
-msgstr ""
-
-msgid "Analytics|Visualize the relation between AI usage and SDLC trends. Learn more about %{docsLinkStart}AI Impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo Pro seats usage%{subscriptionLinkEnd}."
 msgstr ""
 
 msgid "Analytics|Would you like to replace your existing selection with a new visualization generated through GitLab Duo?"
@@ -9829,6 +9829,9 @@ msgid "BranchRules|Something went wrong while deleting branch rule."
 msgstr ""
 
 msgid "BranchRules|Something went wrong while updating branch rule."
+msgstr ""
+
+msgid "BranchRules|Squash commits: %{setting}"
 msgstr ""
 
 msgid "BranchRules|Status check created"
@@ -27605,6 +27608,9 @@ msgid "I'm sorry, Duo Chat agent reached the limit before finding an answer for 
 msgstr ""
 
 msgid "I'm sorry, I couldn't respond in time. Please try again."
+msgstr ""
+
+msgid "I'm sorry, but answering this question requires a different Duo subscription. Please contact your administrator."
 msgstr ""
 
 msgid "I'm sorry, you don't have the GitLab Duo subscription required to use Duo Chat. Please contact your administrator."

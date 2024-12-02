@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::SetLegacyOpenSourceLicenseAvailableForNonPublicProjects,
   :migration,
   schema: 20230721095222 do
+  let(:organizations_table) { table(:organizations) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:project_settings_table) { table(:project_settings) }
@@ -36,15 +37,30 @@ RSpec.describe Gitlab::BackgroundMigration::SetLegacyOpenSourceLicenseAvailableF
   end
 
   def create_legacy_license_project(path, visibility_level:)
-    namespace = namespaces_table.create!(name: "namespace-#{path}", path: "namespace-#{path}")
-    project_namespace = namespaces_table.create!(name: "project-namespace-#{path}", path: path, type: 'Project')
+    organization = organizations_table.create!(name: "organization-#{path}", path: "organization-#{path}")
+
+    namespace = namespaces_table.create!(
+      name: "namespace-#{path}",
+      path: "namespace-#{path}",
+      organization_id: organization.id
+    )
+
+    project_namespace = namespaces_table.create!(
+      name: "project-namespace-#{path}",
+      path: path,
+      type: 'Project',
+      organization_id: organization.id
+    )
+
     project = projects_table.create!(
+      organization_id: organization.id,
       name: path,
       path: path,
       namespace_id: namespace.id,
       project_namespace_id: project_namespace.id,
       visibility_level: visibility_level
     )
+
     project_settings_table.create!(project_id: project.id, legacy_open_source_license_available: true)
 
     project

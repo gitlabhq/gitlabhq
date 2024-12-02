@@ -10,7 +10,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = <<~MSG
-          `%s` is a large table with several columns, adding more should be avoided unless absolutely necessary.
+          `%s` is over the limit authorized, adding more should be avoided unless absolutely necessary.
           Consider storing the column in a different table or creating a new one.
           The list of large tables is defined in rubocop/rubocop-migrations.yml.
           See https://docs.gitlab.com/ee/development/database/large_tables_limitations.html
@@ -52,11 +52,11 @@ module RuboCop
           return false unless valid_table_node?(table_name)
 
           table_value = table_name.value
-          wide_or_large_table?(table_value)
+          wide_or_over_limit_table?(table_value)
         end
 
-        def wide_or_large_table?(table_value)
-          WIDE_TABLES.include?(table_value) || large_tables.include?(table_value)
+        def wide_or_over_limit_table?(table_value)
+          WIDE_TABLES.include?(table_value) || over_limit_tables.include?(table_value)
         end
 
         def valid_table_node?(table_name)

@@ -9,7 +9,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 Geo connects GitLab instances together. One GitLab instance is
 designated as a **primary** site and can be run with multiple
 **secondary** sites. Geo orchestrates quite a few components that can be seen on
-the diagram below and are described in more detail within this document.
+the diagram below and are described in more detail in this document.
 
 ![Geo Architecture Diagram](../administration/geo/replication/img/geo_architecture_v13_8.png)
 

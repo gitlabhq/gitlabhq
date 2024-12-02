@@ -175,7 +175,8 @@ To limit potential abuse, you can restrict users from creating tokens for a grou
 
 To restrict the creation of group access tokens:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.

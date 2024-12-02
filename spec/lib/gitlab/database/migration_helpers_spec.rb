@@ -2818,14 +2818,35 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       end
     end
 
-    let(:namespaces)     { table(:namespaces) }
-    let(:projects)       { table(:projects) }
-    let(:issues)         { table(:issues) }
+    let_it_be(:organizations)  { table(:organizations) }
+    let_it_be(:namespaces)     { table(:namespaces) }
+    let_it_be(:projects)       { table(:projects) }
+    let_it_be(:issues)         { table(:issues) }
+
+    let_it_be(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
     def setup
-      namespace = namespaces.create!(name: 'foo', path: 'foo', type: Namespaces::UserNamespace.sti_name)
-      project_namespace = namespaces.create!(name: 'project-foo', path: 'project-foo', type: 'Project', parent_id: namespace.id, visibility_level: 20)
-      projects.create!(namespace_id: namespace.id, project_namespace_id: project_namespace.id)
+      namespace = namespaces.create!(
+        name: 'foo',
+        path: 'foo',
+        type: Namespaces::UserNamespace.sti_name,
+        organization_id: organization.id
+      )
+
+      project_namespace = namespaces.create!(
+        name: 'project-foo',
+        path: 'project-foo',
+        type: 'Project',
+        organization_id: organization.id,
+        parent_id: namespace.id,
+        visibility_level: 20
+      )
+
+      projects.create!(
+        namespace_id: namespace.id,
+        project_namespace_id: project_namespace.id,
+        organization_id: organization.id
+      )
     end
 
     it 'generates iids properly for models created after the migration' do

@@ -161,12 +161,12 @@ export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
 };
 
 // the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
-export const newWorkItemPath = ({ fullPath, isGroup = false, workItemTypeName }) => {
+export const newWorkItemPath = ({ fullPath, isGroup = false, workItemTypeName, query = '' }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
   const type =
     WORK_ITEMS_TYPE_MAP[workItemTypeName]?.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
-  return `${domain}/${basePath}/-/${type}/new`;
+  return `${domain}/${basePath}/-/${type}/new${query}`;
 };
 
 export const getDisplayReference = (workItemFullPath, workitemReference) => {

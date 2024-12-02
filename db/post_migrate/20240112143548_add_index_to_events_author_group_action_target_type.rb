@@ -8,11 +8,9 @@ class AddIndexToEventsAuthorGroupActionTargetType < Gitlab::Database::Migration[
   INDEX_NAME = 'index_events_author_id_group_id_action_target_type_created_at'
   COLUMNS = [:author_id, :group_id, :action, :target_type, :created_at]
 
-  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index :events, COLUMNS, name: INDEX_NAME
   end
-  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :events, INDEX_NAME

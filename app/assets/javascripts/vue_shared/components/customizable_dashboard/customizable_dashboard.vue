@@ -1,13 +1,5 @@
 <script>
-import {
-  GlButton,
-  GlFormInput,
-  GlFormGroup,
-  GlLink,
-  GlIcon,
-  GlSprintf,
-  GlExperimentBadge,
-} from '@gitlab/ui';
+import { GlButton, GlFormInput, GlFormGroup, GlIcon, GlExperimentBadge } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { createAlert } from '~/alert';
 import { cloneWithoutReferences } from '~/lib/utils/common_utils';
@@ -17,13 +9,10 @@ import { InternalEvents } from '~/tracking';
 import UrlSync, { HISTORY_REPLACE_UPDATE_METHOD } from '~/vue_shared/components/url_sync.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER,
   EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
   DASHBOARD_STATUS_BETA,
-  AI_IMPACT_DASHBOARD,
-  BUILT_IN_VALUE_STREAM_DASHBOARD,
   CUSTOM_VALUE_STREAM_DASHBOARD,
 } from './constants';
 import GridstackWrapper from './gridstack_wrapper.vue';
@@ -43,9 +32,7 @@ export default {
     GlButton,
     GlFormInput,
     GlIcon,
-    GlLink,
     GlFormGroup,
-    GlSprintf,
     GlExperimentBadge,
     UrlSync,
     AvailableVisualizationsDrawer,
@@ -154,12 +141,6 @@ export default {
         getDashboardConfig(this.initialDashboard),
         getDashboardConfig(this.dashboard),
       );
-    },
-    isValueStreamsDashboard() {
-      return this.dashboard.slug === BUILT_IN_VALUE_STREAM_DASHBOARD;
-    },
-    isAiImpactDashboard() {
-      return this.dashboard.slug === AI_IMPACT_DASHBOARD;
     },
   },
   watch: {
@@ -344,19 +325,9 @@ export default {
       this.dashboard.panels.push(...panels);
     },
   },
-  i18n: {
-    alternativeAiImpactDescription: s__(
-      'Analytics|Visualize the relation between AI usage and SDLC trends. Learn more about %{docsLinkStart}AI Impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo Pro seats usage%{subscriptionLinkEnd}.',
-    ),
-  },
   HISTORY_REPLACE_UPDATE_METHOD,
   FORM_GROUP_CLASS: 'gl-w-full sm:gl-w-3/10 gl-min-w-20 gl-m-0',
   FORM_INPUT_CLASS: 'form-control gl-mr-4 gl-border-gray-200',
-  VSD_DOCUMENTATION_LINK: helpPagePath('user/analytics/value_streams_dashboard'),
-  AI_IMPACT_DOCUMENTATION_LINK: helpPagePath('user/analytics/ai_impact_analytics'),
-  DUO_PRO_SUBSCRIPTION_ADD_ON_LINK: helpPagePath('subscriptions/subscription-add-ons', {
-    anchor: 'assign-gitlab-duo-seats',
-  }),
 };
 </script>
 
@@ -382,31 +353,8 @@ export default {
           data-testid="dashboard-description"
         >
           <p class="gl-mb-0">
-            <!-- TODO: Remove this alternative description in https://gitlab.com/gitlab-org/gitlab/-/issues/465569 -->
-            <gl-sprintf
-              v-if="isAiImpactDashboard"
-              :message="$options.i18n.alternativeAiImpactDescription"
-            >
-              <template #docsLink="{ content }">
-                <gl-link :href="$options.AI_IMPACT_DOCUMENTATION_LINK">{{ content }}</gl-link>
-              </template>
-
-              <template #subscriptionLink="{ content }">
-                <gl-link :href="$options.DUO_PRO_SUBSCRIPTION_ADD_ON_LINK">{{ content }}</gl-link>
-              </template>
-            </gl-sprintf>
-            <template v-else>
-              {{ dashboardDescription }}
-              <!-- TODO: Remove this link in https://gitlab.com/gitlab-org/gitlab/-/issues/465569 -->
-              <gl-sprintf
-                v-if="isValueStreamsDashboard"
-                :message="__('%{linkStart} Learn more%{linkEnd}.')"
-              >
-                <template #link="{ content }">
-                  <gl-link :href="$options.VSD_DOCUMENTATION_LINK">{{ content }}</gl-link>
-                </template>
-              </gl-sprintf>
-            </template>
+            {{ dashboardDescription }}
+            <slot name="after-description"></slot>
           </p>
         </div>
 

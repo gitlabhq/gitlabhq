@@ -10,6 +10,7 @@ module Gitlab
     class Identity
       COMPOSITE_IDENTITY_USERS_KEY = 'composite_identities'
       COMPOSITE_IDENTITY_KEY_FORMAT = 'user:%s:composite_identity'
+      COMPOSITE_IDENTITY_SIDEKIQ_ARG = 'sqci' # Sidekiq Composite Identity
 
       IdentityError = Class.new(StandardError)
       IdentityLinkMismatchError = Class.new(IdentityError)
@@ -24,6 +25,25 @@ module Gitlab
         end
       end
 
+      def self.sidekiq_restore!(job)
+        ids = Array(job[COMPOSITE_IDENTITY_SIDEKIQ_ARG])
+
+        return if ids.empty?
+        raise IdentityError, 'unexpected number of identities in Sidekiq job' unless ids.size == 2
+
+        ::Gitlab::Auth::Identity
+          .new(::User.find(ids.first))
+          .link!(::User.find(ids.second))
+      end
+
+      def self.currently_linked
+        user = ::Gitlab::SafeRequestStore
+          .store[COMPOSITE_IDENTITY_USERS_KEY]
+          .to_a.first
+
+        yield new(user) if user.present?
+      end
+
       def self.fabricate(user)
         new(user) if user.is_a?(::User)
       end
@@ -36,9 +56,23 @@ module Gitlab
       end
 
       def composite?
-        return false unless Feature.enabled?(:composite_identity, @user)
+        return false unless composite_identity_enabled?
 
         @user.has_composite_identity?
+      end
+
+      def sidekiq_link!(job)
+        job[COMPOSITE_IDENTITY_SIDEKIQ_ARG] = [primary_user_id, scoped_user_id]
+      end
+
+      def link!(scope_user)
+        return self unless composite_identity_enabled?
+        return self unless scope_user
+
+        validate_link!(scope_user)
+        store_identity_link!(scope_user)
+
+        self
       end
 
       def linked?
@@ -57,27 +91,26 @@ module Gitlab
         end
       end
 
-      def link!(scope_user)
-        return unless scope_user
-
-        validate_link!(scope_user)
-        store_identity_link!(scope_user)
-
-        self
+      def primary_user
+        @user
       end
 
       private
+
+      def composite_identity_enabled?
+        Feature.enabled?(:composite_identity, @user)
+      end
 
       def scoped_user_id
         scoped_user.id
       end
 
-      def scoped_user_present?
-        @request_store.exist?(store_key)
+      def primary_user_id
+        @user.id
       end
 
       def validate_link!(scope_user)
-        return unless scoped_user_present? && saved_scoped_user_different_from_new_scope_user?(scope_user)
+        return unless linked? && saved_scoped_user_different_from_new_scope_user?(scope_user)
 
         raise IdentityLinkMismatchError, 'identity link change detected'
       end

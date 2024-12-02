@@ -213,6 +213,14 @@ You might get an error that states
 This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
 Please try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
 
+## `Error G3001`
+
+You might get an error that states
+`I'm sorry, but answering this question requires a different Duo subscription. Please contact your administrator.`.
+
+This error occurs when GitLab Duo Chat is not available in your subscription.
+Try a different request and contact your administrator.
+
 ## Header mismatch issue
 
 You might get an error that states `I'm sorry, I can't generate a response. Please try again`, without a specific error code.

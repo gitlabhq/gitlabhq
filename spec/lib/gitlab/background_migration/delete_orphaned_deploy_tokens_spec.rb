@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedDeployTokens, feature_category: :continuous_delivery do
-  let!(:group) { table(:namespaces).create!(name: 'group', path: 'group') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:group) { table(:namespaces).create!(name: 'group', path: 'group', organization_id: organization.id) }
 
   let!(:project) do
     table(:projects).create!(name: 'project', path: 'project', namespace_id: group.id,
-      project_namespace_id: group.id)
+      project_namespace_id: group.id, organization_id: organization.id)
   end
 
   let!(:valid_project_deploy_token) do

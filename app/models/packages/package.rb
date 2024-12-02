@@ -323,8 +323,6 @@ class Packages::Package < ApplicationRecord
   # This is a temp advisory lock to prevent race conditions. We will switch to use database `upsert`
   # once we have a database unique index: https://gitlab.com/gitlab-org/gitlab/-/issues/424238#note_2187274213
   def prevent_concurrent_inserts
-    return if Feature.disabled?(:use_exclusive_lease_in_mvn_find_or_create_package, project)
-
     lock_key = [self.class.table_name, project_id, name, version].join('-')
     lock_expression = "hashtext(#{connection.quote(lock_key)})"
 

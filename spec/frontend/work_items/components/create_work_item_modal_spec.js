@@ -59,6 +59,7 @@ describe('CreateWorkItemModal', () => {
     hideButton = false,
     workItemTypeName = 'EPIC',
     namespaceWorkItemTypesQueryHandler = workItemTypesQueryHandler,
+    relatedItem = null,
   } = {}) => {
     apolloProvider = createMockApollo([
       [namespaceWorkItemTypesQuery, namespaceWorkItemTypesQueryHandler],
@@ -69,6 +70,7 @@ describe('CreateWorkItemModal', () => {
         workItemTypeName,
         asDropdownItem,
         hideButton,
+        relatedItem,
       },
       apolloProvider,
       provide: {
@@ -210,5 +212,21 @@ describe('CreateWorkItemModal', () => {
     findForm().vm.$emit('workItemCreated', { webUrl: '/' });
 
     expect(setNewWorkItemCache).toHaveBeenCalled();
+  });
+
+  describe('when there is a related item', () => {
+    beforeEach(async () => {
+      createComponent({
+        relatedItem: { id: 'gid://gitlab/WorkItem/843', type: 'Epic', reference: 'flightjs#53' },
+      });
+      await waitForPromises();
+      await nextTick();
+    });
+
+    it('appends the related item id to the full page button href', () => {
+      expect(findOpenInFullPageButton().attributes('href')).toBe(
+        '/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843',
+      );
+    });
   });
 });

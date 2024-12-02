@@ -33,6 +33,7 @@ describe('WorkItemStickyHeader', () => {
         isModal: false,
         currentUserTodos: [],
         workItemState: STATE_OPEN,
+        isGroup: false,
       },
       provide: {
         glFeatures: {

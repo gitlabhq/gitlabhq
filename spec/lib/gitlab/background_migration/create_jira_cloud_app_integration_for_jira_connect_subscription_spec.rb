@@ -6,6 +6,7 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
   let(:jira_connect_installation) { table(:jira_connect_installations) }
   let(:jira_connect_subscriptions) { table(:jira_connect_subscriptions) }
 
+  let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:integrations) { table(:integrations) }
@@ -22,8 +23,11 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
     }
   end
 
+  let!(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+
   let!(:group_namespace1) do
     namespaces.create!(
+      organization_id: organization.id,
       name: 'gitlab-1',
       path: 'gitlab-1',
       type: 'Group'
@@ -32,6 +36,7 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
 
   let!(:group_namespace1_subgroup) do
     namespaces.create!(
+      organization_id: organization.id,
       name: 'gitlab-subgroup',
       path: 'gitlab-subgroup',
       type: 'Group',
@@ -41,6 +46,7 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
 
   let!(:group_namespace2) do
     namespaces.create!(
+      organization_id: organization.id,
       name: 'gitlab-2',
       path: 'gitlab-2',
       type: 'Group'
@@ -49,6 +55,7 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
 
   let!(:group_namespace3) do
     namespaces.create!(
+      organization_id: organization.id,
       name: 'gitlab-3',
       path: 'gitlab-3',
       type: 'Group'
@@ -57,6 +64,7 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
 
   let!(:group_namespace4) do
     namespaces.create!(
+      organization_id: organization.id,
       name: 'gitlab-4',
       path: 'gitlab-4',
       type: 'Group'
@@ -121,12 +129,14 @@ RSpec.describe Gitlab::BackgroundMigration::CreateJiraCloudAppIntegrationForJira
 
   def create_project(name, group)
     project_namespace = namespaces.create!(
+      organization_id: organization.id,
       name: name,
       path: name,
       type: 'Project'
     )
 
     projects.create!(
+      organization_id: organization.id,
       namespace_id: group.id,
       project_namespace_id: project_namespace.id,
       name: name,

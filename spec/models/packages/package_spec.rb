@@ -356,18 +356,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
         subject
       end
-
-      context 'when the use_exclusive_lease_in_mvn_find_or_create_package FF is disabled' do
-        before do
-          stub_feature_flags(use_exclusive_lease_in_mvn_find_or_create_package: false)
-        end
-
-        it 'does not execute advisory lock' do
-          expect(maven_package.connection).not_to receive(:execute)
-
-          subject
-        end
-      end
     end
 
     Packages::Package.package_types.keys.without('conan').each do |pt|

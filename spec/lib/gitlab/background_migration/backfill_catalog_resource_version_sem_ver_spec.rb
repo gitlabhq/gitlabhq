@@ -3,8 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillCatalogResourceVersionSemVer, feature_category: :pipeline_composition do
-  let(:namespace) { table(:namespaces).create!(name: 'name', path: 'path') }
-  let(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let(:namespace) { table(:namespaces).create!(name: 'name', path: 'path', organization_id: organization.id) }
+  let(:project) do
+    table(:projects).create!(
+      namespace_id: namespace.id,
+      project_namespace_id: namespace.id,
+      organization_id: organization.id
+    )
+  end
+
   let(:resource) { table(:catalog_resources).create!(project_id: project.id) }
 
   let(:releases_table) { table(:releases) }

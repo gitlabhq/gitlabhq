@@ -21,7 +21,8 @@ RSpec.describe Trigger, feature_category: :tooling do
       'GITLAB_USER_NAME' => 'gitlab_user_name',
       'GITLAB_USER_LOGIN' => 'gitlab_user_login',
       'QA_IMAGE' => 'qa_image',
-      'DOCS_PROJECT_API_TOKEN' => nil
+      'DOCS_PROJECT_API_TOKEN' => nil,
+      'DOCS_HUGO_PROJECT_API_TOKEN' => nil
     }
   end
 
@@ -569,7 +570,7 @@ RSpec.describe Trigger, feature_category: :tooling do
         end
 
         it 'returns the docs-specific access token' do
-          expect(described_class.access_token).to eq(docs_project_api_token)
+          expect(subject.access_token).to eq(docs_project_api_token)
         end
       end
 
@@ -579,7 +580,7 @@ RSpec.describe Trigger, feature_category: :tooling do
         end
 
         it 'returns the default access token' do
-          expect(described_class.access_token).to eq(Trigger::Base.access_token)
+          expect(subject.access_token).to eq(Trigger::Base.new.access_token)
         end
       end
     end
@@ -661,6 +662,223 @@ RSpec.describe Trigger, feature_category: :tooling do
 
           subject.cleanup!
         end
+      end
+    end
+  end
+
+  describe Trigger::DocsHugo do
+    let(:downstream_project_path) { 'gitlab-org/technical-writing-group/gitlab-docs-hugo' }
+
+    describe '#variables' do
+      describe "BRANCH_CE" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/gitlab-foss')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/gitlab-foss' do
+          it 'sets BRANCH_CE to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_CE']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
+      describe "BRANCH_EE" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/gitlab')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/gitlab' do
+          it 'sets BRANCH_EE to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_EE']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
+      describe "BRANCH_RUNNER" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/gitlab-runner')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/gitlab-runner' do
+          it 'sets BRANCH_RUNNER to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_RUNNER']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
+      describe "BRANCH_OMNIBUS" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/omnibus-gitlab')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/omnibus-gitlab' do
+          it 'sets BRANCH_OMNIBUS to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_OMNIBUS']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
+      describe "BRANCH_CHARTS" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/charts/gitlab')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/charts/gitlab' do
+          it 'sets BRANCH_CHARTS to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_CHARTS']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
+      describe "BRANCH_OPERATOR" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/cloud-native/gitlab-operator')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/cloud-native/gitlab-operator' do
+          it 'sets BRANCH_OPERATOR to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_OPERATOR']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
+      describe "REVIEW_SLUG" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/gitlab-foss')
+        end
+
+        context 'when CI_MERGE_REQUEST_IID is set' do
+          it 'sets REVIEW_SLUG' do
+            expect(subject.variables['REVIEW_SLUG']).to eq("ce-#{env['CI_MERGE_REQUEST_IID']}")
+          end
+        end
+
+        context 'when CI_MERGE_REQUEST_IID is not set' do
+          before do
+            stub_env('CI_MERGE_REQUEST_IID', nil)
+          end
+
+          it 'sets REVIEW_SLUG' do
+            expect(subject.variables['REVIEW_SLUG']).to eq("ce-#{env['CI_COMMIT_REF_SLUG']}")
+          end
+        end
+      end
+    end
+
+    describe '.access_token' do
+      context 'when DOCS_HUGO_PROJECT_API_TOKEN is set' do
+        let(:docs_hugo_project_api_token) { 'docs_hugo_project_api_token' }
+
+        before do
+          stub_env('DOCS_HUGO_PROJECT_API_TOKEN', docs_hugo_project_api_token)
+        end
+
+        it 'returns the docs-specific access token' do
+          expect(subject.access_token).to eq(docs_hugo_project_api_token)
+        end
+      end
+
+      context 'when DOCS_HUGO_PROJECT_API_TOKEN is not set' do
+        before do
+          stub_env('DOCS_HUGO_PROJECT_API_TOKEN', nil)
+        end
+
+        it 'returns the default access token' do
+          expect(subject.access_token).to eq(Trigger::Base.new.access_token)
+        end
+      end
+    end
+
+    describe '#invoke!' do
+      let(:trigger_token) { 'docs_hugo_trigger_token' }
+      let(:ref) { 'main' }
+
+      let(:env) do
+        super().merge(
+          'CI_PROJECT_PATH' => 'gitlab-org/gitlab-foss',
+          'DOCS_HUGO_TRIGGER_TOKEN' => trigger_token
+        )
+      end
+
+      describe '#downstream_project_path' do
+        context 'when DOCS_PROJECT_PATH is set' do
+          let(:downstream_project_path) { 'docs_project_path' }
+
+          before do
+            stub_env('DOCS_PROJECT_PATH', downstream_project_path)
+          end
+
+          it 'triggers the pipeline on the correct project' do
+            expect_run_trigger_with_params
+
+            subject.invoke!
+          end
+        end
+      end
+
+      describe '#ref' do
+        context 'when DOCS_BRANCH is set' do
+          let(:ref) { 'docs_branch' }
+
+          before do
+            stub_env('DOCS_BRANCH', ref)
+          end
+
+          it 'triggers the pipeline on the correct ref' do
+            expect_run_trigger_with_params
+
+            subject.invoke!
+          end
+        end
+      end
+    end
+
+    describe '#cleanup!' do
+      let(:downstream_environment_response) { double('downstream_environment', id: 42) }
+      let(:downstream_environments_response) { [downstream_environment_response] }
+
+      before do
+        expect(com_gitlab_client).to receive(:environments)
+          .with(downstream_project_path, name: subject.__send__(:downstream_environment))
+          .and_return(downstream_environments_response)
+        expect(com_gitlab_client).to receive(:stop_environment)
+          .with(downstream_project_path, downstream_environment_response.id)
+          .and_return(downstream_environment_stopping_response)
+      end
+
+      context "when stopping the environment succeeds" do
+        let(:downstream_environment_stopping_response) { double('downstream_environment', state: 'stopped') }
+
+        it 'displays a success message' do
+          expect(subject).to receive(:puts)
+            .with("=> Downstream environment '#{subject.__send__(:downstream_environment)}' stopped.")
+
+          subject.cleanup!
+        end
+      end
+
+      context "when stopping the environment fails" do
+        let(:downstream_environment_stopping_response) { double('downstream_environment', state: 'running') }
+
+        it 'displays a failure message' do
+          expect(subject).to receive(:puts)
+            .with("=> Downstream environment '#{subject.__send__(:downstream_environment)}' failed to stop.")
+
+          subject.cleanup!
+        end
+      end
+    end
+
+    describe '#app_url' do
+      let(:review_slug) { 'ce-123' }
+
+      before do
+        allow(subject).to receive(:review_slug).and_return(review_slug)
+      end
+
+      it 'returns the correct app URL' do
+        expected_url = "https://new.docs.gitlab.com/upstream-review-mr-#{review_slug}/"
+        expect(subject.send(:app_url)).to eq(expected_url)
       end
     end
   end

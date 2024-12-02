@@ -28,6 +28,10 @@ module RuboCop
       @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')
     end
 
+    def over_limit_tables
+      @over_limit_table ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'OverLimitTables')
+    end
+
     def large_tables
       @large_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'LargeTables')
     end

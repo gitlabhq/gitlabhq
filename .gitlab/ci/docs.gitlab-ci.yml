@@ -39,6 +39,41 @@ review-docs-cleanup:
   script:
     - ./scripts/trigger-build.rb docs cleanup
 
+.review-docs-hugo:
+  extends:
+    - .default-retry
+    - .docs:rules:review-docs
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
+  stage: review
+  needs: []
+  variables:
+    GIT_DEPTH: 1
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing-group/gitlab-docs-hugo` project
+    DOCS_BRANCH: main
+  environment:
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
+    auto_stop_in: 2 weeks
+    url: https://new.docs.gitlab.com/upstream-review-mr-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}
+    on_stop: review-docs-hugo-cleanup
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+
+# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing-group/gitlab-docs-hugo)
+review-docs-hugo-deploy:
+  extends: .review-docs-hugo
+  script:
+    - ./scripts/trigger-build.rb docs-hugo deploy
+
+# Cleanup remote environment of gitlab-org/technical-writing-group/gitlab-docs-hugo
+review-docs-hugo-cleanup:
+  extends: .review-docs-hugo
+  environment:
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
+    action: stop
+  script:
+    - ./scripts/trigger-build.rb docs-hugo cleanup
+
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.20-vale-3.7.1-markdownlint2-0.14.0-lychee-0.15.1

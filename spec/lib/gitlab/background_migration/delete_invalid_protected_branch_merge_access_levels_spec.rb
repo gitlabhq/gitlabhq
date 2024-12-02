@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteInvalidProtectedBranchMergeAccessLevels,
   feature_category: :source_code_management do
+  let(:organizations_table) { table(:organizations) }
   let(:projects_table) { table(:projects) }
   let(:protected_branches_table) { table(:protected_branches) }
   let(:namespaces_table) { table(:namespaces) }
@@ -13,13 +14,22 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteInvalidProtectedBranchMergeAcc
 
   let(:user1) { users_table.create!(name: 'user1', email: 'user1@example.com', projects_limit: 5) }
 
-  let(:project_group) { namespaces_table.create!(name: 'group-1', path: 'group-1', type: 'Group') }
-  let(:project_namespace) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-2', type: 'Project') }
+  let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
+
+  let(:project_group) do
+    namespaces_table.create!(name: 'group-1', path: 'group-1', type: 'Group', organization_id: organization.id)
+  end
+
+  let(:project_namespace) do
+    namespaces_table.create!(name: 'namespace', path: 'namespace-2', type: 'Project', organization_id: organization.id)
+  end
+
   let!(:project_1) do
     projects_table
     .create!(
       name: 'project1',
       path: 'path1',
+      organization_id: organization.id,
       namespace_id: project_group.id,
       project_namespace_id: project_namespace.id,
       visibility_level: 0

@@ -182,14 +182,6 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
         keep_around_count: 3,
         orphan_count: 2
     end
-
-    context "for todo keep-arounds" do
-      let_it_be(:todo) { create(:todo, project: project, commit_id: ::TestEnv::BRANCH_SHA['master']) }
-
-      it_behaves_like 'orphans found',
-        keep_around_count: 3,
-        orphan_count: 2
-    end
   end
 end
 # rubocop:enable RSpec/AvoidTestProf

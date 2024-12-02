@@ -7,11 +7,9 @@ class AddIndexSentNotificationsOnIssueEmailParticipantId < Gitlab::Database::Mig
 
   INDEX_NAME = 'index_sent_notifications_on_issue_email_participant_id'
 
-  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index :sent_notifications, :issue_email_participant_id, name: INDEX_NAME
   end
-  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :sent_notifications, INDEX_NAME

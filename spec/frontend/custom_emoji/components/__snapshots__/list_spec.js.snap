@@ -15,7 +15,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
           data-testid="actions-tabs-start"
         >
           <a
-            class="btn btn-info btn-md gl-button"
+            class="btn btn-confirm btn-md gl-button"
             data-testid="action-primary"
             href="/new"
             to="/new"
@@ -32,7 +32,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
           data-testid="actions-tabs-end"
         >
           <a
-            class="btn btn-info btn-md gl-button"
+            class="btn btn-confirm btn-md gl-button"
             data-testid="action-primary"
             href="/new"
             to="/new"

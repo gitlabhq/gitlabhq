@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventAddingColumns, feature_category: 
 
     context 'with wide tables' do
       it 'registers an offense when adding a column to a wide table' do
-        offense = '`projects` is a large table with several columns, [...]'
+        offense = '`projects` is over the limit authorized, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventAddingColumns, feature_category: 
       end
 
       it 'registers an offense when adding a column with default to a wide table' do
-        offense = '`users` is a large table with several columns, [...]'
+        offense = '`users` is over the limit authorized, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventAddingColumns, feature_category: 
       end
 
       it 'registers an offense when adding a reference' do
-        offense = '`ci_builds` is a large table with several columns, [...]'
+        offense = '`ci_builds` is over the limit authorized, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventAddingColumns, feature_category: 
       end
 
       it 'registers an offense when adding timestamps' do
-        offense = '`projects` is a large table with several columns, [...]'
+        offense = '`projects` is over the limit authorized, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -83,13 +83,13 @@ RSpec.describe RuboCop::Cop::Migration::PreventAddingColumns, feature_category: 
       end
     end
 
-    context 'when targeting a large table' do
-      it 'registers an offense for audit_events' do
-        offense = '`audit_events` is a large table with several columns, [...]'
+    context 'when targeting an over limit table' do
+      it 'registers an offense for issues' do
+        offense = '`issues` is over the limit authorized, [...]'
 
         expect_offense(<<~RUBY)
           def up
-            add_column(:audit_events, :another_column, :boolean, default: false)
+            add_column(:issues, :another_column, :boolean, default: false)
             ^^^^^^^^^^ #{offense}
           end
         RUBY

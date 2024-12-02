@@ -141,6 +141,7 @@ describe('WorkItemActions component', () => {
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
+        isGroup: false,
         canUpdate,
         canDelete,
         isConfidential,

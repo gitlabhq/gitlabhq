@@ -10,6 +10,7 @@ RSpec.describe Gitlab::BackgroundMigration::DropVulnerabilitiesWithoutFindingId,
     skip_if_multiple_databases_are_setup(:sec)
   end
 
+  let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }
@@ -19,10 +20,16 @@ RSpec.describe Gitlab::BackgroundMigration::DropVulnerabilitiesWithoutFindingId,
   let(:vulnerability_findings) { table(:vulnerability_occurrences) }
   let(:vulnerabilities) { table(:vulnerabilities) }
   let!(:user) { create_user(email: "test1@example.com", username: "test1") }
-  let!(:namespace) { namespaces.create!(name: "test-1", path: "test-1", owner_id: user.id) }
+  let!(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+  let!(:namespace) do
+    namespaces.create!(name: "test-1", path: "test-1", owner_id: user.id, organization_id: organization.id)
+  end
+
   let!(:project) do
     projects.create!(
-      id: 9999, namespace_id: namespace.id,
+      id: 9999,
+      organization_id: organization.id,
+      namespace_id: namespace.id,
       project_namespace_id: namespace.id,
       creator_id: user.id
     )

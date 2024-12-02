@@ -220,7 +220,8 @@ To integrate Microsoft Azure AD, you:
 
 To configure for a GitLab.com group:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > SAML SSO**.
 1. Configure [SAML SSO for the group](../../../user/group/saml_sso/index.md).
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.

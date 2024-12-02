@@ -1398,6 +1398,7 @@
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
 "@gitlab/noop@^1.0.0", jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
+  name jackspeak
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
   integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
@@ -1421,10 +1422,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.121.0.tgz#57cacc895929aef4320632396373797a64b230ff"
   integrity sha512-ZekVjdMZrjrNEjdrOHsJYCu7A+ea3AkuNUxWIZ3FaNgJj4Oh21RlTP7bQKnRSXVhBbV1jg1PgzQ1ANEoCW8t4g==
 
-"@gitlab/ui@103.7.1":
-  version "103.7.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-103.7.1.tgz#7df2ab802aad48a946100d73d3fc9fa1733bb9bb"
-  integrity sha512-ThpGdWWLdWN0j2q3RhQ63625KbeK2BXinhk3iQyy//z08sxZJYXWwcdFF88TImPtBVV7p5e/01Mb6WhqI/H8wg==
+"@gitlab/ui@104.0.0":
+  version "104.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-104.0.0.tgz#a4f00addd595a8248bd99cf0ceaebf1c67c54775"
+  integrity sha512-vhCZ+Hrvx/qRuVtpKB5SN4sC+FIvkzywKbxjC7rq0aQG314gmBl7W41vAPHCPO7zCPSlrNyT7zyCN1jcrQxsWA==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"

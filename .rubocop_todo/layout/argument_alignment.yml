@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArgumentAlignment:
   Exclude:
-    - 'ee/app/services/ee/issues/clone_service.rb'
     - 'ee/app/services/ee/keys/create_service.rb'
     - 'ee/app/services/ee/projects/create_from_template_service.rb'
     - 'ee/app/services/ee/projects/gitlab_projects_import_service.rb'

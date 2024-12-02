@@ -107,8 +107,6 @@ class Todo < ApplicationRecord
     state :done
   end
 
-  after_save :keep_around_commit, if: :commit_id
-
   class << self
     # Returns all todos for the given group ids and their descendants.
     #
@@ -387,10 +385,6 @@ class Todo < ApplicationRecord
   end
 
   private
-
-  def keep_around_commit
-    project.repository.keep_around(self.commit_id, source: self.class.name)
-  end
 
   def build_work_item_target_url
     ::Gitlab::UrlBuilder.build(

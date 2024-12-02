@@ -9,9 +9,17 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIssuesCorrectWorkItemTypeId,
   let(:sub_batch_size) { 2 }
   let(:pause_ms) { 0 }
 
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace', organization_id: organization.id) }
+  let(:project) do
+    table(:projects).create!(
+      namespace_id: namespace.id,
+      project_namespace_id: namespace.id,
+      organization_id: organization.id
+    )
+  end
+
   let(:issue_type_enum) { { issue: 0, incident: 1, test_case: 2, requirement: 3, task: 4 } }
-  let(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
-  let(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
   let(:issues_table) { table(:issues) }
   let(:issue_type) { table(:work_item_types).find_by!(base_type: issue_type_enum[:issue]) }
   let(:task_type) { table(:work_item_types).find_by!(base_type: issue_type_enum[:task]) }

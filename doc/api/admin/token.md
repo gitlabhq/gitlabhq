@@ -16,6 +16,7 @@ DETAILS:
 > - [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
 > - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
 > - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932) in GitLab 17.7.
+> - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987) in GitLab 17.7.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -30,7 +31,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-## Get Token Information
+## Identify Token
 
 Returns information about a token.
 
@@ -41,6 +42,7 @@ Supported tokens:
 - [Feed tokens](../../security/tokens/index.md#feed-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)
 - [Cluster agent tokens](../../security/tokens/index.md#gitlab-cluster-agent-tokens)
+- [Runner authentication tokens](../../security/tokens/index.md#runner-authentication-tokens)
 
 ```plaintext
 POST /api/v4/admin/token

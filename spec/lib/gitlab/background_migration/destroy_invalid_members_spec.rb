@@ -17,6 +17,7 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
   end
 
   let(:users_table) { table(:users) }
+  let(:organizations_table) { table(:organizations) }
   let(:namespaces_table) { table(:namespaces) }
   let(:members_table) { table(:members) }
   let(:projects_table) { table(:projects) }
@@ -30,14 +31,23 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
   let(:user6) { users_table.create!(name: 'user6', email: 'user6@example.com', projects_limit: 5) }
   let(:user7) { users_table.create!(name: 'user7', email: 'user7@example.com', projects_limit: 5) }
   let(:user8) { users_table.create!(name: 'user8', email: 'user8@example.com', projects_limit: 5) }
-  let!(:group1) { namespaces_table.create!(name: 'marvellous group 1', path: 'group-path-1', type: 'Group') }
-  let!(:group2) { namespaces_table.create!(name: 'outstanding group 2', path: 'group-path-2', type: 'Group') }
+  let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
+
+  let!(:group1) do
+    namespaces_table.create!(name: 'group 1', path: 'group-path-1', type: 'Group', organization_id: organization.id)
+  end
+
+  let!(:group2) do
+    namespaces_table.create!(name: 'group 2', path: 'group-path-2', type: 'Group', organization_id: organization.id)
+  end
+
   let!(:project_namespace1) do
     namespaces_table.create!(
       name: 'fabulous project',
       path: 'project-path-1',
       type: 'ProjectNamespace',
-      parent_id: group1.id
+      parent_id: group1.id,
+      organization_id: organization.id
     )
   end
 
@@ -46,7 +56,8 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
       name: 'fabulous project',
       path: 'project-path-1',
       project_namespace_id: project_namespace1.id,
-      namespace_id: group1.id
+      namespace_id: group1.id,
+      organization_id: organization.id
     )
   end
 
@@ -55,7 +66,8 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
       name: 'splendiferous project',
       path: 'project-path-2',
       type: 'ProjectNamespace',
-      parent_id: group1.id
+      parent_id: group1.id,
+      organization_id: organization.id
     )
   end
 
@@ -64,7 +76,8 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
       name: 'splendiferous project',
       path: 'project-path-2',
       project_namespace_id: project_namespace2.id,
-      namespace_id: group1.id
+      namespace_id: group1.id,
+      organization_id: organization.id
     )
   end
 

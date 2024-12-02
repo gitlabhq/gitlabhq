@@ -39,7 +39,6 @@ export default {
   modalProps: {
     primary: {
       text: s__('Environments|Clean up'),
-      attributes: [{ variant: 'info' }],
     },
     cancel: {
       text: __('Cancel'),

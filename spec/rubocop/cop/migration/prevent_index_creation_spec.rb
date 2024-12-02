@@ -3,30 +3,11 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/prevent_index_creation'
 
-RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
+RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: :database do
+  include RuboCop::MigrationHelpers
+
   let(:forbidden_tables) do
-    %w[
-      ci_builds
-      namespaces
-      projects
-      users
-      merge_requests
-      merge_request_metrics
-      merge_request_diffs
-      merge_request_diff_commits
-      notes
-      web_hook_logs
-      events
-      project_statistics
-      sent_notifications
-      issues
-      issue_search_data
-      packages_packages
-      vulnerability_occurrences
-      sbom_occurrences
-      security_findings
-      deployments
-    ].freeze
+    described_class::FORBIDDEN_TABLES + large_tables
   end
 
   context 'when in migration' do
@@ -121,7 +102,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
         it "registers an offense when add_concurrent_index is used", :aggregate_failures do
           expect_offense(<<~RUBY)
             INDEX_NAME = "index_name"
-            TABLE_NAME = :ci_builds
+            TABLE_NAME = :projects
             disable_ddl_transaction!
 
             def change
@@ -134,7 +115,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
         it "registers an offense when prepare_async_index is used", :aggregate_failures do
           expect_offense(<<~RUBY)
             INDEX_NAME = "index_name"
-            TABLE_NAME = :ci_builds
+            TABLE_NAME = :projects
             disable_ddl_transaction!
 
             def change

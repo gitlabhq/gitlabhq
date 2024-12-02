@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToSecurityScans, feature_category: :vulnerability_management do
   let(:security_scans) { table(:security_scans, database: :sec) }
   let(:ci_builds) { partitioned_table(:p_ci_builds, database: :ci) }
+  let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
 
@@ -80,11 +81,19 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToSecurityScans, fe
   end
 
   def create_ci_build(name)
-    namespace = namespaces.create!(name: "group-#{name}", path: "group-#{name}")
-    project_namespace = namespaces.create!(name: "project-#{name}", path: "project-#{name}")
+    organization = organizations.create!(name: "organization-#{name}", path: "organization-#{name}")
+    namespace = namespaces.create!(name: "group-#{name}", path: "group-#{name}", organization_id: organization.id)
+
+    project_namespace = namespaces.create!(
+      name: "project-#{name}",
+      path: "project-#{name}",
+      organization_id: organization.id
+    )
+
     project = projects.create!(
       namespace_id: namespace.id,
       project_namespace_id: project_namespace.id,
+      organization_id: organization.id,
       name: "project-#{name}",
       path: "project-#{name}"
     )

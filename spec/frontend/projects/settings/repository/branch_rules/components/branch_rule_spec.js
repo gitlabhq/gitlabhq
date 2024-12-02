@@ -10,9 +10,12 @@ import {
 describe('Branch rule', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, features = { branchRuleSquashSettings: false }) => {
     wrapper = shallowMountExtended(BranchRule, {
-      provide: branchRuleProvideMock,
+      provide: {
+        ...branchRuleProvideMock,
+        glFeatures: features,
+      },
       stubs: {
         ProtectedBadge,
       },
@@ -73,5 +76,17 @@ describe('Branch rule', () => {
     expect(findDetailsButton().attributes('href')).toBe(
       `${branchRuleProvideMock.branchRulesPath}?branch=${encodedBranchName}`,
     );
+  });
+
+  describe('squash settings', () => {
+    it('renders squash settings when branchRuleSquashSettings is true', () => {
+      const branchRuleProps = {
+        ...branchRulePropsMock,
+        branchProtection: { squashSetting: 'Mock setting' },
+      };
+
+      createComponent(branchRuleProps, { branchRuleSquashSettings: true });
+      expect(findProtectionDetailsListItems().at(0).text()).toBe('Squash commits: Mock setting');
+    });
   });
 });

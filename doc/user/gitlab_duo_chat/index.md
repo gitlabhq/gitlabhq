@@ -193,11 +193,11 @@ After GitLab Duo Chat opens:
 1. To send your question, press **Enter** or select **Send**.
 1. Use the buttons within code blocks in the responses to interact with them.
 
-### In the editor window
+### In GitLab Duo Quick Chat in the editor view
 
-> - Introduced as [generally available](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) in GitLab Duo 3.0.0.
+> - Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab Workflow extension for VS Code 5.14.0](https://gitlab.com/groups/gitlab-org/-/epics/15218).
 
-To open GitLab Duo Chat in the editor window, use any of these methods:
+To open GitLab Duo Chat Quick Chat in the editor window, use any of these methods:
 
 - From a keyboard shortcut, by pressing:
   - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
@@ -215,6 +215,14 @@ After Quick Chat opens:
 1. Use the buttons around code blocks in the responses to interact with them.
 1. To exit chat, either select **Escape to close**, or press **Escape** while focused on the chat.
 
+<div class="video-fallback">
+  <a href="https://youtu.be/5JbAM5g2VbQ">View how to use GitLab Duo Quick Chat</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/5JbAM5g2VbQ?si=pm7bTRDCR5we_1IX" frameborder="0" allowfullscreen> </iframe>
+</figure>
+<!-- Video published on 2024-10-15 -->
+
 ## Watch a demo and get tips
 
 <div class="video-fallback">
@@ -223,6 +231,7 @@ After Quick Chat opens:
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_" frameborder="0" allowfullscreen> </iframe>
 </figure>
+<!-- Video published on 2023-11-10 -->
 
 For tips and tricks about integrating GitLab Duo Chat into your AI-powered DevSecOps workflows,
 read the blog post:

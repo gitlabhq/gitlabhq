@@ -3,19 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeduplicateLfsObjectsProjects, feature_category: :source_code_management do
-  let(:namespace_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:lfs_objects_table) { table(:lfs_objects) }
   let(:lfs_objects_projects_table) { table(:lfs_objects_projects) }
   let(:lfs_object_size) { 20 }
 
-  let(:namespace1) { namespace_table.create!(name: 'namespace1', path: 'namespace1') }
-  let(:namespace2) { namespace_table.create!(name: 'namespace2', path: 'namespace2') }
-  let(:namespace3) { namespace_table.create!(name: 'namespace3', path: 'namespace3') }
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
 
-  let(:project1) { projects_table.create!(namespace_id: namespace1.id, project_namespace_id: namespace1.id) }
-  let(:project2) { projects_table.create!(namespace_id: namespace2.id, project_namespace_id: namespace2.id) }
-  let(:project3) { projects_table.create!(namespace_id: namespace3.id, project_namespace_id: namespace3.id) }
+  let(:namespace1) { table(:namespaces).create!(name: 'ns1', path: 'ns1', organization_id: organization.id) }
+  let(:namespace2) { table(:namespaces).create!(name: 'ns2', path: 'ns2', organization_id: organization.id) }
+  let(:namespace3) { table(:namespaces).create!(name: 'ns3', path: 'ns3', organization_id: organization.id) }
+
+  # rubocop:disable Layout/LineLength -- easier to read in single line
+  let(:project1) { projects_table.create!(namespace_id: namespace1.id, project_namespace_id: namespace1.id, organization_id: organization.id) }
+  let(:project2) { projects_table.create!(namespace_id: namespace2.id, project_namespace_id: namespace2.id, organization_id: organization.id) }
+  let(:project3) { projects_table.create!(namespace_id: namespace3.id, project_namespace_id: namespace3.id, organization_id: organization.id) }
+  # rubocop:enable Layout/LineLength
 
   let(:lfs_object1) do
     lfs_objects_table.create!(

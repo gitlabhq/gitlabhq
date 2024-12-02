@@ -74,6 +74,7 @@ For status, choose one:
 
 - `Beta`
 - `Experiment`
+- `Limited availability`
 
 Generally available features should not have a status.
 
@@ -129,7 +130,14 @@ For a feature status change from experiment to beta, use `changed`:
 
 ```markdown
 > - [Introduced](https://issue-link) as an [experiment](../../policy/development_stages_support.md) in GitLab 15.7.
-> - [Changed](https://issue-link) to beta in GitLab 16.0.
+> - [Changed](https://issue-link) from experiment to beta in GitLab 16.0.
+```
+
+For a feature status change from beta to limited availability, use `changed`:
+
+```markdown
+> - [Changed](https://issue-link) from experiment to beta in GitLab 16.0.
+> - [Changed](https://issue-link) from beta to limited availability in GitLab 16.3.
 ```
 
 For a change to generally available, use:

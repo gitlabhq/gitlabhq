@@ -480,6 +480,7 @@ RSpec.describe Ability, feature_category: :system_access do
     let_it_be(:group) { create(:group, :private) }
     let_it_be(:user) { create(:user) }
     let_it_be(:delegated_user) { create(:user) }
+
     let(:request_store_key) { format(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_KEY_FORMAT, user.id) }
 
     subject { described_class.allowed?(user, :read_group, group) }

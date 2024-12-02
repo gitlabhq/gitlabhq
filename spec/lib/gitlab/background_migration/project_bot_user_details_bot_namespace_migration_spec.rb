@@ -7,16 +7,23 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectBotUserDetailsBotNamespaceMig
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
   let(:members) { table(:members) }
+  let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
 
-  let(:group) { namespaces.create!(name: 'group', path: 'group', type: 'Group') }
-  let(:subgroup) { namespaces.create!(name: 'subgroup', path: 'subgroup', type: 'Group') }
-  let(:group2) { namespaces.create!(name: 'group2', path: 'group2', type: 'Group') }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
-  let(:project_namespace) { namespaces.create!(name: 'proj1', path: 'proj1', type: 'Project') }
+  let(:group) { namespaces.create!(name: 'group', path: 'group', type: 'Group', organization_id: organization.id) }
+  let(:subgroup) { namespaces.create!(name: 'subgroup', path: 'sub', type: 'Group', organization_id: organization.id) }
+  let(:group2) { namespaces.create!(name: 'group2', path: 'group2', type: 'Group', organization_id: organization.id) }
+
+  let(:project_namespace) do
+    namespaces.create!(name: 'proj1', path: 'proj1', type: 'Project', organization_id: organization.id)
+  end
+
   let(:project) do
     projects.create!(
+      organization_id: organization.id,
       namespace_id: group.id,
       project_namespace_id: project_namespace.id,
       name: 'proj1',

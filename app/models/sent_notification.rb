@@ -15,8 +15,6 @@ class SentNotification < ApplicationRecord
   validates :in_reply_to_discussion_id, format: { with: /\A\h{40}\z/, allow_nil: true }
   validate :note_valid
 
-  after_save :keep_around_commit, if: :for_commit?
-
   class << self
     def reply_key
       SecureRandom.hex(16)
@@ -121,9 +119,5 @@ class SentNotification < ApplicationRecord
           { errors: note.errors.full_messages.to_sentence }
       )
     end
-  end
-
-  def keep_around_commit
-    project.repository.keep_around(self.commit_id, source: self.class.name)
   end
 end

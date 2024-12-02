@@ -7,9 +7,12 @@ RSpec.describe(
   schema: 20230721095222,
   feature_category: :geo_replication
 ) do
+  let!(:organizations) { table(:organizations) }
   let!(:namespaces) { table(:namespaces) }
   let!(:projects) { table(:projects) }
   let!(:design_management_repositories) { table(:design_management_repositories) }
+
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
   subject(:migration) do
     described_class.new(
@@ -50,6 +53,7 @@ RSpec.describe(
 
     def create_namespace(name)
       namespaces.create!(
+        organization_id: organization.id,
         name: name,
         path: name,
         type: 'Project'
@@ -58,6 +62,7 @@ RSpec.describe(
 
     def create_project(namespace, name)
       projects.create!(
+        organization_id: namespace.organization_id,
         namespace_id: namespace.id,
         project_namespace_id: namespace.id,
         name: name,

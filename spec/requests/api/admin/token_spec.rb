@@ -12,6 +12,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
   let_it_be(:deploy_token) { create(:deploy_token) }
   let_it_be(:oauth_application) { create(:oauth_application) }
   let_it_be(:cluster_agent_token) { create(:cluster_agent_token, token_encrypted: nil) }
+  let_it_be(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user) }
 
   let(:plaintext) { nil }
   let(:params) { { token: plaintext } }
@@ -27,7 +28,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             [ref(:deploy_token), lazy { deploy_token.token }],
             [ref(:user), lazy { user.feed_token }],
             [ref(:oauth_application), lazy { oauth_application.plaintext_secret }],
-            [ref(:cluster_agent_token), lazy { cluster_agent_token.token }]
+            [ref(:cluster_agent_token), lazy { cluster_agent_token.token }],
+            [ref(:runner_authentication_token), lazy { runner_authentication_token.token }]
           ]
         end
 

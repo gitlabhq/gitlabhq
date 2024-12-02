@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillPackagesTagsProjectId,
   feature_category: :package_registry,
   schema: 20231030051837 do # schema before we introduced the invalid not-null constraint
+  let!(:organization) { table(:organizations).create!(name: 'my organization', path: 'my-orgainzation') }
   let!(:tags_without_project_id) do
     (0...13).map do |i|
-      namespace = table(:namespaces).create!(name: 'my namespace', path: 'my-namespace')
-      project = table(:projects).create!(name: 'my project', path: 'my-project', namespace_id: namespace.id,
-        project_namespace_id: namespace.id)
+      namespace = table(:namespaces).create!(name: 'my namespace', path: 'my namespace',
+        organization_id: organization.id)
+      project = table(:projects).create!(name: 'my project', path: 'my project', namespace_id: namespace.id,
+        project_namespace_id: namespace.id, organization_id: organization.id)
       package = table(:packages_packages).create!(project_id: project.id, created_at: Time.current,
         updated_at: Time.current, name: "Package #{i}", package_type: 1, status: 1)
       table(:packages_tags).create!(package_id: package.id, name: "Tag #{i}", created_at: Time.current,

@@ -4,8 +4,6 @@ class AddAutoResolvedToVulnerabilities < Gitlab::Database::Migration[2.2]
   milestone '17.6'
 
   def change
-    # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
     add_column :vulnerabilities, :auto_resolved, :boolean, null: false, default: false, if_not_exists: true
-    # rubocop:enable Migration/PreventAddingColumns
   end
 end

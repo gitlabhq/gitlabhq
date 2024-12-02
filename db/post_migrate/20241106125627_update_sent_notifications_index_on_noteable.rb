@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop: disable Migration/PreventIndexCreation -- update an existing index
+# -- update an existing index
 class UpdateSentNotificationsIndexOnNoteable < Gitlab::Database::Migration[2.2]
   milestone '17.6'
 
@@ -22,4 +22,3 @@ class UpdateSentNotificationsIndexOnNoteable < Gitlab::Database::Migration[2.2]
     unprepare_async_index :sent_notifications, COLUMN_NAMES, name: INDEX_NAME
   end
 end
-# rubocop: enable Migration/PreventIndexCreation

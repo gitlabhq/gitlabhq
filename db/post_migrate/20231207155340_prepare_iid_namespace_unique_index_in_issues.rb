@@ -6,11 +6,9 @@ class PrepareIidNamespaceUniqueIndexInIssues < Gitlab::Database::Migration[2.2]
   milestone '16.8'
 
   # TODO: Index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/435856
-  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     prepare_async_index :issues, [:namespace_id, :iid], unique: true, name: INDEX_NAME
   end
-  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     unprepare_async_index :issues, [:namespace_id, :iid], unique: true, name: INDEX_NAME

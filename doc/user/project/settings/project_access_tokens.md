@@ -128,7 +128,8 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream project and subgroup. Any existing project access tokens remain valid until their expiration date or until manually revoked.
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. In **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.

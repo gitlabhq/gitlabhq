@@ -188,6 +188,10 @@ export default {
       required: false,
       default: false,
     },
+    isGroup: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -551,6 +555,7 @@ export default {
       :related-item="relatedItemData"
       :work-item-type-name="workItemType.toUpperCase()"
       :show-project-selector="!isEpic"
+      :is-group="isGroup"
       hide-button
       @workItemCreated="$emit('workItemCreated')"
       @hideModal="isCreateWorkItemModalVisible = false"

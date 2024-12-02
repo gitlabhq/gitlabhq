@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteStalePackagesNpmMetadataCaches, feature_category: :package_registry do
-  let!(:namespace) { table(:namespaces).create!(name: 'group', path: 'group', type: 'Group') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:namespace) do
+    table(:namespaces).create!(name: 'group', path: 'group', type: 'Group', organization_id: organization.id)
+  end
 
   let!(:project) do
     table(:projects).create!(name: 'project', path: 'project', project_namespace_id: namespace.id,
-      namespace_id: namespace.id)
+      namespace_id: namespace.id, organization_id: organization.id)
   end
 
   let!(:cache_1) do

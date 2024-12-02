@@ -107,7 +107,8 @@ For more information on group-level domain verification, see [epic 5299](https:/
 
 The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. In **Domain**, enter the domain name.
@@ -153,7 +154,8 @@ For GitLab instances with domain verification enabled, if the domain cannot be v
 
 To view all configured domains in your group:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 
 You then see:
@@ -166,7 +168,8 @@ You then see:
 
 To edit or remove a domain:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
 1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/index.md) instructions.

@@ -7,11 +7,9 @@ class AddIssuesMilestoneAndIdIndexConcurrently < Gitlab::Database::Migration[2.2
 
   disable_ddl_transaction!
 
-  # rubocop: disable Migration/PreventIndexCreation -- Replacing an existing index
   def up
     add_concurrent_index :issues, %i[milestone_id id], name: INDEX_NAME
   end
-  # rubocop: enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :issues, INDEX_NAME

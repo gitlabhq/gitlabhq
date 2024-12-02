@@ -71,6 +71,10 @@ export default {
       required: false,
       default: 0,
     },
+    isGroup: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     canUpdate() {
@@ -175,6 +179,7 @@ export default {
             :work-item-state="workItem.state"
             :is-modal="isModal"
             :work-item-author-id="workItemAuthorId"
+            :is-group="isGroup"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)

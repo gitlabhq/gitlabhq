@@ -23,6 +23,7 @@ import {
 } from '~/vue_shared/components/customizable_dashboard/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { stubComponent } from 'helpers/stub_component';
+import { trimText } from 'helpers/text_helper';
 import {
   dashboard,
   builtinDashboard,
@@ -61,16 +62,13 @@ describe('CustomizableDashboard', () => {
   };
 
   const panelSlotSpy = jest.fn();
-  const scopedSlots = {
+  const defaultSlots = {
     panel: panelSlotSpy,
   };
 
   const createWrapper = (
     props = {},
-    loadedDashboard = dashboard,
-    provide = {},
-    routeParams = {},
-    // eslint-disable-next-line max-params
+    { loadedDashboard = dashboard, provide = {}, routeParams = {}, scopedSlots = {} } = {},
   ) => {
     const loadDashboard = { ...loadedDashboard };
 
@@ -104,7 +102,10 @@ describe('CustomizableDashboard', () => {
           params: routeParams,
         },
       },
-      scopedSlots,
+      scopedSlots: {
+        ...defaultSlots,
+        ...scopedSlots,
+      },
       provide: {
         dashboardEmptyStateIllustrationPath: TEST_EMPTY_DASHBOARD_SVG_PATH,
         ...provide,
@@ -183,7 +184,7 @@ describe('CustomizableDashboard', () => {
 
   describe('default behaviour', () => {
     beforeEach(() => {
-      createWrapper({}, dashboard);
+      createWrapper();
     });
 
     it('shows the gridstack wrapper', () => {
@@ -236,7 +237,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when a dashboard has no description', () => {
     beforeEach(() => {
-      createWrapper({}, { ...dashboard, description: undefined });
+      createWrapper({}, { loadedDashboard: { ...dashboard, description: undefined } });
     });
 
     it('does not show the dashboard description', () => {
@@ -244,50 +245,28 @@ describe('CustomizableDashboard', () => {
     });
   });
 
-  describe('when the slug is "value_stream_dashboard"', () => {
+  describe('when a dashboard has an after-description slot', () => {
     beforeEach(() => {
-      createWrapper({}, { ...builtinDashboard, slug: 'value_streams_dashboard' });
-    });
-
-    it('shows a "Learn more" link to the VSD user docs', () => {
-      const link = findDashboardDescription().findComponent(GlLink);
-
-      expect(link.text()).toBe('Learn more');
-      expect(link.attributes('href')).toBe('/help/user/analytics/value_streams_dashboard');
-    });
-  });
-
-  describe('when the slug is "ai_impact"', () => {
-    beforeEach(() => {
-      createWrapper({}, { ...builtinDashboard, slug: 'ai_impact' });
-    });
-
-    it('shows an alternative dashboard description', () => {
-      expect(findDashboardDescription().text()).toBe(
-        'Visualize the relation between AI usage and SDLC trends. Learn more about AI Impact analytics and GitLab Duo Pro seats usage.',
+      createWrapper(
+        {},
+        {
+          scopedSlots: {
+            'after-description': `<p>After description</p>`,
+          },
+        },
       );
     });
 
-    it('shows a link to the docs page', () => {
-      const link = findDashboardDescription().findAllComponents(GlLink).at(0);
-
-      expect(link.text()).toBe('AI Impact analytics');
-      expect(link.attributes('href')).toBe('/help/user/analytics/ai_impact_analytics');
-    });
-
-    it('shows a link to the Duo Pro subscription add-ons page', () => {
-      const link = findDashboardDescription().findAllComponents(GlLink).at(1);
-
-      expect(link.text()).toBe('GitLab Duo Pro seats usage');
-      expect(link.attributes('href')).toBe(
-        '/help/subscriptions/subscription-add-ons#assign-gitlab-duo-seats',
+    it('does render after-description slot after the description', () => {
+      expect(trimText(findDashboardDescription().text())).toEqual(
+        'This is a dashboard After description',
       );
     });
   });
 
   describe('when a dashboard is custom', () => {
     beforeEach(() => {
-      createWrapper({}, dashboard);
+      createWrapper();
     });
 
     it('shows the "edit" button', () => {
@@ -297,7 +276,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when a dashboard is built-in', () => {
     beforeEach(() => {
-      createWrapper({}, builtinDashboard);
+      createWrapper({}, { loadedDashboard: builtinDashboard });
     });
 
     it('does not show the "edit" button', () => {
@@ -309,20 +288,20 @@ describe('CustomizableDashboard', () => {
     const customVsd = { ...dashboard, slug: CUSTOM_VALUE_STREAM_DASHBOARD };
 
     it('does not show the "edit" button when `enable_vsd_visual_editor` is disabled', () => {
-      createWrapper({}, customVsd);
+      createWrapper({}, { loadedDashboard: customVsd });
       expect(findEditButton().exists()).toBe(false);
     });
 
     it('shows the "edit" button when `enable_vsd_visual_editor` is enabled', () => {
       const provide = { glFeatures: { enableVsdVisualEditor: true } };
-      createWrapper({}, customVsd, provide);
+      createWrapper({}, { loadedDashboard: customVsd, provide });
       expect(findEditButton().exists()).toBe(true);
     });
   });
 
   describe('when a dashboard is in beta', () => {
     beforeEach(() => {
-      createWrapper({}, betaDashboard);
+      createWrapper({}, { loadedDashboard: betaDashboard });
     });
 
     it('renders the `Beta` badge', () => {
@@ -332,7 +311,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when mounted with the $route.editing param', () => {
     beforeEach(() => {
-      createWrapper({}, dashboard, {}, { editing: true });
+      createWrapper({}, { routeParams: { editing: true } });
     });
 
     it('render the visualization drawer in edit mode', () => {
@@ -348,7 +327,7 @@ describe('CustomizableDashboard', () => {
       beforeUnloadEvent = new Event('beforeunload');
       windowDialogSpy = jest.spyOn(beforeUnloadEvent, 'returnValue', 'set');
 
-      createWrapper({}, dashboard);
+      createWrapper();
 
       await waitForPromises();
 
@@ -719,7 +698,7 @@ describe('CustomizableDashboard', () => {
         {
           isNewDashboard: true,
         },
-        newDashboard,
+        { loadedDashboard: newDashboard },
       );
     });
 
@@ -931,7 +910,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when saving while editing and the editor is enabled', () => {
     beforeEach(() => {
-      createWrapper({ isSaving: true }, dashboard);
+      createWrapper({ isSaving: true });
 
       findEditButton().vm.$emit('click');
     });
@@ -951,7 +930,7 @@ describe('CustomizableDashboard', () => {
     `(
       'when editing="$editing" and changesSaved="$changesSaved" the new editing state is "$newState',
       async ({ editing, changesSaved, newState }) => {
-        createWrapper({ changesSaved, isNewDashboard: editing }, dashboard);
+        createWrapper({ changesSaved, isNewDashboard: editing });
 
         await nextTick();
 
@@ -967,7 +946,7 @@ describe('CustomizableDashboard', () => {
     };
 
     beforeEach(() => {
-      createWrapper({}, dashboardWithoutPanels);
+      createWrapper({}, { loadedDashboard: dashboardWithoutPanels });
 
       return findEditButton().vm.$emit('click');
     });
@@ -1005,7 +984,7 @@ describe('CustomizableDashboard', () => {
       'when isSaving=$isSaving and changesMade=$changesMade',
       ({ isSaving, changesMade, expected }) => {
         beforeEach(async () => {
-          createWrapper({ isSaving }, dashboard);
+          createWrapper({ isSaving });
 
           await findEditButton().vm.$emit('click');
 

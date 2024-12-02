@@ -45,7 +45,7 @@ export default {
       return {
         text: __('New custom emoji'),
         attributes: {
-          variant: 'info',
+          variant: 'confirm',
           to: '/new',
         },
       };

@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
@@ -18,12 +19,14 @@ export default {
     matchingBranches: s__('BranchRules|%{total} matching %{subject}'),
     pushAccessLevels: s__('BranchRules|Allowed to push and merge'),
     mergeAccessLevels: s__('BranchRules|Allowed to merge'),
+    squashSetting: s__('BranchRules|Squash commits: %{setting}'),
   },
   components: {
     GlBadge,
     GlButton,
     ProtectedBadge,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     branchRulesPath: {
       default: '',
@@ -94,6 +97,11 @@ export default {
         subject: n__('branch', 'branches', this.matchingBranchesCount),
       });
     },
+    squashSettingText() {
+      return sprintf(this.$options.i18n.squashSetting, {
+        setting: this.branchProtection?.squashSetting,
+      });
+    },
     mergeAccessLevels() {
       const { mergeAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(mergeAccessLevels);
@@ -130,6 +138,9 @@ export default {
       }
       if (this.pushAccessLevels.total > 0) {
         approvalDetails.push(this.pushAccessLevelsText);
+      }
+      if (this.glFeatures.branchRuleSquashSettings && this.branchProtection?.squashSetting) {
+        approvalDetails.push(this.squashSettingText);
       }
       return approvalDetails;
     },

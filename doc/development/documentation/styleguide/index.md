@@ -1029,6 +1029,15 @@ To open group settings:
 1. Expand **General pipelines**.
 ```
 
+To open settings for a top-level group:
+
+```markdown
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
+1. Select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+```
+
 To open either project or group settings:
 
 ```markdown

@@ -13,11 +13,18 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillHasIssuesForExternalIssueLin
   let(:users) { table(:users) }
   let(:user) { create_user(email: "test1@example.com", username: "test1") }
 
+  let(:organizations) { table(:organizations) }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+
   let(:namespaces) { table(:namespaces) }
-  let(:namespace) { namespaces.create!(name: 'test-1', path: 'test-1', owner_id: user.id) }
+  let(:namespace) do
+    namespaces.create!(name: 'test-1', path: 'test-1', owner_id: user.id, organization_id: organization.id)
+  end
 
   let(:projects) { table(:projects) }
-  let(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+  let(:project) do
+    projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id, organization_id: organization.id)
+  end
 
   let(:members) { table(:members) }
   let!(:membership) do

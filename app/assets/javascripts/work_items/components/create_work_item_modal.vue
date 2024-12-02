@@ -11,6 +11,7 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
   ROUTES,
+  RELATED_ITEM_ID_URL_QUERY_PARAM,
 } from '../constants';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import CreateWorkItem from './create_work_item.vue';
@@ -134,6 +135,7 @@ export default {
         fullPath: this.fullPath,
         isGroup: this.isGroup,
         workItemTypeName: this.workItemTypeName,
+        query: this.relatedItem ? `?${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}` : '',
       });
     },
     newWorkItemText() {
@@ -202,7 +204,10 @@ export default {
       event.preventDefault();
 
       if (this.useVueRouter) {
-        this.$router.push({ name: ROUTES.new });
+        this.$router.push({
+          name: ROUTES.new,
+          query: { [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id },
+        });
       } else {
         visitUrl(this.newWorkItemPath);
       }

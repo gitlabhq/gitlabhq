@@ -6,8 +6,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEventsShardingKey, :migratio
   let(:connection) { ApplicationRecord.connection }
 
   describe '#perform' do
-    let!(:namespace) { table(:namespaces).create!(name: 'name', path: 'path') }
-    let!(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+    let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+    let!(:namespace) { table(:namespaces).create!(name: 'name', path: 'path', organization_id: organization.id) }
+    let!(:project) do
+      table(:projects).create!(
+        namespace_id: namespace.id,
+        project_namespace_id: namespace.id,
+        organization_id: organization.id
+      )
+    end
+
     let!(:user) { table(:users).create!(username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 1) }
     let!(:note) { table(:notes).create!(noteable_type: 'Issue', project_id: project.id) }
     let!(:mr) do

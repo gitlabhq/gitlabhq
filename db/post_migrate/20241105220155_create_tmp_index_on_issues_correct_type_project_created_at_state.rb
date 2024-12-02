@@ -8,7 +8,7 @@ class CreateTmpIndexOnIssuesCorrectTypeProjectCreatedAtState < Gitlab::Database:
 
   def up
     # Temporary index to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/500165
-    add_concurrent_index :issues, # rubocop:disable Migration/PreventIndexCreation -- Tmp index needed to fix work item type ids
+    add_concurrent_index :issues, # -- Tmp index needed to fix work item type ids
       [:correct_work_item_type_id, :project_id, :created_at, :state_id],
       name: INDEX_NAME
   end

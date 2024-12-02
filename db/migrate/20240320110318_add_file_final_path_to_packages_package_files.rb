@@ -6,9 +6,7 @@ class AddFileFinalPathToPackagesPackageFiles < Gitlab::Database::Migration[2.2]
 
   def up
     with_lock_retries do
-      # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
       add_column :packages_package_files, :file_final_path, :text, if_not_exists: true
-      # rubocop:enable Migration/PreventAddingColumns
     end
 
     add_text_limit :packages_package_files, :file_final_path, 1024
