@@ -32219,7 +32219,7 @@ CREATE UNIQUE INDEX index_security_trainings_on_unique_project_id ON security_tr
 
 CREATE INDEX index_sent_notifications_on_issue_email_participant_id ON sent_notifications USING btree (issue_email_participant_id);
 
-CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id ON sent_notifications USING btree (noteable_id) WHERE ((noteable_type)::text = 'Issue'::text);
+CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id_and_id ON sent_notifications USING btree (noteable_id, id) WHERE ((noteable_type)::text = 'Issue'::text);
 
 CREATE UNIQUE INDEX index_sent_notifications_on_reply_key ON sent_notifications USING btree (reply_key);
 
@@ -32364,6 +32364,8 @@ CREATE INDEX index_subscription_user_add_on_assignments_on_user_id ON subscripti
 CREATE INDEX index_subscriptions_on_project_id ON subscriptions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_id ON subscriptions USING btree (subscribable_id, subscribable_type, user_id, project_id);
+
+CREATE INDEX index_subscriptions_on_subscribable_type_subscribable_id_and_id ON subscriptions USING btree (subscribable_id, subscribable_type, id);
 
 CREATE INDEX index_subscriptions_on_user ON subscriptions USING btree (user_id);
 

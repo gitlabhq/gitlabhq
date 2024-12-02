@@ -20,6 +20,9 @@ including:
 - Linked issues
 - Actions log
 - Filename and line number of the vulnerability (if available)
+- Vulnerability risk data
+  - Severity - [Common Vulnerability Scoring System (CVSS)](severities.md)
+  - Likelihood of exploitation - [EPSS](risk_assessment_data.md#epss)
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.

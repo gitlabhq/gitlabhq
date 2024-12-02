@@ -8,11 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use vulnerability risk data to help assess the potential impact to your environment.
 
-Vulnerability risk data includes:
+Each [vulnerability's details page](index.md) contains risk data, including:
 
 - Severity - [Common Vulnerability Scoring System (CVSS)](severities.md)
 - Likelihood of exploitation - [EPSS](#epss)
-- Presence of known exploits - [KEV](#kev)
 
 With multiple data points you can better prioritize remediation and mitigation actions.
 For example, a vulnerability with medium severity and a high EPSS score may require mitigation
@@ -97,9 +96,3 @@ Sample output:
   "correlationId": "..."
 }
 ```
-
-## KEV
-
-[CISA Known Exploited Vulnerabilities (KEV) catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) is a catalog of vulnerabilities that are known to have been exploited. It is crucial to remediate these vulnerabilities if you find them in your environment because there are documented cases of attacks using these vulnerabilities and the exploitation method is likely known to attackers.
-
-Support for KEV is proposed in [epic 11912](https://gitlab.com/groups/gitlab-org/-/epics/11912).
