@@ -1,8 +1,9 @@
-import { findKey, intersection, difference } from 'lodash';
+import { intersection, difference } from 'lodash';
 import {
   formatSearchResultCount,
   addCountOverLimit,
   injectRegexSearch,
+  scopeCrawler,
 } from '~/search/store/utils';
 
 import {
@@ -11,7 +12,13 @@ import {
   LABEL_AGREGATION_NAME,
   LANGUAGE_FILTER_PARAM,
 } from '~/search/sidebar/constants';
-import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
+
+import {
+  GROUPS_LOCAL_STORAGE_KEY,
+  PROJECTS_LOCAL_STORAGE_KEY,
+  ICON_MAP,
+  SUBITEMS_FILTER,
+} from './constants';
 
 const queryLabelFilters = (state) => state?.query?.[LABEL_FILTER_PARAM] || [];
 const urlQueryLabelFilters = (state) => state?.urlQuery?.[LABEL_FILTER_PARAM] || [];
@@ -82,16 +89,36 @@ export const unappliedNewLabels = (state) =>
     return unappliedNewLabelKeys(state)?.includes(label.title);
   });
 
-export const currentScope = (state) => findKey(state.navigation, { active: true });
+export const currentScope = (state) => {
+  return scopeCrawler(state.navigation);
+};
 
 export const navigationItems = (state) =>
-  Object.values(state.navigation).map((item) => ({
-    title: item.label,
-    icon: ICON_MAP[item.scope] || '',
-    link: item.scope === SCOPE_BLOB ? injectRegexSearch(item.link) : item.link,
-    is_active: Boolean(item?.active),
-    pill_count: `${formatSearchResultCount(item?.count)}${addCountOverLimit(item?.count)}` || '',
-    items: [],
-  }));
+  Object.values(state.navigation).map((item, index) => {
+    const navigation = {
+      id: `menu-${item.scope}-${index}`,
+      scope: item.scope,
+      title: item.label,
+      icon: ICON_MAP[item.scope] || '',
+      link: item.scope === SCOPE_BLOB ? injectRegexSearch(item.link) : item.link,
+      is_active: Boolean(item?.active),
+      pill_count: `${formatSearchResultCount(item?.count)}${addCountOverLimit(item?.count)}` || '',
+    };
+
+    if (item?.sub_items) {
+      navigation.items = Object.keys(item.sub_items)
+        .filter((subItem) => Boolean(SUBITEMS_FILTER[subItem]))
+        .map((subItem, subIndex) => {
+          return {
+            id: `menu-${subItem}-${subIndex}`,
+            title: item.sub_items[subItem].label,
+            link: item.sub_items[subItem].link,
+            is_active: Boolean(item.sub_items[subItem]?.active),
+          };
+        });
+    }
+
+    return navigation;
+  });
 
 export const hasMissingProjectContext = (state) => !state?.projectInitialJson?.id;

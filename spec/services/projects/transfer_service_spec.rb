@@ -26,10 +26,26 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
     let!(:package) { create(:npm_package, project: project, name: "@testscope/test") }
 
-    context 'with a root namespace change' do
-      it 'allow the transfer' do
-        expect(transfer_service.execute(group)).to be true
+    shared_examples 'allow the transfer' do
+      it 'allows the transfer' do
+        expect(transfer_service.execute(namespace)).to be true
         expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+
+    context 'with a root namespace change' do
+      it_behaves_like 'allow the transfer' do
+        let(:namespace) { group }
+      end
+
+      context 'when npm_extract_npm_package_model is disabled' do
+        before do
+          stub_feature_flags(npm_extract_npm_package_model: false)
+        end
+
+        it_behaves_like 'allow the transfer' do
+          let(:namespace) { group }
+        end
       end
     end
 
@@ -38,9 +54,18 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         package.pending_destruction!
       end
 
-      it 'allow the transfer' do
-        expect(transfer_service.execute(group)).to be true
-        expect(project.errors[:new_namespace]).to be_empty
+      it_behaves_like 'allow the transfer' do
+        let(:namespace) { group }
+      end
+
+      context 'when npm_extract_npm_package_model is disabled' do
+        before do
+          stub_feature_flags(npm_extract_npm_package_model: false)
+        end
+
+        it_behaves_like 'allow the transfer' do
+          let(:namespace) { group }
+        end
       end
     end
 
@@ -50,6 +75,17 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       it 'does not allow the transfer' do
         expect(transfer_service.execute(group)).to be false
         expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
+      end
+
+      context 'when npm_extract_npm_package_model is disabled' do
+        before do
+          stub_feature_flags(npm_extract_npm_package_model: false)
+        end
+
+        it 'does not allow the transfer' do
+          expect(transfer_service.execute(group)).to be false
+          expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
+        end
       end
     end
 
@@ -63,9 +99,18 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         other_group.add_owner(user)
       end
 
-      it 'allow the transfer' do
-        expect(transfer_service.execute(other_group)).to be true
-        expect(project.errors[:new_namespace]).to be_empty
+      it_behaves_like 'allow the transfer' do
+        let(:namespace) { other_group }
+      end
+
+      context 'when npm_extract_npm_package_model is disabled' do
+        before do
+          stub_feature_flags(npm_extract_npm_package_model: false)
+        end
+
+        it_behaves_like 'allow the transfer' do
+          let(:namespace) { other_group }
+        end
       end
     end
   end

@@ -10,6 +10,7 @@ import {
   prepareSearchAggregations,
   addCountOverLimit,
   injectRegexSearch,
+  scopeCrawler,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -22,6 +23,7 @@ import {
   MOCK_AGGREGATIONS,
   SMALL_MOCK_AGGREGATIONS,
   TEST_RAW_BUCKETS,
+  MOCK_NAVIGATION,
 } from '../mock_data';
 
 const PREV_TIME = new Date().getTime() - 1;
@@ -354,6 +356,53 @@ describe('Global Search Store Utils', () => {
         localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
         expect(injectRegexSearch(urlIn)).toEqual(urlOut);
       });
+    });
+  });
+
+  describe('scopeCrawler', () => {
+    it('returns the correct scope when active item is at root level', () => {
+      const navigationClone = { ...MOCK_NAVIGATION };
+      navigationClone.epics.active = true;
+      delete navigationClone.issues.active;
+      const result = scopeCrawler(navigationClone);
+
+      expect(result).toBe('epics');
+    });
+
+    it('returns the correct parent scope when active item is in sub_items', () => {
+      const navigationClone = { ...MOCK_NAVIGATION };
+      navigationClone.epics.active = false;
+      navigationClone.issues.sub_items.objective.active = true;
+      const result = scopeCrawler(navigationClone);
+
+      expect(result).toBe('issues');
+    });
+
+    it('returns null when no items are active', () => {
+      const navigationClone = { ...MOCK_NAVIGATION };
+      delete navigationClone.issues.active;
+      delete navigationClone.epics.active;
+      delete navigationClone.issues.sub_items.objective.active;
+
+      const result = scopeCrawler(navigationClone);
+      expect(result).toBeNull();
+    });
+
+    it('returns the scope of the deepest active sub_item', () => {
+      const navigationClone = { ...MOCK_NAVIGATION };
+      navigationClone.issues.sub_items.objective.active = true;
+      const result = scopeCrawler(navigationClone);
+      expect(result).toBe('issues');
+    });
+
+    it('returns parentScope if provided and active item is found', () => {
+      const navigationClone = { ...MOCK_NAVIGATION.issues.sub_items };
+
+      navigationClone.objective.active = true;
+
+      const parentScope = 'customScope';
+      const result = scopeCrawler(navigationClone, parentScope);
+      expect(result).toBe(parentScope);
     });
   });
 });

@@ -128,7 +128,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       it 'displays result counts for all categories' do
         within_testid('super-sidebar') do
           expect(page).to have_link('Projects 1')
-          expect(page).to have_link('Work items 1')
+          expect(page).to have_link('issue')
           expect(page).to have_link('Merge requests 0')
           expect(page).to have_link('Milestones 0')
           expect(page).to have_link('Users 0')

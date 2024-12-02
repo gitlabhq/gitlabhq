@@ -37,3 +37,4 @@ Migration/EnsureFactoryForTable:
     - 'db/migrate/20240419082037_create_ai_self_hosted_models.rb'
     - 'db/migrate/20240423064716_create_ci_build_execution_config.rb'
     - 'db/migrate/20240430110033_create_ai_feature_settings.rb'
+    - 'db/migrate/20241127092714_create_container_registry_protection_tag_rules.rb'

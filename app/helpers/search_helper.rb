@@ -11,7 +11,8 @@ module SearchHelper
     :snippets,
     :sort,
     :force_search_results,
-    :project_ids
+    :project_ids,
+    :type
   ].freeze
 
   def search_autocomplete_opts(term, filter: nil, scope: nil)
@@ -488,12 +489,33 @@ module SearchHelper
     end
   end
 
-  def search_filter_link_json(scope, label, data, search)
+  def active_nav?(active_scope, active_type, type)
+    return active_scope unless @scope.to_s == 'issues'
+    return active_type if type
+    return active_scope if params[:type].nil?
+
+    false
+  end
+
+  def search_filter_link_json(scope, label, data, search, type)
     scope_name = scope.to_s
-    search_params = params.merge(search).merge({ scope: scope_name }).permit(SEARCH_GENERIC_PARAMS)
+    search_params = params
+      .merge(search)
+      .merge(scope: scope_name)
+      .merge(type: type)
+      .permit(SEARCH_GENERIC_PARAMS)
+
     active_scope = @scope == scope_name
 
-    result = { label: label, scope: scope_name, data: data, link: search_path(search_params), active: active_scope }
+    active_type = params[:type].to_s == type.to_s
+
+    result = {
+      label: label,
+      scope: scope_name,
+      data: data,
+      link: search_path(search_params),
+      active: active_nav?(active_scope, active_type, type)
+    }
 
     if active_scope
       result[:count] = formatted_count(scope_name)
@@ -518,10 +540,20 @@ module SearchHelper
       options: nav_options
     )
     sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
+    parse_navigation(sorted_navigation).to_json
+  end
 
-    sorted_navigation.each_with_object({}) do |(key, value), hash|
-      hash[key] = search_filter_link_json(key, value[:label], value[:data], value[:search]) if value[:condition]
-    end.to_json
+  def parse_navigation(navigation)
+    navigation.each_with_object({}) do |(key, value), hash|
+      next unless value[:condition]
+
+      scope = value[:scope] || key
+      hash[key] = search_filter_link_json(scope, value[:label], value[:data], value[:search], value[:type])
+
+      if value[:sub_items]
+        hash[key][:sub_items] = parse_navigation(value[:sub_items].sort_by { |_, h| h[:sort] })
+      end
+    end
   end
 
   def search_filter_input_options(type, placeholder = _('Search or filter results…'))

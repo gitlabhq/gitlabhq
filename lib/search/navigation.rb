@@ -80,6 +80,7 @@ module Search
       nav[:issues] = {
         sort: 4,
         label: _("Work items"),
+        sub_items: get_sub_items,
         condition: show_issues_search_tab?
       }
 
@@ -87,6 +88,18 @@ module Search
     end
 
     private
+
+    def get_sub_items
+      ::WorkItems::Type::TYPE_NAMES.each_with_object({}) do |(key, value, index), hash|
+        hash[key] ||= {}
+        hash[key][:scope] = 'issues'
+        hash[key][:label] = value
+        hash[key][:type] = key
+        hash[key][:sort] = index
+        hash[key][:active] = ''
+        hash[key][:condition] = show_issues_search_tab?
+      end
+    end
 
     attr_reader :user, :project, :group, :options
 

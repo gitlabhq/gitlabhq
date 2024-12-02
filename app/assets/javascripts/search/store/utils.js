@@ -190,3 +190,20 @@ export const injectRegexSearch = (link) => {
   }
   return `${urlObject.pathname}?${objectToQuery(queryObject)}`;
 };
+
+export const scopeCrawler = (navigation, parentScope = null) => {
+  for (const value of Object.values(navigation)) {
+    if (value.active) {
+      return parentScope || value.scope;
+    }
+
+    if (value.sub_items) {
+      const subItemScope = scopeCrawler(value.sub_items, value.scope);
+      if (subItemScope) {
+        return subItemScope;
+      }
+    }
+  }
+
+  return null;
+};

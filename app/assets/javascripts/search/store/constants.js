@@ -47,6 +47,13 @@ export const ICON_MAP = {
   snippet_titles: 'snippet',
 };
 
+export const SUBITEMS_FILTER = {
+  issue: { order: 2, icon: 'issue-type-issue' },
+  task: { order: 3, icon: 'issue-type-task' },
+  objective: { order: 4, icon: 'issue-type-objective' },
+  key_result: { order: 1, icon: 'issue-type-keyresult' },
+};
+
 export const SCOPE_NAVIGATION_MAP = {
   blobs: s__(`GlobalSearch|Code`),
   issues: window.gon?.features?.workItemScopeFrontend

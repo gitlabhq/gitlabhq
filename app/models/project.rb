@@ -427,6 +427,7 @@ class Project < ApplicationRecord
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project
 
   has_many :container_registry_protection_rules, class_name: 'ContainerRegistry::Protection::Rule', inverse_of: :project
+  has_many :container_registry_protection_tag_rules, class_name: 'ContainerRegistry::Protection::TagRule', inverse_of: :project
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -3111,6 +3112,8 @@ class Project < ApplicationRecord
       ).exists?
   end
 
+  # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
   def has_namespaced_npm_packages?
     packages.with_npm_scope(root_namespace.path)
             .not_pending_destruction

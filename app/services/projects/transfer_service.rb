@@ -94,7 +94,7 @@ module Projects
 
       verify_if_container_registry_tags_can_be_handled(project)
 
-      if !new_namespace_has_same_root?(project) && project.has_namespaced_npm_packages?
+      if !new_namespace_has_same_root?(project) && project_has_namespaced_npm_packages?
         raise TransferError, s_("TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
       end
 
@@ -330,6 +330,17 @@ module Projects
       })
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def project_has_namespaced_npm_packages?
+      if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
+        ::Packages::Npm::Package.for_projects(project)
+                                .with_npm_scope(project.root_namespace.path)
+                                .not_pending_destruction
+                                .exists?
+      else
+        project.has_namespaced_npm_packages?
+      end
     end
   end
 end
