@@ -20,7 +20,7 @@ RSpec.describe 'admin/users/_form.html.haml', feature_category: :user_management
           render
 
           expect(rendered).not_to have_field(
-            'Can create top level group',
+            'Can create top-level group',
             type: 'checkbox'
           )
         end
@@ -35,7 +35,7 @@ RSpec.describe 'admin/users/_form.html.haml', feature_category: :user_management
           render
 
           expect(rendered).to have_field(
-            'Can create top level group',
+            'Can create top-level group',
             type: 'checkbox'
           )
         end

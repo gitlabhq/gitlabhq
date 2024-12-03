@@ -76,13 +76,9 @@ Generally available features:
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
 - Have a complete user experience aligned with GitLab design standards.
 
-## Production features
+## Development guidelines
 
-All experimental, beta, and publicly available features are available on GitLab.com and are considered in production.
-
-## GitLab experiment and beta development guidelines
-
-Teams should release features as GA from the start unless there are strong reasons to release them as experimental or beta versions first.
+Teams should release features as GA from the start unless there are strong reasons to release them as experimental, beta, or limited availability first.
 
 Product development teams should refrain from making changes that they reasonably believe
 could create significant risks or friction for GitLab users or the platform, such as:

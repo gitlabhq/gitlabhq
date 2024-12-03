@@ -183,6 +183,7 @@
     white-space: pre-wrap;
 
     > code {
+      font-size: 13px;
       white-space: pre-wrap;
       padding: 0;
       display: flex;
@@ -202,7 +203,6 @@
     width: 100%;
 
     > code {
-      @apply gl-text-sm;
       border-left: 100px solid transparent;
       padding-left: 20px;
       border-radius: 0;

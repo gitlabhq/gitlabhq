@@ -4592,7 +4592,7 @@ msgstr ""
 msgid "AdminUsers|Bot"
 msgstr ""
 
-msgid "AdminUsers|Can create top level group"
+msgid "AdminUsers|Can create top-level group"
 msgstr ""
 
 msgid "AdminUsers|Cannot sign in or access instance information"
@@ -5162,10 +5162,19 @@ msgstr ""
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
+msgid "AiPowered|Always off"
+msgstr ""
+
 msgid "AiPowered|Assign seats"
 msgstr ""
 
 msgid "AiPowered|By turning on self-hosted AI models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
+msgstr ""
+
+msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
+
+msgid "AiPowered|Change configuration"
 msgstr ""
 
 msgid "AiPowered|Configuration"
@@ -5183,13 +5192,13 @@ msgstr ""
 msgid "AiPowered|Early Access Program banner dismissed. You will not see it again for 7 days."
 msgstr ""
 
-msgid "AiPowered|Enabling these features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
-msgstr ""
-
 msgid "AiPowered|End date: %{endDate}"
 msgstr ""
 
 msgid "AiPowered|Enroll in the Early Access Program"
+msgstr ""
+
+msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
@@ -5216,9 +5225,6 @@ msgstr ""
 msgid "AiPowered|Monitor, manage, and customize AI features to ensure efficient utilization and alignment."
 msgstr ""
 
-msgid "AiPowered|Never on"
-msgstr ""
-
 msgid "AiPowered|Off by default"
 msgstr ""
 
@@ -5234,6 +5240,9 @@ msgstr ""
 msgid "AiPowered|Self-hosted AI models"
 msgstr ""
 
+msgid "AiPowered|Self-hosted models"
+msgstr ""
+
 msgid "AiPowered|Setting unavailable"
 msgstr ""
 
@@ -5243,7 +5252,7 @@ msgstr ""
 msgid "AiPowered|Start date: %{startDate}"
 msgstr ""
 
-msgid "AiPowered|These features are being developed and might be unstable. %{linkStart}What do experiment and beta mean?%{linkEnd}"
+msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
 msgid "AiPowered|Turn on self-hosted models"
@@ -10796,7 +10805,7 @@ msgstr ""
 msgid "Can be manually deployed to"
 msgstr ""
 
-msgid "Can create top level groups:"
+msgid "Can create top-level groups:"
 msgstr ""
 
 msgid "Can not delete primary training"
@@ -23169,6 +23178,9 @@ msgstr ""
 msgid "Feature flag was successfully removed."
 msgstr ""
 
+msgid "Feature preview"
+msgstr ""
+
 msgid "FeatureFlags|%d user"
 msgid_plural "FeatureFlags|%d users"
 msgstr[0] ""
@@ -24734,9 +24746,6 @@ msgid "GitLab Duo"
 msgstr ""
 
 msgid "GitLab Duo Pro seats"
-msgstr ""
-
-msgid "GitLab Duo experiment and beta features"
 msgstr ""
 
 msgid "GitLab Duo features"
@@ -59660,9 +59669,6 @@ msgid "Use custom color #FF0000"
 msgstr ""
 
 msgid "Use existing commit message"
-msgstr ""
-
-msgid "Use experiment and beta GitLab Duo features"
 msgstr ""
 
 msgid "Use hashed storage"

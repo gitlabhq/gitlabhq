@@ -134,6 +134,7 @@ $white-gc-bg: #eaf2f5;
 
   &,
   pre.code,
+  code.code,
   .line_holder .line_content {
     background-color: $gl-color-neutral-0;
     color: $white-code-color;

@@ -220,4 +220,4 @@ In the initial version, only the `labels` function is supported.
 
 ## Known issues
 
-For a full list of known issues, see [epic 14437](https://gitlab.com/groups/gitlab-org/-/epics/14437 "GitLab Query Language (GLQL) | Strategy").
+For a full list of known issues, see [epic 14437 "GitLab Query Language (GLQL) Strategy"](https://gitlab.com/groups/gitlab-org/-/epics/14437).

@@ -102,18 +102,18 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /ee/spec/finders/
 /rubocop/rubocop-migrations.yml
 
-[Pipeline configuration] @gl-quality/eng-prod @acunskis @ddavison @mlapierre
+[Pipeline configuration] @gl-pipeline-maintainers
 /.gitlab-ci.yml
 /.gitlab/ci/
-/.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
-/.gitlab/ci/frontend.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/maintainers/frontend
-/.gitlab/ci/test-on-omnibus/ @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/qa-common/ @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
-/.gitlab/ci/reports.gitlab-ci.yml @gl-quality/eng-prod @gitlab-com/gl-security/appsec
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/test-on-gdk/ @gl-quality/eng-prod @gl-quality/qe-maintainers
+/.gitlab/ci/docs.gitlab-ci.yml @gl-pipeline-maintainers @gl-docsteam
+/.gitlab/ci/frontend.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/maintainers/frontend
+/.gitlab/ci/test-on-omnibus/ @gl-pipeline-maintainers @gl-quality/qe-maintainers
+/.gitlab/ci/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-quality/qe-maintainers
+/.gitlab/ci/qa-common/ @gl-pipeline-maintainers @gl-quality/qe-maintainers
+/.gitlab/ci/releases.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/delivery
+/.gitlab/ci/reports.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-com/gl-security/appsec
+/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-quality/qe-maintainers
+/.gitlab/ci/test-on-gdk/ @gl-pipeline-maintainers @gl-quality/qe-maintainers
 /gems/gem.gitlab-ci.yml
 
 [Tooling] @gl-quality/eng-prod

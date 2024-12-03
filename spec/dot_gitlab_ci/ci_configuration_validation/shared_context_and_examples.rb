@@ -2,9 +2,9 @@
 
 RSpec.shared_context 'with simulated pipeline attributes and shared project and user' do
   let(:ci_server_host) { 'gitlab.com' }
-  let(:ci_project_namespace) { 'gitlab-org' }
+  let(:ci_project_namespace) { pipeline_project.namespace.path }
   let(:ci_project_path) { "#{ci_project_namespace}/#{ci_project_name}" }
-  let(:ci_project_name) { 'gitlab' }
+  let(:ci_project_name) { pipeline_project.path }
   let(:ci_pipeline_source) { 'push' }
 
   let(:variables_attributes_base) do

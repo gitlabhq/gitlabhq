@@ -1122,6 +1122,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_1513378d715d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_158ac875f254() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13628,7 +13644,8 @@ CREATE TABLE issue_assignment_events (
     user_id bigint,
     issue_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    action smallint DEFAULT 1 NOT NULL
+    action smallint DEFAULT 1 NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE issue_assignment_events_id_seq
@@ -30707,6 +30724,8 @@ CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree
 
 CREATE INDEX index_issue_assignees_on_user_id_and_issue_id ON issue_assignees USING btree (user_id, issue_id);
 
+CREATE INDEX index_issue_assignment_events_on_namespace_id ON issue_assignment_events USING btree (namespace_id);
+
 CREATE INDEX index_issue_assignment_events_on_user_id ON issue_assignment_events USING btree (user_id);
 
 CREATE UNIQUE INDEX index_issue_crm_contacts_on_issue_id_and_contact_id ON issue_customer_relations_contacts USING btree (issue_id, contact_id);
@@ -35323,6 +35342,8 @@ CREATE TRIGGER trigger_13d4aa8fe3dd BEFORE INSERT OR UPDATE ON draft_notes FOR E
 
 CREATE TRIGGER trigger_14a39509be0a BEFORE INSERT OR UPDATE ON packages_nuget_metadata FOR EACH ROW EXECUTE FUNCTION trigger_14a39509be0a();
 
+CREATE TRIGGER trigger_1513378d715d BEFORE INSERT OR UPDATE ON issue_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_1513378d715d();
+
 CREATE TRIGGER trigger_158ac875f254 BEFORE INSERT OR UPDATE ON approval_group_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_158ac875f254();
 
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
@@ -36675,6 +36696,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT fk_a8703820ae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_assignment_events
+    ADD CONSTRAINT fk_a989e2acd0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_aa1efbe865 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE SET NULL;

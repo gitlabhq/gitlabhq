@@ -334,24 +334,26 @@ These examples are for a `.gitlab-ci.yml` file. GitLab CI/CD automatically provi
 With HTTP headers:
 
 ```yaml
-publish:
-  stage: deploy
+download:
+  stage: test
   script:
     - |
-      curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file path/to/file.txt \
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+           --location \
+           --output file.txt \
            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
 ```
 
 With HTTP Basic authentication:
 
 ```yaml
-publish:
-  stage: deploy
+download:
+  stage: test
   script:
     - |
-      curl --location --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
-           --upload-file path/to/file.txt \
+      curl --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+           --location \
+           --output file.txt \
            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
 ```
 

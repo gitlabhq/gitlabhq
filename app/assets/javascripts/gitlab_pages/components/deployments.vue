@@ -162,7 +162,7 @@ export default {
       <h2 class="gl-text-h2">
         {{ $options.i18n.title }}
       </h2>
-      <span class="gl-text-subtle">
+      <span>
         <gl-toggle
           v-model="showInactive"
           :label="$options.i18n.showInactiveLabel"

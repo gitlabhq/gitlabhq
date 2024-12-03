@@ -222,7 +222,7 @@ By default, users can create top-level groups. To prevent a user from creating a
 1. Select **Overview > Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
-1. Clear the **Can create top level group** checkbox.
+1. Clear the **Can create top-level group** checkbox.
 1. Select **Save changes**.
 
 It is also possible to [limit which roles can create a subgroup within a group](../user/group/subgroups/index.md#change-who-can-create-subgroups).
