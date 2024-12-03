@@ -22,9 +22,11 @@ module Gitlab
       # Object should behave as a object so we can remove object.is_a?(Hash) check
       # This will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/412328
       def uid(object)
-        # We want this to only match either username or email depending on the flag state.
-        # There should be no fall-through.
-        if Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
+        # We want this to only match either placeholder, username, or email
+        # depending on the flag state. There should be no fall-through.
+        if user_mapping_enabled?(project)
+          source_user_for_author(object).mapped_user_id
+        elsif Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
           find_user_id(by: :username, value: object.is_a?(Hash) ? object[:author_username] : object.author_username)
         else
           find_user_id(by: :email, value: object.is_a?(Hash) ? object[:author_email] : object.author_email)
@@ -59,6 +61,26 @@ module Gitlab
 
       def build_cache_key(by, value)
         format(CACHE_KEY, project_id: project.id, by: by, value: value)
+      end
+
+      def user_mapping_enabled?(project)
+        !!project.import_data.user_mapping_enabled?
+      end
+
+      def source_user_for_author(user_data)
+        source_user_mapper.find_or_create_source_user(
+          source_user_identifier: user_data[:username],
+          source_name: user_data[:display_name],
+          source_username: user_data[:username]
+        )
+      end
+
+      def source_user_mapper
+        @source_user_mapper ||= Gitlab::Import::SourceUserMapper.new(
+          namespace: project.root_ancestor,
+          import_type: ::Import::SOURCE_BITBUCKET_SERVER,
+          source_hostname: project.import_url
+        )
       end
     end
   end

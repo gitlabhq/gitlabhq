@@ -62,9 +62,9 @@ RSpec.describe 'Virtual Registries Packages Maven', :api, :js, feature_category:
     it 'returns the file contents from the cache' do
       expect(::Gitlab::HTTP).not_to receive(:head)
       expect { request }.not_to change { upstream.cached_responses.count }
-      expect(request.headers[::API::VirtualRegistries::Packages::Maven::SHA1_CHECKSUM_HEADER])
+      expect(request.headers[::API::VirtualRegistries::Packages::Maven::Endpoints::SHA1_CHECKSUM_HEADER])
         .to be_an_instance_of(String)
-      expect(request.headers[::API::VirtualRegistries::Packages::Maven::MD5_CHECKSUM_HEADER])
+      expect(request.headers[::API::VirtualRegistries::Packages::Maven::Endpoints::MD5_CHECKSUM_HEADER])
         .to be_an_instance_of(String)
     end
 

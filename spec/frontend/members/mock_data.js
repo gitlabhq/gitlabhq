@@ -45,6 +45,8 @@ export const member = {
   },
   id: 238,
   createdAt: '2020-07-17T16:22:46.923Z',
+  requestAcceptedAt: '2020-07-27T16:22:46.923Z',
+  inviteAcceptedAt: null,
   expiresAt: null,
   usingLicense: false,
   groupSso: false,

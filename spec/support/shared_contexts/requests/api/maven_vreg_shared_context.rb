@@ -19,7 +19,7 @@ RSpec.shared_context 'for maven virtual registry api setup' do
   end
 
   let(:personal_access_token) { create(:personal_access_token, user: user) }
-  let(:headers) { user_basic_auth_header(user, personal_access_token) }
+  let(:headers) { token_header(:personal_access_token) }
 
   before do
     stub_config(dependency_proxy: { enabled: true }) # not enabled by default

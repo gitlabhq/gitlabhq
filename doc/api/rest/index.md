@@ -461,3 +461,5 @@ notice:
 - Elements labeled in the [REST API resources](../api_resources.md) as
   [experimental or beta](../../policy/development_stages_support.md).
 - Fields behind a feature flag and disabled by default.
+
+For GitLab self-managed instances, [downgrading](../../downgrade_ee_to_ce/index.md) from an EE instance to CE causes breaking changes.

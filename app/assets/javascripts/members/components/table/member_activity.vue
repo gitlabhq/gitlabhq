@@ -21,7 +21,7 @@ export default {
       return this.member.user?.lastActivityOn;
     },
     accessGranted() {
-      return this.member.requestAcceptedAt || this.member.createdAt;
+      return this.member.inviteAcceptedAt || this.member.requestAcceptedAt || this.member.createdAt;
     },
   },
 };
@@ -47,7 +47,7 @@ export default {
         name="check"
         :title="s__('Members|Access granted')"
       />
-      <user-date :date="accessGranted" />
+      <user-date data-testid="access-granted-date" :date="accessGranted" />
     </div>
     <div v-if="lastActivity" class="gl-flex gl-gap-3">
       <gl-icon

@@ -3,27 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inline, feature_category: :importers do
-  let_it_be(:project) do
-    create(:project, :repository, :import_started,
-      import_data_attributes: {
-        data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
-        credentials: { 'token' => 'token' }
-      }
-    )
+  include Import::UserMappingHelper
+
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
   end
 
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
   let_it_be(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
-  let_it_be(:reply_author) { create(:user, username: 'reply_author', email: 'reply_author@example.org') }
-  let_it_be(:inline_note_author) do
-    create(:user, username: 'inline_note_author', email: 'inline_note_author@example.org')
-  end
-
-  let(:reply) do
+  let_it_be(:reply) do
     {
-      author_email: reply_author.email,
-      author_username: reply_author.username,
+      author_email: 'reply_author@example.org',
+      author_username: 'reply_author',
       note: 'I agree',
       created_at: now,
       updated_at: now,
@@ -31,7 +23,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
     }
   end
 
-  let(:pr_inline_comment) do
+  let_it_be(:pr_inline_comment) do
     {
       id: 7,
       file_type: 'ADDED',
@@ -41,14 +33,17 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       old_pos: nil,
       new_pos: 4,
       note: 'Hello world',
-      author_email: inline_note_author.email,
-      author_username: inline_note_author.username,
+      author_email: 'inline_note_author@example.org',
+      author_username: 'inline_note_author',
       comments: [reply],
       created_at: now,
       updated_at: now,
       parent_comment_note: nil
     }
   end
+
+  let_it_be(:reply_source_user) { generate_source_user(project, reply[:author_username]) }
+  let_it_be(:note_source_user) { generate_source_user(project, pr_inline_comment[:author_username]) }
 
   before do
     allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
@@ -62,7 +57,17 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
 
   subject(:importer) { described_class.new(project, merge_request) }
 
-  describe '#execute' do
+  describe '#execute', :clean_gitlab_redis_shared_state do
+    it 'pushes placeholder references' do
+      importer.execute(pr_inline_comment)
+
+      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+      expect(cached_references).to contain_exactly(
+        ['DiffNote', instance_of(Integer), 'author_id', note_source_user.id],
+        ['DiffNote', instance_of(Integer), 'author_id', reply_source_user.id]
+      )
+    end
+
     it 'imports the threaded discussion' do
       expect(mentions_converter).to receive(:convert).and_call_original.twice
 
@@ -78,11 +83,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       expect(start_note.updated_at).to eq(pr_inline_comment[:updated_at])
       expect(start_note.position.old_line).to be_nil
       expect(start_note.position.new_line).to eq(pr_inline_comment[:new_pos])
-      expect(start_note.author).to eq(inline_note_author)
+      expect(start_note.author_id).to eq(note_source_user.mapped_user_id)
 
       reply_note = notes.last
       expect(reply_note.note).to eq(reply[:note])
-      expect(reply_note.author).to eq(reply_author)
+      expect(reply_note.author_id).to eq(reply_source_user.mapped_user_id)
       expect(reply_note.created_at).to eq(reply[:created_at])
       expect(reply_note.updated_at).to eq(reply[:created_at])
       expect(reply_note.position.old_line).to be_nil
@@ -98,22 +103,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
 
     context 'when note is invalid' do
       let(:invalid_comment) do
-        {
-          id: 7,
-          file_type: 'ADDED',
-          from_sha: 'c5f4288162e2e6218180779c7f6ac1735bb56eab',
-          to_sha: 'a4c2164330f2549f67c13f36a93884cf66e976be',
-          file_path: '.gitmodules',
+        pr_inline_comment.merge(
           old_pos: 3,
-          new_pos: 4,
           note: '',
-          author_email: inline_note_author.email,
-          author_username: inline_note_author.username,
-          comments: [],
-          created_at: now,
-          updated_at: now,
-          parent_comment_note: nil
-        }
+          comments: []
+        )
       end
 
       it 'fallback to basic note' do
@@ -143,13 +137,46 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       end
     end
 
-    context 'when converting mention is failed' do
-      it 'logs its exception' do
-        expect(mentions_converter).to receive(:convert).and_raise(StandardError)
-        expect(Gitlab::ErrorTracking).to receive(:log_exception)
-          .with(StandardError, include(import_stage: 'create_diff_note'))
+    context 'when user contribution mapping is disabled' do
+      let_it_be(:reply_author) { create(:user, username: 'reply_author', email: 'reply_author@example.org') }
+      let_it_be(:inline_note_author) do
+        create(:user, username: 'inline_note_author', email: 'inline_note_author@example.org')
+      end
 
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+      end
+
+      it 'imports the threaded discussion' do
+        expect(mentions_converter).to receive(:convert).and_call_original.twice
+
+        expect { importer.execute(pr_inline_comment) }.to change { Note.count }.by(2)
+
+        expect(merge_request.discussions.count).to eq(1)
+
+        notes = merge_request.notes.order(:id).to_a
+        start_note = notes.first
+        expect(start_note.author_id).to eq(inline_note_author.id)
+
+        reply_note = notes.last
+        expect(reply_note.author_id).to eq(reply_author.id)
+      end
+
+      context 'when converting mention is failed' do
+        it 'logs its exception' do
+          expect(mentions_converter).to receive(:convert).and_raise(StandardError)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception)
+            .with(StandardError, include(import_stage: 'create_diff_note'))
+
+          importer.execute(pr_inline_comment)
+        end
+      end
+
+      it 'does not push placeholder references' do
         importer.execute(pr_inline_comment)
+
+        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+        expect(cached_references).to be_empty
       end
     end
   end

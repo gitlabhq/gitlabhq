@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe API::VirtualRegistries::Packages::Maven::Registries, :aggregate_failures, feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include_context 'for maven virtual registry api setup'
 
-  describe 'GET /api/v4/virtual_registries/packages/maven/registries' do
+  describe 'GET /api/v4/groups/:id/-/virtual_registries/packages/maven/registries' do
     let(:group_id) { group.id }
-    let(:url) { "/virtual_registries/packages/maven/registries?group_id=#{group_id}" }
+    let(:url) { "/groups/#{group_id}/-/virtual_registries/packages/maven/registries" }
 
     subject(:api_request) { get api(url), headers: headers }
 
@@ -34,23 +34,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     context 'with invalid group_id' do
       where(:group_id, :status) do
         non_existing_record_id | :not_found
-        'foo'                  | :bad_request
-        ''                     | :bad_request
+        'foo'                  | :not_found
+        ''                     | :not_found
       end
 
       with_them do
         it_behaves_like 'returning response status', params[:status]
-      end
-    end
-
-    context 'with missing group_id' do
-      let(:url) { '/virtual_registries/packages/maven/registries' }
-
-      it 'returns a bad request with missing group_id' do
-        api_request
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('group_id is missing, group_id is empty')
       end
     end
 
@@ -75,21 +64,13 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     context 'for authentication' do
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :ok
-        :personal_access_token | :basic_auth | :ok
         :deploy_token          | :header     | :ok
-        :deploy_token          | :basic_auth | :ok
         :job_token             | :header     | :ok
-        :job_token             | :basic_auth | :ok
       end
 
       with_them do
         let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
+          token_header(token)
         end
 
         it_behaves_like 'returning response status', params[:status]
@@ -97,23 +78,23 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     end
   end
 
-  describe 'POST /api/v4/virtual_registries/packages/maven/registries' do
+  describe 'POST /api/v4/groups/:id/-/virtual_registries/packages/maven/registries' do
     let_it_be(:registry_class) { ::VirtualRegistries::Packages::Maven::Registry }
-    let(:url) { '/virtual_registries/packages/maven/registries' }
+    let(:group_id) { group.id }
+    let(:url) { "/groups/#{group_id}/-/virtual_registries/packages/maven/registries" }
 
-    subject(:api_request) { post api(url), headers: headers, params: params }
+    subject(:api_request) { post api(url), headers: headers }
 
     shared_examples 'successful response' do
       it 'returns a successful response' do
         expect { api_request }.to change { registry_class.count }.by(1)
 
-        expect(registry_class.last.group_id).to eq(params[:group_id])
+        expect(response).to have_gitlab_http_status(:created)
+        expect(Gitlab::Json.parse(response.body)).to eq(registry_class.last.as_json)
       end
     end
 
-    context 'with valid params' do
-      let(:params) { { group_id: group.id } }
-
+    context 'with valid group_id' do
       it { is_expected.to have_request_urgency(:low) }
 
       it_behaves_like 'disabled virtual_registry_maven feature flag'
@@ -165,42 +146,30 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
 
         where(:token, :sent_as, :status) do
           :personal_access_token | :header     | :created
-          :personal_access_token | :basic_auth | :created
           :deploy_token          | :header     | :forbidden
-          :deploy_token          | :basic_auth | :forbidden
           :job_token             | :header     | :created
-          :job_token             | :basic_auth | :created
         end
 
         with_them do
-          let(:headers) do
-            case sent_as
-            when :header
-              token_header(token)
-            when :basic_auth
-              token_basic_auth(token)
-            end
-          end
+          let(:headers) { token_header(token) }
 
           it_behaves_like 'returning response status', params[:status]
         end
       end
     end
 
-    context 'with invalid params' do
+    context 'with invalid group_id' do
       before_all do
         group.add_maintainer(user)
       end
 
       where(:group_id, :status) do
         non_existing_record_id  | :not_found
-        'foo'                   | :bad_request
-        ''                      | :bad_request
+        'foo'                   | :not_found
+        ''                      | :not_found
       end
 
       with_them do
-        let(:params) { { group_id: group_id } }
-
         it_behaves_like 'returning response status', params[:status]
       end
     end
@@ -208,7 +177,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     context 'with subgroup' do
       let(:subgroup) { create(:group, parent: group, visibility_level: group.visibility_level) }
 
-      let(:params) { { group_id: subgroup.id } }
+      let(:group_id) { subgroup.id }
 
       before_all do
         group.add_maintainer(user)
@@ -280,22 +249,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     context 'for authentication' do
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :ok
-        :personal_access_token | :basic_auth | :ok
         :deploy_token          | :header     | :ok
-        :deploy_token          | :basic_auth | :ok
         :job_token             | :header     | :ok
-        :job_token             | :basic_auth | :ok
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         it_behaves_like 'returning response status', params[:status]
       end
@@ -361,22 +320,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
 
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :no_content
-        :personal_access_token | :basic_auth | :no_content
         :deploy_token          | :header     | :forbidden
-        :deploy_token          | :basic_auth | :forbidden
         :job_token             | :header     | :no_content
-        :job_token             | :basic_auth | :no_content
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         it_behaves_like 'returning response status', params[:status]
       end

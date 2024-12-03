@@ -13,13 +13,13 @@ It can help you troubleshoot your pipeline, write tests, address vulnerabilities
 
 ## Step 1: Ensure you have a subscription
 
-Your organization has purchased a GitLab Duo add-on subscription: Either Duo Pro or Duo Enterprise.
+Your organization has purchased a GitLab Duo add-on subscription: either Duo Pro or Duo Enterprise.
 Each subscription includes a set of AI-powered features to help improve your workflow.
 
 After your organization purchases a subscription, an administrator must assign seats to users.
 You likely received an email that notified you of your seat.
 
-The AI-powered features you have access to use large language models (LLMs) to help streamline
+The AI-powered features you have access to use language models to help streamline
 your workflow. If you're on self-managed GitLab, your administrator can choose to use
 GitLab models, or self-host their own models.
 
@@ -30,7 +30,7 @@ For more information, see:
 
 - [Assign seats to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-- [List of GitLab Duo features and their LLMs](../gitlab_duo/index.md).
+- [List of GitLab Duo features and their language models](../gitlab_duo/index.md).
 - [Self-hosted models](../../administration/self_hosted_models/index.md).
 - [Health check details](../gitlab_duo/turn_on_off.md#run-a-health-check-for-gitlab-duo).
 

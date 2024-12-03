@@ -1988,6 +1988,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_7943cb549289() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_7a8b08eed782() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2826,6 +2842,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "vulnerability_occurrences"
   WHERE "vulnerability_occurrences"."id" = NEW."vulnerability_occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_e815625b59fa() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
 END IF;
 
 RETURN NEW;
@@ -13564,6 +13596,7 @@ CREATE TABLE issuable_metric_images (
     file text NOT NULL,
     url text,
     url_text text,
+    namespace_id bigint,
     CONSTRAINT check_3bc6d47661 CHECK ((char_length(url_text) <= 128)),
     CONSTRAINT check_5b3011e234 CHECK ((char_length(url) <= 255)),
     CONSTRAINT check_7ed527062f CHECK ((char_length(file) <= 255))
@@ -19004,7 +19037,8 @@ CREATE TABLE resource_link_events (
     issue_id bigint NOT NULL,
     child_work_item_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    system_note_metadata_id bigint
+    system_note_metadata_id bigint,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE resource_link_events_id_seq
@@ -30710,6 +30744,8 @@ CREATE INDEX index_ip_restrictions_on_group_id ON ip_restrictions USING btree (g
 
 CREATE INDEX index_issuable_metric_images_on_issue_id ON issuable_metric_images USING btree (issue_id);
 
+CREATE INDEX index_issuable_metric_images_on_namespace_id ON issuable_metric_images USING btree (namespace_id);
+
 CREATE INDEX index_issuable_resource_links_on_issue_id ON issuable_resource_links USING btree (issue_id);
 
 CREATE INDEX index_issuable_resource_links_on_namespace_id ON issuable_resource_links USING btree (namespace_id);
@@ -32167,6 +32203,8 @@ CREATE INDEX index_resource_label_events_on_user_id ON resource_label_events USI
 CREATE INDEX index_resource_link_events_on_child_work_item_id ON resource_link_events USING btree (child_work_item_id);
 
 CREATE INDEX index_resource_link_events_on_issue_id ON resource_link_events USING btree (issue_id);
+
+CREATE INDEX index_resource_link_events_on_namespace_id ON resource_link_events USING btree (namespace_id);
 
 CREATE INDEX index_resource_link_events_on_user_id ON resource_link_events USING btree (user_id);
 
@@ -35450,6 +35488,8 @@ CREATE TRIGGER trigger_740afa9807b8 BEFORE INSERT OR UPDATE ON subscription_user
 
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
 
+CREATE TRIGGER trigger_7943cb549289 BEFORE INSERT OR UPDATE ON issuable_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_7943cb549289();
+
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
 CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validations FOR EACH ROW EXECUTE FUNCTION trigger_7de792ddbc05();
@@ -35559,6 +35599,8 @@ CREATE TRIGGER trigger_e0864d1cff37 BEFORE INSERT OR UPDATE ON packages_debian_g
 CREATE TRIGGER trigger_e1da4a738230 BEFORE INSERT OR UPDATE ON vulnerability_external_issue_links FOR EACH ROW EXECUTE FUNCTION trigger_e1da4a738230();
 
 CREATE TRIGGER trigger_e49ab4d904a0 BEFORE INSERT OR UPDATE ON vulnerability_finding_links FOR EACH ROW EXECUTE FUNCTION trigger_e49ab4d904a0();
+
+CREATE TRIGGER trigger_e815625b59fa BEFORE INSERT OR UPDATE ON resource_link_events FOR EACH ROW EXECUTE FUNCTION trigger_e815625b59fa();
 
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
 
@@ -36361,6 +36403,9 @@ ALTER TABLE ONLY cluster_agent_tokens
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_7537413f9d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY resource_link_events
+    ADD CONSTRAINT fk_75961aea6b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_75c2098045 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE SET NULL;
 
@@ -36681,6 +36726,9 @@ ALTER TABLE ONLY abuse_report_user_mentions
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issuable_metric_images
+    ADD CONSTRAINT fk_a53e03ca65 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_strategies
     ADD CONSTRAINT fk_a542e10c31 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -28,5 +28,20 @@ module Import
         [item.model, key, item.user_reference_column, item.source_user_id]
       end
     end
+
+    # Generate a source user with a provided project and identifier
+    #
+    # @param project [Project]
+    # @param identifier [String, Integer]
+    # @return [Import::SourceUser]
+    def generate_source_user(project, identifier)
+      create(
+        :import_source_user,
+        source_user_identifier: identifier,
+        source_hostname: project.import_url,
+        import_type: project.import_type,
+        namespace: project.root_ancestor
+      )
+    end
   end
 end

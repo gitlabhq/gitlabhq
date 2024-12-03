@@ -1001,6 +1001,32 @@ the `secret-detection` job on.
 The GitLab pipeline secret detection analyzer [only supports](#enable-the-analyzer) running on the `amd64` CPU architecture.
 This message indicates that the job is being run on a different architecture, such as `arm`.
 
+#### Error: `fatal: detected dubious ownership in repository at '/builds/<project dir>'`
+
+Secret detection might fail with an exit status of 128. This can be caused by a change to the user on the Docker image.
+
+For example:
+
+```shell
+$ /analyzer run
+[INFO] [secrets] [2024-06-06T07:28:13Z] ▶ GitLab secrets analyzer v6.0.1
+[INFO] [secrets] [2024-06-06T07:28:13Z] ▶ Detecting project
+[INFO] [secrets] [2024-06-06T07:28:13Z] ▶ Analyzer will attempt to analyze all projects in the repository
+[INFO] [secrets] [2024-06-06T07:28:13Z] ▶ Loading ruleset for /builds....
+[WARN] [secrets] [2024-06-06T07:28:13Z] ▶ /builds/....secret-detection-ruleset.toml not found, ruleset support will be disabled.
+[INFO] [secrets] [2024-06-06T07:28:13Z] ▶ Running analyzer
+[FATA] [secrets] [2024-06-06T07:28:13Z] ▶ get commit count: exit status 128
+```
+
+To work around this issue, add a `before_script` with the following:
+
+```yaml
+before_script:
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+```
+
+For more information about this issue, see [issue 465974](https://gitlab.com/gitlab-org/gitlab/-/issues/465974).
+
 ## Warnings
 
 ### Responding to a leaked secret

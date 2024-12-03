@@ -214,6 +214,8 @@ To avoid having a breaking change affect your integrations, you should:
 
 For more information, see [Deprecating GitLab features](../../development/deprecation_guidelines/index.md).
 
+For GitLab self-managed instances, [downgrading](../../downgrade_ee_to_ce/index.md) from an EE instance to CE causes breaking changes.
+
 ### Breaking change exemptions
 
 Schema items labeled as experiments in the [GraphQL API reference](reference/index.md)

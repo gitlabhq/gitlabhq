@@ -277,13 +277,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_current_user_push_to_default_branch?
       new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_main) : project_new_blob_path(project, default_branch_or_main)
 
-      AnchorData.new(false, statistic_icon('plus', '!gl-text-blue-500 gl-mr-3') + _('New file'), new_file_path)
+      AnchorData.new(false, statistic_icon('plus', 'gl-mr-3') + _('New file'), new_file_path)
     end
   end
 
   def readme_anchor_data
     if can_current_user_push_to_default_branch? && readme_path.nil?
-      icon = statistic_icon('plus', '!gl-text-blue-500 gl-mr-3')
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add README')
       AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path)
     elsif readme_path
@@ -329,7 +329,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         'license'
       )
     elsif can_current_user_push_to_default_branch?
-      icon = statistic_icon('plus', '!gl-text-blue-500 gl-mr-3')
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add LICENSE')
       AnchorData.new(
         false,
@@ -341,7 +341,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def contribution_guide_anchor_data
     if can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
-      icon = statistic_icon('plus', '!gl-text-blue-500 gl-mr-3')
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add CONTRIBUTING')
       AnchorData.new(
         false,

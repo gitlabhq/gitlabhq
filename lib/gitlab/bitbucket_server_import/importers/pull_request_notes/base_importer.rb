@@ -7,6 +7,7 @@ module Gitlab
         # Base class for importing pull request notes during project import from Bitbucket Server
         class BaseImporter
           include Loggable
+          include ::Import::PlaceholderReferences::Pusher
 
           # @param project [Project]
           # @param merge_request [MergeRequest]

@@ -15,12 +15,21 @@ module Gitlab
               event_id: merge_event[:id]
             )
 
-            committer = merge_event[:committer_email]
+            user_id = if user_mapping_enabled?(project)
+                        user_finder.uid(
+                          username: merge_event[:committer_username],
+                          display_name: merge_event[:committer_user]
+                        )
+                      else
+                        user_finder.find_user_id(by: :email, value: merge_event[:committer_email])
+                      end
 
-            user_id = user_finder.find_user_id(by: :email, value: committer) || project.creator_id
+            user_id ||= project.creator_id
+
             timestamp = merge_event[:merge_timestamp]
             merge_request.update({ merge_commit_sha: merge_event[:merge_commit] })
-            create_merge_request_metrics(merged_by_id: user_id, merged_at: timestamp)
+            metric = create_merge_request_metrics(merged_by_id: user_id, merged_at: timestamp)
+            push_reference(project, metric, :merged_by_id, merge_event[:committer_username])
 
             log_info(
               import_stage: 'import_merge_event',

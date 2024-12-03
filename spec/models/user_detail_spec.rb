@@ -19,6 +19,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       let(:glm_source) { 'glm_source' }
       let(:glm_content) { 'glm_content' }
       let(:joining_project) { true }
+      let(:role) { 0 }
       let(:onboarding_status) do
         {
           step_url: step_url,
@@ -27,7 +28,8 @@ RSpec.describe UserDetail, feature_category: :system_access do
           registration_type: registration_type,
           glm_source: glm_source,
           glm_content: glm_content,
-          joining_project: joining_project
+          joining_project: joining_project,
+          role: role
         }
       end
 
@@ -140,6 +142,22 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
         context "when 'joining_project' is invalid" do
           let(:joining_project) { 'true' }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for role' do
+        let(:onboarding_status) do
+          {
+            role: role
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'role' is invalid" do
+          let(:role) { 10 }
 
           it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
         end

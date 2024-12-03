@@ -208,6 +208,12 @@ FactoryBot.define do
       import_status { :canceled }
     end
 
+    trait :bitbucket_server_import do
+      import_started
+      import_url { 'https://bitbucket.example.com' }
+      import_type { :bitbucket_server }
+    end
+
     trait :jira_dvcs_server do
       before(:create) do |project|
         create(:project_feature_usage, :dvcs_server, project: project)

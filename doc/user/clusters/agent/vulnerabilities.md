@@ -166,6 +166,40 @@ container_scanning:
     repository: "your-custom-registry/your-image-path"
 ```
 
+## Configure scan timeout
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+
+By default, the Trivy scan times out after five minutes. The agent itself provides an extra 15 minutes to read the chained configmaps and transmit the vulnerabilities.
+
+To customize the Trivy timeout duration:
+
+- Specify the duration in seconds with the `scanner_timeout` field.
+
+For example:
+
+```yaml
+container_scanning:
+  scanner_timeout: "3600s" # 60 minutes
+```
+
+## Configure Trivy report size
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+
+By default, the Trivy report is limited to 100 MB, which is sufficient for most scans. However, if you have a lot of workloads, you might need to increase the limit.
+
+To do this:
+
+- Specify the limit in bytes with the `report_max_size` field.
+
+For example:
+
+```yaml
+container_scanning:
+  report_max_size: "300000000" # 300MB
+```
+
 ## View cluster vulnerabilities
 
 To view vulnerability information in GitLab:
@@ -200,4 +234,17 @@ In GitLab agent 16.9 and later, operational container scanning:
 ### `Error running Trivy scan. Container terminated reason: OOMKilled`
 
 OCS might fail with an OOM error if there are too many resources to be scanned or if the images being scanned are large.
+
 To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of memory available.
+
+### `Error running Trivy scan due to context timeout`
+
+OCS might fail to complete a scan if it takes Trivy too long to complete the scan. The default scan timeout is 5 minutes, with an extra 15 minutes for the agent to read the results and transmit the vulnerabilities.
+
+To resolve this, [configure the scanner timeout](#configure-scan-timeout) to increase the amount of memory available.
+
+### `trivy report size limit exceeded`
+
+OCS might fail with this error if the generated Trivy report size is larger than the default maximum limit.
+
+To resolve this, [configure the max Trivy report size](#configure-trivy-report-size) to increase the maximum allowed size of the Trivy report.

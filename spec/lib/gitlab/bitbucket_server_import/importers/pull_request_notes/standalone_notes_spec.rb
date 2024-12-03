@@ -3,32 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::StandaloneNotes, feature_category: :importers do
-  let_it_be(:project) do
-    create(:project, :repository, :import_started,
-      import_data_attributes: {
-        data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
-        credentials: { 'token' => 'token' }
-      }
-    )
-  end
+  include Import::UserMappingHelper
 
+  let_it_be(:project) { create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
-  let_it_be(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
   let_it_be(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
+  let_it_be(:author_details) do
+    {
+      author_name: 'John Notes',
+      author_username: 'note_author',
+      author_email: 'note_author@example.org'
+    }
+  end
 
-  let(:pr_comment) do
+  let_it_be(:pr_comment) do
     {
       id: 5,
       note: 'Hello world',
-      author_email: note_author.email,
-      author_username: note_author.username,
       comments: [],
       created_at: now,
       updated_at: now,
       parent_comment_note: nil
-    }
+    }.merge(author_details)
   end
+
+  let_it_be(:source_user) { generate_source_user(project, pr_comment[:author_username]) }
 
   before do
     allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
@@ -42,7 +42,16 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
 
   subject(:importer) { described_class.new(project, merge_request) }
 
-  describe '#execute' do
+  describe '#execute', :clean_gitlab_redis_shared_state do
+    it 'pushes placeholder reference' do
+      importer.execute(pr_comment)
+
+      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+      expect(cached_references).to contain_exactly(
+        ['Note', instance_of(Integer), 'author_id', source_user.id]
+      )
+    end
+
     it 'imports the stand alone comments' do
       expect(mentions_converter).to receive(:convert).and_call_original
 
@@ -51,7 +60,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
       expect(merge_request.notes.count).to eq(1)
       expect(merge_request.notes.first).to have_attributes(
         note: end_with(pr_comment[:note]),
-        author: note_author,
+        author_id: source_user.mapped_user_id,
         created_at: pr_comment[:created_at],
         updated_at: pr_comment[:created_at],
         imported_from: 'bitbucket_server'
@@ -63,28 +72,24 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
         {
           id: 6,
           note: 'Foo bar',
-          author_email: note_author.email,
-          author_username: note_author.username,
           comments: [],
           created_at: now,
           updated_at: now,
           parent_comment_note: nil,
           imported_from: 'bitbucket_server'
-        }
+        }.merge(author_details)
       end
 
       let(:pr_comment) do
         {
           id: 5,
           note: 'Hello world',
-          author_email: note_author.email,
-          author_username: note_author.username,
           comments: [pr_comment_extra],
           created_at: now,
           updated_at: now,
           parent_comment_note: nil,
           imported_from: 'bitbucket_server'
-        }
+        }.merge(author_details)
       end
 
       it 'imports multiple comments' do
@@ -95,32 +100,18 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
         expect(merge_request.notes.count).to eq(2)
         expect(merge_request.notes.first).to have_attributes(
           note: end_with(pr_comment[:note]),
-          author: note_author,
+          author_id: source_user.mapped_user_id,
           created_at: pr_comment[:created_at],
           updated_at: pr_comment[:created_at],
           imported_from: 'bitbucket_server'
         )
         expect(merge_request.notes.last).to have_attributes(
           note: end_with(pr_comment_extra[:note]),
-          author: note_author,
+          author_id: source_user.mapped_user_id,
           created_at: pr_comment_extra[:created_at],
           updated_at: pr_comment_extra[:created_at],
           imported_from: 'bitbucket_server'
         )
-      end
-    end
-
-    context 'when the author is not found' do
-      before do
-        allow_next_instance_of(Gitlab::BitbucketServerImport::UserFinder) do |user_finder|
-          allow(user_finder).to receive(:uid).and_return(nil)
-        end
-      end
-
-      it 'adds a note with the author username and email' do
-        importer.execute(pr_comment)
-
-        expect(Note.first.note).to include("*By #{note_author.username} (#{note_author.email})")
       end
     end
 
@@ -129,14 +120,12 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
         {
           id: 5,
           note: 'Note',
-          author_email: note_author.email,
-          author_username: note_author.username,
           comments: [],
           created_at: now,
           updated_at: now,
           parent_comment_note: 'Parent note',
           imported_from: 'bitbucket_server'
-        }
+        }.merge(author_details)
       end
 
       it 'adds the parent note before the actual note' do
@@ -174,6 +163,42 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
           .with(StandardError, include(import_stage: 'import_standalone_notes_comments'))
 
         importer.execute(pr_comment)
+      end
+    end
+
+    context 'when user contribution mapping is disabled' do
+      let_it_be(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
+
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+      end
+
+      it 'imports the merge event' do
+        expect { importer.execute(pr_comment) }.to change { Note.count }.by(1)
+        expect(merge_request.notes.first).to have_attributes(
+          author_id: note_author.id
+        )
+      end
+
+      it 'does not push placeholder references' do
+        importer.execute(pr_comment)
+
+        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+        expect(cached_references).to be_empty
+      end
+
+      context 'when the author is not found' do
+        before do
+          allow_next_instance_of(Gitlab::BitbucketServerImport::UserFinder) do |user_finder|
+            allow(user_finder).to receive(:uid).and_return(nil)
+          end
+        end
+
+        it 'adds a note with the author username and email' do
+          importer.execute(pr_comment)
+
+          expect(Note.first.note).to include("*By #{note_author.username} (#{note_author.email})")
+        end
       end
     end
   end

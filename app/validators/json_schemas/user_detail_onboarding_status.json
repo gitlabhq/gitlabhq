@@ -31,6 +31,21 @@
     "joining_project": {
       "description": "Setting to understand if a user is joining a project or not during onboarding",
       "type": "boolean"
+    },
+    "role": {
+      "description": "User persona collected during onboarding",
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
     }
   },
   "additionalProperties": false

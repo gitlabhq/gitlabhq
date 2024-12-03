@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_failures, feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include_context 'for maven virtual registry api setup'
 

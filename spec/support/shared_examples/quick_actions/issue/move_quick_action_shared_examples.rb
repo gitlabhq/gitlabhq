@@ -8,10 +8,6 @@ RSpec.shared_examples 'move quick action' do
   context 'move the issue to another project' do
     let(:target_project) { create(:project, :public) }
 
-    before do
-      stub_feature_flags(async_sidebar_counts: false)
-    end
-
     context 'when the project is valid' do
       before do
         target_project.add_maintainer(user)

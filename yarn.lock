@@ -1421,10 +1421,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.121.0.tgz#57cacc895929aef4320632396373797a64b230ff"
   integrity sha512-ZekVjdMZrjrNEjdrOHsJYCu7A+ea3AkuNUxWIZ3FaNgJj4Oh21RlTP7bQKnRSXVhBbV1jg1PgzQ1ANEoCW8t4g==
 
-"@gitlab/ui@104.0.0":
-  version "104.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-104.0.0.tgz#a4f00addd595a8248bd99cf0ceaebf1c67c54775"
-  integrity sha512-vhCZ+Hrvx/qRuVtpKB5SN4sC+FIvkzywKbxjC7rq0aQG314gmBl7W41vAPHCPO7zCPSlrNyT7zyCN1jcrQxsWA==
+"@gitlab/ui@104.1.0":
+  version "104.1.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-104.1.0.tgz#e2d482e3a1c80bf1a0846c9e9862d31586bb1d28"
+  integrity sha512-5sHu6uUt4o5w2L7XuWA/DDSXx6uKbNrM78Ex1tg2QCUEiNK8XPiEGPUx5uP0FnX9Bg/1oBq5itYrdD05X96yVw==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -7685,13 +7685,6 @@ fast-mersenne-twister@1.0.2:
   resolved "https://registry.yarnpkg.com/fast-mersenne-twister/-/fast-mersenne-twister-1.0.2.tgz#5ead7caf3ace592a5789d11767732bd81cbaaa56"
   integrity sha512-IaClPxsoBu3MxGpcURyjV8otT5Bj4ARoK0KBCJGnEVnD1A/qclL5eIeYiUuwG/WWJPxL1jlK61HTm2T6SBmvBQ==
 
-fast-xml-parser@^3.21.1:
-  version "3.21.1"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.21.1.tgz#152a1d51d445380f7046b304672dd55d15c9e736"
-  integrity sha512-FTFVjYoBOZTJekiUsawGsSYV9QL0A+zDYCRj7y34IO6Jg+2IMYEtQa+bbictpdpV8dHxXywqU7C0gRDEOFtBFg==
-  dependencies:
-    strnum "^1.0.4"
-
 fastest-levenshtein@^1.0.12, fastest-levenshtein@^1.0.16:
   version "1.0.16"
   resolved "https://registry.yarnpkg.com/fastest-levenshtein/-/fastest-levenshtein-1.0.16.tgz#210e61b6ff181de91ea9b3d1b84fdedd47e034e5"
@@ -13743,11 +13736,6 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
-
-strnum@^1.0.4:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/strnum/-/strnum-1.0.5.tgz#5c4e829fe15ad4ff0d20c3db5ac97b73c9b072db"
-  integrity sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==
 
 style-loader@^2.0.0:
   version "2.0.0"

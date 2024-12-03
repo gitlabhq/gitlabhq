@@ -76,7 +76,7 @@ export default {
         return { fullPath: this.currentPath };
       },
       skip() {
-        return !this.isAsyncSidebarCountsFlagEnabled || !this.currentPath;
+        return !this.currentPath;
       },
       update(data) {
         return data?.namespace?.sidebar ?? {};
@@ -87,9 +87,6 @@ export default {
     },
   },
   computed: {
-    isAsyncSidebarCountsFlagEnabled() {
-      return this.glFeatures.asyncSidebarCounts;
-    },
     // Returns the list of items that we want to have static at the top.
     // Only sidebars that support pins also support a static section.
     staticItems() {

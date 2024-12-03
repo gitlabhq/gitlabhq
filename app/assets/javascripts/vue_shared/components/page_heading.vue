@@ -22,7 +22,7 @@ export default {
         </h1>
         <div
           v-if="$scopedSlots.actions"
-          class="page-heading-actions gl-flex gl-w-full gl-shrink-0 gl-flex-wrap gl-items-start gl-gap-3 sm:gl-w-auto md:gl-mt-1 lg:gl-mt-2"
+          class="page-heading-actions gl-flex gl-w-full gl-shrink-0 gl-flex-wrap gl-items-center gl-gap-3 sm:gl-w-auto md:gl-mt-1 lg:gl-mt-2"
           data-testid="page-heading-actions"
         >
           <slot name="actions"></slot>

@@ -442,9 +442,9 @@ jest vue3 check quarantined:
     expire_in: 31d
     when: always
     paths:
-      - jest_stdout
-      - jest_stderr
-      - junit_jest.xml
+      - tmp/tests/frontend/jest_stdout
+      - tmp/tests/frontend/jest_stderr
+      - tmp/tests/frontend/jest_results.json
 
 jest-with-fixtures vue3 check quarantined:
   extends:
@@ -461,9 +461,9 @@ jest-with-fixtures vue3 check quarantined:
     expire_in: 31d
     when: always
     paths:
-      - jest_stdout
-      - jest_stderr
-      - junit_jest.xml
+      - tmp/tests/frontend/jest_stdout
+      - tmp/tests/frontend/jest_stderr
+      - tmp/tests/frontend/jest_results.json
 
 jest-integration:
   extends:

@@ -15,7 +15,12 @@ module Gitlab
               event_id: declined_event[:id]
             )
 
-            user_id = if Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
+            user_id = if user_mapping_enabled?(project)
+                        user_finder.uid(
+                          username: declined_event[:decliner_username],
+                          display_name: declined_event[:decliner_name]
+                        )
+                      elsif Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
                         user_finder.find_user_id(by: :username, value: declined_event[:decliner_username])
                       else
                         user_finder.find_user_id(by: :email, value: declined_event[:decliner_email])
@@ -37,14 +42,34 @@ module Gitlab
             user = User.new(id: user_id)
 
             SystemNoteService.change_status(merge_request, merge_request.target_project, user, 'closed', nil)
-            EventCreateService.new.close_mr(merge_request, user)
-            create_merge_request_metrics(latest_closed_by_id: user_id, latest_closed_at: declined_event[:created_at])
+
+            event = record_event(user_id)
+            push_reference(project, event, :author_id, declined_event[:decliner_username])
+
+            metric = create_merge_request_metrics(
+              latest_closed_by_id: user_id,
+              latest_closed_at: declined_event[:created_at]
+            )
+            push_reference(project, metric, :latest_closed_by_id, declined_event[:decliner_username])
 
             log_info(
               import_stage: 'import_declined_event',
               message: 'finished',
               iid: merge_request.iid,
               event_id: declined_event[:id]
+            )
+          end
+
+          private
+
+          def record_event(user_id)
+            Event.create!(
+              project_id: project.id,
+              author_id: user_id,
+              action: 'closed',
+              target_type: 'MergeRequest',
+              target_id: merge_request.id,
+              imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:bitbucket_server]
             )
           end
         end

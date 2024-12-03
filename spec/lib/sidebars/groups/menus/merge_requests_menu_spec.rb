@@ -30,10 +30,6 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :na
     end
   end
 
-  it_behaves_like 'pill_count formatted results' do
-    let(:count_service) { ::Groups::MergeRequestsCountService }
-  end
-
   it_behaves_like 'serializable as super_sidebar_menu_args' do
     let(:extra_attrs) do
       {
@@ -49,16 +45,6 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :na
   describe '#pill_count_field' do
     it 'returns the correct GraphQL field name' do
       expect(menu.pill_count_field).to eq('openMergeRequestsCount')
-    end
-
-    context 'when async_sidebar_counts feature flag is disabled' do
-      before do
-        stub_feature_flags(async_sidebar_counts: false)
-      end
-
-      it 'returns nil' do
-        expect(menu.pill_count_field).to be_nil
-      end
     end
   end
 end

@@ -1,7 +1,7 @@
 **Please note:** if the incident relates to sensitive data or is security-related, consider
 labeling this issue with ~security and mark it confidential, or create it in a private repository. 
 
-There is now a separate internal-only RCA template for SIRT issues referenced https://about.gitlab.com/handbook/security/root-cause-analysis.html
+There is now a separate internal-only RCA template for SIRT issues referenced https://handbook.gitlab.com/handbook/security/root-cause-analysis/
 ***
 
 ## Summary

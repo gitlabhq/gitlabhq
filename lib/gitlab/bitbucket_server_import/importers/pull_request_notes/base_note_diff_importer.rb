@@ -28,6 +28,8 @@ module Gitlab
 
             if note.valid?
               note.save
+              push_reference(project, note, :author_id, comment[:author_username])
+
               return note
             end
 
@@ -52,7 +54,7 @@ module Gitlab
           end
 
           def pull_request_comment_attributes(comment)
-            author = user_finder.uid(comment)
+            author = author(comment)
             note = ''
 
             unless author
@@ -79,16 +81,30 @@ module Gitlab
             }
           end
 
+          def author(comment)
+            if user_mapping_enabled?(project)
+              user_finder.uid(
+                username: comment[:author_username],
+                display_name: comment[:author_name]
+              )
+            else
+              user_finder.uid(comment)
+            end
+          end
+
           def create_basic_fallback_note(merge_request, comment, position)
             attributes = pull_request_comment_attributes(comment)
-            note = "*Comment on"
+            note_text = "*Comment on"
 
-            note += " #{position.old_path}:#{position.old_line} -->" if position.old_line
-            note += " #{position.new_path}:#{position.new_line}" if position.new_line
-            note += "*\n\n#{comment[:note]}"
+            note_text += " #{position.old_path}:#{position.old_line} -->" if position.old_line
+            note_text += " #{position.new_path}:#{position.new_line}" if position.new_line
+            note_text += "*\n\n#{comment[:note]}"
 
-            attributes[:note] = note
-            merge_request.notes.create!(attributes)
+            attributes[:note] = note_text
+
+            note = merge_request.notes.create!(attributes)
+            push_reference(project, note, :author_id, comment[:author_username])
+            note
           end
         end
       end
