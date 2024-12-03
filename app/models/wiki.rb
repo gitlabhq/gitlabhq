@@ -253,6 +253,8 @@ class Wiki
   #
   # Returns an initialized WikiPage instance or nil
   def find_page(title, version = nil, load_content: true)
+    return unless title.present?
+
     capture_git_error(:find, response_on_error: nil) do
       create_wiki_repository unless repository_exists?
 

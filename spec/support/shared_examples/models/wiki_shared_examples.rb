@@ -349,6 +349,10 @@ RSpec.shared_examples 'wiki model' do
         expect(subject.find_page('index page', 'non-existent')).to be_nil
       end
 
+      it 'returns nil if the title is nil' do
+        expect(subject.find_page(nil)).to be_nil
+      end
+
       it 'returns nil if the repository raise an error' do
         expect(subject.repository)
           .to receive(:search_files_by_regexp)
