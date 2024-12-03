@@ -180,15 +180,12 @@ based on Semgrep, with a configured set of checks.
 In the case of Java and C#, an additional step is taken to decompile the binary artifacts prior to
 running static analysis.
 
-### Limitations
+### Known issues
 
-Each language has its own set of limitations. Please review this section to determine if your
-project is impacted.
+Each language has its own known issues.
 
-#### General limitations
-
-All package files such as `Gemfile.lock`, `requirements.txt` and so forth must provide explicit
-versions. Version ranges are not supported.
+All package files such as `Gemfile.lock` and `requirements.txt` must provide explicit versions.
+Version ranges are not supported.
 
 <!-- markdownlint-disable MD003 -->
 <!-- markdownlint-disable MD020 -->

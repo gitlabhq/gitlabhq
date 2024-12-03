@@ -4056,7 +4056,7 @@ We intend to replace this feature with the ability to [embed charts](https://git
 
 </div>
 
-While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name-limitations) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
+While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
 
 In GitLab 16.0, validation will be added to strictly limit the following to 255 characters as well:
 

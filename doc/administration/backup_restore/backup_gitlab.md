@@ -607,14 +607,14 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 
 :::TabTitle Helm chart (Kubernetes)
 
-```yaml 
+```yaml
 toolbox:
 #...
     extra: {}
     extraEnv:
       GITLAB_BACKUP_MAX_CONCURRENCY: 4
       GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY: 1
-   
+
 ```
 
 ::EndTabs
@@ -1376,7 +1376,7 @@ In the following cases, consider using file system data transfer or snapshots as
 - Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
 
 WARNING:
-Gitaly Cluster [does not support snapshot backups](../gitaly/index.md#snapshot-backup-and-recovery-limitations).
+Gitaly Cluster [does not support snapshot backups](../gitaly/index.md#snapshot-backup-and-recovery).
 
 When considering using file system data transfer or snapshots:
 

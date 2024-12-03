@@ -8,7 +8,9 @@ class AddIndexOwaspTop10ForGroupLevelReports < Gitlab::Database::Migration[2.2]
 
   # -- Legacy migration
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :vulnerability_reads, [:owasp_top_10, :state, :report_type,
+      # rubocop:enable Migration/PreventIndexCreation
       :severity, :traversal_ids, :vulnerability_id, :resolved_on_default_branch],
       where: 'archived = false',
       name: INDEX_NAME

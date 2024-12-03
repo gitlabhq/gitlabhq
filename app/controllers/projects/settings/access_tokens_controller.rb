@@ -20,6 +20,10 @@ module Projects
       def represent(tokens)
         ::ProjectAccessTokenSerializer.new.represent(tokens, project: resource)
       end
+
+      def rotate_service
+        ProjectAccessTokens::RotateService
+      end
     end
   end
 end

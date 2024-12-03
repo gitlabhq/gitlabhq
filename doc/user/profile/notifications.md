@@ -208,7 +208,17 @@ to change their user notification settings to **Watch** instead.
 ### Edit notification settings for issues, merge requests, and epics
 
 To toggle notifications on an issue, merge request, or epic: on the right sidebar,
-turn on or off the **Notifications** (**{notifications}**) toggle.
+select the vertical ellipsis (**{ellipsis_v}**), then turn on or off the **Notifications** toggle.
+
+#### Moved notifications
+
+DETAILS:
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history. Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
 
 When you **turn on** notifications, you start receiving notifications on each update, even if you
 haven't participated in the discussion.

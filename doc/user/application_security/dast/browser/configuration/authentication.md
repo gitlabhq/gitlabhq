@@ -55,7 +55,7 @@ To run a DAST authenticated scan:
 ### Prerequisites
 
 - You have the username and password of the user you would like to authenticate as during the scan.
-- You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application.
+- You have checked the [known issues](#known-issues) to ensure DAST can authenticate to your application.
 - You have satisfied the prerequisites if you're using [form authentication](#form-authentication).
 - You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
 
@@ -191,7 +191,7 @@ Even when an application uses Single Sign-on. Applications using SSO solutions s
 authentication using the [single-step](#configuration-for-a-single-step-login-form) or [multi-step](#configuration-for-a-multi-step-login-form) login form configuration guides.
 
 DAST supports authentication processes where a user is redirected to an external Identity Provider's site to sign in.
-Check the [known limitations](#known-limitations) of DAST authentication to determine if your SSO authentication process is supported.
+Check the [known issues](#known-issues) of DAST authentication to determine if your SSO authentication process is supported.
 
 ### Configuration for Windows integrated authentication (Kerberos)
 
@@ -507,7 +507,7 @@ dast:
     DAST_AUTH_COOKIE_NAMES: "sessionID,refreshToken"
 ```
 
-## Known limitations
+## Known issues
 
 - DAST cannot bypass a CAPTCHA if the authentication flow includes one. Turn these off in the testing environment for the application being scanned.
 - DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Turn these off in the testing environment for the application being scanned.

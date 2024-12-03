@@ -33,7 +33,7 @@ We use the following terminology to describe the Service Ping components:
 - **MAU**: monthly active users.
 - **WAU**: weekly active users.
 
-### Limitations
+### Known issues
 
 - Service Ping delivers only [metrics](../index.md#metric), not individual events.
 - A metric has to be present and instrumented in the codebase for a GitLab version to be delivered in Service Pings for that version.

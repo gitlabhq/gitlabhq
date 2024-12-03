@@ -4,6 +4,7 @@ require 'securerandom'
 require 'spec_helper'
 
 RSpec.describe Integrations::Datadog, feature_category: :integrations do
+  let_it_be(:user) { create(:user, username: 'username') }
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
@@ -17,6 +18,7 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
   let(:dd_env) { 'ci' }
   let(:dd_service) { 'awesome-gitlab' }
   let(:dd_tags) { '' }
+  let(:dd_ci_visibility) { nil }
 
   let(:expected_hook_url) { default_url + "?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}" }
   let(:hook_url) { default_url + "?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}" }
@@ -30,7 +32,8 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
       api_key: api_key,
       datadog_env: dd_env,
       datadog_service: dd_service,
-      datadog_tags: dd_tags
+      datadog_tags: dd_tags,
+      datadog_ci_visibility: dd_ci_visibility
     )
   end
 
@@ -41,6 +44,7 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
 
   let(:pipeline_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
   let(:build_data) { Gitlab::DataBuilder::Build.build(build) }
+  let(:push_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
   let(:archive_trace_data) do
     create(:ci_job_artifact, :trace, job: build)
 
@@ -124,6 +128,20 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
         it { is_expected.not_to allow_value(':value').for(:datadog_tags) }
         it { is_expected.not_to allow_value("key:value\nINVALID").for(:datadog_tags) }
       end
+
+      context 'with datadog_ci_visibility disabled' do
+        let(:dd_ci_visibility) { false }
+
+        it { is_expected.not_to allow_value(true).for(:archive_trace_events) }
+        it { is_expected.to allow_value(false).for(:archive_trace_events) }
+      end
+
+      context 'with datadog_ci_visibility enabled' do
+        let(:dd_ci_visibility) { true }
+
+        it { is_expected.to allow_value(true).for(:archive_trace_events) }
+        it { is_expected.to allow_value(false).for(:archive_trace_events) }
+      end
     end
 
     context 'when integration is not active' do
@@ -139,6 +157,28 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
 
     it { is_expected.to be_a(String) }
     it { is_expected.not_to be_empty }
+  end
+
+  describe 'upgrade from previous version' do
+    subject { instance.datadog_ci_visibility }
+
+    context 'with previously active integration' do
+      let(:active) { true }
+      let(:dd_ci_visibility) { nil }
+
+      # If the integration was active but no datadog_ci_visibility is in the
+      # properties, we're expecting it to be true since this was the previous default
+      it { is_expected.to be(true) }
+    end
+
+    context 'with previously inactive integration' do
+      let(:active) { false }
+      let(:dd_ci_visibility) { nil }
+
+      # If the integration is not active, datadog_ci_visibility shouldn't be initialized
+      # since it's now opt-in
+      it { is_expected.to be(false) }
+    end
   end
 
   describe '#hook_url' do
@@ -239,6 +279,14 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
     context 'with archive trace data' do
       let(:data) { archive_trace_data }
       let(:expected_headers) { { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Archive Trace Hook' } }
+      let(:expected_body) { data.to_json }
+
+      it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
+    end
+
+    context 'with push data' do
+      let(:data) { push_data }
+      let(:expected_headers) { { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Push Hook' } }
       let(:expected_body) { data.to_json }
 
       it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }

@@ -72,11 +72,13 @@ RSpec.shared_examples Integrations::Actions do
   end
 
   describe 'PUT #test' do
-    before do
-      put :test, params: routing_params
-    end
+    context 'with unknown integration' do
+      before do
+        put :test, params: routing_params
+      end
 
-    it_behaves_like 'unknown integration'
+      it_behaves_like 'unknown integration'
+    end
 
     context 'with untestable integration' do
       before do

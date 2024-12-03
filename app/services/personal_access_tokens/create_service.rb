@@ -38,7 +38,8 @@ module PersonalAccessTokens
         impersonation: params[:impersonation] || false,
         scopes: params[:scopes],
         expires_at: pat_expiration,
-        organization_id: organization_id
+        organization_id: organization_id,
+        description: params[:description]
       }
     end
 

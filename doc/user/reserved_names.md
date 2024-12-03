@@ -19,7 +19,7 @@ where:
 - `PROJECT_WILDCARD_ROUTES` are names reserved for subgroups or projects.
 - `GROUP_ROUTES` are names reserved for all groups or projects.
 
-## Limitations on usernames, project and group names and slugs
+## Rules for usernames, project and group names, and slugs
 
 - Usernames must start and end with a letter (`a-zA-Z`) or a digit (`0-9`). Additionally:
   - Usernames and group names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), parentheses (`()`), dashes (`-`), or spaces.

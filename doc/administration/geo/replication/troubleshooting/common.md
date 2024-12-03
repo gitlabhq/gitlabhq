@@ -124,9 +124,9 @@ OpenSSH configured to use AuthorizedKeysCommand ... skipped
   doc/administration/operations/fast_ssh_key_lookup.md
 ```
 
-This issue may occur if:
+This issue might occur if:
 
-- You [use SELinux](../../../operations/fast_ssh_key_lookup.md#selinux-support-and-limitations).
+- You use [SELinux](../../../operations/fast_ssh_key_lookup.md#selinux-support).
 - You don't use SELinux, and the `git` user cannot access the OpenSSH configuration file due to restricted file permissions.
 
 In the latter case, the following output shows that only the `root` user can read this file:

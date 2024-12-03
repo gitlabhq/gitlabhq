@@ -10,8 +10,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Geo replicates your database, your Git repositories, and few other assets,
-but there are some [limitations](../index.md#limitations).
+Geo replicates your database, your Git repositories, and other assets.
+Some [known issues](../index.md#known-issues) exist.
 
 WARNING:
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and

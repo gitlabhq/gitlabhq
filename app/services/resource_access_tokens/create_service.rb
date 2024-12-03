@@ -102,7 +102,8 @@ module ResourceAccessTokens
         name: params[:name] || "#{resource_type}_bot",
         impersonation: false,
         scopes: params[:scopes] || default_scopes,
-        expires_at: pat_expiration
+        expires_at: pat_expiration,
+        description: params[:description]
       }
     end
 

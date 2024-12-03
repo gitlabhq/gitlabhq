@@ -20,7 +20,10 @@ This behavior enables use-cases including:
 - Geographically load-balancing traffic without worrying about write access.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see: [Secondary proxying using geographic load-balancer and AWS Route53](https://www.youtube.com/watch?v=TALLy7__Na8).
+For an overview, see [Geo proxying for secondary sites](https://www.youtube.com/watch?v=TALLy7__Na8).
+<!-- Video published on 2022-01-26 -->
+
+For known issues, see [proxying-related items in the Geo documentation](../index.md#known-issues).
 
 ## Set up a unified URL for Geo sites
 
@@ -174,10 +177,6 @@ If your secondary site uses the same external URL as the primary site:
    In the Geo administration page of the **primary** site, edit the target secondary site and set the `URL` field to the desired URL.
 
    To allow the sites to talk to each other, [make sure the `Internal URL` field is unique for each site](../../geo_sites.md#set-up-the-internal-urls). If the desired URL is unique to this site, then you can clear the `Internal URL` field. On save, it defaults to the external URL.
-
-## Known issues
-
-See proxying-related items in the consolidated list of [Geo Limitations](../index.md#limitations).
 
 ## Behavior of secondary sites when the primary Geo site is down
 

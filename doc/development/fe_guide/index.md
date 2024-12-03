@@ -15,7 +15,7 @@ GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Ham
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-Be wary of [the limitations that come with using Hamlit](https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations).
+For more information, see [Hamlit](https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md).
 
 <!-- vale gitlab_base.Spelling = YES -->
 

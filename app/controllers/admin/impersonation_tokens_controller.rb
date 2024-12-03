@@ -59,7 +59,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def impersonation_token_params
-    params.require(:personal_access_token).permit(:name, :expires_at, :impersonation, scopes: [])
+    params.require(:personal_access_token).permit(:name, :description, :expires_at, :impersonation, scopes: [])
   end
 
   def set_index_vars

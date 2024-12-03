@@ -34,3 +34,45 @@ RSpec.shared_examples 'finding the valid revocable' do
     end
   end
 end
+
+RSpec.shared_examples 'rotating token succeeds' do |token_type|
+  it "displays the newly created token" do
+    visit resource_settings_access_tokens_path
+    accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
+
+    wait_for_all_requests
+    expect(page).to have_content("Your new #{token_type} access token has been created.")
+    expect(active_access_tokens).to have_text(resource_access_token.name)
+    expect(created_access_token).to match(/[\w-]{20}/)
+  end
+end
+
+RSpec.shared_examples 'rotating already revoked token fails' do
+  it "displays an error message" do
+    visit resource_settings_access_tokens_path
+
+    accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
+      resource_access_token.revoke!
+      click_on s_('AccessTokens|Rotate')
+    end
+
+    wait_for_all_requests
+    expect(page).to have_content(s_('AccessTokens|Token already revoked'))
+  end
+end
+
+RSpec.shared_examples 'rotating token fails due to missing access rights' do |token_type|
+  it 'does not rotate token' do
+    owner_role = resource.add_owner(user)
+
+    visit resource_settings_access_tokens_path
+
+    accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
+      owner_role.destroy!
+      click_on s_('AccessTokens|Rotate')
+    end
+
+    wait_for_all_requests
+    expect(page).not_to have_content("Your new #{token_type} access token has been created.")
+  end
+end

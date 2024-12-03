@@ -487,6 +487,7 @@ Parameters:
 | Parameter              | Type    | Required | Description                                                                                                                                                                            |
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api_key`              | string  | yes     | [API key](https://docs.datadoghq.com/account_management/api-app-keys/) used for authentication with Datadog. |
+| `datadog_ci_visibility`| boolean | yes     | Enables collection of pipeline and job events in Datadog to display pipeline execution traces. |
 | `api_url`              | string  | no    | Full URL of your Datadog site. |
 | `datadog_env`          | string  | no    | For self-managed deployments, `env%` tag for all the data sent to Datadog. |
 | `datadog_service`      | string  | no    | GitLab instance to tag all data from in Datadog. Can be used when managing several self-managed deployments. |

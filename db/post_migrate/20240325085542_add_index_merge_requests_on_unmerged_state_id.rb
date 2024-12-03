@@ -9,7 +9,9 @@ class AddIndexMergeRequestsOnUnmergedStateId < Gitlab::Database::Migration[2.2]
   TABLE_NAME = :merge_requests
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index(TABLE_NAME, :id, name: INDEX_NAME, where: "state_id <> 3")
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

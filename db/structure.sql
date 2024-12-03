@@ -16911,6 +16911,8 @@ CREATE TABLE personal_access_tokens (
     seven_days_notification_sent_at timestamp with time zone,
     thirty_days_notification_sent_at timestamp with time zone,
     sixty_days_notification_sent_at timestamp with time zone,
+    description text,
+    CONSTRAINT check_6d2ddc9355 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_aa95773861 CHECK ((char_length(advanced_scopes) <= 4096))
 );
 

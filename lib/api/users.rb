@@ -1023,6 +1023,7 @@ module API
           end
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
+            optional :description, type: String, desc: 'The description of the personal access token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
             optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The array of scopes of the impersonation token'
           end
@@ -1080,6 +1081,7 @@ module API
             requires :name, type: String, desc: 'The name of the personal access token'
             requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
               desc: 'The array of scopes of the personal access token'
+            optional :description, type: String, desc: 'The description of the personal access token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
           end
           post feature_category: :system_access do
@@ -1496,6 +1498,7 @@ module API
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
           requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
+          optional :description, type: String, desc: 'The description of the personal access token'
           optional :expires_at, type: Date, default: -> { 1.day.from_now.to_date }, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
         end
         post feature_category: :system_access do

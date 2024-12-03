@@ -7,7 +7,9 @@ class AddMergeRequestDiffsProjectIdIndex < Gitlab::Database::Migration[2.2]
   INDEX_NAME = 'index_merge_request_diffs_on_project_id'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :merge_request_diffs, :project_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

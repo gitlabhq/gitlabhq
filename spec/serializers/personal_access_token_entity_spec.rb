@@ -21,6 +21,7 @@ RSpec.describe PersonalAccessTokenEntity do
       include(
         id: token.id,
         name: token.name,
+        description: token.description,
         scopes: token.scopes,
         user_id: token.user_id,
         revoke_path: expected_revoke_path,

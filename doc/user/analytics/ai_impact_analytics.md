@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on (GitLab Duo Pro for `AiUserMetrics`) in GitLab 17.6.
 
 AI Impact analytics displays software development lifecycle (SDLC) metrics for a project or group in the month-to-date and the past six months.
 
@@ -58,6 +58,8 @@ The **Metric trends** table displays metrics for the last six months, with month
   NOTE:
   Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
   For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
+
+To retrieve AI Impact metrics, you can use the GraphQL API [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics) and [`AiUsageData`](../../api/graphql/reference/index.md#aiusagedata).
 
 ## View AI Impact analytics
 

@@ -32,8 +32,8 @@ module RuboCop
       @over_limit_table ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'OverLimitTables')
     end
 
-    def large_tables
-      @large_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'LargeTables')
+    def large_or_over_limit_tables
+      @large_or_over_limit_tables ||= large_tables + over_limit_tables
     end
 
     # Returns true if the given node originated from the db/migrate directory.
@@ -86,6 +86,10 @@ module RuboCop
     # rubocop:enable Lint/BooleanSymbol
 
     private
+
+    def large_tables
+      @large_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'LargeTables')
+    end
 
     def filepath(node)
       node.location.expression.source_buffer.name

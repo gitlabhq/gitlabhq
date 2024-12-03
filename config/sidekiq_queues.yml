@@ -379,6 +379,10 @@
   - 1
 - - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
   - 1
+- - gitlab_subscriptions_add_on_purchases_create_user_add_on_assignment
+  - 1
+- - gitlab_subscriptions_add_on_purchases_destroy_user_add_on_assignment
+  - 1
 - - gitlab_subscriptions_add_on_purchases_email_on_duo_bulk_user_assignments
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments

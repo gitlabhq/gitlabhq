@@ -71,6 +71,7 @@ Example response:
         "name": "Test Token",
         "revoked": false,
         "created_at": "2020-07-23T14:31:47.729Z",
+        "description": "Test Token description",
         "scopes": [
             "api"
         ],
@@ -97,6 +98,7 @@ Example response:
         "name": "Test Token",
         "revoked": false,
         "created_at": "2020-07-23T14:31:47.729Z",
+        "description": "Test Token description",
         "scopes": [
             "api"
         ],
@@ -123,6 +125,7 @@ Example response:
         "name": "Revoked Test Token",
         "revoked": true,
         "created_at": "2022-01-01T14:31:47.729Z",
+        "description": "Test Token description",
         "scopes": [
             "api"
         ],
@@ -197,6 +200,7 @@ Example response:
     "name": "Test Token",
     "revoked": false,
     "created_at": "2020-07-23T14:31:47.729Z",
+    "description": "Test Token description",
     "scopes": [
         "api"
     ],
@@ -246,6 +250,7 @@ Example response:
     "name": "Rotated Token",
     "revoked": false,
     "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test Token description",
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
@@ -290,6 +295,7 @@ Example response:
     "name": "Rotated Token",
     "revoked": false,
     "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test Token description",
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,

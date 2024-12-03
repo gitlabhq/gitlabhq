@@ -94,7 +94,7 @@ You can enable automatic removal of group members who either:
 1. Expand **Permissions and group features**.
 1. Scroll to **Dormant members**.
 1. Select the **Remove dormant members after a period of inactivity** checkbox.
-1. In the **Days of inactivity before removal** field, enter the number of days before removal. The minimum is 90 days.
+1. In the **Days of inactivity before removal** field, enter the number of days before removal. The minimum is 90 days, the maximum is 1827 days (5 years).
 1. Select **Save changes**.
 
 After the member has reached the days of inactivity and is removed from the group:

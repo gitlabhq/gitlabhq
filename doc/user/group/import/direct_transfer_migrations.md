@@ -145,7 +145,7 @@ After you have authorized access to the source GitLab instance, you are redirect
 
 If you do not want to import all user memberships from the source instance, ensure the **Import user memberships** checkbox is cleared. For example, the source instance might have 200 members, but you might want to import 50 members only. After the import completes, you can add more members to groups and projects.
 
-1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
+1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to [naming rules](../../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
    - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.

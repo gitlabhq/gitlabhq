@@ -231,7 +231,7 @@ have to be shared using NFS, which is not recommended. Instead:
 
 Before you enable the feature flag:
 
-- Review [the limitations of incremental logging](#limitations).
+- See [known issues](#known-issues).
 - [Enable object storage](job_artifacts.md#using-object-storage).
 
 To enable incremental logging:
@@ -279,10 +279,11 @@ Here is the detailed data flow:
 1. The Sidekiq worker archives the log to object storage and cleans up the log
    in Redis and a persistent store (object storage or the database).
 
-### Limitations
+### Known issues
 
 - [Redis Cluster is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/224171).
 - You must configure [object storage for CI/CD artifacts, logs, and builds](job_artifacts.md#using-object-storage)
   before you enable the feature flag. After the flag is enabled, files cannot be written
   to disk, and there is no protection against misconfiguration.
-- There is [an epic tracking other potential limitations and improvements](https://gitlab.com/groups/gitlab-org/-/epics/3791).
+
+For more information, see [epic 3791](https://gitlab.com/groups/gitlab-org/-/epics/3791).

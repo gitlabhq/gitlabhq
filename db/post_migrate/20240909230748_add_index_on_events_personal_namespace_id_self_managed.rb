@@ -11,7 +11,7 @@ class AddIndexOnEventsPersonalNamespaceIdSelfManaged < Gitlab::Database::Migrati
   def up
     return if Gitlab.com_except_jh?
 
-    add_concurrent_index :events,
+    add_concurrent_index :events, # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
       :personal_namespace_id,
       where: 'personal_namespace_id IS NOT NULL',
       name: INDEX

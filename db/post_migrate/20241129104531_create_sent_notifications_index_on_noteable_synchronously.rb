@@ -10,7 +10,9 @@ class CreateSentNotificationsIndexOnNoteableSynchronously < Gitlab::Database::Mi
   # Creating prepared index in 20241106125627_update_sent_notifications_index_on_noteable
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171687
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :sent_notifications, COLUMN_NAMES, where: "noteable_type = 'Issue'", name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

@@ -358,7 +358,7 @@ Other MLflowClient methods:
 | `create_registered_model` | Yes              | 16.8          |                                                  |
 | `create_registered_model` | Yes              | 16.8          |                                                  |
 
-## Limitations
+## Known issues
 
 - The API GitLab supports is the one defined at MLflow version 2.7.1.
 - MLflow client methods not listed above are not supported.

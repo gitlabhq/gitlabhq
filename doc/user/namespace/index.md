@@ -9,6 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Namespaces organize projects in GitLab. Because each namespace is separate,
 you can use the same project name in multiple namespaces.
 
+When you choose a name for your namespace, keep in mind:
+
+- [Naming rules](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)
+- [Reserved group names](../reserved_names.md#reserved-group-names)
+
+NOTE:
+Namespaces with a period (`.`) cause issues with SSL certificate validation and the source path when [publishing Terraform modules](../packages/terraform_module_registry/index.md#publish-a-terraform-module).
+
 ## Types of namespaces
 
 GitLab has two types of namespaces:
@@ -35,10 +43,3 @@ To determine whether you're in a group or personal namespace, you can view the U
 | A user named `alex`. | `https://gitlab.example.com/alex` | `alex` |
 | A group named `alex-team`. | `https://gitlab.example.com/alex-team` | `alex-team` |
 | A group named `alex-team` with a subgroup named `marketing`. |  `https://gitlab.example.com/alex-team/marketing` | `alex-team/marketing` |
-
-## Name limitations
-
-When you choose a name for your namespace, keep in mind the [character limitations](../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and [reserved group names](../reserved_names.md#reserved-group-names).
-
-NOTE:
-Namespaces with a period (`.`) cause issues with SSL certificate validation and the source path when [publishing Terraform modules](../packages/terraform_module_registry/index.md#publish-a-terraform-module).

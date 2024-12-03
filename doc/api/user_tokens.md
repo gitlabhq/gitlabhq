@@ -34,6 +34,7 @@ Supported attributes:
 |:-------------|:--------|:---------|:------------|
 | `user_id`    | integer | yes      | ID of the user. |
 | `name`       | string  | yes      | Name of the personal access token. |
+| `description`| string  | no       | Description of the personal access token. |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is set to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 | `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 
@@ -52,6 +53,7 @@ Example response:
     "name": "mytoken",
     "revoked": false,
     "created_at": "2020-10-14T11:58:53.526Z",
+    "description": "Test Token description",
     "scopes": [
         "api"
     ],
@@ -89,6 +91,7 @@ Supported attributes:
 | Attribute    | Type   | Required | Description |
 |:-------------|:-------|:---------|:------------|
 | `name`       | string | yes      | Name of the personal access token. |
+| `description`| string | no       | Description of the personal access token. |
 | `scopes`     | array  | yes      | Array of scopes of the personal access token. Possible values are `k8s_proxy`. |
 | `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is at the end of the current day. The expiration is subject to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
@@ -106,6 +109,7 @@ Example response:
     "name": "mytoken",
     "revoked": false,
     "created_at": "2020-10-14T11:58:53.526Z",
+    "description": "Test Token description",
     "scopes": [
         "k8s_proxy"
     ],
@@ -154,6 +158,7 @@ Example response:
       ],
       "revoked" : false,
       "name" : "mytoken",
+      "description": "Test Token description",
       "id" : 2,
       "created_at" : "2017-03-17T17:18:09.283Z",
       "impersonation" : true,
@@ -168,6 +173,7 @@ Example response:
       ],
       "revoked" : true,
       "name" : "mytoken2",
+      "description": "Test Token description",
       "created_at" : "2017-03-17T17:19:28.697Z",
       "id" : 3,
       "impersonation" : true,
@@ -213,6 +219,7 @@ Example response:
    ],
    "revoked" : false,
    "name" : "mytoken",
+   "description": "Test Token description",
    "id" : 2,
    "created_at" : "2017-03-17T17:18:09.283Z",
    "impersonation" : true,
@@ -241,6 +248,7 @@ Supported attributes:
 |:-------------|:--------|:---------|:------------|
 | `user_id`    | integer | yes      | ID of the user. |
 | `name`       | string  | yes      | Name of the impersonation token. |
+| `description`| string  | no       | Description of the personal access token. |
 | `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`). |
 | `scopes`     | array   | yes      | Array of scopes of the impersonation token (`api`, `read_user`). |
 
@@ -265,6 +273,7 @@ Example response:
    "active" : true,
    "impersonation" : true,
    "name" : "mytoken",
+   "description": "Test Token description",
    "created_at" : "2017-03-17T17:18:09.283Z",
    "expires_at" : "2017-04-04"
 }

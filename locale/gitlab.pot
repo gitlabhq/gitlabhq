@@ -2943,6 +2943,9 @@ msgstr ""
 msgid "AccessTokens|Token already revoked"
 msgstr ""
 
+msgid "AccessTokens|Token description"
+msgstr ""
+
 msgid "AccessTokens|Token name"
 msgstr ""
 
@@ -17787,37 +17790,61 @@ msgstr ""
 msgid "DatadogIntegration|API URL"
 msgstr ""
 
-msgid "DatadogIntegration|Custom tags in Datadog. Enter one tag per line in the %{codeOpen}key:value%{codeClose} format. %{linkOpen}How do I use tags?%{linkClose}"
+msgid "DatadogIntegration|Additionally, enable CI Visibility to send pipeline information to Datadog to monitor for job failures and troubleshoot performance issues."
 msgstr ""
 
-msgid "DatadogIntegration|Datadog site to send data to. To send data to the EU site, use %{codeOpen}datadoghq.eu%{codeClose}."
+msgid "DatadogIntegration|CI Visibility"
+msgstr ""
+
+msgid "DatadogIntegration|Connect your GitLab projects to your Datadog account to synchronize repository metadata and enrich telemetry on your Datadog account."
+msgstr ""
+
+msgid "DatadogIntegration|Connect your projects to Datadog and trace your GitLab pipelines."
+msgstr ""
+
+msgid "DatadogIntegration|Custom tags for pipeline data in Datadog. Enter one tag per line in the %{codeOpen}key:value%{codeClose} format. %{linkOpen}How do I use tags?%{linkClose}"
+msgstr ""
+
+msgid "DatadogIntegration|Datadog account"
+msgstr ""
+
+msgid "DatadogIntegration|Datadog site to send data to. Learn more about Datadog sites in the %{link_start}documentation%{link_end}."
+msgstr ""
+
+msgid "DatadogIntegration|Enable CI Visibility"
+msgstr ""
+
+msgid "DatadogIntegration|Enabled"
 msgstr ""
 
 msgid "DatadogIntegration|Environment"
 msgstr ""
 
-msgid "DatadogIntegration|For self-managed deployments, set the %{codeOpen}env%{codeClose} tag for all the data sent to Datadog. %{linkOpen}How do I use tags?%{linkClose}"
+msgid "DatadogIntegration|For self-managed deployments, set the %{codeOpen}env%{codeClose} tag for all the pipeline data sent to Datadog. %{linkOpen}How do I use tags?%{linkClose}"
 msgstr ""
 
-msgid "DatadogIntegration|Full URL of your Datadog site."
-msgstr ""
-
-msgid "DatadogIntegration|GitLab instance to tag all data from in Datadog. Can be used when managing several self-managed deployments."
-msgstr ""
-
-msgid "DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues."
+msgid "DatadogIntegration|Full URL of your Datadog site. Only required if you do not use a standard Datadog site."
 msgstr ""
 
 msgid "DatadogIntegration|Service"
 msgstr ""
 
+msgid "DatadogIntegration|Tag all pipeline data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments."
+msgstr ""
+
 msgid "DatadogIntegration|Tags"
 msgstr ""
 
-msgid "DatadogIntegration|Trace your GitLab pipelines with Datadog."
+msgid "DatadogIntegration|When enabled, pipeline job logs are collected by Datadog and displayed along with pipeline execution traces. This requires CI Visibility to be enabled. Note that pipeline job logs are priced like regular Datadog logs. Learn more %{link_start}here%{link_end}."
+msgstr ""
+
+msgid "DatadogIntegration|When enabled, pipelines and jobs are collected, and Datadog will display pipeline execution traces. Note that CI Visibility is priced per committers, see our %{link_start}pricing page%{link_end}."
 msgstr ""
 
 msgid "DatadogIntegration|have an invalid format"
+msgstr ""
+
+msgid "DatadogIntegration|requires CI Visibility to be enabled"
 msgstr ""
 
 msgid "Date"
@@ -20924,6 +20951,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable CI Visibility"
+msgstr ""
+
 msgid "Enable ClickHouse"
 msgstr ""
 
@@ -20940,6 +20970,9 @@ msgid "Enable Kroki"
 msgstr ""
 
 msgid "Enable Mailgun event receiver"
+msgstr ""
+
+msgid "Enable Pipeline Job logs collection"
 msgstr ""
 
 msgid "Enable PlantUML"
@@ -21024,9 +21057,6 @@ msgid "Enable instance runners for this project"
 msgstr ""
 
 msgid "Enable integration"
-msgstr ""
-
-msgid "Enable logs collection"
 msgstr ""
 
 msgid "Enable maintenance mode"

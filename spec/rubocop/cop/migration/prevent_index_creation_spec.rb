@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
   include RuboCop::MigrationHelpers
 
   let(:forbidden_tables) do
-    described_class::FORBIDDEN_TABLES + large_tables
+    described_class::FORBIDDEN_TABLES + large_or_over_limit_tables
   end
 
   context 'when in migration' do

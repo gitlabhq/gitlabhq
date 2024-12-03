@@ -91,7 +91,7 @@ To view the full list of jobs that ran in a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#view-jobs-in-a-pipeline) and [job name](#job-name-limitations).
+You can filter the list by [job status](#view-jobs-in-a-pipeline) and [job name](#job-name).
 
 ## See why a job failed
 
@@ -112,7 +112,7 @@ You can also see the reason it failed on the Job detail page.
 
 You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
-## Job name limitations
+## Job name
 
 You can't use these keywords as job names:
 

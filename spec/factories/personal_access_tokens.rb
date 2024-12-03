@@ -5,6 +5,7 @@ FactoryBot.define do
     user
     organization
     sequence(:name) { |n| "PAT #{n}" }
+    description { "Token description" }
     revoked { false }
     expires_at { 30.days.from_now }
     scopes { ['api'] }

@@ -48590,6 +48590,10 @@ definitions:
         type: boolean
         description: When enabled, job logs are collected by Datadog and displayed
           along with pipeline execution traces.
+      datadog_ci_visibility:
+        type: boolean
+        description: Whether to collect Pipeline and Job events in Datadog, to
+          display pipeline execution traces.
       datadog_service:
         type: string
         description: GitLab instance to tag all data from in Datadog. Can be used
@@ -48614,6 +48618,7 @@ definitions:
           `false`.
     required:
     - api_key
+    - datadog_ci_visibility
     description: Create/Edit Datadog integration
   putApiV4ProjectsIdServicesDiffblueCover:
     type: object
@@ -50468,6 +50473,10 @@ definitions:
         type: boolean
         description: When enabled, job logs are collected by Datadog and displayed
           along with pipeline execution traces.
+      datadog_ci_visibility:
+        type: boolean
+        description: Whether to collect Pipeline and Job events in Datadog, to
+          display pipeline execution traces.
       datadog_service:
         type: string
         description: GitLab instance to tag all data from in Datadog. Can be used
@@ -50492,6 +50501,7 @@ definitions:
           `false`.
     required:
     - api_key
+    - datadog_ci_visibility
     description: Create/Edit Datadog integration
   putApiV4ProjectsIdIntegrationsDiffblueCover:
     type: object

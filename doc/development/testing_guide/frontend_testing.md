@@ -30,10 +30,10 @@ Information on testing Vue 3 is contained in [this page](../testing_guide/testin
 We use Jest to write frontend unit and integration tests.
 Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 
-### Limitations of jsdom
+### `jsdom`
 
-Jest uses jsdom instead of a browser for running tests.
-This comes with a number of limitations, namely:
+Jest uses `jsdom` instead of a browser for running tests.
+Known issues include:
 
 - [No scrolling support](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/browser/Window.js#L623-L625)
 - [No element sizes or positions](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/living/nodes/Element-impl.js#L334-L371)

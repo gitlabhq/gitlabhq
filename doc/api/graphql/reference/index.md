@@ -18558,13 +18558,17 @@ Self-hosted LLM servers.
 
 ### `AiUsageData`
 
+Usage data for events stored in the default PostgreSQL database. Data retained for three months.
+
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions feature. (see [Connections](#connections)) |
+| <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions. (see [Connections](#connections)) |
 
 ### `AiUserMetrics`
+
+Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat.
 
 #### Fields
 
@@ -18572,7 +18576,7 @@ Self-hosted LLM servers.
 | ---- | ---- | ----------- |
 | <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` | [`Int`](#int) | Total count of code suggestions accepted by the user. |
 | <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` | [`Int`](#int) | Number of user interactions with GitLab Duo Chat. |
-| <a id="aiusermetricsuser"></a>`user` | [`UserCore!`](#usercore) | Metrics user. |
+| <a id="aiusermetricsuser"></a>`user` | [`UserCore!`](#usercore) | User metrics. |
 
 ### `AlertManagementAlert`
 

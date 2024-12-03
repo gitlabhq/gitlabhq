@@ -1704,10 +1704,10 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       describe 'eager loading' do
         let(:runner) { shared_runner }
 
-        it 'avoids N+1 DB queries' do
+        it 'avoids N+1 DB queries', :use_sql_query_cache do
           get api(path, current_user)
 
-          control = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api(path, current_user)
           end
 

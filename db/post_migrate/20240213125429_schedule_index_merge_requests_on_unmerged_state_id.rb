@@ -7,7 +7,9 @@ class ScheduleIndexMergeRequestsOnUnmergedStateId < Gitlab::Database::Migration[
   TABLE_NAME = :merge_requests
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     prepare_async_index(TABLE_NAME, :id, name: INDEX_NAME, where: "state_id <> 3")
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

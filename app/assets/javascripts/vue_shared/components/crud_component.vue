@@ -194,7 +194,7 @@ export default {
             data-testid="crud-count"
           >
             <template v-if="displayedCount">
-              <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
+              <gl-icon v-if="icon" :name="icon" variant="subtle" data-testid="crud-icon" />
               {{ displayedCount }}
             </template>
             <slot v-if="$scopedSlots.count" name="count"></slot>

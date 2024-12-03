@@ -10,6 +10,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     it { expect(personal_access_token.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID) }
     it { expect(personal_access_token.organization).to eq(Organizations::Organization.default_organization) }
+    it { expect(personal_access_token.description).to be_nil }
   end
 
   describe '.build' do

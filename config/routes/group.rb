@@ -50,6 +50,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       resources :access_tokens, only: [:index, :create] do
         member do
           put :revoke
+          put :rotate
         end
       end
 

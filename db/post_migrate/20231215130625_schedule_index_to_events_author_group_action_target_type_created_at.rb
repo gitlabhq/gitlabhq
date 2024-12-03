@@ -7,7 +7,7 @@ class ScheduleIndexToEventsAuthorGroupActionTargetTypeCreatedAt < Gitlab::Databa
   COLUMNS = [:author_id, :group_id, :action, :target_type, :created_at]
 
   def up
-    prepare_async_index :events, COLUMNS, name: INDEX_NAME
+    prepare_async_index :events, COLUMNS, name: INDEX_NAME # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   end
 
   def down

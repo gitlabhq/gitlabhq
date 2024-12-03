@@ -7,6 +7,7 @@ module API
       expose :name, documentation: { type: 'string', example: 'John Doe' }
       expose :revoked, documentation: { type: 'boolean' }
       expose :created_at, documentation: { type: 'dateTime' }
+      expose :description, documentation: { type: 'string', example: 'Token to manage api' }
       expose :scopes, documentation: { type: 'array', example: ['api'] }
       expose :user_id, documentation: { type: 'integer', example: 3 }
       expose :last_used_at, documentation: { type: 'dateTime', example: '2020-08-31T15:53:00.073Z' }

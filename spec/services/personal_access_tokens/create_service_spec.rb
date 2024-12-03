@@ -7,6 +7,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     it 'creates personal access token record' do
       expect(subject.success?).to be true
       expect(token.name).to eq(params[:name])
+      expect(token.description).to eq(params[:description])
       expect(token.impersonation).to eq(params[:impersonation])
       expect(token.scopes).to eq(params[:scopes])
       expect(token.expires_at).to eq(params[:expires_at])
@@ -41,7 +42,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     let(:current_user) { create(:user) }
     let(:organization) { create(:organization) }
     let(:user) { create(:user) }
-    let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month } }
+    let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month, description: "Test Description" } }
     let(:service) { described_class.new(current_user: current_user, target_user: user, organization_id: organization.id, params: params, concatenate_errors: false) }
     let(:token) { subject.payload[:personal_access_token] }
 
@@ -83,6 +84,15 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
         it 'returns a nil expiration date' do
           expect(subject.payload[:personal_access_token].expires_at).to be_nil
         end
+      end
+    end
+
+    context 'with no description set' do
+      let(:params) { { name: 'Test token', impersonation: false, scopes: [:api] } }
+      let(:service) { described_class.new(current_user: user, organization_id: organization.id, target_user: user, params: params) }
+
+      it 'returns a nil description' do
+        expect(subject.payload[:personal_access_token].description).to be_nil
       end
     end
 

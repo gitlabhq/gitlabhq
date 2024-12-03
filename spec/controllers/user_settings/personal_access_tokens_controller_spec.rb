@@ -90,14 +90,16 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       expect(assigns(:active_access_tokens).to_json).to eq(active_personal_access_tokens_detail.to_json)
     end
 
-    it "builds a PAT with name and scopes from params" do
+    it "builds a PAT with name, description and scopes from params" do
       name = 'My PAT'
       scopes = 'api,read_user'
+      description = 'My PAT description'
 
-      get :index, params: { name: name, scopes: scopes }
+      get :index, params: { name: name, scopes: scopes, description: description }
 
       expect(assigns(:personal_access_token)).to have_attributes(
         name: eq(name),
+        description: eq(description),
         scopes: contain_exactly(:api, :read_user)
       )
     end

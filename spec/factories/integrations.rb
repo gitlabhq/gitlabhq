@@ -25,6 +25,7 @@ FactoryBot.define do
   factory :datadog_integration, class: 'Integrations::Datadog' do
     project
     active { true }
+    datadog_ci_visibility { false }
     datadog_site { 'datadoghq.com' }
     datadog_tags { 'key:value' }
     api_key { 'secret' }

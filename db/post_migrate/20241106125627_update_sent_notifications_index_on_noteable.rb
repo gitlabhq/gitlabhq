@@ -15,7 +15,9 @@ class UpdateSentNotificationsIndexOnNoteable < Gitlab::Database::Migration[2.2]
   # "index_sent_notifications_on_noteable_type_noteable_id_id" btree (noteable_id, id) WHERE noteable_type = 'Issue'
   # to improve iterating over issue related sent notification records in batches.
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     prepare_async_index :sent_notifications, COLUMN_NAMES, where: "noteable_type = 'Issue'", name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

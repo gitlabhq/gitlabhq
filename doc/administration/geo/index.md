@@ -136,7 +136,7 @@ Keep in mind that:
 - The **primary** site talks to the **secondary** sites for viewing replication details. The **primary** does a GraphQL query against the **secondary** site for sync and verification data (API).
 - You can push directly to a **secondary** site (for both HTTP and SSH,
   including Git LFS), and it will proxy the requests to the **primary** site.
-- There are [limitations](#limitations) when using Geo.
+- Some [known issues](#known-issues) exist when using Geo.
 
 ### Architecture
 
@@ -260,12 +260,12 @@ When something is marked to be updated in the tracking database instance, asynch
 
 This new architecture allows GitLab to be resilient to connectivity issues between the sites. It doesn't matter how long the **secondary** site is disconnected from the **primary** site as it is able to replay all the events in the correct order and become synchronized with the **primary** site again.
 
-## Limitations
+## Known issues
 
 WARNING:
-This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
+These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
 
-- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). The limitation is that you cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
+- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
@@ -275,7 +275,8 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
-- For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
+- For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary.
+  For more information, see [issue 339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262).
 - Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
 - Backups [cannot be run on Geo secondary sites](replication/troubleshooting/postgresql_replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 - Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).

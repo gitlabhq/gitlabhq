@@ -9,7 +9,7 @@ class AsyncAddIndexOnEventsPersonalNamespaceId2 < Gitlab::Database::Migration[2.
   def up
     return unless Gitlab.com_except_jh?
 
-    prepare_async_index :events, :personal_namespace_id, name: INDEX_NAME,
+    prepare_async_index :events, :personal_namespace_id, name: INDEX_NAME, # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
       where: 'personal_namespace_id IS NOT NULL'
   end
 

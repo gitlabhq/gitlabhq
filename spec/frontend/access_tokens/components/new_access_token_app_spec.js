@@ -45,6 +45,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         <input type="text" id="expires_at" value="2022-01-01"/>
         <input type="text" value='1'/>
         <input type="checkbox" checked/>
+        <textarea>my description</textarea>
         <button type="submit" data-testid="create-token-button" value="Create" class="disabled" disabled="disabled"/>
       </form>`,
     );
@@ -107,10 +108,12 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       it('should reset selectively some input fields', async () => {
         expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('1');
         expect(document.querySelector('input[type=checkbox]').checked).toBe(true);
+        expect(document.querySelector('textarea').value).toBe('my description');
         await triggerSuccess();
 
         expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('');
         expect(document.querySelector('input[type=checkbox]').checked).toBe(false);
+        expect(document.querySelector('textarea').value).toBe('');
       });
 
       it('should not reset the date field', async () => {

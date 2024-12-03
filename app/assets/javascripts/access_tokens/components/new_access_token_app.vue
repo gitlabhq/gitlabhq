@@ -112,6 +112,11 @@ export default {
       this.form.querySelectorAll('input[type=text]:not([id$=expires_at])').forEach((el) => {
         el.value = '';
       });
+
+      this.form.querySelectorAll('textarea').forEach((el) => {
+        el.value = '';
+      });
+
       this.form.querySelectorAll('input[type=checkbox]').forEach((el) => {
         el.checked = false;
       });

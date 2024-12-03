@@ -15,6 +15,7 @@ module UserSettings
       scopes = params[:scopes].split(',').map(&:squish).select(&:present?).map(&:to_sym) unless params[:scopes].nil?
       @personal_access_token = finder.build(
         name: params[:name],
+        description: params[:description],
         scopes: scopes
       )
 
@@ -83,7 +84,7 @@ module UserSettings
     end
 
     def personal_access_token_params
-      params.require(:personal_access_token).permit(:name, :expires_at, scopes: [])
+      params.require(:personal_access_token).permit(:name, :expires_at, :description, scopes: [])
     end
 
     def set_index_vars
