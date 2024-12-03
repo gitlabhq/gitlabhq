@@ -242,7 +242,6 @@ Style/GuardClause:
     - 'ee/app/models/dast/profile.rb'
     - 'ee/app/models/dast_site.rb'
     - 'ee/app/models/dast_site_profile.rb'
-    - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/group_group_link.rb'
     - 'ee/app/models/ee/group_member.rb'

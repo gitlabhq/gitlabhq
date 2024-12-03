@@ -142,6 +142,14 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       publish
     end
 
+    it 'resolves todos for the MR' do
+      expect_any_instance_of(TodoService) do |todo_service|
+        expect(todo_service).to receive(:new_review).with(kind_of(Review), user)
+      end
+
+      publish
+    end
+
     it 'tracks the publish event' do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_publish_review_action)
@@ -243,7 +251,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
-      expect(recorder.count).not_to be > 112
+      expect(recorder.count).not_to be > 116
     end
   end
 

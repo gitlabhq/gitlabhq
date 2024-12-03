@@ -187,6 +187,14 @@ class TodoService
     create_ssh_key_todos(ssh_keys, ::Todo::SSH_KEY_EXPIRED)
   end
 
+  # When a merge request receives a review
+  #
+  #   * Mark all outstanding todos on this MR for the current user as done
+  #
+  def new_review(review, current_user)
+    resolve_todos_for_target(review.merge_request, current_user)
+  end
+
   # When user marks a target as todo
   def mark_todo(target, current_user)
     project = target.project

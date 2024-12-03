@@ -80,7 +80,6 @@ Lint/UnusedBlockArgument:
     - 'ee/app/graphql/resolvers/incident_management/escalation_policies_resolver.rb'
     - 'ee/app/graphql/resolvers/incident_management/oncall_rotations_resolver.rb'
     - 'ee/app/graphql/types/health_status_enum.rb'
-    - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/ci/build.rb'
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/namespace_setting.rb'

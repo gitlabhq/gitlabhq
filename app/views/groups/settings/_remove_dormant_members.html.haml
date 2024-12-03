@@ -9,10 +9,10 @@
     checkbox_options: { checked: group.namespace_settings&.remove_dormant_members }
   .form-group
     = f.label :remove_dormant_members_period, _('Days of inactivity before removal'), class: 'label-light'
-    = f.number_field :remove_dormant_members_period, class: 'form-control w-auto gl-form-input', min: 90,
+    = f.number_field :remove_dormant_members_period, class: 'form-control w-auto gl-form-input', min: 90, max: 1827,
       required: true, value: group.namespace_settings&.remove_dormant_members_period,
       disabled: !group.namespace_settings&.remove_dormant_members?
     #group_remove_dormant_members_period_error.form-text.gl-text-red-500.gl-hidden
-      = _('Please enter a value of 90 days or more')
+      = _('Please enter a value between 90 and 1827 days (5 years).')
     .form-text.gl-text-subtle
       = _('Must be 90 days or more.')

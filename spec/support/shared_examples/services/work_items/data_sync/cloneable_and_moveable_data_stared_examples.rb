@@ -88,6 +88,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
+  def work_item_timelogs(work_item)
+    work_item.reload.timelogs.pluck(:user_id, :time_spent)
+  end
+
   def work_item_crm_contacts(work_item)
     work_item.reload.customer_relations_contacts
   end
@@ -169,6 +173,11 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     milestone.title
   end
 
+  let_it_be(:timelogs) do
+    timelogs = create_list(:timelog, 2, issue: original_work_item)
+    timelogs.pluck(:user_id, :time_spent)
+  end
+
   where(:widget_name, :eval_value, :expected_data, :operations) do
     :assignees          | :work_item_assignees          | ref(:assignees)     | [ref(:move), ref(:clone)]
     :award_emoji        | :work_item_award_emoji        | ref(:award_emojis)  | [ref(:move)]
@@ -176,6 +185,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     :milestone          | :work_item_milestone          | ref(:milestone)     | [ref(:move), ref(:clone)]
     :subscriptions      | :work_item_subscriptions      | ref(:subscriptions) | [ref(:move)]
     :sent_notifications | :work_item_sent_notifications | ref(:notifications) | [ref(:move)]
+    :timelogs           | :work_item_timelogs           | ref(:timelogs)      | [ref(:move)]
     :customer_relations_contacts | :work_item_crm_contacts | ref(:crm_contacts) | [ref(:move), ref(:clone)]
   end
 
@@ -183,6 +193,9 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     context "with widget" do
       before do
         allow(original_work_item).to receive(:from_service_desk?).and_return(true)
+        allow(WorkItems::CopyTimelogsWorker).to receive(:perform_async) do |*args|
+          WorkItems::CopyTimelogsWorker.perform_inline(*args)
+        end
       end
 
       it 'clones and moves widget data', :aggregate_failures do

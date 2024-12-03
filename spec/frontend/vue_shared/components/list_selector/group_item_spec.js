@@ -8,12 +8,13 @@ describe('GroupItem spec', () => {
 
   const MOCK_GROUP = { id: 123, fullName: 'Group 1', name: 'group1', avatarUrl: 'some/avatar.jpg' };
 
-  const createComponent = (props) => {
+  const createComponent = (props, options) => {
     wrapper = mountExtended(GroupItem, {
       propsData: {
         data: MOCK_GROUP,
         ...props,
       },
+      ...options,
     });
   };
 
@@ -24,10 +25,8 @@ describe('GroupItem spec', () => {
 
   it('renders an Avatar component', () => {
     expect(findAvatar().props('size')).toBe(32);
-    expect(findAvatar().attributes()).toMatchObject({
-      src: MOCK_GROUP.avatarUrl,
-      alt: MOCK_GROUP.fullName,
-    });
+    expect(findAvatar().props('src')).toBe(MOCK_GROUP.avatarUrl);
+    expect(findAvatar().attributes('alt')).toBe(MOCK_GROUP.fullName);
   });
 
   it('renders a fullName and name', () => {
@@ -40,7 +39,12 @@ describe('GroupItem spec', () => {
   });
 
   describe('hidden groups', () => {
-    beforeEach(() => createComponent({ data: { ...MOCK_GROUP, type: 'hidden_groups' } }));
+    beforeEach(() =>
+      createComponent(
+        { data: { ...MOCK_GROUP, type: 'hidden_groups' } },
+        { stubs: { HiddenGroupsItem } },
+      ),
+    );
 
     const findHiddenGroupsItem = () => wrapper.findComponent(HiddenGroupsItem);
 

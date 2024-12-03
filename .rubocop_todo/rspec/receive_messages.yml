@@ -5,7 +5,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/bin/custom_ability_spec.rb'
     - 'ee/spec/components/namespaces/storage/limit_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/repository_limit_alert_component_spec.rb'
-    - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/concerns/analytics/cycle_analytics/value_stream_actions_spec.rb'
     - 'ee/spec/controllers/concerns/audit_events/audit_events_params_spec.rb'
     - 'ee/spec/controllers/ee/search_controller_spec.rb'

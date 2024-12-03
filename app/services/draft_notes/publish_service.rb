@@ -49,6 +49,7 @@ module DraftNotes
       keep_around_commits(created_notes)
       draft_notes.delete_all
       notification_service.async.new_review(review)
+      todo_service.new_review(review, current_user)
       MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
       after_publish

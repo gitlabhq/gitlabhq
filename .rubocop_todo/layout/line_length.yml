@@ -617,7 +617,6 @@ Layout/LineLength:
     - 'ee/app/models/dast/site_profile_secret_variable.rb'
     - 'ee/app/models/dora/lead_time_for_changes_metric.rb'
     - 'ee/app/models/ee/alert_management/alert.rb'
-    - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/ci/build.rb'
     - 'ee/app/models/ee/ci/daily_build_group_report_result.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'

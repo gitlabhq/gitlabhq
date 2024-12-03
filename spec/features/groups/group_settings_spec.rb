@@ -365,7 +365,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
       end
 
       expect(page).to have_selector(selector, visible: :visible)
-      expect(page).to have_content _('Please enter a value of 90 days or more')
+      expect(page).to have_content _('Please enter a value between 90 and 1827 days (5 years)')
     end
 
     it 'auto disables dormant members period field depending on parent checkbox', :js do

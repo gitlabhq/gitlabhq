@@ -3,7 +3,6 @@
 RSpec/BeEq:
   Exclude:
     - 'ee/spec/bin/custom_ability_spec.rb'
-    - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/audit_log_reports_controller_spec.rb'
     - 'ee/spec/controllers/concerns/ee/routable_actions/sso_enforcement_redirect_spec.rb'
     - 'ee/spec/controllers/concerns/routable_actions_spec.rb'

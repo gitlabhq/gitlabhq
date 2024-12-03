@@ -1,7 +1,6 @@
 ---
 RSpec/ContextWording:
   Exclude:
-    - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/audit_logs_controller_spec.rb'
     - 'ee/spec/controllers/admin/dev_ops_report_controller_spec.rb'
     - 'ee/spec/controllers/admin/emails_controller_spec.rb'

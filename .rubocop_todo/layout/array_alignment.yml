@@ -12,7 +12,6 @@ Layout/ArrayAlignment:
     - 'ee/app/models/concerns/geo/verification_state.rb'
     - 'ee/app/models/dast_site_profile.rb'
     - 'ee/app/models/dora/base_metric.rb'
-    - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/geo/event_log.rb'

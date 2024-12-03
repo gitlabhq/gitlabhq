@@ -254,7 +254,6 @@ Style/IfUnlessModifier:
     - 'ee/app/models/concerns/geo/verifiable_replicator.rb'
     - 'ee/app/models/concerns/security/scan_execution_policy.rb'
     - 'ee/app/models/dast_site_profile.rb'
-    - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'
     - 'ee/app/models/ee/group.rb'
     - 'ee/app/models/ee/issue.rb'

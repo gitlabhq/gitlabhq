@@ -10251,6 +10251,9 @@ msgstr ""
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
 msgstr ""
 
+msgid "BulkImport|Import from %{hostname} completed"
+msgstr ""
+
 msgid "BulkImport|Import groups by direct transfer"
 msgstr ""
 
@@ -28383,12 +28386,6 @@ msgstr ""
 msgid "Import|GitHub import details"
 msgstr ""
 
-msgid "Import|Import completed"
-msgstr ""
-
-msgid "Import|Import from %{hostname} completed"
-msgstr ""
-
 msgid "Import|Import source user has an invalid status for this operation"
 msgstr ""
 
@@ -28422,16 +28419,7 @@ msgstr ""
 msgid "Import|Partially completed"
 msgstr ""
 
-msgid "Import|Reassign contributions"
-msgstr ""
-
 msgid "Import|Show errors"
-msgstr ""
-
-msgid "Import|The import %{project_creator_name} started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed."
-msgstr ""
-
-msgid "Import|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed."
 msgstr ""
 
 msgid "Import|The repository could not be imported."
@@ -28449,19 +28437,7 @@ msgstr ""
 msgid "Import|Timeout for decompressing archived files."
 msgstr ""
 
-msgid "Import|Users with the Owner role for the group can reassign contributions on the \"Members\" page."
-msgstr ""
-
-msgid "Import|View import results"
-msgstr ""
-
 msgid "Import|You can import a Subversion repository by using third-party tools. %{svn_link}."
-msgstr ""
-
-msgid "Import|You can now review your import results."
-msgstr ""
-
-msgid "Import|You can reassign contributions on the \"Members\" page of the group."
 msgstr ""
 
 msgid "Import|You do not have permission to view import source users for this namespace"
@@ -41224,6 +41200,9 @@ msgid "Please enter a valid number"
 msgstr ""
 
 msgid "Please enter a valid time interval"
+msgstr ""
+
+msgid "Please enter a value between 90 and 1827 days (5 years)."
 msgstr ""
 
 msgid "Please enter a value of 90 days or more"

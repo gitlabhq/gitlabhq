@@ -17,11 +17,12 @@ These features aim to help increase velocity and solve key pain points across th
 GitLab Duo features are available in [IDE extensions](../../editor_extensions/index.md) and the GitLab UI.
 Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat_examples.md).
 
+- [Get started with GitLab Duo](../get_started/getting_started_gitlab_duo.md).
+- [View a walkthrough of GitLab Duo Enterprise features](https://gitlab.navattic.com/duo-enterprise).
+
 GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparency).
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
-
-**{play}** [View a walkthrough of GitLab Duo Enterprise features](https://gitlab.navattic.com/duo-enterprise).
 
 ## Generally available features
 

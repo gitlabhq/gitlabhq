@@ -23,10 +23,8 @@ describe('UserItem spec', () => {
 
   it('renders an Avatar component', () => {
     expect(findAvatar().props('size')).toBe(32);
-    expect(findAvatar().attributes()).toMatchObject({
-      src: MOCK_USER.avatarUrl,
-      alt: MOCK_USER.name,
-    });
+    expect(findAvatar().props('src')).toBe(MOCK_USER.avatarUrl);
+    expect(findAvatar().attributes('alt')).toBe(MOCK_USER.name);
   });
 
   it('renders a name and username', () => {
