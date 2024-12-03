@@ -1294,7 +1294,7 @@ module API
         present paginate(current_user.emails), with: Entities::Email
       end
 
-      desc "Update a user's credit_card_validation" do
+      desc "[DEPRECATED] Update a user's credit_card_validation" do
         success Entities::UserCreditCardValidations
       end
       params do

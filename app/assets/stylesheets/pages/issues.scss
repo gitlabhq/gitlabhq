@@ -149,22 +149,6 @@ ul.related-merge-requests > li gl-emoji {
     transform: translateY(0);
     display: none;
     margin-top: 4px;
-
-    // override dropdown item styles
-    .btn.btn-confirm {
-      @include btn-default;
-      @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-contrast);
-
-      border-width: 1px;
-      line-height: $line-height-base;
-      width: auto;
-
-      &.disabled {
-        background-color: $gray-10;
-        border-color: $gray-100;
-        @apply gl-text-disabled;
-      }
-    }
   }
 }
 

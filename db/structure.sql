@@ -5989,6 +5989,8 @@ CREATE TABLE ai_settings (
     id bigint NOT NULL,
     ai_gateway_url text,
     singleton boolean DEFAULT true NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
 );
@@ -7493,6 +7495,7 @@ CREATE TABLE audit_events_amazon_s3_configurations (
     aws_region text NOT NULL,
     encrypted_secret_access_key bytea NOT NULL,
     encrypted_secret_access_key_iv bytea NOT NULL,
+    stream_destination_id bigint,
     CONSTRAINT check_3a41f4ea06 CHECK ((char_length(bucket_name) <= 63)),
     CONSTRAINT check_72b5aaa71b CHECK ((char_length(aws_region) <= 50)),
     CONSTRAINT check_90505816db CHECK ((char_length(name) <= 72)),
@@ -7516,6 +7519,7 @@ CREATE TABLE audit_events_external_audit_event_destinations (
     updated_at timestamp with time zone NOT NULL,
     verification_token text,
     name text NOT NULL,
+    stream_destination_id bigint,
     CONSTRAINT check_2feafb9daf CHECK ((char_length(destination_url) <= 255)),
     CONSTRAINT check_8ec80a7d06 CHECK ((char_length(verification_token) <= 24)),
     CONSTRAINT check_c52ff8e90e CHECK ((char_length(name) <= 72))
@@ -7541,6 +7545,7 @@ CREATE TABLE audit_events_google_cloud_logging_configurations (
     encrypted_private_key bytea NOT NULL,
     encrypted_private_key_iv bytea NOT NULL,
     name text NOT NULL,
+    stream_destination_id bigint,
     CONSTRAINT check_0ef835c61e CHECK ((char_length(client_email) <= 254)),
     CONSTRAINT check_55783c7c19 CHECK ((char_length(google_project_id_name) <= 30)),
     CONSTRAINT check_898a76b005 CHECK ((char_length(log_id_name) <= 511)),
@@ -7617,6 +7622,7 @@ CREATE TABLE audit_events_instance_amazon_s3_configurations (
     aws_region text NOT NULL,
     encrypted_secret_access_key bytea NOT NULL,
     encrypted_secret_access_key_iv bytea NOT NULL,
+    stream_destination_id bigint,
     CONSTRAINT check_1a908bd36f CHECK ((char_length(name) <= 72)),
     CONSTRAINT check_8083750c42 CHECK ((char_length(bucket_name) <= 63)),
     CONSTRAINT check_d2ca3eb90e CHECK ((char_length(aws_region) <= 50)),
@@ -7640,6 +7646,7 @@ CREATE TABLE audit_events_instance_external_audit_event_destinations (
     encrypted_verification_token bytea NOT NULL,
     encrypted_verification_token_iv bytea NOT NULL,
     name text NOT NULL,
+    stream_destination_id bigint,
     CONSTRAINT check_433fbb3305 CHECK ((char_length(name) <= 72)),
     CONSTRAINT check_4dc67167ce CHECK ((char_length(destination_url) <= 255))
 );
@@ -7685,6 +7692,7 @@ CREATE TABLE audit_events_instance_google_cloud_logging_configurations (
     name text NOT NULL,
     encrypted_private_key bytea NOT NULL,
     encrypted_private_key_iv bytea NOT NULL,
+    stream_destination_id bigint,
     CONSTRAINT check_0da5c76c49 CHECK ((char_length(client_email) <= 254)),
     CONSTRAINT check_74fd943192 CHECK ((char_length(log_id_name) <= 511)),
     CONSTRAINT check_ab65f57721 CHECK ((char_length(google_project_id_name) <= 30)),
@@ -33334,6 +33342,18 @@ CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_t
 
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
+CREATE UNIQUE INDEX uniq_idx_audit_events_aws_configs_stream_dests ON audit_events_amazon_s3_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
+
+CREATE UNIQUE INDEX uniq_idx_audit_events_ext_audit_event_stream_dests ON audit_events_external_audit_event_destinations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
+
+CREATE UNIQUE INDEX uniq_idx_audit_events_gcp_configs_stream_dests ON audit_events_google_cloud_logging_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
+
+CREATE UNIQUE INDEX uniq_idx_audit_events_instance_aws_configs_stream_dests ON audit_events_instance_amazon_s3_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
+
+CREATE UNIQUE INDEX uniq_idx_audit_events_instance_ext_audit_event_stream_dests ON audit_events_instance_external_audit_event_destinations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
+
+CREATE UNIQUE INDEX uniq_idx_audit_events_instance_gcp_configs_stream_dests ON audit_events_instance_google_cloud_logging_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
+
 CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_references_package_reference ON packages_conan_package_references USING btree (package_id, recipe_revision_id, reference);
 
 CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_revisions_revision ON packages_conan_package_revisions USING btree (package_id, package_reference_id, revision);
@@ -35606,6 +35626,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
+    ADD CONSTRAINT fk_03a15ca4fa FOREIGN KEY (stream_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY service_desk_settings
     ADD CONSTRAINT fk_03afb71f06 FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
@@ -35665,6 +35688,9 @@ ALTER TABLE ONLY subscription_seat_assignments
 
 ALTER TABLE ONLY approval_group_rules_protected_branches
     ADD CONSTRAINT fk_0b85e6c388 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_amazon_s3_configurations
+    ADD CONSTRAINT fk_0bcc22194d FOREIGN KEY (stream_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_0c0037f723 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -35843,6 +35869,9 @@ ALTER TABLE ONLY zoekt_repositories
 ALTER TABLE p_ci_pipelines
     ADD CONSTRAINT fk_262d4c2d19_p FOREIGN KEY (auto_canceled_by_partition_id, auto_canceled_by_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL;
 
+ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations
+    ADD CONSTRAINT fk_266365d2b0 FOREIGN KEY (stream_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -35878,6 +35907,9 @@ ALTER TABLE ONLY agent_group_authorizations
 
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_2d060dfc73 FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations
+    ADD CONSTRAINT fk_2d3ebd0fbc FOREIGN KEY (stream_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_2e82291620 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE SET NULL;
@@ -36044,6 +36076,9 @@ ALTER TABLE ONLY todos
 ALTER TABLE ONLY security_policy_requirements
     ADD CONSTRAINT fk_458f7f5ad5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
+    ADD CONSTRAINT fk_4601829756 FOREIGN KEY (stream_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36070,6 +36105,9 @@ ALTER TABLE ONLY packages_conan_recipe_revisions
 
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT fk_4d6ba63ba5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_external_audit_event_destinations
+    ADD CONSTRAINT fk_4df855d797 FOREIGN KEY (stream_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_4e64972902 FOREIGN KEY (finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;

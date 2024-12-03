@@ -40328,7 +40328,7 @@ paths:
       operationId: postApiV4UserEmails
   "/api/v4/user/{user_id}/credit_card_validation":
     put:
-      description: Update a user's credit_card_validation
+      description: "[DEPRECATED] Update a user's credit_card_validation"
       produces:
       - application/json
       consumes:
@@ -40346,7 +40346,7 @@ paths:
           "$ref": "#/definitions/putApiV4UserUserIdCreditCardValidation"
       responses:
         '200':
-          description: Update a user's credit_card_validation
+          description: "[DEPRECATED] Update a user's credit_card_validation"
           schema:
             "$ref": "#/definitions/API_Entities_UserCreditCardValidations"
       tags:
@@ -62024,7 +62024,7 @@ definitions:
     - credit_card_holder_name
     - credit_card_mask_number
     - credit_card_type
-    description: Update a user's credit_card_validation
+    description: "[DEPRECATED] Update a user's credit_card_validation"
   API_Entities_UserCreditCardValidations:
     type: object
     properties:

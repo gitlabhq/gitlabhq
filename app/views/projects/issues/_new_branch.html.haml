@@ -59,7 +59,7 @@
               %span.js-ref-message.form-text.gl-text-sm
 
             = render Pajamas::ButtonComponent.new(variant: :confirm,
-              button_options: { class: 'js-create-target', data: { action: 'create-mr', **tracking_data } }) do
+              button_options: { class: 'js-create-target !gl-w-auto', data: { action: 'create-mr', **tracking_data } }) do
               = create_mr_text
 
             - if can_create_confidential_merge_request?

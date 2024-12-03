@@ -6,15 +6,19 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Cascading Settings
 
-The cascading settings framework allows groups to essentially inherit settings
+Have you ever wanted to add a setting on a GitLab project and/or group that had a default value that was inherited from a parent in the hierarchy?
+
+If so: we have the framework you have been seeking!
+
+The cascading settings framework allows groups and projects to inherit settings
 values from ancestors (parent group on up the group hierarchy) and from
 instance-level application settings. The framework also allows settings values
-to be enforced on groups lower in the hierarchy.
+to be "locked" (enforced) on groups lower in the hierarchy.
 
-Cascading settings can currently only be defined within `NamespaceSetting`, though
+Cascading settings historically have only been defined on `ApplicationSetting`, `NamespaceSetting` and `ProjectSetting`, though
 the framework may be extended to other objects in the future.
 
-## Add a new cascading setting
+## Add a new cascading setting to groups only
 
 Settings are not cascading by default. To define a cascading setting, take the following steps:
 
@@ -103,6 +107,61 @@ It returns `false` when called from the group that locked the attribute.
 
 When `include_self: true` is specified, it returns `true` when called from the group that locked the attribute.
 This would be relevant, for example, when checking if an attribute is locked from a project.
+
+## Add a new cascading setting to projects
+
+### Background
+
+The first iteration of the cascading settings framework was for instance and group-level settings only.
+
+Later on, there was a need to add this setting to projects as well. Projects in GitLab also have namespaces, so you might think it would be easy to extend the existing framework to projects by using the same column in the `namespace_settings` table that was added for the group-level setting. But, it made more sense to add cascading project settings to the `project_settings` table.
+
+Why, you may ask? Well, because it turns out that:
+
+- Every user, project, and group in GitLab belongs to a namespace
+- Namespace `has_one` namespace_settings record
+- When a group or user is created, its namespace + namespace settings are created via service objects ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/4ec1107b20e75deda9c63ede7108b03cbfcc0cf2/app/services/groups/create_service.rb#L20)).
+- When a project is created, a namespace is created but no namespace settings are created.
+
+In addition, we do not expose project-level namespace settings in the GitLab UI anywhere. Instead, we use project settings. One day, we hope to be able to use namespace settings for project settings. But today, it is easier to add project-level settings to the `project_settings` table.
+
+### Implementation
+
+An example of adding a cascading setting to a project is in [MR 149931](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931).
+
+## Cascading setting values on write
+
+The only cascading setting that actually cascades values at the database level in the new recommended way is `duo_features_enabled`. That setting cascades from groups to projects. [Issue 505335](https://gitlab.com/gitlab-org/gitlab/-/issues/505335) describes adding this cascading from the application level to groups as well.
+
+### Legacy cascading settings writes
+
+In the first iteration of the cascading settings framework, the "cascade" was as the application code-level, not the database level. The way this works is that the setting value in the `application_settings` table has a default value. At the `namespace_settings` level, it does not. As a result, namespaces have a `nil` value at the databse level but "inherit" the `application_settings` value.
+
+If the group is updated to have a new setting value, that takes precedent over the default value at the `application_settings` level. And, any subgroups will inherit the parent group's setting value because they also have a `nil` value at the database level but inherit the parent value from the `namespace_settings` table. If one of the subgroups update the setting, however, then that overrides the parent group.
+
+This introduces some potentially confusing logic.
+
+If the setting value changes at the `application_settings` level:
+
+- Any root-level groups that have the setting value set to `nil` will inherit the new value.
+- Any root-level groups that have the setting value set to a value other than `nil` will not inherit the new value.
+
+If the setting value changes at the `namespace_settings` level:
+
+- Any subgroups or projects that have the setting value set to `nil` will inherit the new value from the parent group.
+- Any subgroups or projects that have the setting value set to a value other than `nil` will not inherit the new value from the parent group.
+
+Because the database-level values cannot be seen in the UI or by using the API (because those both show the inherited value), an instance or group admin may not understand which groups/projects inherit the value or not.
+
+The exception to the inconsistent cascading behavior is if the setting is `locked`. This always "forces" inheritance.
+
+In addition to the confusing logic, this also creates a performance problem whenever the value is read: if the settings value is queried for a deeply nested hierarchy, the settings value for the whole hierarchy may need to be read to know the setting value.
+
+### Recommendation for cascading settings writes going forward
+
+To provide a clearer logic chain and improve performance, you should be adding default values to newly-added cascading settings and doing a write on all child objects in the hierarchy when the setting value is updated. This requires kicking off a job so that the update happens asynchronously. An example of how to do this is in [MR 145876](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145876).
+
+Cascading settings that were added previously still have default `nil` values and read the ancestor hierarchy to find inherited settings values. But to minimize confusion we should update those to cascade on write. [Issue 483143](https://gitlab.com/gitlab-org/gitlab/-/issues/483143) describes this maintenance task.
 
 ## Display cascading settings on the frontend
 
