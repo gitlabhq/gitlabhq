@@ -172,22 +172,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         expect(expiring_token.thirty_days_notification_sent_at).to eq(Time.current)
         expect(expiring_token.sixty_days_notification_sent_at).to be_nil
       end
-
-      context 'when expiring_pats_30d_60d_notifications feature flag is disabled' do
-        before do
-          stub_feature_flags(expiring_pats_30d_60d_notifications: false)
-        end
-
-        it 'does not call notification services' do
-          expect(worker).not_to receive(:notification_service)
-
-          worker.perform
-        end
-
-        it 'does not change the notification delivered of the token' do
-          expect { worker.perform }.not_to change { expiring_token.reload.thirty_days_notification_sent_at }
-        end
-      end
     end
 
     context 'when tokens expire within 60 days' do
@@ -217,22 +201,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         expect(expiring_token.seven_days_notification_sent_at).to be_nil
         expect(expiring_token.thirty_days_notification_sent_at).to be_nil
         expect(expiring_token.sixty_days_notification_sent_at).to eq(Time.current)
-      end
-
-      context 'when expiring_pats_30d_60d_notifications feature flag is disabled' do
-        before do
-          stub_feature_flags(expiring_pats_30d_60d_notifications: false)
-        end
-
-        it 'does not call notification services' do
-          expect(worker).not_to receive(:notification_service)
-
-          worker.perform
-        end
-
-        it 'does not change the notification delivered of the token' do
-          expect { worker.perform }.not_to change { expiring_token.reload.sixty_days_notification_sent_at }
-        end
       end
     end
 

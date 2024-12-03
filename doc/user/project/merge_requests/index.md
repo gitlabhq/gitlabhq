@@ -384,7 +384,7 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 ## Move notifications and to-dos
 
-DETAILs:
+DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 

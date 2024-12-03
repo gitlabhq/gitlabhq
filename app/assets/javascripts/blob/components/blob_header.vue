@@ -101,6 +101,11 @@ export default {
       required: false,
       default: true,
     },
+    editButtonVariant: {
+      type: String,
+      required: false,
+      default: 'confirm',
+    },
   },
   data() {
     return {
@@ -163,6 +168,7 @@ export default {
       <web-ide-link
         v-if="showWebIdeLink"
         :show-edit-button="!isBinary"
+        :button-variant="editButtonVariant"
         class="gl-mr-3"
         :edit-url="blob.editBlobPath"
         :web-ide-url="blob.ideEditPath"

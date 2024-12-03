@@ -40,26 +40,34 @@ When you view a GitLab project in VS Code, the extension shows you information a
 
 ## Set up the GitLab Workflow extension
 
-This extension requires you to create a GitLab personal access token, and assign it to the extension:
+To set up the GitLab Workflow extension for VS Code:
 
-1. [Install the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-   from the Visual Studio Marketplace and enable it. If you use an unofficial version of VS Code, install the
-   extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
-1. To sign in to your GitLab instance, run the command **GitLab: Authenticate** in VS Code.
-   1. Open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-      - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   1. In the Command Palette, search for **GitLab: Authenticate** and press <kbd>Enter</kbd>.
-   1. Select your GitLab instance URL from the offered options, or enter one manually.
-      - When manually adding an instance to **URL to GitLab instance**, paste the full URL to your
-        GitLab instance, including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
-   1. For `GitLab.com`, you can use the OAuth authentication method.
-   1. If you don't use OAuth, use a personal access token to sign in.
-      - If you have an existing personal access token with `api` scope, select **Enter an existing token** to enter it.
-      - If you don't, select **Create a token first**, and the extension opens the token settings page for you.
-        If this method fails, follow the instructions to [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token).
-   1. Copy the token. _For security reasons, this value is never displayed again, so you must copy this value now._
-   1. Paste in your GitLab personal access token and press <kbd>Enter</kbd>. The token is not displayed, nor is it accessible to others.
+First, install the extension:
+
+- [Go to the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+  and install and enable the extension.
+- If you use an unofficial version of VS Code, install the
+  extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
+
+Second, authenticate with GitLab:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Type `GitLab: Authenticate` and press <kbd>Enter</kbd>.
+1. Select your GitLab instance URL from the options, or enter one manually.
+   - If you enter one manually, in **URL to GitLab instance**, paste the full URL,
+     including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
+1. Authenticate with GitLab. For `GitLab.com`, you can use the OAuth authentication method.
+   If you don't use OAuth, use a personal access token to sign in:
+   - If you have an existing personal access token with the `api` scope, select **Enter an existing token**.
+   - If you don't:
+     1. Select **Create a token first**. The token settings page opens.
+        If this method fails, follow the instructions to
+        [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token).
+     1. Copy the token. For security reasons, this value is never displayed again.
+     1. Paste your GitLab personal access token and press <kbd>Enter</kbd>.
+        The token is not displayed, and it is not accessible to others.
 
 The extension matches your Git repository remote URL with the GitLab instance URL you specified
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
@@ -72,12 +80,26 @@ The extension shows information in the VS Code status bar if both:
 
 ## Configure extension settings
 
-After you install GitLab Workflow, go to **Settings > Extensions > GitLab Workflow** in VS Code to configure its settings:
+After you install GitLab Workflow, go to **Settings > Extensions > GitLab Workflow**
+in VS Code to configure settings.
 
 - [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code).
 - [Features to display or hide](settings.md#extension-settings).
 - [Self-signed certificate](troubleshooting.md#configure-self-signed-certificates) information.
 - [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
+
+### Confirm that GitLab Duo is on
+
+If you are assigned a seat, GitLab Duo AI-powered features are turned on by default.
+However, to confirm that you have GitLab Duo, including Duo Chat and Code Suggestions,
+turned on:
+
+1. In VS Code, open the extension by going to **Settings > Extensions > GitLab Workflow**.
+1. Select **Manage** (**{settings}**).
+1. Ensure that **GitLab › Duo Chat: Enabled** and **GitLab › Duo Code Suggestions: Enabled** are selected.
+1. Optional. For **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
+   select the languages you want to suggest or generate code for.
+1. Optional. For **GitLab › Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
 
 ### Customize keyboard shortcuts
 

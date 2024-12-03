@@ -16,6 +16,7 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 export const Blob = Template.bind({});
+export const WithButtonVariant = Template.bind({});
 
 const defaultArgs = {
   isFork: false,
@@ -35,4 +36,9 @@ Default.args = {
 Blob.args = {
   ...defaultArgs,
   isBlob: true,
+};
+
+WithButtonVariant.args = {
+  ...defaultArgs,
+  buttonVariant: 'confirm',
 };

@@ -42,10 +42,6 @@ module AccessTokensHelper
       min_date: 1.day.from_now.iso8601
     }
   end
-
-  def show_token_expiration_banner?
-    Gitlab::Auth::TokenExpirationBanner.show_token_expiration_banner?
-  end
 end
 
 AccessTokensHelper.prepend_mod

@@ -93,7 +93,7 @@ export default {
     >
       <span class="js-assignee-tooltip">
         <span class="gl-block gl-font-bold">{{ s__('Label|Assignee') }}</span> {{ assignee.name }}
-        <span v-if="assignee.username" class="text-white-50">@{{ assignee.username }}</span>
+        <span v-if="assignee.username">@{{ assignee.username }}</span>
       </span>
     </user-avatar-link>
     <span

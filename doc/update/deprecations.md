@@ -234,7 +234,7 @@ the setting to **Only this project and any groups and projects in the allowlist*
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### CI/CD job token - **Limit access _from_ your project** setting removal
+### CI/CD job token - **Limit access from your project** setting removal
 
 <div class="deprecation-notes">
 

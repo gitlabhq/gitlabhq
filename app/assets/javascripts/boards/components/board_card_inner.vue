@@ -366,7 +366,7 @@ export default {
           <span class="js-assignee-tooltip">
             <span class="gl-block gl-font-bold">{{ __('Assignee') }}</span>
             {{ assignee.name }}
-            <span class="text-white-50">@{{ assignee.username }}</span>
+            <span>@{{ assignee.username }}</span>
           </span>
         </user-avatar-link>
         <span

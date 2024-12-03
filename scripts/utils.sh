@@ -517,7 +517,60 @@ function log_disk_usage() {
       echo "If this problem persists, please contact #g_hosted_runners team."
       echo "NOTE: This job will be retried automatically."
       echo "********************************************************************"
-      exit 111
+
+      exit_code=111
+      alert_job_in_slack $exit_code "Auto-retried due to low free disk space."
+
+      exit $exit_code
     fi
   fi
+}
+
+function alert_job_in_slack() {
+  exit_code=$1
+  alert_reason=$2
+  local slack_channel="#dx_development-analytics_alerts"
+
+  echo "Reporting ${CI_JOB_URL} to Slack channel ${slack_channel}"
+
+  json_payload=$(cat <<JSON
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Job <${CI_JOB_URL}|${CI_JOB_NAME}> in pipeline <${CI_PIPELINE_URL}|#${CI_PIPELINE_ID}> needs attention*"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Branch:* \n\`${CI_COMMIT_REF_NAME}\`"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Project:* \n<${CI_PROJECT_URL}|${CI_PROJECT_PATH}>"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Error code:* \n\`${exit_code}\`"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Reason:* \n${alert_reason}"
+				}
+			]
+		}
+	],
+  "channel": "${slack_channel}"
+}
+JSON
+)
+
+  curl --silent -o /dev/null -X POST "${CI_SLACK_WEBHOOK_URL}" \
+    -H 'Content-type: application/json' \
+    -d "${json_payload}"
 }

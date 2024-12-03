@@ -84,6 +84,11 @@ export default {
       required: false,
       default: '',
     },
+    buttonVariant: {
+      type: String,
+      required: false,
+      default: null,
+    },
     pipelineEditorUrl: {
       type: String,
       required: false,
@@ -146,6 +151,12 @@ export default {
     },
     hasActions() {
       return this.actions.length > 0;
+    },
+    editButtonVariant() {
+      if (this.buttonVariant) {
+        return this.buttonVariant;
+      }
+      return this.isBlob ? 'confirm' : 'default';
     },
     editAction() {
       if (!this.showEditButton) return null;
@@ -295,7 +306,7 @@ export default {
 <template>
   <div v-if="hasActions" :class="cssClasses">
     <gl-disclosure-dropdown
-      :variant="isBlob ? 'confirm' : 'default'"
+      :variant="editButtonVariant"
       :category="isBlob ? 'primary' : 'secondary'"
       :toggle-text="$options.i18n.toggleText"
       data-testid="action-dropdown"

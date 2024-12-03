@@ -84,7 +84,11 @@ function rspec_simple_job() {
   local rspec_cmd="bin/rspec $(rspec_args "${1}" "${2}" "${3}")"
   echoinfo "Running RSpec command: ${rspec_cmd}"
 
-  eval "${rspec_cmd}"
+  eval "${rspec_cmd}" || exit_code=$?
+
+  change_exit_code_if_known_infra_error $exit_code || exit_code=$?
+
+  exit $exit_code
 }
 
 function rspec_simple_job_with_retry () {
@@ -228,6 +232,31 @@ function change_exit_code_if_known_flaky_tests() {
   return "${new_exit_code}"
 }
 
+function change_exit_code_if_known_infra_error() {
+  exit_code=$1
+
+  if [[ $exit_code -ne 0 ]]; then
+    echo "*******************************************************"
+    echo "Checking whether there was a known infrastructure error"
+    echo "*******************************************************"
+
+    found_infrastructure_error || found_infrastructure_error_status=$?
+
+    if [[ $found_infrastructure_error_status -eq 0 ]]; then
+      echo "Changing the CI/CD job exit code to 110."
+
+      exit_code=110
+
+      alert_job_in_slack $exit_code "Auto-retried due to infrastructure error."
+
+    else
+      echo "Not changing the CI/CD job exit code."
+    fi
+  fi
+
+  return $exit_code
+}
+
 function found_known_flaky_tests() {
   # For the input files, we want to get both rspec-${CI_JOB_ID}.json (first RSpec run)
   # and rspec-retry-${CI_JOB_ID}.json (second RSpec run).
@@ -239,6 +268,13 @@ function found_known_flaky_tests() {
     --project "gitlab-org/gitlab" \
     --input-files "rspec/rspec-*${CI_JOB_ID}.json" \
     --health-problem-type failures;
+}
+
+function found_infrastructure_error() {
+  bundle exec detect-infrastructure-failures \
+    --job-id "${CI_JOB_ID}" \
+    --project "${CI_PROJECT_ID}" \
+    --token "${TEST_FAILURES_PROJECT_TOKEN}"
 }
 
 function rspec_parallelized_job() {

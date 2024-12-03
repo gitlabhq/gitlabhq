@@ -83,12 +83,4 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
       end
     end
   end
-
-  describe '#show_token_expiration_banner?' do
-    it 'calls the singleton method from the module' do
-      expect(Gitlab::Auth::TokenExpirationBanner).to receive(:show_token_expiration_banner?)
-
-      helper.show_token_expiration_banner?
-    end
-  end
 end

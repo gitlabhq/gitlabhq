@@ -105,18 +105,20 @@ If you have selected code in the editor, this selection is sent along with your 
 > - Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
 > - Changed to generally available in GitLab 16.11.
 
+Prerequisites:
+
+- [Install the Workflow extension for VS Code and authenticate with GitLab](../../editor_extensions/visual_studio_code/index.md#set-up-the-gitlab-workflow-extension).
+- [Confirm that GitLab Duo is on](../../editor_extensions/visual_studio_code/index.md#confirm-that-gitlab-duo-is-on).
+ 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
-1. Install and set up the Workflow extension for VS Code:
-   1. In VS Code, download and install the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md).
-   1. Configure the [GitLab Workflow extension](../../editor_extensions/visual_studio_code/index.md).
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
      1. Select **Explain selected code** or **Generate Tests**.
-   - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac)
+   - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac).
 1. In the message box, enter your question and press **Enter** or select **Send**.
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.

@@ -170,9 +170,9 @@ usually a good idea.
 
 **Label:** `flaky-test::improper synchronization`
 
-**Description:** A flaky test issue caused by failing to account for delays, eventual consistency,
-asynchronous operations, or race conditions, leading to tests that assume an immediate state or experience
-unpredictable behavior due to the timing or order of events.
+**Description:** A flaky test issue arising from timing-related factors, such as delays, eventual consistency, asynchronous operations, or race conditions.
+These issues may stem from shortcomings in the test logic, the system under test, or their interaction.
+While tests can sometimes address these issues through improved synchronization, they may also reveal underlying system bugs that require resolution.
 
 **Difficulty to reproduce:** Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
 element on a page that is not yet rendered, or in unit tests by failing to wait for an asynchronous operation to complete.

@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillWorkItemProgressesNamespaceId
+description: Backfills sharding key `work_item_progresses.namespace_id` from `issues`.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174410
+milestone: '17.7'
+queued_migration_version: 20241202143623
+finalized_by: # version of the migration that finalized this BBM

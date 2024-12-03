@@ -130,7 +130,7 @@ contain a secret. To instead have only the changes (diff) scanned for secrets wh
 the Git CLI client, enable diff scanning.
 
 Changes committed by using the Web IDE still result in the entire file being scanned due to a
-technical limitation. Support for improvements are proposed in
+technical limitation. Support for improvements is proposed in
 [issue 491282](https://gitlab.com/gitlab-org/gitlab/-/issues/491282).
 
 ## Resolve a blocked push

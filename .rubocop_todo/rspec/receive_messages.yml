@@ -600,7 +600,6 @@ RSpec/ReceiveMessages:
     - 'spec/views/projects/tags/index.html.haml_spec.rb'
     - 'spec/views/projects/tree/show.html.haml_spec.rb'
     - 'spec/views/shared/_broadcast_message.html.haml_spec.rb'
-    - 'spec/views/shared/_token_expiration_banner.html.haml_spec.rb'
     - 'spec/views/shared/projects/_list.html.haml_spec.rb'
     - 'spec/views/shared/projects/_project_card.html.haml_spec.rb'
     - 'spec/views/user_settings/ssh_keys/_key.html.haml_spec.rb'
