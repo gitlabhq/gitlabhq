@@ -170,6 +170,15 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
         expect { import_state.finish }.to change { import_state.last_error }.from(error_message).to(nil)
       end
 
+      it 'sets the user mapping feature flag state from import data for other transitions' do
+        import_state = create(:import_state, :started)
+        import_state.project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true }).save!
+
+        import_state.finish
+
+        expect(import_state.user_mapping_enabled).to be(true)
+      end
+
       it 'enqueues housekeeping when an import of a fresh project is completed' do
         project = create(:project_empty_repo, :import_started, import_type: :github)
 
@@ -230,6 +239,15 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
         end.to change { project.import_data }
           .from(import_data).to(nil)
       end
+
+      it 'sets the user mapping feature flag state from import data for other transitions' do
+        import_state = create(:import_state, :scheduled)
+        import_state.project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true }).save!
+
+        import_state.cancel
+
+        expect(import_state.user_mapping_enabled).to be(true)
+      end
     end
 
     context 'state transition: started: [:finished, :canceled, :failed]' do
@@ -260,6 +278,92 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
 
           expect(project.import_state.checksums).to eq(expected_checksums)
         end
+      end
+    end
+  end
+
+  describe 'completion notification trigger', :aggregate_failures do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, :import_user_mapping_enabled, namespace: group) }
+    let_it_be(:group_owner) { create(:user) }
+
+    let(:user_mapping_enabled) { true }
+
+    subject(:import_state) { create(:import_state, status: initial_status, project: project) }
+
+    before_all do
+      group.add_owner(group_owner)
+      group.add_owner(project.creator)
+    end
+
+    shared_examples 'only the project creator is notified' do |event|
+      it 'only sends completion email to the project creator' do
+        expect(Notify).to receive(:project_import_complete)
+          .with(project.id, project.creator_id, user_mapping_enabled)
+          .and_call_original
+
+        import_state.send(:"#{event}!")
+      end
+    end
+
+    shared_examples 'not a completing event' do |event, initial_status|
+      let(:initial_status) { initial_status }
+
+      it 'does not send any completion emails' do
+        expect(Notify).not_to receive(:project_import_complete)
+
+        import_state.send(:"#{event}!")
+      end
+    end
+
+    it_behaves_like 'not a completing event', :schedule, :none
+    it_behaves_like 'not a completing event', :force_start, :none
+    it_behaves_like 'not a completing event', :start, :scheduled
+    it_behaves_like 'not a completing event', :cancel, :started
+
+    context 'when the import state transitions to finished' do
+      let(:event) { :finish }
+      let(:initial_status) { :started }
+
+      it 'sends a completion email to the project creator and group owners' do
+        allow(Notify).to receive(:project_import_complete).and_call_original
+
+        import_state.send(:"#{event}!")
+
+        expect(Notify).to have_received(:project_import_complete).with(project.id, project.creator_id, true)
+        expect(Notify).to have_received(:project_import_complete).with(project.id, group_owner.id, true)
+      end
+
+      context 'when the project was imported to a personal namespace' do
+        let_it_be(:project) { create(:project, :import_user_mapping_enabled) }
+
+        it_behaves_like 'only the project creator is notified', :finish
+      end
+
+      context 'when user mapping is disabled' do
+        let(:user_mapping_enabled) { false }
+
+        before do
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled }).save!
+        end
+
+        it_behaves_like 'only the project creator is notified', :finish
+      end
+    end
+
+    context 'when the import state transitions to failed' do
+      let(:initial_status) { :started }
+
+      it_behaves_like 'only the project creator is notified', :fail_op
+
+      context 'when user mapping is disabled' do
+        let(:user_mapping_enabled) { false }
+
+        before do
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled }).save!
+        end
+
+        it_behaves_like 'only the project creator is notified', :fail_op
       end
     end
   end

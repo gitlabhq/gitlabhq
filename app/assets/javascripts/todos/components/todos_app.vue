@@ -246,7 +246,9 @@ export default {
 
 <template>
   <div>
-    <div class="gl-flex gl-justify-between gl-border-b-1 gl-border-default gl-border-b-solid">
+    <div
+      class="gl-flex gl-flex-wrap-reverse gl-justify-between gl-border-b-1 gl-border-default gl-border-b-solid"
+    >
       <gl-tabs
         :value="currentTab"
         content-class="gl-p-0"
@@ -273,7 +275,7 @@ export default {
         </gl-tab>
       </gl-tabs>
 
-      <div class="gl-my-3 gl-mr-5 gl-flex gl-items-center gl-justify-end gl-gap-3">
+      <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
         <todos-mark-all-done-button
           v-if="showMarkAllAsDone"
           :filters="queryFilterValues"

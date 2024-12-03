@@ -249,7 +249,11 @@ export default {
         :style="activeIndicatorStyle"
         data-testid="active-indicator"
       ></div>
-      <div v-if="!isFlyout" class="gl-flex gl-w-6 gl-shrink-0">
+      <div
+        v-if="!isFlyout"
+        class="gl-flex gl-w-6 gl-shrink-0"
+        :class="{ 'gl-self-start': hasAvatar }"
+      >
         <slot name="icon">
           <gl-icon
             v-if="item.icon"
@@ -259,7 +263,8 @@ export default {
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
-            class="js-draggable-icon show-on-focus-or-hover--target super-sidebar-mix-blend-mode gl-m-auto gl-cursor-grab gl-text-gray-400"
+            class="js-draggable-icon show-on-focus-or-hover--target super-sidebar-mix-blend-mode gl-m-auto gl-cursor-grab"
+            variant="subtle"
           />
           <gl-avatar
             v-else-if="hasAvatar"
@@ -272,7 +277,7 @@ export default {
         </slot>
       </div>
       <div
-        class="gl-grow gl-text-default"
+        class="gl-grow gl-break-all gl-text-default"
         :class="{ 'gl-w-max': isFlyout }"
         data-testid="nav-item-link-label"
       >

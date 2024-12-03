@@ -32,6 +32,10 @@ module Namespaces
       Array.wrap(owner)
     end
 
+    def owner_ids
+      owners.map(&:id)
+    end
+
     def member?(user, min_access_level = Gitlab::Access::GUEST)
       return false unless user
 

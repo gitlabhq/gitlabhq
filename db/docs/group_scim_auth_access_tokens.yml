@@ -11,3 +11,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170565/
 gitlab_schema: gitlab_main_cell
 sharding_key:
   group_id: namespaces
+table_size: small

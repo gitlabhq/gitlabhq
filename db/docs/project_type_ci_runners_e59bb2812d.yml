@@ -11,3 +11,4 @@ milestone: '17.6'
 gitlab_schema: gitlab_ci
 sharding_key:
   sharding_key_id: projects
+table_size: small

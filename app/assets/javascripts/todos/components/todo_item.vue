@@ -50,7 +50,7 @@ export default {
       :href="targetUrl"
       :data-track-label="trackingLabel"
       :data-track-action="$options.TRACK_ACTION"
-      class="gl-flex gl-flex-wrap gl-gap-x-2 !gl-text-default !gl-no-underline !gl-outline-none sm:gl-flex-nowrap sm:gl-items-center"
+      class="gl-flex gl-flex-wrap gl-justify-end gl-gap-x-2 !gl-text-default !gl-no-underline !gl-outline-none sm:gl-flex-nowrap sm:gl-items-center"
     >
       <div
         class="gl-w-64 gl-flex-grow-2 gl-self-center gl-overflow-hidden gl-overflow-x-auto sm:gl-w-auto"
@@ -58,11 +58,12 @@ export default {
         <todo-item-title :todo="todo" />
         <todo-item-body :todo="todo" :current-user-id="currentUserId" />
       </div>
-      <todo-item-actions
-        :todo="todo"
-        class="sm:gl-order-3"
-        @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
-      />
+      <div class="sm:gl-order-3">
+        <todo-item-actions
+          :todo="todo"
+          @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
+        />
+      </div>
       <todo-item-timestamp
         :todo="todo"
         class="gl-w-full gl-whitespace-nowrap gl-px-2 sm:gl-w-auto"

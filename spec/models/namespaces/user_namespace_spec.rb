@@ -10,12 +10,20 @@ RSpec.describe Namespaces::UserNamespace, type: :model do
     it { is_expected.to validate_presence_of(:owner) }
   end
 
-  describe '#owners' do
+  describe 'owner methods' do
     let(:owner) { build(:user) }
     let(:namespace) { build(:namespace, owner: owner) }
 
-    specify do
-      expect(namespace.owners).to match_array([owner])
+    describe '#owners' do
+      specify do
+        expect(namespace.owners).to match_array([owner])
+      end
+    end
+
+    describe '#owner_ids' do
+      specify do
+        expect(namespace.owner_ids).to match_array([owner.id])
+      end
     end
   end
 

@@ -480,6 +480,9 @@ export default {
         @clear="onFiltersCleared"
       />
       <gl-sorting
+        class="gl-flex"
+        dropdown-class="gl-w-full"
+        block
         :sort-options="$options.SORT_OPTIONS"
         :sort-by="sortBy"
         :is-ascending="isAscending"

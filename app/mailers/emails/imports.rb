@@ -12,12 +12,32 @@ module Emails
       )
     end
 
+    def project_import_complete(project_id, user_id, user_mapping_enabled)
+      user = User.find(user_id)
+      @project = Project.find(project_id)
+      @namespace = @project.root_ancestor
+      @hostname = @project.import_url
+      @user_mapping_available = user_mapping_enabled && !@namespace.user_namespace? && !@project.import_failed?
+      @is_group_owner = user.can?(:admin_namespace, @namespace)
+      @is_project_creator = user_id == @project.creator_id
+
+      title = safe_format(
+        s_('Import|Import from %{hostname} completed'),
+        hostname: @hostname
+      )
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(title)
+      )
+    end
+
     def bulk_import_complete(user_id, bulk_import_id)
       user = User.find(user_id)
       @bulk_import = BulkImport.find(bulk_import_id)
       @hostname = @bulk_import.configuration.url
       title = safe_format(
-        s_('BulkImport|Import from %{hostname} completed'),
+        s_('Import|Import from %{hostname} completed'),
         hostname: @hostname
       )
 
