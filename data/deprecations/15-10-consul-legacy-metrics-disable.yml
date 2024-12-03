@@ -6,7 +6,7 @@
   stage: enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7278  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The Consul provided in the GitLab Omnibus package will no longer provide older deprecated Consul metrics starting in GitLab 16.0.
+    The Consul provided in the Linux package will no longer provide older deprecated Consul metrics starting in GitLab 16.0.
 
     In GitLab 14.0, [Consul was updated to 1.9.6](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5344),
     which deprecated some telemetry metrics from being at the `consul.http` path. In GitLab 16.0, the `consul.http` path will be removed.

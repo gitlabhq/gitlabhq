@@ -6,4 +6,4 @@
   stage: Secure  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430966  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    As of GitLab 17.0, Proxy-based DAST will not be supported. Please migrate to Browser-based DAST to continue analyzing your projects for security findings via dynamic analysis.  [Breach and Attack Simulation](https://docs.gitlab.com/ee/user/application_security/breach_and_attack_simulation/), an incubating feature which is built on top of Proxy-based DAST, is also included in this deprecation and will not be supported after 17.0.
+    As of GitLab 17.0, Proxy-based DAST will not be supported. Please migrate to Browser-based DAST to continue analyzing your projects for security findings via dynamic analysis. [Breach and Attack Simulation](https://docs.gitlab.com/ee/user/application_security/breach_and_attack_simulation/), an incubating feature which is built on top of Proxy-based DAST, is also included in this deprecation and will not be supported after 17.0.

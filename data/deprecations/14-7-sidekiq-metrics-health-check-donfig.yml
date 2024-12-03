@@ -19,7 +19,7 @@
 
     For the deprecation period those settings are optional
     and GitLab will default the Sidekiq health-checks port to the same port as `sidekiq_exporter`
-    and only run one server (not changing the current behaviour).
+    and only run one server (not changing the current behavior).
     Only if they are both set and a different port is provided, a separate metrics server will spin up
     to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
   stage: Enablement

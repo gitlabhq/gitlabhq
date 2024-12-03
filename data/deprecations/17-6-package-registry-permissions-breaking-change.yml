@@ -15,4 +15,4 @@
 
     This change streamlines package sharing capabilities within organizations and simplifies access management for package consumers by providing consistent behavior across all GitLab deployments.
 
-    Project Owners and Maintainers should review their private projects' lists of members. Users with the Guest role who should not have package pulling capabilities should be removed. If more restrictive package access is required, consider using project access tokens instead of guest access.
+    Project Owners and Maintainers should review their private projects' lists of members. Users with the Guest role who should not have package pulling capabilities should be removed. If more restrictive package access is required, consider using project access tokens instead of guest role.

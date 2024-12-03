@@ -1,4 +1,4 @@
-- title: "'repository_download_operation' audit event type for public projects"
+- title: "`repository_download_operation` audit event type for public projects"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true

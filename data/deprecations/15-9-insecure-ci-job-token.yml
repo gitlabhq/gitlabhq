@@ -22,7 +22,7 @@
     in GitLab 16.0 and scheduled for removal in GitLab 18.0.
 
     The **Limit access _from_ this project** setting is disabled by default for all new projects.
-    In GitLab 16.0 and later, you cannot re-enable this this setting after it is disabled in any project.
+    In GitLab 16.0 and later, you cannot re-enable this setting after it is disabled in any project.
     Instead, use the **Authorized groups and projects** setting to control job token access to your projects.
   #
   # OPTIONAL END OF SUPPORT FIELDS

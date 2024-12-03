@@ -8,7 +8,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts self-managed customers that have connected their external registry to the GitLab user interface to find, view, and delete container images.
 
-    Supporting both GitLab's container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://handbook.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
+    Supporting both the GitLab container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://handbook.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
 
     This change will not impact your ability to pull and push container images to external registries using pipelines.
 

@@ -10,5 +10,5 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369127  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The `omniauth-cas3` gem that provides GitLab with the CAS OmniAuth provider will be removed in our next major
-    release, GitLab 16.0. This gem sees very little use and its lack of upstream maintenance is preventing GitLab's
-    [upgrade to OmniAuth 2.0](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+    release, GitLab 16.0. This gem sees very little use and its lack of upstream maintenance is preventing GitLab from
+    [upgrading to OmniAuth 2.0](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).

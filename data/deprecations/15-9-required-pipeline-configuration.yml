@@ -19,7 +19,7 @@
     We recommend these alternative solutions because they provides greater flexibility, allowing required pipelines to be assigned to specific
     compliance framework labels.
 
-    Note: Compliance pipelines will be deprecated in the future and migrated to security policies. For more information, see the
+    Compliance pipelines will be deprecated in the future and migrated to security policies. For more information, see the
     [migration and deprecation epic](https://gitlab.com/groups/gitlab-org/-/epics/11275).
 #
 # OPTIONAL END OF SUPPORT FIELDS

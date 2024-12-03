@@ -11,6 +11,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+If your merge request builds upon a previous merge request, you might
+need to [include previously-merged commits for context](../user/project/merge_requests/commits.md#show-commits-from-previous-merge-requests).
+Use this API to add commits to a merge request for more context.
+
 ## List MR context commits
 
 Get a list of merge request context commits.

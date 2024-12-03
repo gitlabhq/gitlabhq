@@ -1,21 +1,3 @@
-# Use this template to announce a feature deprecation or other
-# important planned changes at least three releases prior to removal.
-# Breaking changes must happen in a major release.
-#
-# See the deprecation guidelines to confirm your understanding of GitLab's definitions:
-# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
-#
-# If an End of Support period applies, see the OPTIONAL section below.
-#
-# For more information, see the handbook:
-# https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
-
-# ===================
-# REQUIRED FIELDS
-# ===================
-
-# ----- DELETE EVERYTHING ABOVE THIS LINE -----
-
 - title: "`workflow:rules` templates"
   # The milestones for the deprecation announcement, and the removal.
   removal_milestone: "19.0"

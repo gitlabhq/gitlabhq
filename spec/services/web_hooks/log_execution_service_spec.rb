@@ -6,12 +6,8 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
   include ExclusiveLeaseHelpers
   using RSpec::Parameterized::TableSyntax
 
-  describe '#execute' do
-    around do |example|
-      travel_to(Time.current) { example.run }
-    end
-
-    let_it_be_with_reload(:project_hook) { create(:project_hook, :token) }
+  describe '#execute', :freeze_time do
+    let_it_be_with_reload(:project_hook) { create(:project_hook) }
 
     let(:idempotency_key) { SecureRandom.uuid }
     let(:response_category) { :ok }
@@ -35,6 +31,18 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       expect { service.execute }.to change(::WebHookLog, :count).by(1)
 
       expect(WebHookLog.recent.first).to have_attributes(data)
+    end
+
+    context 'when data contains unsafe YAML properties' do
+      before do
+        data[:request_data] = { data: described_class }
+      end
+
+      it 'casts to safe properties and logs the data' do
+        expect { service.execute }.to change(::WebHookLog, :count).by(1)
+
+        expect(WebHookLog.recent.first).to have_attributes('request_data' => { 'data' => described_class.to_s })
+      end
     end
 
     it 'updates the last failure' do
@@ -166,7 +174,7 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
     end
 
     context 'with X-Gitlab-Token' do
-      let(:request_headers) { { 'X-Gitlab-Token' => project_hook.token } }
+      let(:request_headers) { { 'X-Gitlab-Token' => 'secret_token' } }
 
       it 'redacts the token' do
         service.execute

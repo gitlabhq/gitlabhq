@@ -8,7 +8,6 @@ module AuthorizedProjectUpdate
     urgency :high
     queue_namespace :authorized_project_update
 
-    deduplicate :until_executing, including_scheduled: true
     idempotent!
 
     def perform(project_id, user_id)
@@ -17,9 +16,9 @@ module AuthorizedProjectUpdate
 
       return unless project && user
 
-      in_lock(lock_key(project), ttl: 10.seconds) do
-        AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
-      end
+      service = AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user)
+
+      recalculate(project, service)
     end
   end
 end

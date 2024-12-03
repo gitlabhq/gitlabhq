@@ -1,25 +1,3 @@
-# Use this template to announce a feature deprecation or other
-# important planned changes at least three releases prior to removal.
-# Breaking changes must happen in a major release.
-#
-# Copy this template into a new file in /data/deprecations, and name the file similar to:
-# `16-9-deprecated-feature.yml`, where `16-9` is the announcement milestone,
-# not the removal milestone.
-#
-# See the deprecation guidelines to confirm your understanding of GitLab's definitions:
-# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
-#
-# If an End of Support period applies, see the OPTIONAL section below.
-#
-# For more information, see the handbook:
-# https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
-
-# ===================
-# REQUIRED FIELDS
-# ===================
-
-# ----- DELETE EVERYTHING ABOVE THIS LINE -----
-
 - title: "Pipeline subscriptions"
   # The milestones for the deprecation announcement, and the removal.
   removal_milestone: "18.0"
