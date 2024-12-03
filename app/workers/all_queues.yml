@@ -3783,6 +3783,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: pages_reset_pages_default_domain_redirect
+  :worker_name: Pages::ResetPagesDefaultDomainRedirectWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: post_receive
   :worker_name: PostReceive
   :feature_category: :source_code_management

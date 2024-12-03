@@ -407,6 +407,7 @@ class Group < Namespace
       project_creation_allowed_on_levels = [
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS,
         nil
       ]
 

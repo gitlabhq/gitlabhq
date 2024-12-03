@@ -65,6 +65,14 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
   end
 
+  condition(:owner_access, scope: :subject) do
+    @subject.project_creation_level == ::Gitlab::Access::OWNER_PROJECT_ACCESS
+  end
+
+  condition(:maintainer_access, scope: :subject) do
+    @subject.project_creation_level == ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+  end
+
   condition(:developer_maintainer_access, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
   end
@@ -158,6 +166,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { admin }.policy do
     enable :update_max_artifacts_size
+    enable :create_projects
   end
 
   rule { can?(:read_all_resources) }.policy do
@@ -245,7 +254,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { maintainer }.policy do
     enable :destroy_package
-    enable :create_projects
     enable :import_projects
     enable :admin_pipeline
     enable :admin_build
@@ -327,6 +335,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock)
   end.enable :change_share_with_group_lock
 
+  rule { owner & owner_access }.enable :create_projects
+  rule { maintainer & maintainer_access }.enable :create_projects
   rule { developer & developer_maintainer_access }.enable :create_projects
   rule { create_projects_disabled }.policy do
     prevent :create_projects

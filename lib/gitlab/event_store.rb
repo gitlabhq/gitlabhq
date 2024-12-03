@@ -51,6 +51,7 @@ module Gitlab
         if: ->(event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
       store.subscribe ::Ci::InitializePipelinesIidSequenceWorker, to: ::Projects::ProjectCreatedEvent
       store.subscribe ::Pages::DeletePagesDeploymentWorker, to: ::Projects::ProjectArchivedEvent
+      store.subscribe ::Pages::ResetPagesDefaultDomainRedirectWorker, to: ::PagesDomains::PagesDomainDeletedEvent
     end
     private_class_method :configure!
   end

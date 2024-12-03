@@ -2,9 +2,10 @@
 
 module Users
   class MergeRequestInteraction
-    def initialize(user:, merge_request:)
+    def initialize(user:, merge_request:, current_user: nil)
       @user = user
       @merge_request = merge_request
+      @current_user = current_user
     end
 
     def declarative_policy_subject
@@ -37,7 +38,7 @@ module Users
       @reviewer ||= merge_request.merge_request_reviewers.find { |r| r.user_id == user.id }
     end
 
-    attr_reader :user, :merge_request
+    attr_reader :user, :merge_request, :current_user
   end
 end
 

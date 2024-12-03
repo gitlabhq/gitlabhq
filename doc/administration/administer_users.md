@@ -16,29 +16,29 @@ Administer and manage users in your self-managed GitLab installation.
 ## User accounts
 
 - [Create users](../user/profile/account/create_accounts.md)
-- [Reset user password](../security/reset_user_password.md)
-- [Unlock a user](../security/unlock_user.md)
+- [Reset user passwords](../security/reset_user_password.md)
+- [Locked user accounts](../security/unlock_user.md)
 - [User file uploads](../security/user_file_uploads.md)
 - [Delete users](../user/profile/account/delete_account.md)
 - [Configure the Libravatar service](../administration/libravatar.md)
 
 ## User types
 
+- [Auditor users](../administration/auditor_users.md)
 - [External users](../administration/external_users.md)
 - [Guest users](../administration/guest_users.md)
 - [Internal users](../administration/internal_users.md)
-- [Auditor users](../administration/auditor_users.md)
 
 ## User management
 
-- [Global user settings](../administration/user_settings.md)
+- [Modify global user settings](../administration/user_settings.md)
 - [Moderate users](../administration/moderate_users.md)
 - [Review abuse reports](../administration/review_abuse_reports.md)
 - [Review spam logs](../administration/review_spam_logs.md)
 - [User cohorts](../administration/user_cohorts.md)
 - [Broadcast messages](../administration/broadcast_messages.md)
 - [Email from GitLab](../administration/email_from_gitlab.md)
-- [Rake tasks](../raketasks/user_management.md)
+- [User management Rake tasks](../raketasks/user_management.md)
 
 ## Security and authentication
 

@@ -18552,7 +18552,7 @@ Self-hosted LLM servers.
 | <a id="aiselfhostedmodelhasapitoken"></a>`hasApiToken` | [`Boolean!`](#boolean) | Indicates if an API key is set for the self-hosted model server. |
 | <a id="aiselfhostedmodelid"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | ID of the self-hosted model server. |
 | <a id="aiselfhostedmodelidentifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
-| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | AI model deployed. |
+| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | Display name of the AI model deployed. |
 | <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
 | <a id="aiselfhostedmodelupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
 
@@ -29342,6 +29342,7 @@ Machine learning model in the model registry.
 | <a id="mlmodelcandidatecount"></a>`candidateCount` | [`Int`](#int) | Count of candidates in the model. |
 | <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
 | <a id="mlmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlmodeldefaultexperimentpath"></a>`defaultExperimentPath` | [`String`](#string) | Path to default experiment page for the model. |
 | <a id="mlmodeldescription"></a>`description` | [`String`](#string) | Description of the model. |
 | <a id="mlmodeldescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |

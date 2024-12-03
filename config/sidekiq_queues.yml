@@ -611,6 +611,8 @@
   - 1
 - - pages_domain_verification
   - 1
+- - pages_reset_pages_default_domain_redirect
+  - 1
 - - personal_access_tokens
   - 1
 - - pipeline_background

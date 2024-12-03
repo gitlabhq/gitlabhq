@@ -576,6 +576,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       it_behaves_like 'not allowed to transfer projects' do
+        let(:project_creation_level) { ::Gitlab::Access::OWNER_PROJECT_ACCESS }
+      end
+
+      it_behaves_like 'not allowed to transfer projects' do
         let(:project_creation_level) { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
       end
 
@@ -589,6 +593,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it_behaves_like 'not allowed to transfer projects' do
         let(:project_creation_level) { ::Gitlab::Access::NO_ONE_PROJECT_ACCESS }
+      end
+
+      it_behaves_like 'not allowed to transfer projects' do
+        let(:project_creation_level) { ::Gitlab::Access::OWNER_PROJECT_ACCESS }
       end
 
       it_behaves_like 'not allowed to transfer projects' do
@@ -607,6 +615,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         let(:project_creation_level) { ::Gitlab::Access::NO_ONE_PROJECT_ACCESS }
       end
 
+      it_behaves_like 'not allowed to transfer projects' do
+        let(:project_creation_level) { ::Gitlab::Access::OWNER_PROJECT_ACCESS }
+      end
+
       it_behaves_like 'allowed to transfer projects' do
         let(:project_creation_level) { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
       end
@@ -621,6 +633,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it_behaves_like 'not allowed to transfer projects' do
         let(:project_creation_level) { ::Gitlab::Access::NO_ONE_PROJECT_ACCESS }
+      end
+
+      it_behaves_like 'allowed to transfer projects' do
+        let(:project_creation_level) { ::Gitlab::Access::OWNER_PROJECT_ACCESS }
       end
 
       it_behaves_like 'allowed to transfer projects' do
@@ -648,6 +664,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { maintainer } | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { owner }      | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { admin }      | false
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS                 | lazy { planner }    | false
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS                 | lazy { reporter }   | false
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS                 | lazy { developer }  | false
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS                 | lazy { maintainer } | false
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS                 | lazy { owner }      | true
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS                 | lazy { admin }      | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { planner }    | false
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { reporter }   | false
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { developer }  | false
@@ -806,7 +828,41 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    context 'when group has project creation level set to maintainer only' do
+    context 'when group has project creation level set to owner' do
+      let(:project_creation_level) { ::Gitlab::Access::OWNER_PROJECT_ACCESS }
+
+      context 'planner' do
+        let(:current_user) { planner }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to maintainer' do
       let(:project_creation_level) { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
 
       context 'planner' do

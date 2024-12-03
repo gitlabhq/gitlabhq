@@ -1,4 +1,4 @@
-# Make sure to update the docs if this file moves. Docs URL: https://docs.gitlab.com/ee/development/migration_style_guide.html#when-to-use-the-helper-method
+---
 Migration/UpdateLargeTable:
   Enabled: true
   OverLimitTables:

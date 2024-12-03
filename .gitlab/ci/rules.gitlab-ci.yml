@@ -1033,7 +1033,10 @@
         ARCH: amd64,arm64
     - !reference [".build-images:rules:build-qa-image-merge-requests", rules]
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
-    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
+    # Always build on stable branches to serve release-environments pipeline
+    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
+    # to avoid the side effect of "never" rules
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 # When new minor release tag is pushed, re-tag gdk image with pattern ignored by registry cleanup
 .build-images:rules:retag-gdk-image:
@@ -1098,8 +1101,11 @@
       when: never
     - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
     - <<: *if-tag
-    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
     - !reference [".frontend:rules:assets-shared", rules]
+    # Always build on stable branches to serve release-environments pipeline
+    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
+    # to avoid the side effect of "never" rules
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 .build-images:rules:build-assets-image-as-if-foss:
   rules:
@@ -1302,8 +1308,11 @@
       when: never
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - <<: *if-tag
-    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
     - !reference [".frontend:rules:assets-shared", rules]
+    # Always build on stable branches to serve release-environments pipeline
+    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
+    # to avoid the side effect of "never" rules
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 .frontend:rules:compile-test-assets:
   rules:

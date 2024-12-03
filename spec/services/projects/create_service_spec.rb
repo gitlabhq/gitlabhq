@@ -277,6 +277,19 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     it_behaves_like 'has sync-ed traversal_ids'
 
+    context 'when user is not allowed to create projects' do
+      it 'does not create the project' do
+        maintainer_group =
+          create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) do |group|
+            group.add_maintainer(user)
+          end
+        project = create_project(user, opts.merge!(namespace_id: maintainer_group.id))
+
+        expect(project).not_to be_persisted
+        expect(project.errors.messages[:namespace].first).to eq('is not valid')
+      end
+    end
+
     context 'when project is an import' do
       let(:group) do
         create(:group).tap do |group|
