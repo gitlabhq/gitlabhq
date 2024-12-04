@@ -2,6 +2,7 @@
 - page_title _("Members")
 - show_the_header = can_invite_members_for_project?(@project) || project_can_be_shared?
 
+= render_if_exists 'shared/promotions/promote_planner_role'
 - if show_the_header
   = render ::Layouts::PageHeadingComponent.new(_("Project members")) do |c|
     - c.with_description do

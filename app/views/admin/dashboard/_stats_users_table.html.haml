@@ -10,6 +10,13 @@
     %td{ class: '!gl-p-5' }
       = s_('AdminArea|Users with highest role')
       %strong
+        = s_('AdminArea|Planner')
+    %td.gl-text-right{ class: '!gl-p-5' }
+      = @users_statistics&.with_highest_role_planner
+  %tr
+    %td{ class: '!gl-p-5' }
+      = s_('AdminArea|Users with highest role')
+      %strong
         = s_('AdminArea|Reporter')
     %td.gl-text-right{ class: '!gl-p-5' }
       = @users_statistics&.with_highest_role_reporter

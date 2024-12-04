@@ -3758,6 +3758,9 @@ msgstr ""
 msgid "AdminArea|Owner"
 msgstr ""
 
+msgid "AdminArea|Planner"
+msgstr ""
+
 msgid "AdminArea|Projects"
 msgstr ""
 
@@ -33462,6 +33465,9 @@ msgstr ""
 msgid "MemberRole|Direct users assigned"
 msgstr ""
 
+msgid "MemberRole|Dismiss Planner role promotion"
+msgstr ""
+
 msgid "MemberRole|Edit role"
 msgstr ""
 
@@ -33498,6 +33504,9 @@ msgstr ""
 msgid "MemberRole|Learn more about %{linkStart}available custom permissions%{linkEnd}."
 msgstr ""
 
+msgid "MemberRole|Learn more about roles and permissions"
+msgstr ""
+
 msgid "MemberRole|Manage roles"
 msgstr ""
 
@@ -33505,6 +33514,9 @@ msgid "MemberRole|Manage which actions users can take with %{linkStart}roles and
 msgstr ""
 
 msgid "MemberRole|Name"
+msgstr ""
+
+msgid "MemberRole|New Planner role"
 msgstr ""
 
 msgid "MemberRole|New role"
@@ -33577,6 +33589,12 @@ msgid "MemberRole|The None role is assigned to the invited group users of a shar
 msgstr ""
 
 msgid "MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners."
+msgstr ""
+
+msgid "MemberRole|The Planner role is a hybrid of the existing Guest and Reporter roles but designed for users who need access to planning workflows."
+msgstr ""
+
+msgid "MemberRole|The Planner role is a hybrid of the existing Guest and Reporter roles but designed for users who need access to planning workflows. For more information about the new role, see %{blogLinkStart}our blog%{blogLinkEnd} or %{learnMoreStart}learn more about roles and permissions%{learnMoreEnd}."
 msgstr ""
 
 msgid "MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code, such as project managers and scrum masters."

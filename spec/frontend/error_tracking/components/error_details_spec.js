@@ -86,10 +86,9 @@ describe('ErrorDetails', () => {
   };
 
   const findInput = (name) => {
-    const inputs = wrapper
+    return wrapper
       .findAllComponents(GlFormInput)
-      .filter((c) => c.attributes('name') === name);
-    return inputs.length ? inputs.at(0) : inputs;
+      .wrappers.find((c) => c.attributes('name') === name);
   };
 
   const findUpdateIgnoreStatusButton = () =>

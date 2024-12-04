@@ -401,17 +401,52 @@ Deleting or resetting might help improve the answers when you switch contexts, b
 
 ## GitLab Duo Chat slash commands
 
-Duo Chat has a list of supported commands, each of which is preceded by a slash (`/`).
-Use the following commands to quickly accomplish specific tasks.
+Duo Chat has a list of universal, GitLab UI, and IDE commands, each of which is preceded by a slash (`/`).
 
-| Command                | Purpose                                                                             |
-|------------------------|-------------------------------------------------------------------------------------|
-| /clear                 | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)  |
-| /reset                 | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation)  |
-| /tests                 | [Write tests](#write-tests-in-the-ide)                                              |
-| /explain               | [Explain code](#explain-selected-code)              |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability)   |
-| /refactor              | [Refactor the code](#refactor-code-in-the-ide)        |
-| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
-| /fix                   | [Fix the code](#fix-code-in-the-ide)        |
-| /help                  | Learn more about how Duo Chat works.  |
+Use the commands to quickly accomplish specific tasks.
+
+### Universal
+
+DETAILS:
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+
+These commands work in Duo Chat in all IDEs and in the GitLab UI:
+
+| Command | Purpose                                                                                                                       |
+|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| /clear  | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)                           |
+| /reset  | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation) |
+| /help   | Learn more about how Duo Chat works                                                                                           |
+
+### GitLab UI
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise- [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+
+These commands are dynamic and are available only in the GitLab UI when using Duo Chat:
+
+| Command                | Purpose                                                                                                            | Area             |
+|------------------------|--------------------------------------------------------------------------------------------------------------------|------------------|
+| /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues           |
+| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Failed pipelines |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability)       | Vulnerabilities  |
+
+### IDE
+
+DETAILS:
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** Web IDE, VS Code, JetBrains IDEs
+
+These commands work only when using Duo Chat in supported IDEs:
+
+| Command   | Purpose                                        |
+|-----------|------------------------------------------------|
+| /tests    | [Write tests](#write-tests-in-the-ide)         |
+| /explain  | [Explain code](#explain-selected-code)         |
+| /refactor | [Refactor the code](#refactor-code-in-the-ide) |
+| /fix      | [Fix the code](#fix-code-in-the-ide)           |

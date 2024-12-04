@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.count_distinct_project_id_from_disable_inbound_job_token_scope_monthly
+description: Monthly count of unique projects that disabled job token scope
+product_group: pipeline_security
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171945
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: disable_inbound_job_token_scope
+  unique: project.id

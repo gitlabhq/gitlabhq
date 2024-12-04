@@ -29,7 +29,6 @@ module Gitlab
       include ActionController::HttpAuthentication::Basic
       include ActionController::HttpAuthentication::Token
 
-      API_TOKEN_ENV = 'gitlab.api.token'
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
@@ -226,7 +225,7 @@ module Gitlab
       private
 
       def save_current_token_in_env
-        request.env[API_TOKEN_ENV] = {
+        ::Current.token_info = {
           token_id: access_token.id,
           token_type: access_token.class.to_s,
           token_scopes: access_token.scopes.map(&:to_sym)

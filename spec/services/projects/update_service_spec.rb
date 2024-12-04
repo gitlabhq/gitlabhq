@@ -970,6 +970,75 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
       end
     end
+
+    describe 'when updating ci_inbound_job_token_scope_enabled' do
+      let(:category) { described_class }
+      let(:user) { admin }
+
+      subject(:service_action) { update_project(project, admin, ci_inbound_job_token_scope_enabled: ci_inbound_job_token_scope_enabled) }
+
+      context 'when it is changed from false to true' do
+        let(:ci_inbound_job_token_scope_enabled) { true }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: false)
+          project.reload
+        end
+
+        it 'updates the setting' do
+          service_action
+          expect(project.reload.ci_inbound_job_token_scope_enabled).to eq(true)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'enable_inbound_job_token_scope' }
+        end
+      end
+
+      context 'when it is changed from true to false' do
+        let(:ci_inbound_job_token_scope_enabled) { false }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          project.reload
+        end
+
+        it 'updates the setting' do
+          service_action
+          expect(project.reload.ci_inbound_job_token_scope_enabled).to eq(false)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'disable_inbound_job_token_scope' }
+        end
+      end
+
+      context 'when current value is true and is unchanged' do
+        let(:ci_inbound_job_token_scope_enabled) { true }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          project.reload
+        end
+
+        it 'does not trigger event' do
+          expect { service_action }.not_to trigger_internal_events('enable_inbound_job_token_scope')
+        end
+      end
+
+      context 'when current value is false and is unchanged' do
+        let(:ci_inbound_job_token_scope_enabled) { false }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: false)
+          project.reload
+        end
+
+        it 'does not trigger event' do
+          expect { service_action }.not_to trigger_internal_events('disable_inbound_job_token_scope')
+        end
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do

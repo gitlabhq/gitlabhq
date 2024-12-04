@@ -4,6 +4,7 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
     include ValidatesClassificationLabel
+    include ::Ci::JobToken::InternalEventsTracking
 
     ValidationError = Class.new(StandardError)
     ApiError = Class.new(StandardError)
@@ -154,6 +155,8 @@ module Projects
     end
 
     def after_update
+      track_job_token_scope_setting_changes(project.ci_cd_settings, current_user)
+
       todos_features_changes = %w[
         issues_access_level
         merge_requests_access_level

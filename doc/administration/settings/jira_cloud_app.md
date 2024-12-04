@@ -363,6 +363,8 @@ that cannot be accessed directly from the internet, keep the following in mind:
 - If you use a rewrite or subfilter with your proxy, ensure the proxy
   does not rewrite or replace the `gitlab-jira-connect-${host}` app key.
   Otherwise, you might get a [`Failed to link group`](jira_cloud_app_troubleshooting.md#error-failed-to-link-group) error.
+- When you select [**Create branch**](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/#Create-feature-branches) in the Jira development panel,
+  you are redirected to the reverse proxy FQDN rather than the internal GitLab FQDN.
 
 ### External NGINX
 

@@ -18,6 +18,7 @@ class Current < ActiveSupport::CurrentAttributes
 
   # watch background jobs need to reset on each job if using
   attribute :organization, :organization_assigned
+  attribute :token_info
 
   def organization=(value)
     # We want to explicitly allow only one organization assignment per thread

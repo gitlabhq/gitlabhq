@@ -42,8 +42,11 @@ model configuration.
    [Rake task](../../raketasks/index.md):
 
    ```shell
-   gitlab-rake gitlab:duo:verify_self_hosted_setup
+   gitlab-rake "gitlab:duo:verify_self_hosted_setup[<username>]"
    ```
+
+   Optional: Include a `<username>` that has an assigned seat.
+   If you do not include a username parameter, the Rake task uses the root user.
 
 1. Debug the AI gateway setup. For your AI gateway container, run:
 

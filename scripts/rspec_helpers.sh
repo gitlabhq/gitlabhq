@@ -86,7 +86,9 @@ function rspec_simple_job() {
 
   eval "${rspec_cmd}" || exit_code=$?
 
-  change_exit_code_if_known_infra_error $exit_code || exit_code=$?
+  if [[ "$AUTO_RETRY_INFRA_ERROR" == "true" ]]; then
+    change_exit_code_if_known_infra_error $exit_code || exit_code=$?
+  fi
 
   exit $exit_code
 }

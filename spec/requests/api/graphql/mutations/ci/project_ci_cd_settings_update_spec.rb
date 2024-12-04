@@ -127,6 +127,8 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
     end
 
     describe 'inbound_job_token_scope_enabled' do
+      let(:category) { Mutations::Ci::ProjectCiCdSettingsUpdate }
+
       it 'updates inbound_job_token_scope_enabled' do
         post_graphql_mutation(mutation, current_user: user)
 
@@ -145,6 +147,56 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
         expect(response).to have_gitlab_http_status(:success)
         expect(project.ci_inbound_job_token_scope_enabled).to eq(true)
+      end
+
+      context 'when inbound_job_token_scope_enabled is changed from false to true' do
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: false)
+          variables[:inbound_job_token_scope_enabled] = true
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'enable_inbound_job_token_scope' }
+          subject(:service_action) { post_graphql_mutation(mutation, current_user: user) }
+        end
+      end
+
+      context 'when inbound_job_token_scope_enabled is changed from true to false' do
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          variables[:inbound_job_token_scope_enabled] = false
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'disable_inbound_job_token_scope' }
+          subject(:service_action) { post_graphql_mutation(mutation, current_user: user) }
+        end
+      end
+
+      context 'when inbound_job_token_scope_enabled is true but value is unchanged' do
+        subject(:service_action) { post_graphql_mutation(mutation, current_user: user) }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          variables[:inbound_job_token_scope_enabled] = true
+        end
+
+        it 'does not trigger event' do
+          expect { service_action }.not_to trigger_internal_events('enable_inbound_job_token_scope')
+        end
+      end
+
+      context 'when inbound_job_token_scope_enabled is false but value is unchanged' do
+        subject(:service_action) { post_graphql_mutation(mutation, current_user: user) }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: false)
+          variables[:inbound_job_token_scope_enabled] = false
+        end
+
+        it 'does not trigger event' do
+          expect { service_action }.not_to trigger_internal_events('disable_inbound_job_token_scope')
+        end
       end
     end
 

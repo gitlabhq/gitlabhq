@@ -4,23 +4,23 @@ module Features
   module InviteMembersModalHelpers
     include ListboxHelpers
 
-    def invite_member(names, role: 'Guest', expires_at: nil)
+    def invite_member(names, role: 'Guest', expires_at: nil, use_exact_text_match: true)
       click_on 'Invite members'
 
       page.within invite_modal_selector do
         select_members(names)
-        choose_options(role, expires_at)
+        choose_options(role, expires_at, use_exact_text_match)
         submit_invites
       end
 
       wait_for_requests
     end
 
-    def invite_member_by_email(role)
+    def invite_member_by_email(role, use_exact_text_match: true)
       click_on _('Invite members')
 
       page.within invite_modal_selector do
-        choose_options(role, nil)
+        choose_options(role, nil, use_exact_text_match)
         find(member_dropdown_selector).set('new_email@gitlab.com')
         wait_for_requests
 
@@ -49,13 +49,13 @@ module Features
       end
     end
 
-    def invite_group(name, role: 'Guest', expires_at: nil)
+    def invite_group(name, role: 'Guest', expires_at: nil, use_exact_text_match: true)
       click_on 'Invite a group'
 
       click_on 'Select a group'
       wait_for_requests
       find('[role="option"]', text: name).click
-      choose_options(role, expires_at)
+      choose_options(role, expires_at, use_exact_text_match)
 
       submit_invites
     end
@@ -64,11 +64,11 @@ module Features
       click_button 'Invite'
     end
 
-    def choose_options(role, expires_at)
+    def choose_options(role, expires_at, use_exact_text_match = true)
       page.within role_dropdown_selector do
         wait_for_requests
         toggle_listbox
-        select_listbox_item(role, exact_text: true)
+        select_listbox_item(role, exact_text: use_exact_text_match)
       end
       fill_in 'YYYY-MM-DD', with: expires_at.to_date.iso8601 if expires_at
     end

@@ -44,10 +44,10 @@ describe('RunnerInstructionsModal component', () => {
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findAlert = (variant = 'danger') => {
-    const { wrappers } = wrapper
-      .findAllComponents(GlAlert)
-      .filter((w) => w.props('variant') === variant);
-    return wrappers[0] || new ErrorWrapper();
+    return (
+      wrapper.findAllComponents(GlAlert).wrappers.find((w) => w.props('variant') === variant) ||
+      new ErrorWrapper()
+    );
   };
   const findModal = () => wrapper.findComponent(GlModal);
   const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');

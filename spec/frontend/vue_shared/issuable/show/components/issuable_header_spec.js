@@ -21,10 +21,10 @@ describe('IssuableHeader component', () => {
   const findAuthorLink = () => wrapper.findComponent(GlLink);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
-  const findGlIconWithName = (name) =>
-    wrapper.findAllComponents(GlIcon).filter((component) => component.props('name') === name);
   const findIcon = (name) =>
-    findGlIconWithName(name).exists() ? findGlIconWithName(name).at(0) : undefined;
+    wrapper
+      .findAllComponents(GlIcon)
+      .wrappers.find((component) => component.props('name') === name);
   const findBlockedBadge = () => wrapper.findComponent(LockedBadge);
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);

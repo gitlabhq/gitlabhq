@@ -1156,7 +1156,6 @@ RSpec/ContextWording:
     - 'spec/features/protected_branches_spec.rb'
     - 'spec/features/reportable_note/commit_spec.rb'
     - 'spec/features/reportable_note/merge_request_spec.rb'
-    - 'spec/features/runners_spec.rb'
     - 'spec/features/search/user_searches_for_code_spec.rb'
     - 'spec/features/signed_commits_spec.rb'
     - 'spec/features/snippets/explore_spec.rb'

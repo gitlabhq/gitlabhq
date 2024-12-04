@@ -3337,7 +3337,6 @@
 - './spec/features/reportable_note/issue_spec.rb'
 - './spec/features/reportable_note/merge_request_spec.rb'
 - './spec/features/reportable_note/snippets_spec.rb'
-- './spec/features/runners_spec.rb'
 - './spec/features/search/user_searches_for_code_spec.rb'
 - './spec/features/search/user_searches_for_comments_spec.rb'
 - './spec/features/search/user_searches_for_commits_spec.rb'

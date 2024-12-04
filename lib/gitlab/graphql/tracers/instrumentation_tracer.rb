@@ -93,7 +93,7 @@ module Gitlab
             query_string: clean_query_string(query)
           }
 
-          token_info = auth_token_info(query)
+          token_info = ::Current.token_info
           info.merge!(token_info) if token_info
 
           info[:graphql_errors] = query.result['errors'] if query.result['errors']
@@ -104,13 +104,6 @@ module Gitlab
           info.merge!(analysis_info) if analysis_info
 
           ::Gitlab::GraphqlLogger.info(info)
-        end
-
-        def auth_token_info(query)
-          request_env = query.context[:request]&.env
-          return unless request_env
-
-          request_env[::Gitlab::Auth::AuthFinders::API_TOKEN_ENV]
         end
 
         def clean_variables(variables)

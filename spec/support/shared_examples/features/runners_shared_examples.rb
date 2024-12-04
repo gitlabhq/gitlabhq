@@ -169,7 +169,7 @@ RSpec.shared_examples 'shows locked field' do
 end
 
 RSpec.shared_examples 'submits edit runner form' do
-  it 'breadcrumb contains runner id and token' do
+  it 'breadcrumb contains runner id and token', :js do
     within_testid 'breadcrumb-links' do
       expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
       expect(find('li:last-of-type')).to have_content("Edit")

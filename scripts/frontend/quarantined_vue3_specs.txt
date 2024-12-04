@@ -16,7 +16,6 @@ ee/spec/frontend/analytics/cycle_analytics/components/value_stream_aggregation_s
 ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_spec.js
 ee/spec/frontend/analytics/dashboards/ai_impact/components/metric_table_spec.js
 ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_app_spec.js
-ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_overview_spec.js
 ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_overview_table_spec.js
 ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/filter_bar_spec.js
@@ -35,18 +34,15 @@ ee/spec/frontend/boards/components/board_new_issue_spec.js
 ee/spec/frontend/boards/components/epic_board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/epics_swimlanes_spec.js
 ee/spec/frontend/ci/pipeline_details/header/pipeline_header_spec.js
-ee/spec/frontend/ci/runner/components/stat/runner_upgrade_status_stats_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_app_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
 ee/spec/frontend/ci/secrets/router_spec.js
 ee/spec/frontend/clusters/components/environments_spec.js
-ee/spec/frontend/compliance_dashboard/components/frameworks_report/edit_framework/components/policies_section_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/report_spec.js
 ee/spec/frontend/compliance_dashboard/components/standards_adherence_report/base_table_spec.js
 ee/spec/frontend/dependencies/components/app_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js
 ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
-ee/spec/frontend/environments_dashboard/components/project_header_spec.js
 ee/spec/frontend/geo_sites/components/details/secondary_site/geo_site_replication_details_responsive_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/groups/components/invite_members_spec.js
@@ -67,7 +63,6 @@ ee/spec/frontend/metrics/details/filter_bar/groupby_filter_spec.js
 ee/spec/frontend/metrics/details/metrics_details_spec.js
 ee/spec/frontend/metrics/details/related_traces_spec.js
 ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
-ee/spec/frontend/notes/components/ai_summary_spec.js
 ee/spec/frontend/notes/components/notes_app_spec.js
 ee/spec/frontend/on_demand_scans/components/action_button_spec.js
 ee/spec/frontend/on_demand_scans/components/tabs/base_tab_spec.js
@@ -212,7 +207,6 @@ spec/frontend/ide/components/new_dropdown/index_spec.js
 spec/frontend/ide/ide_router_extension_spec.js
 spec/frontend/ide/ide_router_spec.js
 spec/frontend/ide/sync_router_and_store_spec.js
-spec/frontend/import_entities/import_projects/components/import_projects_table_spec.js
 spec/frontend/integrations/edit/components/sections/connection_spec.js
 spec/frontend/invite_members/components/members_token_select_spec.js
 spec/frontend/issuable/components/issuable_by_email_spec.js
@@ -272,7 +266,6 @@ spec/frontend/pages/projects/shared/permissions/components/settings_panel_spec.j
 spec/frontend/pages/shared/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/pages/shared/wikis/components/wiki_more_dropdown_spec.js
 spec/frontend/performance_bar/index_spec.js
-spec/frontend/pipeline_wizard/components/commit_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/profile/preferences/components/integration_view_spec.js
 spec/frontend/profile/preferences/components/profile_preferences_spec.js
@@ -360,7 +353,6 @@ spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js
 spec/frontend/vue_shared/directives/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/directives/track_event_spec.js
-spec/frontend/vue_shared/issuable/show/components/issuable_header_spec.js
 spec/frontend/vue_shared/issuable/sidebar/components/issuable_sidebar_root_spec.js
 spec/frontend/webhooks/components/form_url_app_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js
