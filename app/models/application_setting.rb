@@ -913,7 +913,7 @@ class ApplicationSetting < ApplicationRecord
   Recursion = Class.new(RuntimeError)
 
   def self.create_from_defaults
-    # this is posssible if calls to create the record depend on application
+    # this is possible if calls to create the record depend on application
     # settings themselves. This was seen in the case of a feature flag called by
     # `transaction` that ended up requiring application settings to determine metrics behavior.
     # If something like that happens, we break the loop here, and let the caller decide how to manage it.

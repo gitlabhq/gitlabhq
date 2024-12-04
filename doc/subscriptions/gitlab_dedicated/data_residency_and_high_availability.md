@@ -39,6 +39,7 @@ The following regions are verified for use:
 - US East (N. Virginia)
 - US West (N. California)
 - US West (Oregon)
+- Middle East (Bahrain)
 
 If you're interested in a region not listed here, contact your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about availability.
 

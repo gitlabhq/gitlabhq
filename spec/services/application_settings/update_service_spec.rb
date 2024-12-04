@@ -523,8 +523,20 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     context 'when it goes from enabled to disabled' do
       let(:params) { { require_admin_approval_after_user_signup: false } }
 
-      it 'calls ApproveBlockedPendingApprovalUsersWorker' do
-        expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)
+      describe 'when auto approval is enabled' do
+        let(:params) { { require_admin_approval_after_user_signup: false, pending_user_auto_approval: 'true' } }
+
+        it 'calls ApproveBlockedPendingApprovalUsersWorker' do
+          expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)
+
+          subject.execute
+        end
+      end
+
+      it 'does not call ApproveBlockedPendingApprovalUsersWorker' do
+        application_settings.update!(require_admin_approval_after_user_signup: false)
+
+        expect(ApproveBlockedPendingApprovalUsersWorker).not_to receive(:perform_async)
 
         subject.execute
       end

@@ -37,6 +37,7 @@ module VirtualRegistries
         validates :cache_validity_hours, numericality: { greater_than_or_equal_to: 0, only_integer: true }
         validates :encrypted_username_iv, :encrypted_password_iv, uniqueness: true
 
+        before_validation :set_cache_validity_hours_for_maven_central, if: :url?, on: :create
         after_validation :reset_credentials, if: -> { persisted? && url_changed? }
 
         prevent_from_serialization(:username, :password) if respond_to?(:prevent_from_serialization)
@@ -61,6 +62,12 @@ module VirtualRegistries
 
           self.username = nil
           self.password = nil
+        end
+
+        def set_cache_validity_hours_for_maven_central
+          return unless url.start_with?('https://repo1.maven.org/maven2')
+
+          self.cache_validity_hours = 0
         end
       end
     end

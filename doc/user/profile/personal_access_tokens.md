@@ -42,6 +42,7 @@ Use impersonation tokens to automate authentication as a specific user.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
 > - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 > - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - Personal access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
@@ -56,7 +57,9 @@ You can create as many personal access tokens as you like.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
 1. Select **Add new token**.
-1. Enter a name and expiry date for the token.
+1. In **Token name**, enter a name for the token.
+1. Optional. In **Token description**, enter a description for the token.
+1. In **Expiration date**, enter an expiry date for the token.
    - The token expires on that date at midnight UTC.A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).

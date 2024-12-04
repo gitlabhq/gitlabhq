@@ -6,6 +6,10 @@ RSpec.describe Gitlab::Database::PostgresTableSize, type: :model, feature_catego
   include Database::DatabaseHelpers
 
   let(:connection) { ApplicationRecord.connection }
+  let(:small_table) { create(:postgres_table_size, table_name: 'small', size_in_bytes: 5.gigabytes) }
+  let(:medium_table) { create(:postgres_table_size, table_name: 'medium', size_in_bytes: 30.gigabytes) }
+  let(:large_table) { create(:postgres_table_size, table_name: 'large', size_in_bytes: 70.gigabytes) }
+  let(:over_limit_table) { create(:postgres_table_size, table_name: 'over_limit', size_in_bytes: 120.gigabytes) }
 
   before do
     swapout_view_for_table(:postgres_table_sizes, connection: connection)
@@ -30,11 +34,6 @@ RSpec.describe Gitlab::Database::PostgresTableSize, type: :model, feature_catego
   end
 
   describe 'scopes' do
-    let!(:small_table) { create(:postgres_table_size, size_in_bytes: 5.gigabytes) }
-    let!(:medium_table) { create(:postgres_table_size, size_in_bytes: 30.gigabytes) }
-    let!(:large_table) { create(:postgres_table_size, size_in_bytes: 70.gigabytes) }
-    let!(:over_limit_table) { create(:postgres_table_size, size_in_bytes: 120.gigabytes) }
-
     describe '.small' do
       it 'returns tables smaller than SMALL threshold' do
         expect(described_class.small).to include(small_table)
@@ -60,6 +59,40 @@ RSpec.describe Gitlab::Database::PostgresTableSize, type: :model, feature_catego
       it 'returns tables greater than LARGE threshold' do
         expect(described_class.over_limit).to include(over_limit_table)
         expect(described_class.over_limit).not_to include(small_table, medium_table, large_table)
+      end
+    end
+
+    describe '.by_table_name' do
+      let(:table_name) { small_table.table_name }
+
+      it 'returns the table' do
+        expect(described_class.by_table_name(table_name)).to eq(small_table)
+      end
+    end
+  end
+
+  describe '#size_classification' do
+    context 'with table < 10 GB' do
+      it 'returns small' do
+        expect(small_table.size_classification).to eq('small')
+      end
+    end
+
+    context 'with table > 10 GB && < 50 GB' do
+      it 'returns medium' do
+        expect(medium_table.size_classification).to eq('medium')
+      end
+    end
+
+    context 'with table > 50 GB && < 100 GB' do
+      it 'returns large' do
+        expect(large_table.size_classification).to eq('large')
+      end
+    end
+
+    context 'with table > 100 GB' do
+      it 'returns over_limit' do
+        expect(over_limit_table.size_classification).to eq('over_limit')
       end
     end
   end

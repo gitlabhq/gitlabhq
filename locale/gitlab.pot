@@ -6860,11 +6860,6 @@ msgstr ""
 msgid "ApplicationSettings|Any user that visits %{host} can create an account."
 msgstr ""
 
-msgid "ApplicationSettings|Approve %d user"
-msgid_plural "ApplicationSettings|Approve %d users"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "ApplicationSettings|Approve role promotions"
 msgstr ""
 
@@ -6874,15 +6869,15 @@ msgstr ""
 msgid "ApplicationSettings|Approve users in the pending approval status?"
 msgstr ""
 
-msgid "ApplicationSettings|Approve users who are pending approval?"
-msgstr ""
-
-msgid "ApplicationSettings|By making this change, you will automatically approve %d user who is pending approval."
-msgid_plural "ApplicationSettings|By making this change, you will automatically approve %d users who are pending approval."
+msgid "ApplicationSettings|By changing this setting, you can also automatically approve %d user who is pending approval."
+msgid_plural "ApplicationSettings|By changing this setting, you can also automatically approve %d users who are pending approval."
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "ApplicationSettings|By making this change, you will automatically approve all users who are pending approval."
+msgstr ""
+
+msgid "ApplicationSettings|Change setting and approve pending users?"
 msgstr ""
 
 msgid "ApplicationSettings|Denied domains for sign-ups"
@@ -6928,6 +6923,14 @@ msgid "ApplicationSettings|Off"
 msgstr ""
 
 msgid "ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com"
+msgstr ""
+
+msgid "ApplicationSettings|Proceed and approve %d user"
+msgid_plural "ApplicationSettings|Proceed and approve %d users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ApplicationSettings|Proceed without auto-approval"
 msgstr ""
 
 msgid "ApplicationSettings|Require admin approval for new sign-ups"
@@ -13988,6 +13991,9 @@ msgstr ""
 msgid "ComplianceFrameworks|All selected projects will be covered by the framework’s selected requirements and the policies."
 msgstr ""
 
+msgid "ComplianceFrameworks|An error occurred while deleting the requirement."
+msgstr ""
+
 msgid "ComplianceFrameworks|Background color"
 msgstr ""
 
@@ -14133,6 +14139,9 @@ msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-
 msgstr ""
 
 msgid "ComplianceFrameworks|Requirement name"
+msgstr ""
+
+msgid "ComplianceFrameworks|Requirement removed."
 msgstr ""
 
 msgid "ComplianceFrameworks|Requirements"

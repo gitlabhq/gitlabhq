@@ -18,3 +18,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: build
         foreign_key_name: fk_rails_aebc78111f_p
+table_size: small
