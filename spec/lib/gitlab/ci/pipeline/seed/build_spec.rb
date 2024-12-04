@@ -360,7 +360,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           }
         end
 
-        it { is_expected.to include(options: { cache: [a_hash_including( key: 'something-default' )] }) }
+        it { is_expected.to include(options: { cache: [a_hash_including(key: 'something-default')] }) }
       end
 
       context 'with cache:key:files and prefix' do

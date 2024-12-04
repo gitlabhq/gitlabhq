@@ -270,6 +270,15 @@ module Gitlab
 
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
+          elsif Feature.enabled?(:auth_finder_no_token_length_detection, :current_request)
+            # The token can be a PAT or an OAuth (doorkeeper) token
+            begin
+              find_oauth_access_token
+            rescue UnauthorizedError
+              # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
+              # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
+              # and try to find a personal access token.
+            end || find_personal_access_token
           else
             # The token can be a PAT or an OAuth (doorkeeper) token
             # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
@@ -296,7 +305,8 @@ module Gitlab
         return unless token
 
         # PATs with OAuth headers are not handled by OauthAccessToken
-        return if matches_personal_access_token_length?(token)
+        return if Feature.disabled?(:auth_finder_no_token_length_detection, :current_request) &&
+          matches_personal_access_token_length?(token)
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(token)

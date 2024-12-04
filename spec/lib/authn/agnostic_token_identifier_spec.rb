@@ -9,6 +9,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   let_it_be(:deploy_token) { create(:deploy_token).token }
   let_it_be(:feed_token) { user.feed_token }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user).token }
+  let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user).token }
   let_it_be(:oauth_application_secret) { create(:oauth_application).plaintext_secret }
   let_it_be(:cluster_agent_token) { create(:cluster_agent_token, token_encrypted: nil).token }
   let_it_be(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user).token }
@@ -18,6 +19,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   context 'with supported token types' do
     where(:plaintext, :token_type) do
       ref(:personal_access_token) | ::Authn::Tokens::PersonalAccessToken
+      ref(:impersonation_token) | ::Authn::Tokens::PersonalAccessToken
       ref(:feed_token) | ::Authn::Tokens::FeedToken
       ref(:deploy_token) | ::Authn::Tokens::DeployToken
       ref(:oauth_application_secret) | ::Authn::Tokens::OauthApplicationSecret

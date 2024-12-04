@@ -1,4 +1,4 @@
-import { serialize, serializeWithOptions, builders } from '../../serialization_utils';
+import { serialize, serializeWithOptions, builders, sourceTag } from '../../serialization_utils';
 
 const { paragraph, image } = builders;
 
@@ -96,4 +96,18 @@ it('does not escape url in an image', () => {
   expect(
     serialize(paragraph(image({ src: 'https://example.com/image__1_.png', alt: 'image' }))),
   ).toBe('![image](https://example.com/image__1_.png)');
+});
+
+it('serializes image as an HTML tag if sourceTagName is defined', () => {
+  const imageAttrs = { src: 'img.jpg', alt: 'image', ...sourceTag('img') };
+
+  expect(serialize(paragraph(image(imageAttrs)))).toBe('<img src="img.jpg" alt="image">');
+
+  expect(serialize(paragraph(image({ ...imageAttrs, width: 300, height: 300 })))).toBe(
+    '<img src="img.jpg" alt="image" width="300" height="300">',
+  );
+
+  expect(serialize(paragraph(image({ ...imageAttrs, title: 'image title' })))).toBe(
+    '<img src="img.jpg" alt="image" title="image title">',
+  );
 });

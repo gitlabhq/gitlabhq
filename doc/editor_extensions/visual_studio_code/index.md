@@ -38,18 +38,18 @@ When you view a GitLab project in VS Code, the extension shows you information a
 - If the merge request includes an [issue closing pattern](../../user/project/issues/managing_issues.md#closing-issues-automatically),
   a link to the issue.
 
-## Set up the GitLab Workflow extension
+## Install the extension
 
-To set up the GitLab Workflow extension for VS Code:
-
-First, install the extension:
+To install the GitLab Workflow extension for VS Code:
 
 - [Go to the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
   and install and enable the extension.
 - If you use an unofficial version of VS Code, install the
   extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
 
-Second, authenticate with GitLab:
+### Authenticate with GitLab
+
+After you download and install the extension, connect it to your GitLab account.
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
@@ -78,9 +78,9 @@ The extension shows information in the VS Code status bar if both:
 - Your project has a pipeline for the last commit.
 - Your current branch is associated with a merge request.
 
-## Configure extension settings
+### Configure the extension
 
-After you install GitLab Workflow, go to **Settings > Extensions > GitLab Workflow**
+After you have installed GitLab Workflow and authenticated with GitLab, go to **Settings > Extensions > GitLab Workflow**
 in VS Code to configure settings.
 
 - [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code).
@@ -91,10 +91,10 @@ in VS Code to configure settings.
 ### Confirm that GitLab Duo is on
 
 If you are assigned a seat, GitLab Duo AI-powered features are turned on by default.
-However, to confirm that you have GitLab Duo, including Duo Chat and Code Suggestions,
+However, to confirm that you have GitLab Duo (including Duo Chat and Code Suggestions)
 turned on:
 
-1. In VS Code, open the extension by going to **Settings > Extensions > GitLab Workflow**.
+1. In VS Code, go to **Settings > Extensions > GitLab Workflow**.
 1. Select **Manage** (**{settings}**).
 1. Ensure that **GitLab › Duo Chat: Enabled** and **GitLab › Duo Code Suggestions: Enabled** are selected.
 1. Optional. For **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
@@ -299,7 +299,7 @@ Prerequisites:
 
 - You're a member of a GitLab project.
 - You've installed the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- You've signed in to your GitLab instance, as described in [Set up the GitLab Workflow extension](#set-up-the-gitlab-workflow-extension).
+- You've signed in to your GitLab instance, as described in [Authenticate with GitLab](#authenticate-with-gitlab).
 
 To search the titles and description fields in your project:
 

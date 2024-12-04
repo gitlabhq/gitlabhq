@@ -74,10 +74,10 @@ Then you can confirm that GitLab Duo is available in your IDE and test some of t
 
 For more information, see:
 
-- [Set up the extension for VS Code](../../editor_extensions/visual_studio_code/index.md#set-up-the-gitlab-workflow-extension).
-- [Set up the extension for JetBrains](../../editor_extensions/jetbrains_ide/index.md#download-the-extension).
+- [Set up the extension for VS Code](../../editor_extensions/visual_studio_code/index.md).
+- [Set up the extension for JetBrains](../../editor_extensions/jetbrains_ide/index.md).
 - [Set up the extension for Visual Studio](../../editor_extensions/visual_studio/index.md).
-- [Set up the extension for Neovim](../../editor_extensions/neovim/index.md#install-the-extension).
+- [Set up the extension for Neovim](../../editor_extensions/neovim/index.md).
 
 ## Step 5: Turn on Code Suggestions in your IDE
 

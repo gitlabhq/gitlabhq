@@ -10,16 +10,33 @@ const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey', 'sourceTagName'];
 const ignoreAttrs = {
   dd: ['isTerm'],
   dt: ['isTerm'],
+  blockquote: ['multiline'],
+  h1: ['level'],
+  h2: ['level'],
+  h3: ['level'],
+  h4: ['level'],
+  h5: ['level'],
+  h6: ['level'],
 };
 
 // Buffers the output of the given action (fn) and returns the output that was written
 // to the prosemirror-markdown serializer state output.
-export function buffer(state, action = () => {}) {
+export function buffer(state, action = () => {}, trackOnly = true) {
   const buf = state.out;
   action();
   const retval = state.out.substring(buf.length);
-  state.out = buf;
+  if (trackOnly) state.out = buf;
   return retval;
+}
+
+export function placeholder(state) {
+  const id = Math.floor(Math.random() * Date.now() * 10e3).toString(16);
+  return {
+    replaceWith: (content) => {
+      state.out = state.out.replace(new RegExp(id, 'g'), content);
+    },
+    value: id,
+  };
 }
 
 export function containsOnlyText(node) {
@@ -31,11 +48,20 @@ export function containsOnlyText(node) {
   return false;
 }
 
-export function containsParagraphWithOnlyText(cell) {
-  if (cell.childCount === 1) {
-    const child = cell.child(0);
+export function containsEmptyParagraph(node) {
+  if (node.childCount === 1) {
+    const child = node.child(0);
+    return child.type.name === 'paragraph' && child.childCount === 0;
+  }
+
+  return false;
+}
+
+export function containsParagraphWithOnlyText(node) {
+  if (node.childCount === 1) {
+    const child = node.child(0);
     if (child.type.name === 'paragraph') {
-      return containsOnlyText(child);
+      return child.childCount === 0 || containsOnlyText(child);
     }
   }
 
@@ -108,7 +134,8 @@ export function renderContent(state, node, forceRenderInline) {
       state.flushClose();
     }
   } else {
-    const renderInline = forceRenderInline || containsParagraphWithOnlyText(node);
+    const renderInline =
+      forceRenderInline || containsParagraphWithOnlyText(node) || containsOnlyText(node);
     if (!renderInline) {
       state.closeBlock(node);
       state.flushClose();
@@ -133,6 +160,13 @@ export function renderTextInline(text, state, node) {
   }
 }
 
+let inBlockquote = false;
+
+export const isInBlockquote = () => inBlockquote;
+export const setIsInBlockquote = (value) => {
+  inBlockquote = value;
+};
+
 const expandPreserveUnchangedConfig = (configOrRender) =>
   isFunction(configOrRender)
     ? { render: configOrRender, overwriteSourcePreservationStrategy: false, inline: false }
@@ -147,7 +181,8 @@ export function preserveUnchanged(configOrRender) {
     const { sourceMarkdown } = node.attrs;
     const same = state.options.changeTracker.get(node);
 
-    if (same && !overwriteSourcePreservationStrategy) {
+    // sourcemaps for elements in blockquotes are not accurate
+    if (same && !overwriteSourcePreservationStrategy && !isInBlockquote()) {
       state.write(sourceMarkdown);
 
       if (!inline) {

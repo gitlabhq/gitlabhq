@@ -210,8 +210,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns a token with expiry when it receives a valid expires_at parameter' do
       freeze_time do
-        token_size = (PersonalAccessToken.token_prefix || '').size + 20
-
         post api('/internal/personal_access_token'),
           params: {
             key_id: key.id,
@@ -222,7 +220,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
-        expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
+        expect(json_response['token']).to start_with(PersonalAccessToken.token_prefix)
         expect(json_response['scopes']).to match_array(%w[read_api read_repository])
         expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end
@@ -230,8 +228,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns token with expiry as PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
       freeze_time do
-        token_size = (PersonalAccessToken.token_prefix || '').size + 20
-
         post api('/internal/personal_access_token'),
           params: {
             key_id: key.id,
@@ -242,7 +238,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
-        expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
+        expect(json_response['token']).to start_with(PersonalAccessToken.token_prefix)
         expect(json_response['scopes']).to match_array(%w[read_api read_repository])
         expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end

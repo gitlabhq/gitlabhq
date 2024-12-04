@@ -8,6 +8,10 @@ const sensitiveDataPatterns = () => {
       regex: `${patPrefix}[0-9a-zA-Z_-]{20}`,
     },
     {
+      name: 'GitLab personal access token (routable)',
+      regex: `${patPrefix}(?<base64_payload>[0-9a-zA-Z_-]{27,300})\\.(?<base64_payload_length>[0-9a-z]{2})(?<crc32>[0-9a-z]{7})`,
+    },
+    {
       name: 'Feed Token',
       regex: 'feed_token=[0-9a-zA-Z_-]{20}|glft-[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_',
     },

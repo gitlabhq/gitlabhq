@@ -38,7 +38,7 @@ export const renderList = (state, node, delim, firstDelim) => {
 
 export const renderBulletList = (state, node) => {
   const { sourceMarkdown, bullet: bulletAttr } = node.attrs;
-  const bullet = /^(\*|\+|-)\s/.exec(sourceMarkdown)?.[1] || bulletAttr || '*';
+  const bullet = /^(\*|\+|-)\s/.exec(sourceMarkdown?.trim())?.[1] || bulletAttr || '*';
 
   renderList(state, node, '  ', () => `${bullet} `);
 };

@@ -573,6 +573,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.with_at_least_access_level' do
+      it 'filters members with the at least the specified access level' do
+        results = described_class.with_at_least_access_level(::Gitlab::Access::MAINTAINER)
+
+        expect(results).to include(@owner, @maintainer)
+        expect(results).not_to include(@developer)
+      end
+    end
+
     describe '.developers' do
       subject { described_class.developers.to_a }
 

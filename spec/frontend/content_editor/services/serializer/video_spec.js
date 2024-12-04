@@ -7,3 +7,11 @@ it('correctly serializes video', () => {
     `![video](video.mov)`,
   );
 });
+
+it('serializes video with width and height', () => {
+  expect(
+    serialize(
+      paragraph(video({ alt: 'video', canonicalSrc: 'video.mov', width: 400, height: 300 })),
+    ),
+  ).toBe(`![video](video.mov){width=400 height=300}`);
+});

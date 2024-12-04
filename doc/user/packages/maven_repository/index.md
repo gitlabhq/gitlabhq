@@ -858,11 +858,12 @@ Your changes are automatically saved.
 
 ### Request forwarding to Maven Central
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85299) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`. Disabled by default.
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 FLAG:
-By default this feature is not available for self-managed. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
-This feature is not available for GitLab.com or GitLab Dedicated users.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).

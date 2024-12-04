@@ -16,9 +16,10 @@ like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine. The plugin supports thes
 While coding, accept Code Suggestions by pressing <kbd>Tab</kbd>. To dismiss Code Suggestions,
 press <kbd>Escape</kbd>.
 
-## Download the extension
+## Install the extension
 
-Download the plugin from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo).
+Download the plugin from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
+and install it.
 
 Prerequisites:
 
@@ -29,7 +30,7 @@ If you use an older version of a JetBrains IDE, check the version compatibility 
 It contains a table of plugin versions and their
 [supported IDE versions](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/versions).
 
-## Configure the extension
+### Configure the extension
 
 Prerequisites:
 
@@ -45,7 +46,9 @@ To enable the plugin:
 1. Select the **GitLab Duo** plugin, and select **Install**.
 1. Select **OK** or **Save**.
 
-To configure the plugin in your IDE after you enable it:
+### Authenticate with GitLab
+
+After you configure the plugin in your IDE, connect it to your GitLab account:
 
 1. Go to your IDE's top menu bar and select **Settings**.
 1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
@@ -58,7 +61,7 @@ To configure the plugin in your IDE after you enable it:
 1. Select **Verify setup**.
 1. Select **OK** or **Save**.
 
-### Enable experimental or beta features
+## Enable experimental or beta features
 
 Some features in the plugin are in experiment or beta status. To use them, you must opt in:
 

@@ -202,6 +202,6 @@ before starting VS Code. If you set the token in a
 you don't have to set a personal access token each time you delete your VS Code storage. Set these variables:
 
 - `GITLAB_WORKFLOW_INSTANCE_URL`: Your GitLab instance URL, like `https://gitlab.com`.
-- `GITLAB_WORKFLOW_TOKEN`: Your personal access token, which you created [during setup](index.md#set-up-the-gitlab-workflow-extension).
+- `GITLAB_WORKFLOW_TOKEN`: Your personal access token, which you created [when authenticating with GitLab](index.md#authenticate-with-gitlab).
 
 The token configured in an environment variable is overridden if you configure a token for the same GitLab instance in the extension.

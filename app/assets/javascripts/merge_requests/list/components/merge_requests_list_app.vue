@@ -732,7 +732,13 @@ export default {
     >
       <template #nav-actions>
         <div class="gl-flex gl-gap-3">
-          <gl-button v-if="mergeTrainsPath" :href="mergeTrainsPath" data-testid="merge-trains">
+          <gl-button
+            v-if="mergeTrainsPath"
+            :href="mergeTrainsPath"
+            data-testid="merge-trains"
+            variant="link"
+            class="gl-mr-3"
+          >
             {{ __('Merge trains') }}
           </gl-button>
           <gl-button

@@ -38,6 +38,7 @@ Returns information about a token.
 Supported tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
+- [Impersonation tokens](../../api/rest/authentication.md#impersonation-tokens)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
 - [Feed tokens](../../security/tokens/index.md#feed-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)

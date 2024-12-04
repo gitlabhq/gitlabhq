@@ -8852,7 +8852,8 @@ CREATE TABLE ci_build_pending_states (
     failure_reason smallint,
     trace_checksum bytea,
     trace_bytesize bigint,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_build_pending_states_id_seq
@@ -29466,6 +29467,8 @@ CREATE UNIQUE INDEX index_ci_build_needs_on_build_id_and_name ON ci_build_needs 
 CREATE INDEX index_ci_build_needs_on_partition_id_build_id ON ci_build_needs USING btree (partition_id, build_id);
 
 CREATE UNIQUE INDEX index_ci_build_pending_states_on_build_id ON ci_build_pending_states USING btree (build_id);
+
+CREATE INDEX index_ci_build_pending_states_on_project_id ON ci_build_pending_states USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_build_report_results_on_partition_id_build_id ON ci_build_report_results USING btree (partition_id, build_id);
 

@@ -11,8 +11,6 @@ FactoryBot.define do
     scopes { ['api'] }
     impersonation { false }
 
-    after(:build) { |personal_access_token| personal_access_token.ensure_token }
-
     trait :impersonation do
       impersonation { true }
     end

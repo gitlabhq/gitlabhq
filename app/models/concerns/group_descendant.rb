@@ -47,6 +47,8 @@ module GroupDescendant
         Parent was not preloaded for child when rendering group hierarchy.
         This error is not user facing, but causes a +1 query.
       MSG
+      exception.set_backtrace(caller)
+
       extras = {
         parent: parent.inspect,
         child: child.inspect,

@@ -48,6 +48,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
     push_frontend_feature_flag(:vulnerability_code_flow, project)
     push_frontend_feature_flag(:pipeline_vulnerability_code_flow, project)
+    push_frontend_feature_flag(:mr_vulnerability_code_flow, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]

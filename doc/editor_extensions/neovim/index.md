@@ -79,15 +79,21 @@ use {
 
 ::EndTabs
 
+## Authenticate with GitLab
+
+To connect this extension to your GitLab account, configure your environment variables:
+
+| Environment variable | Default              | Description |
+|----------------------|----------------------|-------------|
+| `GITLAB_TOKEN`.      | not applicable       | The default GitLab personal access token to use for authenticated requests. If provided, skips interactive authentication. |
+| `GITLAB_VIM_URL`.    | `https://gitlab.com` | Override the GitLab instance to connect with. Defaults to `https://gitlab.com`. |
+
+A full list of environment variables is available in the extension's help text at
+[`doc/gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
+
 ## Configure the extension
 
-1. Configure environment variables. While these are the most common, a full list is available in this
-   plugin's help text at [`doc/gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt):
-
-   | Environment variable | Default              | Description |
-   |----------------------|----------------------|-------------|
-   | `GITLAB_TOKEN`.      | not applicable       | The default GitLab personal access token to use for authenticated requests. If provided, skips interactive authentication. |
-   | `GITLAB_VIM_URL`.    | `https://gitlab.com` | Override the GitLab instance to connect with. Defaults to `https://gitlab.com`. |
+To configure this extension:
 
 1. Configure your desired file types. For example, because this plugin supports Ruby, it adds a `FileType ruby` auto-command.
    To configure this behavior for additional file types, add more file types to the `code_suggestions.auto_filetypes` setup option:

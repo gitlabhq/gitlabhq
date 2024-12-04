@@ -19,7 +19,14 @@ class PersonalAccessToken < ApplicationRecord
 
   add_authentication_token_field :token,
     digest: true,
-    format_with_prefix: :prefix_from_application_current_settings
+    format_with_prefix: :prefix_from_application_current_settings,
+    routable_token: {
+      if: ->(token_owner_record) { Feature.enabled?(:routable_pat, token_owner_record.user) },
+      payload: {
+        o: ->(token_owner_record) { token_owner_record.organization_id },
+        u: ->(token_owner_record) { token_owner_record.user_id }
+      }
+    }
 
   columns_changing_default :organization_id
 

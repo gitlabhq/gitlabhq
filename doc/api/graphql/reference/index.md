@@ -18546,6 +18546,7 @@ Self-hosted LLM servers.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aiselfhostedmodelapitoken"></a>`apiToken` | [`String`](#string) | Optional API key for the self-hosted model server. |
 | <a id="aiselfhostedmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of creation. |
 | <a id="aiselfhostedmodelendpoint"></a>`endpoint` | [`String!`](#string) | Endpoint of the self-hosted model server. |
 | <a id="aiselfhostedmodelfeaturesettings"></a>`featureSettings` | [`AiFeatureSettingConnection`](#aifeaturesettingconnection) | AI feature settings using the self-hosted model. (see [Connections](#connections)) |

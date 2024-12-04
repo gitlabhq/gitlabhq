@@ -1,6 +1,13 @@
-import { serialize, builders, source, text, serializeWithOptions } from '../../serialization_utils';
+import {
+  serialize,
+  builders,
+  source,
+  text,
+  serializeWithOptions,
+  sourceTag,
+} from '../../serialization_utils';
 
-const { paragraph, link } = builders;
+const { paragraph, link, bold } = builders;
 
 it('escapes < and > in a paragraph', () => {
   expect(
@@ -70,5 +77,29 @@ describe('when a paragraph contains a link', () => {
         'some prose with a reference [link changed](https://example.com)\n\n[1]: https://example.com',
       );
     });
+  });
+
+  it('serializes a text-only paragraph with an HTML tag as inline', () => {
+    expect(
+      serialize(
+        paragraph(sourceTag('p'), 'hello world'),
+        paragraph(sourceTag('p'), 'A quick brown fox jumps over the lazy dog'),
+      ),
+    ).toBe(`<p>hello world</p>
+
+<p>A quick brown fox jumps over the lazy dog</p>
+
+`);
+  });
+
+  it('serializes a paragraph with an HTML tag containing markdown as markdown', () => {
+    // HTML paragraph tags by definition cannot contain any markdown tags,
+    // so we serialize it to markdown despite being defined in source markdown as an HTML tag
+    expect(
+      serialize(
+        paragraph(sourceTag('p'), 'some', bold('bold'), 'text'),
+        paragraph(sourceTag('p'), 'A quick ', link({ href: '#' }, 'link'), ' to the docs'),
+      ),
+    ).toBe(`some**bold**text\n\nA quick [link](#) to the docs`);
   });
 });

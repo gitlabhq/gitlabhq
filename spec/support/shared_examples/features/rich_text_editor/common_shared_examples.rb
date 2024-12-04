@@ -97,17 +97,11 @@ supported in Markdown and will be converted to HTML."
 <th>header</th>
 </tr>
 <tr>
-<td>
-
-</td>
-<td>
-
-</td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td>
-
-</td>
+<td></td>
 <td>
 
 * list item

@@ -201,6 +201,7 @@ class Member < ApplicationRecord
   scope :with_user, ->(user) { where(user: user) }
   scope :by_access_level, ->(access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, ->(access_level) { where(access_level: access_level) }
+  scope :with_at_least_access_level, ->(access_level) { where(access_level: access_level..) }
 
   scope :preload_users, -> { preload(:user) }
 

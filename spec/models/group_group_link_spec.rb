@@ -177,6 +177,19 @@ RSpec.describe GroupGroupLink, feature_category: :groups_and_projects do
         expect(described_class.for_shared_with_groups(link.shared_with_group)).to contain_exactly(link)
       end
     end
+
+    describe '.with_at_least_group_access' do
+      let_it_be(:group_link_dev) { create(:group_group_link, group_access: Gitlab::Access::DEVELOPER) }
+      let_it_be(:group_link_guest) { create(:group_group_link, group_access: Gitlab::Access::GUEST) }
+      let_it_be(:group_link_maintainer) { create(:group_group_link, group_access: Gitlab::Access::MAINTAINER) }
+
+      it 'filters group links with at least the specified group access' do
+        results = described_class.with_at_least_group_access(Gitlab::Access::DEVELOPER)
+
+        expect(results).to include(group_link_dev, group_link_maintainer)
+        expect(results).not_to include(group_link_guest)
+      end
+    end
   end
 
   describe '#human_access' do

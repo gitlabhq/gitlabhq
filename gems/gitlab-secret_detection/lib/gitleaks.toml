@@ -8,6 +8,12 @@ keywords = ["glpat"]
 regex = "\\bglpat-[0-9a-zA-Z_\\-]{20}\\b"
 tags = ["gitlab", "revocation_type", "gitlab_blocking"]
 [[rules]]
+description = "GitLab Personal Access Token (routable)"
+id = "gitlab_personal_access_token_routable"
+keywords = ["glpat"]
+regex = "\\bglpat-(?<base64_payload>[0-9a-zA-Z_\\-]{27,300})\\.(?<base64_payload_length>[0-9a-z]{2})(?<crc32>[0-9a-z]{7})\\b"
+tags = ["gitlab", "revocation_type", "gitlab_blocking"]
+[[rules]]
 description = "GitLab Pipeline Trigger Token"
 id = "gitlab_pipeline_trigger_token"
 keywords = ["glptt"]

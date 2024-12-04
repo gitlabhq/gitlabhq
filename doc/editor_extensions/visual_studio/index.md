@@ -11,10 +11,11 @@ The [GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLa
 integrates GitLab with Visual Studio for Windows. GitLab for Visual Studio supports
 [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
-## Download the extension
+## Install the extension
 
 Download the extension from the
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
+and install it.
 
 The extension requires:
 
@@ -24,33 +25,29 @@ The extension requires:
   - GitLab Duo Code Suggestions requires GitLab version 16.8 or later.
 - You are not using Visual Studio for Mac, as it is unsupported.
 
-## Configure the extension
+No new additional data is collected to enable this feature. Private non-public GitLab customer data is not used as training data.
+Learn more about [Google Vertex AI Codey APIs Data Governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance).
 
-After you download and install the extension, you must configure it.
+### Authenticate with GitLab
+
+After you download and install the extension, connect it to your GitLab account.
 
 Prerequisites:
 
 - GitLab Duo [is available and configured](../../user/gitlab_duo/turn_on_off.md) for your project.
+- You have created a [GitLab personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) with the `api` and `read_user` scope, and copied that token.
 - Your project must use one of the
   [supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages).
 
 To do this:
 
-1. Install the extension from the Visual Studio Marketplace, and enable it.
-1. In GitLab, create a [GitLab personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)
-   with the `api` and `read_user` scopes.
-   1. Copy the token. _For security reasons, this value is never displayed again, so you must copy this value now._
-1. Open Visual Studio.
-   1. On the top bar, go to **Tools > Options > GitLab**.
-   1. For **Access Token**, paste in your token. The token is not displayed, nor is it accessible to others.
-   1. For **GitLab URL** field, provide the URL of your GitLab instance. For GitLab SaaS, use `https://gitlab.com`.
+1. In Visual Studio, on the top bar, go to **Tools > Options > GitLab**.
+1. In the **Access Token** field, paste in your token. The token is not displayed, nor is it accessible to others.
+1. In the **GitLab URL** text box, enter the URL of your GitLab instance. For GitLab SaaS, use `https://gitlab.com`.
 
-No new additional data is collected to enable this feature. Private non-public GitLab customer data is not used as training data.
-Learn more about [Google Vertex AI Codey APIs Data Governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance).
+### Configure the extension
 
-### Customize keyboard shortcuts
-
-This extension provides these custom commands:
+This extension provides these custom commands, which you can configure:
 
 | Command name                   | Default keyboard shortcut | Feature |
 |--------------------------------|---------------------------|---------|

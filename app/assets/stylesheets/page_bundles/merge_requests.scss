@@ -830,7 +830,7 @@
 }
 
 .merge-request-sticky-header {
-  z-index: $top-bar-z-index;
+  z-index: calc($top-bar-z-index - 1);
   height: $mr-sticky-header-height;
 }
 

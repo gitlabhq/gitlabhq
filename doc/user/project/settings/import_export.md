@@ -186,7 +186,8 @@ For a quick overview, items that are exported include:
 - Design management files and data
 - LFS objects
 - Issue boards
-- CI/CD pipelines and pipeline schedules
+- CI/CD pipelines
+- Pipeline schedules (inactive and assigned to the user who initiated the import)
 - Protected branches and tags
 - Push rules
 - Emoji reactions
@@ -217,6 +218,7 @@ Items that are **not** exported include:
 - Security policies associated with your project
 - Links between issues and linked items
 - Links to related merge requests
+- Pipeline schedule variables
 
 Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
 [instance](../../../administration/custom_project_templates.md) levels. Therefore, the list of exported items is the same.

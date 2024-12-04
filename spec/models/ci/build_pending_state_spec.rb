@@ -65,4 +65,19 @@ RSpec.describe Ci::BuildPendingState, feature_category: :continuous_integration 
       end
     end
   end
+
+  describe '#set_project_id' do
+    it 'sets the project_id before validation' do
+      pending_state = create(:ci_build_pending_state)
+
+      expect(pending_state.project_id).to eq(pending_state.build.project_id)
+    end
+
+    it 'does not override the project_id if set' do
+      existing_project = create(:project)
+      pending_state = create(:ci_build_pending_state, project_id: existing_project.id)
+
+      expect(pending_state.project_id).to eq(existing_project.id)
+    end
+  end
 end

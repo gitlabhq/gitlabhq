@@ -16,27 +16,26 @@ export default Node.create({
       },
       src: {
         default: null,
-        parseHTML: (element) => {
-          const playable = queryPlayableElement(element, this.options.mediaType);
-
-          return playable.src;
-        },
+        parseHTML: (element) => queryPlayableElement(element, this.options.mediaType).src,
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => {
-          const playable = queryPlayableElement(element, this.options.mediaType);
-
-          return playable.dataset.canonicalSrc;
-        },
+        parseHTML: (element) =>
+          queryPlayableElement(element, this.options.mediaType).dataset.canonicalSrc,
       },
       alt: {
         default: null,
-        parseHTML: (element) => {
-          const playable = queryPlayableElement(element, this.options.mediaType);
-
-          return playable.dataset.title;
-        },
+        parseHTML: (element) => queryPlayableElement(element, this.options.mediaType).dataset.title,
+      },
+      width: {
+        default: null,
+        parseHTML: (element) =>
+          queryPlayableElement(element, this.options.mediaType).getAttribute('width'),
+      },
+      height: {
+        default: null,
+        parseHTML: (element) =>
+          queryPlayableElement(element, this.options.mediaType).getAttribute('height'),
       },
     };
   },
