@@ -90,7 +90,7 @@ input[type='file'] {
 
   &.badge-gray {
     background-color: $label-gray-bg;
-    color: $gl-text-color;
+    @apply gl-text-default;
     text-shadow: none;
   }
 

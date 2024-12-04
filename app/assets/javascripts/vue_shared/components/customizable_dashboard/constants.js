@@ -42,7 +42,3 @@ export const VISUALIZATION_TYPE_SINGLE_STAT = 'SingleStat';
 
 export const EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER = 'user_viewed_dashboard_designer';
 export const EVENT_LABEL_EXCLUDE_ANONYMISED_USERS = 'exclude_anonymised_users';
-
-// The URL for shared analytics dashboards is based on the name of the YAML config
-// YAML configured VSD uses `/value_streams` for the custom file name
-export const CUSTOM_VALUE_STREAM_DASHBOARD = 'value_streams';

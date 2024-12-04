@@ -66,6 +66,11 @@ export default {
       required: false,
       default: true,
     },
+    showPathAsLink: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     overrideCopy: {
       type: Boolean,
       required: false,
@@ -148,7 +153,12 @@ export default {
   <div class="js-file-title file-title-flex-parent">
     <div class="gl-flex">
       <table-of-contents class="gl-pr-2" />
-      <blob-filepath :blob="blob" :show-path="showPath" :show-blob-size="showBlobSize">
+      <blob-filepath
+        :blob="blob"
+        :show-path="showPath"
+        :show-as-link="showPathAsLink"
+        :show-blob-size="showBlobSize"
+      >
         <template #filepath-prepend>
           <slot name="prepend"></slot>
         </template>

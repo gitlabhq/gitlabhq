@@ -397,14 +397,14 @@
           "format": "uri-reference",
           "pattern": "\\w\\.ya?ml$",
           "anyOf": [
-              {
-                  "pattern": "^https?://"
-              },
-              {
-                  "not": {
-                      "pattern": "^\\w+://"
-                  }
+            {
+              "pattern": "^https?://"
+            },
+            {
+              "not": {
+                "pattern": "^\\w+://"
               }
+            }
           ]
         },
         {
@@ -2009,6 +2009,14 @@
                       "type": "string",
                       "description": "The kubernetes namespace where this environment should be deployed to.",
                       "minLength": 1
+                    },
+                    "agent": {
+                      "type": "string",
+                      "description": "Specifies the Gitlab Agent for Kubernetes. The format is `path/to/agent/project:agent-name`."
+                    },
+                    "flux_resource_path": {
+                      "type": "string",
+                      "description": "The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
                     }
                   }
                 },

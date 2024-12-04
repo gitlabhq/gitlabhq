@@ -3938,9 +3938,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Model family"
 msgstr ""
 

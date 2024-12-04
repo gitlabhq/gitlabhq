@@ -124,7 +124,7 @@ $work-item-overview-gap-width: 2rem;
   }
 
   a, a:hover {
-    color: $gl-text-color;
+    @apply gl-text-default;
     text-decoration: none;
   }
 }

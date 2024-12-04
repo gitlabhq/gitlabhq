@@ -122,7 +122,7 @@
   @include gl-dropdown-toggle-button;
 
   &:disabled.read-only {
-    color: $gl-text-color !important;
+    @apply gl-text-default #{!important};
   }
 
   &.large {
@@ -736,7 +736,7 @@
 
 .dropdown-menu-inner-title {
   display: block;
-  color: $gl-text-color;
+  @apply gl-text-default;
   font-weight: $gl-font-weight-bold;
 }
 
@@ -840,7 +840,7 @@
 .bulk-update {
   .dropdown-toggle-text {
     &.is-default {
-      color: $gl-text-color;
+      @apply gl-text-default;
     }
   }
 }

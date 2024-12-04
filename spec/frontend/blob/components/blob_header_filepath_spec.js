@@ -60,10 +60,17 @@ describe('Blob Header Filepath', () => {
       expect(wrapper.find('small').exists()).toBe(false);
     });
 
-    it('should have classes', () => {
+    it('should have classes by default', () => {
       createComponent();
       expect(getById('file-title-content').attributes('class')).toEqual(
-        'file-title-name mr-1 js-blob-header-filepath gl-break-all !gl-no-underline',
+        'file-title-name mr-1 js-blob-header-filepath gl-break-all gl-font-bold',
+      );
+    });
+
+    it('should have classes when shown as a link', () => {
+      createComponent({}, {}, { showAsLink: true });
+      expect(getById('file-title-content').attributes('class')).toEqual(
+        'file-title-name mr-1 js-blob-header-filepath gl-break-all gl-font-bold !gl-text-blue-700 hover:gl-cursor-pointer',
       );
     });
 

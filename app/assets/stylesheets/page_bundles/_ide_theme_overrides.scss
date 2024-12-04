@@ -35,7 +35,7 @@
   .nav-links li a.active,
   .gl-tabs-nav li a.gl-tab-nav-item-active,
   .md-area.is-focused {
-    color: var(--ide-text-color, $gl-text-color);
+    color: var(--ide-text-color, var(--gl-text-color-default));
   }
 
   .badge.badge-pill {
@@ -153,32 +153,32 @@
   // in the default white theme and "none" theme.
   &:not(.theme-white):not(.theme-none) {
     .ide-sidebar-link.active {
-      color: var(--ide-highlight-accent, $gl-text-color);
-      box-shadow: inset 3px 0 var(--ide-highlight-accent, $gl-text-color);
+      color: var(--ide-highlight-accent, var(--gl-text-color-default));
+      box-shadow: inset 3px 0 var(--ide-highlight-accent, var(--gl-text-color-default));
 
       &.is-right {
-        box-shadow: inset -3px 0 var(--ide-highlight-accent, $gl-text-color);
+        box-shadow: inset -3px 0 var(--ide-highlight-accent, var(--gl-text-color-default));
       }
     }
 
     .nav-links li.active a,
     .nav-links li a.active {
-      border-color: var(--ide-highlight-accent, $gl-text-color);
+      border-color: var(--ide-highlight-accent, var(--gl-text-color-default));
     }
 
     .dropdown-menu .nav-links li a.active {
-      border-color: var(--ide-highlight-accent, $gl-text-color);
+      border-color: var(--ide-highlight-accent, var(--gl-text-color-default));
     }
 
     .gl-tabs-nav li a.gl-tab-nav-item-active {
-      box-shadow: inset 0 -2px 0 0 var(--ide-highlight-accent, $gl-text-color);
+      box-shadow: inset 0 -2px 0 0 var(--ide-highlight-accent, var(--gl-text-color-default));
     }
 
     // for other themes, suppress different avatar default colors for simplicity
     .avatar-container {
       &,
       .avatar {
-        color: var(--ide-text-color, $gl-text-color);
+        color: var(--ide-text-color, var(--gl-text-color-default));
         background-color: var(--ide-highlight-background, $white);
         border-color: var(--ide-highlight-background, var(--gl-avatar-border-color-default));
       }
@@ -202,7 +202,7 @@
   input[type='search'],
   .filtered-search-box,
   textarea {
-    color: var(--ide-input-color, $gl-text-color) !important;
+    color: var(--ide-input-color, var(--gl-text-color-default)) !important;
   }
 
   .filtered-search-box input[type='search'] {
@@ -213,7 +213,7 @@
   .filtered-search-token .value-container,
   .filtered-search-term .value-container {
     background-color: var(--ide-dropdown-hover-background, $gray-50);
-    color: var(--ide-text-color, $gl-text-color);
+    color: var(--ide-text-color, var(--gl-text-color-default));
 
     &:hover {
       background-color: var(--ide-input-border, $gray-100);
@@ -240,7 +240,7 @@
   .btn-default:not(.gl-button),
   .dropdown,
   .dropdown-menu-toggle {
-    color: var(--ide-input-color, $gl-text-color) !important;
+    color: var(--ide-input-color, var(--gl-text-color-default)) !important;
     border-color: var(--ide-btn-default-border, $border-color);
   }
 
@@ -294,7 +294,7 @@
   }
 
   .dropdown-menu {
-    color: var(--ide-text-color, $gl-text-color);
+    color: var(--ide-text-color, var(--gl-text-color-default));
     border-color: var(--ide-background, $border-color);
     background-color: var(--ide-dropdown-background, $white);
 
@@ -319,7 +319,7 @@
     li button:not(.disable-hover):focus,
     li button.is-focused {
       background-color: var(--ide-dropdown-hover-background, $gray-50);
-      color: var(--ide-text-color, $gl-text-color);
+      color: var(--ide-text-color, var(--gl-text-color-default));
     }
   }
 

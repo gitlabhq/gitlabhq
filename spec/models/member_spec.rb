@@ -183,6 +183,31 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when access_level is nil' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:member) { create(:group_member, source: group, user: user) }
+
+      shared_examples 'returns the correct validation error' do
+        specify do
+          member.access_level = nil
+
+          member.validate
+
+          expect(member.errors.messages[:access_level]).to include("is not included in the list")
+        end
+      end
+
+      it_behaves_like 'returns the correct validation error'
+
+      context 'for a subgroup member' do
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be(:member) { create(:group_member, source: subgroup, user: user) }
+
+        it_behaves_like 'returns the correct validation error'
+      end
+    end
   end
 
   describe 'Scopes & finders' do

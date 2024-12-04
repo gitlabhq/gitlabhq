@@ -64,7 +64,7 @@
 
     &.light {
       a {
-        color: $gl-text-color;
+        @apply gl-text-default;
       }
     }
   }
@@ -243,7 +243,7 @@
   }
 
   .controllers-buttons {
-    color: $gl-text-color;
+    @apply gl-text-default;
     margin: 0 $grid-size;
 
     &:last-child {

@@ -207,8 +207,9 @@ which consists of only a single reusable `CommonService` class. It also uses
 [functional patterns with stateless singleton class methods](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#functional-patterns).
 See the Remote Development [service layer code example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#service-layer-code-example) for more details.
 However, even though the invocation signature of services via this pattern is different,
-it still respects the standard Service Class contract of always returning all results via a
-[`ServiceResponse`](#serviceresponse) object.
+it still respects the standard Service layer contracts of always returning all results via a
+[`ServiceResponse`](#serviceresponse) object, and performing
+[defense-in-depth authorization](permissions/authorizations.md#where-should-permissions-be-checked).
 
 Classes that are not service objects should be
 [created elsewhere](software_design.md#use-namespaces-to-define-bounded-contexts),

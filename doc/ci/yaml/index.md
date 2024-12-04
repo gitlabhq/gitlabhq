@@ -2356,11 +2356,19 @@ Some actions can be used to reset the scheduled stop time for the environment. F
 #### `environment:kubernetes`
 
 > - `agent` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
+> - `namespace` and `flux_resource_path` keywords [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500164) in GitLab 17.7.
 
 Use the `kubernetes` keyword to configure the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md)
 for an environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md). The format is `path/to/agent/project:agent-name`.
+- `namespace`: A string representing the Kubernetes namespace. It needs to be set together with the `agent` keyword.
+- `flux_resource_path`: A string representing the path to the Flux resource. This must be the full resource path. It needs to be set together with the
+  `agent` and `namespace` keywords.
 
 **Example of `environment:kubernetes`**:
 
@@ -2372,11 +2380,15 @@ deploy:
     name: production
     kubernetes:
       agent: path/to/agent/project:agent-name
+      namespace: my-namespace
+      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent
 ```
 
 This configuration sets up the `deploy` job to deploy to the `production`
-environment, and associates the [agent](../../user/clusters/agent/index.md)
-named `agent-name` with the environment.
+environment, associates the [agent](../../user/clusters/agent/index.md) named `agent-name` with the environment,
+and configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
+the namespace `my-namespace` and the `flux_resource_path` set to
+`helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.
 
 **Additional details**:
 
@@ -2384,6 +2396,8 @@ named `agent-name` with the environment.
   [install the GitLab agent for Kubernetes](../../user/clusters/agent/install/index.md) and
   [configure `user_access`](../../user/clusters/agent/user_access.md)
   for the environment's project or its parent group.
+- The user running the job must be authorized to access the cluster agent.
+  Otherwise, it will ignore `agent`, `namespace` and `flux_resource_path` attributes.
 
 #### `environment:deployment_tier`
 

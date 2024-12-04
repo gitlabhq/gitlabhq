@@ -13,7 +13,6 @@ import {
   EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER,
   EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
   DASHBOARD_STATUS_BETA,
-  CUSTOM_VALUE_STREAM_DASHBOARD,
 } from './constants';
 import GridstackWrapper from './gridstack_wrapper.vue';
 import AvailableVisualizationsDrawer from './dashboard_editor/available_visualizations_drawer.vue';
@@ -96,6 +95,11 @@ export default {
       required: false,
       default: null,
     },
+    editingEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -112,13 +116,6 @@ export default {
     },
     queryParams() {
       return this.showFilters ? filtersToQueryParams(this.filters) : {};
-    },
-    editingEnabled() {
-      return (
-        this.dashboard.userDefined &&
-        (this.dashboard.slug !== CUSTOM_VALUE_STREAM_DASHBOARD ||
-          this.glFeatures.enableVsdVisualEditor)
-      );
     },
     showEditControls() {
       return this.editingEnabled && this.editing;

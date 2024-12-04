@@ -139,6 +139,10 @@ module API
         optional :enabled, type: Boolean, desc: 'Flag indication if container expiration policy is enabled'
       end
 
+      params :share_project_params_ee do
+        # Overriden in EE
+      end
+
       def self.update_params_at_least_one_of
         [
           :allow_merge_on_skipped_pipeline,

@@ -11,3 +11,5 @@ module API
     end
   end
 end
+
+API::Entities::ProjectGroupLink.prepend_mod

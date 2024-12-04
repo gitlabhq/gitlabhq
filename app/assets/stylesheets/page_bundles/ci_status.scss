@@ -37,7 +37,7 @@
     border-color: currentColor;
 
     &:not(span):hover {
-      background-color: rgba($gl-text-color, 0.07);
+      @apply gl-bg-alpha-dark-8;
     }
   }
 

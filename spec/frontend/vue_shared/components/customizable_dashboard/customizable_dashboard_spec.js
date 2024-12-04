@@ -16,7 +16,6 @@ import {
 } from '~/vue_shared/components/customizable_dashboard/utils';
 import UrlSync, { HISTORY_REPLACE_UPDATE_METHOD } from '~/vue_shared/components/url_sync.vue';
 import {
-  CUSTOM_VALUE_STREAM_DASHBOARD,
   EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER,
   EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
   DASHBOARD_SCHEMA_VERSION,
@@ -26,7 +25,6 @@ import { stubComponent } from 'helpers/stub_component';
 import { trimText } from 'helpers/text_helper';
 import {
   dashboard,
-  builtinDashboard,
   betaDashboard,
   mockDateRangeFilterChangePayload,
   createVisualization,
@@ -264,37 +262,22 @@ describe('CustomizableDashboard', () => {
     });
   });
 
-  describe('when a dashboard is custom', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
+  describe('editingEnabled', () => {
+    it('shows the edit button if editingEnabled', () => {
+      createWrapper({ editingEnabled: true });
 
-    it('shows the "edit" button', () => {
       expect(findEditButton().exists()).toBe(true);
     });
-  });
 
-  describe('when a dashboard is built-in', () => {
-    beforeEach(() => {
-      createWrapper({}, { loadedDashboard: builtinDashboard });
-    });
+    it('does not show the edit button if not editingEnabled', () => {
+      createWrapper({ editingEnabled: false });
 
-    it('does not show the "edit" button', () => {
-      expect(findEditButton().exists()).toBe(false);
-    });
-  });
-
-  describe('when a dashboard is a custom VSD', () => {
-    const customVsd = { ...dashboard, slug: CUSTOM_VALUE_STREAM_DASHBOARD };
-
-    it('does not show the "edit" button when `enable_vsd_visual_editor` is disabled', () => {
-      createWrapper({}, { loadedDashboard: customVsd });
       expect(findEditButton().exists()).toBe(false);
     });
 
-    it('shows the "edit" button when `enable_vsd_visual_editor` is enabled', () => {
-      const provide = { glFeatures: { enableVsdVisualEditor: true } };
-      createWrapper({}, { loadedDashboard: customVsd, provide });
+    it('shows the edit button by default', () => {
+      createWrapper();
+
       expect(findEditButton().exists()).toBe(true);
     });
   });
@@ -468,10 +451,6 @@ describe('CustomizableDashboard', () => {
           );
         });
       });
-    });
-
-    it('does not show the "edit" button', () => {
-      expect(findEditButton().exists()).toBe(false);
     });
 
     describe('with the visualization drawer', () => {
