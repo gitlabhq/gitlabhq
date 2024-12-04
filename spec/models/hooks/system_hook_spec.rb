@@ -47,7 +47,8 @@ RSpec.describe SystemHook, feature_category: :webhooks do
     let(:project) { build(:project, namespace: user.namespace) }
     let(:group) { build(:group) }
     let(:params) do
-      { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: User.random_password }
+      { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: User.random_password,
+        organization_id: group.organization_id }
     end
 
     before do

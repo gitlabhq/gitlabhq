@@ -114,55 +114,55 @@ To use custom settings for a project or group integration:
 
 ## Available integrations
 
-| Integration                                                                 | Description                                                           | Integration hooks      |
-|-----------------------------------------------------------------------------|-----------------------------------------------------------------------|------------------------|
-| [Apple App Store Connect](apple_app_store.md)                               | Use GitLab to build and release an app in the Apple App Store.        | **{dotted-circle}** No |
-| [Asana](asana.md)                                                           | Add commit messages as comments to Asana tasks.                       | **{dotted-circle}** No |
-| Assembla                                                                    | Manage projects with Assembla.                                        | **{dotted-circle}** No |
-| [Atlassian Bamboo](bamboo.md)                                               | Run CI/CD pipelines with Atlassian Bamboo.                            | **{check-circle}** Yes |
-| [Bugzilla](bugzilla.md)                                                     | Use Bugzilla as an issue tracker.                                     | **{dotted-circle}** No |
-| [Beyond Identity](beyond_identity.md)                                       | Verify that GPG keys are authorized by Beyond Identity Authenticator. | **{dotted-circle}** No |
-| Buildkite                                                                   | Run CI/CD pipelines with Buildkite.                                   | **{check-circle}** Yes |
-| Campfire                                                                    | Connect Campfire to chat.                                             | **{dotted-circle}** No |
-| [ClickUp](clickup.md)                                                       | Use ClickUp as an issue tracker.                                      | **{dotted-circle}** No |
-| [Confluence Workspace](../../../api/integrations.md#confluence-workspace)   | Use Confluence Workspace as an internal wiki.                         | **{dotted-circle}** No |
-| [Custom issue tracker](custom_issue_tracker.md)                             | Use a custom issue tracker.                                           | **{dotted-circle}** No |
-| [Datadog](../../../integration/datadog.md)                                  | Trace your GitLab pipelines with Datadog.                             | **{check-circle}** Yes |
-| [Diffblue Cover](../../../integration/diffblue_cover.md)                    | Automatically write comprehensive, human-like Java unit tests.        | **{check-circle}** No |
-| [Discord Notifications](discord_notifications.md)                           | Send notifications about project events to a Discord channel.         | **{dotted-circle}** No |
-| Drone                                                                       | Run CI/CD pipelines with Drone.                                       | **{check-circle}** Yes |
-| [Emails on push](emails_on_push.md)                                         | Send commits and diffs on push by email.                              | **{dotted-circle}** No |
-| [Engineering Workflow Management (EWM)](ewm.md)                             | Use EWM as an issue tracker.                                          | **{dotted-circle}** No |
-| [External wiki](../wiki/index.md#link-an-external-wiki)                     | Link an external wiki.                                                | **{dotted-circle}** No |
-| [GitGuardian](git_guardian.md)                                              | Reject commits based on GitGuardian policies.                         | **{dotted-circle}** No |
-| [GitHub](github.md)                                                         | Receive statuses for commits and pull requests.                       | **{dotted-circle}** No |
-| [GitLab for Slack app](gitlab_slack_application.md)                         | Use the native Slack app to receive notifications and run commands.   | **{dotted-circle}** No |
-| [Google Artifact Management](google_artifact_management.md)                 | Manage your artifacts in Google Artifact Registry.                    | **{dotted-circle}** No |
-| [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a space in Google Chat. | **{dotted-circle}** No |
-| [Google Cloud IAM](../../../integration/google_cloud_iam.md)                | Manage permissions for Google Cloud resources with Identity and Access Management (IAM). | **{dotted-circle}** No |
-| [Google Play](google_play.md)                                               | Use GitLab to build and release an app in Google Play.                | **{dotted-circle}** No |
-| [Harbor](harbor.md)                                                         | Use Harbor as the container registry for GitLab.                      | **{dotted-circle}** No |
-| [irker (IRC gateway)](irker.md)                                             | Send IRC messages.                                                    | **{dotted-circle}** No |
-| [Jenkins](../../../integration/jenkins.md)                                  | Run CI/CD pipelines with Jenkins.                                     | **{check-circle}** Yes |
-| JetBrains TeamCity                                                          | Run CI/CD pipelines with TeamCity.                                    | **{check-circle}** Yes |
-| [JetBrains YouTrack](youtrack.md)                                           | Use JetBrains YouTrack as your project's issue tracker.               | **{dotted-circle}** No |
-| [Jira](../../../integration/jira/index.md)                                  | Use Jira as an issue tracker.                                         | **{dotted-circle}** No |
-| [Matrix notifications](matrix.md)                                           | Send notifications about project events to Matrix.                    | **{dotted-circle}** No |
-| [Mattermost notifications](mattermost.md)                                   | Send notifications about project events to Mattermost channels.       | **{dotted-circle}** No |
-| [Mattermost slash commands](mattermost_slash_commands.md)                   | Run slash commands from a Mattermost chat environment.                | **{dotted-circle}** No |
-| [Microsoft Teams notifications](microsoft_teams.md)                         | Receive event notifications in Microsoft Teams.                       | **{dotted-circle}** No |
-| Packagist                                                                   | Update your PHP dependencies in Packagist.                            | **{check-circle}** Yes |
-| [Phorge](phorge.md)                                                         | Use Phorge as an issue tracker.                                       | **{dotted-circle}** No |
-| [Pipeline status emails](pipeline_status_emails.md)                         | Send the pipeline status to a list of recipients by email.            | **{dotted-circle}** No |
-| [Pivotal Tracker](pivotal_tracker.md)                                       | Add commit messages as comments to Pivotal Tracker stories.           | **{dotted-circle}** No |
-| [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                         | **{dotted-circle}** No |
-| Pushover                                                                    | Get real-time notifications on your device.                           | **{dotted-circle}** No |
-| [Redmine](redmine.md)                                                       | Use Redmine as an issue tracker.                                      | **{dotted-circle}** No |
-| [Slack slash commands](slack_slash_commands.md)                             | Run slash commands from a Slack chat environment.                     | **{dotted-circle}** No |
-| [Squash TM](squash_tm.md)                                                   | Update Squash TM requirements when GitLab issues are modified.        | **{check-circle}** Yes |
-| [Telegram](telegram.md)                                                     | Send notifications about project events to Telegram.                  | **{dotted-circle}** No |
-| [Unify Circuit](unify_circuit.md)                                           | Send notifications about project events to Unify Circuit.             | **{dotted-circle}** No |
-| [Webex Teams](webex_teams.md)                                               | Receive event notifications in Webex Teams.                           | **{dotted-circle}** No |
+| Integration                                                  | Description                                                                              | Integration hooks |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ----------------- |
+| [Apple App Store Connect](apple_app_store.md)                | Use GitLab to build and release an app in the Apple App Store.                           | **{dotted-circle}** No |
+| [Asana](asana.md)                                            | Add commit messages as comments to Asana tasks.                                          | **{dotted-circle}** No |
+| Assembla                                                     | Manage projects with Assembla.                                                           | **{dotted-circle}** No |
+| [Atlassian Bamboo](bamboo.md)                                | Run CI/CD pipelines with Atlassian Bamboo.                                               | **{check-circle}** Yes |
+| [Bugzilla](bugzilla.md)                                      | Use Bugzilla as an issue tracker.                                                        | **{dotted-circle}** No |
+| [Beyond Identity](beyond_identity.md)                        | Verify that GPG keys are authorized by Beyond Identity Authenticator.                    | **{dotted-circle}** No |
+| Buildkite                                                    | Run CI/CD pipelines with Buildkite.                                                      | **{check-circle}** Yes |
+| Campfire                                                     | Connect Campfire to chat.                                                                | **{dotted-circle}** No |
+| [ClickUp](clickup.md)                                        | Use ClickUp as an issue tracker.                                                         | **{dotted-circle}** No |
+| [Confluence Workspace](confluence.md)                        | Use Confluence Workspace as an internal wiki.                                            | **{dotted-circle}** No |
+| [Custom issue tracker](custom_issue_tracker.md)              | Use a custom issue tracker.                                                              | **{dotted-circle}** No |
+| [Datadog](../../../integration/datadog.md)                   | Trace your GitLab pipelines with Datadog.                                                | **{check-circle}** Yes |
+| [Diffblue Cover](../../../integration/diffblue_cover.md)     | Automatically write comprehensive, human-like Java unit tests.                           | **{check-circle}** No |
+| [Discord Notifications](discord_notifications.md)            | Send notifications about project events to a Discord channel.                            | **{dotted-circle}** No |
+| Drone                                                        | Run CI/CD pipelines with Drone.                                                          | **{check-circle}** Yes |
+| [Emails on push](emails_on_push.md)                          | Send commits and diffs on push by email.                                                 | **{dotted-circle}** No |
+| [Engineering Workflow Management (EWM)](ewm.md)              | Use EWM as an issue tracker.                                                             | **{dotted-circle}** No |
+| [External wiki](../wiki/index.md#link-an-external-wiki)      | Link an external wiki.                                                                   | **{dotted-circle}** No |
+| [GitGuardian](git_guardian.md)                               | Reject commits based on GitGuardian policies.                                            | **{dotted-circle}** No |
+| [GitHub](github.md)                                          | Receive statuses for commits and pull requests.                                          | **{dotted-circle}** No |
+| [GitLab for Slack app](gitlab_slack_application.md)          | Use the native Slack app to receive notifications and run commands.                      | **{dotted-circle}** No |
+| [Google Artifact Management](google_artifact_management.md)  | Manage your artifacts in Google Artifact Registry.                                       | **{dotted-circle}** No |
+| [Google Chat](hangouts_chat.md)                              | Send notifications from your GitLab project to a space in Google Chat.                   | **{dotted-circle}** No |
+| [Google Cloud IAM](../../../integration/google_cloud_iam.md) | Manage permissions for Google Cloud resources with Identity and Access Management (IAM). | **{dotted-circle}** No |
+| [Google Play](google_play.md)                                | Use GitLab to build and release an app in Google Play.                                   | **{dotted-circle}** No |
+| [Harbor](harbor.md)                                          | Use Harbor as the container registry for GitLab.                                         | **{dotted-circle}** No |
+| [irker (IRC gateway)](irker.md)                              | Send IRC messages.                                                                       | **{dotted-circle}** No |
+| [Jenkins](../../../integration/jenkins.md)                   | Run CI/CD pipelines with Jenkins.                                                        | **{check-circle}** Yes |
+| JetBrains TeamCity                                           | Run CI/CD pipelines with TeamCity.                                                       | **{check-circle}** Yes |
+| [JetBrains YouTrack](youtrack.md)                            | Use JetBrains YouTrack as your project's issue tracker.                                  | **{dotted-circle}** No |
+| [Jira](../../../integration/jira/index.md)                   | Use Jira as an issue tracker.                                                            | **{dotted-circle}** No |
+| [Matrix notifications](matrix.md)                            | Send notifications about project events to Matrix.                                       | **{dotted-circle}** No |
+| [Mattermost notifications](mattermost.md)                    | Send notifications about project events to Mattermost channels.                          | **{dotted-circle}** No |
+| [Mattermost slash commands](mattermost_slash_commands.md)    | Run slash commands from a Mattermost chat environment.                                   | **{dotted-circle}** No |
+| [Microsoft Teams notifications](microsoft_teams.md)          | Receive event notifications in Microsoft Teams.                                          | **{dotted-circle}** No |
+| Packagist                                                    | Update your PHP dependencies in Packagist.                                               | **{check-circle}** Yes |
+| [Phorge](phorge.md)                                          | Use Phorge as an issue tracker.                                                          | **{dotted-circle}** No |
+| [Pipeline status emails](pipeline_status_emails.md)          | Send the pipeline status to a list of recipients by email.                               | **{dotted-circle}** No |
+| [Pivotal Tracker](pivotal_tracker.md)                        | Add commit messages as comments to Pivotal Tracker stories.                              | **{dotted-circle}** No |
+| [Pumble](pumble.md)                                          | Send event notifications to a Pumble channel.                                            | **{dotted-circle}** No |
+| Pushover                                                     | Get real-time notifications on your device.                                              | **{dotted-circle}** No |
+| [Redmine](redmine.md)                                        | Use Redmine as an issue tracker.                                                         | **{dotted-circle}** No |
+| [Slack slash commands](slack_slash_commands.md)              | Run slash commands from a Slack chat environment.                                        | **{dotted-circle}** No |
+| [Squash TM](squash_tm.md)                                    | Update Squash TM requirements when GitLab issues are modified.                           | **{check-circle}** Yes |
+| [Telegram](telegram.md)                                      | Send notifications about project events to Telegram.                                     | **{dotted-circle}** No |
+| [Unify Circuit](unify_circuit.md)                            | Send notifications about project events to Unify Circuit.                                | **{dotted-circle}** No |
+| [Webex Teams](webex_teams.md)                                | Receive event notifications in Webex Teams.                                              | **{dotted-circle}** No |
 
 ## Project webhooks
 

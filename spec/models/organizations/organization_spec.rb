@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Organizations::Organization, type: :model, feature_category: :cell do
   let_it_be_with_refind(:organization) { create(:organization) }
-  let_it_be(:default_organization) { create(:organization, :default) }
 
   describe 'associations' do
     it { is_expected.to have_one(:organization_detail).inverse_of(:organization).autosave(true) }
@@ -147,16 +146,6 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
   end
 
   context 'when using scopes' do
-    describe '.without_default' do
-      it 'excludes default organization' do
-        expect(described_class.without_default).not_to include(default_organization)
-      end
-
-      it 'includes other organizations organization' do
-        expect(described_class.without_default).to include(organization)
-      end
-    end
-
     describe '.with_namespace_path' do
       let_it_be(:group) { create(:group, organization: organization) }
       let(:path) { group.path }
@@ -188,41 +177,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
         organization.users << user
       end
 
-      it { is_expected.to eq([default_organization, organization, second_organization]) }
-    end
-  end
-
-  describe '.default_organization' do
-    it 'returns the default organization' do
-      expect(described_class.default_organization).to eq(default_organization)
-    end
-  end
-
-  describe '.default?' do
-    context 'when organization is default' do
-      it 'returns true' do
-        expect(described_class.default?(default_organization.id)).to eq(true)
-      end
-    end
-
-    context 'when organization is not default' do
-      it 'returns false' do
-        expect(described_class.default?(organization.id)).to eq(false)
-      end
-    end
-  end
-
-  describe '#id' do
-    context 'when organization is default' do
-      it 'has id 1' do
-        expect(default_organization.id).to eq(1)
-      end
-    end
-
-    context 'when organization is not default' do
-      it 'does not have id 1' do
-        expect(organization.id).not_to eq(1)
-      end
+      it { is_expected.to eq([organization, second_organization]) }
     end
   end
 
@@ -278,66 +233,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
-  describe '#destroy!' do
-    context 'when trying to delete the default organization' do
-      it 'raises an error' do
-        expect do
-          default_organization.destroy!
-        end.to raise_error(ActiveRecord::RecordNotDestroyed, _('Cannot delete the default organization'))
-      end
-    end
-
-    context 'when trying to delete a non-default organization' do
-      let(:to_be_removed) { create(:organization) }
-
-      it 'does not raise error' do
-        expect { to_be_removed.destroy! }.not_to raise_error
-      end
-    end
-  end
-
-  describe '#destroy' do
-    context 'when trying to delete the default organization' do
-      it 'returns false' do
-        expect(default_organization.destroy).to eq(false)
-      end
-    end
-
-    context 'when trying to delete a non-default organization' do
-      let(:to_be_removed) { create(:organization) }
-
-      it 'returns true' do
-        expect(to_be_removed.destroy).to eq(to_be_removed)
-      end
-    end
-  end
-
   describe '#organization_detail' do
     it 'ensures organization has organization_detail upon initialization' do
       expect(organization.organization_detail).to be_present
       expect(organization.organization_detail).not_to be_persisted
-    end
-  end
-
-  describe '#default?' do
-    context 'when organization is default' do
-      it 'returns true' do
-        expect(default_organization.default?).to eq(true)
-      end
-    end
-
-    context 'when organization is not default' do
-      it 'returns false' do
-        expect(organization.default?).to eq(false)
-      end
-    end
-  end
-
-  describe '#name' do
-    context 'when organization is default' do
-      it 'returns Default' do
-        expect(default_organization.name).to eq('Default')
-      end
     end
   end
 
@@ -346,20 +245,6 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
 
     it 'returns the path' do
       expect(organization.to_param).to eq('org_path')
-    end
-  end
-
-  context 'on deleting organizations via SQL' do
-    it 'does not allow to delete default organization' do
-      expect { default_organization.delete }.to raise_error(
-        ActiveRecord::StatementInvalid, /Deletion of the default Organization is not allowed/
-      )
-    end
-
-    it 'allows to delete any other organization' do
-      organization.delete
-
-      expect(described_class.where(id: organization)).not_to exist
     end
   end
 
@@ -429,6 +314,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
   end
 
   describe '.search' do
+    let_it_be(:other_organization) { create(:organization, name: 'Other') }
+
     using RSpec::Parameterized::TableSyntax
 
     subject { described_class.search(query) }
@@ -436,7 +323,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     context 'when searching by name' do
       where(:query, :expected_organizations) do
         'Organization' | [ref(:organization)]
-        'default'      | [ref(:default_organization)]
+        'Other'        | [ref(:other_organization)]
       end
 
       with_them do
@@ -447,11 +334,129 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     context 'when searching by path' do
       where(:query, :expected_organizations) do
         'organization' | [ref(:organization)]
-        'default'      | [ref(:default_organization)]
+        'other'        | [ref(:other_organization)]
       end
 
       with_them do
         it { is_expected.to contain_exactly(*expected_organizations) }
+      end
+    end
+  end
+
+  context 'when a default organization exists' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+
+    describe '.without_default' do
+      it 'excludes default organization' do
+        expect(described_class.without_default).not_to include(default_organization)
+      end
+
+      it 'includes other organizations organization' do
+        expect(described_class.without_default).to include(organization)
+      end
+    end
+
+    describe '.default_organization' do
+      it 'returns the default organization' do
+        expect(described_class.default_organization).to eq(default_organization)
+      end
+    end
+
+    describe '.default?' do
+      context 'when organization is default' do
+        it 'returns true' do
+          expect(described_class.default?(default_organization.id)).to eq(true)
+        end
+      end
+
+      context 'when organization is not default' do
+        it 'returns false' do
+          expect(described_class.default?(organization.id)).to eq(false)
+        end
+      end
+    end
+
+    describe '#id' do
+      context 'when organization is default' do
+        it 'has id 1' do
+          expect(default_organization.id).to eq(1)
+        end
+      end
+
+      context 'when organization is not default' do
+        it 'does not have id 1' do
+          expect(organization.id).not_to eq(1)
+        end
+      end
+    end
+
+    describe '#destroy!' do
+      context 'when trying to delete the default organization' do
+        it 'raises an error' do
+          expect do
+            default_organization.destroy!
+          end.to raise_error(ActiveRecord::RecordNotDestroyed, _('Cannot delete the default organization'))
+        end
+      end
+
+      context 'when trying to delete a non-default organization' do
+        let(:to_be_removed) { create(:organization) }
+
+        it 'does not raise error' do
+          expect { to_be_removed.destroy! }.not_to raise_error
+        end
+      end
+    end
+
+    describe '#destroy' do
+      context 'when trying to delete the default organization' do
+        it 'returns false' do
+          expect(default_organization.destroy).to eq(false)
+        end
+      end
+
+      context 'when trying to delete a non-default organization' do
+        let(:to_be_removed) { create(:organization) }
+
+        it 'returns true' do
+          expect(to_be_removed.destroy).to eq(to_be_removed)
+        end
+      end
+    end
+
+    context 'on deleting organizations via SQL' do
+      it 'does not allow to delete default organization' do
+        expect { default_organization.delete }.to raise_error(
+          ActiveRecord::StatementInvalid, /Deletion of the default Organization is not allowed/
+        )
+      end
+
+      it 'allows to delete any other organization' do
+        organization.delete
+
+        expect(described_class.where(id: organization)).not_to exist
+      end
+    end
+
+    describe '#default?' do
+      context 'when organization is default' do
+        it 'returns true' do
+          expect(default_organization.default?).to eq(true)
+        end
+      end
+
+      context 'when organization is not default' do
+        it 'returns false' do
+          expect(organization.default?).to eq(false)
+        end
+      end
+    end
+
+    describe '#name' do
+      context 'when organization is default' do
+        it 'returns Default' do
+          expect(default_organization.name).to eq('Default')
+        end
       end
     end
   end

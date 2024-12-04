@@ -7,7 +7,7 @@ module QA
       InvalidUserError = Class.new(RuntimeError)
 
       attr_reader :unique_id
-      attr_writer :username, :password
+      attr_writer :username, :password, :ldap_user
       attr_accessor :admin,
         :provider,
         :extern_uid,
@@ -49,6 +49,7 @@ module QA
         @email_domain = 'example.com'
         @with_personal_access_token = false
         @personal_access_tokens = []
+        @ldap_user = false
       end
 
       def admin?
@@ -58,12 +59,10 @@ module QA
       def username
         @username || "qa-user-#{unique_id}"
       end
-      alias_method :ldap_username, :username
 
       def password
         @password ||= "Pa$$w0rd"
       end
-      alias_method :ldap_password, :password
 
       def name
         @name ||= api_resource&.dig(:name) || "QA User #{unique_id}"
@@ -218,6 +217,13 @@ module QA
         raise ResourceQueryError unless resp.code == Support::API::HTTP_STATUS_OK
 
         parse_body(resp)
+      end
+
+      # User registered through LDAP protocol
+      #
+      # @return [Boolean]
+      def ldap_user?
+        @ldap_user
       end
 
       # Create new personal access token for user

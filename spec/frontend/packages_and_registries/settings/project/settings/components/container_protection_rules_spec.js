@@ -33,7 +33,7 @@ describe('Container protection rules project settings', () => {
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsSection);
   const findTable = () =>
-    extendedWrapper(wrapper.findByRole('table', { name: /protected containers/i }));
+    extendedWrapper(wrapper.findByRole('table', { name: /protected container repositories/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
@@ -445,7 +445,7 @@ describe('Container protection rules project settings', () => {
             const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
 
             expect(findModal().props('modal-id')).toBe(modalId);
-            expect(findModal().props('title')).toBe('Delete container protection rule?');
+            expect(findModal().props('title')).toBe('Delete container repository protection rule?');
             expect(findModal().text()).toContain(
               'Users with at least the Developer role for this project will be able to push and delete container images to this repository path.',
             );

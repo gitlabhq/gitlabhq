@@ -2,47 +2,22 @@
 
 module QA
   RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
-    shared_examples 'registration and login' do
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
+      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       it 'allows the user to register and login' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-        Resource::User.fabricate_via_browser_ui! do |user_resource|
-          user_resource.email_domain = 'gitlab.com'
+        Resource::User.fabricate_via_browser_ui! do |user|
+          user.username = Runtime::Env.ldap_username
+          user.password = Runtime::Env.ldap_password
+          user.email_domain = 'gitlab.com'
+          user.ldap_user = true
         end
 
         Page::Main::Menu.perform do |menu|
           expect(menu).to have_personal_area
         end
       end
-    end
-
-    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
-      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
-      let!(:personal_access_token) { Runtime::Env.personal_access_token }
-
-      around do |example|
-        with_application_settings(require_admin_approval_after_user_signup: false) { example.run }
-      end
-
-      before do
-        # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not
-        # an admin. So we need to set it to nil in order to create a new token for admin user so that we are able
-        # to set_application_settings. Also, when GITLAB_LDAP_USERNAME is provided, it is used to create a token.
-        # This also needs to be set to nil temporarily for the same reason as above.
-
-        Runtime::Env.personal_access_token = nil
-
-        ldap_username = Runtime::Env.ldap_username
-        Runtime::Env.ldap_username = nil
-
-        Runtime::Env.ldap_username = ldap_username
-      end
-
-      after do
-        Runtime::Env.personal_access_token = personal_access_token
-      end
-
-      it_behaves_like 'registration and login'
     end
 
     # TODO: needs to be refactored to correctly support parallel testing
@@ -55,7 +30,17 @@ module QA
 
         context "with basic registration",
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
-          it_behaves_like 'registration and login'
+          it 'allows the user to register and login' do
+            Runtime::Browser.visit(:gitlab, Page::Main::Login)
+
+            Resource::User.fabricate_via_browser_ui! do |user_resource|
+              user_resource.email_domain = 'gitlab.com'
+            end
+
+            Page::Main::Menu.perform do |menu|
+              expect(menu).to have_personal_area
+            end
+          end
         end
 
         context "with user deletion" do

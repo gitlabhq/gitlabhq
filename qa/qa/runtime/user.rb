@@ -22,18 +22,6 @@ module QA
         '5iveL!fe'
       end
 
-      def ldap_user?
-        Runtime::Env.ldap_username.present? && Runtime::Env.ldap_password.present?
-      end
-
-      def ldap_username
-        Runtime::Env.ldap_username || username
-      end
-
-      def ldap_password
-        Runtime::Env.ldap_password || password
-      end
-
       def admin_username
         Runtime::Env.admin_username || default_username
       end

@@ -10,8 +10,7 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
       bitbucket_username: 'foo',
       bitbucket_app_password: 'bar',
       repo_path: 'path/to/repo',
-      target_namespace: user.namespace_path,
-      organization_id: current_organization.id
+      target_namespace: user.namespace_path
     }
   end
 

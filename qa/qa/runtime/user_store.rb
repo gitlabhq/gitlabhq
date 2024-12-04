@@ -83,7 +83,16 @@ module QA
           return @test_user if defined?(@test_user)
 
           info("Creating test user")
-          return @test_user = create_new_user if create_unique_test_user?
+
+          if ldap_user_configured?
+            return @test_user = Resource::User.init do |user|
+              user.username = Env.ldap_username
+              user.password = Env.ldap_password
+              user.ldap_user = true
+            end
+          elsif create_unique_test_user?
+            return @test_user = create_new_user
+          end
 
           if Env.user_username.blank? || Env.user_password.blank?
             raise "Missing user_username and user_password variable values"
@@ -279,6 +288,13 @@ module QA
         # @return [Boolean]
         def status_ok?(resp)
           resp.code == Support::API::HTTP_STATUS_OK
+        end
+
+        # Check if environment has ldap user set
+        #
+        # @return [Boolean]
+        def ldap_user_configured?
+          Runtime::Env.ldap_username.present? && Runtime::Env.ldap_password.present?
         end
       end
     end

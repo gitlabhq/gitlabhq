@@ -10,6 +10,12 @@ module Gitlab
     ImpersonationDisabled = Class.new(AuthenticationError)
     UnauthorizedError = Class.new(AuthenticationError)
 
+    class DpopValidationError < AuthenticationError
+      def initialize(msg)
+        super("DPoP validation error: #{msg}")
+      end
+    end
+
     class InsufficientScopeError < AuthenticationError
       attr_reader :scopes
 

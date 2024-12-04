@@ -679,7 +679,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
           request
 
           errors = assigns[:user].errors
-          expect(errors).to contain_exactly('Organization users is invalid')
+          expect(errors).to contain_exactly("Namespace organization can't be blank", "Organization users is invalid")
         end
       end
     end

@@ -424,16 +424,11 @@ module QA
       end
 
       def ldap_username
-        @ldap_username ||= ENV['GITLAB_LDAP_USERNAME']
-      end
-
-      def ldap_username=(ldap_username)
-        @ldap_username = ldap_username # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        ENV['GITLAB_LDAP_USERNAME'] = ldap_username
+        ENV['GITLAB_LDAP_USERNAME']
       end
 
       def ldap_password
-        @ldap_password ||= ENV['GITLAB_LDAP_PASSWORD']
+        ENV['GITLAB_LDAP_PASSWORD']
       end
 
       def sandbox_name

@@ -40,7 +40,7 @@ module Types
         null: false,
         experiment: { milestone: '17.2' },
         description:
-          'Whether any matching container protection rule exists for the container. ' \
+          'Whether any matching container protection rule exists for the container repository. ' \
           'Available only when feature flag `container_registry_protected_containers` is enabled.'
       field :status, Types::ContainerRegistry::ContainerRepositoryStatusEnum, null: true,
         description: 'Status of the container repository.'

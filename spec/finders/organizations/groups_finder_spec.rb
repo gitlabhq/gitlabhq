@@ -7,6 +7,7 @@ RSpec.describe Organizations::GroupsFinder, feature_category: :groups_and_projec
     let_it_be(:organization_user) { create(:organization_user) }
     let_it_be(:organization) { organization_user.organization }
     let_it_be(:user) { organization_user.user }
+    let_it_be(:default_organization) { create(:organization, :default) }
     let_it_be_with_reload(:public_group) { create(:group, name: 'public-group', organization: organization) }
     let_it_be_with_reload(:outside_organization_group) { create(:group) }
     let_it_be_with_reload(:private_group) do

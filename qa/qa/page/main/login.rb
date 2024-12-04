@@ -70,12 +70,9 @@ module QA
           using_wait_time 0 do
             set_initial_password_if_present
 
-            if Runtime::User.ldap_user? && user && user.username != Runtime::User.ldap_username
-              raise QA::Resource::User::InvalidUserError, 'If an LDAP user is provided, it must be used for sign-in'
-            end
-
             test_user = user || Runtime::UserStore.test_user
-            if Runtime::User.ldap_user?
+
+            if test_user.ldap_user?
               sign_in_using_ldap_credentials(user: test_user)
             else
               sign_in_using_gitlab_credentials(user: test_user, skip_page_validation: skip_page_validation)
@@ -104,8 +101,8 @@ module QA
 
             switch_to_ldap_tab
 
-            fill_element 'username-field', user.ldap_username
-            fill_element 'password-field', user.ldap_password
+            fill_element 'username-field', user.username
+            fill_element 'password-field', user.password
             click_element 'sign-in-button'
           end
 

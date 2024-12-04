@@ -219,12 +219,12 @@ export default {
     :data-item-iid="item.iid"
     :data-item-path="item.referencePath"
     data-testid="board-card"
-    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-leading-normal hover:gl-bg-gray-10"
+    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
   >
     <button
       :class="[
         {
-          'focus:gl-bg-gray-10': showFocusBackground,
+          'focus:gl-bg-subtle dark:focus:gl-bg-gray-200': showFocusBackground,
           'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
         },
       ]"

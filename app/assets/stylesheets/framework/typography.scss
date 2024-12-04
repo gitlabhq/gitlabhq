@@ -148,29 +148,16 @@
 
   blockquote,
   .blockquote {
-    font-size: inherit;
-    color: $gray-700;
-    padding-top: $gl-spacing-scale-3;
-    padding-bottom: $gl-spacing-scale-3;
-    padding-left: $gl-spacing-scale-5;
-    margin-top: $gl-spacing-scale-3;
-    margin-bottom: $gl-spacing-scale-3;
-    margin-left: 0;
-    margin-right: 0;
-    border-left: 4px solid var(--gl-color-neutral-100);
-
-    .gl-dark & {
-      border-left-color: var(--gl-color-neutral-600);
-    }
+    @apply gl-text-size-reset gl-text-subtle;
+    @apply gl-py-3 gl-pl-5 gl-my-3 gl-mx-0;
+    @apply gl-border-l gl-border-l-4 gl-border-strong;
 
     &:dir(rtl) {
-      border-left: 0;
-      border-right: 3px solid $gray-100;
+      @apply gl-border-l-0 gl-border-r gl-border-r-4;
     }
 
     p {
-      line-height: 1.5;
-     color: inherit;
+      @apply gl-text-inherit gl-leading-[1.5];
 
       &:last-child {
         margin: 0;

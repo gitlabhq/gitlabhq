@@ -422,7 +422,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
 
       it 'creates user in the selected organization' do
         within_testid 'organization-section' do
-          select_from_listbox 'New Organization', from: 'Default'
+          select_from_listbox 'New Organization', from: current_organization.name
         end
 
         expect { click_button 'Create user' }.to change { organization.users.count }.by(1)

@@ -257,6 +257,8 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'organizations association' do
+      let_it_be(:default_organization) { create(:organization, :default) }
+
       it 'does not create a cross-database query' do
         user = create(:user)
 

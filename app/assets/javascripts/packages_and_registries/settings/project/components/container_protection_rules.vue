@@ -43,14 +43,14 @@ export default {
   },
   inject: ['projectPath'],
   i18n: {
-    settingBlockTitle: s__('ContainerRegistry|Protected containers'),
+    settingBlockTitle: s__('ContainerRegistry|Protected container repositories'),
     settingBlockDescription: s__(
-      'ContainerRegistry|When a container is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image.',
+      'ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image.',
     ),
     protectionRuleDeletionConfirmModal: {
-      title: s__('ContainerRegistry|Delete container protection rule?'),
+      title: s__('ContainerRegistry|Delete container repository protection rule?'),
       descriptionWarning: s__(
-        'ContainerRegistry|You are about to delete the container protection rule for %{repositoryPathPattern}.',
+        'ContainerRegistry|You are about to delete the container repository protection rule for %{repositoryPathPattern}.',
       ),
       descriptionConsequence: s__(
         'ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images to this repository path.',

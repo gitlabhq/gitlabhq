@@ -197,7 +197,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
           project = create(:project, group: group)
           create(:event, project: project)
         end
-        subgroup = create(:group, parent: group)
+        subgroup = create(:group, parent: group, organization: group.organization)
         project = create(:project, group: subgroup)
         create(:event, project: project)
 

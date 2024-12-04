@@ -281,11 +281,7 @@ module QA
       end
 
       def default_credentials
-        if Runtime::User.ldap_user?
-          [Runtime::User.ldap_username, Runtime::User.ldap_password]
-        else
-          [default_user.username, default_user.password]
-        end
+        [default_user.username, default_user.password]
       end
 
       def read_netrc_content
