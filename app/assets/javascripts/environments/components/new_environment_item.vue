@@ -218,7 +218,7 @@ export default {
       <div class="gl-flex gl-items-center">
         <p
           v-if="canShowAutoStopDate"
-          class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-gray-700"
+          class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-subtle"
           data-testid="auto-stop-time"
         >
           <gl-sprintf :message="$options.i18n.autoStopIn">

@@ -74,7 +74,8 @@ export default {
         :title="$options.helpText"
         :aria-label="$options.helpText"
         name="question-o"
-        class="text-secondary gl-cursor-help"
+        class="gl-cursor-help"
+        variant="subtle"
       />
     </div>
     <ul class="gl-m-0 gl-list-none gl-p-0">

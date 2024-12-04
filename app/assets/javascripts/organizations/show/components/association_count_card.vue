@@ -34,7 +34,7 @@ export default {
 <template>
   <gl-card>
     <div class="gl-flex gl-items-center gl-justify-between">
-      <div class="gl-flex gl-items-center gl-text-gray-700">
+      <div class="gl-flex gl-items-center gl-text-subtle">
         <gl-icon :name="iconName" />
         <span class="gl-ml-2">{{ title }}</span>
       </div>

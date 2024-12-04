@@ -94,18 +94,16 @@ export default {
                           <gl-icon name="approval" />
                           <span class="gl-sr-only">{{ __('Approvals') }}</span>
                         </th>
-                        <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-gray-700">
+                        <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-subtle">
                           {{ __('Title') }}
                         </th>
-                        <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-gray-700">
+                        <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-subtle">
                           {{ __('Assignee') }}
                         </th>
-                        <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-gray-700">
+                        <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-subtle">
                           {{ __('Reviewers') }}
                         </th>
-                        <th
-                          class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-gray-700"
-                        >
+                        <th class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-subtle">
                           {{ __('Activity') }}
                         </th>
                       </tr>

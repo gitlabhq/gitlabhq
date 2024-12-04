@@ -19,19 +19,7 @@ module QA
       end
 
       def default_password
-        Runtime::Env.initial_root_password || '5iveL!fe'
-      end
-
-      def username
-        Runtime::Env.user_username || default_username
-      end
-
-      def password
-        Runtime::Env.user_password || default_password
-      end
-
-      def email
-        default_email
+        '5iveL!fe'
       end
 
       def ldap_user?

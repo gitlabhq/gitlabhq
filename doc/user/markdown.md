@@ -796,8 +796,8 @@ To achieve a similar effect for a larger code example, you can:
 
 - Fence an entire block of code with triple backticks (```` ``` ````).
   - You can use more than three backticks, as long as both the opening and closing set have the same number.
-    Use multiple backticks for example when you want to include [suggestions](project/merge_requests/reviews/suggestions.md#nest-code-blocks-in-suggestions)
-    in your code blocks, or the other way around.
+    When you create a [multi-line suggestion](project/merge_requests/reviews/suggestions.md)
+    containing a code block, the number of backticks automatically increases.
 - Fence an entire block of code with triple tildes (`~~~`).
 - Indent it four or more spaces.
 
@@ -1004,7 +1004,7 @@ _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-To prevent malicious activity, GitLab renders only the first 50 inline math instances. 
+To prevent malicious activity, GitLab renders only the first 50 inline math instances.
 You can disable this limit [for a group](../api/graphql/reference/index.md#mutationgroupupdate)
 or for the entire [self-managed instance](../administration/instance_limits.md#math-rendering-limits).
 

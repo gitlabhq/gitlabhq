@@ -213,7 +213,7 @@ module ApplicationHelper
       timeago = time_ago_with_tooltip(editable_object.last_edited_at, placement: placement, html_class: html_class)
 
       if !exclude_author && editable_object.last_edited_by
-        author_link = link_to_member(editable_object.last_edited_by, avatar: false, extra_class: 'hover:gl-underline gl-text-gray-700', author_class: nil)
+        author_link = link_to_member(editable_object.last_edited_by, avatar: false, extra_class: 'hover:gl-underline gl-text-subtle', author_class: nil)
         output = safe_format(_("Edited %{timeago} by %{author}"), timeago: timeago, author: author_link)
       else
         output = safe_format(_("Edited %{timeago}"), timeago: timeago)

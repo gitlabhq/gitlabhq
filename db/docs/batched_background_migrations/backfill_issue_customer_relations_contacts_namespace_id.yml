@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillIssueCustomerRelationsContactsNamespaceId
+description: Backfills sharding key `issue_customer_relations_contacts.namespace_id` from `issues`.
+feature_category: service_desk
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174504
+milestone: '17.7'
+queued_migration_version: 20241203075018
+finalized_by: # version of the migration that finalized this BBM

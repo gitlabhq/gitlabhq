@@ -201,6 +201,7 @@ export default {
             :title="commitIconTooltipTitle"
             :size="12"
             data-testid="commit-icon-type"
+            variant="subtle"
           />
           <gl-link
             v-if="mergeRequestRef"

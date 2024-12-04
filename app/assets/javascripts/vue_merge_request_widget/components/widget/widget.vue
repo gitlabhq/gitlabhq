@@ -359,7 +359,7 @@ export default {
             <div
               v-if="!isSummaryLoading && generatedSubSummary"
               v-safe-html="generatedSubSummary"
-              class="gl-text-sm gl-text-gray-700"
+              class="gl-text-sm gl-text-subtle"
             ></div
           ></slot>
         </div>

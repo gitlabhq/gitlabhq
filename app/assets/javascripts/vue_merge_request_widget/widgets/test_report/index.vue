@@ -262,7 +262,7 @@ export default {
               <div
                 v-for="(subtext, i) in suite.subtext"
                 :key="`${suite.id}-subtext-${i}`"
-                class="gl-text-sm gl-text-gray-700"
+                class="gl-text-sm gl-text-subtle"
               >
                 {{ subtext }}
               </div>

@@ -182,7 +182,7 @@ export default {
             class="gl-mr-3"
             @add="addEnvironment"
           />
-          <span v-if="appliesToAllEnvironments" class="text-secondary mt-md-0 ml-md-3 gl-mt-3">
+          <span v-if="appliesToAllEnvironments" class="mt-md-0 ml-md-3 gl-mt-3 gl-text-subtle">
             {{ $options.i18n.allEnvironments }}
           </span>
           <div v-else class="gl-flex gl-flex-wrap gl-items-center">

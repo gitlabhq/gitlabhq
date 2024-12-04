@@ -7,6 +7,12 @@ module QA
         include Layout::Flash
         include Runtime::Canary
 
+        delegate :admin_user, to: QA::Runtime::UserStore
+
+        def self.path
+          '/users/sign_in'
+        end
+
         view 'app/views/devise/passwords/edit.html.haml' do
           element 'password-field'
           element 'password-confirmation-field'
@@ -82,10 +88,10 @@ module QA
         def sign_in_using_admin_credentials
           using_wait_time 0 do
             set_initial_password_if_present
-            sign_in_using_gitlab_credentials(user: admin)
+            sign_in_using_gitlab_credentials(user: admin_user)
           end
 
-          set_up_new_admin_password_if_required
+          set_up_new_password_if_required(user: admin_user, skip_page_validation: false)
 
           Page::Main::Menu.perform(&:has_personal_area?)
         end
@@ -106,29 +112,6 @@ module QA
           Page::Main::Menu.perform(&:signed_in?)
 
           dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
-        end
-
-        # Handle request for password change
-        # Happens on clean GDK installations when seeded root admin password is expired
-        #
-        def set_up_new_password_if_required(user:, skip_page_validation:)
-          Support::WaitForRequests.wait_for_requests
-          return unless has_content?('Update password for', wait: 1)
-
-          Profile::Password.perform do |new_password_page|
-            password = user&.password || Runtime::User.password
-            new_password_page.set_new_password(password, password)
-          end
-
-          sign_in_using_credentials(user: user, skip_page_validation: skip_page_validation)
-        end
-
-        def set_up_new_admin_password_if_required
-          set_up_new_password_if_required(user: admin, skip_page_validation: false)
-        end
-
-        def self.path
-          '/users/sign_in'
         end
 
         def has_sign_in_tab?(wait: Capybara.default_max_wait_time)
@@ -212,11 +195,19 @@ module QA
 
         private
 
-        def admin
-          @admin ||= QA::Resource::User.init do |user|
-            user.username = QA::Runtime::User.admin_username
-            user.password = QA::Runtime::User.admin_password
+        # Handle request for password change
+        # Happens on clean GDK installations when seeded root admin password is expired
+        #
+        def set_up_new_password_if_required(user:, skip_page_validation:)
+          Support::WaitForRequests.wait_for_requests
+          return unless has_content?('Update password for', wait: 1)
+
+          Profile::Password.perform do |new_password_page|
+            password = user.password
+            new_password_page.set_new_password(password, password)
           end
+
+          sign_in_using_credentials(user: user, skip_page_validation: skip_page_validation)
         end
 
         def sign_in_using_gitlab_credentials(user:, skip_page_validation: false)
@@ -227,7 +218,7 @@ module QA
 
           fill_in_credential(user)
 
-          click_accept_all_cookies if Runtime::Env.running_on_dot_com? && has_accept_all_cookies_button?
+          click_accept_all_cookies if Runtime::Env.running_on_live_env? && has_accept_all_cookies_button?
 
           click_element 'sign-in-button'
 

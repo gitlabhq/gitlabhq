@@ -154,7 +154,7 @@ export default {
         />
         <span>
           <span class="gl-mr-2 gl-block"> {{ item.text }} </span>
-          <span class="gl-block gl-text-secondary"> {{ item.namespace }} </span>
+          <span class="gl-block gl-text-subtle"> {{ item.namespace }} </span>
         </span>
       </div>
     </template>

@@ -621,12 +621,9 @@ toolbox:
 
 #### Incremental repository backups
 
-> - `PREVIOUS_BACKUP` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4184) in GitLab 15.0.
-> - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../feature_flags.md) named `incremental_repository_backup`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 15.3. Feature flag `incremental_repository_backup` removed.
+> - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5461) in GitLab 16.6.
 
 NOTE:
 Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task

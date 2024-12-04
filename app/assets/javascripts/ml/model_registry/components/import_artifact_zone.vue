@@ -304,7 +304,7 @@ export default {
               <gl-icon v-if="upload.canceled()" name="status_canceled" variant="warning" />
             </div>
           </div>
-          <p v-if="errors[index]" :data-testid="`fb-${index}`" class="row m-0 p-0 text-secondary">
+          <p v-if="errors[index]" :data-testid="`fb-${index}`" class="row m-0 p-0 gl-text-subtle">
             {{ errors[index] }}
           </p>
         </div>

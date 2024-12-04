@@ -213,7 +213,7 @@ export default {
         sort-by="key"
         sort-direction="asc"
         stacked="md"
-        table-class="text-secondary"
+        table-class="gl-text-subtle"
         show-empty
         :empty-text="$options.i18n.noFilesMessage"
       >

@@ -144,12 +144,12 @@ export default {
               <span ref="percentage" class="gl-text-center gl-text-lg gl-text-default"
                 >{{ deployBoardData.completion }}%</span
               >
-              <span class="text text-center text-secondary">{{ __('Complete') }}</span>
+              <span class="text text-center gl-text-subtle">{{ __('Complete') }}</span>
             </span>
           </section>
 
           <section class="deploy-board-instances">
-            <div class="text-secondary gl-text-base">
+            <div class="gl-text-base gl-text-subtle">
               <span class="deploy-board-instances-text"
                 >{{ instanceTitle }} ({{ instanceCount }})</span
               >

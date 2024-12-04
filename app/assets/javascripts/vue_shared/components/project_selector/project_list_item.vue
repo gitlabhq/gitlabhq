@@ -61,10 +61,10 @@ export default {
         v-if="truncatedNamespace"
         data-testid="project-namespace"
         :title="projectNameWithNamespace"
-        class="text-secondary text-truncate"
+        class="text-truncate gl-text-subtle"
       >
         {{ truncatedNamespace }}
-        <span v-if="truncatedNamespace" class="text-secondary">/&nbsp;</span>
+        <span v-if="truncatedNamespace" class="gl-text-subtle">/&nbsp;</span>
       </div>
       <div
         v-safe-html="highlightedProjectName"

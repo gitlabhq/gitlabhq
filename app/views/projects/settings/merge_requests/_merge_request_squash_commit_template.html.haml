@@ -2,7 +2,7 @@
 
 .form-group
   %b= s_('ProjectSettings|Squash commit message template')
-  %p.text-secondary
+  %p.gl-text-subtle
     = s_('ProjectSettings|The commit message used when squashing commits.')
   .mb-2
     = form.text_area :squash_commit_template_or_default, class: 'form-control gl-form-input', rows: 8, maxlength: Project::MAX_COMMIT_TEMPLATE_LENGTH, placeholder: s_('ProjectSettings|The default template will be applied on save.')

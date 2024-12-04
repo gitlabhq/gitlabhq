@@ -2,7 +2,7 @@
 
 .form-group
   %b= s_('ProjectSettings|Merge suggestions')
-  %p.text-secondary
+  %p.gl-text-subtle
     = s_('ProjectSettings|The commit message used when applying merge request suggestions.')
   .mb-2
     = form.text_area :suggestion_commit_message, class: 'form-control gl-form-input', rows: 4, placeholder: Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE

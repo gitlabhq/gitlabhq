@@ -2,10 +2,9 @@
 
 exports[`Design item component when item appears in view after image is loaded renders media broken icon when image onerror triggered 1`] = `
 <gl-icon-stub
-  class="text-secondary"
   name="media-broken"
   size="32"
-  variant="current"
+  variant="subtle"
 />
 `;
 

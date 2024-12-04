@@ -649,7 +649,7 @@ export default {
         />
         <p
           v-if="variable.raw"
-          class="text-secondary gl-mb-0 gl-mt-2"
+          class="gl-mb-0 gl-mt-2 gl-text-subtle"
           data-testid="raw-variable-tip"
         >
           {{ $options.i18n.valueFeedback.rawHelpText }}

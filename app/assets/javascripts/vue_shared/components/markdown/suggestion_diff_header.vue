@@ -151,7 +151,7 @@ export default {
     </gl-badge>
     <div
       v-else-if="isApplying"
-      class="text-secondary gl-flex gl-items-center"
+      class="gl-flex gl-items-center gl-text-subtle"
       data-testid="applying-badge"
     >
       <gl-loading-icon size="sm" class="gl-mr-3 gl-items-center gl-justify-center" />

@@ -1492,6 +1492,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_397d1b13068e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3d1a58344b29() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1765,6 +1781,22 @@ END
 $$;
 
 CREATE FUNCTION trigger_57d53b2ab135() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_589db52d2d69() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -2170,6 +2202,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "merge_requests"
   WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_8d661362aa1a() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
 END IF;
 
 RETURN NEW;
@@ -13695,7 +13743,8 @@ CREATE TABLE issue_customer_relations_contacts (
     issue_id bigint NOT NULL,
     contact_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE issue_customer_relations_contacts_id_seq
@@ -13713,6 +13762,7 @@ CREATE TABLE issue_email_participants (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     email text NOT NULL,
+    namespace_id bigint,
     CONSTRAINT check_2c321d408d CHECK ((char_length(email) <= 255))
 );
 
@@ -19671,7 +19721,8 @@ ALTER SEQUENCE sent_notifications_id_seq OWNED BY sent_notifications.id;
 CREATE TABLE sentry_issues (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
-    sentry_issue_identifier bigint NOT NULL
+    sentry_issue_identifier bigint NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE sentry_issues_id_seq
@@ -30768,7 +30819,11 @@ CREATE UNIQUE INDEX index_issue_crm_contacts_on_issue_id_and_contact_id ON issue
 
 CREATE INDEX index_issue_customer_relations_contacts_on_contact_id ON issue_customer_relations_contacts USING btree (contact_id);
 
+CREATE INDEX index_issue_customer_relations_contacts_on_namespace_id ON issue_customer_relations_contacts USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_issue_email_participants_on_issue_id_and_lower_email ON issue_email_participants USING btree (issue_id, lower(email));
+
+CREATE INDEX index_issue_email_participants_on_namespace_id ON issue_email_participants USING btree (namespace_id);
 
 CREATE INDEX index_issue_emails_on_email_message_id ON issue_emails USING btree (email_message_id);
 
@@ -32387,6 +32442,8 @@ CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id_and_id ON sen
 CREATE UNIQUE INDEX index_sent_notifications_on_reply_key ON sent_notifications USING btree (reply_key);
 
 CREATE UNIQUE INDEX index_sentry_issues_on_issue_id ON sentry_issues USING btree (issue_id);
+
+CREATE INDEX index_sentry_issues_on_namespace_id ON sentry_issues USING btree (namespace_id);
 
 CREATE INDEX index_sentry_issues_on_sentry_issue_identifier ON sentry_issues USING btree (sentry_issue_identifier);
 
@@ -35426,6 +35483,8 @@ CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_
 
 CREATE TRIGGER trigger_38bfee591e40 BEFORE INSERT OR UPDATE ON dependency_proxy_blob_states FOR EACH ROW EXECUTE FUNCTION trigger_38bfee591e40();
 
+CREATE TRIGGER trigger_397d1b13068e BEFORE INSERT OR UPDATE ON issue_customer_relations_contacts FOR EACH ROW EXECUTE FUNCTION trigger_397d1b13068e();
+
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
 
 CREATE TRIGGER trigger_3e067fa9bfe3 BEFORE INSERT OR UPDATE ON incident_management_timeline_event_tag_links FOR EACH ROW EXECUTE FUNCTION trigger_3e067fa9bfe3();
@@ -35461,6 +35520,8 @@ CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variabl
 CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements FOR EACH ROW EXECUTE FUNCTION trigger_57ad2742ac16();
 
 CREATE TRIGGER trigger_57d53b2ab135 BEFORE INSERT OR UPDATE ON issuable_resource_links FOR EACH ROW EXECUTE FUNCTION trigger_57d53b2ab135();
+
+CREATE TRIGGER trigger_589db52d2d69 BEFORE INSERT OR UPDATE ON sentry_issues FOR EACH ROW EXECUTE FUNCTION trigger_589db52d2d69();
 
 CREATE TRIGGER trigger_5ca97b87ee30 BEFORE INSERT OR UPDATE ON merge_request_context_commits FOR EACH ROW EXECUTE FUNCTION trigger_5ca97b87ee30();
 
@@ -35511,6 +35572,8 @@ CREATE TRIGGER trigger_8b39d532224c BEFORE INSERT OR UPDATE ON ci_secure_file_st
 CREATE TRIGGER trigger_8d002f38bdef BEFORE INSERT OR UPDATE ON packages_debian_group_components FOR EACH ROW EXECUTE FUNCTION trigger_8d002f38bdef();
 
 CREATE TRIGGER trigger_8d17725116fe BEFORE INSERT OR UPDATE ON merge_request_reviewers FOR EACH ROW EXECUTE FUNCTION trigger_8d17725116fe();
+
+CREATE TRIGGER trigger_8d661362aa1a BEFORE INSERT OR UPDATE ON issue_email_participants FOR EACH ROW EXECUTE FUNCTION trigger_8d661362aa1a();
 
 CREATE TRIGGER trigger_8e66b994e8f0 BEFORE INSERT OR UPDATE ON audit_events_streaming_event_type_filters FOR EACH ROW EXECUTE FUNCTION trigger_8e66b994e8f0();
 
@@ -35880,6 +35943,9 @@ ALTER TABLE ONLY ai_agent_version_attachments
 
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT fk_1dccb304f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY sentry_issues
+    ADD CONSTRAINT fk_1df79abe52 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -36259,6 +36325,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 ALTER TABLE ONLY user_broadcast_message_dismissals
     ADD CONSTRAINT fk_5c0cfb74ce FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY issue_email_participants
+    ADD CONSTRAINT fk_5cb5a5b4f0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY boards_epic_lists
     ADD CONSTRAINT fk_5cbb450986 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36435,6 +36504,9 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY analytics_devops_adoption_snapshots
     ADD CONSTRAINT fk_78c9eac821 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_customer_relations_contacts
+    ADD CONSTRAINT fk_79296ff8c6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY wiki_page_meta_user_mentions
     ADD CONSTRAINT fk_7954f34107 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

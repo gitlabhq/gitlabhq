@@ -82,7 +82,7 @@ export default {
         {{ suggestion.title }}
       </gl-link>
     </div>
-    <div class="text-secondary suggestion-footer">
+    <div class="suggestion-footer gl-text-subtle">
       <span ref="state">
         <gl-icon :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
       </span>

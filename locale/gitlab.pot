@@ -48384,16 +48384,25 @@ msgstr ""
 msgid "ScanResultPolicy|Add new criteria"
 msgstr ""
 
+msgid "ScanResultPolicy|Add new license"
+msgstr ""
+
 msgid "ScanResultPolicy|Age criteria can only be added for pre-existing vulnerabilities"
 msgstr ""
 
 msgid "ScanResultPolicy|Age is:"
 msgstr ""
 
+msgid "ScanResultPolicy|Allow except on"
+msgstr ""
+
 msgid "ScanResultPolicy|Allow the merge request to proceed, even if not all criteria are met"
 msgstr ""
 
 msgid "ScanResultPolicy|Allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Allowed license"
 msgstr ""
 
 msgid "ScanResultPolicy|Allowlist or Denylist"
@@ -48414,6 +48423,9 @@ msgstr ""
 msgid "ScanResultPolicy|Block the merge request until all criteria are met"
 msgstr ""
 
+msgid "ScanResultPolicy|Choose a license"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
@@ -48426,10 +48438,22 @@ msgstr ""
 msgid "ScanResultPolicy|Denied"
 msgstr ""
 
+msgid "ScanResultPolicy|Denied license"
+msgstr ""
+
+msgid "ScanResultPolicy|Deny except on"
+msgstr ""
+
 msgid "ScanResultPolicy|Don't show me this again"
 msgstr ""
 
 msgid "ScanResultPolicy|Edge case settings"
+msgstr ""
+
+msgid "ScanResultPolicy|Edit allowlist"
+msgstr ""
+
+msgid "ScanResultPolicy|Edit denylist"
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -48570,6 +48594,12 @@ msgstr ""
 msgid "ScanResultPolicy|Required scanners defined in the condition did not run or produce any artifacts."
 msgstr ""
 
+msgid "ScanResultPolicy|Save allowlist"
+msgstr ""
+
+msgid "ScanResultPolicy|Save denylist"
+msgstr ""
+
 msgid "ScanResultPolicy|Select a scan type before adding criteria"
 msgstr ""
 
@@ -48589,6 +48619,9 @@ msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
 msgid "ScanResultPolicy|Status is:"
+msgstr ""
+
+msgid "ScanResultPolicy|The product %{verb} use the selected licenses"
 msgstr ""
 
 msgid "ScanResultPolicy|Unknown"
@@ -48639,7 +48672,7 @@ msgstr ""
 msgid "ScanResultPolicy|You have selected all protected branches in this policy's rules. To better protect your project, you should leave this setting enabled. %{linkStart}What are the risks of allowing pushing and force pushing?%{linkEnd}"
 msgstr ""
 
-msgid "ScanResultPolicy|allowlist (%{licenceCount} %{licences})"
+msgid "ScanResultPolicy|allowlist (%{licenseCount} %{licenses})"
 msgstr ""
 
 msgid "ScanResultPolicy|any commits"
@@ -48648,7 +48681,7 @@ msgstr ""
 msgid "ScanResultPolicy|any unsigned commits"
 msgstr ""
 
-msgid "ScanResultPolicy|denylist (%{licenceCount} %{licences})"
+msgid "ScanResultPolicy|denylist (%{licenseCount} %{licenses})"
 msgstr ""
 
 msgid "ScanResultPolicy|license status"
@@ -49824,6 +49857,9 @@ msgid "SecurityOrchestration|Enforce the following pipeline execution policy:"
 msgstr ""
 
 msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
+msgstr ""
+
+msgid "SecurityOrchestration|Except"
 msgstr ""
 
 msgid "SecurityOrchestration|Exception branches"
@@ -64888,6 +64924,9 @@ msgstr ""
 msgid "cURL:"
 msgstr ""
 
+msgid "can"
+msgstr ""
+
 msgid "can contain only digits"
 msgstr ""
 
@@ -64946,6 +64985,9 @@ msgid "can't include: %{invalid_storages}"
 msgstr ""
 
 msgid "can't reference a branch that does not exist"
+msgstr ""
+
+msgid "cannot"
 msgstr ""
 
 msgid "cannot assign a linked work item as a parent"
@@ -65924,7 +65966,7 @@ msgstr ""
 msgid "lfs objects"
 msgstr ""
 
-msgid "licence"
+msgid "license"
 msgid_plural "licenses"
 msgstr[0] ""
 msgstr[1] ""

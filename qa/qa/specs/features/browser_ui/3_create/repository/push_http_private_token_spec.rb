@@ -3,13 +3,13 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Git push over HTTP', :smoke, :skip_fips_env, product_group: :source_code do
-      let(:token) { Runtime::UserStore.default_api_client.personal_access_token }
+      let(:test_user) { Runtime::UserStore.test_user }
 
       it 'user using a personal access token pushes code to the repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347749' do
         Flow::Login.sign_in
 
-        user = build(:user, username: Runtime::User.username, password: token)
+        user = build(:user, username: test_user.username, password: test_user.api_client.personal_access_token)
 
         push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.user = user

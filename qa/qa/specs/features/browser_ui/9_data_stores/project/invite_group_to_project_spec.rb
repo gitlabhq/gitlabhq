@@ -49,7 +49,7 @@ module QA
             :private,
             name: 'personal-namespace-project',
             description: 'test personal namespace project',
-            personal_namespace: Runtime::User.username)
+            personal_namespace: Runtime::UserStore.test_user.username)
         end
 
         it_behaves_like 'invites group to project'

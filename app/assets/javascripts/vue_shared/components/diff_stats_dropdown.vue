@@ -135,7 +135,7 @@ export default {
                     >{{ additionsText(item.added) }}, {{ deletionsText(item.removed) }}</span
                   >
                 </div>
-                <div class="gl-overflow-hidden gl-text-ellipsis gl-text-gray-700">
+                <div class="gl-overflow-hidden gl-text-ellipsis gl-text-subtle">
                   {{ item.path }}
                 </div>
               </div>

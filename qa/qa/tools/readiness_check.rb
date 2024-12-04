@@ -66,7 +66,7 @@ module QA
       def wait_for_login_page_to_load
         # Do not perform headless request on .com or release environment due to cloudfare
         # TODO: add additional check to detect when environment doesn't allow to check sign in page via headless request
-        if Runtime::Env.running_on_dot_com? || Runtime::Env.running_on_release?
+        if Runtime::Env.running_on_live_env?
           debug("Checking for required elements via web browser")
           return Capybara.current_session.using_wait_time(wait) { Runtime::Browser.visit(:gitlab, Page::Main::Login) }
         end

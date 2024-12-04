@@ -52,7 +52,6 @@ module QA
 
           Runtime::Browser.visit(:gitlab, Page::Main::Login)
           Page::Main::Login.perform(&:sign_in_using_admin_credentials)
-          Page::Main::Login.perform(&:set_up_new_admin_password_if_required)
           Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
           Runtime::UserStore.initialize_admin_api_client # re-initialize admin client after password reset

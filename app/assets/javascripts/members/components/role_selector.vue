@@ -70,7 +70,7 @@ export default {
         class="gl-mt-1 gl-line-clamp-2 gl-text-sm"
         data-testid="role-description"
       >
-        <span v-if="item.description" class="gl-text-gray-700">{{ item.description }}</span>
+        <span v-if="item.description" class="gl-text-subtle">{{ item.description }}</span>
         <span v-else class="gl-text-subtle">{{ s__('MemberRole|No description') }}</span>
       </div>
     </template>

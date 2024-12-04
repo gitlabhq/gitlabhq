@@ -38838,6 +38838,7 @@ The status of the workflow.
 | <a id="duoworkflowstatusfinished"></a>`FINISHED` | The workflow is finished. |
 | <a id="duoworkflowstatuspaused"></a>`PAUSED` | The workflow is paused. |
 | <a id="duoworkflowstatusrunning"></a>`RUNNING` | The workflow is running. |
+| <a id="duoworkflowstatusstopped"></a>`STOPPED` | The workflow is stopped. |
 
 ### `EntryType`
 

@@ -160,12 +160,7 @@ export default {
         @appear="onAppear"
       >
         <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
-        <gl-icon
-          v-else-if="showImageErrorIcon"
-          name="media-broken"
-          class="text-secondary"
-          :size="32"
-        />
+        <gl-icon v-else-if="showImageErrorIcon" name="media-broken" :size="32" variant="subtle" />
         <img
           v-show="showImage"
           :src="imageLink"

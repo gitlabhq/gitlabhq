@@ -444,7 +444,7 @@ export default {
             data-testid="add-visualization-button"
             @click="toggleVisualizationDrawer"
           >
-            <div class="gl-flex gl-items-center gl-font-bold gl-text-gray-700">
+            <div class="gl-flex gl-items-center gl-font-bold gl-text-subtle">
               <div
                 class="gl-mr-3 gl-inline-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-bg-gray-100"
               >

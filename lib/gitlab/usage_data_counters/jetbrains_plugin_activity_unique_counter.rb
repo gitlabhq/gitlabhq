@@ -4,7 +4,7 @@ module Gitlab
   module UsageDataCounters
     module JetBrainsPluginActivityUniqueCounter
       JETBRAINS_API_REQUEST_ACTION = 'i_code_review_user_jetbrains_api_request'
-      JETBRAINS_USER_AGENT_REGEX = /\Agitlab-jetbrains-plugin/
+      JETBRAINS_USER_AGENT_REGEX = /gitlab-jetbrains-plugin/
 
       class << self
         def track_api_request_when_trackable(user_agent:, user:)

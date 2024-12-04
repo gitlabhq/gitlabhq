@@ -118,11 +118,11 @@ export default {
     class="gl-responsive-table-row deploy-key gl-items-start !gl-border-default gl-bg-gray-10 md:gl-pl-5 md:gl-pr-5"
   >
     <div class="table-section section-40">
-      <div role="rowheader" class="table-mobile-header gl-self-start gl-font-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-self-start gl-font-bold gl-text-subtle">
         {{ s__('DeployKeys|Deploy key') }}
       </div>
       <div class="table-mobile-content" data-testid="key-container">
-        <p class="title gl-font-semibold gl-text-gray-700" data-testid="key-title-content">
+        <p class="title gl-font-semibold gl-text-subtle" data-testid="key-title-content">
           {{ deployKey.title }}
         </p>
         <dl class="gl-mb-0 gl-text-sm">
@@ -142,7 +142,7 @@ export default {
       </div>
     </div>
     <div class="table-section section-20 section-wrap">
-      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-subtle">
         {{ s__('DeployKeys|Project usage') }}
       </div>
       <div class="table-mobile-content deploy-project-list gl-flex gl-flex-wrap">
@@ -185,20 +185,20 @@ export default {
       </div>
     </div>
     <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-subtle">
         {{ __('Created') }}
       </div>
-      <div class="table-mobile-content key-created-at gl-text-gray-700">
+      <div class="table-mobile-content key-created-at gl-text-subtle">
         <span v-gl-tooltip :title="tooltipTitle(deployKey.createdAt)">
           <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.createdAt) }}</span>
         </span>
       </div>
     </div>
     <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-subtle">
         {{ __('Expires') }}
       </div>
-      <div class="table-mobile-content key-expires-at gl-text-gray-700">
+      <div class="table-mobile-content key-expires-at gl-text-subtle">
         <span
           v-if="deployKey.expiresAt"
           v-gl-tooltip

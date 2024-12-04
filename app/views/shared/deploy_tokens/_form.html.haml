@@ -7,17 +7,17 @@
   .form-group
     = f.label :name, class: 'label-bold'
     = f.text_field :name, class: 'form-control gl-form-input', data: { testid: 'deploy-token-name-field' }, required: true
-    .text-secondary= s_('DeployTokens|Enter a unique name for your deploy token. Name the token gitlab-deploy-token to expose it to CI/CD jobs.')
+    .gl-text-subtle= s_('DeployTokens|Enter a unique name for your deploy token. Name the token gitlab-deploy-token to expose it to CI/CD jobs.')
 
   .form-group
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
     = f.gitlab_ui_datepicker :expires_at, data: { testid: 'deploy-token-expires-at-field' }, value: f.object.expires_at
-    .text-secondary= s_('DeployTokens|Enter an expiration date for your token. Defaults to never expire.')
+    .gl-text-subtle= s_('DeployTokens|Enter an expiration date for your token. Defaults to never expire.')
 
   .form-group
     = f.label :username, _('Username (optional)'), class: 'label-bold'
     = f.text_field :username, class: 'form-control'
-    .text-secondary
+    .gl-text-subtle
       = html_escape(s_('DeployTokens|Enter a username for your token. Defaults to %{code_start}gitlab+deploy-token-{n}%{code_end}.')) % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
 
   .form-group

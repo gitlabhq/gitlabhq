@@ -795,10 +795,6 @@ $ide-commit-header-height: 48px;
     white-space: nowrap;
     display: block;
     color: var(--ide-text-color, $gl-text-color);
-
-    &.text-secondary {
-      font-weight: normal;
-    }
   }
 }
 

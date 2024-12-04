@@ -27,7 +27,7 @@ export default {
     <label class="label-bold gl-text-lg" for="board-new-name">
       {{ __('List options') }}
     </label>
-    <p class="text-secondary gl-mb-3">
+    <p class="gl-mb-3 gl-text-subtle">
       {{ __('Configure which lists are shown for anyone who visits this board') }}
     </p>
     <gl-form-checkbox

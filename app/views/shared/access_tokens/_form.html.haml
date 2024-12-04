@@ -40,7 +40,7 @@
   .form-group
     %b{ :'aria-describedby' => 'select_scope_help_text' }
       = s_('AccessTokens|Select scopes')
-    %p.text-secondary#select_scope_help_text
+    %p.gl-text-subtle#select_scope_help_text
       = s_('AccessTokens|Scopes set the permission levels granted to the token.')
       = link_to _("Learn more."), help_path, target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/tokens/scopes_form', prefix: prefix, description_prefix: description_prefix, token: token, scopes: scopes, f: f
