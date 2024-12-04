@@ -79,11 +79,7 @@ export const betaDashboard = {
   ],
 };
 
-export const mockDateRangeFilterChangePayload = {
-  startDate: new Date('2016-01-01'),
-  endDate: new Date('2016-02-01'),
-  dateRangeOption: 'foo',
-};
+export const TEST_EMPTY_DASHBOARD_SVG_PATH = 'illustration/empty-state/empty-dashboard-md';
 
 export const mockPanel = {
   title: 'Test A',
@@ -101,5 +97,3 @@ export const mockPanel = {
   queryOverrides: {},
   id: getUniquePanelId(),
 };
-
-export const TEST_EMPTY_DASHBOARD_SVG_PATH = 'illustration/empty-state/empty-dashboard-md';

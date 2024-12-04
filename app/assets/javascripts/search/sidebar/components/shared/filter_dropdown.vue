@@ -1,18 +1,19 @@
 <script>
 import { GlIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { SEARCH_ICON } from '../../constants';
 
 export default {
-  name: 'BranchDropdown',
+  name: 'FilterDropdown',
   components: {
     GlIcon,
     GlCollapsibleListbox,
   },
   props: {
-    sourceBranches: {
+    listData: {
       type: Array,
       required: true,
     },
@@ -25,11 +26,11 @@ export default {
       type: String,
       required: true,
     },
-    searchBranchText: {
+    searchText: {
       type: String,
       required: true,
     },
-    selectedBranch: {
+    selectedItem: {
       type: String,
       required: false,
       default: '',
@@ -38,6 +39,11 @@ export default {
       type: String,
       required: false,
       default: SEARCH_ICON,
+    },
+    hasApiSearch: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     isLoading: {
       type: Boolean,
@@ -53,6 +59,7 @@ export default {
     return {
       selectedRef: '',
       query: '',
+      hasError: this.errors.length > 0,
     };
   },
   computed: {
@@ -60,7 +67,7 @@ export default {
       return [
         {
           '!gl-shadow-inner-1-red-500': this.hasError,
-          'gl-font-monospace': Boolean(this.selectedBranch),
+          'gl-font-monospace': Boolean(this.selectedItem),
         },
         'gl-mb-0',
       ];
@@ -69,7 +76,7 @@ export default {
       return this.query.length > 0;
     },
     dropdownItems() {
-      return this.isSearching ? this.searchResults : this.sourceBranches;
+      return this.isSearching && !this.hasApiSearch ? this.searchResults : this.listData;
     },
     noResultsText() {
       return this.isSearching
@@ -82,6 +89,11 @@ export default {
   },
   methods: {
     onSearchBoxInput(searchQuery = '') {
+      if (this.hasApiSearch) {
+        this.$emit('search', searchQuery);
+        return;
+      }
+
       this.query = searchQuery?.trim();
       this.debouncedSearch();
     },
@@ -90,7 +102,7 @@ export default {
         this.searchResults = [];
         return;
       }
-      this.searchResults = this.sourceBranches.filter((branch) => branch.text.includes(this.query));
+      this.searchResults = fuzzaldrinPlus.filter(this.listData, this.query, { key: ['text'] });
     },
     selectRef(ref) {
       this.$emit('selected', ref);
@@ -114,14 +126,14 @@ export default {
       block
       searchable
       resetable
-      :selected="selectedBranch"
-      :header-text="s__('GlobalSearch|Source branch')"
+      :selected="selectedItem"
+      :header-text="headerText"
       :items="dropdownItems"
       :no-results-text="noResultsText"
       :searching="isLoading"
-      :search-placeholder="searchBranchText"
+      :search-placeholder="searchText"
       :toggle-class="extendedToggleButtonClass"
-      :toggle-text="searchBranchText"
+      :toggle-text="searchText"
       :icon="icon"
       :loading="isLoading"
       :reset-button-label="s__('GlobalSearch|Reset')"

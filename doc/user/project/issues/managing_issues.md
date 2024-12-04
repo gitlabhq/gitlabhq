@@ -97,6 +97,10 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 ### Bulk edit issues from a group
 
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 > - Minimum role to bulk edit issues from a group [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 You can edit multiple issues across multiple projects when you're in a group.

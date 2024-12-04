@@ -25,12 +25,7 @@ module Gitlab
           import_type: type,
           import_source: repo[:full_name],
           import_url: import_url,
-          skip_wiki: skip_wiki,
-          import_data: {
-            data: {
-              user_contribution_mapping_enabled: user_contribution_mapping_enabled
-            }
-          }
+          skip_wiki: skip_wiki
         }.merge!(extra_attrs)
 
         ::Projects::CreateService.new(current_user, attrs).execute
@@ -56,13 +51,6 @@ module Gitlab
       #
       def skip_wiki
         repo[:has_wiki]
-      end
-
-      # This checks if user mapping is enabled for Gitea only since GitHub UCM is not yet implemented
-      def user_contribution_mapping_enabled
-        return false if type != ::Import::SOURCE_GITEA
-
-        Feature.enabled?(:importer_user_mapping, current_user) && Feature.enabled?(:gitea_user_mapping, current_user)
       end
     end
   end

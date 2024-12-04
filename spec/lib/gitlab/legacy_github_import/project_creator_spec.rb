@@ -40,12 +40,6 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
       expect(project.import_data.credentials).to eq(user: 'asdffg', password: nil)
     end
 
-    it 'sets user_contribution_mapping_enabled to false' do
-      project = service.execute
-
-      expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(false)
-    end
-
     context 'when GitHub project is private' do
       it 'sets project visibility to private' do
         repo[:private] = true
@@ -127,40 +121,6 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
         project = service.execute
 
         expect(project.wiki.repository_exists?).to eq true
-      end
-    end
-
-    context 'when the project is imported from Gitea' do
-      subject(:service) { described_class.new(repo, repo[:name], namespace, user, type: :gitea) }
-
-      it 'sets user_contribution_mapping_enabled to true' do
-        project = service.execute
-
-        expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(true)
-      end
-
-      context 'and gitea_user_mapping is disabled' do
-        before do
-          stub_feature_flags(gitea_user_mapping: false)
-        end
-
-        it 'sets user_contribution_mapping_enabled to false' do
-          project = service.execute
-
-          expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(false)
-        end
-      end
-
-      context 'and importer_user_mapping is disabled' do
-        before do
-          stub_feature_flags(importer_user_mapping: false)
-        end
-
-        it 'sets user_contribution_mapping_enabled to false' do
-          project = service.execute
-
-          expect(project.import_data.data["user_contribution_mapping_enabled"]).to eq(false)
-        end
       end
     end
   end

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlCollapsibleListbox, GlListboxItem, GlIcon } from '@gitlab/ui';
-import BranchDropdown from '~/search/sidebar/components/shared/branch_dropdown.vue';
+import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
@@ -10,17 +10,18 @@ describe('BranchDropdown', () => {
   let wrapper;
 
   const defaultProps = {
-    sourceBranches: mockSourceBranches,
+    listData: mockSourceBranches,
     errors: [],
-    headerText: 'Source branch',
-    searchBranchText: 'Search source branch',
-    selectedBranch: 'master',
-    icon: 'branch',
+    selectedItem: 'Master Item',
+    headerText: 'Filter header',
+    searchText: 'Search filter items',
+    selectedBranch: 'Master Item',
+    icon: 'work',
     isLoading: false,
   };
 
   const createComponent = (props = {}, options = {}) => {
-    wrapper = shallowMount(BranchDropdown, {
+    wrapper = shallowMount(FilterDropdown, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -45,7 +46,7 @@ describe('BranchDropdown', () => {
     it('renders the GlCollapsibleListbox component with correct props', () => {
       const toggleClass = [
         {
-          '!gl-shadow-inner-1-red-500': undefined,
+          '!gl-shadow-inner-1-red-500': false,
           'gl-font-monospace': true,
         },
         'gl-mb-0',
@@ -57,15 +58,15 @@ describe('BranchDropdown', () => {
 
       const props = findGlCollapsibleListbox().props();
 
-      expect(props.selected).toBe('master');
-      expect(props.headerText).toBe('Source branch');
+      expect(props.selected).toBe('Master Item');
+      expect(props.headerText).toBe('Filter header');
       expect(props.items).toMatchObject(mockSourceBranches);
       expect(props.noResultsText).toBe('No results found');
       expect(props.searching).toBe(false);
-      expect(props.searchPlaceholder).toBe('Search source branch');
+      expect(props.searchPlaceholder).toBe('Search filter items');
       expect(props.toggleClass).toMatchObject(toggleClass);
-      expect(props.toggleText).toBe('Search source branch');
-      expect(props.icon).toBe('branch');
+      expect(props.toggleText).toBe('Search filter items');
+      expect(props.icon).toBe('work');
       expect(props.loading).toBe(false);
       expect(props.resetButtonLabel).toBe('Reset');
     });
@@ -88,7 +89,6 @@ describe('BranchDropdown', () => {
       findGlCollapsibleListbox().vm.$emit('search', 'fea');
       jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
       await waitForPromises();
-
       expect(findGlListboxItems()).toHaveLength(1);
     });
 

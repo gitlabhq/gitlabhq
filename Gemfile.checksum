@@ -209,7 +209,7 @@
 {"name":"fog-xml","version":"0.1.3","platform":"ruby","checksum":"5604c42649ebb0d8a31bd973aa000c2dd0127f1c1c4c174b69266a2e78e37410"},
 {"name":"formatador","version":"0.2.5","platform":"ruby","checksum":"80821869ddacb79e72870ff4bb1531efacd278c04f2df26bc6b4529ee13582bd"},
 {"name":"forwardable","version":"1.3.3","platform":"ruby","checksum":"f17df4bd6afa6f46a003217023fe5716ef88ce261f5c4cf0edbdeed6470cafac"},
-{"name":"fugit","version":"1.8.1","platform":"ruby","checksum":"18ffb26813869610f71bb0b7d568c3624d2b3025aeebb6600a18df0c77a6a2b2"},
+{"name":"fugit","version":"1.11.1","platform":"ruby","checksum":"e89485e7be22226d8e9c6da411664d0660284b4b1c08cacb540f505907869868"},
 {"name":"fuubar","version":"2.2.0","platform":"ruby","checksum":"9b0263c4074f39c68b37f1e4e69a7d3cfc7523c41bea43601235daa723179b4a"},
 {"name":"fuzzyurl","version":"0.9.0","platform":"ruby","checksum":"542efa80f2bcaadbdc402c2f0b572f2e335a1d53e375aecad68bbb3d86860c0f"},
 {"name":"gapic-common","version":"0.20.0","platform":"ruby","checksum":"af304704b440f7a2a1e8ce6ecce109a67b79fa173f36f11b513b8a35ce509366"},

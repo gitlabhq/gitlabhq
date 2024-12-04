@@ -14,7 +14,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       coverage created_at updated_at started_at finished_at committed_at
       stages user retryable cancelable jobs source_job job job_artifacts downstream
       upstream path project active user_permissions warnings commit commit_path uses_needs
-      test_report_summary test_suite ref ref_path warning_messages merge_request_event_type
+      test_report_summary test_suite ref ref_path warning_messages error_messages merge_request_event_type
       name total_jobs triggered_by_path child source stuck
       latest merge_request ref_text failure_reason yaml_errors yaml_error_messages trigger manual_variables
     ]

@@ -28661,8 +28661,6 @@ CREATE INDEX idx_approval_project_rules_on_configuration_id_and_id ON approval_p
 
 CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
 
-CREATE INDEX idx_audit_events_group_external_destinations_on_group_id ON audit_events_group_external_streaming_destinations USING btree (group_id);
-
 CREATE INDEX idx_audit_events_namespace_event_type_filters_on_group_id ON audit_events_group_streaming_event_type_filters USING btree (namespace_id);
 
 CREATE INDEX idx_audit_events_part_on_entity_id_desc_author_id_created_at ON ONLY audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
@@ -33568,6 +33566,10 @@ CREATE UNIQUE INDEX unique_compliance_framework_security_policies_framework_id O
 CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_name ON audit_events_external_audit_event_destinations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
+
+CREATE UNIQUE INDEX unique_idx_group_destinations_on_name_category_group ON audit_events_group_external_streaming_destinations USING btree (group_id, category, name);
+
+CREATE UNIQUE INDEX unique_idx_instance_destinations_on_name_category ON audit_events_instance_external_streaming_destinations USING btree (category, name);
 
 CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id) WHERE (status = 0);
 

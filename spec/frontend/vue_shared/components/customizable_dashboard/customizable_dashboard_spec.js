@@ -6,18 +6,10 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CustomizableDashboard from '~/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
 import GridstackWrapper from '~/vue_shared/components/customizable_dashboard/gridstack_wrapper.vue';
-import AnonUsersFilter from '~/vue_shared/components/customizable_dashboard/filters/anon_users_filter.vue';
-import DateRangeFilter from '~/vue_shared/components/customizable_dashboard/filters/date_range_filter.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import AvailableVisualizationsDrawer from '~/vue_shared/components/customizable_dashboard/dashboard_editor/available_visualizations_drawer.vue';
 import {
-  filtersToQueryParams,
-  buildDefaultDashboardFilters,
-} from '~/vue_shared/components/customizable_dashboard/utils';
-import UrlSync, { HISTORY_REPLACE_UPDATE_METHOD } from '~/vue_shared/components/url_sync.vue';
-import {
   EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER,
-  EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
   DASHBOARD_SCHEMA_VERSION,
 } from '~/vue_shared/components/customizable_dashboard/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -26,7 +18,6 @@ import { trimText } from 'helpers/text_helper';
 import {
   dashboard,
   betaDashboard,
-  mockDateRangeFilterChangePayload,
   createVisualization,
   TEST_EMPTY_DASHBOARD_SVG_PATH,
 } from './mock_data';
@@ -81,10 +72,8 @@ describe('CustomizableDashboard', () => {
         ...props,
       },
       stubs: {
-        AnonUsersFilter,
         RouterLink: RouterLinkStub,
         GlSprintf,
-        DateRangeFilter,
         GridstackWrapper: stubComponent(GridstackWrapper, {
           props: ['value', 'editing'],
           template: `<div data-testid="gridstack-wrapper">
@@ -121,9 +110,6 @@ describe('CustomizableDashboard', () => {
   const findSaveButton = () => wrapper.findByTestId('dashboard-save-btn');
   const findCancelButton = () => wrapper.findByTestId('dashboard-cancel-edit-btn');
   const findFilters = () => wrapper.findByTestId('dashboard-filters');
-  const findAnonUsersFilter = () => wrapper.findComponent(AnonUsersFilter);
-  const findDateRangeFilter = () => wrapper.findComponent(DateRangeFilter);
-  const findUrlSync = () => wrapper.findComponent(UrlSync);
   const findVisualizationDrawer = () => wrapper.findComponent(AvailableVisualizationsDrawer);
   const findDashboardDescription = () => wrapper.findByTestId('dashboard-description');
   const findGridstackWrapper = () => wrapper.findComponent(GridstackWrapper);
@@ -218,10 +204,6 @@ describe('CustomizableDashboard', () => {
 
     it('does not show the filters', () => {
       expect(findFilters().exists()).toBe(false);
-    });
-
-    it('does not sync filters with the URL', () => {
-      expect(findUrlSync().exists()).toBe(false);
     });
 
     it('does not show a dashboard documentation link', () => {
@@ -541,133 +523,37 @@ describe('CustomizableDashboard', () => {
   });
 
   describe('dashboard filters', () => {
-    const defaultFilters = buildDefaultDashboardFilters('');
-
-    describe('when showDateRangeFilter is false', () => {
+    describe('default behavior', () => {
       beforeEach(() => {
-        createWrapper({
-          showDateRangeFilter: false,
-          syncUrlFilters: true,
-          defaultFilters,
-          dateRangeLimit: 0,
-        });
+        createWrapper(
+          {},
+          { scopedSlots: { filters: '<p data-testid="test-filters">Filters here</p>' } },
+        );
       });
 
-      it('does not show the filters', () => {
-        expect(findDateRangeFilter().exists()).toBe(false);
-        expect(findAnonUsersFilter().exists()).toBe(false);
+      it('renders the filters slot', () => {
+        expect(findFilters().exists()).toBe(true);
+        expect(wrapper.findByTestId('test-filters').exists()).toBe(true);
+      });
+
+      it('does not render the filters slot when in editing mode', async () => {
+        findEditButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findFilters().exists()).toBe(false);
       });
     });
 
-    describe('when the date range filter is enabled and configured', () => {
-      describe('by default', () => {
-        beforeEach(() => {
-          createWrapper({ showDateRangeFilter: true, syncUrlFilters: true, defaultFilters });
-        });
+    it('does not render the filters slot if isNewDashboard=true', () => {
+      createWrapper(
+        { isNewDashboard: true },
+        { scopedSlots: { filters: '<p data-testid="test-filters">Filters here</p>' } },
+      );
 
-        it('does not show the anon users filter', () => {
-          expect(findAnonUsersFilter().exists()).toBe(false);
-        });
-
-        it('shows the date range filter and passes the default options and filters', () => {
-          expect(findDateRangeFilter().props()).toMatchObject({
-            startDate: defaultFilters.startDate,
-            endDate: defaultFilters.endDate,
-            defaultOption: defaultFilters.dateRangeOption,
-            dateRangeLimit: 0,
-          });
-        });
-
-        it('synchronizes the filters with the URL', () => {
-          expect(findUrlSync().props()).toMatchObject({
-            historyUpdateMethod: HISTORY_REPLACE_UPDATE_METHOD,
-            query: filtersToQueryParams(defaultFilters),
-          });
-        });
-
-        it('sets the panel filters to the default date range', () => {
-          expect(panelSlotSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ filters: expect.objectContaining(defaultFilters) }),
-          );
-        });
-
-        it('updates the panel filters when the date range is changed', async () => {
-          await findDateRangeFilter().vm.$emit('change', mockDateRangeFilterChangePayload);
-
-          expect(panelSlotSpy).toHaveBeenCalledWith(
-            expect.objectContaining({
-              filters: expect.objectContaining(mockDateRangeFilterChangePayload),
-            }),
-          );
-        });
-      });
-
-      describe.each([0, 12, 31])('when given a date range limit of %d', (dateRangeLimit) => {
-        beforeEach(() => {
-          createWrapper({
-            showDateRangeFilter: true,
-            syncUrlFilters: true,
-            defaultFilters,
-            dateRangeLimit,
-          });
-        });
-
-        it('passes the date range limit to the date range filter', () => {
-          expect(findDateRangeFilter().props()).toMatchObject({
-            dateRangeLimit,
-          });
-        });
-      });
-    });
-
-    describe('filtering anonymous users', () => {
-      beforeEach(() => {
-        createWrapper({
-          showAnonUsersFilter: true,
-          syncUrlFilters: true,
-          defaultFilters,
-          dateRangeLimit: 0,
-        });
-      });
-
-      it('does not show the date range filter', () => {
-        expect(findDateRangeFilter().exists()).toBe(false);
-      });
-
-      it('sets the default filter on the anon users filter component', () => {
-        expect(findAnonUsersFilter().props('value')).toBe(defaultFilters.filterAnonUsers);
-      });
-
-      it('updates the panel filters when anon users are filtered out', async () => {
-        expect(panelSlotSpy).toHaveBeenCalledWith(
-          expect.objectContaining({ filters: expect.objectContaining({ filterAnonUsers: false }) }),
-        );
-
-        await findAnonUsersFilter().vm.$emit('change', true);
-
-        expect(panelSlotSpy).toHaveBeenCalledWith(
-          expect.objectContaining({ filters: expect.objectContaining({ filterAnonUsers: true }) }),
-        );
-      });
-
-      it(`tracks the "${EVENT_LABEL_EXCLUDE_ANONYMISED_USERS}" event when excluding anon users`, async () => {
-        await findAnonUsersFilter().vm.$emit('change', true);
-
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
-          expect.any(Object),
-        );
-      });
-
-      it(`does not track "${EVENT_LABEL_EXCLUDE_ANONYMISED_USERS}" event including anon users`, async () => {
-        await findAnonUsersFilter().vm.$emit('change', false);
-
-        expect(trackingSpy).not.toHaveBeenCalled();
-      });
+      expect(findFilters().exists()).toBe(false);
     });
   });
-
   describe('when a dashboard is new and the editing feature flag is enabled', () => {
     const newDashboard = NEW_DASHBOARD();
     const newPanels = [dashboard.panels[0]];
@@ -746,11 +632,6 @@ describe('CustomizableDashboard', () => {
 
     it('shows the "Add visualization" button', () => {
       expect(findAddVisualizationButton().text()).toBe('Add visualization');
-    });
-
-    it('does not show the filters', () => {
-      expect(findDateRangeFilter().exists()).toBe(false);
-      expect(findAnonUsersFilter().exists()).toBe(false);
     });
 
     describe('when saving', () => {

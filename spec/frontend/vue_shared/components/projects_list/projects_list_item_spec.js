@@ -3,6 +3,7 @@ import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
@@ -73,11 +74,11 @@ describe('ProjectsListItem', () => {
   const findForksLink = () => wrapper.findByTestId('forks-btn');
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
-  const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
+  const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
@@ -387,29 +388,10 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  describe('when project has a description', () => {
-    it('renders description', () => {
-      const descriptionHtml = '<p>Foo bar</p>';
+  it('renders project description', () => {
+    createComponent();
 
-      createComponent({
-        propsData: {
-          project: {
-            ...project,
-            descriptionHtml,
-          },
-        },
-      });
-
-      expect(findProjectDescription().element.innerHTML).toBe(descriptionHtml);
-    });
-  });
-
-  describe('when project does not have a description', () => {
-    it('does not render description', () => {
-      createComponent();
-
-      expect(findProjectDescription().exists()).toBe(false);
-    });
+    expect(findProjectDescription().exists()).toBe(true);
   });
 
   describe('when `showProjectIcon` prop is `true`', () => {

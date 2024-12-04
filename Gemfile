@@ -292,7 +292,7 @@ gem 'gitlab-sidekiq-fetcher',
   feature_category: :scalability
 
 # Cron Parser
-gem 'fugit', '~> 1.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'fugit', '~> 1.11.1', feature_category: :continuous_integration
 
 # HTTP requests
 gem 'httparty', '~> 0.21.0' # rubocop:todo Gemfile/MissingFeatureCategory

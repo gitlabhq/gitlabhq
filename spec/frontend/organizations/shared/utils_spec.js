@@ -26,7 +26,7 @@ describe('formatGroups', () => {
 
     expect(firstFormattedGroup).toMatchObject({
       id: getIdFromGraphQLId(firstMockGroup.id),
-      name: firstMockGroup.fullName,
+      avatarLabel: firstMockGroup.fullName,
       fullName: firstMockGroup.fullName,
       parent: null,
       editPath: firstMockGroup.organizationEditPath,
@@ -48,7 +48,7 @@ describe('formatGroups', () => {
 
     expect(nonDeletableFormattedGroup).toMatchObject({
       id: getIdFromGraphQLId(nonDeletableGroup.id),
-      name: nonDeletableGroup.fullName,
+      avatarLabel: nonDeletableGroup.fullName,
       fullName: nonDeletableGroup.fullName,
       parent: null,
       editPath: nonDeletableGroup.organizationEditPath,

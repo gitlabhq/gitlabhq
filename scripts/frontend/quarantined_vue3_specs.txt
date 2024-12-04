@@ -293,7 +293,6 @@ spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
 spec/frontend/repository/router_spec.js
 spec/frontend/search/results/components/status_bar_spec.js
-spec/frontend/search/sidebar/components/branch_dropdown_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
 spec/frontend/search/sidebar/components/label_dropdown_items_spec.js
 spec/frontend/search/topbar/components/app_spec.js
@@ -320,7 +319,6 @@ spec/frontend/super_sidebar/components/nav_item_router_link_spec.js
 spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
-spec/frontend/tags/components/delete_tag_modal_spec.js
 spec/frontend/tags/init_delete_tag_modal_spec.js
 spec/frontend/tooltips/components/tooltips_spec.js
 spec/frontend/tooltips/index_spec.js

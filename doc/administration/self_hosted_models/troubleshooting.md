@@ -52,7 +52,7 @@ model configuration.
 
    ```shell
    docker exec -it <ai-gateway-container> sh
-   poetry run python scripts/troubleshoot_selfhosted_installation.py --model-name "codegemma_7b" --model-endpoint
+   poetry run troubleshoot --model-name "mistral" --model-endpoint
    "http://localhost:4000"
    ```
 

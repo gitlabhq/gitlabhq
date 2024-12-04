@@ -44167,6 +44167,9 @@ msgstr ""
 msgid "Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab."
 msgstr ""
 
+msgid "Projects|Scheduled for deletion on %{date}"
+msgstr ""
+
 msgid "Projects|You don't have any projects yet."
 msgstr ""
 

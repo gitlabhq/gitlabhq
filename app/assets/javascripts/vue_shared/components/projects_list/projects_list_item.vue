@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
   GlPopover,
   GlSprintf,
-  GlTruncateText,
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
@@ -15,6 +14,7 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
 } from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -22,7 +22,6 @@ import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __, s__ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -49,15 +48,12 @@ export default {
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
     actions: __('Actions'),
-    showMore: __('Show more'),
-    showLess: __('Show less'),
     project: __('Project'),
     deleteErrorMessage: s__(
       'Projects|An error occurred deleting the project. Please refresh the page to try again.',
     ),
     ciCatalogBadge: s__('CiCatalog|CI/CD Catalog project'),
   },
-  truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
     GlAvatarLabeled,
     GlIcon,
@@ -65,10 +61,10 @@ export default {
     GlBadge,
     GlPopover,
     GlSprintf,
-    GlTruncateText,
     TimeAgoTooltip,
     DeleteModal,
     ListActions,
+    ProjectListItemDescription,
     ProjectListItemInactiveBadge,
     ProjectListItemDelayedDeletionModalFooter: () =>
       import(
@@ -77,7 +73,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   props: {
     /**
@@ -317,21 +312,7 @@ export default {
               </div>
             </div>
           </template>
-          <gl-truncate-text
-            v-if="project.descriptionHtml"
-            :lines="2"
-            :mobile-lines="2"
-            :show-more-text="$options.i18n.showMore"
-            :show-less-text="$options.i18n.showLess"
-            :toggle-button-props="$options.truncateTextToggleButtonProps"
-            class="gl-mt-2 gl-max-w-88"
-          >
-            <div
-              v-safe-html="project.descriptionHtml"
-              class="md md-child-content-text-subtle gl-text-sm"
-              data-testid="project-description"
-            ></div>
-          </gl-truncate-text>
+          <project-list-item-description :project="project" />
           <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
             <div
               class="-gl-mx-2 -gl-my-2 gl-inline-flex gl-w-full gl-flex-wrap gl-items-center gl-text-base gl-font-normal"

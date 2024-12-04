@@ -41,4 +41,3 @@ export const VISUALIZATION_TYPE_COLUMN_CHART = 'ColumnChart';
 export const VISUALIZATION_TYPE_SINGLE_STAT = 'SingleStat';
 
 export const EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER = 'user_viewed_dashboard_designer';
-export const EVENT_LABEL_EXCLUDE_ANONYMISED_USERS = 'exclude_anonymised_users';

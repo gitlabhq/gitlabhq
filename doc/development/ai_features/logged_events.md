@@ -259,7 +259,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
 ### Json parsing error during Question Categorization
 
   - Description: logged when json is not parsable
-  - Class: `Gitlab::Llm::Anthropic::Completions::CategorizeQuestions`
+  - Class: `Gitlab::Llm::AiGateway::Completions::CategorizeQuestions`
   - Ai_event_name: error
   - Level: error
   - Arguments:
@@ -272,7 +272,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
 ### Response did not contain defined categories
 
   - Description: logged when response is not containing one of the defined categories
-  - Class: `Gitlab::Llm::Anthropic::Completions::CategorizeQuestions`
+  - Class: `Gitlab::Llm::AiGateway::Completions::CategorizeQuestions`
   - Ai_event_name: error
   - Level: error
   - Arguments:
@@ -285,7 +285,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
 ### Error response received while categorizing question
 
   - Description: logged when response returned is not succesful
-  - Class: `Gitlab::Llm::Anthropic::Completions::CategorizeQuestions`
+  - Class: `Gitlab::Llm::AiGateway::Completions::CategorizeQuestions`
   - Ai_event_name: error
   - Level: error
   - Arguments:

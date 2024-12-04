@@ -3,7 +3,7 @@ description: "User submits a Duo Chat message.
   The message is analyzed using LLM (e.g. categorization) and Ruby (e.g. message length).
   Schema: https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema
   Category list: https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml"
-category: Gitlab::Llm::Anthropic::Completions::CategorizeQuestion
+category: Gitlab::Llm::AiGateway::Completions::CategorizeQuestion
 action: ai_question_category
 identifiers:
   - user

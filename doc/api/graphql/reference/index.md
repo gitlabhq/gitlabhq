@@ -16021,6 +16021,29 @@ The edge type for [`PipelineManualVariable`](#pipelinemanualvariable).
 | <a id="pipelinemanualvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelinemanualvariableedgenode"></a>`node` | [`PipelineManualVariable`](#pipelinemanualvariable) | The item at the end of the edge. |
 
+#### `PipelineMessageConnection`
+
+The connection type for [`PipelineMessage`](#pipelinemessage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinemessageconnectionedges"></a>`edges` | [`[PipelineMessageEdge]`](#pipelinemessageedge) | A list of edges. |
+| <a id="pipelinemessageconnectionnodes"></a>`nodes` | [`[PipelineMessage]`](#pipelinemessage) | A list of nodes. |
+| <a id="pipelinemessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineMessageEdge`
+
+The edge type for [`PipelineMessage`](#pipelinemessage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinemessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelinemessageedgenode"></a>`node` | [`PipelineMessage`](#pipelinemessage) | The item at the end of the edge. |
+
 #### `PipelineScheduleConnection`
 
 The connection type for [`PipelineSchedule`](#pipelineschedule).
@@ -30561,6 +30584,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelinedetailedstatus"></a>`detailedStatus` | [`DetailedStatus!`](#detailedstatus) | Detailed status of the pipeline. |
 | <a id="pipelinedownstream"></a>`downstream` | [`PipelineConnection`](#pipelineconnection) | Pipelines the pipeline will trigger. (see [Connections](#connections)) |
 | <a id="pipelineduration"></a>`duration` | [`Int`](#int) | Duration of the pipeline in seconds. |
+| <a id="pipelineerrormessages"></a>`errorMessages` | [`PipelineMessageConnection`](#pipelinemessageconnection) | Pipeline error messages. (see [Connections](#connections)) |
 | <a id="pipelinefailurereason"></a>`failureReason` | [`String`](#string) | Reason why the pipeline failed. |
 | <a id="pipelinefinishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of the pipeline's completion. |
 | <a id="pipelineid"></a>`id` | [`ID!`](#id) | ID of the pipeline. |

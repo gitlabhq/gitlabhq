@@ -54,7 +54,7 @@ module Gitlab
           data: {
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy],
-            user_contribution_mapping_enabled: user_contribution_mapping_enabled
+            user_contribution_mapping_enabled: user_contribution_mapping_enabled?
           },
           credentials: project.import_data&.credentials
         )
@@ -68,15 +68,6 @@ module Gitlab
 
       def disabled?(stage_name)
         !enabled?(stage_name)
-      end
-
-      # This checks if user mapping is enabled for Github only since Gitea import check is done
-      # in LegacyGithubImport
-      def user_contribution_mapping_enabled
-        return false unless project.import_type == ::Import::SOURCE_GITHUB.to_s
-
-        Feature.enabled?(:importer_user_mapping, project.creator) &&
-          Feature.enabled?(:github_user_mapping, project.creator)
       end
 
       def user_mapping_enabled?
@@ -94,6 +85,21 @@ module Gitlab
           enabled = Gitlab::Utils.to_boolean(user_settings[stage_name], default: false)
           [stage_name, enabled]
         end
+      end
+
+      def user_contribution_mapping_enabled?
+        creator_user_actor = User.actor_from_id(project.creator_id)
+
+        return false unless Feature.enabled?(:importer_user_mapping, creator_user_actor)
+
+        flag_by_type = case project.import_type&.to_sym
+                       when ::Import::SOURCE_GITHUB
+                         Feature.enabled?(:github_user_mapping, creator_user_actor)
+                       when ::Import::SOURCE_GITEA
+                         Feature.enabled?(:gitea_user_mapping, creator_user_actor)
+                       end
+
+        !!flag_by_type
       end
     end
   end

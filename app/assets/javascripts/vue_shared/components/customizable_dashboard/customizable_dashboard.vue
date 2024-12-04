@@ -6,19 +6,13 @@ import { cloneWithoutReferences } from '~/lib/utils/common_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import UrlSync, { HISTORY_REPLACE_UPDATE_METHOD } from '~/vue_shared/components/url_sync.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import {
-  EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER,
-  EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
-  DASHBOARD_STATUS_BETA,
-} from './constants';
+import { EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER, DASHBOARD_STATUS_BETA } from './constants';
 import GridstackWrapper from './gridstack_wrapper.vue';
 import AvailableVisualizationsDrawer from './dashboard_editor/available_visualizations_drawer.vue';
 import {
   getDashboardConfig,
-  filtersToQueryParams,
   availableVisualizationsValidator,
   createNewVisualizationPanel,
 } from './utils';
@@ -26,14 +20,11 @@ import {
 export default {
   name: 'CustomizableDashboard',
   components: {
-    DateRangeFilter: () => import('./filters/date_range_filter.vue'),
-    AnonUsersFilter: () => import('./filters/anon_users_filter.vue'),
     GlButton,
     GlFormInput,
     GlIcon,
     GlFormGroup,
     GlExperimentBadge,
-    UrlSync,
     AvailableVisualizationsDrawer,
     GridstackWrapper,
   },
@@ -49,31 +40,6 @@ export default {
       required: false,
       default: () => {},
       validator: availableVisualizationsValidator,
-    },
-    dateRangeLimit: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    showDateRangeFilter: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    showAnonUsersFilter: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    defaultFilters: {
-      type: Object,
-      required: false,
-      default: () => {},
-    },
-    syncUrlFilters: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isSaving: {
       type: Boolean,
@@ -105,17 +71,13 @@ export default {
     return {
       dashboard: this.createDraftDashboard(this.initialDashboard),
       editing: this.isNewDashboard,
-      filters: this.defaultFilters,
       alert: null,
       visualizationDrawerOpen: false,
     };
   },
   computed: {
     showFilters() {
-      return !this.editing && (this.showDateRangeFilter || this.showAnonUsersFilter);
-    },
-    queryParams() {
-      return this.showFilters ? filtersToQueryParams(this.filters) : {};
+      return !this.editing && this.$scopedSlots.filters;
     },
     showEditControls() {
       return this.editingEnabled && this.editing;
@@ -287,24 +249,7 @@ export default {
         cancelBtnText,
       });
     },
-    setDateRangeFilter({ dateRangeOption, startDate, endDate }) {
-      this.filters = {
-        ...this.filters,
-        dateRangeOption,
-        startDate,
-        endDate,
-      };
-    },
-    setAnonymousUsersFilter(filterAnonUsers) {
-      this.filters = {
-        ...this.filters,
-        filterAnonUsers,
-      };
 
-      if (filterAnonUsers) {
-        this.trackEvent(EVENT_LABEL_EXCLUDE_ANONYMISED_USERS);
-      }
-    },
     toggleVisualizationDrawer() {
       this.visualizationDrawerOpen = !this.visualizationDrawerOpen;
     },
@@ -322,7 +267,6 @@ export default {
       this.dashboard.panels.push(...panels);
     },
   },
-  HISTORY_REPLACE_UPDATE_METHOD,
   FORM_GROUP_CLASS: 'gl-w-full sm:gl-w-3/10 gl-min-w-20 gl-m-0',
   FORM_INPUT_CLASS: 'form-control gl-mr-4 gl-border-gray-200',
 };
@@ -416,25 +360,9 @@ export default {
             data-testid="dashboard-filters"
             class="gl-flex gl-flex-col gl-gap-5 gl-px-3 gl-pb-3 gl-pt-4 md:gl-flex-row"
           >
-            <date-range-filter
-              v-if="showDateRangeFilter"
-              :default-option="filters.dateRangeOption"
-              :start-date="filters.startDate"
-              :end-date="filters.endDate"
-              :date-range-limit="dateRangeLimit"
-              @change="setDateRangeFilter"
-            />
-            <anon-users-filter
-              v-if="showAnonUsersFilter"
-              :value="filters.filterAnonUsers"
-              @change="setAnonymousUsersFilter"
-            />
+            <slot name="filters"></slot>
           </section>
-          <url-sync
-            v-if="syncUrlFilters"
-            :query="queryParams"
-            :history-update-method="$options.HISTORY_REPLACE_UPDATE_METHOD"
-          />
+
           <button
             v-if="showEditControls"
             class="card upload-dropzone-card upload-dropzone-border gl-m-3 gl-flex gl-items-center gl-px-5 gl-py-3"
@@ -455,7 +383,7 @@ export default {
             <template #panel="{ panel }">
               <slot
                 name="panel"
-                v-bind="{ panel, filters, editing, deletePanel: () => deletePanel(panel) }"
+                v-bind="{ panel, editing, deletePanel: () => deletePanel(panel) }"
               ></slot>
             </template>
           </gridstack-wrapper>

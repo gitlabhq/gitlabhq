@@ -178,6 +178,9 @@ module Types
       field :warning_messages, [Types::Ci::PipelineMessageType], null: true,
         description: 'Pipeline warning messages.'
 
+      field :error_messages, Types::Ci::PipelineMessageType.connection_type, null: true,
+        description: 'Pipeline error messages.'
+
       field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
         description: "Event type of the pipeline associated with a merge request."
 
@@ -209,6 +212,17 @@ module Types
 
       def commit
         BatchLoader::GraphQL.wrap(object.commit)
+      end
+
+      def error_messages
+        BatchLoader::GraphQL.for(object).batch do |pipelines, loader|
+          # rubocop: disable CodeReuse/ActiveRecord -- no need to bloat the Pipeline model, we only need this functionality for GraphQL
+          messages = ::Ci::PipelineMessage.where(pipeline: pipelines, severity: :error)
+          # rubocop: enable CodeReuse/ActiveRecord
+          pipelines.each do |pipeline|
+            loader.call(pipeline, messages.select { |m| m.pipeline_id == pipeline.id })
+          end
+        end
       end
 
       def detailed_status

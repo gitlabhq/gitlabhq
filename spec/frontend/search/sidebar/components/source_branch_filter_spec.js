@@ -7,7 +7,7 @@ import { GlFormCheckbox } from '@gitlab/ui';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
 import SourceBranchFilter from '~/search/sidebar/components/source_branch_filter/index.vue';
-import BranchDropdown from '~/search/sidebar/components/shared/branch_dropdown.vue';
+import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 
@@ -41,7 +41,7 @@ describe('Source branch filter', () => {
     });
   };
 
-  const findBranchDropdown = () => wrapper.findComponent(BranchDropdown);
+  const findBranchDropdown = () => wrapper.findComponent(FilterDropdown);
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   describe('when nothing is selected', () => {
@@ -66,12 +66,12 @@ describe('Source branch filter', () => {
     });
 
     it('renders the component with selected options', () => {
-      expect(findBranchDropdown().props('selectedBranch')).toBe('feature');
+      expect(findBranchDropdown().props('selectedItem')).toBe('feature');
       expect(findGlFormCheckbox().attributes('checked')).toBe('true');
     });
 
     it('displays the correct placeholder text and icon', () => {
-      expect(findBranchDropdown().props('searchBranchText')).toBe('feature');
+      expect(findBranchDropdown().props('searchText')).toBe('feature');
       expect(findBranchDropdown().props('icon')).toBe('branch');
     });
   });
