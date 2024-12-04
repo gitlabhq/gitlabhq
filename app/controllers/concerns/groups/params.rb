@@ -47,8 +47,6 @@ module Groups
         ] },
         :default_branch_name,
         :allow_mfa_for_subgroups,
-        :remove_dormant_members,
-        :remove_dormant_members_period,
         :resource_access_token_creation_allowed,
         :resource_access_token_notify_inherited,
         :lock_resource_access_token_notify_inherited,

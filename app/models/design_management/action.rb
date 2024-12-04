@@ -43,5 +43,9 @@ module DesignManagement
         raise ArgumentError, "Expected a DesignManagement::Version, got #{version}"
       end
     end
+
+    def uploads_sharding_key
+      { namespace_id: design&.namespace_id }
+    end
   end
 end

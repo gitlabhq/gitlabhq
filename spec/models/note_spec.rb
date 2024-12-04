@@ -2014,4 +2014,13 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns namespace_id' do
+      namespace = build_stubbed(:namespace)
+      note = build_stubbed(:note, namespace: namespace)
+
+      expect(note.uploads_sharding_key).to eq(namespace_id: namespace.id)
+    end
+  end
 end

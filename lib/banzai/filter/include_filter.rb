@@ -18,7 +18,6 @@ module Banzai
         timeout: Banzai::Filter::Concerns::TimeoutFilterHandler::RENDER_TIMEOUT)
 
       def call
-        return text unless Feature.enabled?(:markdown_include_directive, context[:project])
         return text unless wiki? || blob?
 
         @included_content = {}

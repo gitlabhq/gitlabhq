@@ -4904,7 +4904,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when the diff refs are for a comparison between merge request versions' do
-      let(:diff_refs) { merge_request_diff3.compare_with(merge_request_diff1.head_commit_sha).diff_refs }
+      let(:diff_refs) do
+        ::MergeRequests::MergeRequestDiffComparison
+          .new(merge_request_diff3)
+          .compare_with(merge_request_diff1.head_commit_sha)
+          .diff_refs
+      end
 
       it 'returns the diff ID and start sha of the versions to compare' do
         expect(subject.version_params_for(diff_refs)).to eq(diff_id: merge_request_diff3.id, start_sha: merge_request_diff1.head_commit_sha)

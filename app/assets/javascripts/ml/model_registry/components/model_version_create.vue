@@ -4,6 +4,7 @@ import { __, s__, sprintf } from '~/locale';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { semverRegex } from '~/lib/utils/regexp';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
@@ -11,6 +12,7 @@ import createModelVersionMutation from '../graphql/mutations/create_model_versio
 export default {
   name: 'ModelVersionCreate',
   components: {
+    PageHeading,
     GlAlert,
     GlButton,
     GlForm,
@@ -109,6 +111,7 @@ export default {
     },
     async create() {
       this.errorMessage = '';
+
       try {
         if (!this.versionData) {
           this.versionData = await this.createModelVersion();
@@ -176,9 +179,22 @@ export default {
 
 <template>
   <div>
+    <gl-alert
+      v-if="errorMessage"
+      class="gl-mt-5"
+      data-testid="create-alert"
+      variant="danger"
+      @dismiss="hideAlert"
+      >{{ errorMessage }}
+    </gl-alert>
+
+    <page-heading :heading="$options.i18n.title">
+      <template #description>
+        {{ $options.i18n.description }}
+      </template>
+    </page-heading>
+
     <gl-form>
-      <h2 data-testid="title">{{ $options.i18n.title }}</h2>
-      <p data-testid="description" class="gl-text-default">{{ $options.i18n.description }}</p>
       <gl-form-group
         data-testid="versionDescriptionId"
         :label="$options.i18n.versionLabelText"
@@ -193,6 +209,7 @@ export default {
           v-model="version"
           data-testid="versionId"
           type="text"
+          required
           :placeholder="$options.i18n.versionPlaceholder"
           autocomplete="off"
         />
@@ -229,24 +246,24 @@ export default {
         <import-artifact-zone
           id="versionImportArtifactZone"
           ref="importArtifactZoneRef"
-          class="gl-px-3 gl-py-0"
+          class="gl-px-0 gl-py-0"
           :submit-on-select="false"
           @error="onImportError"
         />
       </gl-form-group>
+
+      <div class="gl-flex gl-gap-3">
+        <gl-button
+          data-testid="primary-button"
+          variant="confirm"
+          :disabled="submitButtonDisabled"
+          @click="create"
+          >{{ $options.i18n.actionPrimaryText }}
+        </gl-button>
+        <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
+          >{{ $options.i18n.actionSecondaryText }}
+        </gl-button>
+      </div>
     </gl-form>
-    <gl-alert v-if="errorMessage" variant="danger" @dismiss="hideAlert">{{
-      errorMessage
-    }}</gl-alert>
-    <gl-button
-      data-testid="primary-button"
-      variant="confirm"
-      :disabled="submitButtonDisabled"
-      @click="create"
-      >{{ $options.i18n.actionPrimaryText }}
-    </gl-button>
-    <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
-      >{{ $options.i18n.actionSecondaryText }}
-    </gl-button>
   </div>
 </template>

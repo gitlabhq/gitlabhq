@@ -1197,20 +1197,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
-  describe '#compare_with' do
-    it 'delegates compare to the service' do
-      expect(CompareService).to receive(:new).and_call_original
-
-      diff_with_commits.compare_with(nil)
-    end
-
-    it 'uses git diff A..B approach by default' do
-      diffs = diff_with_commits.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
-
-      expect(diffs.size).to eq(21)
-    end
-  end
-
   describe '#commits_count' do
     it 'returns number of commits using serialized commits' do
       expect(diff_with_commits.commits_count).to eq(29)

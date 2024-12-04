@@ -1,9 +1,0 @@
----
-name: markdown_include_directive
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/195798
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169374
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502242
-milestone: '17.6'
-group: group::knowledge
-type: gitlab_com_derisk
-default_enabled: false

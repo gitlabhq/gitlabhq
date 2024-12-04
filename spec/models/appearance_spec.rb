@@ -166,4 +166,12 @@ RSpec.describe Appearance do
       end
     end
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns epmty hash' do
+      appearance = build_stubbed(:appearance)
+
+      expect(appearance.uploads_sharding_key).to eq({})
+    end
+  end
 end

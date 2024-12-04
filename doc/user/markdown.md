@@ -1539,10 +1539,7 @@ $example = array(
 
 ## Includes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7 [with a flag](../administration/feature_flags.md) named `markdown_include_directive`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag. For more information, see the history.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7.
 
 Use includes, or include directives, to add the content of a document inside another document.
 

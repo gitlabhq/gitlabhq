@@ -30,20 +30,6 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     allow(Gitlab::Git::Blob).to receive(:find).with(project.repository, ref, 'file.md').and_return(file_blob)
   end
 
-  context 'when :markdown_include_directive feature flag disabled' do
-    before do
-      stub_feature_flags(markdown_include_directive: false)
-    end
-
-    it 'does not work for wikis' do
-      expect(filter(text_include, wiki: project.wiki, requested_path: './')).to eq text_include
-    end
-
-    it 'does not work for blobs' do
-      expect(filter(text_include, filter_context)).to eq text_include
-    end
-  end
-
   it 'works for wikis' do
     expect(filter(text_include, wiki: project.wiki, requested_path: './')).to eq file_data
   end

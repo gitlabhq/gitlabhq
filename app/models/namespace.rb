@@ -755,6 +755,10 @@ class Namespace < ApplicationRecord
     !!deleted_at
   end
 
+  def uploads_sharding_key
+    { organization_id: organization_id }
+  end
+
   private
 
   def require_organization?

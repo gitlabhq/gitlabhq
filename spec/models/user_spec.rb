@@ -9111,4 +9111,12 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns empty hash' do
+      user = build_stubbed(:user)
+
+      expect(user.uploads_sharding_key).to eq({})
+    end
+  end
 end

@@ -6,8 +6,6 @@ module Groups
 
     SETTINGS_PARAMS = [
       :allow_mfa_for_subgroups,
-      :remove_dormant_members,
-      :remove_dormant_members_period,
       :early_access_program_participant
     ].freeze
 

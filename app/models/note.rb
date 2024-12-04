@@ -723,6 +723,10 @@ class Note < ApplicationRecord
     attributes.keys
   end
 
+  def uploads_sharding_key
+    { namespace_id: namespace_id }
+  end
+
   private
 
   def trigger_note_subscription?

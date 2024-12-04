@@ -304,8 +304,11 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         expect(duplicate).to eq(event)
       end
 
-      it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { :wiki_action }
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'performed_wiki_action' }
+        let(:category) { described_class.name }
+        let(:project) { meta.project }
+        let(:additional_properties) { { label: action.to_s } }
       end
 
       it_behaves_like "it records a git write event"

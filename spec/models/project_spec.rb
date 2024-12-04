@@ -9750,4 +9750,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it { expect(project.placeholder_reference_store).to be_nil }
     end
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns namespace_id' do
+      namespace = build_stubbed(:namespace)
+      project = build_stubbed(:project, namespace: namespace)
+
+      expect(project.uploads_sharding_key).to eq(namespace_id: namespace.id)
+    end
+  end
 end

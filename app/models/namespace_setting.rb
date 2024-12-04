@@ -25,15 +25,10 @@ class NamespaceSetting < ApplicationRecord
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
-  validates :remove_dormant_members, inclusion: { in: [false] }, if: :subgroup?
-  validates :remove_dormant_members_period,
-    numericality: { only_integer: true, greater_than_or_equal_to: 90, less_than_or_equal_to: 1827 } # 90 days - ~5 years
   validates :allow_mfa_for_subgroups, presence: true, if: :subgroup?
   validates :resource_access_token_creation_allowed, presence: true, if: :subgroup?
 
   sanitizes! :default_branch_name
-
-  after_initialize :set_default_values, if: :new_record?
 
   before_validation :normalize_default_branch_name
 
@@ -106,10 +101,6 @@ class NamespaceSetting < ApplicationRecord
   end
 
   private
-
-  def set_default_values
-    self.remove_dormant_members_period = 90
-  end
 
   def all_ancestors_have_emails_enabled?
     self.class.where(namespace_id: namespace.self_and_ancestors, emails_enabled: false).none?

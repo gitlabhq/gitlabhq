@@ -1,18 +1,17 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.source_code.wiki_action_monthly
-description: Count of unique actions done on a wiki (create, edit, delete)
+description: Count of unique users that did a wiki action (create, edit, delete)
 product_group: knowledge
 product_categories:
 - wiki
 value_type: number
 status: active
 time_frame: 28d
-data_source: redis_hll
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-  - wiki_action
+data_source: internal_events
+events:
+  - name: performed_wiki_action
+    unique: user.id
 distribution:
 - ce
 - ee

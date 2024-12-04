@@ -3,6 +3,7 @@ import { GlAlert, GlButton, GlForm, GlFormGroup } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import editModelVersionMutation from '../graphql/mutations/edit_model_version.mutation.graphql';
@@ -11,6 +12,7 @@ import { emptyArtifactFile } from '../constants';
 export default {
   name: 'ModelVersionEdit',
   components: {
+    PageHeading,
     MarkdownEditor,
     GlAlert,
     GlButton,
@@ -104,7 +106,17 @@ export default {
 
 <template>
   <div>
-    <h2>{{ $options.i18n.title }}</h2>
+    <gl-alert
+      v-if="errorMessage"
+      data-testid="edit-alert"
+      variant="danger"
+      class="gl-mt-5"
+      @dismiss="hideAlert"
+      >{{ errorMessage }}
+    </gl-alert>
+
+    <page-heading :heading="$options.i18n.title" />
+
     <gl-form>
       <gl-form-group
         :label="$options.i18n.descriptionLabel"
@@ -129,16 +141,16 @@ export default {
           :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
           @input="setDescription"
         />
+
+        <div class="gl-mt-5 gl-flex gl-gap-3">
+          <gl-button data-testid="primary-button" variant="confirm" @click="edit"
+            >{{ $options.i18n.actionPrimaryText }}
+          </gl-button>
+          <gl-button data-testid="secondary-button" variant="default" :href="modelVersionPath"
+            >{{ $options.i18n.actionSecondaryText }}
+          </gl-button>
+        </div>
       </gl-form-group>
     </gl-form>
-    <gl-alert v-if="errorMessage" data-testid="edit-alert" variant="danger" @dismiss="hideAlert"
-      >{{ errorMessage }}
-    </gl-alert>
-    <gl-button data-testid="secondary-button" variant="default" :href="modelVersionPath"
-      >{{ $options.i18n.actionSecondaryText }}
-    </gl-button>
-    <gl-button data-testid="primary-button" variant="confirm" @click="edit"
-      >{{ $options.i18n.actionPrimaryText }}
-    </gl-button>
   </div>
 </template>

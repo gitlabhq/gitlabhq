@@ -17,6 +17,7 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  DAST_IMAGE_SUFFIX: ""
 
 dast:
   stage: dast
@@ -29,12 +30,13 @@ dast:
     - /analyze
   artifacts:
     access: 'developer'
+    when: always
     reports:
       dast: gl-dast-report.json
+    paths:
+      - gl-dast-*.*
   rules:
     - if: $CI_GITLAB_FIPS_MODE == "true"
       variables:
         DAST_IMAGE_SUFFIX: "-fips"
-    - if: $CI_GITLAB_FIPS_MODE != "true"
-      variables:
-        DAST_IMAGE_SUFFIX: ""
+    - when: on_success

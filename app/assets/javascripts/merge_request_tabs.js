@@ -104,7 +104,7 @@ function mountPipelines() {
       manualActionsLimit: 50,
       mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
       sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
-      useFailedJobsWidget: gon.features?.ciJobFailuresInMr || false,
+      useFailedJobsWidget: true,
     },
     render(createElement) {
       return createElement('merge-request-pipelines-table', {

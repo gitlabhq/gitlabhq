@@ -2020,6 +2020,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_78c85ddc4031() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_7943cb549289() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13812,6 +13828,7 @@ CREATE TABLE issue_emails (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
     email_message_id text NOT NULL,
+    namespace_id bigint,
     CONSTRAINT check_5abf3e6aea CHECK ((char_length(email_message_id) <= 1000))
 );
 
@@ -20796,6 +20813,9 @@ CREATE TABLE uploads (
     secret character varying,
     version integer DEFAULT 1 NOT NULL,
     uploaded_by_user_id bigint,
+    organization_id bigint,
+    namespace_id bigint,
+    project_id bigint,
     CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL))
 );
 
@@ -30865,6 +30885,8 @@ CREATE INDEX index_issue_emails_on_email_message_id ON issue_emails USING btree 
 
 CREATE INDEX index_issue_emails_on_issue_id ON issue_emails USING btree (issue_id);
 
+CREATE INDEX index_issue_emails_on_namespace_id ON issue_emails USING btree (namespace_id);
+
 CREATE INDEX index_issue_links_on_namespace_id ON issue_links USING btree (namespace_id);
 
 CREATE INDEX index_issue_links_on_source_id ON issue_links USING btree (source_id);
@@ -35593,6 +35615,8 @@ CREATE TRIGGER trigger_740afa9807b8 BEFORE INSERT OR UPDATE ON subscription_user
 
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
 
+CREATE TRIGGER trigger_78c85ddc4031 BEFORE INSERT OR UPDATE ON issue_emails FOR EACH ROW EXECUTE FUNCTION trigger_78c85ddc4031();
+
 CREATE TRIGGER trigger_7943cb549289 BEFORE INSERT OR UPDATE ON issuable_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_7943cb549289();
 
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
@@ -37362,6 +37386,9 @@ ALTER TABLE ONLY issuable_resource_links
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_emails
+    ADD CONSTRAINT fk_ed0f4c4b51 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_eea90e3209 FOREIGN KEY (personal_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

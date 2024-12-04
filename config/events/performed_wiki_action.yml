@@ -1,0 +1,18 @@
+---
+description: Action on a wiki page was performed
+internal_events: true
+action: performed_wiki_action
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Type of action (created, updated, destroyed)
+product_group: knowledge
+milestone: '17.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174095
+tiers:
+- free
+- premium
+- ultimate

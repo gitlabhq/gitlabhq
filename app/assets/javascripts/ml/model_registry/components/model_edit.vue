@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { noSpacesRegex } from '~/lib/utils/regexp';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -12,6 +13,7 @@ import editModelMutation from '../graphql/mutations/edit_model.mutation.graphql'
 export default {
   name: 'ModelEdit',
   components: {
+    PageHeading,
     MarkdownEditor,
     GlAlert,
     GlButton,
@@ -65,6 +67,7 @@ export default {
   methods: {
     async edit() {
       this.errorMessage = '';
+
       try {
         const { data } = await this.$apollo.mutate({
           mutation: editModelMutation,
@@ -118,7 +121,17 @@ export default {
 
 <template>
   <div>
-    <h2>{{ $options.i18n.title }}</h2>
+    <gl-alert
+      v-if="errorMessage"
+      data-testid="edit-alert"
+      variant="danger"
+      class="gl-mt-5"
+      @dismiss="hideAlert"
+      >{{ errorMessage }}
+    </gl-alert>
+
+    <page-heading :heading="$options.i18n.title" />
+
     <gl-form>
       <gl-form-group
         :label="$options.i18n.modelName"
@@ -134,6 +147,7 @@ export default {
           :value="model.name"
           data-testid="nameId"
           type="text"
+          required
           :disabled="true"
         />
       </gl-form-group>
@@ -161,15 +175,15 @@ export default {
           @input="setDescription"
         />
       </gl-form-group>
+
+      <div class="gl-flex gl-gap-3">
+        <gl-button data-testid="primary-button" variant="confirm" @click="edit"
+          >{{ $options.i18n.actionPrimaryText }}
+        </gl-button>
+        <gl-button data-testid="secondary-button" variant="default" :href="modelPath"
+          >{{ $options.i18n.actionSecondaryText }}
+        </gl-button>
+      </div>
     </gl-form>
-    <gl-alert v-if="errorMessage" data-testid="edit-alert" variant="danger" @dismiss="hideAlert"
-      >{{ errorMessage }}
-    </gl-alert>
-    <gl-button data-testid="secondary-button" variant="default" :href="modelPath"
-      >{{ $options.i18n.actionSecondaryText }}
-    </gl-button>
-    <gl-button data-testid="primary-button" variant="confirm" @click="edit"
-      >{{ $options.i18n.actionPrimaryText }}
-    </gl-button>
   </div>
 </template>

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ImportExportUpload do
   let(:project) { create(:project) }
 
-  subject { described_class.new(project: project) }
+  subject(:import_export_upload) { described_class.new(project: project) }
 
   shared_examples 'stores the Import/Export file' do |method|
     it 'stores the import file' do
@@ -125,6 +125,15 @@ RSpec.describe ImportExportUpload do
           expect(subject.export_archive_exists?).to be false
         end
       end
+    end
+  end
+
+  describe '#uploads_sharding_key' do
+    it 'returns project_id / group_id' do
+      expect(import_export_upload.uploads_sharding_key).to eq(
+        project_id: project.id,
+        namespace_id: nil
+      )
     end
   end
 end

@@ -35215,6 +35215,9 @@ msgstr ""
 msgid "ModelRegistry|New model"
 msgstr ""
 
+msgid "ModelRegistry|New version"
+msgstr ""
+
 msgid "ModelRegistry|Version"
 msgstr ""
 

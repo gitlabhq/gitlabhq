@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { noSpacesRegex } from '~/lib/utils/regexp';
 import createModelMutation from '../graphql/mutations/create_model.mutation.graphql';
@@ -11,6 +12,7 @@ import createModelMutation from '../graphql/mutations/create_model.mutation.grap
 export default {
   name: 'ModelCreate',
   components: {
+    PageHeading,
     MarkdownEditor,
     GlAlert,
     GlButton,
@@ -64,6 +66,7 @@ export default {
     },
     async create() {
       this.errorMessage = '';
+
       try {
         // Attempt creating a model if needed
         if (!this.modelData) {
@@ -120,7 +123,17 @@ export default {
 
 <template>
   <div>
-    <h2>{{ $options.i18n.title }}</h2>
+    <gl-alert
+      v-if="errorMessage"
+      class="gl-mt-5"
+      data-testid="create-alert"
+      variant="danger"
+      @dismiss="hideAlert"
+      >{{ errorMessage }}
+    </gl-alert>
+
+    <page-heading :heading="$options.i18n.title" />
+
     <gl-form>
       <gl-form-group
         :label="$options.i18n.modelName"
@@ -136,6 +149,7 @@ export default {
           v-model="name"
           data-testid="nameId"
           type="text"
+          required
           :placeholder="$options.i18n.namePlaceholder"
         />
       </gl-form-group>
@@ -163,22 +177,19 @@ export default {
           @input="setDescription"
         />
       </gl-form-group>
+
+      <div class="gl-flex gl-gap-3">
+        <gl-button
+          data-testid="primary-button"
+          variant="confirm"
+          :disabled="submitButtonDisabled"
+          @click="create"
+          >{{ $options.i18n.actionPrimaryText }}
+        </gl-button>
+        <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
+          >{{ $options.i18n.actionSecondaryText }}
+        </gl-button>
+      </div>
     </gl-form>
-
-    <gl-alert v-if="errorMessage" data-testid="create-alert" variant="danger" @dismiss="hideAlert"
-      >{{ errorMessage }}
-    </gl-alert>
-
-    <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
-      >{{ $options.i18n.actionSecondaryText }}
-    </gl-button>
-
-    <gl-button
-      data-testid="primary-button"
-      variant="confirm"
-      :disabled="submitButtonDisabled"
-      @click="create"
-      >{{ $options.i18n.actionPrimaryText }}
-    </gl-button>
   </div>
 </template>

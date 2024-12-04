@@ -151,19 +151,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
       end
     end
-
-    describe 'remove_dormant_members' do
-      it { expect(subgroup.namespace_settings).to validate_inclusion_of(:remove_dormant_members).in_array([false]) }
-    end
-
-    describe 'remove_dormant_members_period' do
-      it do
-        expect(namespace_settings).to validate_numericality_of(:remove_dormant_members_period)
-          .only_integer
-          .is_greater_than_or_equal_to(90)
-          .is_less_than_or_equal_to(1827)
-      end
-    end
   end
 
   describe '#prevent_sharing_groups_outside_hierarchy' do

@@ -204,11 +204,6 @@ RSpec.shared_examples 'wiki controller actions' do
       end
 
       context 'page view tracking' do
-        it_behaves_like 'tracking unique hll events' do
-          let(:target_event) { 'wiki_action' }
-          let(:expected_value) { instance_of(String) }
-        end
-
         it_behaves_like 'internal event tracking' do
           let(:event) { 'view_wiki_page' }
           let(:project) { container if container.is_a?(Project) }

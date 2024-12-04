@@ -76,6 +76,10 @@ module Projects
       end
     end
 
+    def uploads_sharding_key
+      { organization_id: organization_id }
+    end
+
     private
 
     def validate_name_format

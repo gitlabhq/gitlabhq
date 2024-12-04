@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::ExportUpload, type: :model, feature_category: :importers do
-  subject { described_class.new(export: create(:bulk_import_export)) }
+  let(:export) { create(:bulk_import_export) }
+
+  subject(:bulk_import_export) { described_class.new(export: export) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:export) }
@@ -32,6 +34,15 @@ RSpec.describe BulkImports::ExportUpload, type: :model, feature_category: :impor
     it 'export file is stored in after_commit callback' do
       expect(find_callback(after_commit_callbacks, :store_export_file!)).to be_present
       expect(find_callback(after_save_callbacks, :store_export_file!)).to be_nil
+    end
+  end
+
+  describe '#uploads_sharding_key' do
+    it 'returns project_id or group_id' do
+      expect(bulk_import_export.uploads_sharding_key).to eq(
+        project_id: export.project_id,
+        namespace_id: export.group_id
+      )
     end
   end
 end

@@ -21,6 +21,8 @@ module Gitlab
       end
 
       def from_job(job)
+        return unless job&.running?
+
         new(access_token_id: job.token, user_id: job.user.id, expire_at: job.project.build_timeout.seconds.from_now)
       end
 

@@ -2530,6 +2530,10 @@ class User < ApplicationRecord
     false
   end
 
+  def uploads_sharding_key
+    {}
+  end
+
   protected
 
   # override, from Devise::Validatable
