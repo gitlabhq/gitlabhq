@@ -110,5 +110,30 @@ RSpec.describe GraphqlChannel, feature_category: :api do
         end
       end
     end
+
+    describe 'metrics' do
+      before do
+        stub_action_cable_connection current_user: create(:user)
+      end
+
+      it 'does not track unauthorized subscriptions as errors' do
+        expect(Gitlab::Metrics::RailsSlis.graphql_query_apdex).not_to receive(:increment)
+
+        expect(Gitlab::Metrics::RailsSlis.graphql_query_error_rate).to receive(:increment).with({
+          labels: anything,
+          error: false
+        })
+
+        subscribe(subscribe_params)
+
+        expect(transmissions.first['result']).to match(a_hash_including(
+          'errors' => [
+            a_hash_including(
+              'message' => 'Unauthorized subscription'
+            )
+          ]
+        ))
+      end
+    end
   end
 end
