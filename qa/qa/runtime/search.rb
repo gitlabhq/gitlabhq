@@ -119,7 +119,7 @@ module QA
       end
 
       def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab)
+        Runtime::User::Store.user_api_client
       end
     end
   end

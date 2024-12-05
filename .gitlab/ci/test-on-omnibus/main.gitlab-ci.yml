@@ -432,8 +432,7 @@ metrics:
     - if: $QA_SUITES =~ /Test::Instance::Metrics/
     - !reference [.rules:test:manual, rules]
 
-# TODO: re-enable after gitlab-org/quality/quality-engineering/team-tasks#3153 is resolved
-.elasticsearch:
+elasticsearch:
   extends: .qa
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"

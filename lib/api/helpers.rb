@@ -837,8 +837,6 @@ module API
     end
 
     def audit_request_with_token_scope(user)
-      return unless Feature.enabled?(:api_audit_requests_with_scope, user)
-
       token_info = ::Current.token_info
       return unless token_info
       return unless TOKEN_SCOPES_TO_AUDIT.intersect?(Array.wrap(token_info[:token_scopes]))

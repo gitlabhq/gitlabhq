@@ -12173,6 +12173,29 @@ The edge type for [`CiCatalogResourceComponent`](#cicatalogresourcecomponent).
 | <a id="cicatalogresourcecomponentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cicatalogresourcecomponentedgenode"></a>`node` | [`CiCatalogResourceComponent`](#cicatalogresourcecomponent) | The item at the end of the edge. |
 
+#### `CiCatalogResourceComponentUsageConnection`
+
+The connection type for [`CiCatalogResourceComponentUsage`](#cicatalogresourcecomponentusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentusageconnectionedges"></a>`edges` | [`[CiCatalogResourceComponentUsageEdge]`](#cicatalogresourcecomponentusageedge) | A list of edges. |
+| <a id="cicatalogresourcecomponentusageconnectionnodes"></a>`nodes` | [`[CiCatalogResourceComponentUsage]`](#cicatalogresourcecomponentusage) | A list of nodes. |
+| <a id="cicatalogresourcecomponentusageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiCatalogResourceComponentUsageEdge`
+
+The edge type for [`CiCatalogResourceComponentUsage`](#cicatalogresourcecomponentusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogresourcecomponentusageedgenode"></a>`node` | [`CiCatalogResourceComponentUsage`](#cicatalogresourcecomponentusage) | The item at the end of the edge. |
+
 #### `CiCatalogResourceConnection`
 
 The connection type for [`CiCatalogResource`](#cicatalogresource).
@@ -19917,6 +19940,18 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="cicatalogresourcecomponentinputregex"></a>`regex` | [`String`](#string) | Pattern that the input value must match. Only applicable to string inputs. |
 | <a id="cicatalogresourcecomponentinputrequired"></a>`required` | [`Boolean`](#boolean) | Indicates if an input is required. |
 | <a id="cicatalogresourcecomponentinputtype"></a>`type` | [`CiCatalogResourceComponentInputType`](#cicatalogresourcecomponentinputtype) | Type of the input. |
+
+### `CiCatalogResourceComponentUsage`
+
+Represents a component usage in a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentusagelastuseddate"></a>`lastUsedDate` | [`ISO8601Date`](#iso8601date) | When the component was last used. |
+| <a id="cicatalogresourcecomponentusagename"></a>`name` | [`String`](#string) | Name of the component. |
+| <a id="cicatalogresourcecomponentusageversion"></a>`version` | [`String`](#string) | Version of the component. |
 
 ### `CiCatalogResourceVersion`
 
@@ -31153,6 +31188,7 @@ Project-level settings for product analytics provider.
 | <a id="projectciupstreamprojectsubscriptions"></a>`ciUpstreamProjectSubscriptions` **{warning-solid}** | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the downstream project.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project (this project). |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
+| <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` **{warning-solid}** | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
 | <a id="projectcontainerregistryprotectionrules"></a>`containerRegistryProtectionRules` **{warning-solid}** | [`ContainerRegistryProtectionRuleConnection`](#containerregistryprotectionruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |

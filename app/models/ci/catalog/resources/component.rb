@@ -25,6 +25,20 @@ module Ci
         validates :spec, json_schema: { filename: 'catalog_resource_component_spec' }
         validates :version, :catalog_resource, :project, :name, presence: true
 
+        def self.names_by_ids(component_ids)
+          where(id: component_ids).select(:id, :name)
+        end
+
+        def self.versions_by_component_ids(component_ids)
+          joins(:version)
+            .where(id: component_ids)
+            .select('catalog_resource_components.id',
+              'catalog_resource_components.version_id',
+              "CONCAT_WS('.', catalog_resource_versions.semver_major, " \
+                "catalog_resource_versions.semver_minor, " \
+                "catalog_resource_versions.semver_patch) AS version_name")
+        end
+
         def include_path
           "$CI_SERVER_FQDN/#{project.full_path}/#{name}@#{version.name}"
         end

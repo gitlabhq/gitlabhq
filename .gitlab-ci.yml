@@ -16,6 +16,7 @@ stages:
   - notify
   - release-environments
   - benchmark
+  - ai-gateway
 
 # always use `gitlab-org` runners, however
 # in cases where jobs require Docker-in-Docker, the job

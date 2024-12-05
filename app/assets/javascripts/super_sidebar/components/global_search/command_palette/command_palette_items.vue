@@ -191,7 +191,7 @@ export default {
       return fuzzaldrinPlus.filter(items, this.searchQuery, { key });
     },
     async getProjectFiles() {
-      if (!this.projectFiles.length) {
+      if (this.projectFilesPath && !this.projectFiles.length) {
         this.loading = true;
 
         try {

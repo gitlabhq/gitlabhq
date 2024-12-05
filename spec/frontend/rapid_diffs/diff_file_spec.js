@@ -16,7 +16,13 @@ jest.mock('~/rapid_diffs/intersection_observer', () => {
 });
 
 describe('DiffFile Web Component', () => {
-  const html = `<diff-file data-viewer="current"><div id="foo"></div></diff-file>`;
+  const html = `
+    <diff-file data-viewer="current" data-custom="bar" id="fileHash">
+      <div id="foo">
+        <button data-click="foo"></button>
+      </div>
+    </diff-file>
+  `;
   let adapter;
 
   const getDiffElement = () => document.querySelector('[id=foo]');
@@ -33,6 +39,11 @@ describe('DiffFile Web Component', () => {
   const getContext = () => ({
     diffElement: getDiffElement(),
     viewer: 'current',
+    data: {
+      custom: 'bar',
+    },
+    sink: {},
+    trigger: getWebComponentElement().trigger,
   });
 
   beforeAll(() => {
@@ -41,6 +52,15 @@ describe('DiffFile Web Component', () => {
 
   beforeEach(() => {
     document.body.innerHTML = html;
+    assignAdapter({
+      click: jest.fn(),
+      clicks: {
+        foo: jest.fn(),
+      },
+      visible: jest.fn(),
+      invisible: jest.fn(),
+      mounted: jest.fn(),
+    });
     getWebComponentElement().mount();
   });
 
@@ -48,32 +68,49 @@ describe('DiffFile Web Component', () => {
     expect(IS.prototype.observe).toHaveBeenCalledWith(getWebComponentElement());
   });
 
-  describe('when visible', () => {
-    beforeEach(() => {
-      assignAdapter({
-        onClick: jest.fn(),
-        onVisible: jest.fn(),
-        onInvisible: jest.fn(),
-      });
-    });
+  it('triggers mounted event', () => {
+    expect(adapter.mounted).toHaveBeenCalled();
+    expect(adapter.mounted.mock.instances[0]).toStrictEqual(getContext());
+  });
 
-    it('handles clicks', () => {
+  describe('when visible', () => {
+    it('handles all clicks', () => {
       triggerVisibility(true);
       getDiffElement().click();
-      expect(adapter.onClick).toHaveBeenCalledWith(expect.any(MouseEvent));
-      expect(adapter.onClick.mock.instances[0]).toStrictEqual(getContext());
+      expect(adapter.click).toHaveBeenCalledWith(expect.any(MouseEvent));
+      expect(adapter.click.mock.instances[0]).toStrictEqual(getContext());
+    });
+
+    it('handles specific clicks', () => {
+      triggerVisibility(true);
+      getDiffElement().querySelector('[data-click=foo]').click();
+      expect(adapter.clicks.foo).toHaveBeenCalledWith(expect.any(MouseEvent));
+      expect(adapter.clicks.foo.mock.instances[0]).toStrictEqual(getContext());
     });
 
     it('handles visible event', () => {
       triggerVisibility(true);
-      expect(adapter.onVisible).toHaveBeenCalled();
-      expect(adapter.onVisible.mock.instances[0]).toStrictEqual(getContext());
+      expect(adapter.visible).toHaveBeenCalled();
+      expect(adapter.visible.mock.instances[0]).toStrictEqual(getContext());
     });
 
     it('handles invisible event', () => {
       triggerVisibility(false);
-      expect(adapter.onInvisible).toHaveBeenCalled();
-      expect(adapter.onInvisible.mock.instances[0]).toStrictEqual(getContext());
+      expect(adapter.invisible).toHaveBeenCalled();
+      expect(adapter.invisible.mock.instances[0]).toStrictEqual(getContext());
+    });
+  });
+
+  describe('static methods', () => {
+    it('findByFileHash', () => {
+      expect(DiffFile.findByFileHash('fileHash')).toBeInstanceOf(DiffFile);
+    });
+
+    it('getAll', () => {
+      document.body.innerHTML = `<diff-file></diff-file><diff-file></diff-file>`;
+      const instances = DiffFile.getAll();
+      expect(instances.length).toBe(2);
+      instances.forEach((instance) => expect(instance).toBeInstanceOf(DiffFile));
     });
   });
 });

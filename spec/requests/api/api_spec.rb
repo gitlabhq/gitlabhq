@@ -565,14 +565,6 @@ RSpec.describe API::API, feature_category: :system_access do
 
           it_behaves_like 'audited request'
         end
-
-        context 'when api_audit_requests_with_scope flag is disabled' do
-          before do
-            stub_feature_flags(api_audit_requests_with_scope: false)
-          end
-
-          it_behaves_like 'not audited request'
-        end
       end
 
       context 'when token with ai_workflows scope is not used' do

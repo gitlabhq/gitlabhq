@@ -28,6 +28,11 @@ module Ci
               used_by_project_id: used_by_project.id
             )
           end
+
+          def self.by_project_ids(project_ids)
+            where(used_by_project_id: project_ids)
+              .group_by(&:used_by_project_id)
+          end
         end
       end
     end

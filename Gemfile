@@ -32,7 +32,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 if next?
   gem 'rails', '~> 7.1.4', feature_category: :shared
 else
-  gem 'rails', '~> 7.0.8.4', feature_category: :shared
+  gem 'rails', '~> 7.0.8.6', feature_category: :shared
 end
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfile/MissingFeatureCategory

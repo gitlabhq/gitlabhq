@@ -920,13 +920,21 @@ For further details on this subject, see the
 
 #### Geo secondary site considerations
 
-When a Geo secondary site is replicating from a primary site that uses `Patroni` and `PgBouncer`, [replicating through PgBouncer is not supported](https://github.com/pgbouncer/pgbouncer/issues/382#issuecomment-517911529). The secondary _must_ replicate directly from the leader node in the `Patroni` cluster. When there is an automatic or manual failover in the `Patroni` cluster, you can manually re-point your secondary site to replicate from the new leader with:
+When a Geo secondary site is replicating from a primary site that uses `Patroni` and `PgBouncer`, replicating through PgBouncer is not supported. There is a feature request to add support, see [issue #8832](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8832).
+
+Recommended. Introduce a load balancer in the primary site to automatically handle failovers in the `Patroni` cluster. For more information, see [Step 2: Configure the internal load balancer on the primary site](../geo/setup/database.md#step-2-configure-the-internal-load-balancer-on-the-primary-site).
+
+##### Handling Patroni failover when replicating directly from the leader node
+
+If your secondary site is configured to replicate directly from the leader node in the `Patroni` cluster, then a failover in the `Patroni` cluster will stop replication to the secondary site, even if the original node gets re-added as a follower node.
+
+In that scenario, you must manually point your secondary site to replicate from the new leader after a failover in the `Patroni` cluster:
 
 ```shell
 sudo gitlab-ctl replicate-geo-database --host=<new_leader_ip> --replication-slot=<slot_name>
 ```
 
-Otherwise, the replication does not happen, even if the original node gets re-added as a follower node. This re-syncs your secondary site database and may take a long time depending on the amount of data to sync. You may also need to run `gitlab-ctl reconfigure` if replication is still not working after re-syncing.
+This re-syncs your secondary site database and may take a very long time depending on the amount of data to sync. You may also need to run `gitlab-ctl reconfigure` if replication is still not working after re-syncing.
 
 ### Recovering the Patroni cluster
 

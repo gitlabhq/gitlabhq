@@ -3368,7 +3368,10 @@
       when: never
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
-.release-environments:rules:ai-gateway-tagging:
+##############################
+# ai-gateway rules #
+##############################
+.ai-gateway:rules:tagging:
   rules:
     - if: '$AIGW_PIPELINE_TRIGGER_TOKEN == null'
       when: never

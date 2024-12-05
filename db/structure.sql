@@ -13891,7 +13891,8 @@ CREATE TABLE issue_tracker_data (
     encrypted_new_issue_url character varying,
     encrypted_new_issue_url_iv character varying,
     integration_id bigint,
-    CONSTRAINT check_7ca00cd891 CHECK ((integration_id IS NOT NULL))
+    instance_integration_id bigint,
+    CONSTRAINT check_d525c6d20b CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
 );
 
 CREATE SEQUENCE issue_tracker_data_id_seq
@@ -14105,8 +14106,9 @@ CREATE TABLE jira_tracker_data (
     jira_auth_type smallint DEFAULT 0 NOT NULL,
     project_keys text[] DEFAULT '{}'::text[] NOT NULL,
     customize_jira_issue_enabled boolean DEFAULT false,
+    instance_integration_id bigint,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
-    CONSTRAINT check_0fbd71d9f2 CHECK ((integration_id IS NOT NULL)),
+    CONSTRAINT check_160e0f9fe2 CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255)),
     CONSTRAINT check_4cc5bbc801 CHECK ((char_length(jira_issue_prefix) <= 255)),
     CONSTRAINT check_9863a0a5fd CHECK ((char_length(jira_issue_regex) <= 255))
@@ -22579,7 +22581,9 @@ CREATE TABLE zentao_tracker_data (
     encrypted_zentao_product_xid bytea,
     encrypted_zentao_product_xid_iv bytea,
     encrypted_api_token bytea,
-    encrypted_api_token_iv bytea
+    encrypted_api_token_iv bytea,
+    instance_integration_id bigint,
+    CONSTRAINT check_500f588095 CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
 );
 
 CREATE SEQUENCE zentao_tracker_data_id_seq
@@ -30904,6 +30908,8 @@ CREATE INDEX index_issue_metrics_on_namespace_id ON issue_metrics USING btree (n
 
 CREATE INDEX index_issue_on_project_id_state_id_and_blocking_issues_count ON issues USING btree (project_id, state_id, blocking_issues_count);
 
+CREATE INDEX index_issue_tracker_data_on_instance_integration_id ON issue_tracker_data USING btree (instance_integration_id);
+
 CREATE INDEX index_issue_tracker_data_on_integration_id ON issue_tracker_data USING btree (integration_id);
 
 CREATE INDEX index_issue_user_mentions_on_namespace_id ON issue_user_mentions USING btree (namespace_id);
@@ -30975,6 +30981,8 @@ CREATE INDEX index_jira_imports_on_label_id ON jira_imports USING btree (label_i
 CREATE INDEX index_jira_imports_on_project_id_and_jira_project_key ON jira_imports USING btree (project_id, jira_project_key);
 
 CREATE INDEX index_jira_imports_on_user_id ON jira_imports USING btree (user_id);
+
+CREATE INDEX index_jira_tracker_data_on_instance_integration_id ON jira_tracker_data USING btree (instance_integration_id);
 
 CREATE INDEX index_jira_tracker_data_on_integration_id ON jira_tracker_data USING btree (integration_id);
 
@@ -33265,6 +33273,8 @@ CREATE INDEX index_x509_commit_signatures_on_x509_certificate_id ON x509_commit_
 CREATE INDEX index_x509_issuers_on_subject_key_identifier ON x509_issuers USING btree (subject_key_identifier);
 
 CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports USING btree (project_id, lang);
+
+CREATE INDEX index_zentao_tracker_data_on_instance_integration_id ON zentao_tracker_data USING btree (instance_integration_id);
 
 CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
 
@@ -36127,6 +36137,9 @@ ALTER TABLE ONLY lfs_objects_projects
 ALTER TABLE ONLY vulnerability_merge_request_links
     ADD CONSTRAINT fk_2ef3954596 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY jira_tracker_data
+    ADD CONSTRAINT fk_2ef8e4e35b FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_2f6398d8ee FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36532,6 +36545,9 @@ ALTER TABLE ONLY packages_conan_package_references
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY zentao_tracker_data
+    ADD CONSTRAINT fk_72a0e59cd8 FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_7302a29cd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36831,6 +36847,9 @@ ALTER TABLE ONLY protected_environments
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_9e49e5c2b7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_tracker_data
+    ADD CONSTRAINT fk_9e6e0e7d23 FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_9ed5cf0600 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

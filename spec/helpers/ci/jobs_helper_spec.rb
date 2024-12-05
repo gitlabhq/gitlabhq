@@ -7,6 +7,7 @@ RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:job) { create(:ci_build, project: project) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:report) { create(:ci_build_report_result, build: job, project: project) }
 
     before do
       helper.instance_variable_set(:@project, project)

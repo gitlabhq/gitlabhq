@@ -55,8 +55,7 @@ module QA
         end
       end
 
-      # # TODO: refactor/fix - gitlab-org/quality/quality-engineering/team-tasks#3153
-      it 'does not expose variable on unprotected branch', :smoke, :skip_live_env,
+      it 'does not expose variable on unprotected branch', :smoke,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347664' do
         [developer, maintainer].each do |user|
           create_merge_request(user.api_client)

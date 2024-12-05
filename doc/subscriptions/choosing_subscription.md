@@ -5,23 +5,24 @@ description: Options for accessing GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Choose a GitLab subscription
+# GitLab plans
 
 To choose the right GitLab subscription, select an offering and a tier.
 
-## Choose a subscription
+## Choose an offering
 
-Choose which GitLab subscription suits your needs:
+Choose which GitLab offering suits your needs:
 
-- [GitLab.com](gitlab_com/index.md): The GitLab software-as-a-service offering.
+- GitLab.com: The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab Dedicated](gitlab_dedicated/index.md): A single-tenant SaaS service for highly regulated and large enterprises.
-- [GitLab self-managed](self_managed/index.md): Install, administer, and maintain
-  your own GitLab instance.
+- GitLab self-managed: Install, administer, and maintain your own GitLab instance.
 
 On a GitLab self-managed instance, a GitLab subscription provides the same set of
-features for _all_ users. On GitLab.com, you can apply a subscription to a top-level group
+features for all users.
+
+On GitLab.com, you can apply a subscription to a top-level group
 namespace. You cannot apply a subscription to a personal namespace.
 
 NOTE:

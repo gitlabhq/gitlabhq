@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::ZentaoTrackerData do
+RSpec.describe Integrations::ZentaoTrackerData, feature_category: :integrations do
   it_behaves_like Integrations::BaseDataFields
 
   describe 'factory available' do

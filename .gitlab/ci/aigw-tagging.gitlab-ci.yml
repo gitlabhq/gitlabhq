@@ -1,5 +1,5 @@
 trigger-ai-gateway-tagging:
-  stage: release-environments
+  stage: ai-gateway
   image: curlimages/curl:latest
   script:
     - |
@@ -9,5 +9,5 @@ trigger-ai-gateway-tagging:
         -F "variables[GITLAB_VERSION]=${CI_COMMIT_TAG}" \
         "https://gitlab.com/api/v4/projects/39903947/trigger/pipeline"
   extends:
-    - .release-environments:rules:ai-gateway-tagging
+    - .ai-gateway:rules:tagging
   allow_failure: true

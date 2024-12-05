@@ -230,6 +230,17 @@ describe('CommandPaletteItems', () => {
 
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
+
+    it('should not request project files for an empty or missing repository', async () => {
+      jest.spyOn(axios, 'get');
+      const searchQuery = 'gitlab-ci.yml';
+      createComponent({ handle: PATH_HANDLE, searchQuery }, {}, { projectFilesPath: '' });
+
+      await waitForPromises();
+
+      expect(axios.get).not.toHaveBeenCalled();
+      expect(findLoader().exists()).toBe(false);
+    });
   });
 
   describe('Settings search', () => {

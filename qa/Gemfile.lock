@@ -22,13 +22,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    actionview (7.0.8.4)
-      activesupport (= 7.0.8.4)
+    actionview (7.0.8.6)
+      activesupport (= 7.0.8.6)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activesupport (7.0.8.4)
+    activesupport (7.0.8.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -211,7 +211,7 @@ GEM
     mime-types-data (3.2024.0604)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    minitest (5.23.1)
+    minitest (5.25.2)
     mize (0.6.1)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -354,7 +354,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 7.0.8.4)
+  activesupport (~> 7.0.8.6)
   allure-rspec (~> 2.25.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
