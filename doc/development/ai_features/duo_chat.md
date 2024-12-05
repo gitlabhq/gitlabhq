@@ -356,7 +356,7 @@ The current QA evaluation test consists of the following components.
 #### Epic and issue fixtures
 
 The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
-The internal notes were excluded when they were sampled. The fixtures have been commited into the canonical `gitlab` repository.
+The internal notes were excluded when they were sampled. The fixtures have been committed into the canonical `gitlab` repository.
 See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used to create the fixtures.
 
 #### RSpec and helpers

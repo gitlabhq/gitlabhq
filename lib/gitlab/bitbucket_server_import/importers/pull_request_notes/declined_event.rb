@@ -20,8 +20,6 @@ module Gitlab
                           username: declined_event[:decliner_username],
                           display_name: declined_event[:decliner_name]
                         )
-                      elsif Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
-                        user_finder.find_user_id(by: :username, value: declined_event[:decliner_username])
                       else
                         user_finder.find_user_id(by: :email, value: declined_event[:decliner_email])
                       end

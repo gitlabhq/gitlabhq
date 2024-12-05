@@ -75,16 +75,6 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
             expect(user_id).to eq(user.id)
           end
         end
-
-        it 'caches and returns the user ID by username' do
-          expect(User).to receive(:find_by_username).once.and_call_original
-
-          2.times do
-            user_id = user_finder.find_user_id(by: :username, value: user.username)
-
-            expect(user_id).to eq(user.id)
-          end
-        end
       end
     end
 
@@ -111,36 +101,6 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
 
     describe '#uid' do
       context 'when provided object is a Hash' do
-        it 'maps to an existing user with the same username' do
-          object = { author_username: user.username }
-
-          expect(user_finder.uid(object)).to eq(user.id)
-        end
-      end
-
-      context 'when provided object is a representation object' do
-        it 'maps to a existing user with the same username' do
-          object = instance_double(BitbucketServer::Representation::Comment, author_username: user.username)
-
-          expect(user_finder.uid(object)).to eq(user.id)
-        end
-      end
-
-      context 'when corresponding user does not exist' do
-        it 'returns nil' do
-          object = { author_username: 'unknown' }
-
-          expect(user_finder.uid(object)).to be_nil
-        end
-      end
-    end
-
-    context 'when bitbucket_server_user_mapping_by_username is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
-      end
-
-      context 'when provided object is a Hash' do
         it 'maps to an existing user with the same email' do
           object = { author_email: user.email }
 
@@ -148,7 +108,7 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
         end
       end
 
-      context 'when provided object is a representation Object' do
+      context 'when provided object is a representation object' do
         it 'maps to an existing user with the same email' do
           object = instance_double(BitbucketServer::Representation::Comment, author_email: user.email)
 

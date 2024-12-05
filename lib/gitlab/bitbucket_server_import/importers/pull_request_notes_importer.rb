@@ -92,8 +92,6 @@ module Gitlab
                         username: approved_event.approver_username,
                         display_name: approved_event.approver_name
                       )
-                    elsif Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
-                      user_finder.find_user_id(by: :username, value: approved_event.approver_username)
                     else
                       user_finder.find_user_id(by: :email, value: approved_event.approver_email)
                     end

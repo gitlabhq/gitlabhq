@@ -35,7 +35,7 @@ module Projects
       # Git data (e.g. a list of branch names).
       flush_caches(project)
 
-      ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
+      ::Ci::AbortPipelinesService.new.execute(all_pipelines, :project_deleted)
 
       Projects::UnlinkForkService.new(project, current_user).execute(refresh_statistics: false)
 
@@ -61,6 +61,11 @@ module Projects
     end
 
     private
+
+    def all_pipelines
+      # We don't use `Project#all_pipelines` to skip the `build_enabled?` setting in order to get all pipelines.
+      ::Ci::Pipeline.for_project(project.id)
+    end
 
     def validate_active_repositories_move!
       if project.repository_storage_moves.scheduled_or_started.exists?
@@ -250,13 +255,15 @@ module Projects
       # This is to avoid logging the artifact deletion in Ci::JobArtifacts::DestroyBatchService.
       project.build_artifacts_size_refresh&.destroy
 
-      project.all_pipelines.find_each(batch_size: BATCH_SIZE) do |pipeline| # rubocop: disable CodeReuse/ActiveRecord
+      all_pipelines.find_each(batch_size: BATCH_SIZE) do |pipeline| # rubocop: disable CodeReuse/ActiveRecord
         # Destroy artifacts, then builds, then pipelines
         # All builds have already been dropped by Ci::AbortPipelinesService,
         # so no Ci::Build-instantiating cancellations happen here.
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71342#note_691523196
 
-        ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
+        # We already have done the permission check for `remove_project` so we can use `unsafe_execute` here.
+        # Using `#execute` causes issues with removing pipeline when `ProjectPolicy#repository_disabled` is true.
+        ::Ci::DestroyPipelineService.new(project, current_user).unsafe_execute(pipeline)
       end
 
       project.secure_files.find_each(batch_size: BATCH_SIZE) do |secure_file| # rubocop: disable CodeReuse/ActiveRecord

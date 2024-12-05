@@ -72,28 +72,21 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
         project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
-      context 'when bitbucket_server_user_mapping_by_username flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
-        end
+      it 'finds the user based on email' do
+        importer.execute(declined_event)
 
-        context 'when a user with a matching username does not exist' do
-          let(:another_username_event) do
-            declined_event.merge(decliner_username: 'another_username')
-          end
-
-          it 'finds the user based on email' do
-            importer.execute(another_username_event)
-
-            expect(merge_request.metrics.reload.latest_closed_by).to eq(decliner_author)
-          end
-        end
+        expect(merge_request.metrics.reload.latest_closed_by).to eq(decliner_author)
       end
 
-      context 'when no users match email or username' do
-        let(:another_user_event) do
-          declined_event.merge(decliner_username: 'another_username', decliner_email: 'another_email@example.org')
-        end
+      it 'does not push placeholder references' do
+        importer.execute(declined_event)
+
+        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+        expect(cached_references).to be_empty
+      end
+
+      context 'when no users match email' do
+        let(:another_user_event) { declined_event.merge(decliner_email: 'another_email@example.org') }
 
         it 'does not set a decliner' do
           expect_log(
@@ -109,13 +102,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
 
           expect(merge_request.metrics.reload.latest_closed_by).to be_nil
         end
-      end
-
-      it 'does not push placeholder references' do
-        importer.execute(declined_event)
-
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
-        expect(cached_references).to be_empty
       end
     end
   end

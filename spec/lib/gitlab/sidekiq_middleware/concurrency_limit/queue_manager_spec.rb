@@ -28,7 +28,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     }
   end
 
-  let(:worker_args) { [1, 2] }
+  let(:job) { { 'args' => [1, 2] } }
+  let(:job_with_wal_locations) do
+    { 'args' => [1, 2], 'wal_locations' => { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
+  end
 
   subject(:service) { described_class.new(worker_name: worker_class_name, prefix: 'some_prefix') }
 
@@ -37,7 +40,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
   end
 
   describe '#add_to_queue!' do
-    subject(:add_to_queue!) { service.add_to_queue!(worker_args, worker_context) }
+    subject(:add_to_queue!) { service.add_to_queue!(job, worker_context) }
 
     it 'adds a job to the set' do
       expect { add_to_queue! }
@@ -61,25 +64,48 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         expect(stored_job['context']).to eq(stored_context)
       end
     end
+
+    context 'with wal locations' do
+      subject(:add_to_queue!) { service.add_to_queue!(job_with_wal_locations, worker_context) }
+
+      it 'stores wal locations' do
+        add_to_queue!
+
+        Gitlab::Redis::SharedState.with do |r|
+          set_key = service.redis_key
+          stored_job = service.send(:deserialize, r.lrange(set_key, 0, -1).first)
+
+          expect(stored_job['wal_locations']).to eq(job_with_wal_locations['wal_locations'])
+        end
+      end
+    end
   end
 
   describe '#has_jobs_in_queue?' do
     it 'uses queue_size' do
-      expect { service.add_to_queue!(worker_args, worker_context) }
+      expect { service.add_to_queue!(job, worker_context) }
         .to change { service.has_jobs_in_queue? }
         .from(false).to(true)
     end
   end
 
   describe '#resume_processing!' do
-    let(:jobs) { [[1], [2], [3]] }
-    let(:setter) { instance_double('Sidekiq::Job::Setter') }
+    let(:wal_locations) { { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
+    let(:jobs) do
+      [
+        { 'args' => [1], 'wal_locations' => wal_locations },
+        { 'args' => [2], 'wal_locations' => wal_locations },
+        { 'args' => [3], 'wal_locations' => wal_locations }
+      ]
+    end
+
     let(:buffered_at) { Time.now.utc }
     let(:metadata_queue) do
       queue = Queue.new
       2.times do
         queue.push({ 'concurrency_limit_buffered_at' => buffered_at.to_f,
-                     'concurrency_limit_resume' => true }.merge(stored_context))
+                     'concurrency_limit_resume' => true,
+                     'wal_locations' => wal_locations }.merge(stored_context))
       end
 
       queue
@@ -141,8 +167,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
 
       it 'pushes the jobs in batches' do
-        jobs.each do |args|
-          expect(worker_class).to receive(:bulk_perform_async).with([args]).ordered
+        jobs.each do |job|
+          expect(worker_class).to receive(:bulk_perform_async).with([job['args']]).ordered
         end
 
         service.resume_processing!(limit: jobs.count)

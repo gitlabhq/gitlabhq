@@ -22,12 +22,10 @@ module Gitlab
       # Object should behave as a object so we can remove object.is_a?(Hash) check
       # This will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/412328
       def uid(object)
-        # We want this to only match either placeholder, username, or email
+        # We want this to only match either placeholder or email
         # depending on the flag state. There should be no fall-through.
         if user_mapping_enabled?(project)
           source_user_for_author(object).mapped_user_id
-        elsif Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
-          find_user_id(by: :username, value: object.is_a?(Hash) ? object[:author_username] : object.author_username)
         else
           find_user_id(by: :email, value: object.is_a?(Hash) ? object[:author_email] : object.author_email)
         end
@@ -42,11 +40,7 @@ module Gitlab
         return if cached_id == CACHE_USER_ID_NOT_FOUND
         return cached_id if cached_id
 
-        user = if by == :email
-                 User.find_by_any_email(value, confirmed: true)
-               else
-                 User.find_by_username(value)
-               end
+        user = User.find_by_any_email(value, confirmed: true)
 
         user&.id.tap do |id|
           cache.write(cache_key, id || CACHE_USER_ID_NOT_FOUND)

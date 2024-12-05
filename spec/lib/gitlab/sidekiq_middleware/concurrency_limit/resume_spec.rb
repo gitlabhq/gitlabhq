@@ -113,7 +113,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Resume, :request_sto
     end
 
     before do
-      2.times { queue_manager.add_to_queue!(['foo'], context) }
+      2.times { queue_manager.add_to_queue!({ 'args' => ['foo'] }, context) }
     end
 
     it 'enqueued jobs containing the correct payload' do

@@ -179,7 +179,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       context 'when alternate UCM flags are disabled' do
         before do
           stub_feature_flags(
-            bitbucket_server_user_mapping_by_username: false,
             bitbucket_server_convert_mentions_to_users: false,
             bitbucket_server_user_mapping: false
           )

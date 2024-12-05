@@ -102,8 +102,6 @@ module Gitlab
               @reviewer_references[uid] = reviewer_data.dig('user', 'slug')
 
               uid
-            elsif Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
-              user_finder.find_user_id(by: :username, value: reviewer_data.dig('user', 'slug'))
             else
               user_finder.find_user_id(by: :email, value: reviewer_data.dig('user', 'emailAddress'))
             end

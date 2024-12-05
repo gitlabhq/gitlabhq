@@ -117,22 +117,6 @@ If the project is public, GitLab only matches users who are invited to the proje
 The importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository imports under the namespace of the user who started the import process.
 
-### User assignment by username
-
-> - Not recommended for production use.
-
-FLAG:
-On self-managed GitLab and GitLab.com, by default this feature is not available. To make it
-available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
-named `bitbucket_server_user_mapping_by_username`. This feature is not ready for production use.
-
-With this feature enabled, user email address matching is disabled.
-Instead, the importer matches users in the GitLab user database with the Bitbucket Server user's:
-
-- `username`
-- `slug`
-- `displayName`
-
 ## Troubleshooting
 
 ### General

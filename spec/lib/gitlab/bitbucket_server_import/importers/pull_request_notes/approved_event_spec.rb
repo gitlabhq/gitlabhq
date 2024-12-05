@@ -82,6 +82,14 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
         project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
+      it 'finds the user based on email' do
+        importer.execute(approved_event)
+
+        approval = merge_request.approvals.first
+
+        expect(approval.user_id).to eq(pull_request_author.id)
+      end
+
       it 'creates the approval, reviewer and approval note' do
         expect { importer.execute(approved_event) }
           .to change { merge_request.approvals.count }.from(0).to(1)
@@ -98,8 +106,15 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
         expect(reviewer.id).to eq(pull_request_author.id)
       end
 
-      context 'when a user with a matching username does not exist' do
-        let(:approved_event) { super().merge(approver_username: 'another_username') }
+      it 'does not push placeholder references' do
+        importer.execute(approved_event)
+
+        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+        expect(cached_references).to be_empty
+      end
+
+      context 'when no users match email' do
+        let(:approved_event) { super().merge(approver_email: 'anotheremail@example.com') }
 
         it 'does not set an approver' do
           expect_log(
@@ -116,52 +131,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
 
           expect(merge_request.approvals).to be_empty
         end
-
-        context 'when bitbucket_server_user_mapping_by_username flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
-          end
-
-          it 'finds the user based on email' do
-            importer.execute(approved_event)
-
-            approval = merge_request.approvals.first
-
-            expect(approval.user).to eq(pull_request_author)
-          end
-        end
-
-        context 'when no users match email or username' do
-          let(:approved_event) do
-            super().merge(
-              approver_username: 'another_username',
-              approver_email: 'anotheremail@example.com'
-            )
-          end
-
-          it 'does not set an approver' do
-            expect_log(
-              stage: 'import_approved_event',
-              message: 'skipped due to missing user',
-              iid: merge_request.iid,
-              event_id: 4
-            )
-
-            expect { importer.execute(approved_event) }
-              .to not_change { merge_request.approvals.count }
-              .and not_change { merge_request.notes.count }
-              .and not_change { merge_request.reviewers.count }
-
-            expect(merge_request.approvals).to be_empty
-          end
-        end
-      end
-
-      it 'does not push placeholder references' do
-        importer.execute(approved_event)
-
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
-        expect(cached_references).to be_empty
       end
     end
   end

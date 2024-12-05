@@ -17,9 +17,9 @@ module Gitlab
           @metadata_key = "#{prefix}:resume_meta:{#{worker_name.underscore}}"
         end
 
-        def add_to_queue!(args, context)
+        def add_to_queue!(job, context)
           with_redis do |redis|
-            redis.rpush(@redis_key, serialize(args, context))
+            redis.rpush(@redis_key, serialize(job, context))
           end
 
           deferred_job_counter.increment({ worker: @worker_name })
@@ -61,8 +61,13 @@ module Gitlab
           Gitlab::Redis::SharedState.with(&) # rubocop:disable CodeReuse/ActiveRecord -- Not active record
         end
 
-        def serialize(args, context)
-          { args: args, context: context, buffered_at: Time.now.utc.to_f }.to_json
+        def serialize(job, context)
+          {
+            args: job['args'],
+            context: context,
+            buffered_at: Time.now.utc.to_f,
+            wal_locations: job['wal_locations']
+          }.to_json
         end
 
         def deserialize(json)
@@ -98,7 +103,8 @@ module Gitlab
         def job_metadata(job)
           {
             'concurrency_limit_buffered_at' => job['buffered_at'],
-            'concurrency_limit_resume' => true
+            'concurrency_limit_resume' => true,
+            'wal_locations' => job['wal_locations']
           }.merge(job['context'])
         end
 

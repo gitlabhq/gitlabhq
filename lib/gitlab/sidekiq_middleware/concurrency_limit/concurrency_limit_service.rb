@@ -19,8 +19,8 @@ module Gitlab
         end
 
         class << self
-          def add_to_queue!(worker_name, args, context)
-            new(worker_name).add_to_queue!(args, context)
+          def add_to_queue!(job, context)
+            new(job['class']).add_to_queue!(job, context)
           end
 
           def has_jobs_in_queue?(worker_name)

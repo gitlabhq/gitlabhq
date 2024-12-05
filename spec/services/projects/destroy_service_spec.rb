@@ -82,6 +82,44 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       it_behaves_like 'deleting the project'
 
+      context 'when project repository feature is disabled' do
+        before do
+          project.project_feature.update!(
+            repository_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED
+          )
+        end
+
+        context 'with different pipeline sources' do
+          before do
+            # We're creating many pipelines
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(456)
+
+            external_pull_request = create(:external_pull_request, project: project)
+            create(:ci_pipeline, project: project, source: :external_pull_request_event, external_pull_request: external_pull_request)
+
+            create(:ci_pipeline, project: project)
+              .update_attribute(:source, :unknown) # Skip validation to create pipeline with unknown source
+
+            # `unknown` & `external_pull_request_event` types are created above
+            Enums::Ci::Pipeline.sources.except(:unknown, :external_pull_request_event).each_key do |source|
+              create(:ci_pipeline, project: project, source: source)
+            end
+          end
+
+          it_behaves_like 'deleting the project'
+
+          it 'deletes all the pipelines associated with the project' do
+            project_id = project.id
+
+            destroy_project(project, user)
+
+            expect(Ci::Pipeline.where(project_id: project_id)).not_to exist
+          end
+        end
+      end
+
       context 'when project is undergoing refresh' do
         let!(:build_artifacts_size_refresh) { create(:project_build_artifacts_size_refresh, :pending, project: project) }
 
@@ -215,7 +253,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   context 'with running pipelines' do
     let!(:pipelines)               { create_list(:ci_pipeline, 3, :running, project: project) }
-    let(:destroy_pipeline_service) { double('DestroyPipelineService', execute: nil) }
+    let(:destroy_pipeline_service) { double('DestroyPipelineService', unsafe_execute: nil) }
 
     it 'bulks-fails with AbortPipelineService and then executes DestroyPipelineService for each pipelines' do
       allow(::Ci::DestroyPipelineService).to receive(:new).and_return(destroy_pipeline_service)
@@ -225,7 +263,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         .with(project.all_pipelines, :project_deleted)
 
       pipelines.each do |pipeline|
-        expect(destroy_pipeline_service).to receive(:execute).with(pipeline)
+        expect(destroy_pipeline_service).to receive(:unsafe_execute).with(pipeline)
       end
 
       destroy_project(project, user, {})
@@ -757,7 +795,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           .to receive(:new)
           .and_return(destroy_pipeline_double)
 
-        allow(destroy_pipeline_double).to receive(:execute)
+        allow(destroy_pipeline_double).to receive(:unsafe_execute)
       end
 
       it 'raises a clear error message about the failed deletion' do

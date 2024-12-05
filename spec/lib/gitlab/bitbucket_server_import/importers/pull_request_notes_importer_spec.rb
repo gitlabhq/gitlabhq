@@ -525,63 +525,26 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         allow_next(BitbucketServer::Client).to receive(:activities).and_return([approved_event])
       end
 
-      it 'does not push placeholder references' do
+      it 'assigns the approval to the PR author based on email' do
         importer.execute
 
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
-        expect(cached_references).to be_empty
+        approval = merge_request.approvals.first
+
+        expect(approval.user).to eq(pull_request_author)
       end
 
-      context 'when the author is not found' do
+      context 'when no users match email' do
         before do
-          allow_next(BitbucketServer::Client).to receive(:activities).and_return([pr_comment])
-
-          allow_next_instance_of(Gitlab::BitbucketServerImport::UserFinder) do |user_finder|
-            allow(user_finder).to receive(:uid).and_return(nil)
-          end
+          pull_request_author.destroy!
         end
 
-        it 'adds a note with the author username and email' do
-          importer.execute
+        it 'does not set an approver' do
+          expect { importer.execute }
+            .to not_change { merge_request.approvals.count }
+            .and not_change { merge_request.notes.count }
+            .and not_change { merge_request.reviewers.count }
 
-          expect(Note.first.note).to include("*By #{note_author.username} (#{note_author.email})")
-        end
-      end
-
-      context 'when bitbucket_server_user_mapping_by_username flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
-        end
-
-        context 'when a user with a matching username does not exist' do
-          before do
-            pull_request_author.update!(username: 'another_username')
-          end
-
-          it 'finds the user based on email' do
-            importer.execute
-
-            approval = merge_request.approvals.first
-
-            expect(approval.user).to eq(pull_request_author)
-          end
-
-          context 'when no users match email or username' do
-            let_it_be(:another_author) { create(:user) }
-
-            before do
-              pull_request_author.destroy!
-            end
-
-            it 'does not set an approver' do
-              expect { importer.execute }
-                .to not_change { merge_request.approvals.count }
-                .and not_change { merge_request.notes.count }
-                .and not_change { merge_request.reviewers.count }
-
-              expect(merge_request.approvals).to be_empty
-            end
-          end
+          expect(merge_request.approvals).to be_empty
         end
 
         context 'when importing merge events' do
@@ -646,6 +609,29 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
 
             expect(merge_request.notes.collect(&:author_id)).to match_array([project.creator_id, project.creator_id])
           end
+        end
+      end
+
+      it 'does not push placeholder references' do
+        importer.execute
+
+        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+        expect(cached_references).to be_empty
+      end
+
+      context 'when the author is not found' do
+        before do
+          allow_next(BitbucketServer::Client).to receive(:activities).and_return([pr_comment])
+
+          allow_next_instance_of(Gitlab::BitbucketServerImport::UserFinder) do |user_finder|
+            allow(user_finder).to receive(:uid).and_return(nil)
+          end
+        end
+
+        it 'adds a note with the author username and email' do
+          importer.execute
+
+          expect(Note.first.note).to include("*By #{note_author.username} (#{note_author.email})")
         end
       end
     end
