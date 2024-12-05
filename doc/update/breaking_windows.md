@@ -30,7 +30,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Registration tokens and server-side runner arguments in `gitlab-runner register` command](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) | Critical | Verify | Instance, group, project |
 | [Support for REST API endpoints that reset runner registration tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) | Critical | Verify | Instance, group, project |
 | [GitLab Runner platforms and setup instructions in GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/387937) | Low | Verify | Instance, group, project |
-| [The `Project.services` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388424) | Low | Foundations | Instance |
 | [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
 | [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Depoy | Project |

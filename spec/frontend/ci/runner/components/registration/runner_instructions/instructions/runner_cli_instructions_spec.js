@@ -5,8 +5,8 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_setup.query.graphql';
-import RunnerCliInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_cli_instructions.vue';
+import getRunnerSetupInstructionsQuery from '~/ci/runner/components/registration/runner_instructions/graphql/get_runner_setup.query.graphql';
+import RunnerCliInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_cli_instructions.vue';
 
 import { mockRunnerPlatforms, mockInstructions, mockInstructionsWindows } from '../mock_data';
 

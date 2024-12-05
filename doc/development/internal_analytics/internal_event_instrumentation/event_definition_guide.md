@@ -32,7 +32,6 @@ Each event is defined in a separate YAML file consisting of the following fields
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the event.                                                                                                                                                                                                                       |
 | `milestone`         | no       | The milestone when the event is introduced.                                                                                                                                                                                                                                                                                      |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the event.                                                                                                                                                                                                                                                                          |
-| `distributions`     | yes      | The [distributions](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.                                                                                             |
 | `tiers`             | yes      | The [tiers](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`.                                                                                             |
 | `additional_properties` | no | A list of additional properties that are sent with the event. Each additional property must have a record entry with a `description` field. It is required to add all the additional properties that would be sent with the event in the event definition file. Built-in properties are: `label` (string), `property` (string) and `value` (numeric). [Custom](quick_start.md#additional-properties) properties can be added if the built-in options are not sufficient.      |
 
@@ -59,8 +58,6 @@ identifiers:
 product_group: group::product analytics
 milestone: "16.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128029
-distributions:
-- ee
 tiers:
 - ultimate
 ```

@@ -2,21 +2,21 @@
 
 RSpec.shared_context 'ProjectPolicy context' do
   let_it_be(:anonymous) { nil }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:planner) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:inherited_guest) { create(:user) }
-  let_it_be(:inherited_planner) { create(:user) }
-  let_it_be(:inherited_reporter) { create(:user) }
-  let_it_be(:inherited_developer) { create(:user) }
-  let_it_be(:inherited_maintainer) { create(:user) }
-  let_it_be(:organization) { create(:organization, :default) }
-  let_it_be(:owner) { create(:user, namespace: create(:user_namespace, organization: organization)) }
-  let_it_be(:organization_owner) { create(:user, :organization_owner) }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:non_member) { create(:user) }
+  let_it_be_with_reload(:guest) { create(:user) }
+  let_it_be_with_reload(:planner) { create(:user) }
+  let_it_be_with_reload(:reporter) { create(:user) }
+  let_it_be_with_reload(:developer) { create(:user) }
+  let_it_be_with_reload(:maintainer) { create(:user) }
+  let_it_be_with_reload(:inherited_guest) { create(:user) }
+  let_it_be_with_reload(:inherited_planner) { create(:user) }
+  let_it_be_with_reload(:inherited_reporter) { create(:user) }
+  let_it_be_with_reload(:inherited_developer) { create(:user) }
+  let_it_be_with_reload(:inherited_maintainer) { create(:user) }
+  let_it_be_with_reload(:organization) { create(:organization, :default) }
+  let_it_be_with_reload(:owner) { create(:user, namespace: create(:user_namespace, organization: organization)) }
+  let_it_be_with_reload(:organization_owner) { create(:user, :organization_owner) }
+  let_it_be_with_reload(:admin) { create(:admin) }
+  let_it_be_with_reload(:non_member) { create(:user) }
   let_it_be_with_refind(:group) { create(:group, :public) }
   let_it_be_with_refind(:private_project) { create(:project, :private, namespace: owner.namespace) }
   let_it_be_with_refind(:internal_project) { create(:project, :internal, namespace: owner.namespace) }

@@ -46,7 +46,7 @@ Cron workers themselves run instance wide, so they aren't scoped to
 users, namespaces, projects, or other resources that should be added to
 the context.
 
-However, they often schedule other jobs that _do_ require context.
+However, they often run services or schedule other jobs that _do_ require context.
 
 That is why there needs to be an indication of context somewhere in
 the worker. This can be done by using one of the following methods

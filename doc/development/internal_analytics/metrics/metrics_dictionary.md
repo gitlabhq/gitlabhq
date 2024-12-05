@@ -46,7 +46,6 @@ Each metric is defined in a YAML file consisting of a number of fields:
 | `data_source`                | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`, `license`, `internal_events`. |
 | `data_category`              | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`. |
 | `instrumentation_class`      | no       | `string`; used for metrics with `data_source` other than `internal_events`. See [the class that implements the metric](metrics_instrumentation.md). |
-| `distribution`               | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. |
 | `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau`, `customer_health_score` or `devops_report`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
 | `tier`                       | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `tiers`                       | no      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tiers](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
@@ -133,9 +132,6 @@ instrumentation_class: UuidMetric
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
 time_frame: none
 data_source: database
-distribution:
-- ce
-- ee
 tier:
 - free
 - premium

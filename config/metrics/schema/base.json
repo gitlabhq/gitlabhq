@@ -8,7 +8,6 @@
     "product_group",
     "time_frame",
     "data_source",
-    "distribution",
     "data_category",
     "milestone",
     "introduced_by_url",
@@ -111,7 +110,10 @@
       "pattern": "^(([A-Z][a-z]+)+::)*(([A-Z]+[a-z]+)+)$"
     },
     "distribution": {
-      "type": "array",
+      "type": [
+        "array",
+        "null"
+      ],
       "items": {
         "type": "string",
         "enum": [

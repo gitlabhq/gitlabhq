@@ -61,8 +61,20 @@ export function toggleSection($section) {
   $section.removeClass('no-animate');
   if (isExpanded($section)) {
     closeSection($section);
+
+    // If ID set, remove URL
+    if ($section.attr('id')) {
+      // eslint-disable-next-line no-restricted-globals
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
   } else {
     expandSection($section);
+
+    // If ID set, add to URL
+    if ($section.attr('id')) {
+      // eslint-disable-next-line no-restricted-globals
+      location.hash = $section.attr('id');
+    }
   }
 }
 

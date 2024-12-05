@@ -6,12 +6,12 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
-import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
-import RunnerCliInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_cli_instructions.vue';
-import RunnerDockerInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_docker_instructions.vue';
-import RunnerKubernetesInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_kubernetes_instructions.vue';
-import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
+import getRunnerPlatformsQuery from '~/ci/runner/components/registration/runner_instructions/graphql/get_runner_platforms.query.graphql';
+import RunnerInstructionsModal from '~/ci/runner/components/registration/runner_instructions/runner_instructions_modal.vue';
+import RunnerCliInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_cli_instructions.vue';
+import RunnerDockerInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_docker_instructions.vue';
+import RunnerKubernetesInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_kubernetes_instructions.vue';
+import RunnerAwsInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_aws_instructions.vue';
 
 import { mockRunnerPlatforms } from './mock_data';
 

@@ -24,10 +24,6 @@ module MergeRequests
       return error("Merge request is not scheduled to be cleaned up yet.") unless scheduled?
       return error("Merge request has not been closed nor merged for #{TIME_THRESHOLD.inspect}.") unless eligible?
 
-      # Ensure that commit shas of refs are kept around so we won't lose them when GC runs.
-      keep_around
-
-      return error('Failed to create keep around refs.') unless kept_around?
       return error('Failed to cache merge ref sha.') unless cache_merge_ref_sha
 
       delete_refs if repository.exists?
@@ -55,18 +51,6 @@ module MergeRequests
 
     def met_time_threshold?(attr)
       attr.nil? || attr.to_i <= TIME_THRESHOLD.ago.to_i
-    end
-
-    def kept_around?
-      service = Gitlab::Git::KeepAround.new(repository)
-
-      [ref_head_sha, merge_ref_sha].compact.all? do |sha|
-        service.kept_around?(sha)
-      end
-    end
-
-    def keep_around
-      repository.keep_around(ref_head_sha, merge_ref_sha, source: self.class.name)
     end
 
     def cache_merge_ref_sha

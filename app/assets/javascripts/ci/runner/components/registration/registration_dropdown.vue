@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RunnerInstructionsModal from '~/ci/runner/components/registration/runner_instructions/runner_instructions_modal.vue';
 import {
   INSTANCE_TYPE,
   GROUP_TYPE,

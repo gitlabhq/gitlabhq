@@ -15,9 +15,9 @@ import {
   AWS_CF_BASE_URL,
   AWS_TEMPLATES_BASE_URL,
   AWS_EASY_BUTTONS,
-} from '~/vue_shared/components/runner_instructions/constants';
+} from '~/ci/runner/components/registration/runner_instructions/constants';
 
-import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
+import RunnerAwsInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_aws_instructions.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({

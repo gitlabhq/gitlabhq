@@ -1,11 +1,24 @@
 import $ from 'jquery';
 import htmlGroupsEdit from 'test_fixtures/groups/edit.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import initSettingsPanels, { isExpanded } from '~/settings_panels';
+import initSettingsPanels, { isExpanded, toggleSection } from '~/settings_panels';
+
+const pushStateSpy = jest.fn();
 
 describe('Settings Panels', () => {
   beforeEach(() => {
     setHTMLFixture(htmlGroupsEdit);
+
+    // Mock history and location APIs
+    window.history.pushState = pushStateSpy;
+    Object.defineProperty(window, 'location', {
+      value: {
+        hash: '',
+        pathname: '/settings',
+        search: '?param=1',
+      },
+      writable: true,
+    });
   });
 
   afterEach(() => {
@@ -59,5 +72,51 @@ describe('Settings Panels', () => {
 
     expect(isExpanded(panel)).toBe(false);
     expect(trigger.textContent).toEqual(originalText);
+  });
+
+  describe('toggleSection', () => {
+    let $section;
+
+    beforeEach(() => {
+      $section = $('#js-general-settings');
+    });
+
+    it('removes no-animate class when toggling', () => {
+      $section.addClass('no-animate');
+      toggleSection($section);
+      expect($section.hasClass('no-animate')).toBe(false);
+    });
+
+    describe('when section is not expanded', () => {
+      beforeEach(() => {
+        $section.removeClass('expanded');
+      });
+
+      it('expands the section', () => {
+        toggleSection($section);
+        expect(isExpanded($section[0])).toBe(true);
+      });
+
+      it('adds section ID to URL hash', () => {
+        toggleSection($section);
+        expect(window.location.hash).toBe('js-general-settings');
+      });
+    });
+
+    describe('when section is expanded', () => {
+      beforeEach(() => {
+        $section.addClass('expanded');
+      });
+
+      it('closes the section', () => {
+        toggleSection($section);
+        expect(isExpanded($section[0])).toBe(false);
+      });
+
+      it('removes hash from URL', () => {
+        toggleSection($section);
+        expect(pushStateSpy).toHaveBeenCalledWith('', document.title, '/settings?param=1');
+      });
+    });
   });
 });

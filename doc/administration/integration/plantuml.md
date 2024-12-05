@@ -157,7 +157,7 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
    sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
    ```
 
-1. Install and configure Tomcat 10:
+1. Install and configure Tomcat 10.1:
 
    ```shell
    wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.33/bin/apache-tomcat-10.1.33.tar.gz -P /tmp
@@ -233,7 +233,7 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 1. Install PlantUML and copy the `.war` file:
 
    Use the [latest release](https://github.com/plantuml/plantuml-server/releases) of `plantuml-jsp`
-   (for example: `plantuml-jsp-v1.2023.12.war`).
+   (for example: `plantuml-jsp-v1.2024.8.war`).
    For context, see [issue 265](https://github.com/plantuml/plantuml-server/issues/265).
 
    ```shell
@@ -245,7 +245,7 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 
 The Tomcat service should restart. After the restart is complete, the
 PlantUML integration is ready and listening for requests on port `8005`:
-`http://localhost:8005`.
+`http://localhost:8005/plantuml`.
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 

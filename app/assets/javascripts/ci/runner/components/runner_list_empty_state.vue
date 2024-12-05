@@ -4,7 +4,7 @@ import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/emp
 import { GlEmptyState, GlLink, GlSprintf, GlModalDirective } from '@gitlab/ui';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RunnerInstructionsModal from '~/ci/runner/components/registration/runner_instructions/runner_instructions_modal.vue';
 import {
   I18N_GET_STARTED,
   I18N_RUNNERS_ARE_AGENTS,

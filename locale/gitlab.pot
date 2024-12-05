@@ -14723,7 +14723,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-msgid "Confirm Enrollement"
+msgid "Confirm Enrollment"
 msgstr ""
 
 msgid "Confirm approval"
@@ -46949,7 +46949,7 @@ msgstr[1] ""
 msgid "Runners|%{upgradeLinkStart}Upgrade GitLab Runner%{upgradeLinkEnd} to match your GitLab version. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
 msgstr ""
 
-msgid "Runners|%{upgradeLinkStart}Upgrade GitLab Runner%{upgradeLinkEnd} to match your GitLab version. This upgrade is highly recommended for this runner and may contain security or compatibilty fixes. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgid "Runners|%{upgradeLinkStart}Upgrade GitLab Runner%{upgradeLinkEnd} to match your GitLab version. This upgrade is highly recommended for this runner and may contain security or compatibility fixes. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
 msgstr ""
 
 msgid "Runners|1. Configure your Google Cloud project"
@@ -50818,6 +50818,9 @@ msgstr ""
 msgid "SecurityReports|Ensure that %{trackingStart}issue tracking%{trackingEnd} is enabled for this project and you have %{permissionsStart}permission to create new issues%{permissionsEnd}."
 msgstr ""
 
+msgid "SecurityReports|Enter at least 3 characters to view available identifiers."
+msgstr ""
+
 msgid "SecurityReports|Error fetching the vulnerability counts. Please check your network connection and try again."
 msgstr ""
 
@@ -50852,6 +50855,9 @@ msgid "SecurityReports|Has merge request"
 msgstr ""
 
 msgid "SecurityReports|Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityReports|Identifier"
 msgstr ""
 
 msgid "SecurityReports|If you were expecting vulnerabilities to be shown here, check that you've completed the %{linkStart}security scanning prerequisites%{linkEnd}, or check the other vulnerability types in the tabs above."
@@ -50903,6 +50909,9 @@ msgid "SecurityReports|Monitored projects"
 msgstr ""
 
 msgid "SecurityReports|New feature: Grouping"
+msgstr ""
+
+msgid "SecurityReports|No identifiers found."
 msgstr ""
 
 msgid "SecurityReports|No longer detected"
@@ -51019,6 +51028,9 @@ msgid "SecurityReports|There was an error fetching the finding. Please try again
 msgstr ""
 
 msgid "SecurityReports|There was an error fetching the finding. The security report for this pipeline may have expired. To generate a new security report, go the %{boldStart}Pipelines%{boldEnd} tab and run a pipeline."
+msgstr ""
+
+msgid "SecurityReports|There was an error fetching the identifiers for this project. Please try again later."
 msgstr ""
 
 msgid "SecurityReports|There was an error reverting the dismissal."

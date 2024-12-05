@@ -6,7 +6,7 @@ import TooltipOnTruncate from '~/vue_shared/directives/tooltip_on_truncate';
 
 jest.mock('~/lib/utils/dom_utils');
 jest.mock('@gitlab/ui', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
+  ...jest.requireActual('@gitlab/ui'),
   GlTooltipDirective: mockDirective('gl-tooltip'),
   GlResizeObserverDirective: mockDirective('gl-resize-observer'),
 }));

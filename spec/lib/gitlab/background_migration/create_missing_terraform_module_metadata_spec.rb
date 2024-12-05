@@ -3,11 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::CreateMissingTerraformModuleMetadata, feature_category: :package_registry do
-  let!(:namespace) { table(:namespaces).create!(name: 'group-1', path: 'group-1', type: 'Group') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+
+  let!(:namespace) do
+    table(:namespaces).create!(name: 'group-1', path: 'group-1', type: 'Group', organization_id: organization.id)
+  end
 
   let!(:project) do
     table(:projects).create!(name: 'project 2', path: 'project-1', project_namespace_id: namespace.id,
-      namespace_id: namespace.id)
+      namespace_id: namespace.id, organization_id: organization.id)
   end
 
   let!(:package_1) do

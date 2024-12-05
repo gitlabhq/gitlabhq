@@ -345,7 +345,7 @@ spec/frontend/vue_shared/components/markdown_drawer/markdown_drawer_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/page_heading_spec.js
 spec/frontend/vue_shared/components/project_selector/project_selector_spec.js
-spec/frontend/vue_shared/components/runner_instructions/runner_instructions_modal_spec.js
+spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/vue_shared/components/smart_virtual_list_spec.js
 spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js

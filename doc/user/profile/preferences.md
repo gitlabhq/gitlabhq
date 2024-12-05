@@ -89,7 +89,7 @@ To change the layout width of your UI:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ui_for_organizations`.
+The availability of this feature is controlled by a feature flag. For more information, see the history.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 

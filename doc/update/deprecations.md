@@ -175,6 +175,42 @@ automatically from GitLab 16.0 onwards.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Slack notifications integration
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435909).
+
+</div>
+
+As we're consolidating all Slack capabilities into the
+GitLab for Slack app, we've deprecated the Slack notifications
+integration.
+Use the GitLab for Slack app to manage notifications
+to your Slack workspace.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### The `Project.services` GraphQL field is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388424).
+
+</div>
+
+The `Project.services` GraphQL field is deprecated. A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `workflow:rules` templates
 
 <div class="deprecation-notes">
@@ -962,26 +998,6 @@ In GitLab 18.0, only the runner registration methods implemented in the new GitL
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Slack notifications integration
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435909).
-
-</div>
-
-As we're consolidating all Slack capabilities into the
-GitLab for Slack app, we've deprecated the Slack notifications
-integration.
-Use the GitLab for Slack app to manage notifications
-to your Slack workspace.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">
@@ -1022,22 +1038,6 @@ From GitLab 18.0 and later, the runner registration methods implemented by the n
 </div>
 
 We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/ee/development/work_items.html#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 18.0. The legacy requirement IID remains available until its removal in GitLab 18.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### The `Project.services` GraphQL field is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388424).
-
-</div>
-
-The `Project.services` GraphQL field is deprecated. A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
 
 </div>
 

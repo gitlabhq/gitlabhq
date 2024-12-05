@@ -21,6 +21,7 @@ A service account:
   - Bot user.
 - Is listed in group membership as a service account.
 - Cannot sign in to GitLab through the UI.
+- Does not receive notification emails because it is a non-human account with an invalid email.
 
 You should use service accounts in pipelines or integrations where credentials must be
 set up and maintained without being impacted by changes in human user membership.

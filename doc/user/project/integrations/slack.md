@@ -12,8 +12,8 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) in GitLab 15.9
-and is planned for removal in 18.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/435909) in GitLab 15.9
+and is planned for removal in 19.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
 This change is a breaking change.
 
 The Slack notifications integration enables your GitLab project to send events

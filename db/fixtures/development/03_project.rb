@@ -65,10 +65,11 @@ class Gitlab::Seeder::Projects
 
   def self.insert_project_namespaces_sql(type:, range:)
     <<~SQL
-          INSERT INTO namespaces (name, path, parent_id, owner_id, type, visibility_level, created_at, updated_at)
+          INSERT INTO namespaces (name, path, organization_id, parent_id, owner_id, type, visibility_level, created_at, updated_at)
           SELECT
             'Seed project ' || seq || ' ' || ('{#{Gitlab::Seeder::Projects.visibility_per_user}}'::text[])[seq] AS project_name,
             '#{Gitlab::Seeder::MASS_INSERT_PROJECT_START}' || ('{#{Gitlab::Seeder::Projects.visibility_per_user}}'::text[])[seq] || '_' || seq AS namespace_path,
+            n.organization_id as organization_id,
             n.id AS parent_id,
             n.owner_id AS owner_id,
             'Project' AS type,
@@ -85,11 +86,12 @@ class Gitlab::Seeder::Projects
 
   def self.insert_projects_sql(type:, range:)
     <<~SQL
-          INSERT INTO projects (name, path, creator_id, namespace_id, project_namespace_id, visibility_level, created_at, updated_at)
+          INSERT INTO projects (name, path, creator_id, organization_id, namespace_id, project_namespace_id, visibility_level, created_at, updated_at)
           SELECT
             n.name AS project_name,
             n.path AS project_path,
             n.owner_id AS creator_id,
+            n.organization_id AS organization_id,
             n.parent_id AS namespace_id,
             n.id AS project_namespace_id,
             n.visibility_level AS visibility_level,
@@ -133,6 +135,7 @@ class Gitlab::Seeder::Projects
 
     params = {
       import_url: url,
+      organization_id: Organizations::Organization.default_organization.id,
       namespace_id: group.id,
       name: project_path.titleize,
       description: FFaker::Lorem.sentence,
