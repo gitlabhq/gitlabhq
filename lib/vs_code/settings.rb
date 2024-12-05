@@ -15,6 +15,7 @@ module VsCode
         }
       ]
     }.freeze
+    EXTENSIONS = "extensions"
     SETTINGS_TYPES = %w[settings extensions globalState machines keybindings snippets tasks profiles].freeze
     DEFAULT_SESSION = "1"
     NO_CONTENT_ETAG = "0"

@@ -110,7 +110,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'file_count' => deployment.file_count
                   },
                   'unique_host' => nil,
-                  'root_directory' => deployment.root_directory
+                  'root_directory' => deployment.root_directory,
+                  'default_domain_redirect' => nil
                 }
               ]
             )
@@ -179,7 +180,53 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'file_count' => deployment.file_count
                   },
                   'unique_host' => 'unique-domain.example.com',
-                  'root_directory' => 'public'
+                  'root_directory' => 'public',
+                  'default_domain_redirect' => nil
+                }
+              ]
+            )
+          end
+        end
+      end
+
+      context 'when querying a default domain redirect' do
+        let_it_be(:pages_domain) { create(:pages_domain, domain: 'pages.io', project: project) }
+
+        context 'when there are pages deployed for the related project' do
+          let!(:deployment) { create(:pages_deployment, project: project) }
+
+          before do
+            project.project_setting.update!(
+              pages_default_domain_redirect: 'https://pages.io',
+              pages_unique_domain: 'unique-domain',
+              pages_unique_domain_enabled: true
+            )
+          end
+
+          it 'responds with the correct domain configuration' do
+            get api('/internal/pages'), headers: auth_header, params: { host: 'unique-domain.example.com' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('internal/pages/virtual_domain')
+
+            expect(json_response['lookup_paths']).to eq(
+              [
+                {
+                  'project_id' => project.id,
+                  'access_control' => false,
+                  'https_only' => false,
+                  'prefix' => '/',
+                  'source' => {
+                    'type' => 'zip',
+                    'path' => deployment.file.url(expire_at: 1.day.from_now),
+                    'global_id' => "gid://gitlab/PagesDeployment/#{deployment.id}",
+                    'sha256' => deployment.file_sha256,
+                    'file_size' => deployment.size,
+                    'file_count' => deployment.file_count
+                  },
+                  'unique_host' => 'unique-domain.example.com',
+                  'root_directory' => 'public',
+                  'default_domain_redirect' => 'https://pages.io'
                 }
               ]
             )
@@ -229,7 +276,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                       'file_count' => deployment.file_count
                     },
                     'unique_host' => nil,
-                    'root_directory' => 'public'
+                    'root_directory' => 'public',
+                    'default_domain_redirect' => nil
                   }
                 ]
               )
@@ -277,7 +325,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                       'file_count' => deployment.file_count
                     },
                     'unique_host' => nil,
-                    'root_directory' => 'public'
+                    'root_directory' => 'public',
+                    'default_domain_redirect' => nil
                   }
                 ]
               )

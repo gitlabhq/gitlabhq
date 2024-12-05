@@ -11,7 +11,8 @@ module API
             :project_id,
             :source,
             :unique_host,
-            :root_directory
+            :root_directory,
+            :default_domain_redirect
         end
       end
     end

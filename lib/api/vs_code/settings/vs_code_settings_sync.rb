@@ -13,7 +13,9 @@ module API
           def find_settings
             return [DEFAULT_MACHINE] if params[:resource_name] == DEFAULT_MACHINE[:setting_type]
 
-            SettingsFinder.new(current_user, [params[:resource_name]]).execute
+            SettingsFinder.new(current_user: current_user,
+              setting_types: [params[:resource_name]],
+              settings_context_hash: params[:settings_context_hash]).execute
           end
         end
 
@@ -36,7 +38,9 @@ module API
               tags %w[vscode]
             end
             get '/v1/manifest' do
-              settings = SettingsFinder.new(current_user, SETTINGS_TYPES).execute
+              settings = SettingsFinder.new(current_user: current_user,
+                setting_types: SETTINGS_TYPES,
+                settings_context_hash: params[:settings_context_hash]).execute
               presenter = VsCodeManifestPresenter.new(settings)
 
               present presenter, with: Entities::VsCodeManifest
@@ -92,8 +96,8 @@ module API
             end
             get '/v1/resource/:resource_name' do
               settings = find_settings
-
-              present settings, with: Entities::VsCodeSettingReference
+              present settings, with: Entities::VsCodeSettingReference,
+                settings_context_hash: params[:settings_context_hash]
             end
 
             desc 'Creates or updates a specific setting' do
@@ -108,11 +112,13 @@ module API
                 values: SETTINGS_TYPES
             end
             post '/v1/resource/:resource_name' do
-              response = CreateOrUpdateService.new(current_user: current_user, params: {
-                content: params[:content],
-                version: params[:version],
-                setting_type: params[:resource_name]
-              }).execute
+              response = CreateOrUpdateService.new(current_user: current_user,
+                params: {
+                  content: params[:content],
+                  version: params[:version],
+                  setting_type: params[:resource_name],
+                  settings_context_hash: params[:settings_context_hash]
+                }).execute
 
               if response.success?
                 header 'Access-Control-Expose-Headers', 'etag'

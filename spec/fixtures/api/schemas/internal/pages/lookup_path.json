@@ -63,6 +63,12 @@
     },
     "root_directory": {
       "type": "string"
+    },
+    "default_domain_redirect": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

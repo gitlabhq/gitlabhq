@@ -175,7 +175,7 @@ module Types
         description: 'Reference path to the branch from which the pipeline was triggered.',
         method: :source_ref_path
 
-      field :warning_messages, [Types::Ci::PipelineMessageType], null: true,
+      field :warning_messages, Types::Ci::PipelineMessageType.connection_type, null: true,
         description: 'Pipeline warning messages.'
 
       field :error_messages, Types::Ci::PipelineMessageType.connection_type, null: true,
@@ -239,6 +239,18 @@ module Types
 
       def path
         ::Gitlab::Routing.url_helpers.project_pipeline_path(object.project, object)
+      end
+
+      def warning_messages
+        BatchLoader::GraphQL.for(object).batch do |pipelines, loader|
+          # rubocop: disable CodeReuse/ActiveRecord -- context specific
+          messages = ::Ci::PipelineMessage.where(pipeline: pipelines, severity: :warning)
+          # rubocop: enable CodeReuse/ActiveRecord
+
+          pipelines.each do |pipeline|
+            loader.call(pipeline, messages.select { |m| m.pipeline_id == pipeline.id })
+          end
+        end
       end
 
       def job(id: nil, name: nil)

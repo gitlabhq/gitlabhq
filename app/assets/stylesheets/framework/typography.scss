@@ -13,16 +13,15 @@
   }
 
   *:first-child {
-    margin-top: 0;
+    @apply gl-mt-0;
   }
 
   > :last-child {
-    margin-bottom: 0;
+    @apply gl-mb-0;
   }
 
   p {
-    @apply gl-text-default;
-    margin: 0 0 16px;
+    @apply gl-text-default gl-m-0 gl-mb-5;
 
     > code {
       font-weight: inherit;
@@ -32,7 +31,7 @@
   .media-container {
     display: inline-flex;
     flex-direction: column;
-    margin-bottom: $gl-spacing-scale-2;
+    @apply gl-mb-2;
 
     video {
       max-width: 100%;
@@ -53,7 +52,7 @@
   img.lazy {
     min-width: 200px;
     min-height: 100px;
-    background-color: $gray-10;
+    @apply gl-bg-disabled;
   }
 
   img.js-lazy-loaded,
@@ -64,15 +63,15 @@
   }
 
   details {
-    margin-bottom: $gl-padding;
+    @apply gl-mb-5;
 
     > *:not(summary) {
-      margin-left: $gl-spacing-scale-5;
+      @apply gl-ml-5;
     }
   }
 
   details[open] summary {
-    margin-bottom: $gl-padding;
+    @apply gl-mb-5;
   }
 
   // Shift the anchor link for a heading inside a details summary to the left
@@ -80,19 +79,18 @@
   details summary {
     h1, h2, h3, h4, h5, h6 {
       a.anchor {
-        margin-left: -2rem;
+        @apply -gl-ml-7;
       }
     }
   }
 
   summary > * {
-    display: inline-block;
-    margin-bottom: 0;
+    @apply gl-inline-block gl-mb-0;
   }
 
   // Single code lines should wrap
   code {
-    font-family: $monospace-font;
+    @apply gl-font-monospace;
     white-space: pre-wrap;
     // Safari
     word-wrap: break-word;
@@ -105,45 +103,27 @@
   }
 
   h1 {
-    font-size: 1.75em;
-    font-weight: $gl-font-weight-bold;
-    margin: 24px 0 16px;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid $gray-200;
-    @apply gl-text-heading;
-
-    &:first-child {
-      margin-top: 0;
-    }
+    @apply gl-heading-1 gl-mt-7 gl-pb-2 gl-border-b;
   }
 
   h2 {
-    font-size: 1.5em;
-    font-weight: $gl-font-weight-bold;
-    margin: 24px 0 16px;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid $gray-200;
-    @apply gl-text-heading;
+    @apply gl-heading-2 gl-mt-6 gl-pb-2 gl-border-b;
   }
 
   h3 {
-    margin: 24px 0 16px;
-    font-size: 1.3em;
+    @apply gl-heading-3 gl-mt-6;
   }
 
   h4 {
-    margin: 24px 0 16px;
-    font-size: 1.2em;
+    @apply gl-heading-4 gl-mt-5;
   }
 
   h5 {
-    margin: 24px 0 16px;
-    font-size: 1em;
+    @apply gl-heading-5 gl-mt-5;
   }
 
   h6 {
-    margin: 24px 0 16px;
-    font-size: 0.95em;
+    @apply gl-heading-6 gl-mt-5;
   }
 
   blockquote,
@@ -347,7 +327,7 @@
   }
 
   pre {
-    margin-bottom: 16px;
+    @apply gl-mb-5;
     line-height: 1.6em;
     overflow-x: auto;
     border-radius: $gl-border-radius-base;
@@ -376,19 +356,19 @@
   ul,
   ol {
     padding: 0;
-    margin: 0 0 16px;
+    @apply gl-m-0 gl-mb-5;
 
     // Lists embedded in other lists can be "loose" or "tight"
     // Remove bottom margin for all lists (default for tight lists)
     ul,
     ol {
-      margin-bottom: 0;
+      @apply gl-mb-0;
     }
 
     // Loose lists need bottom margin added back
     p ~ ol,
     p ~ ul {
-      margin-bottom: 16px;
+      @apply gl-mb-5;
     }
   }
 
@@ -731,7 +711,8 @@ body {
 /** CODE **/
 pre {
   position: relative;
-  font-family: $monospace-font;
+  @apply gl-font-monospace;
+
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
@@ -759,12 +740,12 @@ pre {
 
 .commit-sha,
 .ref-name {
-  font-family: $monospace-font;
+  @apply gl-font-monospace;
   font-size: 95%;
 }
 
 .git-revision-dropdown .dropdown-content li:not(.dropdown-menu-empty-item) a {
-  font-family: $monospace-font;
+  @apply gl-font-monospace;
   font-size: 95%;
   word-break: break-all;
 }
@@ -774,7 +755,7 @@ pre {
  *
  */
 textarea.js-gfm-input {
-  font-family: $monospace-font;
+  @apply gl-font-monospace;
   font-size: $gl-font-size;
 }
 
