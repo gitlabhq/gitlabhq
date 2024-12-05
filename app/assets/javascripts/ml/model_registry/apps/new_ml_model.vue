@@ -9,7 +9,6 @@ export default {
   provide() {
     return {
       projectPath: this.projectPath,
-      maxAllowedFileSize: this.maxAllowedFileSize,
       markdownPreviewPath: this.markdownPreviewPath,
     };
   },
@@ -20,10 +19,6 @@ export default {
     },
     canWriteModelRegistry: {
       type: Boolean,
-      required: true,
-    },
-    maxAllowedFileSize: {
-      type: Number,
       required: true,
     },
     markdownPreviewPath: {

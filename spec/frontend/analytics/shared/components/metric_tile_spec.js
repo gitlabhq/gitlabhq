@@ -60,6 +60,16 @@ describe('MetricTile', () => {
         expect(findSingleStat().props('animationDecimalPlaces')).toBe(1);
       });
 
+      it.each([10.53, 10.53324])(
+        'will round to a maximum of 2 decimal place for a float value given %s',
+        (value) => {
+          const metric = { identifier: 'deploys', label: 'Deploys', value };
+          wrapper = createComponent({ metric });
+
+          expect(findSingleStat().props('animationDecimalPlaces')).toBe(2);
+        },
+      );
+
       it('will render using delimiters', () => {
         const metric = { identifier: 'deploys', value: '10000', label: 'Deploys' };
         wrapper = createComponent({ metric });

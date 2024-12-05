@@ -22,7 +22,6 @@ Layout/SpaceInsideParens:
     - 'spec/lib/gitlab/ci/templates/terraform_latest_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/database/migrations/runner_spec.rb'
     - 'spec/lib/gitlab/database/reindexing/reindex_concurrently_spec.rb'
-    - 'spec/lib/gitlab/database_spec.rb'
     - 'spec/lib/gitlab/diff/highlight_cache_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_helpers_spec.rb'
     - 'spec/lib/gitlab/git/blob_spec.rb'

@@ -20,7 +20,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     describe 'POST /api/v4/runners/verify', :freeze_time do
       let_it_be_with_reload(:runner) { create(:ci_runner, token_expires_at: 3.days.from_now) }
 
-      let(:params) {}
+      let(:params) { nil }
 
       subject(:verify) { post api('/runners/verify'), params: params }
 
@@ -30,7 +30,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       context 'when no token is provided' do
         it 'returns 400 error' do
-          post api('/runners/verify')
+          verify
 
           expect(response).to have_gitlab_http_status :bad_request
         end
@@ -77,11 +77,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           verify
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to eq({
+          expect(json_response).to eq(
             'id' => runner.id,
             'token' => runner.token,
             'token_expires_at' => runner.token_expires_at.iso8601(3)
-          })
+          )
         end
 
         it 'updates contacted_at' do
@@ -97,11 +97,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             verify
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to eq({
+            expect(json_response).to eq(
               'id' => runner.id,
               'token' => runner.token,
               'token_expires_at' => nil
-            })
+            )
           end
         end
 
@@ -127,11 +127,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           verify
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to eq({
+          expect(json_response).to eq(
             'id' => runner.id,
             'token' => runner.token,
             'token_expires_at' => runner.token_expires_at.iso8601(3)
-          })
+          )
         end
       end
 

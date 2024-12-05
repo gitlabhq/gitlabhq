@@ -2945,6 +2945,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_e4a6cde57b42() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_e815625b59fa() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -19207,7 +19223,8 @@ CREATE TABLE resource_weight_events (
     issue_id bigint NOT NULL,
     weight integer,
     created_at timestamp with time zone NOT NULL,
-    previous_weight integer
+    previous_weight integer,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE resource_weight_events_id_seq
@@ -32362,6 +32379,8 @@ CREATE INDEX index_resource_weight_events_on_issue_id_and_created_at ON resource
 
 CREATE INDEX index_resource_weight_events_on_issue_id_and_weight ON resource_weight_events USING btree (issue_id, weight);
 
+CREATE INDEX index_resource_weight_events_on_namespace_id ON resource_weight_events USING btree (namespace_id);
+
 CREATE INDEX index_resource_weight_events_on_user_id ON resource_weight_events USING btree (user_id);
 
 CREATE INDEX index_reviews_on_author_id ON reviews USING btree (author_id);
@@ -35748,6 +35767,8 @@ CREATE TRIGGER trigger_e1da4a738230 BEFORE INSERT OR UPDATE ON vulnerability_ext
 
 CREATE TRIGGER trigger_e49ab4d904a0 BEFORE INSERT OR UPDATE ON vulnerability_finding_links FOR EACH ROW EXECUTE FUNCTION trigger_e49ab4d904a0();
 
+CREATE TRIGGER trigger_e4a6cde57b42 BEFORE INSERT OR UPDATE ON resource_weight_events FOR EACH ROW EXECUTE FUNCTION trigger_e4a6cde57b42();
+
 CREATE TRIGGER trigger_e815625b59fa BEFORE INSERT OR UPDATE ON resource_link_events FOR EACH ROW EXECUTE FUNCTION trigger_e815625b59fa();
 
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
@@ -36793,6 +36814,9 @@ ALTER TABLE ONLY dependency_proxy_blob_states
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY resource_weight_events
+    ADD CONSTRAINT fk_97c7849ca4 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_user_access_group_authorizations
     ADD CONSTRAINT fk_97ce8e8284 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

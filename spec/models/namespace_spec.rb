@@ -1803,28 +1803,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       execute_update
     end
-
-    context 'when the feature flag `specialized_worker_for_group_lock_update_auth_recalculation` is disabled' do
-      before do
-        stub_feature_flags(specialized_worker_for_group_lock_update_auth_recalculation: false)
-      end
-
-      it 'updates authorizations leading to users from shared groups losing access', :sidekiq_inline do
-        expect { execute_update }
-          .to change { group_one_user.authorized_projects.include?(project) }.from(true).to(false)
-          .and change { group_two_user.authorized_projects.include?(project) }.from(true).to(false)
-      end
-
-      it 'updates the authorizations in a non-blocking manner' do
-        expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async).with([[group_one_user.id]])).once
-
-        expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async).with([[group_two_user.id]])).once
-
-        execute_update
-      end
-    end
   end
 
   describe '#share_with_group_lock with subgroups' do

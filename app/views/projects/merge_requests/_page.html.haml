@@ -13,10 +13,11 @@
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
 
-- add_page_startup_api_call @endpoint_metadata_url
-- add_page_startup_api_call @linked_file_url if @linked_file_url
-- if mr_action == 'diffs' && !@file_by_file_default
-  - add_page_startup_api_call @endpoint_diff_batch_url
+- unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) && params[:rapid_diffs] == 'true'
+  - add_page_startup_api_call @endpoint_metadata_url
+  - add_page_startup_api_call @linked_file_url if @linked_file_url
+  - if mr_action == 'diffs' && !@file_by_file_default
+    - add_page_startup_api_call @endpoint_diff_batch_url
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
   = render "projects/merge_requests/mr_title"

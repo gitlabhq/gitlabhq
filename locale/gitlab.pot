@@ -13452,6 +13452,9 @@ msgstr ""
 msgid "Collapse merge details"
 msgstr ""
 
+msgid "Collapse merge request reports"
+msgstr ""
+
 msgid "Collapse milestones"
 msgstr ""
 
@@ -22611,6 +22614,9 @@ msgid "Expand merge checks"
 msgstr ""
 
 msgid "Expand merge details"
+msgstr ""
+
+msgid "Expand merge request reports"
 msgstr ""
 
 msgid "Expand milestones"
@@ -33968,6 +33974,9 @@ msgstr ""
 msgid "Merge options"
 msgstr ""
 
+msgid "Merge reports (%{reportsCount}):"
+msgstr ""
+
 msgid "Merge request"
 msgstr ""
 
@@ -39733,6 +39742,9 @@ msgid "Password|Satisfied"
 msgstr ""
 
 msgid "Password|To be satisfied"
+msgstr ""
+
+msgid "Password|cannot include your name, username, or email"
 msgstr ""
 
 msgid "Password|cannot use common phrases (e.g. \"password\")"
@@ -62812,6 +62824,12 @@ msgid "WorkItem|Comment & reopen %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Comments only"
+msgstr ""
+
+msgid "WorkItem|Confidentiality turned off."
+msgstr ""
+
+msgid "WorkItem|Confidentiality turned on."
 msgstr ""
 
 msgid "WorkItem|Configure work items such as epics, issues, and tasks to represent how your team works."

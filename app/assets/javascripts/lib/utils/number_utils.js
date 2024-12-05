@@ -206,3 +206,37 @@ const numberRegex = /^[0-9]+$/;
  * @return {boolean}
  */
 export const isPositiveInteger = (value) => numberRegex.test(value);
+
+/**
+ * Splits a number into an integer and decimal component
+ * returns an object with the integer and decimal values extracted
+ *
+ * @param value
+ * @return {Object}
+ */
+export const splitDecimalNumber = (value) => {
+  if (isNumeric(value)) {
+    const parts = String(value).split('.');
+    if (value === 0) return { integer: '0', decimal: '0' };
+
+    if (parts.length) {
+      return parts.length > 1
+        ? { integer: parts[0], decimal: parts[1] }
+        : { integer: parts[0], decimal: null };
+    }
+  }
+  return { integer: null, decimal: null };
+};
+
+/**
+ * Calculates the number of digits after the decimal place
+ *
+ * @param num - any numeric value
+ * @return number of digits after the decimal (if any)
+ */
+export const countFloatingPointDigits = (num = null) => {
+  if (!num || !isNumeric(num)) return 0;
+
+  const { decimal } = splitDecimalNumber(num);
+  return String(decimal).length;
+};

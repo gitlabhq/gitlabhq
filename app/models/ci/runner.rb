@@ -553,11 +553,15 @@ module Ci
     end
 
     def compute_token_expiration_group
-      ::Group.where(id: runner_namespaces.map(&:namespace_id)).map(&:effective_runner_token_expiration_interval).compact.min&.from_now
+      ::Group.id_in(runner_namespaces.map(&:namespace_id))
+        .map(&:effective_runner_token_expiration_interval)
+        .compact.min&.from_now
     end
 
     def compute_token_expiration_project
-      Project.where(id: runner_projects.map(&:project_id)).map(&:effective_runner_token_expiration_interval).compact.min&.from_now
+      Project.id_in(runner_projects.map(&:project_id))
+        .map(&:effective_runner_token_expiration_interval)
+        .compact.min&.from_now
     end
 
     def cleanup_runner_queue

@@ -22,21 +22,21 @@ Once you have a project identified to use:
 1. Note the ID of the project (from the three dots at upper right of main project page).
 1. Note the ID of the top-level group which contains the project.
 1. When setting the environment variables for the following steps, add them to `env.runit` in the root of the `gitlab-development-kit` folder.
-1. Follow instructions to [configure distributed tracing for a project](../../operations/tracing.md), with the following custom settings:
+1. Follow instructions to [configure distributed tracing for a project](../tracing.md), with the following custom settings:
    - For the `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` environment variable, use the following value:
 
      ```shell
      export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://<gitlab-host>/v3/<gitlab-top-level-group-id>/<gitlab-project-id>/ingest/traces"
      ```
 
-1. Follow instructions to [configure distributed metrics for a project](../../operations/metrics.md), with the following custom settings:
+1. Follow instructions to [configure distributed metrics for a project](../metrics.md), with the following custom settings:
    - For the `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` environment variable, use the following value:
 
      ```shell
      export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="https://<gitlab-host>/v3/<gitlab-top-level-group-id>/<gitlab-project-id>/ingest/metrics"
      ```
 
-1. Follow instructions to [configure distributed logs for a project](../../operations/logs.md), with the following custom settings:
+1. Follow instructions to [configure distributed logs for a project](../logs.md), with the following custom settings:
    - For the `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` environment variable, use the following value:
 
      ```shell
@@ -55,9 +55,9 @@ Once you have a project identified to use:
 
 ## References
 
-- [Distributed Tracing](../../operations/tracing.md)
-- [Metrics](../../operations/metrics.md)
-- [Logs](../../operations/logs.md)
+- [Distributed Tracing](../tracing.md)
+- [Metrics](../metrics.md)
+- [Logs](../logs.md)
 
 ## Related design documents
 

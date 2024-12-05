@@ -2,11 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
+RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner do
   include StubGitlabCalls
 
+  let_it_be(:organization, freeze: true) { create_default(:organization) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:other_project) { create(:project) }
 
   it_behaves_like 'having unique enum values'
 
@@ -66,6 +68,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
 
       context 'tag does not exist' do
+        let(:tag_name) { 'new-tag' }
+
         it 'creates a tag' do
           expect { runner.save! }.to change(Ci::Tag, :count).by(1)
         end
@@ -288,7 +292,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'when runner has creator' do
       let_it_be(:creator) { create(:user) }
-      let_it_be(:runner) { create(:ci_runner, :instance, creator: creator) }
+      let_it_be(:runner) { create(:ci_runner, creator: creator) }
 
       it { is_expected.to eq creator }
     end
@@ -311,7 +315,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       own_runner = create(:ci_runner, :project, projects: [own_project])
 
       # other
-      other_project = create(:project)
       create(:ci_runner, :project, projects: [other_project])
 
       expect(described_class.belonging_to_project(own_project.id)).to eq [own_runner]
@@ -443,19 +446,29 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#display_name' do
-    it 'returns the description if it has a value' do
-      runner = build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
-      expect(runner.display_name).to eq 'Linux/Ruby-1.9.3-p448'
+    let(:args) { {} }
+    let(:runner) { build(:ci_runner, **args) }
+
+    subject(:display_name) { runner.display_name }
+
+    it 'returns the default description' do
+      is_expected.to eq runner.description
     end
 
-    it 'returns the token if it does not have a description' do
-      runner = create(:ci_runner)
-      expect(runner.display_name).to eq runner.description
+    context 'when description has a value' do
+      let(:args) { { description: 'Linux/Ruby-1.9.3-p448' } }
+
+      it 'returns the specified description' do
+        is_expected.to eq args[:description]
+      end
     end
 
-    it 'returns the token if the description is an empty string' do
-      runner = build(:ci_runner, description: '', token: 'token')
-      expect(runner.display_name).to eq runner.token
+    context 'when description is empty and token have a value' do
+      let(:args) { { description: '', token: 'token' } }
+
+      it 'returns the short_sha' do
+        is_expected.to eq runner.short_sha
+      end
     end
   end
 
@@ -475,7 +488,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'with runner having multiple projects' do
-      let_it_be(:other_project) { create(:project) }
       let_it_be(:runner_project) { create(:ci_runner_project, project: other_project, runner: runner) }
 
       it { is_expected.to be_falsey }
@@ -483,8 +495,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#assign_to' do
-    let_it_be(:project) { create(:project) }
-
     subject(:assign_to) { runner.assign_to(project) }
 
     context 'with instance runner' do
@@ -497,7 +507,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'with group runner' do
-      let(:group) { create(:group) }
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'raises an error' do
@@ -507,8 +516,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'with project runner' do
-      let_it_be(:other_project) { create(:project) }
-
       let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
 
       it 'assigns runner to project' do
@@ -740,12 +747,17 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:runner_project) { build.project }
+    let_it_be_with_refind(:runner) { create(:ci_runner, :project, projects: [runner_project]) }
 
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-    let(:runner_project) { build.project }
-    let(:runner) { create(:ci_runner, :project, projects: [runner_project], tag_list: tag_list, run_untagged: run_untagged) }
     let(:tag_list) { [] }
     let(:run_untagged) { true }
+
+    before do
+      runner.tag_list = tag_list
+      runner.run_untagged = run_untagged
+    end
 
     subject { runner.matches_build?(build) }
 
@@ -1192,7 +1204,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
 
       context 'group runner' do
-        let(:group) { create(:group) }
         let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
         it 'returns false' do
@@ -1296,7 +1307,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '#pick_build!' do
     let_it_be(:runner) { create(:ci_runner) }
 
-    let(:build) { create(:ci_build) }
+    let(:build) { FactoryBot.build(:ci_build) }
 
     context 'runner can pick the build' do
       it 'calls #tick_runner_queue' do
@@ -1467,14 +1478,14 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       it 'includes runner_ids' do
         expect(matchers.size).to eq(1)
 
-        expect(matchers.first.runner_ids).to match_array(described_class.all.pluck(:id))
+        expect(matchers.first.runner_ids).to match_array(described_class.all.ids)
       end
     end
   end
 
   describe '#runner_matcher' do
     let(:runner) do
-      build_stubbed(:ci_runner, :instance_type, tag_list: %w[tag1 tag2], allowed_plan_ids: [1, 2])
+      build_stubbed(:ci_runner, tag_list: %w[tag1 tag2], allowed_plan_ids: [1, 2])
     end
 
     subject(:matcher) { runner.runner_matcher }
@@ -1677,7 +1688,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     subject(:short_sha) { runner.short_sha }
 
     context 'when registered via command-line' do
-      let(:runner) { create(:ci_runner) }
+      let_it_be(:runner) { create(:ci_runner) }
 
       specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
@@ -1686,7 +1697,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'when creating new runner via UI' do
-      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
@@ -1745,6 +1756,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#token_expires_at', :freeze_time do
+    let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i) }
+    let_it_be(:group_with_expiration) { create(:group, namespace_settings: group_settings) }
+    let_it_be(:existing_runner) { create(:ci_runner) }
+
     shared_examples 'expiring token' do |interval:|
       it 'expires' do
         expect(runner.token_expires_at).to eq(interval.from_now)
@@ -1758,7 +1773,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'no expiration' do
-      let(:runner) { create(:ci_runner) }
+      let(:runner) { existing_runner }
 
       it_behaves_like 'non-expiring token'
     end
@@ -1778,7 +1793,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
       end
 
-      let(:runner) { create(:ci_runner) }
+      let(:runner) { existing_runner }
 
       it_behaves_like 'non-expiring token'
     end
@@ -1788,86 +1803,31 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
       end
 
-      let(:runner) { create(:ci_runner) }
+      let(:runner) { existing_runner }
 
       it_behaves_like 'non-expiring token'
     end
 
     context 'group expiration' do
-      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i) }
-      let(:group) { create(:group, namespace_settings: group_settings) }
-      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let(:runner) { create(:ci_runner, :group, groups: [group_with_expiration]) }
 
       it_behaves_like 'expiring token', interval: 6.days
-    end
 
-    context 'human-readable group expiration' do
-      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval_human_readable: '7 days') }
-      let(:group) { create(:group, namespace_settings: group_settings) }
-      let(:runner) { create(:ci_runner, :group, groups: [group]) }
-
-      it_behaves_like 'expiring token', interval: 7.days
-    end
-
-    context 'project expiration' do
-      let(:project) { create(:project, runner_token_expiration_interval: 4.days.to_i).tap(&:save!) }
-      let(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-      it_behaves_like 'expiring token', interval: 4.days
-    end
-
-    context 'human-readable project expiration' do
-      let(:project) { create(:project, runner_token_expiration_interval_human_readable: '5 days').tap(&:save!) }
-      let(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-      it_behaves_like 'expiring token', interval: 5.days
-    end
-
-    context 'multiple projects' do
-      let(:project1) { create(:project, runner_token_expiration_interval: 8.days.to_i).tap(&:save!) }
-      let(:project2) { create(:project, runner_token_expiration_interval: 7.days.to_i).tap(&:save!) }
-      let(:project3) { create(:project, runner_token_expiration_interval: 9.days.to_i).tap(&:save!) }
-      let(:runner) { create(:ci_runner, :project, projects: [project1, project2, project3]) }
-
-      it_behaves_like 'expiring token', interval: 7.days
-    end
-
-    context 'with project runner token expiring' do
-      let_it_be(:project) { create(:project, runner_token_expiration_interval: 4.days.to_i).tap(&:save!) }
-
-      context 'project overrides system' do
+      context 'with human-readable group expiration' do
         before do
-          stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+          group_with_expiration.runner_token_expiration_interval_human_readable = '7 days'
+          group_with_expiration.save!
         end
 
-        let(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-        it_behaves_like 'expiring token', interval: 4.days
+        it_behaves_like 'expiring token', interval: 7.days
       end
-
-      context 'system overrides project' do
-        before do
-          stub_application_setting(project_runner_token_expiration_interval: 3.days.to_i)
-        end
-
-        let(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-        it_behaves_like 'expiring token', interval: 3.days
-      end
-    end
-
-    context 'with group runner token expiring' do
-      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
-      let_it_be(:group) { create(:group, namespace_settings: group_settings) }
 
       context 'group overrides system' do
         before do
-          stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+          stub_application_setting(group_runner_token_expiration_interval: 7.days.to_i)
         end
 
-        let(:runner) { create(:ci_runner, :group, groups: [group]) }
-
-        it_behaves_like 'expiring token', interval: 4.days
+        it_behaves_like 'expiring token', interval: 6.days
       end
 
       context 'system overrides group' do
@@ -1875,7 +1835,45 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
           stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
         end
 
-        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+        it_behaves_like 'expiring token', interval: 3.days
+      end
+    end
+
+    context 'project expiration' do
+      let_it_be(:project) { create(:project, group: group, runner_token_expiration_interval: 4.days.to_i) }
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it_behaves_like 'expiring token', interval: 4.days
+
+      context 'human-readable project expiration' do
+        before do
+          project.runner_token_expiration_interval_human_readable = '5 days'
+          project.save!
+        end
+
+        it_behaves_like 'expiring token', interval: 5.days
+      end
+
+      context 'with multiple projects' do
+        let_it_be(:project2) { create(:project, runner_token_expiration_interval: 3.days.to_i) }
+        let_it_be(:project3) { create(:project, runner_token_expiration_interval: 9.days.to_i) }
+        let(:runner) { create(:ci_runner, :project, projects: [project, project2, project3]) }
+
+        it_behaves_like 'expiring token', interval: 3.days
+      end
+
+      context 'when project overrides system' do
+        before do
+          stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+        end
+
+        it_behaves_like 'expiring token', interval: 4.days
+      end
+
+      context 'when system overrides project' do
+        before do
+          stub_application_setting(project_runner_token_expiration_interval: 3.days.to_i)
+        end
 
         it_behaves_like 'expiring token', interval: 3.days
       end
@@ -1884,38 +1882,54 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     context "with group's project runner token expiring" do
       let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 2.days.to_i) }
       let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:group_settings) { create(:namespace_settings) }
+      let_it_be(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       context 'parent group overrides subgroup' do
-        let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 3.days.to_i) }
-        let(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
-        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+        before_all do
+          group.runner_token_expiration_interval = 3.days.to_i
+          group.save!
+        end
 
         it_behaves_like 'expiring token', interval: 2.days
       end
 
       context 'subgroup overrides parent group' do
-        let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 1.day.to_i) }
-        let(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
-        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+        before_all do
+          group.runner_token_expiration_interval = 1.day.to_i
+          group.save!
+        end
 
         it_behaves_like 'expiring token', interval: 1.day
       end
     end
 
     context "with group's project runner token expiring" do
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 2.days.to_i) }
-      let_it_be(:group) { create(:group, namespace_settings: group_settings) }
+      let_it_be(:project) { create(:project, group: group_with_expiration) }
+
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      before_all do
+        group_with_expiration.project_runner_token_expiration_interval = 2.days.to_i
+        group_with_expiration.save!
+      end
 
       context 'group overrides project' do
-        let(:project) { create(:project, group: group, runner_token_expiration_interval: 3.days.to_i).tap(&:save!) }
-        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+        before do
+          project.runner_token_expiration_interval = 3.days.to_i
+          project.save!
+        end
 
         it_behaves_like 'expiring token', interval: 2.days
       end
 
       context 'project overrides group' do
-        let(:project) { create(:project, group: group, runner_token_expiration_interval: 1.day.to_i).tap(&:save!) }
-        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+        before do
+          project.runner_token_expiration_interval = 1.day.to_i
+          project.save!
+        end
 
         it_behaves_like 'expiring token', interval: 1.day
       end

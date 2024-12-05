@@ -20,7 +20,7 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
-  inject: ['projectPath', 'maxAllowedFileSize', 'markdownPreviewPath'],
+  inject: ['projectPath', 'markdownPreviewPath'],
   props: {
     disableAttachments: {
       type: Boolean,

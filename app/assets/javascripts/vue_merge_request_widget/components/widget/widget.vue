@@ -341,9 +341,9 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4">
+    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4" :class="{ 'gl-pl-9': glFeatures.mrReportsTab }">
       <status-icon
-        :level="1"
+        :level="glFeatures.mrReportsTab ? 2 : 1"
         :name="widgetName"
         :is-loading="shouldShowLoadingIcon"
         :icon-name="summaryStatusIcon"

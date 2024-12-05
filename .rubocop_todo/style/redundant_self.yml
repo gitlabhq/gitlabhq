@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Style/RedundantSelf:
   Exclude:
-    - 'app/models/application_setting.rb'
     - 'app/models/ci/group.rb'
     - 'app/models/ci/job_artifact.rb'
     - 'app/models/ci/job_token/project_scope_link.rb'

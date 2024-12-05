@@ -12,6 +12,8 @@ import {
   formattedChangeInPercent,
   isNumeric,
   isPositiveInteger,
+  splitDecimalNumber,
+  countFloatingPointDigits,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
@@ -219,6 +221,37 @@ describe('Number Utils', () => {
   `('isPositiveInteger', ({ value, outcome }) => {
     it(`when called with ${typeof value} ${value} it returns ${outcome}`, () => {
       expect(isPositiveInteger(value)).toBe(outcome);
+    });
+  });
+
+  describe('splitDecimalNumber', () => {
+    it.each`
+      value          | integer   | decimal
+      ${null}        | ${null}   | ${null}
+      ${0}           | ${'0'}    | ${'0'}
+      ${'1.0'}       | ${'1'}    | ${'0'}
+      ${'1024.1293'} | ${'1024'} | ${'1293'}
+    `(
+      'when called with $value it returns integer=$integer and decimal=$decimal',
+      ({ value, integer, decimal }) => {
+        expect(splitDecimalNumber(value)).toEqual({ integer, decimal });
+      },
+    );
+  });
+
+  describe('countFloatingPointDigits', () => {
+    it.each`
+      value          | digits
+      ${null}        | ${0}
+      ${0}           | ${0}
+      ${'1.0'}       | ${1}
+      ${'5.3'}       | ${1}
+      ${'3.20'}      | ${2}
+      ${'3.04'}      | ${2}
+      ${'14.123'}    | ${3}
+      ${'1024.1293'} | ${4}
+    `('when called with $value it returns $digits', ({ value, digits }) => {
+      expect(countFloatingPointDigits(value)).toBe(digits);
     });
   });
 });

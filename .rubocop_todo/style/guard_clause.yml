@@ -50,7 +50,6 @@ Style/GuardClause:
     - 'app/helpers/visibility_level_helper.rb'
     - 'app/mailers/emails/notes.rb'
     - 'app/models/alert_management/http_integration.rb'
-    - 'app/models/application_setting.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/ci/build_trace.rb'
     - 'app/models/ci/job_artifact.rb'

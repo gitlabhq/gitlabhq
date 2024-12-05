@@ -92,7 +92,6 @@ Layout/LineLength:
     - 'app/helpers/labels_helper.rb'
     - 'app/models/analytics/cycle_analytics/merge_request_stage_event.rb'
     - 'app/models/application_record.rb'
-    - 'app/models/application_setting.rb'
     - 'app/models/application_setting_implementation.rb'
     - 'app/models/award_emoji.rb'
     - 'app/models/blob_viewer/base.rb'

@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Rails/PluralizationGrammar:
   Exclude:
-    - 'app/models/application_setting.rb'
     - 'app/models/application_setting_implementation.rb'
     - 'app/services/packages/helm/extract_file_metadata_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_download_service.rb'

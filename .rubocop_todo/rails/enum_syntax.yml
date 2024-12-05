@@ -11,7 +11,6 @@ Rails/EnumSyntax:
     - 'app/models/anti_abuse/event.rb'
     - 'app/models/anti_abuse/trust_score.rb'
     - 'app/models/application_record.rb'
-    - 'app/models/application_setting.rb'
     - 'app/models/authentication_event.rb'
     - 'app/models/batched_git_ref_updates/deletion.rb'
     - 'app/models/bulk_import.rb'

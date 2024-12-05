@@ -54,7 +54,6 @@ Style/FormatString:
     - 'app/mailers/emails/members.rb'
     - 'app/mailers/emails/pages_domains.rb'
     - 'app/mailers/emails/profile.rb'
-    - 'app/models/application_setting.rb'
     - 'app/models/application_setting_implementation.rb'
     - 'app/models/concerns/integrations/has_issue_tracker_fields.rb'
     - 'app/models/concerns/limitable.rb'

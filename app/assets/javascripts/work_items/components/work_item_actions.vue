@@ -54,6 +54,8 @@ export default {
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
     disableConfidentiality: s__('WorkItem|Turn off confidentiality'),
+    confidentialityEnabled: s__('WorkItem|Confidentiality turned on.'),
+    confidentialityDisabled: s__('WorkItem|Confidentiality turned off.'),
     confidentialParentTooltip: s__(
       'WorkItem|Child items of a confidential parent must be confidential. Turn off confidentiality on the parent item first.',
     ),
@@ -280,6 +282,11 @@ export default {
     isEpic() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
     },
+    confidentialityToggledText() {
+      return this.isConfidential
+        ? this.$options.i18n.confidentialityDisabled
+        : this.$options.i18n.confidentialityEnabled;
+    },
   },
   methods: {
     copyToClipboard(text, message) {
@@ -292,6 +299,7 @@ export default {
     handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
+      toast(this.confidentialityToggledText);
       this.closeDropdown();
     },
     handleDelete() {

@@ -14,11 +14,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   end
 
   describe '/api/v4/runners' do
+    let(:params) { nil }
     let(:registration_token) { 'abcdefg123456' }
 
     before do
       stub_application_setting(runners_registration_token: registration_token)
     end
+
+    subject(:perform_request) { delete api('/runners'), params: params }
 
     describe 'DELETE /api/v4/runners' do
       it_behaves_like 'runner migrations backoff' do
@@ -27,15 +30,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       context 'when no token is provided' do
         it 'returns 400 error' do
-          delete api('/runners')
+          perform_request
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
       context 'when invalid token is provided' do
+        let(:params) do
+          { token: 'invalid' }
+        end
+
         it 'returns 403 error' do
-          delete api('/runners'), params: { token: 'invalid' }
+          perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -44,12 +51,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       context 'when valid token is provided' do
         let!(:runner) { create(:ci_runner, *args) }
         let(:args) { [] }
-
-        subject(:perform_request) { delete api('/runners'), params: { token: runner.token } }
+        let(:params) { { token: runner.token } }
 
         it 'deletes runner' do
-          expect { perform_request }
-            .to change { ::Ci::Runner.count }.by(-1)
+          expect { perform_request }.to change { ::Ci::Runner.count }.by(-1)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end

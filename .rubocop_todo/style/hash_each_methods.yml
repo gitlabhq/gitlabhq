@@ -25,7 +25,6 @@ Style/HashEachMethods:
     - 'app/graphql/types/packages/package_type_enum.rb'
     - 'app/graphql/types/release_asset_link_type_enum.rb'
     - 'app/graphql/types/user_callout_feature_name_enum.rb'
-    - 'app/models/application_setting.rb'
     - 'app/models/ci/pipeline.rb'
     - 'app/models/concerns/bulk_insertable_associations.rb'
     - 'app/services/packages/debian/process_package_file_service.rb'

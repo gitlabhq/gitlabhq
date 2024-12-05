@@ -173,7 +173,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
   describe '.check_for_non_superuser' do
     subject { described_class.check_for_non_superuser }
 
-    let(:non_superuser) { Gitlab::Database::PgUser.new(usename: 'foo', usesuper: false ) }
+    let(:non_superuser) { Gitlab::Database::PgUser.new(usename: 'foo', usesuper: false) }
     let(:superuser) { Gitlab::Database::PgUser.new(usename: 'bar', usesuper: true) }
 
     it 'prints user details if not superuser' do

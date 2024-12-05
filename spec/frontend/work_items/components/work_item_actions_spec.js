@@ -324,6 +324,7 @@ describe('WorkItemActions component', () => {
       findConfidentialityToggleButton().vm.$emit('action');
 
       expect(wrapper.emitted('toggleWorkItemConfidentiality')[0]).toEqual([true]);
+      expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
     });
 
     it('does not render when canUpdate is false', () => {

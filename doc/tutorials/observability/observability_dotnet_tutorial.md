@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
-For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
+For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
 <!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a .NET Core application using GitLab Observability features.

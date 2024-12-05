@@ -92,14 +92,13 @@ The following items are changed when they are imported:
 
 ## User assignment
 
-> - Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
-> - Matching user mentions with GitLab users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to import approvals only by email address in GitLab 17.1.
+> - User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
+> - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
 
 FLAG:
-On self-managed GitLab, matching user mentions with GitLab users is not available. To make it available per user,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `bitbucket_server_import_stage_import_users`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
 When issues and pull requests are importing, the importer tries to match a Bitbucket Server user's email address
 with a confirmed email address in the GitLab user database. If no such user is found:
