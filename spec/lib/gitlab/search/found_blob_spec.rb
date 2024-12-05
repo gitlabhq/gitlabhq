@@ -17,7 +17,6 @@ RSpec.describe Gitlab::Search::FoundBlob, feature_category: :global_search do
       expect(subject.path).to eq('CHANGELOG')
       expect(subject.basename).to eq('CHANGELOG')
       expect(subject.ref).to eq('master')
-      expect(subject.matched_lines_count).to be_nil
       expect(subject.startline).to eq(188)
       expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
     end
