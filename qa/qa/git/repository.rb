@@ -255,7 +255,7 @@ module QA
       alias_method :use_lfs?, :use_lfs
 
       def default_user
-        @default_user ||= Runtime::UserStore.test_user || Runtime::UserStore.admin_user
+        @default_user ||= Runtime::User::Store.test_user || Runtime::User::Store.admin_user
       end
 
       def add_credentials?

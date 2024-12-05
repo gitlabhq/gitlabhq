@@ -251,4 +251,12 @@ module CycleAnalyticsHelpers
     # this is needed for the DORA API so we have aggregated data
     ::Dora::DailyMetrics::RefreshWorker.new.perform(environment.id, Time.current.to_date.to_s) if Gitlab.ee?
   end
+
+  def vsa_metrics_values
+    page.find("[data-testid='vsa-metrics']").all("[data-testid='displayValue']").collect(&:text)
+  end
+
+  def vsa_metrics_titles
+    page.find("[data-testid='vsa-metrics']").all("[data-testid='title-text']").collect(&:text)
+  end
 end

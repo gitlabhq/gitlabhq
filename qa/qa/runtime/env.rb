@@ -30,48 +30,6 @@ module QA
         @gitlab_url ||= ENV["QA_GITLAB_URL"] || "http://127.0.0.1:3000" # default to GDK
       end
 
-      # Username for main test user
-      #
-      # @return [String]
-      def user_username
-        ENV['GITLAB_USERNAME']
-      end
-
-      # Password for main test user
-      #
-      # @return [String]
-      def user_password
-        ENV['GITLAB_PASSWORD']
-      end
-
-      # Personal access token for main test user
-      #
-      # @return [String]
-      def personal_access_token
-        ENV['GITLAB_QA_ACCESS_TOKEN']
-      end
-
-      # Administrator user username
-      #
-      # @return [String]
-      def admin_username
-        ENV['GITLAB_ADMIN_USERNAME']
-      end
-
-      # Administrator user password
-      #
-      # @return [String]
-      def admin_password
-        ENV['GITLAB_ADMIN_PASSWORD']
-      end
-
-      # Administrator user personal access token
-      #
-      # @return [String]
-      def admin_personal_access_token
-        ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
-      end
-
       # Retrieves the value of the gitlab_canary cookie if set or returns an empty hash.
       #
       # @return [Hash]
@@ -423,14 +381,6 @@ module QA
         ENV['CI_NODE_TOTAL'].to_i > 1 && ENV['NO_KNAPSACK'] != "true"
       end
 
-      def ldap_username
-        ENV['GITLAB_LDAP_USERNAME']
-      end
-
-      def ldap_password
-        ENV['GITLAB_LDAP_PASSWORD']
-      end
-
       def sandbox_name
         ENV['GITLAB_SANDBOX_NAME']
       end
@@ -522,10 +472,6 @@ module QA
         return unless github_access_token.empty?
 
         raise ArgumentError, "Please provide QA_GITHUB_ACCESS_TOKEN"
-      end
-
-      def require_admin_access_token!
-        admin_personal_access_token || (raise ArgumentError, "GITLAB_QA_ADMIN_ACCESS_TOKEN is required!")
       end
 
       # Returns true if there is an environment variable that indicates that

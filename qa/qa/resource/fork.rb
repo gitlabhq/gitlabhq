@@ -14,7 +14,7 @@ module QA
       end
 
       attribute :user do
-        Runtime::UserStore.test_user
+        Runtime::User::Store.test_user
       end
 
       attribute :path_with_namespace do

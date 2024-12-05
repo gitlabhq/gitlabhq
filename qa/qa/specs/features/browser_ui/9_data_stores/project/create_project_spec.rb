@@ -34,7 +34,7 @@ module QA
         let(:project) do
           Resource::Project.fabricate_via_browser_ui! do |project|
             project.name = project_name
-            project.personal_namespace = Runtime::UserStore.test_user.username
+            project.personal_namespace = Runtime::User::Store.test_user.username
             project.description = nil
           end
         end

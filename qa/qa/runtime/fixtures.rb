@@ -45,7 +45,7 @@ module QA
       private
 
       def api_client
-        @api_client ||= UserStore.test_user.api_client
+        @api_client ||= User::Store.test_user.api_client
       end
     end
   end

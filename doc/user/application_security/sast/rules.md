@@ -36,6 +36,8 @@ GitLab creates, maintains, and supports the rules for [Advanced SAST](gitlab_adv
 Its rules are custom-built to leverage the Advanced SAST scanning engine's cross-file, cross-function analysis capabilities.
 The Advanced SAST ruleset is not open source, and is not the same ruleset as any other analyzer.
 
+For details of which types of vulnerabilities Advanced SAST detects, see [When vulnerabilities are reported](gitlab_advanced_sast.md#when-vulnerabilities-are-reported).
+
 ### Semgrep-based analyzer
 
 GitLab creates, maintains, and supports the rules that are used in the Semgrep-based GitLab SAST analyzer.

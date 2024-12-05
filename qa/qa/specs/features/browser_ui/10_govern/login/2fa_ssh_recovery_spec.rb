@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Govern', :blocking, :requires_admin, :skip_live_env,
     product_group: :authentication do
     describe '2FA' do
-      let!(:user) { Runtime::UserStore.test_user }
+      let!(:user) { Runtime::User::Store.test_user }
       let!(:user_api_client) { user.api_client }
       let(:address) { QA::Runtime::Scenario.gitlab_address }
       let(:uri) { URI.parse(address) }

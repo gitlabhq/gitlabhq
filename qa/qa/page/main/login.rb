@@ -7,7 +7,7 @@ module QA
         include Layout::Flash
         include Runtime::Canary
 
-        delegate :admin_user, to: QA::Runtime::UserStore
+        delegate :admin_user, to: QA::Runtime::User::Store
 
         def self.path
           '/users/sign_in'
@@ -70,7 +70,7 @@ module QA
           using_wait_time 0 do
             set_initial_password_if_present
 
-            test_user = user || Runtime::UserStore.test_user
+            test_user = user || Runtime::User::Store.test_user
 
             if test_user.ldap_user?
               sign_in_using_ldap_credentials(user: test_user)

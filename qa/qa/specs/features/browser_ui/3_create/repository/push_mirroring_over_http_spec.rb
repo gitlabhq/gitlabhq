@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Push mirror a repository over HTTP', :blocking, product_group: :source_code do
-      let(:user) { Runtime::UserStore.test_user }
+      let(:user) { Runtime::User::Store.test_user }
 
       it('configures and syncs a (push) mirrored repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347741',

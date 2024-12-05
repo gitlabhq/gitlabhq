@@ -277,6 +277,11 @@ class IssuableBaseService < ::BaseContainerService
 
     old_associations = associations_before_update(issuable)
 
+    # We need to set the lock version early in case some of the callbacks below does a save
+    # that increments the lock version. This will prevent a stale lock version when we get to
+    # the `#assign_attributes` call below.
+    issuable.lock_version = params.delete(:lock_version) if params.key?(:lock_version)
+
     handle_quick_actions(issuable)
     filter_params(issuable)
 

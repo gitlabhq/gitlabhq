@@ -92,7 +92,7 @@ module QA
         # @return [void]
         def uses_admin_api_client
           define_method(:api_client) do
-            @api_client ||= Runtime::UserStore.admin_api_client
+            @api_client ||= Runtime::User::Store.admin_api_client
           end
           private :api_client
         end

@@ -110,6 +110,19 @@ Consult these topics for information on contributing to specific GitLab features
 - [Group migration](bulk_import.md)
 - [Export to CSV](export_csv.md)
 
+### Integrations
+
+- [Integrations development guide](integrations/index.md)
+- [GitLab for Jira Cloud app](integrations/jira_connect.md)
+- [Security Scanners](integrations/secure.md)
+- [Secure Partner Integration](integrations/secure_partner_integration.md)
+- [How to run Jenkins in development environment](integrations/jenkins.md)
+
+The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
+
+- [Jira integration development](https://gitlab.com/gitlab-org/foundations/import-and-integrate/team/-/blob/main/integrations/jira.md)
+- [GitLab for Slack app development](https://gitlab.com/gitlab-org/foundations/import-and-integrate/team/-/blob/main/integrations/slack.md)
+
 ## Performance guides
 
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
@@ -127,19 +140,6 @@ Consult these topics for information on contributing to specific GitLab features
 ## Database guides
 
 See [database guidelines](database/index.md).
-
-## Integration guides
-
-- [Integrations development guide](integrations/index.md)
-- [GitLab for Jira Cloud app](integrations/jira_connect.md)
-- [Security Scanners](integrations/secure.md)
-- [Secure Partner Integration](integrations/secure_partner_integration.md)
-- [How to run Jenkins in development environment](integrations/jenkins.md)
-
-The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
-
-- [Jira integration development](https://gitlab.com/gitlab-org/foundations/import-and-integrate/team/-/blob/main/integrations/jira.md)
-- [GitLab for Slack app development](https://gitlab.com/gitlab-org/foundations/import-and-integrate/team/-/blob/main/integrations/slack.md)
 
 ## Testing guides
 

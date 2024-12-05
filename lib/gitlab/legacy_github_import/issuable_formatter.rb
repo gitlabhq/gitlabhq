@@ -3,6 +3,8 @@
 module Gitlab
   module LegacyGithubImport
     class IssuableFormatter < BaseFormatter
+      include Import::UsernameMentionRewriter
+
       attr_writer :assignee_id, :author_id
 
       def project_association
@@ -68,7 +70,7 @@ module Gitlab
       end
 
       def body
-        raw_data[:body] || ""
+        wrap_mentions_in_backticks(raw_data[:body]) || ""
       end
 
       def description

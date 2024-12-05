@@ -374,7 +374,7 @@ The collected SAST report uploads to GitLab as an artifact.
 For more information, see:
 
 - [View SAST results](../../user/application_security/sast/index.md#view-sast-results)
-- [SAST output](../../user/application_security/sast/index.md#output)
+- [SAST output](../../user/application_security/sast/index.md#download-a-sast-report)
 
 ## `artifacts:reports:secret_detection`
 

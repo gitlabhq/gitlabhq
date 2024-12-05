@@ -43,7 +43,7 @@ module QA
         },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347762'
       ) do
-        gitlab_account_user_name = Runtime::UserStore.test_user.name
+        gitlab_account_user_name = Runtime::User::Store.test_user.name
 
         milestone = create(:project_milestone, project: project)
 

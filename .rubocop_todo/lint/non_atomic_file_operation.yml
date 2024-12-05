@@ -19,6 +19,5 @@ Lint/NonAtomicFileOperation:
     - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
     - 'lib/gitlab/import_export/recursive_merge_folders.rb'
     - 'lib/gitlab/memory/upload_and_cleanup_reports.rb'
-    - 'lib/gitlab/setup_helper.rb'
     - 'lib/tasks/gitlab/update_templates.rake'
     - 'lib/tasks/tanuki_emoji.rake'

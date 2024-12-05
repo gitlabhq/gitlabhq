@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Govern', :requires_admin, :skip_live_env, :blocking do
     describe '2FA', product_group: :authentication do
-      let(:owner_user) { Runtime::UserStore.test_user }
+      let(:owner_user) { Runtime::User::Store.test_user }
       let(:owner_api_client) { owner_user.api_client }
       let(:developer_user) { create(:user) }
 

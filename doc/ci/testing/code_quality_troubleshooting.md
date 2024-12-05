@@ -45,7 +45,7 @@ Verify the presence of report on the base commit by obtaining the `base_sha` usi
 
 ## Only a single Code Quality report is displayed, but more are defined
 
-Code Quality automatically [combines multiple reports](../../ci/testing/code_quality.md#integrate-multiple-tools).
+Code Quality automatically [combines multiple reports](../../ci/testing/code_quality.md#scan-code-for-quality-violations).
 
 In GitLab 15.6 and earlier, Code Quality used only the artifact from the latest created job (with the largest job ID). Code Quality artifacts from earlier jobs were ignored.
 

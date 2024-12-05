@@ -5,7 +5,7 @@ module QA
     include Support::API
 
     describe 'API basics', product_group: :source_code do
-      let(:test_user) { Runtime::UserStore.test_user }
+      let(:test_user) { Runtime::User::Store.test_user }
       let(:api_client) { test_user.api_client }
       let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }
       let(:sanitized_project_path) { CGI.escape("#{test_user.username}/#{project_name}") }

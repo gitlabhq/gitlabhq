@@ -77,6 +77,8 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 ### Run a pipeline manually
 
+> - **Run pipeline** name [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
 
 You might do this if the results of a pipeline (for example, a code build) are required outside the standard
@@ -90,7 +92,7 @@ To execute a pipeline manually:
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
 1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
    You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
-1. Select **Run pipeline**.
+1. Select **New pipeline**.
 
 The pipeline now executes the jobs as configured.
 

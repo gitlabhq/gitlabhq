@@ -1,0 +1,9 @@
+---
+name: reorganize_project_level_registry_settings
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500217
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174272
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506888
+milestone: '17.7'
+group: group::container registry
+type: wip
+default_enabled: false

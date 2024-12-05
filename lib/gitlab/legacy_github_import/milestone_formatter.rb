@@ -3,12 +3,14 @@
 module Gitlab
   module LegacyGithubImport
     class MilestoneFormatter < BaseFormatter
+      include Import::UsernameMentionRewriter
+
       def attributes
         {
           iid: number,
           project: project,
           title: raw_data[:title],
-          description: raw_data[:description],
+          description: description,
           due_date: raw_data[:due_on],
           state: state,
           created_at: raw_data[:created_at],
@@ -34,6 +36,10 @@ module Gitlab
 
       def contributing_user_formatters
         {}
+      end
+
+      def description
+        wrap_mentions_in_backticks(raw_data[:description])
       end
 
       private

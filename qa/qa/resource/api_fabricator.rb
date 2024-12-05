@@ -190,7 +190,7 @@ module QA
       #
       # @return [QA::Runtime::API::Client]
       def api_client
-        @api_client ||= Runtime::UserStore.default_api_client
+        @api_client ||= Runtime::User::Store.default_api_client
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

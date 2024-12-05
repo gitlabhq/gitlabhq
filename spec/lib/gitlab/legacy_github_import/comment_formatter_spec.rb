@@ -124,6 +124,16 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       end
     end
 
+    context 'when the comment body has @username mentions' do
+      let(:original_body) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
+      let(:expected_body) { "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+      let(:raw) { base.merge(body: original_body) }
+
+      it 'places backtick around @username mentions' do
+        expect(comment.attributes[:note]).to eq(expected_body)
+      end
+    end
+
     context 'when importing a GitHub project' do
       let_it_be(:project) do
         create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITHUB)

@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Settings > Packages and registries > Container registry tag expiration policy',
-  feature_category: :container_registry do
+RSpec.describe 'Project > Settings > Packages and registries', feature_category: :container_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 
@@ -23,12 +22,34 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
     allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
   end
 
-  context 'as owner', :js do
+  describe 'layout', :js do
+    it 'renders sections' do
+      subject
+
+      expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
+      expect(page).to have_selector 'h2', text: 'Package registry'
+      expect(page).to have_selector 'h2', text: 'Container registry'
+    end
+
+    it 'passes axe automated accessibility testing' do
+      subject
+
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+                                  .skipping :'link-in-text-block'
+    end
+  end
+
+  context 'with feature flag disabled', :js do
+    before do
+      stub_feature_flags(reorganize_project_level_registry_settings: false)
+    end
+
     it 'passes axe automated accessibility testing' do
       subject
 
       wait_for_requests
 
+      expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
     end
 
@@ -61,37 +82,37 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
       expect(page).to have_link('next-generation container registry', href: help_page_href)
     end
-  end
 
-  context 'with a project without expiration policy', :js do
-    before do
-      project.container_expiration_policy.destroy!
-    end
-
-    context 'with container_expiration_policies_enable_historic_entries enabled' do
+    context 'with a project without expiration policy' do
       before do
-        stub_application_setting(container_expiration_policies_enable_historic_entries: true)
+        project.container_expiration_policy.destroy!
       end
 
-      it 'displays the related section' do
-        subject
+      context 'with container_expiration_policies_enable_historic_entries enabled' do
+        before do
+          stub_application_setting(container_expiration_policies_enable_historic_entries: true)
+        end
 
-        within_testid 'container-expiration-policy-project-settings' do
-          expect(page).to have_link('Set cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
+        it 'displays the related section' do
+          subject
+
+          within_testid 'container-expiration-policy-project-settings' do
+            expect(page).to have_link('Set cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
+          end
         end
       end
-    end
 
-    context 'with container_expiration_policies_enable_historic_entries disabled' do
-      before do
-        stub_application_setting(container_expiration_policies_enable_historic_entries: false)
-      end
+      context 'with container_expiration_policies_enable_historic_entries disabled' do
+        before do
+          stub_application_setting(container_expiration_policies_enable_historic_entries: false)
+        end
 
-      it 'does not display the related section' do
-        subject
+        it 'does not display the related section' do
+          subject
 
-        within_testid 'container-expiration-policy-project-settings' do
-          expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
+          within_testid 'container-expiration-policy-project-settings' do
+            expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
+          end
         end
       end
     end

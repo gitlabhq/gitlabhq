@@ -274,7 +274,7 @@ A vulnerability's code flow is the path the data takes from the user input (sour
 For details on how to view a vulnerability's code flow, see
 [Vulnerability code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow).
 
-![A code flow of a Python application across two files](img/example_code_flow_of_python_applications_v17_3.png)
+![A code flow of a Python application across two files](img/code_flow_view_v17_7.png)
 
 ## Vulnerability status values
 

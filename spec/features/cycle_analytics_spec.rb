@@ -14,7 +14,6 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
   let_it_be(:stage_table_pagination_selector) { '[data-testid="vsa-stage-pagination"]' }
   let_it_be(:stage_table_duration_column_header_selector) { '[data-testid="vsa-stage-header-duration"]' }
   let_it_be(:metrics_selector) { "[data-testid='vsa-metrics']" }
-  let_it_be(:metric_value_selector) { "[data-testid='displayValue']" }
   let_it_be(:predefined_date_ranges_dropdown_selector) { '[data-testid="vsa-predefined-date-ranges-dropdown"]' }
   let_it_be(:project) { create(:project, :repository, maintainers: user) }
   let_it_be(:issue) { create(:issue, title: 'My feature', project: project, created_at: 3.weeks.ago) }
@@ -27,10 +26,6 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
   end
 
   let(:stage_table) { find(stage_table_selector) }
-
-  def metrics_values
-    page.find(metrics_selector).all(metric_value_selector).collect(&:text)
-  end
 
   def set_daterange(from_date, to_date)
     page.find(".js-daterange-picker-from input").set(from_date)
@@ -51,7 +46,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'displays metrics with relevant values' do
-        new_issue_count, commit_count, deploy_count = metrics_values
+        new_issue_count, commit_count, deploy_count = vsa_metrics_values
 
         # We expect 1 for new issues because we created one in the setup
         expect(new_issue_count).to eq("1")
@@ -109,12 +104,13 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       let(:stage_table_events) { stage_table.all(stage_table_event_selector) }
 
       it 'displays metrics' do
-        metrics_tiles = page.find(metrics_selector)
+        expect(page).to have_selector metrics_selector
 
         aggregate_failures 'with relevant values' do
-          expect(metrics_tiles).to have_content('Commit')
-          expect(metrics_tiles).to have_content('Deploy')
-          expect(metrics_tiles).to have_content('New issue')
+          expect(vsa_metrics_titles.length).to eq 3
+          expect(vsa_metrics_titles).to match_array ['New issues', 'Commits', 'Deploy']
+
+          expect(vsa_metrics_values).to match_array ["4", "-", "1"]
         end
       end
 
@@ -175,11 +171,11 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'can filter the metrics by date' do
-        expect(metrics_values).to match_array(%w[- 1 4])
+        expect(vsa_metrics_values).to match_array(%w[- 1 4])
 
         set_daterange(from, to)
 
-        expect(metrics_values).to eq(['-'] * 3)
+        expect(vsa_metrics_values).to eq(['-'] * 3)
       end
 
       it 'can navigate directly to a value stream stream stage with filters applied' do
@@ -228,6 +224,17 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
 
     it 'does not show the commit stats', :sidekiq_inline do
       expect(page.find(metrics_selector)).not_to have_selector("#commits")
+    end
+
+    it 'displays metrics' do
+      expect(page).to have_selector metrics_selector
+
+      aggregate_failures 'with relevant values' do
+        expect(vsa_metrics_titles.length).to eq 2
+        expect(vsa_metrics_titles).to match_array ['New issue', 'Deploy']
+
+        expect(vsa_metrics_values).to match_array %w[1 1]
+      end
     end
 
     it 'does not show restricted stages', :aggregate_failures, :sidekiq_inline do

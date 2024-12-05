@@ -28,7 +28,7 @@ RSpec.describe QA::Resource::User do
 
     before do
       allow(QA::Runtime::Scenario).to receive(:gitlab_address).and_return(address)
-      allow(QA::Runtime::UserStore).to receive(:admin_api_client).and_return(
+      allow(QA::Runtime::User::Store).to receive(:admin_api_client).and_return(
         QA::Runtime::API::Client.new(personal_access_token: token)
       )
 

@@ -66,20 +66,10 @@ RSpec.describe QA::Resource::User do
   end
 
   describe '#commit_email' do
-    it 'defaults to QA::Runtime::User.default_email' do
-      expect(subject.commit_email).to eq(QA::Runtime::User.default_email)
-    end
-
     it 'retrieves the commit_email from the api_resource if present' do
       subject.__send__(:api_resource=, api_resource)
 
       expect(subject.commit_email).to eq(api_resource[:commit_email])
-    end
-
-    it 'defaults to QA::Runtime::User.default_email if the commit_email from the api_resource is blank' do
-      subject.__send__(:api_resource=, api_resource.merge(commit_email: ''))
-
-      expect(subject.commit_email).to eq(QA::Runtime::User.default_email)
     end
   end
 

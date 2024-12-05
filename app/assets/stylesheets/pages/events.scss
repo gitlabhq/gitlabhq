@@ -30,20 +30,17 @@
     &.opened-icon,
     &.created-icon {
       svg {
-        fill: $green-300;
+        @apply gl-fill-status-success;
       }
     }
 
     &.closed-icon svg {
-      fill: $red-300;
+      @apply gl-fill-status-danger;
     }
 
-    &.accepted-icon svg {
-      fill: $blue-300;
-    }
-
+    &.accepted-icon svg,
     &.commented-on-icon svg {
-      fill: $blue-600;
+      @apply gl-fill-status-info;
     }
   }
 
@@ -79,9 +76,8 @@
 
       pre {
         border: 0;
-        background: $gray-10;
         border-radius: 0;
-        @apply gl-text-subtle;
+        @apply gl-text-subtle gl-bg-subtle;
         overflow: hidden;
       }
 
@@ -123,7 +119,7 @@
         }
 
         a {
-          color: $blue-600;
+          @apply gl-text-link;
         }
       }
     }

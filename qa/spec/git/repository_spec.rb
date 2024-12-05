@@ -22,7 +22,7 @@ RSpec.describe QA::Git::Repository do
     before do
       allow(repository).to receive(:tmp_home_dir).and_return(tmp_netrc_dir)
       allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
-      allow(QA::Runtime::UserStore).to receive(:test_user).and_return(default_user)
+      allow(QA::Runtime::User::Store).to receive(:test_user).and_return(default_user)
     end
 
     around do |example|

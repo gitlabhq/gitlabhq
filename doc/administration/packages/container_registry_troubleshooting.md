@@ -213,13 +213,14 @@ this error for the entire instance.
 
 ## Image push errors
 
-When getting errors or "retrying" loops in an attempt to push an image but `docker login` works fine,
-there is likely an issue with the headers forwarded to the registry by NGINX. The default recommended
-NGINX configurations should handle this, but it might occur in custom setups where the SSL is
-offloaded to a third party reverse proxy.
+You might get stuck in retry loops when pushing Docker images, even though `docker login` succeeds.
 
-This problem was discussed in a [Docker project issue](https://github.com/docker/distribution/issues/970)
-and a simple solution would be to enable relative URLs in the Registry.
+This issue occurs when NGINX isn't properly forwarding headers to the registry, typically in custom
+setups where SSL is offloaded to a third-party reverse proxy.
+
+For more information, see [Docker push through NGINX proxy fails trying to send a 32B layer #970](https://github.com/docker/distribution/issues/970).
+
+To resolve this issue, update your NGINX configuration to enable relative URLs in the registry:
 
 ::Tabs
 
@@ -245,6 +246,31 @@ and a simple solution would be to enable relative URLs in the Registry.
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
+
+:::TabTitle Docker Compose
+
+1. Edit your `docker-compose.yaml` file:
+
+   ```yaml
+   GITLAB_OMNIBUS_CONFIG: |
+     registry['env'] = {
+       "REGISTRY_HTTP_RELATIVEURLS" => true
+     }
+   ```
+
+1. If the issue persists, ensure both URLs use HTTPS:
+
+   ```yaml
+   GITLAB_OMNIBUS_CONFIG: |
+     external_url 'https://git.example.com'
+     registry_external_url 'https://git.example.com:5050'
+   ```
+
+1. Save the file and restart the container:
+
+   ```shell
+   sudo docker restart gitlab
+   ```
 
 ::EndTabs
 

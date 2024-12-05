@@ -87,7 +87,7 @@ module QA
         @commit_email ||= begin
           api_commit_email = api_resource&.dig(:commit_email)
 
-          api_commit_email && !api_commit_email.empty? ? api_commit_email : Runtime::User.default_email
+          api_commit_email && !api_commit_email.empty? ? api_commit_email : "#{username}@#{email_domain}"
         end
       end
 
@@ -291,7 +291,7 @@ module QA
       #
       # @return [QA::Runtime::API::Client]
       def api_client
-        @api_client ||= Runtime::UserStore.admin_api_client || Runtime::UserStore.user_api_client
+        @api_client ||= Runtime::User::Store.admin_api_client || Runtime::User::Store.user_api_client
       end
 
       protected

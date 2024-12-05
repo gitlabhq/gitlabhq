@@ -37,23 +37,26 @@ and will keep the original record of the vulnerability
 NOTE:
 In case a duplicated vulnerability was already introduced (in the interim time until the deduplication is available),the deduplication capability will not deduplicate it. The capability will be relevant only for validating new vulnerabilities that are not already duplicated.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).
+
+For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).
+
+## When vulnerabilities are reported
+
+GitLab Advanced SAST uses cross-file, cross-function scanning with taint analysis to trace the flow of user input into the program.
 By following the paths user inputs take, the analyzer identifies potential points
 where untrusted data can influence the execution of your application in unsafe ways,
 ensuring that injection vulnerabilities, such as SQL injection and cross-site scripting (XSS),
 are detected even when they span multiple functions and files.
 
-GitLab Advanced SAST includes the following features:
+To minimize noise, Advanced SAST only reports taint-based vulnerabilities when there is a verifiable flow that brings untrusted user input source to a sensitive sink.
+Other products may report vulnerabilities with less validation.
 
-- Source detection: Usually user input that can be tweaked by a malicious entity.
-- Sink detection: Sensitive function calls, whose arguments should not be controlled by the user.
-- Cross-function analysis: Tracks data flow through different functions to detect vulnerabilities that span multiple functions.
-- Cross-file analysis: Tracks data flow across different files, discovering vulnerabilities at a deeper level.
-- Sanitizer detection: Avoid false positive results in case the user input is properly sanitized.
+Advanced SAST is tuned to emphasize input that crosses trust boundaries, like values that are sourced from HTTP requests.
+The set of untrusted input sources does not include command-line arguments, enviroment variables, or other inputs that are typically provided by the user operating the program.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).
-
-For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).
+For details of which types of vulnerabilities Advanced SAST detects, see [Advanced SAST CWE coverage](advanced_sast_coverage.md).
 
 ## Supported languages
 
@@ -160,7 +163,7 @@ The code flow information is shown the **Code flow** tab and includes:
 - The steps from source to sink.
 - The relevant files, including code snippets.
 
-![A code flow of a Python application across two files](../vulnerabilities/img/example_code_flow_of_python_applications_v17_3.png)
+![A code flow of a Python application across two files](../vulnerabilities/img/code_flow_view_v17_7.png)
 
 ### Code flow feature availability
 

@@ -7,9 +7,10 @@ module QA
       it 'allows the user to register and login' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
+        ldap_user = Runtime::User::Store.ldap_user
         Resource::User.fabricate_via_browser_ui! do |user|
-          user.username = Runtime::Env.ldap_username
-          user.password = Runtime::Env.ldap_password
+          user.username = ldap_user.username
+          user.password = ldap_user.password
           user.email_domain = 'gitlab.com'
           user.ldap_user = true
         end

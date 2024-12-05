@@ -5,8 +5,8 @@ module QA
     include Support::API
 
     describe 'Users API', :smoke, product_group: :tenant_scale do
-      let(:api_client) { Runtime::UserStore.test_user.api_client }
-      let(:username) { Runtime::UserStore.test_user.username }
+      let(:api_client) { Runtime::User::Store.test_user.api_client }
+      let(:username) { Runtime::User::Store.test_user.username }
 
       it 'GET /users', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347882' do
         request = Runtime::API::Request.new(api_client, '/users')

@@ -105,6 +105,16 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       end
     end
 
+    context 'when the issue body has @username mentions' do
+      let(:original_body) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
+      let(:expected_body) { "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+      let(:raw_data) { base_data.merge(body: original_body) }
+
+      it 'places backtick around @username mentions' do
+        expect(issue.attributes[:description]).to eq(expected_body)
+      end
+    end
+
     context 'when it is assigned to a user' do
       context 'and the assigned user has a placeholder user in gitlab' do
         let(:raw_data) { base_data.merge(assignee: octocat) }

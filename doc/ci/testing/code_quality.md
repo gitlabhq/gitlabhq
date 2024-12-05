@@ -36,7 +36,9 @@ To find violations and surface them, you can:
 - Directly use a scanning tool and [import its results](#import-code-quality-results-from-a-cicd-job). _(Preferred.)_
 - [Use a built-in CI/CD template](#use-the-built-in-code-quality-cicd-template-deprecated) to enable scanning. The template uses the CodeClimate engine, which wraps common open source tools. _(Deprecated.)_
 
-You can also [integrate multiple tools](#integrate-multiple-tools).
+You can capture results from multiple tools in a single pipeline.
+For example, you can run a code linter to scan your code along with a language linter to scan your documentation, or you can use a standalone tool along with CodeClimate-based scanning.
+Code Quality combines all of the reports so you see all of them when you [view results](#view-code-quality-results).
 
 ### Import Code Quality results from a CI/CD job
 
@@ -72,11 +74,22 @@ The CodeClimate engine runs:
 
 For more details, see [Configure CodeClimate-based Code Quality scanning](code_quality_codeclimate_scanning.md).
 
-### Integrate multiple tools
+#### Migrate from CodeClimate-based scanning
 
-You can capture results from multiple tools in a single pipeline.
-For example, you can run a code linter to scan your code along with a language linter to scan your documentation, or you can use a standalone tool along with CodeClimate-based scanning.
-Code Quality combines all of the reports so you see all of them when you [view results](#view-code-quality-results).
+The CodeClimate engine uses a customizable set of [analysis plugins](code_quality_codeclimate_scanning.md#configure-codeclimate-analysis-plugins).
+Some are on by default; others must be explicitly enabled.
+The following integrations are available to replace the built-in plugins:
+
+| Plugin      | On by default          | Replacement                                                                                                                                                                          |
+|-------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Duplication | **{check-circle}** Yes | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector).                                                                                                                        |
+| ESLint      | **{check-circle}** Yes | [Integrate ESLint](#eslint).                                                                                                                                                         |
+| gofmt       | **{dotted-circle}** No | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt).                                                              |
+| golint      | **{dotted-circle}** No | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
+| govet       | **{dotted-circle}** No | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
+| pep8        | **{dotted-circle}** No | Integrate an alternative Python linter like [Flake8](#flake8) or [Pylint](#pylint).                                                                                                  |
+| SonarPython | **{dotted-circle}** No | Integrate an alternative Python linter like [Flake8](#flake8) or [Pylint](#pylint).                                                                                                  |
+| SwiftLint   | **{dotted-circle}** No | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
 
 ## View Code Quality results
 
@@ -202,6 +215,19 @@ To integrate its output:
 
 You can also use or adapt the [ESLint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
+#### Stylelint
+
+If you already have a [Stylelint](https://stylelint.io/) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
+To integrate its output:
+
+1. Add [`@studiometa/stylelint-formatter-gitlab`](https://www.npmjs.com/package/@studiometa/stylelint-formatter-gitlab) as a development dependency in your project.
+1. Add the `--custom-formatter=@studiometa/stylelint-formatter-gitlab` option to the command you use to run Stylelint.
+1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
+   - By default, the formatter reads your CI/CD configuration and infers the filename where it should save the report.
+     If the formatter can't infer the filename you used in your artifact declaration, set the CI/CD variable `STYLELINT_CODE_QUALITY_REPORT` to the filename specified for your artifact, such as `gl-code-quality-report.json`.
+
+For more details and an example CI/CD job definition, see the [documentation for `@studiometa/stylelint-formatter-gitlab`](https://www.npmjs.com/package/@studiometa/stylelint-formatter-gitlab#usage).
+
 #### MyPy
 
 If you already have a [MyPy](https://mypy-lang.org/) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
@@ -242,6 +268,17 @@ To integrate its output:
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 
 You can also use or adapt the [Pylint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+
+#### Ruff
+
+If you already have a [Ruff](https://docs.astral.sh/ruff/) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
+To integrate its output:
+
+1. Add the argument `--output-format=gitlab` to the command you use to run Ruff.
+1. Change your `ruff check` command to send its output to a file.
+1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
+
+You can also use or adapt the [documented Ruff GitLab CI/CD integration](https://docs.astral.sh/ruff/integrations/#gitlab-cicd) to run the scan and integrate its output with Code Quality.
 
 #### golangci-lint
 

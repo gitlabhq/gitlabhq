@@ -14967,6 +14967,9 @@ msgstr ""
 msgid "ContainerRegistry|Container protection rule updated."
 msgstr ""
 
+msgid "ContainerRegistry|Container registry"
+msgstr ""
+
 msgid "ContainerRegistry|Container registry cleanup policies"
 msgstr ""
 
@@ -15219,6 +15222,9 @@ msgid "ContainerRegistry|Tags with names that match this regex pattern are kept.
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The %{linkStart}GitLab Container Registry%{linkEnd} is a secure and private registry for container images. It’s built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab API to manage the registry across groups and projects."
 msgstr ""
 
 msgid "ContainerRegistry|The %{linkStart}next-generation container registry%{linkEnd} is now available for upgrade on self-managed instances. This upgraded registry supports online garbage collection, and has significant performance and reliability improvements."
@@ -39414,6 +39420,9 @@ msgstr ""
 msgid "PackageRegistry|When a package with same name and version is uploaded to the registry, more assets are added to the package. To save storage space, keep only the most recent assets."
 msgstr ""
 
+msgid "PackageRegistry|With the GitLab package registry, you can use GitLab as a private or public registry for a variety of %{linkStart}supported package managers%{linkEnd}. You can publish and share packages, which can be consumed as a dependency in downstream projects."
+msgstr ""
+
 msgid "PackageRegistry|Yes, delete package"
 msgstr ""
 
@@ -41017,6 +41026,9 @@ msgid "Pipeline|Run for branch name or tag"
 msgstr ""
 
 msgid "Pipeline|Run merge request pipeline"
+msgstr ""
+
+msgid "Pipeline|Run new pipeline"
 msgstr ""
 
 msgid "Pipeline|Run pipeline"

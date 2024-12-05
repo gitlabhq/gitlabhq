@@ -42,8 +42,8 @@ module QA
         end
 
         def initialize_admin_api_client!
-          Runtime::UserStore.initialize_admin_api_client
-        rescue Runtime::UserStore::ExpiredAdminPasswordError
+          Runtime::User::Store.initialize_admin_api_client
+        rescue Runtime::User::ExpiredPasswordError
           # Reset admin password if admin token is present but can't be used due to expired password
           # Mostly issue with gdk where default seeded password for admin user will be expired
           Runtime::Logger.warn(
@@ -54,7 +54,7 @@ module QA
           Page::Main::Login.perform(&:sign_in_using_admin_credentials)
           Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
-          Runtime::UserStore.initialize_admin_api_client # re-initialize admin client after password reset
+          Runtime::User::Store.initialize_admin_api_client # re-initialize admin client after password reset
         end
 
         # Initialize test user and it's api client before test execution for live environments
@@ -63,8 +63,8 @@ module QA
         def initialize_test_user!
           return unless Runtime::Env.running_on_live_env?
 
-          Runtime::UserStore.initialize_user_api_client
-          Runtime::UserStore.initialize_test_user
+          Runtime::User::Store.initialize_user_api_client
+          Runtime::User::Store.initialize_test_user
         end
       end
     end

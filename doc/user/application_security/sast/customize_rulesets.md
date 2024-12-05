@@ -29,7 +29,7 @@ You can disable predefined rules for any SAST analyzer.
 
 When you disable a rule:
 
-- Most analyzers still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](index.md#output).
+- Most analyzers still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](index.md#download-a-sast-report).
 - Findings for the disabled rule no longer appear in the [pipeline security tab](../index.md#pipeline-security-tab).
 - Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/index.md#activity-filter) in the [vulnerability report](../index.md#vulnerability-report).
 
@@ -200,7 +200,7 @@ rule that you wish to modify.
 | `value` | The value of the identifier used by the predefined rule. |
 
 You can look up the correct values for `type` and `value` by viewing the
-[`gl-sast-report.json`](index.md#output) produced by the analyzer.
+[`gl-sast-report.json`](index.md#download-a-sast-report) produced by the analyzer.
 You can download this file as a job artifact from the analyzer's CI job.
 
 For example, the snippet below shows a finding from a `semgrep` rule with three

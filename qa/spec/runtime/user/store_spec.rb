@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe Runtime::UserStore do
+  RSpec.describe Runtime::User::Store do
+    include QA::Support::Helpers::StubEnv
+
     let(:default_admin_token) { "ypCa3Dzb23o5nvsixwPA" }
 
     before do
@@ -29,6 +31,10 @@ module QA
       if described_class.instance_variable_defined?(:@test_user)
         described_class.send(:remove_instance_variable, :@test_user)
       end
+
+      described_class.instance_variable_set(:@admin_username, nil)
+      described_class.instance_variable_set(:@admin_password, nil)
+      described_class.instance_variable_set(:@admin_api_token, nil)
     end
 
     def mock_user_get(token:, code: 200, body: { is_admin: true, id: 1, username: "root" }.to_json)
@@ -42,12 +48,11 @@ module QA
       let(:no_admin_env) { false }
 
       before do
-        allow(Runtime::Env).to receive_messages({
-          admin_username: nil,
-          admin_password: nil,
-          admin_personal_access_token: admin_token,
-          no_admin_environment?: no_admin_env
-        })
+        stub_env("GITLAB_ADMIN_USERNAME", nil)
+        stub_env("GITLAB_ADMIN_PASSWORD", nil)
+        stub_env("GITLAB_QA_ADMIN_ACCESS_TOKEN", admin_token)
+
+        allow(Runtime::Env).to receive(:no_admin_environment?).and_return(no_admin_env)
       end
 
       context "with no admin env" do
@@ -89,7 +94,7 @@ module QA
 
         it "raises InvalidTokenError" do
           expect { described_class.admin_api_client }.to raise_error(
-            described_class::InvalidTokenError, "API client validation failed! Code: 401, Err: '401 Unauthorized'"
+            Runtime::User::InvalidTokenError, "API client validation failed! Code: 401, Err: '401 Unauthorized'"
           )
         end
       end
@@ -101,9 +106,9 @@ module QA
           mock_user_get(token: admin_token, code: 403, body: "Your password expired")
         end
 
-        it "raises ExpiredAdminPasswordError" do
+        it "raises ExpiredPasswordError" do
           expect { described_class.admin_api_client }.to raise_error(
-            described_class::ExpiredAdminPasswordError, "Password for client's user has expired and must be reset"
+            Runtime::User::ExpiredPasswordError, "Password for client's user has expired and must be reset"
           )
         end
       end
@@ -143,12 +148,11 @@ module QA
       let(:no_admin_env) { false }
 
       before do
-        allow(Runtime::Env).to receive_messages({
-          admin_username: nil,
-          admin_password: nil,
-          admin_personal_access_token: nil,
-          no_admin_environment?: no_admin_env
-        })
+        stub_env("GITLAB_ADMIN_USERNAME", nil)
+        stub_env("GITLAB_ADMIN_PASSWORD", nil)
+        stub_env("GITLAB_QA_ADMIN_ACCESS_TOKEN", nil)
+
+        allow(Runtime::Env).to receive(:no_admin_environment?).and_return(no_admin_env)
       end
 
       context "with no admin env" do
@@ -165,7 +169,8 @@ module QA
           let(:password) { "admin-password" }
 
           before do
-            allow(Runtime::Env).to receive_messages({ admin_username: username, admin_password: password })
+            stub_env("GITLAB_ADMIN_USERNAME", username)
+            stub_env("GITLAB_ADMIN_PASSWORD", password)
           end
 
           it "returns admin user with configured credentials" do
@@ -216,7 +221,7 @@ module QA
             described_class.initialize_admin_user
 
             expect(Runtime::Logger).to have_received(:warn).with(<<~WARN)
-              Configured global api client does not belong to configured global user
+              Configured api client does not belong to the user
               Please check values for user authentication related variables
             WARN
           end
@@ -229,7 +234,7 @@ module QA
 
           it "raises invalid token error" do
             expect { described_class.admin_user }.to raise_error(
-              described_class::InvalidTokenError, "API client validation failed! Code: 403, Err: 'Unauthorized'"
+              Runtime::User::InvalidTokenError, "API client validation failed! Code: 403, Err: 'Unauthorized'"
             )
           end
         end
@@ -245,12 +250,11 @@ module QA
         let(:api_token) { "token" }
 
         before do
-          allow(Runtime::Env).to receive_messages({
-            user_username: username,
-            user_password: password,
-            personal_access_token: api_token,
-            running_on_live_env?: true
-          })
+          stub_env("GITLAB_USERNAME", username)
+          stub_env("GITLAB_PASSWORD", password)
+          stub_env("GITLAB_QA_ACCESS_TOKEN", api_token)
+
+          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(true)
         end
 
         context "when api token variable is set" do
@@ -263,23 +267,16 @@ module QA
           end
         end
 
-        context "when api token variable and user variables are not set" do
-          let(:api_token) { nil }
-          let(:username) { nil }
-          let(:password) { nil }
-
-          it "does not return api client" do
-            expect(user_api_client).to be_nil
-          end
-        end
-
         context "with invalid token set via environment variable" do
           before do
             mock_user_get(token: api_token, code: 401, body: "401 Unauthorized")
           end
 
-          it "does not return api client" do
-            expect(user_api_client).to be_nil
+          it "raises invalid token error" do
+            expect { user_api_client }.to raise_error(
+              Runtime::User::InvalidTokenError,
+              "API client validation failed! Code: 401, Err: '401 Unauthorized'"
+            )
           end
         end
 
@@ -288,8 +285,11 @@ module QA
             mock_user_get(token: api_token, code: 403, body: "Your password expired")
           end
 
-          it "does not return api client" do
-            expect(user_api_client).to be_nil
+          it "raises expired password error" do
+            expect { user_api_client }.to raise_error(
+              Runtime::User::ExpiredPasswordError,
+              "Password for client's user has expired and must be reset"
+            )
           end
         end
 
@@ -345,12 +345,11 @@ module QA
         let(:password) { "password" }
 
         before do
-          allow(Runtime::Env).to receive_messages({
-            user_username: username,
-            user_password: password,
-            personal_access_token: nil,
-            running_on_live_env?: true
-          })
+          stub_env("GITLAB_USERNAME", username)
+          stub_env("GITLAB_PASSWORD", password)
+          stub_env("GITLAB_QA_ACCESS_TOKEN", nil)
+
+          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(true)
         end
 
         context "when api client has not been initialized" do
@@ -365,24 +364,33 @@ module QA
             let(:username) { nil }
             let(:password) { nil }
 
-            it "does not return test user" do
-              expect(test_user).to be_nil
+            it "raises error" do
+              expect { test_user }.to raise_error <<~ERR
+                Missing global test user credentials,
+                please set 'GITLAB_USERNAME' and 'GITLAB_PASSWORD' environment variables
+              ERR
             end
           end
 
           context "with only username set" do
             let(:password) { nil }
 
-            it "does not return test user" do
-              expect(test_user).to be_nil
+            it "raises error" do
+              expect { test_user }.to raise_error <<~ERR
+                Missing global test user credentials,
+                please set 'GITLAB_USERNAME' and 'GITLAB_PASSWORD' environment variables
+              ERR
             end
           end
 
           context "with only password set" do
             let(:username) { nil }
 
-            it "does not return test user" do
-              expect(test_user).to be_nil
+            it "raises error" do
+              expect { test_user }.to raise_error <<~ERR
+                Missing global test user credentials,
+                please set 'GITLAB_USERNAME' and 'GITLAB_PASSWORD' environment variables
+              ERR
             end
           end
         end
@@ -418,8 +426,8 @@ module QA
               described_class.initialize_test_user
 
               expect(Runtime::Logger).to have_received(:warn).with(<<~WARN)
-              Configured global api client does not belong to configured global user
-              Please check values for user authentication related variables
+                Configured api client does not belong to the user
+                Please check values for user authentication related variables
               WARN
             end
           end
@@ -430,9 +438,9 @@ module QA
             end
 
             it "raises invalid token error" do
-              expect(test_user).to be_nil
-              expect(Runtime::Logger).to have_received(:warn).with(
-                "Failed to create test user: API client validation failed! Code: 403, Err: 'Unauthorized'"
+              expect { test_user }.to raise_error(
+                Runtime::User::InvalidTokenError,
+                "API client validation failed! Code: 403, Err: 'Unauthorized'"
               )
             end
           end

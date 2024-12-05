@@ -14,8 +14,10 @@ module QA
 
           @test_mapping = Hash.new { |hsh, key| hsh[key] = [] }
           @logger = Runtime::Logger.logger
-          @headers_access_token = { "PRIVATE-TOKEN" => Runtime::Env.admin_personal_access_token }
           @cov_api_endpoint = "#{Runtime::Scenario.gitlab_address}/api/v4/internal/coverage"
+          @headers_access_token = {
+            "PRIVATE-TOKEN" => Runtime::User::Data.admin_api_token || Runtime::User::Data::DEFAULT_ADMIN_API_TOKEN
+          }
         end
 
         ::RSpec::Core::Formatters.register(

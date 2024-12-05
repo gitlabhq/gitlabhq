@@ -563,7 +563,7 @@ export default {
         class="js-no-auto-disable gl-mr-3"
         data-testid="run-pipeline-button"
         :disabled="submitted"
-        >{{ s__('Pipeline|Run pipeline') }}</gl-button
+        >{{ s__('Pipeline|New pipeline') }}</gl-button
       >
       <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>
     </div>

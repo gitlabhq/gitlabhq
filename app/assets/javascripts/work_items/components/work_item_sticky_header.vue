@@ -130,7 +130,7 @@ export default {
           />
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <gl-link
-            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-black"
+            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
             href="#top"
             :title="workItem.title"
           >

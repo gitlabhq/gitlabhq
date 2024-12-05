@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Use a Confluence Workspace as your project wiki.
+Use a Confluence Cloud Workspace as your project wiki.
 
 This integration adds a link to a Confluence wiki instead of the [GitLab wiki](../wiki/index.md).
 Any content you have in Confluence is not displayed in GitLab.

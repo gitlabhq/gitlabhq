@@ -86,7 +86,8 @@ module BulkImports
 
         log_and_fail(e, step, entry)
       rescue Gitlab::Import::SourceUserMapper::FailedToObtainLockError,
-        Gitlab::Import::SourceUserMapper::DuplicatedSourceUserError => e
+        Gitlab::Import::SourceUserMapper::DuplicatedUserError => e
+
         raise BulkImports::RetryPipelineError.new(e.message), cause: e
       rescue BulkImports::RetryPipelineError
         raise

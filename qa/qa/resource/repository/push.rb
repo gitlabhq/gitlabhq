@@ -106,7 +106,7 @@ module QA
         private
 
         def user
-          @user ||= Runtime::UserStore.test_user || Runtime::UserStore.admin_user
+          @user ||= Runtime::User::Store.test_user || Runtime::User::Store.admin_user
         end
 
         def default_branch(repository)

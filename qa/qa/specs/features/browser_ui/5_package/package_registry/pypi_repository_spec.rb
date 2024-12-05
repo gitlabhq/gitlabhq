@@ -6,7 +6,7 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:personal_access_token) { Runtime::UserStore.default_api_client.personal_access_token }
+      let(:personal_access_token) { Runtime::User::Store.default_api_client.personal_access_token }
       let(:project) { create(:project, :private, name: 'pypi-package-project') }
       let(:package) { build(:package, name: "mypypipackage-#{SecureRandom.hex(8)}", project: project) }
 

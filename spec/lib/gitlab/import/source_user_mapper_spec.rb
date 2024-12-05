@@ -96,6 +96,31 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         end
       end
 
+      context 'when another source user was created before the lease was obtained' do
+        let(:race_condition_source_user) do
+          create(:import_source_user,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname,
+            source_name: source_name,
+            source_username: source_username,
+            source_user_identifier: source_user_identifier
+          )
+        end
+
+        it 'returns the existing source user' do
+          expect_next_instance_of(described_class) do |source_user_mapper|
+            expect(source_user_mapper).to receive(:create_source_user).and_wrap_original do |original_method, **args|
+              race_condition_source_user
+
+              original_method.call(**args)
+            end
+          end
+
+          expect(find_or_create_source_user).to eq(race_condition_source_user)
+        end
+      end
+
       context 'when retried and another source user is not created while waiting' do
         before do
           allow_next_instance_of(described_class) do |source_user_mapper|
@@ -182,18 +207,18 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         end
       end
 
-      it 'raises DuplicatedSourceUserError' do
-        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+      it 'raises DuplicatedUserError' do
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedUserError)
       end
     end
 
     context 'when ActiveRecord::RecordInvalid exception because the placeholder user email or username is taken' do
-      it 'rescue the exception and raises DuplicatedSourceUserError' do
+      it 'rescue the exception and raises DuplicatedUserError' do
         create(:user, email: 'user@example.com')
         user = build(:user, email: 'user@example.com').tap(&:valid?)
         allow(User).to receive(:new).and_return(user)
 
-        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedUserError)
       end
     end
 

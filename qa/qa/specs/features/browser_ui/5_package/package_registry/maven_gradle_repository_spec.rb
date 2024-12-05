@@ -12,7 +12,7 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:personal_access_token) { Runtime::UserStore.default_api_client.personal_access_token }
+      let(:personal_access_token) { Runtime::User::Store.default_api_client.personal_access_token }
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven_gradle-#{SecureRandom.hex(8)}" }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }

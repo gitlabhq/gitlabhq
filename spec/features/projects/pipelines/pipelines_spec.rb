@@ -777,7 +777,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           subject(:run_pipeline) do
-            find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+            find_by_testid('run-pipeline-button', text: 'New pipeline').click
 
             wait_for_requests
           end
@@ -796,7 +796,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               end
 
               expect do
-                find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+                find_by_testid('run-pipeline-button', text: 'New pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -809,7 +809,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'without gitlab-ci.yml' do
           before do
-            find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+            find_by_testid('run-pipeline-button', text: 'New pipeline').click
             wait_for_requests
           end
 
@@ -819,7 +819,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+              find_by_testid('run-pipeline-button', text: 'New pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
