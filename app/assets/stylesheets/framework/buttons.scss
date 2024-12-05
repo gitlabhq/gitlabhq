@@ -62,20 +62,6 @@
 .btn {
   white-space: nowrap;
   @include btn-default;
-  @include gl-button-theme(
-    $color: var(--gl-button-default-primary-foreground-color-default),
-    $background-color: var(--gl-button-default-primary-background-color-default),
-    $border-color: var(--gl-button-default-primary-border-color-default),
-    $hover-color: var(--gl-button-default-primary-foreground-color-hover),
-    $hover-background-color: var(--gl-button-default-primary-background-color-hover),
-    $hover-border-color: var(--gl-button-default-primary-border-color-hover),
-    $focus-color: var(--gl-button-default-primary-foreground-color-focus),
-    $focus-background-color: var(--gl-button-default-primary-background-color-focus),
-    $focus-border-color: var(--gl-button-default-primary-border-color-focus),
-    $active-color: var(--gl-button-default-primary-foreground-color-active),
-    $active-background-color: var(--gl-button-default-primary-background-color-active),
-    $active-border-color: var(--gl-button-default-primary-border-color-active),
-  );
 
   &:focus:active {
     outline: 0;
@@ -85,23 +71,6 @@
     &.btn-danger {
       @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
     }
-  }
-
-  &.btn-danger.btn-danger {
-    @include gl-button-theme(
-      $color: var(--gl-button-danger-primary-foreground-color-default),
-      $background-color: var(--gl-button-danger-primary-background-color-default),
-      $border-color: var(--gl-button-danger-primary-border-color-default),
-      $hover-color: var(--gl-button-danger-primary-foreground-color-hover),
-      $hover-background-color: var(--gl-button-danger-primary-background-color-hover),
-      $hover-border-color: var(--gl-button-danger-primary-border-color-hover),
-      $focus-color: var(--gl-button-danger-primary-foreground-color-focus),
-      $focus-background-color: var(--gl-button-danger-primary-background-color-focus),
-      $focus-border-color: var(--gl-button-danger-primary-border-color-focus),
-      $active-color: var(--gl-button-danger-primary-foreground-color-active),
-      $active-background-color: var(--gl-button-danger-primary-background-color-active),
-      $active-border-color: var(--gl-button-danger-primary-border-color-active),
-    );
   }
 
   &.btn-grouped {
@@ -137,6 +106,47 @@
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;
+  }
+}
+
+/**
+ * Use `gl-button-theme` mixin from GitLab UI to apply same styles to
+ * <button class="btn"> and <button class="btn btn-danger"> as GlButton.
+ * Use `:not(.gl-button)` selector to avoid overriding GlButton usage.
+ * Use `.btn-danger.btn-danger` double selector to increase specificity
+ * against Bootstrap default .btn-danger styles for hover/focus states.
+ */
+.btn:not(.gl-button) {
+  @include gl-button-theme(
+    $color: var(--gl-button-default-primary-foreground-color-default),
+    $background-color: var(--gl-button-default-primary-background-color-default),
+    $border-color: var(--gl-button-default-primary-border-color-default),
+    $hover-color: var(--gl-button-default-primary-foreground-color-hover),
+    $hover-background-color: var(--gl-button-default-primary-background-color-hover),
+    $hover-border-color: var(--gl-button-default-primary-border-color-hover),
+    $focus-color: var(--gl-button-default-primary-foreground-color-focus),
+    $focus-background-color: var(--gl-button-default-primary-background-color-focus),
+    $focus-border-color: var(--gl-button-default-primary-border-color-focus),
+    $active-color: var(--gl-button-default-primary-foreground-color-active),
+    $active-background-color: var(--gl-button-default-primary-background-color-active),
+    $active-border-color: var(--gl-button-default-primary-border-color-active),
+  );
+
+  &.btn-danger.btn-danger {
+    @include gl-button-theme(
+      $color: var(--gl-button-danger-primary-foreground-color-default),
+      $background-color: var(--gl-button-danger-primary-background-color-default),
+      $border-color: var(--gl-button-danger-primary-border-color-default),
+      $hover-color: var(--gl-button-danger-primary-foreground-color-hover),
+      $hover-background-color: var(--gl-button-danger-primary-background-color-hover),
+      $hover-border-color: var(--gl-button-danger-primary-border-color-hover),
+      $focus-color: var(--gl-button-danger-primary-foreground-color-focus),
+      $focus-background-color: var(--gl-button-danger-primary-background-color-focus),
+      $focus-border-color: var(--gl-button-danger-primary-border-color-focus),
+      $active-color: var(--gl-button-danger-primary-foreground-color-active),
+      $active-background-color: var(--gl-button-danger-primary-background-color-active),
+      $active-border-color: var(--gl-button-danger-primary-border-color-active),
+    );
   }
 }
 

@@ -94,6 +94,19 @@ RSpec.describe Mutations::MergeRequests::Accept, feature_category: :api do
         end
         expect(result).to include(errors: be_empty, merge_request: be_auto_merge_enabled)
       end
+
+      context 'when MR is in draft state' do
+        before do
+          merge_request.update!(title: "Draft: Test")
+        end
+
+        it "can use the MERGE_WHEN_CHECKS_PASS strategy" do
+          expect_next_found_instance_of(MergeRequest) do |instance|
+            expect(instance).not_to receive(:merge_async)
+          end
+          expect(result).to include(errors: be_empty, merge_request: be_auto_merge_enabled)
+        end
+      end
     end
   end
 end

@@ -26,7 +26,6 @@ export default {
   i18n: {
     findFile: __('Find file'),
     blame: __('Blame'),
-    history: __('History'),
     permalink: __('Permalink'),
     permalinkTooltip: __('Go to permalink'),
     errorMessage: __('An error occurred while loading the blob controls.'),
@@ -175,15 +174,6 @@ export default {
       class="js-blob-blame-link"
     >
       {{ $options.i18n.blame }}
-    </gl-button>
-
-    <gl-button
-      data-testid="history"
-      :href="blobInfo.historyPath"
-      :class="$options.buttonClassList"
-      class="sm:gl-hidden"
-    >
-      {{ $options.i18n.history }}
     </gl-button>
 
     <gl-button

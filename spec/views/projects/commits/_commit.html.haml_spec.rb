@@ -2,31 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/commits/_commit.html.haml' do
+RSpec.describe 'projects/commits/_commit.html.haml', feature_category: :source_code_management do
   let(:template) { 'projects/commits/commit' }
   let(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit(ref) }
 
   before do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
-  end
-
-  context 'with different committer' do
-    let(:ref) { 'master' }
-    let(:committer) { create(:user) }
-
-    it 'renders committed by user' do
-      allow(commit).to receive(:different_committer?).and_return(true)
-      allow(commit).to receive(:committer).and_return(committer)
-
-      render partial: template, formats: :html, locals: {
-        project: project,
-        ref: ref,
-        commit: commit
-      }
-
-      expect(rendered).to have_text("#{committer.name} committed")
-    end
   end
 
   context 'with a signed commit' do
@@ -109,44 +91,34 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
     end
   end
 
-  context 'with history button' do
+  it 'does not render history button' do
+    allow(view).to receive(:project_commits_path).and_return('/commits/123')
+    expect(rendered).not_to have_css('#js-commit-history-link')
+  end
+
+  context 'when it is blob page' do
     let(:ref) { 'master' }
 
-    it 'does not render the history button when show_history_button is not provided' do
-      render partial: template, formats: :html, locals: {
-        project: project,
-        ref: ref,
-        commit: commit
-      }
-
-      expect(rendered).not_to have_css('#js-commit-history-link')
-      expect(rendered).not_to have_content('History')
-    end
-
-    it 'renders the history button when show_history_button is true' do
+    before do
       allow(view).to receive(:project_commits_path).and_return('/commits/123')
-
       render partial: template, formats: :html, locals: {
         project: project,
         ref: ref,
         commit: commit,
-        show_history_button: true
+        is_blob_page: true
       }
-
-      expect(rendered).to have_css('#js-commit-history-link')
-      expect(rendered).to have_content('History')
     end
 
-    it 'does not render the history button when show_history_button is false' do
-      render partial: template, formats: :html, locals: {
-        project: project,
-        ref: ref,
-        commit: commit,
-        show_history_button: false
-      }
+    it 'renders the history button' do
+      expect(rendered).to have_css('#js-commit-history-link')
+    end
 
-      expect(rendered).not_to have_css('#js-commit-history-link')
-      expect(rendered).not_to have_content('History')
+    it 'only renders commit details when expanded' do
+      expect(rendered).to have_selector('.js-toggle-content')
+      within('.js-toggle-content') do
+        expect(rendered).to have_selector('.commit-row-description')
+        expect(rendered).to have_content(commit.short_id)
+      end
     end
   end
 end

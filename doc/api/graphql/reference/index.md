@@ -342,7 +342,7 @@ Returns [`CiStage`](#cistage).
 
 ### `Query.ciQueueingHistory`
 
-Time taken for CI jobs to be picked up by runner by percentile.
+Time taken for CI jobs to be picked up by runner by percentile. Enable the ClickHouse database backend to use this query.
 
 DETAILS:
 **Introduced** in GitLab 16.4.
@@ -1045,7 +1045,7 @@ Returns [`RunnerSetup`](#runnersetup).
 
 ### `Query.runnerUsage`
 
-Runner usage by runner.
+Runner usage by runner. Enable the ClickHouse database backend to use this query.
 
 Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 
@@ -1061,7 +1061,7 @@ Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 
 ### `Query.runnerUsageByProject`
 
-Runner usage by project.
+Runner usage by project. Enable the ClickHouse database backend to use this query.
 
 Returns [`[CiRunnerUsageByProject!]`](#cirunnerusagebyproject).
 
@@ -24648,7 +24648,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.ciQueueingHistory`
 
-Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group.
+Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group. Enable the ClickHouse database backend to use this query.
 
 DETAILS:
 **Introduced** in GitLab 16.11.
