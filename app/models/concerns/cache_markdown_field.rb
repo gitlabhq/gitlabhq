@@ -187,6 +187,10 @@ module CacheMarkdownField
     end
   end
 
+  def store_mentions_after_commit?
+    false
+  end
+
   included do
     cattr_reader :cached_markdown_fields do
       Gitlab::MarkdownCache::FieldData.new

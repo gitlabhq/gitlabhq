@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.deploy_keys
 description: Count of deploy keys
 product_group: environments
+product_categories:
+- continuous_delivery
 value_type: number
 status: active
 time_frame: all

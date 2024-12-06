@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.testing.i_testing_active_user_monthly
 description: Count of monthly active users for pipeline insights features
 product_group: pipeline_execution
+product_categories:
+- code_testing
 value_type: number
 status: active
 milestone: "15.9"

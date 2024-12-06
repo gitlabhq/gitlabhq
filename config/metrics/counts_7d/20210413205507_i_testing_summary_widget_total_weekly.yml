@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.testing.i_testing_summary_widget_total_weekly
 description: Unique users that expand the test summary merge request widget by week
 product_group: pipeline_execution
+product_categories:
+- code_testing
 value_type: number
 status: removed
 milestone: "13.11"

@@ -27,9 +27,9 @@ to create a merge request description.
 
 1. [Create a new merge request](creating_merge_requests.md).
 1. In the **Description** field, put your cursor where you want to insert the description.
-1. Above the description, select **Summarize code changes**.
+1. Select **Summarize code changes**.
 
-   ![merge_request_ai_summary_v16_11](img/merge_request_ai_summary_v16_11.png)
+   ![merge_request_ai_summary_v17_6](img/merge_request_ai_summary_v17_6.png)
 
 The description is inserted where your cursor was.
 

@@ -1201,9 +1201,9 @@ module Ci
     end
 
     def token
-      return super unless Feature.enabled?(:ci_job_token_jwt, user)
+      return encoded_jwt if user&.has_composite_identity? || Feature.enabled?(:ci_job_token_jwt, user)
 
-      encoded_jwt
+      super
     end
 
     protected

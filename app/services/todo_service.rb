@@ -10,6 +10,8 @@
 class TodoService
   include Gitlab::Utils::UsageData
 
+  BATCH_SIZE = 100
+
   # When create an issue we should:
   #
   #  * create a todo for assignee if issue is assigned
@@ -313,6 +315,23 @@ class TodoService
 
     return if users.empty?
 
+    issue_type = attributes.delete(:issue_type)
+
+    excluded_user_ids = excluded_user_ids(users, attributes)
+    users.reject! { |user| excluded_user_ids.include?(user.id) }
+
+    todos = bulk_insert_todos(users, attributes)
+    users.each { |user| track_todo_creation(user, issue_type, namespace, project) }
+
+    # replicate `keep_around_commit` after_save callback
+    todos.select { |todo| todo.commit_id.present? }.each(&:keep_around_commit)
+
+    Users::UpdateTodoCountCacheService.new(users.map(&:id)).execute
+
+    todos
+  end
+
+  def excluded_user_ids(users, attributes)
     users_single_todos, users_multiple_todos = users.partition { |u| Feature.disabled?(:multiple_todos, u) }
     excluded_user_ids = []
 
@@ -330,18 +349,21 @@ class TodoService
       ).distinct_user_ids
     end
 
-    users.reject! { |user| excluded_user_ids.include?(user.id) }
+    excluded_user_ids
+  end
 
-    todos = users.map do |user|
-      issue_type = attributes.delete(:issue_type)
-      track_todo_creation(user, issue_type, namespace, project)
+  def bulk_insert_todos(users, attributes)
+    todos_ids = []
 
-      Todo.create(attributes.merge(user_id: user.id))
+    users.each_slice(BATCH_SIZE) do |users_batch|
+      todos_attributes = users_batch.map do |user|
+        Todo.new(attributes.merge(user_id: user.id)).attributes.except('id', 'created_at', 'updated_at')
+      end
+
+      todos_ids += Todo.insert_all(todos_attributes, returning: :id).rows.flatten unless todos_attributes.blank?
     end
 
-    Users::UpdateTodoCountCacheService.new(users.map(&:id)).execute
-
-    todos
+    Todo.id_in(todos_ids).to_a
   end
 
   def new_issuable(issuable, author)
@@ -383,6 +405,7 @@ class TodoService
       project = target.project
       assignees = target.assignees - old_assignees
       attributes = attributes_for_todo(project, target, author, Todo::ASSIGNED)
+
       create_todos(assignees, attributes, target_namespace(target), project)
     end
   end

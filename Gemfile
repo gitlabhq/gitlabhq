@@ -392,7 +392,7 @@ gem 'sentry-sidekiq', '~> 5.21.0', feature_category: :observability
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 5.1.0', feature_category: :database
+gem 'pg_query', '~> 6.0.0', feature_category: :database
 
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-http', path: 'gems/gitlab-http' # rubocop:todo Gemfile/MissingFeatureCategory

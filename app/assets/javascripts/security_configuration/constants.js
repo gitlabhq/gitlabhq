@@ -21,6 +21,8 @@ import configureSecretDetectionMutation from './graphql/configure_secret_detecti
 export const SAST_NAME = __('Static Application Security Testing (SAST)');
 export const SAST_SHORT_NAME = s__('ciReport|SAST');
 
+export const ADVANCED_SAST_NAME = s__('ciReport|Advanced SAST Scanning');
+
 export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
 export const SAST_IAC_SHORT_NAME = s__('ciReport|SAST IaC');
 
@@ -52,6 +54,7 @@ export const PRE_RECEIVE_SECRET_DETECTION_NAME = __('Secret push protection');
 
 export const SCANNER_NAMES_MAP = {
   SAST: SAST_SHORT_NAME,
+  SAST_ADVANCED: ADVANCED_SAST_NAME,
   SAST_IAC: SAST_IAC_NAME,
   DAST: DAST_SHORT_NAME,
   API_FUZZING: API_FUZZING_NAME,

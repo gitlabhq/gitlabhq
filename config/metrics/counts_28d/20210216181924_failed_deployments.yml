@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts_monthly.failed_deployments
 description: Total failed deployments
 product_group: environments
+product_categories:
+- continuous_delivery
 value_type: number
 status: active
 time_frame: 28d

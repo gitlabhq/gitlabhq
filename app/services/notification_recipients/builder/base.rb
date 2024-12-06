@@ -3,6 +3,10 @@
 module NotificationRecipients
   module Builder
     class Base
+      include ::Gitlab::Utils::StrongMemoize
+
+      BATCH_SIZE = 100
+
       def initialize(*)
         raise 'abstract'
       end
@@ -12,6 +16,7 @@ module NotificationRecipients
       end
 
       def filter!
+        preload_notification_settings
         recipients.select!(&:notifiable?)
       end
 
@@ -31,10 +36,12 @@ module NotificationRecipients
       def project
         target.project
       end
+      strong_memoize_attr :project
 
       def group
         project&.group || target.try(:group)
       end
+      strong_memoize_attr :group
 
       def recipients
         @recipients ||= []
@@ -193,6 +200,15 @@ module NotificationRecipients
       end
 
       private
+
+      def preload_notification_settings
+        sources = [project, group&.self_and_ancestors_asc, nil].flatten
+
+        ActiveRecord::Associations::Preloader.new(
+          records: recipients.map(&:user), associations: [:notification_settings],
+          scope: NotificationSetting.by_sources(sources)
+        ).call
+      end
 
       def preload_users_namespace_bans(_users)
         # overridden in EE

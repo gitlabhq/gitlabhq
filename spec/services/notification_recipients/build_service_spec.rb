@@ -19,8 +19,6 @@ RSpec.describe NotificationRecipients::BuildService, feature_category: :team_pla
 
         create_user
 
-        service.build_new_note_recipients(note)
-
         control = ActiveRecord::QueryRecorder.new do
           service.build_new_note_recipients(note)
         end
@@ -73,8 +71,6 @@ RSpec.describe NotificationRecipients::BuildService, feature_category: :team_pla
         threshold = project.private? ? 1 : 0
 
         create_user
-
-        service.build_new_review_recipients(review)
 
         control = ActiveRecord::QueryRecorder.new do
           service.build_new_review_recipients(review)

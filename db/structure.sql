@@ -6248,7 +6248,12 @@ CREATE TABLE ai_settings (
     singleton boolean DEFAULT true NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    amazon_q_oauth_application_id bigint,
+    amazon_q_service_account_user_id bigint,
+    amazon_q_ready boolean DEFAULT false NOT NULL,
+    amazon_q_role_arn text,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
+    CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
 );
 
@@ -20157,7 +20162,7 @@ CREATE TABLE software_license_policies (
     approval_policy_rule_id bigint,
     software_license_spdx_identifier text,
     CONSTRAINT check_986c4e5c59 CHECK ((char_length(software_license_spdx_identifier) <= 255)),
-    CONSTRAINT check_9ba23ae4c3 CHECK ((num_nonnulls(custom_software_license_id, software_license_id) = 1))
+    CONSTRAINT check_9ba23ae4c3 CHECK ((num_nonnulls(custom_software_license_id, software_license_id) > 0))
 );
 
 CREATE SEQUENCE software_license_policies_id_seq
@@ -29306,6 +29311,10 @@ CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings 
 
 CREATE UNIQUE INDEX index_ai_self_hosted_models_on_name ON ai_self_hosted_models USING btree (name);
 
+CREATE INDEX index_ai_settings_on_amazon_q_oauth_application_id ON ai_settings USING btree (amazon_q_oauth_application_id);
+
+CREATE INDEX index_ai_settings_on_amazon_q_service_account_user_id ON ai_settings USING btree (amazon_q_service_account_user_id);
+
 CREATE UNIQUE INDEX index_ai_settings_on_singleton ON ai_settings USING btree (singleton);
 
 CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
@@ -36023,6 +36032,9 @@ ALTER TABLE ONLY analytics_dashboards_pointers
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_05f1e72feb FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_settings
+    ADD CONSTRAINT fk_05f695565a FOREIGN KEY (amazon_q_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_06067f5644 FOREIGN KEY (latest_merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE SET NULL;
 
@@ -37372,6 +37384,9 @@ ALTER TABLE ONLY external_status_checks_protected_branches
 
 ALTER TABLE ONLY dast_profiles_pipelines
     ADD CONSTRAINT fk_cc206a8c13 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_settings
+    ADD CONSTRAINT fk_cce81e0b9a FOREIGN KEY (amazon_q_service_account_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_ccf0373936 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

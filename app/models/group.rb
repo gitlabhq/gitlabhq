@@ -693,6 +693,11 @@ class Group < Namespace
     end
   end
 
+  def self_and_ancestors_asc
+    self_and_ancestors(hierarchy_order: :asc)
+  end
+  strong_memoize_attr :self_and_ancestors_asc
+
   # Only for direct and not requested members with higher access level than MIMIMAL_ACCESS
   # It returns true for non-active users
   def has_user?(user)

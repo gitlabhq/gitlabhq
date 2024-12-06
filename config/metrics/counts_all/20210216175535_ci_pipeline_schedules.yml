@@ -3,6 +3,8 @@ data_category: operational
 key_path: usage_activity_by_stage.verify.ci_pipeline_schedules
 description: Distinct users creating pipeline schedules
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 value_type: number
 status: active
 time_frame: all

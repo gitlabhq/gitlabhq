@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_auto_devops_weekly
 description: Count of pipelines using the latest Auto Deploy template
 product_group: environments
+product_categories:
+- auto_devops
 value_type: number
 status: active
 time_frame: 7d

@@ -2,7 +2,9 @@
 data_category: operational
 key_path: redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly
 description: Total count of pipelines runs
-product_group: environments
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: removed
 milestone_removed: '14.3'

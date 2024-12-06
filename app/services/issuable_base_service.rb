@@ -99,7 +99,7 @@ class IssuableBaseService < ::BaseContainerService
       params[id_key] = params[id_key].first(1)
     end
 
-    assignee_ids = params[id_key].select { |assignee_id| user_can_read?(issuable, assignee_id) }
+    assignee_ids = User.id_in(params[id_key]).select { |assignee| user_can_read?(issuable, assignee) }.map(&:id)
 
     if params[id_key].map(&:to_s) == [IssuableFinder::Params::NONE]
       params[id_key] = []
@@ -110,11 +110,7 @@ class IssuableBaseService < ::BaseContainerService
     end
   end
 
-  def user_can_read?(issuable, user_id)
-    user = User.find_by_id(user_id)
-
-    return false unless user
-
+  def user_can_read?(issuable, user)
     ability_name = :"read_#{issuable.to_ability_name}"
 
     can?(user, ability_name, issuable.resource_parent)

@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_terraform_module_user_weekly
 description: Count of distinct users that have interacted with Terraform modules in the package registry in the last 7 days
 product_group: environments
+product_categories:
+- infrastructure_as_code
 value_type: number
 status: active
 milestone: '13.11'

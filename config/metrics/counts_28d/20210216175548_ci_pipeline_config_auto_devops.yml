@@ -3,6 +3,8 @@ data_category: operational
 key_path: usage_activity_by_stage_monthly.verify.ci_pipeline_config_auto_devops
 description: Distinct users that ran an auto DevOps pipeline without a .gitlab-ci.yml file.
 product_group: environments
+product_categories:
+- auto_devops
 value_type: number
 status: active
 time_frame: 28d

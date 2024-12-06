@@ -384,6 +384,10 @@ class Todo < ApplicationRecord
     self_added? && (assigned? || review_requested?)
   end
 
+  def keep_around_commit
+    project.repository.keep_around(self.commit_id, source: self.class.name)
+  end
+
   private
 
   def build_work_item_target_url

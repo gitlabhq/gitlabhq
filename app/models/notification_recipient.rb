@@ -177,22 +177,11 @@ class NotificationRecipient
 
     return project_setting unless project_setting.nil? || project_setting.global?
 
-    group_setting = closest_non_global_group_notification_setting
+    group_setting = user.closest_non_global_group_notification_setting(@group)
 
     return group_setting unless group_setting.nil?
 
     user.global_notification_setting
-  end
-
-  # Returns the notification_setting of the lowest group in hierarchy with non global level
-  def closest_non_global_group_notification_setting
-    return unless @group
-
-    @group
-      .notification_settings(hierarchy_order: :asc)
-      .where(user: user)
-      .where.not(level: NotificationSetting.levels[:global])
-      .first
   end
 
   def participating_custom_action?

@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.in_review_folder
 description: A number of environments with name review/*
 product_group: environments
+product_categories:
+- continuous_delivery
 value_type: number
 status: active
 time_frame: all

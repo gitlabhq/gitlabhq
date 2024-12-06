@@ -2,7 +2,9 @@
 data_category: operational
 key_path: counts.ci_runners_instance_type_active
 description: Total active Shared (Instance) Runners
-product_group: pipeline_execution
+product_group: runner
+product_categories:
+- fleet_visibility
 value_type: number
 status: active
 milestone: "13.12"
