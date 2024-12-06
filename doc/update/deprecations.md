@@ -562,6 +562,35 @@ You can read more about it in the [charts release page](https://docs.gitlab.com/
 
 <div class="deprecation " data-milestone="18.0">
 
+### Gitaly rate limiting
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5011).
+
+</div>
+
+Because of the highly variable nature of Git operations and repository latencies, Gitaly
+[RPC-based rate limiting](https://docs.gitlab.com/ee/administration/gitaly/monitoring.html#monitor-gitaly-rate-limiting)
+is ineffective. Configuring proper rate limits is challenging and often becomes obsolete quickly because harmful
+actions rarely generate enough requests per second to stand out.
+
+Gitaly already supports [concurrency limiting](https://docs.gitlab.com/ee/administration/gitaly/concurrency_limiting.html) and an
+[adaptive limiting add-on](https://docs.gitlab.com/ee/administration/gitaly/concurrency_limiting.html#adaptive-concurrency-limiting),
+which have proven to work well in production.
+
+Because Gitaly is not directly exposed to external networks and external protection layers, such as load balancers,
+provide better safeguards, rate limiting is less effective.
+
+Therefore, we're depecating rate limiting in favor of the more reliable concurrency limiting. Gitaly RPC-based
+rate limiting will be removed in GitLab 18.0.
+
+</div>
+
+<div class="deprecation " data-milestone="18.0">
+
 ### Group vulnerability report by OWASP top 10 2017 is deprecated
 
 <div class="deprecation-notes">

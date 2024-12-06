@@ -15,7 +15,13 @@ Metric definitions are available:
 - Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
   Grafana instance configured against Prometheus.
 
-## Monitor Gitaly rate limiting
+<!--- start_remove The following content will be removed on remove_date: '2025-08-01' -->
+
+## Monitor Gitaly rate limiting (deprecated)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitaly/-/issues/5011) in GitLab 17.7
+and is planned for removal in 18.0. Use [concurrency limiting](concurrency_limiting.md) instead.
 
 Gitaly can be configured to limit requests based on:
 
@@ -28,6 +34,8 @@ of requests dropped due to request limiting. The `reason` label indicates why a 
 - `rate`, due to rate limiting.
 - `max_size`, because the concurrency queue size was reached.
 - `max_time`, because the request exceeded the maximum queue wait time as configured in Gitaly.
+
+<!--- end_remove -->
 
 ## Monitor Gitaly concurrency limiting
 

@@ -179,6 +179,8 @@
   - 1
 - - ci_delete_objects
   - 1
+- - ci_destroy_old_pipelines
+  - 1
 - - ci_initialize_pipelines_iid_sequence
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts

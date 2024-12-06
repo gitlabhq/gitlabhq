@@ -61,6 +61,9 @@ export const EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE =
 export const EVENT_SELECT_SOURCE_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE =
   'select_source_branch_filter_on_merge_request_page';
 
+export const EVENT_SELECT_AUTHOR_FILTER_ON_MERGE_REQUEST_PAGE =
+  'event_select_author_filter_on_merge_request_page';
+
 export const LANGUAGE_DEFAULT_ITEM_LENGTH = 10;
 export const LANGUAGE_MAX_ITEM_LENGTH = 100;
 

@@ -1739,15 +1739,60 @@ export const mockDataForBlobBody = {
 
 export const mockSourceBranches = [
   {
-    text: 'master',
-    value: 'master',
+    text: 'Master Item',
+    value: 'master-item',
   },
   {
-    text: 'feature',
-    value: 'feature',
+    text: 'Feature Item',
+    value: 'feature-item',
   },
   {
-    text: 'develop',
-    value: 'develop',
+    text: 'Develop Item',
+    value: 'develop-item',
+  },
+];
+
+export const mockAuthorsAxiosResponse = [
+  {
+    id: 1,
+    username: 'root',
+    name: 'Administrator',
+    state: 'active',
+    locked: false,
+    avatar_url:
+      'https://www.gravatar.com/avatar/8a2ba320206c6d79e89dd41a9081b7ae521d365f2054b3db1ac6462f692b176f?s=80&d=identicon',
+    web_url: 'http://127.0.0.1:3000/root',
+    status_tooltip_html: null,
+    show_status: false,
+    availability: null,
+    path: '/root',
+  },
+  {
+    id: 65,
+    username: 'john',
+    name: 'John Doe',
+    state: 'active',
+    locked: false,
+    avatar_url:
+      'https://www.gravatar.com/avatar/d9165b0da62fb9f9a57214a8fcc333101f2d10f494c662b53ffbeded3dcfa0dd?s=80&d=identicon',
+    web_url: 'http://127.0.0.1:3000/john',
+    status_tooltip_html: null,
+    show_status: false,
+    availability: null,
+    path: '/john',
+  },
+  {
+    id: 50,
+    username: 'jane',
+    name: 'Jane Doe',
+    state: 'active',
+    locked: false,
+    avatar_url:
+      'https://www.gravatar.com/avatar/224e81a612a566f3eb211d1d457b2335b662ad0dc7bb8d1b642056dd1b81755c?s=80&d=identicon',
+    web_url: 'http://127.0.0.1:3000/jane',
+    status_tooltip_html: null,
+    show_status: false,
+    availability: null,
+    path: '/jane',
   },
 ];

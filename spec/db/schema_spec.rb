@@ -412,6 +412,7 @@ RSpec.describe 'Database schema',
     # These pre-existing columns does not use a schema validation yet
     let(:ignored_jsonb_columns_map) do
       {
+        "Ai::Conversation::Message" => %w[extras error_details],
         "ApplicationSetting" => %w[repository_storages_weighted],
         "AlertManagement::Alert" => %w[payload],
         "Ci::BuildMetadata" => %w[config_options config_variables],

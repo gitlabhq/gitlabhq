@@ -15,7 +15,7 @@ module Gitlab
             true
           end
 
-          def monomorphic_taggings?
+          def monomorphic_taggings?(_taggable)
             false
           end
         end

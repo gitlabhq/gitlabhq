@@ -95,7 +95,7 @@ module Gitlab
             tags.each do |tag|
               accumulator[:taggings] << tagging_attributes(tag, taggable) if polymorphic_taggings_available?
 
-              if monomorphic_taggings_available?
+              if monomorphic_taggings_available?(taggable)
                 accumulator[:monomorphic_taggings] << monomorphic_taggings_record(tag, taggable)
               end
             end
@@ -129,8 +129,8 @@ module Gitlab
           end
         end
 
-        def monomorphic_taggings_available?
-          config.monomorphic_taggings?
+        def monomorphic_taggings_available?(taggable)
+          config.monomorphic_taggings?(taggable)
         end
 
         def polymorphic_taggings_available?

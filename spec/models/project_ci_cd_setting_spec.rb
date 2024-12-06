@@ -43,15 +43,6 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
   end
 
-  describe '.configured_to_delete_old_pipelines' do
-    let_it_be(:project) { create(:project, ci_delete_pipelines_in_seconds: 2.weeks.to_i) }
-    let_it_be(:other_project) { create(:project, group_runners_enabled: true) }
-
-    it 'includes settings with values present' do
-      expect(described_class.configured_to_delete_old_pipelines).to contain_exactly(project.ci_cd_settings)
-    end
-  end
-
   describe '#pipeline_variables_minimum_override_role' do
     it 'is maintainer by default' do
       expect(described_class.new.pipeline_variables_minimum_override_role).to eq('maintainer')
@@ -136,6 +127,15 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       with_them do
         it { expect(subject).to eq(result_keep_latest_artifact) }
       end
+    end
+  end
+
+  describe '.configured_to_delete_old_pipelines' do
+    let_it_be(:project) { create(:project, ci_delete_pipelines_in_seconds: 2.weeks.to_i) }
+    let_it_be(:other_project) { create(:project, group_runners_enabled: true) }
+
+    it 'includes settings with values present' do
+      expect(described_class.configured_to_delete_old_pipelines).to contain_exactly(project.ci_cd_settings)
     end
   end
 end

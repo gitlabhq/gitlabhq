@@ -8,6 +8,8 @@ import {
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,
   STATE_FILTER_PARAM,
+  AUTHOR_PARAM,
+  NOT_AUTHOR_PARAM,
 } from '~/search/sidebar/constants';
 
 export const MAX_FREQUENT_ITEMS = 5;
@@ -27,6 +29,8 @@ export const SIDEBAR_PARAMS = [
   INCLUDE_FORKED_FILTER_PARAM,
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,
+  AUTHOR_PARAM,
+  NOT_AUTHOR_PARAM,
 ];
 
 export const REGEX_PARAM = 'regex';

@@ -755,7 +755,7 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-glfm-markdown (0.0.21)
+    gitlab-glfm-markdown (0.0.23)
       rb_sys (= 0.9.94)
     gitlab-kas-grpc (17.5.1)
       grpc (~> 1.0)

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlCollapsibleListbox, GlListboxItem, GlIcon } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -11,7 +11,7 @@ describe('BranchDropdown', () => {
 
   const defaultProps = {
     listData: mockSourceBranches,
-    errors: [],
+    error: '',
     selectedItem: 'Master Item',
     headerText: 'Filter header',
     searchText: 'Search filter items',
@@ -20,8 +20,8 @@ describe('BranchDropdown', () => {
     isLoading: false,
   };
 
-  const createComponent = (props = {}, options = {}) => {
-    wrapper = shallowMount(FilterDropdown, {
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(FilterDropdown, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -30,13 +30,12 @@ describe('BranchDropdown', () => {
         GlCollapsibleListbox,
         GlIcon,
       },
-      ...options,
     });
   };
 
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
-  const findErrorMessages = () => wrapper.findAll('[data-testid="branch-dropdown-error-list"]');
+  const findErrorMessage = () => wrapper.findByTestId('branch-dropdown-error');
 
   describe('when nothing is selected', () => {
     beforeEach(() => {
@@ -71,18 +70,24 @@ describe('BranchDropdown', () => {
       expect(props.resetButtonLabel).toBe('Reset');
     });
 
-    it('renders error messages when errors prop is passed', async () => {
-      const errors = ['Error 1', 'Error 2'];
-      createComponent({ errors });
+    it('renders error message when error prop is passed', async () => {
+      createComponent({ error: 'Error 1' });
 
       await waitForPromises();
+      expect(findErrorMessage().exists()).toBe(true);
+      expect(findErrorMessage().text()).toBe('Error 1');
+    });
 
-      const errorMessages = findErrorMessages();
+    it('renders error message reactivly', async () => {
+      createComponent();
 
-      expect(errorMessages.length).toBe(errors.length);
-      errorMessages.wrappers.forEach((errorWrapper, index) => {
-        expect(errorWrapper.text()).toContain(errors[index]);
-      });
+      await waitForPromises();
+      expect(findErrorMessage().exists()).toBe(false);
+
+      wrapper.setProps({ error: 'Error 1' });
+      await waitForPromises();
+      expect(findErrorMessage().exists()).toBe(true);
+      expect(findErrorMessage().text()).toBe('Error 1');
     });
 
     it('search filters items', async () => {

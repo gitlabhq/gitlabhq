@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -31,7 +32,7 @@ export default {
   data() {
     return {
       sourceBranches: [],
-      errors: [],
+      error: '',
       toggleState: false,
       selectedBranch: '',
       isLoading: false,
@@ -74,12 +75,13 @@ export default {
       this.isLoading = true;
       try {
         const data = await AjaxCache.retrieve(this.getMergeRequestSourceBranchesEndpoint());
-        this.errors = [];
+        this.error = '';
         this.isLoading = false;
         this.sourceBranches = this.convertToListboxItems(data);
-      } catch (e) {
+      } catch (error) {
+        Sentry.captureException(error);
         this.isLoading = false;
-        this.errors.push(e.message);
+        this.error = error.message;
       }
     },
     handleSelected(ref) {
@@ -122,7 +124,7 @@ export default {
     </div>
     <filter-dropdown
       :list-data="sourceBranches"
-      :errors="errors"
+      :error="error"
       :header-text="s__('GlobalSearch|Source branch')"
       :search-text="showDropdownPlaceholderText"
       :selected-item="selectedBranch"

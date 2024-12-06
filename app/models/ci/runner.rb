@@ -13,7 +13,6 @@ module Ci
     include TaggableQueries
     include Presentable
     include EachBatch
-    include Ci::HasRunnerExecutor
     include Ci::HasRunnerStatus
     include Ci::Taggable
 
@@ -88,6 +87,7 @@ module Ci
     has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
+    has_many :tag_links, class_name: 'Ci::RunnerTagging', inverse_of: :runner
 
     # currently we have only 1 namespace assigned, but order is here for consistency
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
@@ -330,6 +330,14 @@ module Ci
       end
     end
 
+    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+    def self.sharded_table_proxy_model
+      @sharded_table_proxy_class ||= Class.new(self) do
+        self.table_name = :ci_runners_e59bb2812d
+        self.primary_key = :id
+      end
+    end
+
     def runner_matcher
       Gitlab::Ci::Matching::RunnerMatcher.new({
         runner_ids: [id],
@@ -436,6 +444,44 @@ module Ci
 
     def has_tags?
       tag_list.any?
+    end
+
+    override :save_tags
+    def save_tags
+      super do |new_tags, old_tags|
+        next if ::Feature.disabled?(:write_to_ci_runner_taggings, owner)
+
+        if old_tags.present?
+          tag_links
+            .where(tag_id: old_tags)
+            .delete_all
+        end
+
+        # Avoid inserting partitioned taggings that refer to a missing ci_runners partitioned record, since
+        # the backfill is not yet finalized.
+        ensure_partitioned_runner_record_exists if new_tags.any?
+
+        ci_runner_taggings = new_tags.map do |tag|
+          Ci::RunnerTagging.new(
+            runner_id: id, runner_type: runner_type,
+            tag_id: tag.id, sharding_key_id: sharding_key_id)
+        end
+
+        ::Ci::RunnerTagging.bulk_insert!(
+          ci_runner_taggings,
+          validate: false,
+          unique_by: [:tag_id, :runner_id, :runner_type],
+          returns: :id
+        )
+      end
+    end
+
+    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+    def ensure_partitioned_runner_record_exists
+      self.class.sharded_table_proxy_model.insert_all(
+        [attributes.except('tag_list')], unique_by: [:id, :runner_type],
+        returning: false, record_timestamps: false
+      )
     end
 
     def predefined_variables

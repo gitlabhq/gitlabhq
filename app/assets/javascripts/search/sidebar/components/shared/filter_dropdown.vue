@@ -17,10 +17,10 @@ export default {
       type: Array,
       required: true,
     },
-    errors: {
-      type: Array,
+    error: {
+      type: String,
       required: false,
-      default: () => [],
+      default: '',
     },
     headerText: {
       type: String,
@@ -57,9 +57,7 @@ export default {
   },
   data() {
     return {
-      selectedRef: '',
       query: '',
-      hasError: this.errors.length > 0,
     };
   },
   computed: {
@@ -83,6 +81,9 @@ export default {
         ? this.$options.i18n.noSearchResultsText
         : this.$options.i18n.noLoadResultsText;
     },
+    hasError() {
+      return Boolean(this.error);
+    },
   },
   created() {
     this.debouncedSearch = debounce(this.search, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
@@ -104,8 +105,8 @@ export default {
       }
       this.searchResults = fuzzaldrinPlus.filter(this.listData, this.query, { key: ['text'] });
     },
-    selectRef(ref) {
-      this.$emit('selected', ref);
+    selectRef(selectedAuthorValue) {
+      this.$emit('selected', selectedAuthorValue);
     },
     onHide() {
       if (!this.query || this.searchResults.length > 0) {
@@ -149,13 +150,12 @@ export default {
       </template>
       <template #footer>
         <div
-          v-for="errorMessage in errors"
-          :key="errorMessage"
-          data-testid="branch-dropdown-error-list"
+          v-if="hasError"
+          data-testid="branch-dropdown-error"
           class="gl-mx-4 gl-my-3 gl-flex gl-items-start gl-text-red-500"
         >
           <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-shrink-0" />
-          <span>{{ errorMessage }}</span>
+          <span class="gl-max-w-full gl-break-all">{{ error }}</span>
         </div>
       </template>
     </gl-collapsible-listbox>

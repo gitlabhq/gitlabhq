@@ -50,8 +50,15 @@ class ProjectCiCdSetting < ApplicationRecord
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr_writer :delete_pipelines_in_human_readable, :delete_pipelines_in_seconds
 
-  scope :configured_to_delete_old_pipelines, -> { where.not(delete_pipelines_in_seconds: nil) }
-  scope :with_project, -> { preload(:project) }
+  scope :for_project, ->(ids) { where(project_id: ids) }
+  scope :order_project_id_asc, -> { order(project_id: :asc) }
+  scope :configured_to_delete_old_pipelines, -> do
+    where.not(delete_pipelines_in_seconds: nil)
+  end
+
+  def self.pluck_project_id(limit)
+    limit(limit).pluck(:project_id)
+  end
 
   def keep_latest_artifacts_available?
     # The project level feature can only be enabled when the feature is enabled instance wide

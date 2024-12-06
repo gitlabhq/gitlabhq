@@ -18063,6 +18063,7 @@ A user with add-on data.
 | <a id="addonuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="addonuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="addonusertype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="addonuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="addonuseruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="addonuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -19019,6 +19020,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="autocompleteduserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="autocompletedusertype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="autocompleteduseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="autocompleteduseruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="autocompleteduserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -21571,6 +21573,7 @@ The currently authenticated GitLab user.
 | <a id="currentuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="currentuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="currentusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="currentusertype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="currentuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="currentuseruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="currentuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -27530,6 +27533,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="mergerequestassigneetype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -27935,6 +27939,7 @@ The author of the merge request.
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="mergerequestauthortype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthoruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -28386,6 +28391,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="mergerequestparticipanttype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -28810,6 +28816,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="mergerequestreviewertype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestrevieweruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -35600,6 +35607,7 @@ Core representation of a GitLab user.
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="usercoretype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -37741,6 +37749,7 @@ LLMs supported by the self-hosted model features.
 | <a id="aiacceptedselfhostedmodelsgpt"></a>`GPT` | GPT: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelsllama3"></a>`LLAMA3` | LLaMA 3: Suitable for code suggestions and duo chat. |
 | <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral: Suitable for code suggestions and duo chat. |
+| <a id="aiacceptedselfhostedmodelsmixtral"></a>`MIXTRAL` | Mixtral: Suitable for code suggestions and duo chat. |
 
 ### `AiAction`
 
@@ -40835,6 +40844,31 @@ Possible states of a user.
 | <a id="userstatedeactivated"></a>`deactivated` | User is no longer active and cannot use the system. |
 | <a id="userstateldap_blocked"></a>`ldap_blocked` | User has been blocked by the system. |
 
+### `UserType`
+
+Possible types of user.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="usertypeadmin_bot"></a>`ADMIN_BOT` | Admin bot. |
+| <a id="usertypealert_bot"></a>`ALERT_BOT` | Alert bot. |
+| <a id="usertypeautomation_bot"></a>`AUTOMATION_BOT` | Automation bot. |
+| <a id="usertypeduo_code_review_bot"></a>`DUO_CODE_REVIEW_BOT` | Duo code review bot. |
+| <a id="usertypeghost"></a>`GHOST` | Ghost. |
+| <a id="usertypehuman"></a>`HUMAN` | Human. |
+| <a id="usertypeimport_user"></a>`IMPORT_USER` | Import user. |
+| <a id="usertypellm_bot"></a>`LLM_BOT` | Llm bot. |
+| <a id="usertypemigration_bot"></a>`MIGRATION_BOT` | Migration bot. |
+| <a id="usertypeplaceholder"></a>`PLACEHOLDER` | Placeholder. |
+| <a id="usertypeproject_bot"></a>`PROJECT_BOT` | Project bot. |
+| <a id="usertypesecurity_bot"></a>`SECURITY_BOT` | Security bot. |
+| <a id="usertypesecurity_policy_bot"></a>`SECURITY_POLICY_BOT` | Security policy bot. |
+| <a id="usertypeservice_account"></a>`SERVICE_ACCOUNT` | Service account. |
+| <a id="usertypeservice_user"></a>`SERVICE_USER` | Service user. |
+| <a id="usertypesuggested_reviewers_bot"></a>`SUGGESTED_REVIEWERS_BOT` | Suggested reviewers bot. |
+| <a id="usertypesupport_bot"></a>`SUPPORT_BOT` | Support bot. |
+| <a id="usertypevisual_review_bot"></a>`VISUAL_REVIEW_BOT` | Visual review bot. |
+
 ### `ValueStreamDashboardMetric`
 
 Possible identifier types for a measurement.
@@ -43127,6 +43161,7 @@ Implementations:
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="usertype"></a>`type` | [`UserType!`](#usertype) | Type of the user. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="useruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |

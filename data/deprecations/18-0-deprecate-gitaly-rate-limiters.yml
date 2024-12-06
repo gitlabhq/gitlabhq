@@ -1,0 +1,26 @@
+- title: "Gitaly rate limiting"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.7"
+  breaking_change: false
+  reporter: qmnguyen0711
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/5011
+  impact: low
+  scope: instance
+  resolution_role: Admin
+  manual_task: false
+  body: |
+    Because of the highly variable nature of Git operations and repository latencies, Gitaly
+    [RPC-based rate limiting](https://docs.gitlab.com/ee/administration/gitaly/monitoring.html#monitor-gitaly-rate-limiting)
+    is ineffective. Configuring proper rate limits is challenging and often becomes obsolete quickly because harmful
+    actions rarely generate enough requests per second to stand out.
+
+    Gitaly already supports [concurrency limiting](https://docs.gitlab.com/ee/administration/gitaly/concurrency_limiting.html) and an
+    [adaptive limiting add-on](https://docs.gitlab.com/ee/administration/gitaly/concurrency_limiting.html#adaptive-concurrency-limiting),
+    which have proven to work well in production.
+
+    Because Gitaly is not directly exposed to external networks and external protection layers, such as load balancers,
+    provide better safeguards, rate limiting is less effective.
+
+    Therefore, we're depecating rate limiting in favor of the more reliable concurrency limiting. Gitaly RPC-based
+    rate limiting will be removed in GitLab 18.0.

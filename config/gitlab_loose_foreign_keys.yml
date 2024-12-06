@@ -3,6 +3,10 @@ abuse_report_assignees:
   - table: users
     column: user_id
     on_delete: async_delete
+ai_conversation_messages:
+  - table: ai_conversation_threads
+    column: thread_id
+    on_delete: async_delete
 application_settings:
   - table: push_rules
     column: push_rule_id
