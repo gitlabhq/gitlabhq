@@ -69,3 +69,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SlashCommands::GlobalSlackHandler.prepend_mod

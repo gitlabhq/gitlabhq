@@ -229,6 +229,7 @@ Returns [`BlobSearch`](#blobsearch).
 | ---- | ---- | ----------- |
 | <a id="queryblobsearchchunkcount"></a>`chunkCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum chunks per file. |
 | <a id="queryblobsearchgroupid"></a>`groupId` **{warning-solid}** | [`GroupID`](#groupid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Group to search in. |
+| <a id="queryblobsearchincludearchived"></a>`includeArchived` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.7. **Status**: Experiment. Includes archived projects in the search. Always true for project search. Default is false. |
 | <a id="queryblobsearchpage"></a>`page` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Page number to fetch the results. |
 | <a id="queryblobsearchperpage"></a>`perPage` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Number of results per page. |
 | <a id="queryblobsearchprojectid"></a>`projectId` **{warning-solid}** | [`ProjectID`](#projectid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Project to search in. |

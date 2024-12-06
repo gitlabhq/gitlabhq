@@ -53,3 +53,5 @@ module JiraConnect
     end
   end
 end
+
+JiraConnect::SyncService.prepend_mod

@@ -322,23 +322,11 @@ class IssuableBaseService < ::BaseContainerService
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable, old_associations)
         issuable.create_new_cross_references!(current_user)
-        Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-          %w[
-            internal_ids
-            issues
-            issue_user_mentions
-            issue_metrics
-            notes
-            system_note_metadata
-            vulnerability_issue_links
-          ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480369'
-        ) do
-          execute_hooks(
-            issuable,
-            'update',
-            old_associations: old_associations
-          )
-        end
+        execute_hooks(
+          issuable,
+          'update',
+          old_associations: old_associations
+        )
 
         issuable.update_project_counter_caches if update_project_counters
       end
