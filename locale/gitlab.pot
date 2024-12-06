@@ -42992,16 +42992,28 @@ msgstr ""
 msgid "ProjectMaintenance|Enter multiple entries on separate lines."
 msgstr ""
 
-msgid "ProjectMaintenance|Enter the following to confirm:"
+msgid "ProjectMaintenance|Go to housekeeping"
 msgstr ""
 
-msgid "ProjectMaintenance|Go to housekeeping"
+msgid "ProjectMaintenance|Historical tags and branches based on the old commit history might no longer work correctly."
 msgstr ""
 
 msgid "ProjectMaintenance|How do I get a list of object IDs?"
 msgstr ""
 
+msgid "ProjectMaintenance|How does blobs removal work?"
+msgstr ""
+
+msgid "ProjectMaintenance|Local copies become incompatible with the updated repository and must be re-cloned."
+msgstr ""
+
 msgid "ProjectMaintenance|Manage repository storage and cleanup."
+msgstr ""
+
+msgid "ProjectMaintenance|Open merge requests might fail to merge and require manual rebasing."
+msgstr ""
+
+msgid "ProjectMaintenance|Pipelines referencing old commit SHAs might break and require reconfiguration."
 msgstr ""
 
 msgid "ProjectMaintenance|Provide a list of blob object IDs to be removed."
@@ -43031,9 +43043,6 @@ msgstr ""
 msgid "ProjectMaintenance|Remove blobs"
 msgstr ""
 
-msgid "ProjectMaintenance|Removing blobs by ID cannot be undone. Are you sure you want to continue?"
-msgstr ""
-
 msgid "ProjectMaintenance|Something went wrong while redacting text."
 msgstr ""
 
@@ -43056,6 +43065,9 @@ msgid "ProjectMaintenance|Yes, redact matching strings"
 msgstr ""
 
 msgid "ProjectMaintenance|Yes, remove blobs"
+msgstr ""
+
+msgid "ProjectMaintenance|You are about to permanently remove blobs from this project."
 msgstr ""
 
 msgid "ProjectMaintenance|You will receive an email notification when the process is complete. Run housekeeping to remove old versions from repository."

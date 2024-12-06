@@ -34,7 +34,7 @@ RSpec.shared_context 'ProjectPolicy context' do
     ]
   end
 
-  let(:base_planner_permissions) do
+  let(:planner_permissions) do
     base_guest_permissions +
       %i[
         admin_issue admin_issue_board admin_issue_board_list admin_label admin_milestone
@@ -118,13 +118,11 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   # Used in EE specs
   let(:additional_guest_permissions) { [] }
-  let(:additional_planner_permissions) { [] }
   let(:additional_reporter_permissions) { [] }
   let(:additional_maintainer_permissions) { [] }
   let(:additional_owner_permissions) { [] }
 
   let(:guest_permissions) { base_guest_permissions + additional_guest_permissions }
-  let(:planner_permissions) { base_planner_permissions + additional_planner_permissions }
   let(:reporter_permissions) { base_reporter_permissions + additional_reporter_permissions }
   let(:maintainer_permissions) { base_maintainer_permissions + additional_maintainer_permissions }
   let(:owner_permissions) { base_owner_permissions + additional_owner_permissions }

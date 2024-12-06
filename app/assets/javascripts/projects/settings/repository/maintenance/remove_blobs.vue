@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlDrawer, GlLink, GlFormTextarea } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -8,6 +8,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__ } from '~/locale';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import removeBlobsMutation from './graphql/mutations/remove_blobs.mutation.graphql';
+import WarningModal from './warning_modal.vue';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -19,20 +20,31 @@ const i18n = {
     'ProjectMaintenance|Enter a list of object IDs to be removed to reduce repository size.',
   ),
   helpLink: s__('ProjectMaintenance|How do I get a list of object IDs?'),
+  warningHelpLink: s__('ProjectMaintenance|How does blobs removal work?'),
   label: s__('ProjectMaintenance|Blob IDs to remove'),
   helpText: s__('ProjectMaintenance|Enter multiple entries on separate lines.'),
-  modalPrimaryText: s__('ProjectMaintenance|Yes, remove blobs'),
-  modalCancelText: s__('ProjectMaintenance|Cancel'),
-  modalContent: s__(
-    'ProjectMaintenance|Removing blobs by ID cannot be undone. Are you sure you want to continue?',
-  ),
-  modalConfirm: s__('ProjectMaintenance|Enter the following to confirm:'),
   removeBlobsError: s__('ProjectMaintenance|Something went wrong while removing blobs.'),
   scheduledRemovalSuccessAlertTitle: s__('ProjectMaintenance|Blobs removal is scheduled.'),
   scheduledSuccessAlertContent: s__(
     'ProjectMaintenance|You will receive an email notification when the process is complete. Run housekeeping to remove old versions from repository.',
   ),
   successAlertButtonText: s__('ProjectMaintenance|Go to housekeeping'),
+  warningModalTitle: s__(
+    'ProjectMaintenance|You are about to permanently remove blobs from this project.',
+  ),
+  warningModalPrimaryText: s__('ProjectMaintenance|Yes, remove blobs'),
+  warningModalListItems: [
+    s__('ProjectMaintenance|Open merge requests might fail to merge and require manual rebasing.'),
+    s__(
+      'ProjectMaintenance|Local copies become incompatible with the updated repository and must be re-cloned.',
+    ),
+    s__(
+      'ProjectMaintenance|Pipelines referencing old commit SHAs might break and require reconfiguration.',
+    ),
+    s__(
+      'ProjectMaintenance|Historical tags and branches based on the old commit history might no longer work correctly.',
+    ),
+  ],
 };
 
 export default {
@@ -41,8 +53,10 @@ export default {
   removeBlobsHelpLink: helpPagePath('/user/project/repository/repository_size', {
     anchor: 'get-a-list-of-object-ids',
   }),
-  modalCancel: { text: i18n.modalCancelText },
-  components: { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput },
+  removeBlobsWarningHelpLink: helpPagePath('/user/project/repository/repository_size', {
+    anchor: 'remove-files',
+  }),
+  components: { GlButton, GlDrawer, GlLink, GlFormTextarea, WarningModal },
   mixins: [trackingMixin],
   inject: { projectPath: { default: '' }, housekeepingPath: { default: '' } },
   data() {
@@ -50,7 +64,6 @@ export default {
       isDrawerOpen: false,
       blobIDs: null,
       showConfirmationModal: false,
-      confirmInput: null,
       isLoading: false,
     };
   },
@@ -64,15 +77,6 @@ export default {
     isValid() {
       return this.blobOids.length && this.blobOids.every((s) => s.length >= BLOB_OID_LENGTH);
     },
-    modalPrimary() {
-      return {
-        text: i18n.modalPrimaryText,
-        attributes: { variant: 'danger', disabled: !this.isConfirmEnabled },
-      };
-    },
-    isConfirmEnabled() {
-      return this.confirmInput === this.projectPath;
-    },
   },
   methods: {
     openDrawer() {
@@ -82,14 +86,12 @@ export default {
       this.blobIDs = null;
       this.isDrawerOpen = false;
     },
-    clearConfirmInput() {
-      this.confirmInput = null;
-    },
     removeBlobs() {
       this.showConfirmationModal = true;
     },
     removeBlobsConfirm() {
       this.isLoading = true;
+      this.showConfirmationModal = false;
       this.trackEvent('click_remove_blob_button_repository_settings');
       this.$apollo
         .mutate({
@@ -186,26 +188,24 @@ export default {
       </div>
     </gl-drawer>
 
-    <gl-modal
-      v-model="showConfirmationModal"
-      :title="$options.i18n.removeBlobs"
-      modal-id="remove-blobs-confirmation-modal"
-      :action-cancel="$options.modalCancel"
-      :action-primary="modalPrimary"
-      @hide="clearConfirmInput"
-      @primary="removeBlobsConfirm"
+    <warning-modal
+      :visible="showConfirmationModal"
+      :title="$options.i18n.warningModalTitle"
+      :primary-text="$options.i18n.warningModalPrimaryText"
+      :confirm-phrase="projectPath"
+      :confirm-loading="isLoading"
+      @confirm="removeBlobsConfirm"
+      @hide="showConfirmationModal = false"
     >
-      <p>{{ $options.i18n.modalContent }}</p>
+      <ul class="mb-0">
+        <li v-for="(item, index) in $options.i18n.warningModalListItems" :key="index">
+          {{ item }}
+        </li>
+      </ul>
 
-      <p id="confirmationInstruction" class="gl-mb-0">
-        {{ $options.i18n.modalConfirm }} <code>{{ projectPath }}</code>
-      </p>
-
-      <gl-form-input
-        v-model="confirmInput"
-        class="gl-mt-3 gl-max-w-34"
-        aria-labelledby="confirmationInstruction"
-      />
-    </gl-modal>
+      <gl-link :href="$options.removeBlobsWarningHelpLink" target="_blank">{{
+        $options.i18n.warningHelpLink
+      }}</gl-link>
+    </warning-modal>
   </div>
 </template>

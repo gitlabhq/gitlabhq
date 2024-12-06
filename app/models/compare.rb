@@ -98,6 +98,15 @@ class Compare
     )
   end
 
+  def changed_paths
+    project
+      .repository
+      .find_changed_paths(
+        [Gitlab::Git::DiffTree.new(diff_refs.base_sha, diff_refs.head_sha)],
+        find_renames: true
+      )
+  end
+
   def modified_paths
     paths = Set.new
     diffs.diff_files.each do |diff|

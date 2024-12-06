@@ -216,21 +216,22 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         visit_pipelines_schedules
         click_link 'New schedule'
         fill_in_schedule_form
-        all('[name="schedule[variables_attributes][][key]"]')[0].set('AAA')
-        all('[name="schedule[variables_attributes][][secret_value]"]')[0].set('AAA123')
-        all('[name="schedule[variables_attributes][][key]"]')[1].set('BBB')
-        all('[name="schedule[variables_attributes][][secret_value]"]')[1].set('BBB123')
+        all('[data-testid="pipeline-form-ci-variable-key"]')[0].set('AAA')
+        all('[data-testid="pipeline-form-ci-variable-value"]')[0].set('AAA123')
+        all('[data-testid="pipeline-form-ci-variable-key"]')[1].set('BBB')
+        all('[data-testid="pipeline-form-ci-variable-value"]')[1].set('BBB123')
         create_pipeline_schedule
       end
 
-      it 'user sees the new variable in edit window', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397040' do
-        find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-        page.within('.ci-variable-list') do
-          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('AAA')
-          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-value", visible: false).value).to eq('AAA123')
-          expect(find(".ci-variable-row:nth-child(2) .js-ci-variable-input-key").value).to eq('BBB')
-          expect(find(".ci-variable-row:nth-child(2) .js-ci-variable-input-value", visible: false).value).to eq('BBB123')
-        end
+      it 'user sees the new variable in edit window' do
+        find("body [data-testid='pipeline-schedule-table-row']:nth-child(1) .btn-group a[title='Edit scheduled pipeline']")
+          .click
+
+        expected_keys = [
+          all("[data-testid='pipeline-form-ci-variable-key']")[0].value,
+          all("[data-testid='pipeline-form-ci-variable-key']")[1].value
+        ]
+        expect(expected_keys).to include('AAA', 'BBB')
       end
     end
 
@@ -315,7 +316,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           it 'shows Pipelines Schedules page' do
             visit_pipelines_schedules
 
-            expect(page).to have_link('New schedule')
+            expect(page).to have_selector(:css, '[data-testid="new-schedule-button"]')
           end
 
           context 'when public pipelines are disabled' do

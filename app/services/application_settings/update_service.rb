@@ -47,7 +47,7 @@ module ApplicationSettings
         params[:usage_stats_set_by_user_id] = current_user.id
       end
 
-      @application_setting.assign_attributes(params.except(:pending_user_auto_approval))
+      @application_setting.assign_attributes(params.except(:auto_approve_pending_users))
 
       if invalidate_markdown_cache?
         @application_setting[:local_markdown_version] = @application_setting.local_markdown_version + 1
@@ -130,7 +130,7 @@ module ApplicationSettings
     end
 
     def auto_approve_blocked_users
-      return unless pending_user_auto_approval?
+      return unless auto_approve_pending_users?
       return unless should_auto_approve_blocked_users?
 
       ApproveBlockedPendingApprovalUsersWorker.perform_async(current_user.id)
@@ -144,8 +144,8 @@ module ApplicationSettings
       enabled_previous && !enabled_current
     end
 
-    def pending_user_auto_approval?
-      Gitlab::Utils.to_boolean(params.fetch(:pending_user_auto_approval, false))
+    def auto_approve_pending_users?
+      Gitlab::Utils.to_boolean(params.fetch(:auto_approve_pending_users, false))
     end
   end
 end

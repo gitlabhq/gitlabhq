@@ -328,7 +328,7 @@ export default {
       <gl-form-group :label="$options.i18n.userCapLabel" data-testid="user-cap-group">
         <input
           type="hidden"
-          name="application_setting[pending_user_auto_approval]"
+          name="application_setting[auto_approve_pending_users]"
           :value="form.shouldProceedWithAutoApproval"
         />
         <gl-form-input

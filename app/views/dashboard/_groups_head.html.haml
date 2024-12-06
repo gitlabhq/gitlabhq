@@ -1,6 +1,8 @@
 = render ::Layouts::PageHeadingComponent.new(_('Groups')) do |c|
   - c.with_actions do
-    = link_to _("Explore groups"), explore_groups_path
+    = render Pajamas::ButtonComponent.new(href: explore_groups_path, variant: :link, button_options: { class: 'gl-m-2' }) do
+      = _("Explore groups")
+
     - if current_user.can_create_group?
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { testid: "new-group-button" } }) do
         = _("New group")

@@ -84,8 +84,10 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
               allow(instance).to receive(:execute)
               .and_return(ServiceResponse.success(payload: Nokogiri::XML::Document.new))
             end
-            allow_next_instance_of(::Packages::Nuget::ExtractMetadataContentService) do |instance|
-              allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
+            allow(::Packages::Nuget::ExtractMetadataContentService).to receive(:new) do
+              instance_double(
+                ::Packages::Nuget::ExtractMetadataContentService, execute: ServiceResponse.success(payload: metadata)
+              )
             end
           end
 

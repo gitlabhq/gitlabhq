@@ -524,7 +524,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
       let(:params) { { require_admin_approval_after_user_signup: false } }
 
       describe 'when auto approval is enabled' do
-        let(:params) { { require_admin_approval_after_user_signup: false, pending_user_auto_approval: 'true' } }
+        let(:params) { { require_admin_approval_after_user_signup: false, auto_approve_pending_users: 'true' } }
 
         it 'calls ApproveBlockedPendingApprovalUsersWorker' do
           expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)

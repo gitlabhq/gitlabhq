@@ -70,7 +70,7 @@ class MigrationName < Elastic::Migration
 The migration is executed only if the condition is `false`. Skipped migrations will not be shown as part of pending migrations.
 
 Skipped migrations can be marked as obsolete, but the `skip_if` condition must be kept so that these migrations are always skipped.
-Once a skipped migration is obsolete, the only way to apply the change is by [recreating the index from scratch](../../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+Once a skipped migration is obsolete, the only way to apply the change is by [recreating the index from scratch](../../integration/elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index).
 
 Update the skipped migration's documentation file with the following attributes:
 

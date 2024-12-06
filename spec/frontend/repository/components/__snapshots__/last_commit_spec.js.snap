@@ -7,14 +7,14 @@ exports[`Repository last commit component renders commit widget 1`] = `
     commit="[object Object]"
   >
     <div
-      class="commit-actions gl-flex gl-items-start"
+      class="commit-actions gl-flex gl-gap-3 gl-items-center"
     >
       <div
         class="gl-flex gl-h-7 gl-items-center gl-ml-5"
       >
         <ci-icon-stub
           aria-label="Pipeline: failed"
-          class="js-commit-pipeline"
+          class="gl-mr-2 js-commit-pipeline"
           showtooltip="true"
           status="[object Object]"
           uselink="true"
@@ -26,7 +26,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         <gl-button-stub
           buttontextclasses=""
           category="primary"
-          class="gl-font-monospace"
+          class="dark:!gl-bg-strong gl-font-monospace"
           data-testid="last-commit-id-label"
           icon=""
           label="true"
@@ -37,7 +37,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         </gl-button-stub>
         <clipboard-button-stub
           category="secondary"
-          class="input-group-text"
+          class="dark:!gl-border-l-section input-group-text"
           size="medium"
           text="123456789"
           title="Copy commit SHA"
@@ -47,8 +47,8 @@ exports[`Repository last commit component renders commit widget 1`] = `
       </gl-button-group-stub>
       <gl-button-stub
         buttontextclasses=""
-        category="tertiary"
-        class="gl-ml-4"
+        category="secondary"
+        class="!gl-ml-0"
         data-testid="last-commit-history"
         href="/history"
         icon=""
@@ -60,7 +60,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
     </div>
   </commit-info-stub>
   <collapsible-commit-info-stub
-    class="gl-block sm:gl-hidden"
+    class="!gl-border-t-0 gl-block sm:gl-hidden"
     commit="[object Object]"
     historyurl="/history"
   />

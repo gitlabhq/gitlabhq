@@ -69,7 +69,7 @@ export default {
 </script>
 
 <template>
-  <div class="well-segment commit gl-flex gl-min-h-8 gl-w-full gl-p-2">
+  <div class="well-segment commit gl-flex gl-w-full !gl-px-5 !gl-py-4">
     <user-avatar-link
       v-if="commit.author"
       :link-href="commit.author.webPath"

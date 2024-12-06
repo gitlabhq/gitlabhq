@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDrawer, GlFormTextarea, GlModal, GlFormInput } from '@gitlab/ui';
+import { GlDrawer, GlFormTextarea } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,6 +9,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import RemoveBlobs from '~/projects/settings/repository/maintenance/remove_blobs.vue';
+import WarningModal from '~/projects/settings/repository/maintenance/warning_modal.vue';
 import removeBlobsMutation from '~/projects/settings/repository/maintenance/graphql/mutations/remove_blobs.mutation.graphql';
 import {
   TEST_HEADER_HEIGHT,
@@ -45,8 +46,7 @@ describe('Remove blobs', () => {
 
   const findDrawerTrigger = () => wrapper.findByTestId('drawer-trigger');
   const findDrawer = () => wrapper.findComponent(GlDrawer);
-  const findModal = () => wrapper.findComponent(GlModal);
-  const findModalInput = () => findModal().findComponent(GlFormInput);
+  const findWarningModal = () => wrapper.findComponent(WarningModal);
   const removeBlobsButton = () => wrapper.findByTestId('remove-blobs');
   const findTextarea = () => wrapper.findComponent(GlFormTextarea);
 
@@ -70,19 +70,13 @@ describe('Remove blobs', () => {
     });
 
     it('renders a modal, closed by default', () => {
-      expect(findModal().props()).toMatchObject({
+      expect(findWarningModal().props()).toMatchObject({
         visible: false,
-        title: 'Remove blobs',
-        modalId: 'remove-blobs-confirmation-modal',
-        actionCancel: { text: 'Cancel' },
-        actionPrimary: { text: 'Yes, remove blobs' },
+        title: 'You are about to permanently remove blobs from this project.',
+        primaryText: 'Yes, remove blobs',
+        confirmPhrase: 'project/path',
+        confirmLoading: false,
       });
-
-      expect(findModal().text()).toContain(
-        'Removing blobs by ID cannot be undone. Are you sure you want to continue?',
-      );
-
-      expect(findModal().text()).toContain('Enter the following to confirm: project/path');
     });
   });
 
@@ -119,13 +113,12 @@ describe('Remove blobs', () => {
         beforeEach(() => removeBlobsButton().vm.$emit('click'));
 
         it('renders the confirmation modal when remove blobs button is clicked', () => {
-          expect(findModal().props('visible')).toBe(true);
+          expect(findWarningModal().props('visible')).toBe(true);
         });
 
         describe('removal confirmed (success)', () => {
           beforeEach(() => {
-            findModalInput().vm.$emit('input', TEST_PROJECT_PATH);
-            findModal().vm.$emit('primary');
+            findWarningModal().vm.$emit('confirm');
           });
 
           it('disables user input while loading', () => {
@@ -156,10 +149,10 @@ describe('Remove blobs', () => {
           });
 
           it('clears the input on the modal when the hide event is emitted', async () => {
-            findModal().vm.$emit('hide');
+            findWarningModal().vm.$emit('hide');
             await nextTick();
 
-            expect(findModalInput().attributes('value')).toBe(undefined);
+            expect(findWarningModal().props('visible')).toBe(false);
           });
 
           it('generates a housekeeping alert', async () => {
@@ -183,7 +176,7 @@ describe('Remove blobs', () => {
             findDrawerTrigger().vm.$emit('click');
             findTextarea().vm.$emit('input', TEST_BLOB_ID);
             removeBlobsButton().vm.$emit('click');
-            findModal().vm.$emit('primary');
+            findWarningModal().vm.$emit('confirm');
 
             await waitForPromises();
           });

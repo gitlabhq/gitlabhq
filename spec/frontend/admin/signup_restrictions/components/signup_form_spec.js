@@ -30,7 +30,7 @@ describe('Signup Form', () => {
   const findForm = () => wrapper.findByTestId('form');
   const findInputCsrf = () => findForm().find('[name="authenticity_token"]');
   const findUserCapAutoApprovalInput = () =>
-    findForm().find('[name="application_setting[pending_user_auto_approval]"]');
+    findForm().find('[name="application_setting[auto_approve_pending_users]"]');
   const findFormSubmitButton = () => findForm().findComponent(GlButton);
 
   const findDenyListRawRadio = () => queryByLabelText('Enter denylist manually');

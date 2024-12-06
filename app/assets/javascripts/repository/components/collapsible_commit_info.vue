@@ -65,25 +65,21 @@ export default {
 </script>
 
 <template>
-  <div class="well-segment">
-    <div class="gl-flex gl-items-center gl-justify-between">
-      <div class="gl-flex gl-items-center gl-gap-3">
+  <div class="well-segment !gl-px-4 !gl-py-3">
+    <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between">
+      <div class="gl-flex gl-items-center gl-gap-3 gl-text-sm">
         <user-avatar-link
           v-if="commit.author"
           :link-href="commit.author.webPath"
           :img-src="commit.author.avatarUrl"
           :img-alt="avatarLinkAltText"
           :img-size="32"
-          class="gl-my-2 gl-mr-3"
         />
         <user-avatar-image
           v-else
-          class="gl-my-2 gl-mr-3"
           :img-src="commit.authorGravatar || $options.defaultAvatarUrl"
           :size="32"
         />
-        <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
-
         <gl-link
           :href="commit.webPath"
           :class="{ 'gl-italic': !commit.message }"
@@ -92,26 +88,26 @@ export default {
           <gl-icon name="commit" />
           {{ commitId }}
         </gl-link>
+        <timeago-tooltip
+          :time="commit.authoredDate"
+          tooltip-placement="bottom"
+          class="gl-text-subtle"
+        />
       </div>
 
-      <div class="gl-flex gl-items-center">
+      <div class="gl-flex gl-items-center gl-gap-3">
         <gl-button
           v-gl-tooltip
           :class="{ open: showDescription }"
           :title="$options.i18n.toggleCommitDescription"
           :aria-label="$options.i18n.toggleCommitDescription"
           :selected="showDescription"
-          class="text-expander !gl-ml-0"
+          class="text-expander"
           icon="ellipsis_h"
           data-testid="text-expander"
           @click="toggleShowDescription"
         />
-        <gl-button
-          category="tertiary"
-          data-testid="collapsible-commit-history"
-          :href="historyUrl"
-          class="gl-ml-2"
-        >
+        <gl-button size="small" data-testid="collapsible-commit-history" :href="historyUrl">
           {{ __('History') }}
         </gl-button>
       </div>

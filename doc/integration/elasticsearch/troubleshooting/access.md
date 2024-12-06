@@ -127,7 +127,7 @@ To verify that your GitLab instance is using Elasticsearch:
   ::Gitlab::CurrentSettings.search_using_elasticsearch?(scope: Project.find_by_full_path("/my-namespace/my-project"))
   ```
 
-## User: anonymous is not authorized to perform: es:ESHttpGet
+## Error: `User: anonymous is not authorized to perform: es:ESHttpGet`
 
 When using a domain level access policy with AWS OpenSearch or Elasticsearch, the AWS role is not assigned to the
 correct GitLab nodes. The GitLab Rails and Sidekiq nodes require permission to communicate with the search cluster.
@@ -139,11 +139,11 @@ action
 
 To fix this, ensure the AWS role is assigned to the correct GitLab nodes.
 
-## `Credential should be scoped to a valid region`
+## No valid region specified
 
-When using AWS authorization with Advanced search, the region must be valid.
+When using AWS authorization with advanced search, the region you specify must be valid.
 
-## No permissions for `[indices:data/write/bulk]`
+## Error: `no permissions for [indices:data/write/bulk]`
 
 When using fine-grained access control with an IAM role or a role created using AWS OpenSearch Dashboards, you might
 encounter the following error:

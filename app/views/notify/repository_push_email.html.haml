@@ -28,9 +28,9 @@
     = s_('Notify|%{changed_files}:') % {changed_files: changed_files}
 
   %ul
-    - @message.diffs.each do |diff_file|
+    - @message.changed_files.each do |diff_file|
       %li.file-stats
-        %a{ href: "#{@message.target_url if @message.disable_diffs?}##{hexdigest(diff_file.file_path)}" }
+        %a{ href: "#{@message.target_url if @message.disable_diffs?}##{hexdigest(diff_file.path)}" }
           - if diff_file.deleted_file?
             %span.deleted-file
               &minus;
@@ -38,13 +38,13 @@
           - elsif diff_file.renamed_file?
             = diff_file.old_path
             &rarr;
-            = diff_file.new_path
+            = diff_file.path
           - elsif diff_file.new_file?
             %span.new-file
               &#43;
-              = diff_file.new_path
+              = diff_file.path
           - else
-            = diff_file.new_path
+            = diff_file.path
 
   - unless @message.disable_diffs?
     - if @message.compare_timeout

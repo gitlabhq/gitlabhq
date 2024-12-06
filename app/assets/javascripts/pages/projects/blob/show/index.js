@@ -229,8 +229,7 @@ const initTreeHistoryLinkApp = (el) => {
         {
           attrs: {
             href: url.href,
-            category: 'tertiary',
-            class: 'gl-ml-4',
+            class: '!gl-ml-3',
           },
         },
         [__('History')],

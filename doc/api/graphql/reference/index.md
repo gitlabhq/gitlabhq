@@ -7087,6 +7087,30 @@ Input type: `MemberRoleDeleteInput`
 | <a id="mutationmemberroledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmemberroledeletememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Deleted member role. |
 
+### `Mutation.memberRoleToUserAssign`
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Input type: `MemberRoleToUserAssignInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroletouserassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroletouserassignmemberroleid"></a>`memberRoleId` | [`MemberRoleID!`](#memberroleid) | Global ID of the custom role to be assigned to a user. |
+| <a id="mutationmemberroletouserassignuserid"></a>`userId` | [`UserID!`](#userid) | Global ID of the user to be assigned to a custom role. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroletouserassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroletouserassignerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmemberroletouserassignusermemberrole"></a>`userMemberRole` | [`UserMemberRole`](#usermemberrole) | Created user member role. |
+
 ### `Mutation.memberRoleUpdate`
 
 Input type: `MemberRoleUpdateInput`
@@ -35969,6 +35993,16 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+
+### `UserMemberRole`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usermemberroleid"></a>`id` | [`GlobalID!`](#globalid) | Global ID of the user member role association. |
+| <a id="usermemberrolememberrole"></a>`memberRole` | [`MemberRole!`](#memberrole) | Member Role to which the user belongs. |
+| <a id="usermemberroleuser"></a>`user` | [`UserCore!`](#usercore) | User to which the member role belongs. |
 
 ### `UserMergeRequestInteraction`
 
