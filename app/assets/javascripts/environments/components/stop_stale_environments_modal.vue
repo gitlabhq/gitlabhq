@@ -77,8 +77,7 @@ export default {
     <p>
       {{
         s__(
-          'Environments|Select which environments to clean up. \
-      Protected environments are excluded. Learn more about cleaning up environments.',
+          'Environments|Select which environments to clean up. Protected environments are excluded. Learn more about cleaning up environments.',
         )
       }}
     </p>

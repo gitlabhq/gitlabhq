@@ -14192,7 +14192,7 @@ msgstr ""
 msgid "ComplianceFrameworks|There can be only one default framework."
 msgstr ""
 
-msgid "ComplianceFrameworks|To link this policy and framework,  edit  the policy's scope."
+msgid "ComplianceFrameworks|To link this policy and framework, edit the policy's scope."
 msgstr ""
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
@@ -15287,7 +15287,7 @@ msgstr ""
 msgid "ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images to this repository path."
 msgstr ""
 
-msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
+msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
 msgid "ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."
@@ -21629,7 +21629,7 @@ msgstr ""
 msgid "Environments|Select namespace"
 msgstr ""
 
-msgid "Environments|Select which environments to clean up.     Protected environments are excluded. Learn more about cleaning up environments."
+msgid "Environments|Select which environments to clean up. Protected environments are excluded. Learn more about cleaning up environments."
 msgstr ""
 
 msgid "Environments|Show all"
@@ -22772,7 +22772,7 @@ msgstr ""
 msgid "ExternalAuthorization|Certificate used to authenticate with the external authorization service. If blank, the server certificate is validated when accessing over HTTPS."
 msgstr ""
 
-msgid "ExternalAuthorization|Classification label to use when requesting authorization if no specific  label is defined on the project."
+msgid "ExternalAuthorization|Classification label to use when requesting authorization if no specific label is defined on the project."
 msgstr ""
 
 msgid "ExternalAuthorization|Client authorization certificate"
@@ -35692,7 +35692,7 @@ msgstr ""
 msgid "NamespaceStorageSize|To remove the read-only state, reduce git repository and git LFS storage, or %{purchase_more_link_start}purchase more storage%{link_end}."
 msgstr ""
 
-msgid "NamespaceStorageSize|To remove the read-only state, reduce git repository and git LFS storage, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end}  and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
+msgid "NamespaceStorageSize|To remove the read-only state, reduce git repository and git LFS storage, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end} and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
 msgstr ""
 
 msgid "NamespaceStorageSize|You have consumed all available storage and you can't push or add large files to projects over the free tier limit (%{free_size_limit})."
@@ -37961,7 +37961,7 @@ msgstr ""
 msgid "OnDemandScans|DAST configuration"
 msgstr ""
 
-msgid "OnDemandScans|DAST scans for vulnerabilities in your project's running application, website, or API.  For details of all configuration options, see the %{linkStart}GitLab DAST documentation%{linkEnd}."
+msgid "OnDemandScans|DAST scans for vulnerabilities in your project's running application, website, or API. For details of all configuration options, see the %{linkStart}GitLab DAST documentation%{linkEnd}."
 msgstr ""
 
 msgid "OnDemandScans|Define the fundamental configuration options for your on-demand scan."
@@ -40704,7 +40704,7 @@ msgstr ""
 msgid "Pipelines|Full configuration is view only"
 msgstr ""
 
-msgid "Pipelines|Get familiar with GitLab CI syntax by setting up a simple pipeline running a  \"Hello world\" script to see how it runs, explore how CI/CD works."
+msgid "Pipelines|Get familiar with GitLab CI syntax by setting up a simple pipeline running a \"Hello world\" script to see how it runs, explore how CI/CD works."
 msgstr ""
 
 msgid "Pipelines|Get started with GitLab CI/CD"

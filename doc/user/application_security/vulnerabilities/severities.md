@@ -96,19 +96,39 @@ All fuzz testing results are reported as Unknown. They should be reviewed and tr
 
 ## SAST
 
-|  GitLab analyzer                                                                                         | Outputs severity levels? | Native severity level type | Native severity level example      |
-|----------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
-| [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
-| [`SpotBugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `11`, `12`, `18`    |
-| [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `4`, `5`            |
-| [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                           | **{check-circle}** Yes   | String                     | `CriticalSeverity`, `InfoSeverity` |
-| [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)                           | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
+|  GitLab analyzer                                                                 | Outputs severity levels? | Native severity level type | Native severity level example      |
+|----------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
+| [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)   | **{check-circle}** Yes   | String                     | `CriticalSeverity`, `InfoSeverity` |
+| [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `4`, `5`            |
+| [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)   | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
+| [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)   | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
+| [`SpotBugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `11`, `12`, `18`    |
 
 ## IaC Scanning
 
 |  GitLab analyzer                                                                                         | Outputs severity levels? | Native severity level type | Native severity level example      |
 |----------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
 | [`kics`](https://gitlab.com/gitlab-org/security-products/analyzers/kics)                                 | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` (gets mapped to `info` in [analyzer version 3.7.0 and later](https://gitlab.com/gitlab-org/security-products/analyzers/kics/-/releases/v3.7.0)) |
+
+### KICS severity mapping
+
+The KICS analyzer maps its output to SARIF severities which, in turn, are mapped to GitLab
+severities. Use the table below to see the corresponding severity in the GitLab Vulnerability
+Report.
+
+| KICS severity | KICS SARIF severity | GitLab severity |
+|---------------|---------------------|-----------------|
+| CRITICAL      | error               | Critical        |
+| HIGH          | error               | Critical        |
+| MEDIUM        | warning             | Medium          |
+| LOW           | note                | Info            |
+| INFO          | none                | Info            |
+| invalid       | none                | Info            |
+
+Note that while both KICS and GitLab define `High` severity, SARIF doesn't, which means `HIGH`
+vulnerabilities in KICS are mapped to `Critical` in GitLab. This is expected.
+
+[Source code for GitLab mapping](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/902c7dcb5f3a0e551223167931ebf39588a0193a/sarif/sarif.go#L279-315).
 
 ## Secret Detection
 

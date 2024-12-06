@@ -68,6 +68,7 @@ module Projects
         project = model.project
 
         data = {
+          model_path: project_ml_model_path(project, model),
           projectPath: project.full_path,
           can_write_model_registry: can_write_model_registry?(user, project),
           max_allowed_file_size: max_allowed_file_size(project),

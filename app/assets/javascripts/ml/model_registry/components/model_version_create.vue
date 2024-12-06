@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
+import { visitUrl, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { semverRegex } from '~/lib/utils/regexp';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -33,6 +33,10 @@ export default {
       required: true,
     },
     markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    modelPath: {
       type: String,
       required: true,
     },
@@ -132,12 +136,8 @@ export default {
         this.errorMessage = error;
       }
     },
-    resetForm() {
-      this.version = null;
-      this.description = '';
-      this.errorMessage = null;
-      this.versionData = null;
-      this.importErrorsText = null;
+    cancel() {
+      visitUrl(this.modelPath);
     },
     hideAlert() {
       this.errorMessage = null;
@@ -260,7 +260,7 @@ export default {
           @click="create"
           >{{ $options.i18n.actionPrimaryText }}
         </gl-button>
-        <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
+        <gl-button data-testid="secondary-button" variant="default" @click="cancel"
           >{{ $options.i18n.actionSecondaryText }}
         </gl-button>
       </div>

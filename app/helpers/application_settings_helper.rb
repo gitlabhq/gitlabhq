@@ -196,7 +196,7 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_client_url_help_text
-    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific  "\
+    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific "\
       "label is defined on the project.")
   end
 

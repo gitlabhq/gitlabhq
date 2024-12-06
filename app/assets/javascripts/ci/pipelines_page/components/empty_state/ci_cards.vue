@@ -30,7 +30,7 @@ const cards = {
     buttonLink: '',
     buttonText: s__('Pipelines|Try test template'),
     description: s__(
-      'Pipelines|Get familiar with GitLab CI syntax by setting up a simple pipeline running a  "Hello world" script to see how it runs, explore how CI/CD works.',
+      'Pipelines|Get familiar with GitLab CI syntax by setting up a simple pipeline running a "Hello world" script to see how it runs, explore how CI/CD works.',
     ),
     emoji: 'wave',
     isVisible: true,

@@ -8,8 +8,6 @@ module Gitlab
           include Gitlab::InternalEventsTracking
 
           def perform!
-            return unless Feature.enabled?(:run_keyword_instrumentation, :instance)
-
             track_keyword_usage
           end
 
