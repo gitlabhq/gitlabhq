@@ -42,7 +42,13 @@ module Projects
       attempt_destroy(project)
 
       execute_hooks(project)
-      log_info("Project \"#{project.full_path}\" was deleted")
+
+      Gitlab::AppLogger.info(
+        class: self.class.name,
+        message: "Project \"#{project.full_path}\" was deleted",
+        project_id: project.id,
+        full_path: project.full_path
+      )
 
       publish_project_deleted_event_for(project)
 
@@ -273,7 +279,7 @@ module Projects
       deleted_count = ::CommitStatus.for_project(project).delete_all
 
       Gitlab::AppLogger.info(
-        class: 'Projects::DestroyService',
+        class: self.class.name,
         project_id: project.id,
         message: 'leftover commit statuses',
         orphaned_commit_status_count: deleted_count

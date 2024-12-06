@@ -20,6 +20,14 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   shared_examples 'deleting the project' do
     it 'deletes the project', :sidekiq_inline do
+      allow(Gitlab::AppLogger).to receive(:info)
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        class: 'Projects::DestroyService',
+        message: "Project \"#{project.full_path}\" was deleted",
+        project_id: project.id,
+        full_path: project.full_path
+      )
+
       destroy_project(project, user, {})
 
       expect(Project.unscoped.all).not_to include(project)

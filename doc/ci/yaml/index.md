@@ -1690,6 +1690,8 @@ Use the `cache:paths` keyword to choose which files or directories to cache.
   - In GitLab Runner 12.10 and earlier,
     [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
+[CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file) are supported.
+
 **Example of `cache:paths`**:
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
@@ -1818,8 +1820,8 @@ Use `cache:key:prefix` to combine a prefix with the SHA computed for [`cache:key
 
 **Possible inputs**:
 
-- A string
-- A [predefined variables](../variables/index.md)
+- A string.
+- A predefined [CI/CD variable](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 - A combination of both.
 
 **Example of `cache:key:prefix`**:
