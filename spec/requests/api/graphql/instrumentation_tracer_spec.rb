@@ -152,6 +152,65 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
 
       expect(json_response.size).to eq(2)
     end
+
+    context 'with IGNORED_ERRORS' do
+      before do
+        stub_const('Gitlab::Graphql::Tracers::InstrumentationTracer::IGNORED_ERRORS', [
+          'an ignored error'
+        ])
+      end
+
+      it 'does not mark request as having an error when it is ignored' do
+        expect(Gitlab::Metrics::RailsSlis.graphql_query_apdex).not_to receive(:increment)
+
+        expect_next_instance_of(Resolvers::EchoResolver) do |resolver|
+          expect(resolver).to receive(:resolve).and_raise(GraphQL::ExecutionError, 'an ignored error')
+        end
+
+        expect(Gitlab::Metrics::RailsSlis.graphql_query_error_rate).to receive(:increment).with({
+          labels: unknown_query_labels,
+          error: be_falsey
+        })
+
+        post_graphql(graphql_query_for('echo', { 'text' => 'test' }, []))
+      end
+
+      context 'when request has multiple errors' do
+        it 'marks request as having an error when at least one error is not ignored' do
+          expect(Gitlab::Metrics::RailsSlis.graphql_query_apdex).not_to receive(:increment)
+
+          expect(Resolvers::EchoResolver).to receive(:new).and_wrap_original do |method, **kwargs|
+            kwargs[:context].add_error(GraphQL::ExecutionError.new('a real error'))
+            kwargs[:context].add_error(GraphQL::ExecutionError.new('an ignored error'))
+            method.call(**kwargs)
+          end
+
+          expect(Gitlab::Metrics::RailsSlis.graphql_query_error_rate).to receive(:increment).with({
+            labels: unknown_query_labels,
+            error: true
+          })
+
+          post_graphql(graphql_query_for('echo', { 'text' => 'test' }, []))
+        end
+
+        it 'does not mark request as having an error when all errors are ignored' do
+          expect(Gitlab::Metrics::RailsSlis.graphql_query_apdex).not_to receive(:increment)
+
+          expect(Resolvers::EchoResolver).to receive(:new).and_wrap_original do |method, **kwargs|
+            kwargs[:context].add_error(GraphQL::ExecutionError.new('an ignored error'))
+            kwargs[:context].add_error(GraphQL::ExecutionError.new('an ignored error'))
+            method.call(**kwargs)
+          end
+
+          expect(Gitlab::Metrics::RailsSlis.graphql_query_error_rate).to receive(:increment).with({
+            labels: unknown_query_labels,
+            error: be_falsey
+          })
+
+          post_graphql(graphql_query_for('echo', { 'text' => 'test' }, []))
+        end
+      end
+    end
   end
 
   it "recognizes known queries from our frontend" do
