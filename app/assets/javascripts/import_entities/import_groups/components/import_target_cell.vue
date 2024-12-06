@@ -72,7 +72,7 @@ export default {
         class="gl-flex gl-h-7 gl-items-center gl-border-0 gl-border-b-1 gl-border-t-1 gl-border-solid gl-bg-gray-10 gl-px-3"
         :class="{
           'gl-border-default gl-text-gray-400': !isPathSelectionAvailable,
-          'gl-border-gray-200': isPathSelectionAvailable,
+          'gl-border-strong': isPathSelectionAvailable,
         }"
       >
         /

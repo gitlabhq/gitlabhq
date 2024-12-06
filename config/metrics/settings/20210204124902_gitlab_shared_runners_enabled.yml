@@ -3,6 +3,8 @@ data_category: operational
 key_path: gitlab_shared_runners_enabled
 description: Whether shared runners is enabled
 product_group: runner
+product_categories:
+- runner
 value_type: boolean
 status: active
 time_frame: none

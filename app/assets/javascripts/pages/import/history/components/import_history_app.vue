@@ -126,9 +126,7 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-solid gl-border-gray-200"
-    >
+    <div class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-solid gl-border-strong">
       <h1 class="gl-my-0 gl-py-4 gl-text-size-h1">
         <img :src="assets.gitlabLogo" class="gl-mb-2 gl-mr-2 gl-inline gl-h-6 gl-w-6" />
         {{ s__('BulkImport|Project import history') }}

@@ -243,7 +243,7 @@ status
 
 ### Failed verification of Uploads on the primary Geo site
 
-If verification of some uploads is failing on the primary Geo site with `verification_checksum = nil` and with the ``verification_failure = Error during verification: undefined method `underscore' for NilClass:Class``, this can be due to orphaned Uploads. The parent record owning the Upload (the upload's model) has somehow been deleted, but the Upload record still exists. These verification failures are false.
+If verification of some uploads is failing on the primary Geo site with `verification_checksum = nil` and with `verification_failure` containing ``Error during verification: undefined method `underscore' for NilClass:Class`` or ``The model which owns this Upload is missing.``, this is due to orphaned Uploads. The parent record owning the Upload (the upload's "model") has somehow been deleted, but the Upload record still exists. This is usually due to a bug in the application, introduced by implementing bulk delete of the "model" while forgetting to bulk delete its associated Upload records. These verification failures are therefore not failures to verify, rather, the errors are a result of bad data in Postgres.
 
 You can find these errors in the `geo.log` file on the primary Geo site.
 
@@ -256,27 +256,46 @@ sudo gitlab-rake gitlab:uploads:check
 You can delete these Upload records on the primary Geo site to get rid of these failures by running the following script from the [Rails console](../../../operations/rails_console.md):
 
 ```ruby
-# Look for uploads with the verification error
-# or edit with your own affected IDs
-uploads = Geo::UploadState.where(
-  verification_checksum: nil,
-  verification_state: 3,
-  verification_failure: "Error during verification: undefined method  `underscore' for NilClass:Class"
-).pluck(:upload_id)
+def delete_orphaned_uploads(dry_run: true)
+  if dry_run
+    p "This is a dry run. Upload rows will only be printed."
+  else
+    p "This is NOT A DRY RUN! Upload rows will be deleted from the DB!"
+  end
 
-uploads_deleted = 0
-begin
+  subquery = Geo::UploadState.where("(verification_failure LIKE 'Error during verification: The model which owns this Upload is missing.%' OR verification_failure = 'Error during verification: undefined method `underscore'' for NilClass:Class') AND verification_checksum IS NULL")
+  uploads = Upload.where(upload_state: subquery)
+  p "Found #{uploads.count} uploads with a model that does not exist"
+
+  uploads_deleted = 0
+  begin
     uploads.each do |upload|
-    u = Upload.find upload
-    rescue => e
-        puts "checking upload #{u.id} failed with #{e.message}"
+
+      if dry_run
+        p upload
       else
         uploads_deleted=uploads_deleted + 1
-        p u                            ### allow verification before destroy
-        # p u.destroy!                 ### uncomment to actually destroy
+        p upload.destroy!
+      end
+    rescue => e
+      puts "checking upload #{upload.id} failed with #{e.message}"
+    end
   end
+
+  p "#{uploads_deleted} remote objects were destroyed." unless dry_run
 end
-p "#{uploads_deleted} remote objects were destroyed."
+```
+
+The above script defines a method named `delete_orphaned_uploads` which you can call like this to do a dry run:
+
+```ruby
+delete_orphaned_uploads(dry_run: true)
+```
+
+And to actually delete the orphaned upload rows:
+
+```ruby
+delete_orphaned_uploads(dry_run: false)
 ```
 
 ### Message: `"Error during verification","error":"File is not checksummable"`

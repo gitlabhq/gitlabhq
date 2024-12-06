@@ -1,9 +1,0 @@
----
-name: opt_in_identity_verification
-feature_issue_url: https://gitlab.com/groups/gitlab-org/modelops/anti-abuse/-/epics/32
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147068
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455481
-milestone: '17.0'
-group: group::anti-abuse
-type: gitlab_com_derisk
-default_enabled: false

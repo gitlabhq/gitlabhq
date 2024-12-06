@@ -128,7 +128,7 @@ export default {
         @close-button-clicked="hidePopover"
         @hide.once="markInputAsDirty"
       >
-        <div class="gl-border-t-1 gl-border-gray-200 gl-border-t-solid" @keyup="onPopoverKeyUp">
+        <div class="gl-border-t-1 gl-border-strong gl-border-t-solid" @keyup="onPopoverKeyUp">
           <tag-create
             v-if="isCreating"
             v-model="newTagName"

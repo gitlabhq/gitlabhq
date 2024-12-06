@@ -95,4 +95,3 @@ Layout/SpaceInsideParens:
     - 'spec/workers/pipeline_schedule_worker_spec.rb'
     - 'spec/workers/purge_dependency_proxy_cache_worker_spec.rb'
     - 'spec/workers/releases/manage_evidence_worker_spec.rb'
-    - 'spec/workers/run_pipeline_schedule_worker_spec.rb'

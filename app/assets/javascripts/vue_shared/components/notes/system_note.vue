@@ -254,7 +254,7 @@ export default {
         </div>
         <div
           v-if="lines.length && showLines"
-          class="gl-my-2 gl-mr-5 gl-overflow-hidden gl-overflow-visible gl-rounded-small gl-border-1 gl-border-solid gl-border-gray-200 gl-pl-0"
+          class="gl-my-2 gl-mr-5 gl-overflow-hidden gl-overflow-visible gl-rounded-small gl-border-1 gl-border-solid gl-border-strong gl-pl-0"
         >
           <table
             :class="$options.userColorSchemeClass"
