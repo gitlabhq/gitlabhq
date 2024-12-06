@@ -10,6 +10,7 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
   let_it_be(:expire_time) { 1.hour.from_now }
   let_it_be(:token_prefix) { 'prefix-' }
   let_it_be(:subject_type) { ::Ci::Build }
+  let_it_be(:custom_payload) { { foo: 'bar', test: 123 } }
 
   describe '.rsa_encode' do
     subject(:encoded_token) do
@@ -17,7 +18,8 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
         subject: job,
         signing_key: signing_key,
         expire_time: expire_time,
-        token_prefix: token_prefix)
+        token_prefix: token_prefix,
+        custom_payload: custom_payload)
     end
 
     it 'creates a JWT token with prefix' do
@@ -33,6 +35,8 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
       expect(payload['aud']).to eq('gitlab-authz-token')
       expect(payload['exp']).to eq(expire_time.to_i)
       expect(payload['version']).to eq('0.1.0')
+      expect(payload['foo']).to eq('bar')
+      expect(payload['test']).to eq(123)
     end
 
     context 'with invalid subject' do

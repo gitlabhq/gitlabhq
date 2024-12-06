@@ -49,7 +49,7 @@ RSpec.describe QA::Tools::KnapsackReportUpdater do
       description: <<~DESCRIPTION
         Update fallback knapsack report with latest spec runtime data.
 
-        @gl-quality/qe-maintainers please review and merge.
+        @gl-dx/qe-maintainers please review and merge.
       DESCRIPTION
     }))
   end

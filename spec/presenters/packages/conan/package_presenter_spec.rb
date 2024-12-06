@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
-  let_it_be(:package) { create(:conan_package) }
+  let_it_be(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
+  let_it_be(:alternative_reference) { '1111111111111111111111111111111111111111' }
+  let_it_be(:package) { create(:conan_package, package_references: [conan_package_reference, alternative_reference]) }
   let_it_be(:project) { package.project }
   let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
-  let_it_be(:conan_package_reference) { '123456789' }
 
   let(:params) { { package_scope: :instance } }
   let(:presenter) { described_class.new(package, user, project, params) }
@@ -143,18 +144,6 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       end
 
       context 'multiple packages with different references' do
-        let(:info_file) { create(:conan_package_file, :conan_package_info, package: package) }
-        let(:manifest_file) { create(:conan_package_file, :conan_package_manifest, package: package) }
-        let(:package_file) { create(:conan_package_file, :conan_package, package: package) }
-        let(:alternative_reference) { 'abcdefghi' }
-
-        before do
-          [info_file, manifest_file, package_file].each do |file|
-            file.conan_file_metadatum.conan_package_reference = alternative_reference
-            file.save!
-          end
-        end
-
         it { is_expected.to eq(expected_result) }
 
         context 'requesting the alternative reference' do

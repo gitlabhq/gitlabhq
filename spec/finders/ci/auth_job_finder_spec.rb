@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
   let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:job, reload: true) { create(:ci_build, status: :running, user: user) }
+  let_it_be(:job, refind: true) { create(:ci_build, status: :running, user: user) }
 
   let(:token) { job.token }
 
@@ -11,7 +12,7 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     described_class.new(token: token)
   end
 
-  describe '#execute!' do
+  describe '#execute!', :request_store do
     subject(:execute) { finder.execute! }
 
     it { is_expected.to eq(job) }
@@ -22,6 +23,36 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
       end
 
       it { is_expected.to eq(job) }
+    end
+
+    context 'when job has a `scoped_user_id` tracked' do
+      let(:scoped_user) { create(:user) }
+
+      before do
+        job.update!(options: job.options.merge(scoped_user_id: scoped_user.id))
+      end
+
+      context 'when job user does not support composite identity' do
+        it 'does not link the scoped user as composite identity' do
+          execute
+
+          expect(::Gitlab::Auth::Identity.new(job.user)).not_to be_linked
+        end
+      end
+
+      context 'when job user supports composite identity' do
+        before do
+          allow(job.user).to receive(:has_composite_identity?).and_return(true)
+        end
+
+        it 'links the scoped user as composite identity' do
+          expect(job.scoped_user).to eq(scoped_user)
+
+          execute
+
+          expect(::Gitlab::Auth::Identity.new(job.user)).to be_linked
+        end
+      end
     end
 
     it 'raises error if the job is not running' do
@@ -45,7 +76,7 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     end
 
     it 'raises error if the the project is being removed' do
-      project = double(Project)
+      project = instance_double(Project)
 
       expect(finder).to receive(:find_job_by_token).and_return(job)
       expect(job).to receive(:project).twice.and_return(project)
@@ -74,9 +105,9 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
 
     context 'when job is running', :request_store do
       it 'sets ci_job_token_scope on the job user', :aggregate_failures do
-        expect(subject).to eq(job)
-        expect(subject.user).to be_from_ci_job_token
-        expect(subject.user.ci_job_token_scope.current_project).to eq(job.project)
+        expect(execute).to eq(job)
+        expect(execute.user).to be_from_ci_job_token
+        expect(execute.user.ci_job_token_scope.current_project).to eq(job.project)
       end
 
       it 'logs context data about the job' do

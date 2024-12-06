@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::FileMetadatum, type: :model do
-  let_it_be(:package_file) { create(:conan_package_file, :conan_recipe_file) }
+  let_it_be(:package_file) { build(:conan_package_file) }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package_file) }
@@ -31,7 +31,7 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
 
     describe '#conan_package_reference' do
       context 'recipe file' do
-        let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
+        let_it_be(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
 
         it 'is valid with empty value' do
           conan_file_metadatum.conan_package_reference = nil
@@ -47,7 +47,7 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
       end
 
       context 'package file' do
-        let(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
+        let_it_be(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
 
         it 'is valid with acceptable value' do
           conan_file_metadatum.conan_package_reference = '123456asdf'
@@ -65,6 +65,62 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
           conan_file_metadatum.conan_package_reference = nil
 
           expect(conan_file_metadatum).to be_invalid
+        end
+      end
+    end
+
+    describe '#package_reference' do
+      let_it_be(:package_reference) { build(:conan_package_reference) }
+
+      context 'recipe file' do
+        let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
+
+        it 'is valid when package_reference is absent' do
+          conan_file_metadatum.package_reference = nil
+
+          expect(conan_file_metadatum).to be_valid
+        end
+
+        it 'is invalid when package_reference is present' do
+          conan_file_metadatum.package_reference = package_reference
+
+          expect(conan_file_metadatum).to be_invalid
+        end
+      end
+
+      context 'package file' do
+        context 'on create' do
+          let(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
+
+          it 'is valid when package_reference is present' do
+            conan_file_metadatum.package_reference = package_reference
+
+            expect(conan_file_metadatum).to be_valid
+          end
+
+          it 'is invalid when package_reference is absent' do
+            conan_file_metadatum.package_reference = nil
+
+            expect(conan_file_metadatum).to be_invalid
+          end
+        end
+
+        context 'on update' do
+          let_it_be_with_reload(:existing_metadatum) do
+            create(:conan_file_metadatum, :package_file, package_file: package_file)
+          end
+
+          it 'is valid when package_reference is absent' do
+            existing_metadatum.package_reference = nil
+
+            expect(existing_metadatum).to be_valid
+          end
+
+          it 'is valid when package_reference is present' do
+            existing_metadatum.package_reference = package_reference
+
+            expect(existing_metadatum).to be_valid
+          end
         end
       end
     end

@@ -150,6 +150,20 @@ module Ci
       self.class.new(new_attributes)
     end
 
+    # Scoped user is present when the user creating the pipeline supports composite identity.
+    # For example: a service account like GitLab Duo. The scoped user is used to further restrict
+    # the permissions of the CI job token associated to the `job.user`.
+    def scoped_user
+      # If jobs are retried by human users (not composite identity) we want to
+      # ignore the persisted `scoped_user_id`, because that is propagated
+      # together with `options` to cloned jobs.
+      # We also handle the case where `user` is `nil` (legacy behavior in specs).
+      return unless user&.has_composite_identity?
+
+      User.find_by_id(options[:scoped_user_id])
+    end
+    strong_memoize_attr :scoped_user
+
     def retryable?
       return false if retried? || archived? || deployment_rejected?
 

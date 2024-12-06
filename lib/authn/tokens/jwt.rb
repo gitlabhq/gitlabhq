@@ -26,7 +26,7 @@ module Authn
       VERSION = '0.1.0'
 
       class << self
-        def rsa_encode(subject:, signing_key:, expire_time:, token_prefix:)
+        def rsa_encode(subject:, signing_key:, expire_time:, token_prefix:, custom_payload: {})
           subject_global_id = GlobalID.create(subject).to_s if subject
           raise InvalidSubjectForTokenError unless subject_global_id.present?
 
@@ -36,6 +36,8 @@ module Authn
             token.audience = AUDIENCE
             token.expire_time = expire_time
             token[:version] = VERSION
+
+            custom_payload.each { |key, value| token[key] = value } if custom_payload.present?
           end
 
           token = ::JSONWebToken::RSAToken.encode(

@@ -31,8 +31,22 @@ module Ci
 
     def find_job_by_token
       jwt = ::Ci::JobToken::Jwt.decode(token)
-      # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
-      jwt&.subject || ::Ci::Build.find_by_token(token)
+      if jwt&.job
+        link_composite_identity!(jwt)
+        jwt.job
+      else
+        # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
+        ::Ci::Build.find_by_token(token)
+      end
+    end
+
+    def link_composite_identity!(jwt)
+      return unless Feature.enabled?(:composite_identity_in_ci, jwt.job&.user)
+      return unless jwt.scoped_user
+
+      # We prefer not to use `link_from_job` when we have the JWT because
+      # the JWT is the source of truth.
+      ::Gitlab::Auth::Identity.fabricate(jwt.job.user)&.link!(jwt.scoped_user)
     end
 
     def validate_job!(job)

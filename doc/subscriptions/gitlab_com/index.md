@@ -340,8 +340,6 @@ If you add a member to a group by using the [share a group with another group](.
 - [Remove the member from the shared group](../../user/group/index.md#remove-a-member-from-the-group).
 - [Remove the invited group](../../user/project/members/sharing_projects_groups.md#remove-an-invited-group).
 
-To remove a user from your self-managed instance, see [Deactivate a user](../../administration/moderate_users.md#deactivate-a-user).
-
 ## Link subscription to a group
 
 To change the group linked to a GitLab.com subscription:

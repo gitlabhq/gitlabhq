@@ -49,7 +49,7 @@ to register new feature, we need to update [CustomersDot configuration](configur
 Since the GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom),
 to register new feature, we need to update [GitLab.com configuration](configuration.md#gitlabcom-configuration) as well.
 
-So, in total, you need to open two separate merge requests: one to [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) and another to [GitLab.com](https://gitlab.com/gitlab-org/gitlab). No synchronization between when they are merged is needed.  
+So, in total, you need to open two separate merge requests: one to [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) and another to [GitLab.com](https://gitlab.com/gitlab-org/gitlab). No synchronization between when they are merged is needed.
 
 The new feature needs to be added as a new **unit primitive**, so you can include it in the **JWT** (Service Access token).
 
@@ -220,18 +220,7 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 
 1. Ensure your request sends the required headers to the [backend service](#implement-authorization-checks-in-backend-service).
 
-   Primary header fields that should be sent to any backend service:
-
-   - `X-Gitlab-Instance-Id`: A globally unique instance ID string.
-   - `X-Gitlab-Global-User-Id`: A globally unique anonymous user ID string.
-   - `X-Gitlab-Realm`: One of `saas`, `self-managed`.
-   - `X-Gitlab-Version`: Version of the GitLab instance.
-   - `X-Gitlab-Host-Name`: The hostname of the current GitLab instance.
-   - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token obtained from the `access_token` method in step 1.
-
-   AI-specific header fields:
-
-   - `X-Gitlab-Duo-Seat-Count`: The number of either duo pro or duo enterprise seats the customer purchased. When both add-ons are present, it will take the highest number of seats.
+   These headers can be found in the `gitlab-cloud-connector` [README](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/tree/main/src/python#authentication).
 
    Some of these headers can be injected by merging the result of the `::CloudConnector#headers` method to your payload.
    For AI uses cases and requests targeting the AI gateway, use `::CloudConnector#ai_headers` instead.

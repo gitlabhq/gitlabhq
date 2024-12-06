@@ -11,6 +11,7 @@ module Projects
 
     def execute
       build_topics
+      ensure_ci_cd_settings
       remove_unallowed_params
       add_pages_unique_domain
 
@@ -53,6 +54,12 @@ module Projects
     end
 
     private
+
+    def ensure_ci_cd_settings
+      # It's possible that before the fix in https://gitlab.com/gitlab-org/gitlab/-/issues/421050,
+      # there were projects created that has no ci_cd_settings, so we backfill it here.
+      project.build_ci_cd_settings unless project.ci_cd_settings
+    end
 
     def add_pages_unique_domain
       return unless params.dig(:project_setting_attributes, :pages_unique_domain_enabled)

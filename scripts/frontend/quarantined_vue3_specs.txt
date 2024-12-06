@@ -202,7 +202,6 @@ spec/frontend/ide/components/commit_sidebar/list_item_spec.js
 spec/frontend/ide/components/commit_sidebar/message_field_spec.js
 spec/frontend/ide/components/merge_requests/item_spec.js
 spec/frontend/ide/components/merge_requests/list_spec.js
-spec/frontend/ide/components/nav_dropdown_button_spec.js
 spec/frontend/ide/components/new_dropdown/index_spec.js
 spec/frontend/ide/ide_router_extension_spec.js
 spec/frontend/ide/ide_router_spec.js

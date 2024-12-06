@@ -759,7 +759,7 @@ module Ci
     def valid_token?(token)
       jwt = ::Ci::JobToken::Jwt.decode(token)
       if jwt
-        jwt.subject == self
+        jwt.job == self
       else
         self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
       end

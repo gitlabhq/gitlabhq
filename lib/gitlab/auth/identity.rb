@@ -25,6 +25,14 @@ module Gitlab
         end
       end
 
+      def self.link_from_job(job)
+        return unless Feature.enabled?(:composite_identity_in_ci, job&.user)
+
+        fabricate(job.user).tap do |identity|
+          identity.link!(job.scoped_user) if identity&.composite?
+        end
+      end
+
       def self.sidekiq_restore!(job)
         ids = Array(job[COMPOSITE_IDENTITY_SIDEKIQ_ARG])
 

@@ -175,6 +175,10 @@ module Ci
         return
       end
 
+      # Make sure that composite identity is propagated to `PipelineProcessWorker`
+      # when the build's status change.
+      ::Gitlab::Auth::Identity.link_from_job(build)
+
       # In case when 2 runners try to assign the same build, second runner will be declined
       # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
       if assign_runner!(build, params)

@@ -34,10 +34,21 @@ export default {
   <dropdown-button class="!gl-w-full">
     <span class="row gl-flex-nowrap">
       <span class="col-auto flex-fill text-truncate">
-        <gl-icon :size="16" :aria-label="__('Current Branch')" name="branch" /> {{ branchLabel }}
+        <gl-icon
+          data-testid="branch-icon"
+          :size="16"
+          :aria-label="__('Current Branch')"
+          name="branch"
+        />
+        {{ branchLabel }}
       </span>
       <span v-if="showMergeRequests" class="col-auto pl-0 text-truncate">
-        <gl-icon :size="16" :aria-label="__('Merge request')" name="merge-request" />
+        <gl-icon
+          data-testid="merge-request-icon"
+          :size="16"
+          :aria-label="__('Merge request')"
+          name="merge-request"
+        />
         {{ mergeRequestLabel }}
       </span>
     </span>

@@ -2,7 +2,7 @@
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
 # As described in https://docs.gitlab.com/ee/user/project/codeowners/index.html
 
-* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gl-quality/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
+* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/qe-maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
@@ -107,26 +107,26 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-pipeline-maintainers @gl-docsteam
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/maintainers/frontend
-/.gitlab/ci/test-on-omnibus/ @gl-pipeline-maintainers @gl-quality/qe-maintainers
-/.gitlab/ci/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-quality/qe-maintainers
-/.gitlab/ci/qa-common/ @gl-pipeline-maintainers @gl-quality/qe-maintainers
+/.gitlab/ci/test-on-omnibus/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
+/.gitlab/ci/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/qe-maintainers
+/.gitlab/ci/qa-common/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
 /.gitlab/ci/releases.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/delivery
 /.gitlab/ci/reports.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-com/gl-security/appsec
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-quality/qe-maintainers
-/.gitlab/ci/test-on-gdk/ @gl-pipeline-maintainers @gl-quality/qe-maintainers
+/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/qe-maintainers
+/.gitlab/ci/test-on-gdk/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
 /gems/gem.gitlab-ci.yml
 
-[Tooling] @gl-quality/eng-prod
+[Tooling] @gl-dx/eng-prod
 Dangerfile
 /danger/
 /tooling/
 /spec/tooling/
 /scripts/
-/scripts/**/*.rb @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
-/scripts/**/*.js @gl-quality/eng-prod @gitlab-org/maintainers/frontend
-/scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+/scripts/**/*.rb @gl-dx/eng-prod @gitlab-org/maintainers/rails-backend
+/scripts/**/*.js @gl-dx/eng-prod @gitlab-org/maintainers/frontend
+/scripts/frontend/ @gl-dx/eng-prod @gitlab-org/maintainers/frontend
 /scripts/remote_development/ @gitlab-org/maintainers/workspaces/backend
-/scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
+/scripts/review_apps/seed-dast-test-data.sh @gl-dx/eng-prod @dappelt @ngeorge1
 /.dockerignore
 /.editorconfig
 /.gitpod.yml
@@ -138,14 +138,14 @@ Dangerfile
 /lefthook.yml
 /tests.yml
 
-^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull
+^[Backend Static Code Analysis] @gl-dx/eng-prod @dstull
 .rubocop*.yml
 /gems/config/rubocop.yml
 /rubocop/
 /spec/rubocop/
 /spec/rubocop*
 
-^[End-to-end] @gl-quality
+^[End-to-end] @gl-dx
 /qa/
 
 ^[LDAP] @dblessing @mkozono
@@ -957,7 +957,7 @@ lib/gitlab/checks/**
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
-/doc/development/gitpod_internals.md @gl-quality/eng-prod
+/doc/development/gitpod_internals.md @gl-dx/eng-prod
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -967,13 +967,13 @@ lib/gitlab/checks/**
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
 /doc/development/permissions.md @rlehmann1
 /doc/development/permissions/ @rlehmann1
-/doc/development/pipelines/ @gl-quality/eng-prod
+/doc/development/pipelines/ @gl-dx/eng-prod
 /doc/development/policies.md @gitlab-org/govern/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/govern/threat-insights-frontend-team
 /doc/development/sec/gemnasium_analyzer_data.md @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
-/doc/development/software_design.md @gl-quality/eng-prod
+/doc/development/software_design.md @gl-dx/eng-prod
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/downgrade_ee_to_ce/ @axil
 /doc/drawers/ @ashrafkhamis
@@ -1713,7 +1713,7 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/fixtures/remote_development/
 /ee/spec/controllers/remote_development/
 /ee/spec/services/remote_development/
-/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-quality/qe-maintainers
+/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/qe-maintainers
 
 ^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
 /app/assets/javascripts/ide/components/shared/tokened_input.vue

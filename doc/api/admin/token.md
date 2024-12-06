@@ -17,6 +17,7 @@ DETAILS:
 > - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
 > - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932) in GitLab 17.7.
 > - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987) in GitLab 17.7.
+> - [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030) in GitLab 17.7.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -44,6 +45,7 @@ Supported tokens:
 - [OAuth application secrets](../../integration/oauth_provider.md)
 - [Cluster agent tokens](../../security/tokens/index.md#gitlab-cluster-agent-tokens)
 - [Runner authentication tokens](../../security/tokens/index.md#runner-authentication-tokens)
+- [Pipeline trigger tokens](../../ci/triggers/index.md#create-a-pipeline-trigger-token)
 
 ```plaintext
 POST /api/v4/admin/token

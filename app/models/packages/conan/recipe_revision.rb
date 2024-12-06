@@ -5,7 +5,7 @@ module Packages
     class RecipeRevision < ApplicationRecord
       include ShaAttribute
 
-      REVISION_LENGTH_MAX = 20
+      REVISION_LENGTH_MAX = 40
 
       sha_attribute :revision
 

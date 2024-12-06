@@ -49,7 +49,7 @@ module API
 
           status :ok
 
-          present identified_token.revocable, with: identified_token.present_with
+          present identified_token.revocable, with: identified_token.present_with, current_user: current_user
         end
       end
     end

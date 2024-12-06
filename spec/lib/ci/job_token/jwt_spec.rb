@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
   let_it_be(:rsa_key) { OpenSSL::PKey::RSA.generate(2048) }
-  let_it_be(:job) { create(:ci_build) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:job) { create(:ci_build, user: user) }
 
   before do
     allow(Gitlab::CurrentSettings)
@@ -65,7 +66,7 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
         decoded_token = described_class.decode(encoded_token)
 
         expect(decoded_token).to be_present
-        expect(decoded_token.subject).to eq(job)
+        expect(decoded_token.job).to eq(job)
       end
     end
 
@@ -156,6 +157,37 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
         expect { key }
           .to raise_error('CI job token signing key is not set')
       end
+    end
+  end
+
+  describe '#scoped_user' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+    let(:scoped_user) { create(:user) }
+
+    context 'when the job doe not have scoped user' do
+      it 'does not encode the scoped user in the JWT payload' do
+        expect(decoded_token.scoped_user).to be_nil
+      end
+    end
+
+    context 'when the job has scoped user' do
+      before do
+        allow(job).to receive(:scoped_user).and_return(scoped_user)
+      end
+
+      it 'encodes the scoped user in the JWT payload' do
+        expect(decoded_token.scoped_user).to eq(scoped_user)
+      end
+    end
+  end
+
+  describe '#job' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+
+    it 'is encoded with the job as subject' do
+      expect(decoded_token.job).to eq(job)
     end
   end
 end

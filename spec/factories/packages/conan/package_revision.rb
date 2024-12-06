@@ -5,6 +5,6 @@ FactoryBot.define do
     package { association(:conan_package) }
     association :project
     package_reference { association(:conan_package_reference) }
-    sequence(:revision) { |n| Digest::SHA1.digest(n.to_s) } # rubocop:disable Fips/SHA1 -- The conan registry is not FIPS compliant
+    sequence(:revision) { |n| Digest::SHA1.hexdigest(n.to_s) } # rubocop:disable Fips/SHA1 -- The conan registry is not FIPS compliant
   end
 end

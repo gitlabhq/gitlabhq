@@ -10,7 +10,8 @@ module Authn
       ::Authn::Tokens::PersonalAccessToken,
       ::Authn::Tokens::OauthApplicationSecret,
       ::Authn::Tokens::ClusterAgentToken,
-      ::Authn::Tokens::RunnerAuthenticationToken
+      ::Authn::Tokens::RunnerAuthenticationToken,
+      ::Authn::Tokens::CiTriggerToken
     ].freeze
 
     def self.token_for(plaintext, source)

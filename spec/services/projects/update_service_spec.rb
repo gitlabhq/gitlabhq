@@ -971,6 +971,20 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
+    describe 'when project has missing CI/CD settings record' do
+      before do
+        project.ci_cd_settings.destroy!
+        project.reload
+      end
+
+      it 'does not fail and creates a ci_cd_settings record for the project' do
+        result = update_project(project, user, topics: 'topics')
+        expect(result[:status]).to eq(:success)
+
+        expect(project.reload.ci_cd_settings).to be_present
+      end
+    end
+
     describe 'when updating ci_inbound_job_token_scope_enabled' do
       let(:category) { described_class }
       let(:user) { admin }

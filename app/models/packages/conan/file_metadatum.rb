@@ -16,6 +16,8 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   validates :package_file, presence: true
   validates :conan_package_reference, absence: true, if: :recipe_file?
   validates :conan_package_reference, format: { with: Gitlab::Regex.conan_package_reference_regex }, if: :package_file?
+  validates :package_reference, absence: true, if: :recipe_file?
+  validates :package_reference, presence: true, if: :package_file?, on: :create
   validate :conan_package_type
   # recipe_revision and package_revision are not supported yet
   validates :recipe_revision, absence: true

@@ -12,6 +12,8 @@
 module Ci
   module JobToken
     class Jwt
+      include Gitlab::Utils::StrongMemoize
+
       # After finishing, jobs need to be able to POST their final state to the `jobs` API endpoint,
       # for example to update their status or the final trace.
       # A leeway of 5 minutes ensures a job is able to do that after they have timed out.
@@ -25,21 +27,25 @@ module Ci
           return unless job.persisted?
           return unless key
 
+          scopes = job.scoped_user ? { scoped_user_id: job.scoped_user.id } : {}
+
           ::Authn::Tokens::Jwt.rsa_encode(
             subject: job,
             signing_key: key,
             expire_time: expire_time(job),
-            token_prefix: token_prefix)
+            token_prefix: token_prefix,
+            custom_payload: scopes)
         end
 
         def decode(token)
           return unless key
 
-          ::Authn::Tokens::Jwt.rsa_decode(
+          jwt = ::Authn::Tokens::Jwt.rsa_decode(
             token: token,
             signing_public_key: key.public_key,
             subject_type: subject_type,
             token_prefix: token_prefix)
+          new(jwt) if jwt
         end
 
         def token_prefix
@@ -65,6 +71,22 @@ module Ci
           nil
         end
       end
+
+      def initialize(jwt)
+        raise ArgumentError, 'argument is not Authn::Tokens::Jwt' unless jwt.is_a?(::Authn::Tokens::Jwt)
+
+        @jwt = jwt
+      end
+
+      def job
+        @jwt.subject
+      end
+
+      def scoped_user
+        scoped_user_id = @jwt.payload['scoped_user_id']
+        User.find_by_id(scoped_user_id) if scoped_user_id
+      end
+      strong_memoize_attr :scoped_user
     end
   end
 end

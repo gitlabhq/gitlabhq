@@ -163,7 +163,6 @@
 - :with_clean_rails_cache
 - :with_cloud_connector
 - :with_current_organization
-- :with_default_organization
 - :with_license
 - :with_sidekiq_context
 - :without_license

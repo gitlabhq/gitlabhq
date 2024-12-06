@@ -877,8 +877,6 @@ GET /projects/:id/integrations/github
 
 ## GitLab for Jira Cloud app
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `enable_jira_connect_configuration`. Disabled by default.
-
 The GitLab for Jira Cloud app integration is enabled or disabled automatically through [group linking and unlinking in Jira](../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app). You cannot enable or disable the integration with the GitLab integrations form or the API.
 
 ### Update integration for a project

@@ -403,7 +403,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/features/projects/settings/user_manages_merge_requests_settings_spec.rb'
     - 'spec/features/projects/tags/user_views_tag_spec.rb'
     - 'spec/features/projects/tags/user_views_tags_spec.rb'
-    - 'spec/finders/ci/auth_job_finder_spec.rb'
     - 'spec/finders/packages/composer/packages_finder_spec.rb'
     - 'spec/finders/packages/conan/package_file_finder_spec.rb'
     - 'spec/finders/packages/conan/package_finder_spec.rb'

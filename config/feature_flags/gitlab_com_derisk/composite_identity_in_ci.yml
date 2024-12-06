@@ -1,0 +1,9 @@
+---
+name: composite_identity_in_ci
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506641
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174051
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/507803
+milestone: '17.7'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

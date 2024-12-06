@@ -16269,7 +16269,8 @@ CREATE TABLE packages_conan_file_metadata (
     conan_file_type smallint NOT NULL,
     recipe_revision_id bigint,
     package_revision_id bigint,
-    package_reference_id bigint
+    package_reference_id bigint,
+    CONSTRAINT check_conan_file_metadata_ref_null_for_recipe_files CHECK ((NOT ((conan_file_type = 1) AND (package_reference_id IS NOT NULL))))
 );
 
 CREATE SEQUENCE packages_conan_file_metadata_id_seq
@@ -33712,6 +33713,8 @@ CREATE UNIQUE INDEX uniq_idx_streaming_group_destination_id_and_namespace_id ON 
 CREATE UNIQUE INDEX uniq_idx_subscription_seat_assignments_on_namespace_and_user ON subscription_seat_assignments USING btree (namespace_id, user_id);
 
 CREATE UNIQUE INDEX uniq_idx_user_add_on_assignments_on_add_on_purchase_and_user ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, user_id);
+
+CREATE UNIQUE INDEX uniq_index_pkg_refs_on_ref_and_pkg_id_when_rev_is_null ON packages_conan_package_references USING btree (package_id, reference) WHERE (recipe_revision_id IS NULL);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

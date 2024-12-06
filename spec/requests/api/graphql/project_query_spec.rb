@@ -69,7 +69,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
             'description' => pipeline_trigger.description,
             'hasTokenExposed' => false,
             'lastUsed' => nil,
-            'token' => pipeline_trigger.token[0, 4]
+            'token' => pipeline_trigger.short_token
           })
         end
       end

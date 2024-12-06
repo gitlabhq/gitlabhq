@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
   let(:seed_build) { described_class.new(seed_context, attributes, previous_stages + [current_stage]) }
 
   describe '#attributes' do
-    subject { seed_build.attributes }
+    subject(:seed_attributes) { seed_build.attributes }
 
     it { is_expected.to be_a(Hash) }
     it { is_expected.to include(:name, :project, :ref) }
@@ -553,6 +553,44 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
           it 'does not recalculate the variables' do
             expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'var 1' })
+          end
+        end
+      end
+    end
+
+    describe 'propagating composite identity', :request_store do
+      let_it_be(:user) { create(:user) }
+
+      let(:attributes) do
+        { name: 'rspec', options: { test: 123 } }
+      end
+
+      before do
+        pipeline.update!(user: user)
+      end
+
+      it 'does not propagate composite identity by default' do
+        expect(seed_attributes[:options].key?(:scoped_user_id)).to be(false)
+      end
+
+      context 'when pipeline user supports composite identity' do
+        before do
+          allow(user).to receive(:has_composite_identity?).and_return(true)
+        end
+
+        it 'does not propagate composite identity if composite user is not linked' do
+          expect(seed_attributes[:options].key?(:scoped_user_id)).to be(false)
+        end
+
+        context 'when composite identity is linked' do
+          let(:scoped_user) { create(:user) }
+
+          before do
+            ::Gitlab::Auth::Identity.fabricate(user).link!(scoped_user)
+          end
+
+          it 'propagates the composite identity as `scoped_user_id` in the options' do
+            expect(seed_attributes[:options][:scoped_user_id]).to be(scoped_user.id)
           end
         end
       end

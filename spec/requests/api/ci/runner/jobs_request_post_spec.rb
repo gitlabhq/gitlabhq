@@ -310,6 +310,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(json_response['id']).to eq(job.id)
           end
 
+          describe 'composite identity', :request_store, :sidekiq_inline do
+            it 'is propagated to downstream Sidekiq workers' do
+              expect(::Gitlab::Auth::Identity).to receive(:link_from_job).and_call_original
+              expect(::Gitlab::Auth::Identity).to receive(:sidekiq_restore!).at_least(:once).and_call_original
+              expect(::PipelineProcessWorker).to receive(:perform_async).and_call_original
+
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+            end
+          end
+
           context 'when job is made for tag' do
             let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 

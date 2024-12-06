@@ -72,6 +72,7 @@ module Gitlab
               .deep_merge(@cache.cache_attributes)
               .deep_merge(runner_tags)
               .deep_merge(build_execution_config_attribute)
+              .deep_merge(scoped_user_id_attribute)
           end
 
           def bridge?
@@ -159,6 +160,17 @@ module Gitlab
               partition_id: @pipeline.partition_id,
               metadata_attributes: { partition_id: @pipeline.partition_id }
             }
+          end
+
+          # Scoped user is present when the user creating the pipeline supports composite identity.
+          # For example: a service account like GitLab Duo. The scoped user is used to further restrict
+          # the permissions of the CI job token associated to the `job.user`.
+          def scoped_user_id_attribute
+            user_identity = ::Gitlab::Auth::Identity.fabricate(@pipeline.user)
+
+            return {} unless user_identity&.composite? && user_identity.linked?
+
+            { options: { scoped_user_id: user_identity.scoped_user.id } }
           end
 
           def rules_attributes

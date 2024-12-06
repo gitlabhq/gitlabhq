@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Oauth::TokensController, feature_category: :system_access do
+  # The logic is still depending on the database default
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/507325
+  let_it_be(:organization) { create(:organization, :default) }
+
   describe 'POST /oauth/token' do
     context 'for resource owner password credential flow', :aggregate_failures do
       let_it_be(:password) { User.random_password }
@@ -11,7 +15,7 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
         post '/oauth/token', params: { grant_type: 'password', username: user.username, password: with_password }
       end
 
-      context 'when user does not have two factor enabled', :with_default_organization do
+      context 'when user does not have two factor enabled' do
         let_it_be(:user) { create(:user, password: password) }
 
         it 'authenticates successfully' do

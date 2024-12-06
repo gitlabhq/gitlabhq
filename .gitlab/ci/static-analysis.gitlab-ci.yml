@@ -151,6 +151,7 @@ rails-next-dependency-check:
   stage: lint
   needs: []
   extends:
+    - .ruby-cache
     - .rails:rules:rails-next-dependency-check
   variables:
     BUNDLE_GEMFILE: Gemfile.next
@@ -163,7 +164,7 @@ rails-next-dependency-check:
     - |
       if [ "$CI_JOB_STATUS" == "failed" ]; then
         echo "Gemfile.next.lock contains outdated dependencies, please run the following command and push the changes:"
-        echo "cp Gemfile.lock Gemfile.next.lock && BUNDLE_GEMFILE=Gemfile.next bundle lock && BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init"
+        echo "bundle exec rake bundler:gemfile:sync"
       fi
 
 feature-flags-usage:
