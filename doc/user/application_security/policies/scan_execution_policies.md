@@ -141,7 +141,6 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named  `scan_execution_pipeline_concurrency_control`.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
 > - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) `scan_execution_pipeline_worker` removed in GitLab 17.6.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) the `scan_execution_pipeline_concurrency_control` feature flag on GitLab.com in GitLab 17.6.
 
 WARNING:
 In GitLab 16.1 and earlier, you should **not** use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
@@ -165,6 +164,7 @@ A scheduled pipeline:
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `cadence`  | `string` | true | Cron expression with limited options. For example, `0 0 * * *` creates a schedule to run every day at midnight (12:00 AM). | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
+| `time_window` | `object` | false |  | Distribution and duration settings for scheduled security scans. |
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
@@ -237,22 +237,56 @@ The keys for a schedule rule are:
 - `agents:<agent-name>` (required): The name of the agent to use for scanning.
 - `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned.
 
+### `time_window` schema
+
+Define how scheduled scans are distributed over time with the `time_window` object in the [`schedule` rule type](#schedule-rule-type). You can configure `time_window` only in YAML mode of the policy editor.
+
+| Field          | Type      | Required | Description                                                                                                                                                                          |
+|----------------|-----------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `distribution` | `string`  | true     | Distribution pattern for schedule scans. Currently only supports `random`, where scans will be distributed randomly in the interval defined by the `value` key of the `time_window`. |
+| `value`        | `integer` | true     | The time window in seconds the schedule scans should run. Enter a value between 3600 (1 hour) and 86400 (24 hours).                                               |
+
+#### Policy example
+
+```yaml
+- name: Enforce Container Scanning with a time window of 1 hour
+  enabled: true
+  rules:
+  - type: schedule
+    cadence: '0 10 * * *'
+    time_window:
+      value: 3600
+      distribution: random
+  actions:
+  - scan: container_scanning
+```
+
+### Optimize scheduled pipelines for projects at scale
+
+Consider performance when enabling scheduled scans across many projects.
+
+If the `scan_execution_pipeline_concurrency_control` feature flag is not enabled:
+
+- Scheduled pipelines run simultaneously across all projects and branches enforced by the policy.
+- The first scheduled pipeline execution in each project creates a security bot user responsible for executing the schedules within each project.
+
+To optimize performance for projects at scale:
+
+- Roll out scheduled scan execution policies gradually, starting with a subset of projects. You can leverage security policy scopes to target specific groups, projects, or projects containing a given compliance framework label.
+- You can configure the policy to run the schedules on runners with a specified `tag`. Consider setting up a dedicated runner in each project to handle schedules enforced from a policy to reduce impact to other runners.
+- Test your implementation in a staging or lower environment before deploying to production. Monitor performance and adjust your rollout plan based on results.
+
+NOTE:
+Additional improvements for managing high-volume scheduled pipelines are planned in [Epic 13977](https://gitlab.com/groups/gitlab-org/-/epics/13997).
+
 ### Concurrency control
 
-If both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` feature flags are enabled, concurrency control is applied.
-Concurrency control limits the number of pipeline jobs created by the scan execution policy that can be active for each top-level group on an instance. For GitLab.com, the limit is managed by GitLab administrators.
-The active pipeline job statuses are:
+GitLab applies concurrency control when:
 
-- `preparing`
-- `pending`
-- `running`
-- `waiting_for_callback`
-- `waiting_for_resource`
-- `canceling`
-- `created`
+- The `scan_execution_pipeline_concurrency_control` feature flag is enabled
+- You set the `time_window` property
 
-If the number of active pipeline jobs exceeds the value of the `max_scheduled_scans_concurrency` application setting, pipeline creation is postponed until more capacity is available.
-Due to the concurrency execution of the background jobs responsible for creating the scheduled scans pipeline jobs, the concurrency limit can take some time be enforced.
+The concurrency control distributes the scheduled pipelines according to the [`time_window` settings](#time_window-schema) defined in the policy.
 
 #### Set the maximum top-level group concurrency for security policy scheduled scans
 

@@ -757,6 +757,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         context 'when validate is not supplied' do
           it_behaves_like 'performs validation', {}
         end
+
+        context "when a ForeignKeyViolation occurs" do
+          let(:source) { 'projects' }
+          let(:constraint_name) { 'fk_projects_users_id' }
+          let(:options) { { column: :user_id, name: constraint_name } }
+
+          it "drops the constraint and raises an error", :aggregate_failures do
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(
+              "ALTER TABLE projects ADD CONSTRAINT fk_projects_users_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE NOT VALID;"
+            )
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/).ordered
+            expect(model).to receive(:execute).with(/ALTER TABLE .* VALIDATE CONSTRAINT/).and_raise(PG::ForeignKeyViolation.new("foreign key violation")).ordered
+            expect(model).to receive(:execute).with(/RESET statement_timeout/).ordered
+            expect(model).to receive(:execute).with(/ALTER TABLE #{source} DROP CONSTRAINT #{constraint_name}/).ordered
+
+            expect do
+              model.add_concurrent_foreign_key(source, :users, **options)
+            end.to raise_error %r{Migration failed intentionally due to ForeignKeyViolation}
+          end
+        end
       end
 
       context 'when the reverse_lock_order flag is set' do

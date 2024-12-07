@@ -302,8 +302,15 @@ module Gitlab
         # Note this is a no-op in case the constraint is VALID already
 
         if options[:validate]
-          disable_statement_timeout do
-            execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{options[:name]};")
+          begin
+            disable_statement_timeout do
+              execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{options[:name]};")
+            end
+          rescue PG::ForeignKeyViolation => e
+            with_lock_retries do
+              execute("ALTER TABLE #{source} DROP CONSTRAINT #{options[:name]};")
+            end
+            raise "Migration failed intentionally due to ForeignKeyViolation: #{e.message}"
           end
         end
       end

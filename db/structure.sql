@@ -39185,6 +39185,9 @@ ALTER TABLE p_ci_build_names
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_bc8972fa55 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE p_ci_builds_execution_configs
+    ADD CONSTRAINT fk_rails_bc9ff5d0a9_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY observability_traces_issues_connections
     ADD CONSTRAINT fk_rails_bcf18aa0d2 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
