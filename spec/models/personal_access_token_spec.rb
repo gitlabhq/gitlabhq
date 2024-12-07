@@ -327,6 +327,13 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         expect(personal_access_token).not_to be_valid
         expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
       end
+
+      it "rejects creating a token with dynamic scopes" do
+        personal_access_token.scopes = [:"user:123"]
+
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
+      end
     end
 
     describe 'expires_at' do

@@ -105,6 +105,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         read_service_ping
         read_user
         sudo
+        user:*
         write_observability
         write_registry
         write_repository

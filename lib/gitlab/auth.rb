@@ -25,6 +25,8 @@ module Gitlab
     AI_FEATURES_SCOPES = [AI_FEATURES].freeze
     AI_WORKFLOW = :ai_workflows
     AI_WORKFLOW_SCOPES = [AI_WORKFLOW].freeze
+    DYNAMIC_USER = :"user:*"
+    DYNAMIC_SCOPES = [DYNAMIC_USER].freeze
 
     PROFILE_SCOPE = :profile
     EMAIL_SCOPE = :email
@@ -419,7 +421,7 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES + AI_WORKFLOW_SCOPES
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES
       end
 
       def registry_scopes

@@ -135,4 +135,6 @@ Doorkeeper.configure do
   application_secret_generator 'Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken'
 
   custom_access_token_attributes [:organization_id]
+
+  enable_dynamic_scopes
 end
