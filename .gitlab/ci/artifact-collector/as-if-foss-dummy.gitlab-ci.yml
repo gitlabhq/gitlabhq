@@ -1,5 +1,0 @@
-rspec:artifact-collector as-if-foss:
-  rules:
-    - when: never
-  script:
-    - echo OK
