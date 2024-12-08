@@ -4928,6 +4928,9 @@ msgstr ""
 msgid "AdminUsers|user cap"
 msgstr ""
 
+msgid "Administrator"
+msgstr ""
+
 msgid "Administrator Account Setup"
 msgstr ""
 
@@ -6009,6 +6012,9 @@ msgstr ""
 msgid "An error occurred while drawing job relationship links."
 msgstr ""
 
+msgid "An error occurred while editing lock information, please try again."
+msgstr ""
+
 msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
@@ -6055,6 +6061,9 @@ msgid "An error occurred while fetching label colors."
 msgstr ""
 
 msgid "An error occurred while fetching labels, please try again."
+msgstr ""
+
+msgid "An error occurred while fetching lock information, please try again."
 msgstr ""
 
 msgid "An error occurred while fetching participants"
@@ -7408,6 +7417,9 @@ msgid "Are you sure that you want to unarchive this project?"
 msgstr ""
 
 msgid "Are you sure you want to %{action} %{name}?"
+msgstr ""
+
+msgid "Are you sure you want to %{action} this directory?"
 msgstr ""
 
 msgid "Are you sure you want to approve %{user}?"
@@ -32625,6 +32637,9 @@ msgstr ""
 msgid "Lock File?"
 msgstr ""
 
+msgid "Lock directory?"
+msgstr ""
+
 msgid "Lock discussion"
 msgstr ""
 
@@ -37729,6 +37744,9 @@ msgid "Offline license"
 msgstr ""
 
 msgid "Oh no!"
+msgstr ""
+
+msgid "Ok"
 msgstr ""
 
 msgid "Okay"

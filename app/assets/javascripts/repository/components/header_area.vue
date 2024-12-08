@@ -32,6 +32,8 @@ export default {
     SourceCodeDownloadDropdown,
     CloneCodeDropdown,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+    LockDirectoryButton: () =>
+      import('ee_component/repository/components/lock_directory_button.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -97,6 +99,9 @@ export default {
   computed: {
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
+    },
+    isRoot() {
+      return !this.currentPath || this.currentPath === '/';
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -190,6 +195,7 @@ export default {
     <!-- Tree controls -->
     <div v-if="isTreeView" class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0">
       <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
+      <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
       <gl-button
         v-if="comparePath"
         data-testid="tree-compare-control"

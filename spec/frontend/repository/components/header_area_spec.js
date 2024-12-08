@@ -9,6 +9,7 @@ import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 
 const defaultMockRoute = {
   params: {
@@ -20,52 +21,6 @@ const defaultMockRoute = {
   query: {
     ref_type: '',
   },
-};
-
-const defaultProvided = {
-  canCollaborate: true,
-  canEditTree: true,
-  canPushCode: true,
-  originalBranch: 'main',
-  selectedBranch: 'feature/new-ui',
-  newBranchPath: '/project/new-branch',
-  newTagPath: '/project/new-tag',
-  newBlobPath: '/project/new-file',
-  forkNewBlobPath: '/project/fork/new-file',
-  forkNewDirectoryPath: '/project/fork/new-directory',
-  forkUploadBlobPath: '/project/fork/upload',
-  uploadPath: '/project/upload',
-  newDirPath: '/project/new-directory',
-  projectRootPath: '/project/root/path',
-  comparePath: undefined,
-  isReadmeView: false,
-  isFork: false,
-  needsToFork: true,
-  gitpodEnabled: false,
-  isBlob: true,
-  showEditButton: true,
-  showWebIdeButton: true,
-  showGitpodButton: false,
-  showPipelineEditorUrl: true,
-  webIdeUrl: 'https://gitlab.com/project/-/ide/',
-  editUrl: 'https://gitlab.com/project/-/edit/main/',
-  pipelineEditorUrl: 'https://gitlab.com/project/-/ci/editor',
-  gitpodUrl: 'https://gitpod.io/#https://gitlab.com/project',
-  userPreferencesGitpodPath: '/profile/preferences#gitpod',
-  userProfileEnableGitpodPath: '/profile/preferences?enable_gitpod=true',
-  httpUrl: 'https://gitlab.com/example-group/example-project.git',
-  xcodeUrl: 'xcode://clone?repo=https://gitlab.com/example-group/example-project.git',
-  sshUrl: 'git@gitlab.com:example-group/example-project.git',
-  kerberosUrl: 'https://kerberos@gitlab.com/example-group/example-project.git',
-  downloadLinks: [
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.zip',
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.gz',
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.bz2',
-    'https://gitlab.com/example-group/example-project/-/releases',
-  ],
-  downloadArtifacts: [
-    'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
-  ],
 };
 
 describe('HeaderArea', () => {
@@ -85,7 +40,7 @@ describe('HeaderArea', () => {
   const createComponent = (props = {}, routeName = 'blobPathDecoded', provided = {}) => {
     return shallowMountExtended(HeaderArea, {
       provide: {
-        ...defaultProvided,
+        ...headerAppInjected,
         ...provided,
       },
       propsData: {
@@ -171,8 +126,8 @@ describe('HeaderArea', () => {
     describe('CodeDropdown', () => {
       it('renders CodeDropdown component with correct props for desktop layout', () => {
         expect(findCodeDropdown().exists()).toBe(true);
-        expect(findCodeDropdown().props('sshUrl')).toBe(defaultProvided.sshUrl);
-        expect(findCodeDropdown().props('httpUrl')).toBe(defaultProvided.httpUrl);
+        expect(findCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
+        expect(findCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
       });
     });
 
@@ -180,14 +135,14 @@ describe('HeaderArea', () => {
       it('renders SourceCodeDownloadDropdown and CloneCodeDropdown component with correct props for mobile layout', () => {
         expect(findSourceCodeDownloadDropdown().exists()).toBe(true);
         expect(findSourceCodeDownloadDropdown().props('downloadLinks')).toEqual(
-          defaultProvided.downloadLinks,
+          headerAppInjected.downloadLinks,
         );
         expect(findSourceCodeDownloadDropdown().props('downloadArtifacts')).toEqual(
-          defaultProvided.downloadArtifacts,
+          headerAppInjected.downloadArtifacts,
         );
         expect(findCloneCodeDropdown().exists()).toBe(true);
-        expect(findCloneCodeDropdown().props('sshUrl')).toBe(defaultProvided.sshUrl);
-        expect(findCloneCodeDropdown().props('httpUrl')).toBe(defaultProvided.httpUrl);
+        expect(findCloneCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
+        expect(findCloneCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
       });
     });
   });

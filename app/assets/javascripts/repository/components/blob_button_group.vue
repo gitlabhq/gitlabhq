@@ -22,7 +22,7 @@ export default {
     GlButton,
     UploadBlobModal,
     CommitChangesModal,
-    LockButton: () => import('ee_component/repository/components/lock_button.vue'),
+    LockFileButton: () => import('ee_component/repository/components/lock_file_button.vue'),
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
@@ -124,7 +124,7 @@ export default {
 <template>
   <div class="gl-mr-3">
     <gl-button-group>
-      <lock-button
+      <lock-file-button
         v-if="glFeatures.fileLocks"
         :name="name"
         :path="path"
