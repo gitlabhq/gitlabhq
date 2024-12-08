@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: System - Build, scan, push and upload sarif report
+name: Sysdig - Build, scan, push and upload sarif report
 
 on:
   push:
