@@ -723,6 +723,12 @@ API/GrapeArrayMissingCoerce:
     - 'lib/**/api/**/*.rb'
     - 'ee/**/api/**/*.rb'
 
+API/ClassLevelAllowAccessWithScope:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 Cop/SidekiqOptionsQueue:
   Enabled: true
   Exclude:

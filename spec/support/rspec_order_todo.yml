@@ -164,7 +164,6 @@
 - './ee/spec/features/merge_request/user_views_blocked_merge_request_spec.rb'
 - './ee/spec/features/merge_trains/two_merge_requests_on_train_spec.rb'
 - './ee/spec/features/merge_trains/user_adds_merge_request_to_merge_train_spec.rb'
-- './ee/spec/features/merge_trains/user_adds_to_merge_train_when_pipeline_succeeds_spec.rb'
 - './ee/spec/features/milestones/user_views_milestone_spec.rb'
 - './ee/spec/features/namespace_user_cap_reached_alert_spec.rb'
 - './ee/spec/features/oncall_schedules/user_creates_schedule_spec.rb'
