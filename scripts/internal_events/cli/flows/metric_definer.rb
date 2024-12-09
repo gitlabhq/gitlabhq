@@ -318,10 +318,6 @@ module InternalEventsCli
             defaults[:tiers]
           )
         end
-
-        assign_shared_attr(:distribution) do |metric|
-          metric.tiers.include?('free') ? %w[ce ee] : %w[ee]
-        end
       end
 
       def create_metric_files

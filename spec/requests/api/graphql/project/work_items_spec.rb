@@ -349,19 +349,6 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       expect(item_ids).to match_array([subscribed_item.to_global_id.to_s, unsubscribed_item.to_global_id.to_s,
         item1.to_global_id.to_s, item2.to_global_id.to_s])
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(filter_subscriptions: false)
-      end
-
-      it 'ignores the filter' do
-        post_graphql(query(subscribed: :EXPLICITLY_SUBSCRIBED), current_user: current_user)
-
-        expect(item_ids).to match_array([subscribed_item.to_global_id.to_s, unsubscribed_item.to_global_id.to_s,
-          item1.to_global_id.to_s, item2.to_global_id.to_s])
-      end
-    end
   end
 
   describe 'sorting and pagination' do

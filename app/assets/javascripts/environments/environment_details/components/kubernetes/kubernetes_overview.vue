@@ -200,16 +200,16 @@ export default {
         ],
       };
     },
-    showFluxResourceDetails() {
+    showFluxResourceDetails(section) {
       const fluxResource = !isEmpty(this.fluxKustomization)
         ? this.fluxKustomization
         : this.fluxHelmRelease;
       const fluxResourceTransformed = this.transformFluxResourceData(fluxResource);
 
-      this.toggleDetailsDrawer(fluxResourceTransformed);
+      this.toggleDetailsDrawer(fluxResourceTransformed, section);
     },
-    toggleDetailsDrawer(item) {
-      this.$refs.detailsDrawer?.toggle(item);
+    toggleDetailsDrawer(item, section) {
+      this.$refs.detailsDrawer?.toggle(item, section);
     },
     closeDetailsDrawer() {
       this.$refs.detailsDrawer?.close();

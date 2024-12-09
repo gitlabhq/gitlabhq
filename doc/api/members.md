@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+Use this API to interact with group and project members.
+
 ## Roles
 
 The [role](../user/permissions.md) assigned to a user or group is defined

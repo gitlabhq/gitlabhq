@@ -77,9 +77,7 @@ module Resolvers
         description: 'List of arguments with inclusive OR.',
         required: false
       argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
-        description: 'Issues the current user is subscribed to. Is ignored if ' \
-          '`filter_subscriptions` feature flag is disabled.',
-        experiment: { milestone: '17.5' },
+        description: 'Issues the current user is subscribed to.',
         required: false
       argument :types, [Types::IssueTypeEnum],
         as: :issue_types,
@@ -128,7 +126,6 @@ module Resolvers
         params[:not] = params[:not].to_h if params[:not]
         params[:or] = params[:or].to_h if params[:or]
         params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
-        params.delete(:subscribed) if Feature.disabled?(:filter_subscriptions, current_user)
 
         rewrite_param_name(params[:or], :author_usernames, :author_username)
         rewrite_param_name(params[:or], :label_names, :label_name)

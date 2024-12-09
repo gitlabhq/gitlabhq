@@ -7,11 +7,13 @@ import { fetchPolicies } from '~/lib/graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import getLocalDesignQuery from '../graphql/local_design.query.graphql';
 import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
 import createImageDiffNoteMutation from '../graphql/create_image_diff_note.mutation.graphql';
+import repositionImageDiffNoteMutation from '../graphql/reposition_image_diff_note.mutation.graphql';
 import archiveDesignMutation from '../graphql/archive_design.mutation.graphql';
 import {
   extractDesign,
@@ -19,11 +21,13 @@ import {
   getPageLayoutElement,
   extractVersions,
   findVersionId,
+  repositionImageDiffNoteOptimisticResponse,
 } from '../utils';
 import {
   updateStoreAfterDesignsArchive,
   updateWorkItemDesignCurrentTodosWidget,
   updateStoreAfterAddImageDiffNote,
+  updateStoreAfterRepositionImageDiffNote,
 } from '../cache_updates';
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
@@ -234,6 +238,42 @@ export default {
       );
       this.closeCommentForm(data);
     },
+    async onMoveNote({ noteId, discussionId, position }) {
+      const currentDiscussion = this.discussions.find((el) => el.id === discussionId);
+      const note = currentDiscussion?.notes.find(
+        ({ discussion }) => discussion?.id === discussionId,
+      );
+
+      try {
+        await this.$apollo.mutate({
+          mutation: repositionImageDiffNoteMutation,
+          variables: {
+            input: {
+              id: noteId,
+              position,
+            },
+          },
+          optimisticResponse:
+            note &&
+            repositionImageDiffNoteOptimisticResponse(note, {
+              position,
+            }),
+          update: this.afterDesignMove,
+        });
+      } catch (error) {
+        Sentry.captureException(error);
+        this.onQueryError(UPDATE_IMAGE_DIFF_NOTE_ERROR);
+        this.errorMessage = UPDATE_IMAGE_DIFF_NOTE_ERROR;
+      }
+    },
+    afterDesignMove(store, { data: { repositionImageDiffNote } }) {
+      return updateStoreAfterRepositionImageDiffNote(
+        store,
+        repositionImageDiffNote,
+        getLocalDesignQuery,
+        this.designVariables,
+      );
+    },
     onDesignQueryResult({ data, loading }) {
       // On the initial load with cache-and-network policy data is undefined while loading is true
       // To prevent throwing an error, we don't perform any logic until loading is false
@@ -388,6 +428,7 @@ export default {
             :is-loading="isLoading"
             :disable-commenting="!isSidebarOpen"
             @openCommentForm="openCommentForm"
+            @moveNote="onMoveNote"
             @setMaxScale="setMaxScale"
           />
         </div>

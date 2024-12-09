@@ -226,18 +226,6 @@ RSpec.shared_examples 'graphql issue list request spec' do
           expect(issue_ids).to match_array(to_gid_list(unsubscribed_issues))
         end
       end
-
-      context 'with feature flag disabled' do
-        let(:issue_filter_params) { { subscribed: :EXPLICITLY_SUBSCRIBED } }
-
-        it 'does not filter out subscribed issues' do
-          stub_feature_flags(filter_subscriptions: false)
-
-          post_query
-
-          expect(issue_ids).to match_array(to_gid_list(issues))
-        end
-      end
     end
 
     context 'when filtering by confidentiality' do

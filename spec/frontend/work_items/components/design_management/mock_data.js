@@ -13,7 +13,24 @@ export const mockDesign = {
     __typename: 'TodoConnection',
   },
   discussions: {
-    nodes: [],
+    nodes: [
+      {
+        id: 'discussion-id',
+        replyId: 'discussion-reply-id',
+        notes: {
+          nodes: [],
+          __typename: 'NoteConnection',
+        },
+      },
+      {
+        id: 'discussion-resolved',
+        replyId: 'discussion-reply-resolved',
+        notes: {
+          nodes: [],
+          __typename: 'NoteConnection',
+        },
+      },
+    ],
     __typename: 'DiscussionConnection',
   },
   diffRefs: {
@@ -242,7 +259,26 @@ export const getLocalDesignResponse = {
         __typename: 'TodoConnection',
       },
       discussions: {
-        nodes: [],
+        nodes: [
+          {
+            id: 'discussion-id',
+            replyId: 'discussion-reply-id',
+            resolved: false,
+            notes: {
+              nodes: [],
+              __typename: 'NoteConnection',
+            },
+          },
+          {
+            id: 'discussion-resolved',
+            replyId: 'discussion-reply-resolved',
+            resolved: true,
+            notes: {
+              nodes: [],
+              __typename: 'NoteConnection',
+            },
+          },
+        ],
         __typename: 'DiscussionConnection',
       },
       diffRefs: {
@@ -594,4 +630,68 @@ export const getAwardEmojiResponse = (toggledOn) => {
       },
     },
   };
+};
+
+export const mockRepositionImageNoteDiffResponse = {
+  data: {
+    __typename: 'Mutation',
+    repositionImageDiffNote: {
+      __typename: 'RepositionImageDiffNotePayload',
+      note: {
+        id: 'gid://gitlab/DiffNote/468',
+        author: {
+          id: 'gid://gitlab/User/1',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'http://127.0.0.1:3000/root',
+          webPath: '/root',
+          __typename: 'UserCore',
+        },
+        awardEmoji: {
+          nodes: [],
+        },
+        body: 'New comment',
+        bodyHtml: "<p data-sourcepos='1:1-1:4' dir='auto'>asdd</p>",
+        createdAt: '2023-02-24T06:49:20Z',
+        resolved: false,
+        position: {
+          diffRefs: {
+            baseSha: 'f63ae53ed82d8765477c191383e1e6a000c10375',
+            startSha: 'f63ae53ed82d8765477c191383e1e6a000c10375',
+            headSha: 'f348c652f1a737151fc79047895e695fbe81464c',
+            __typename: 'DiffRefs',
+          },
+          x: 441,
+          y: 128,
+          height: 152,
+          width: 695,
+          __typename: 'DiffPosition',
+        },
+        imported: false,
+        userPermissions: {
+          adminNote: true,
+          repositionNote: true,
+          awardEmoji: true,
+          __typename: 'NotePermissions',
+        },
+        discussion: {
+          id: 'gid://gitlab/Discussion/6466a72f35b163f3c3e52d7976a09387f2c573e8',
+          notes: {
+            nodes: [
+              {
+                id: 'gid://gitlab/DiffNote/459',
+                __typename: 'Note',
+              },
+            ],
+            __typename: 'NoteConnection',
+          },
+          __typename: 'Discussion',
+        },
+        __typename: 'Note',
+      },
+      errors: [],
+    },
+  },
 };

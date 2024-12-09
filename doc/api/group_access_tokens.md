@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can read more about [group access tokens](../user/group/settings/group_access_tokens.md).
+Use this API to interact with group access tokens. For more information, see [Group access tokens](../user/group/settings/group_access_tokens.md).
 
 ## List group access tokens
 

@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+Use this API to interact with user avatars.
+
 ## Get a single avatar URL
 
 Get a single [avatar](../user/profile/index.md#access-your-user-settings) URL for a user with the given email address.

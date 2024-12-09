@@ -521,7 +521,6 @@ class IssuableFinder
 
   def by_subscribed(items)
     return items unless current_user
-    return items unless Feature.enabled?(:filter_subscriptions, current_user)
 
     case params[:subscribed]
     when :explicitly_subscribed

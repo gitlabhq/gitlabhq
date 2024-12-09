@@ -10,14 +10,17 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-These API calls allow you to read and modify GitLab instance
+Use this API to interact with the
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-as they appear in `/admin/application_settings/general`. You must be an
-administrator to perform this action.
+for your GitLab instance.
 
-Application settings are subject to caching and may not immediately take effect.
+Changes to your application settings are subject to caching and might not immediately take effect.
 By default, GitLab caches application settings for 60 seconds.
 For information on how to control the application settings cache for an instance, see [Application cache interval](../administration/application_settings_cache.md).
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ## Get current application settings
 

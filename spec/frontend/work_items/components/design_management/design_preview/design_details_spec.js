@@ -10,6 +10,7 @@ import getDesignQuery from '~/work_items/components/design_management/graphql/de
 import getLocalDesignQuery from '~/work_items/components/design_management/graphql/local_design.query.graphql';
 import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import createImageDiffNoteMutation from '~/work_items/components/design_management/graphql/create_image_diff_note.mutation.graphql';
+import repositionImageDiffNoteMutation from '~/work_items/components/design_management/graphql/reposition_image_diff_note.mutation.graphql';
 import DesignReplyForm from '~/work_items/components/design_management/design_notes/design_reply_form.vue';
 import DesignDetails from '~/work_items/components/design_management/design_preview/design_details.vue';
 import DesignPresentation from '~/work_items/components/design_management/design_preview/design_presentation.vue';
@@ -25,12 +26,14 @@ import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_SINGLE_ARCHIVE_ERROR,
+  UPDATE_IMAGE_DIFF_NOTE_ERROR,
 } from '~/work_items/components/design_management/constants';
 import {
   getDesignResponse,
   mockDesign,
   mockArchiveDesignMutationResponse,
   mockCreateImageNoteDiffResponse,
+  mockRepositionImageNoteDiffResponse,
 } from '../mock_data';
 
 jest.mock('~/alert');
@@ -55,8 +58,13 @@ const mockPageLayoutElement = {
   },
 };
 
+const newCoordinates = { x: 20, y: 20 };
+const discussionId = 'discussion-id';
+const noteId = 'note-id';
+
 describe('DesignDetails', () => {
   let wrapper;
+
   const workItemIid = '1';
   const routerPushMock = jest.fn();
 
@@ -73,6 +81,9 @@ describe('DesignDetails', () => {
   const archiveDesignSuccessMutationHandler = jest
     .fn()
     .mockResolvedValue(mockArchiveDesignMutationResponse);
+  const repositionImageNoteMutationSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(mockRepositionImageNoteDiffResponse);
   const archiveDesignMutationError = jest.fn().mockRejectedValue(new Error('Mutation failed'));
   const error = new Error('ruh roh some error');
   const errorQueryHandler = jest.fn().mockRejectedValue(error);
@@ -80,7 +91,9 @@ describe('DesignDetails', () => {
   function createComponent({
     queryHandler = getDesignQueryHandler,
     archiveDesignMutationHandler = archiveDesignSuccessMutationHandler,
+    repositionImageMutationHandler = repositionImageNoteMutationSuccessHandler,
     routeArg = MOCK_ROUTE,
+    props = {},
     data = {},
   } = {}) {
     wrapper = shallowMountExtended(DesignDetails, {
@@ -88,12 +101,14 @@ describe('DesignDetails', () => {
         [getDesignQuery, queryHandler],
         [archiveDesignMutation, archiveDesignMutationHandler],
         [createImageDiffNoteMutation, createImageDiffNoteMutationSuccessHandler],
+        [repositionImageDiffNoteMutation, repositionImageMutationHandler],
       ]),
       data() {
         return data;
       },
       propsData: {
         iid: workItemIid,
+        ...props,
       },
       mocks: {
         $route: routeArg,
@@ -149,6 +164,30 @@ describe('DesignDetails', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({ message: DESIGN_SINGLE_ARCHIVE_ERROR });
+    });
+
+    it('moves note pin', async () => {
+      findDesignPresentation().vm.$emit('moveNote', {
+        noteId,
+        discussionId,
+        position: newCoordinates,
+      });
+      await waitForPromises();
+
+      expect(repositionImageNoteMutationSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('displays error when move note pin fails', async () => {
+      createComponent({ repositionImageMutationHandler: errorQueryHandler });
+
+      findDesignPresentation().vm.$emit('moveNote', {
+        noteId,
+        discussionId,
+        position: newCoordinates,
+      });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({ message: UPDATE_IMAGE_DIFF_NOTE_ERROR });
     });
   });
 

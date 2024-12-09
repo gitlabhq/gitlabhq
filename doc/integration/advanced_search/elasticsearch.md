@@ -18,6 +18,10 @@ To enable advanced search, you must:
 1. [Install an Elasticsearch or AWS OpenSearch cluster](#install-an-elasticsearch-or-aws-opensearch-cluster).
 1. [Enable advanced search](#enable-advanced-search).
 
+NOTE:
+Advanced search stores all projects in the same Elasticsearch indices.
+However, private projects appear in search results only to users who have access.
+
 ## Elasticsearch glossary
 
 This glossary provides definitions for terms related to Elasticsearch.

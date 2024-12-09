@@ -96,9 +96,6 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.customer_relations_contacts
   end
 
-  let(:move) { WorkItems::DataSync::MoveService }
-  let(:clone) { WorkItems::DataSync::CloneService }
-
   let_it_be(:users) { create_list(:user, 3) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
@@ -179,14 +176,14 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   end
 
   where(:widget_name, :eval_value, :expected_data, :operations) do
-    :assignees          | :work_item_assignees          | ref(:assignees)     | [ref(:move), ref(:clone)]
-    :award_emoji        | :work_item_award_emoji        | ref(:award_emojis)  | [ref(:move)]
-    :email_participants | :work_item_emails             | ref(:emails)        | [ref(:move)]
-    :milestone          | :work_item_milestone          | ref(:milestone)     | [ref(:move), ref(:clone)]
-    :subscriptions      | :work_item_subscriptions      | ref(:subscriptions) | [ref(:move)]
-    :sent_notifications | :work_item_sent_notifications | ref(:notifications) | [ref(:move)]
-    :timelogs           | :work_item_timelogs           | ref(:timelogs)      | [ref(:move)]
-    :customer_relations_contacts | :work_item_crm_contacts | ref(:crm_contacts) | [ref(:move), ref(:clone)]
+    :assignees                   | :work_item_assignees          | ref(:assignees)      | [ref(:move), ref(:clone)]
+    :award_emoji                 | :work_item_award_emoji        | ref(:award_emojis)   | [ref(:move)]
+    :email_participants          | :work_item_emails             | ref(:emails)         | [ref(:move)]
+    :milestone                   | :work_item_milestone          | ref(:milestone)      | [ref(:move), ref(:clone)]
+    :subscriptions               | :work_item_subscriptions      | ref(:subscriptions)  | [ref(:move)]
+    :sent_notifications          | :work_item_sent_notifications | ref(:notifications)  | [ref(:move)]
+    :timelogs                    | :work_item_timelogs           | ref(:timelogs)       | [ref(:move)]
+    :customer_relations_contacts | :work_item_crm_contacts       | ref(:crm_contacts)   | [ref(:move), ref(:clone)]
   end
 
   with_them do
@@ -198,20 +195,53 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
         end
       end
 
-      it 'clones and moves widget data', :aggregate_failures do
-        new_work_item = service.execute[:work_item]
-        widget_value = send(eval_value, new_work_item)
+      it_behaves_like 'for clone and move services'
+    end
+  end
 
-        if operations.include?(described_class)
-          expect(widget_value).not_to be_blank
-          # trick to compare single values and arrays with a single statement
-          expect([widget_value].flatten).to match_array([expected_data].flatten)
-        else
-          expect(widget_value).to be_blank
-        end
+  RSpec.shared_examples 'cloneable and moveable for ee widget data' do
+    using RSpec::Parameterized::TableSyntax
 
-        expect(original_work_item.reload.public_send(widget_name)).to be_blank if described_class == move
+    def work_item_weights_source(work_item)
+      work_item.reload.weights_source&.slice(:rolled_up_weight, :rolled_up_completed_weight)
+    end
+
+    let_it_be(:weights_source) do
+      weights_source = create(:work_item_weights_source, work_item: original_work_item, rolled_up_weight: 20,
+        rolled_up_completed_weight: 50)
+      weights_source&.slice(:rolled_up_weight, :rolled_up_completed_weight)
+    end
+
+    where(:widget_name, :eval_value, :expected_data, :operations) do
+      :weights_source | :work_item_weights_source | ref(:weights_source) | [ref(:move), ref(:clone)]
+    end
+
+    with_them do
+      context "with widget" do
+        it_behaves_like 'for clone and move services'
       end
     end
+  end
+end
+
+# this shared context is only to be used for sharing the code beetween the shared examples for cloneable and movable
+# widget data (and for EE widget data)
+RSpec.shared_context 'for clone and move services' do
+  let(:move) { WorkItems::DataSync::MoveService }
+  let(:clone) { WorkItems::DataSync::CloneService }
+
+  it 'clones and moves the data', :aggregate_failures do
+    new_work_item = service.execute[:work_item]
+    widget_value = send(eval_value, new_work_item)
+
+    if operations.include?(described_class)
+      expect(widget_value).not_to be_blank
+      # trick to compare single values and arrays with a single statement
+      expect([widget_value].flatten).to match_array([expected_data].flatten)
+    else
+      expect(widget_value).to be_blank
+    end
+
+    expect(original_work_item.reload.public_send(widget_name)).to be_blank if described_class == move
   end
 end

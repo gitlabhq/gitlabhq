@@ -54,9 +54,7 @@ module WorkItems
         required: false
 
       argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
-        description: 'Work items the current user is subscribed to. Is ignored if ' \
-          '`filter_subscriptions` feature flag is disabled.',
-        experiment: { milestone: '17.5' },
+        description: 'Work items the current user is subscribed to.',
         required: false
 
       argument :not, Types::WorkItems::NegatedWorkItemFilterInputType,
@@ -81,8 +79,6 @@ module WorkItems
     override :prepare_finder_params
     def prepare_finder_params(args)
       params = super(args)
-
-      params.delete(:subscribed) if Feature.disabled?(:filter_subscriptions, current_user)
 
       rewrite_param_name(params, :assignee_usernames, :assignee_username)
       rewrite_param_name(params[:or], :assignee_usernames, :assignee_username)

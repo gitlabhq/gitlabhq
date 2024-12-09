@@ -213,6 +213,10 @@ FactoryBot.define do
       author { association(:user) }
     end
 
+    trait :with_assignee do
+      assignees { [author] }
+    end
+
     trait :with_coverage_reports do
       after(:build) do |merge_request|
         merge_request.head_pipeline = build(

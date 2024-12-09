@@ -24,10 +24,11 @@ const configuration = {
   },
 };
 
-const createWrapper = (item = defaultItem) => {
+const createWrapper = ({ item = defaultItem, selectedSection = '' } = {}) => {
   wrapper = shallowMount(WorkloadDetails, {
     propsData: {
       item,
+      selectedSection,
     },
     stubs: { GlTruncate },
   });
@@ -100,7 +101,7 @@ describe('Workload details component', () => {
 
   describe('when additional fields are provided', () => {
     beforeEach(() => {
-      createWrapper(mockPodsTableItems[0]);
+      createWrapper({ item: mockPodsTableItems[0] });
     });
 
     it.each`
@@ -129,7 +130,7 @@ describe('Workload details component', () => {
       };
 
       beforeEach(() => {
-        createWrapper(mockTableItemsWithActions);
+        createWrapper({ item: mockTableItemsWithActions });
       });
 
       it('renders a non-collapsible list item for containers', () => {
@@ -163,7 +164,7 @@ describe('Workload details component', () => {
       };
 
       beforeEach(() => {
-        createWrapper(mockTableItemsWithContainers);
+        createWrapper({ item: mockTableItemsWithContainers });
       });
 
       it('renders a non-collapsible list item for containers', () => {
@@ -191,6 +192,26 @@ describe('Workload details component', () => {
             namespace: pod.namespace,
             containers: [container],
           });
+        },
+      );
+    });
+
+    describe('when selectedSection is `status`', () => {
+      beforeEach(() => {
+        createWrapper({ item: mockPodsTableItems[0], selectedSection: 'status' });
+      });
+
+      it.each`
+        index | isExpanded | description
+        ${0}  | ${false}   | ${'name item'}
+        ${1}  | ${false}   | ${'kind item'}
+        ${2}  | ${false}   | ${'labels item'}
+        ${3}  | ${true}    | ${'status item'}
+        ${4}  | ${false}   | ${'annotations item'}
+      `(
+        'provides isExpanded=$isExpanded to $description at index $index',
+        ({ index, isExpanded }) => {
+          expect(findWorkloadDetailsItem(index).props('isExpanded')).toBe(isExpanded);
         },
       );
     });

@@ -45,19 +45,6 @@ RSpec.describe 'getting merge_requests information', feature_category: :code_rev
       expect_mr_response([subscribed_merge_request, unsubscribed_merge_request, regular_merge_request],
         node_path: node_path)
     end
-
-    context 'when filter_subscriptions feature flag disabled' do
-      before do
-        stub_feature_flags(filter_subscriptions: false)
-      end
-
-      it 'does not filter out subscribed merge requests' do
-        post_graphql(mr_query(project, subscribed: :EXPLICITLY_SUBSCRIBED), current_user: user)
-
-        expect_mr_response([subscribed_merge_request, unsubscribed_merge_request, regular_merge_request],
-          node_path: node_path)
-      end
-    end
   end
 
   def mr_query(project, args = {})

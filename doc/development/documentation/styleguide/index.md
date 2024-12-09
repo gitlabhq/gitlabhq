@@ -1730,6 +1730,9 @@ It renders on the GitLab documentation site as:
 
 On the docs site, you can format text so it's displayed as tabs.
 
+WARNING:
+Do not put version history bullets, topic headings, HTML, or tabs in tabs. Only use paragraphs, lists, alert boxes, and code blocks. Other styles might not render properly. When in doubt, keep things simple.
+
 To create a set of tabs, follow this example:
 
 ```plaintext

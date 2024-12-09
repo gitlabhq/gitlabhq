@@ -4,19 +4,19 @@ import WorkloadDetailsItem from '~/kubernetes_dashboard/components/workload_deta
 
 let wrapper;
 
-const propsData = {
+const defaultProps = {
   label: 'name',
 };
 const defaultSlots = {
   default: '<b>slot value</b>',
-  label: `<label>${propsData.label}</label>`,
+  label: `<label>${defaultProps.label}</label>`,
 };
 
-const createWrapper = ({ collapsible, slots = defaultSlots } = {}) => {
+const createWrapper = ({ propsData = {}, slots = defaultSlots } = {}) => {
   wrapper = shallowMount(WorkloadDetailsItem, {
     propsData: {
+      ...defaultProps,
       ...propsData,
-      collapsible,
     },
     slots,
   });
@@ -37,7 +37,7 @@ describe('Workload details item component', () => {
     });
 
     it('renders the correct label', () => {
-      expect(findLabel().text()).toBe(propsData.label);
+      expect(findLabel().text()).toBe(defaultProps.label);
     });
 
     it('renders default slot content', () => {
@@ -47,7 +47,7 @@ describe('Workload details item component', () => {
 
   describe('when collapsible is true', () => {
     beforeEach(() => {
-      createWrapper({ collapsible: true });
+      createWrapper({ propsData: { collapsible: true } });
     });
 
     it('renders collapsible component that is not visible', () => {
@@ -88,6 +88,16 @@ describe('Workload details item component', () => {
 
     it('renders label slot content', () => {
       expect(wrapper.html()).toContain(labelSlot);
+    });
+  });
+
+  describe('when isExpanded is provided', () => {
+    beforeEach(() => {
+      createWrapper({ propsData: { isExpanded: true, collapsible: true } });
+    });
+
+    it('renders collapsible component that is visible', () => {
+      expect(findCollapsible().props('visible')).toBe(true);
     });
   });
 });

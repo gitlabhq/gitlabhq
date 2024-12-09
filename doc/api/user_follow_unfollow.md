@@ -10,8 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can [follow and unfollow a user](../user/profile/index.md#follow-users) by using the REST API. You can also get the
-details of who a user is following, and who is following them.
+Use this API to perform follower actions for user accounts. For more information, see [Follow users](../user/profile/index.md#follow-users).
 
 ## Follow a user
 

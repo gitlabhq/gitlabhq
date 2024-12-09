@@ -24,13 +24,11 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-Administrators can use this API to retrieve information about arbitrary tokens. Unlike other API endpoints that expose token information, such as the
-[Personal access token API](../personal_access_tokens.md#get-single-personal-access-token), this endpoint allows administrators to retrieve token information without knowing the type of
-the token.
+Use this API to retrieve details about arbitrary tokens. Unlike other APIs that expose token information, this API allows you to retrieve details without knowing the specific type of token.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ## Identify Token
 

@@ -707,6 +707,76 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
     end
   end
 
+  describe 'reloading' do
+    let_it_be(:todo1) { create_todo(author: user, target: issue) }
+
+    before do
+      visit dashboard_todos_path
+    end
+
+    context 'when user clicks the Refresh button' do
+      it 'updates the list of todos' do
+        todo2 = create_todo(author: user, target: issue2)
+        expect(page).not_to have_content todo2.target.title
+        click_on 'Refresh'
+        expect(page).to have_content todo2.target.title
+      end
+    end
+
+    context 'when user stops interacting with the list' do
+      it 'automatically updates the list of todos' do
+        click_on 'Mark as done'
+        sleep 1 # Auto-reload needs 1sec of user inactivity
+        expect(page).to have_content todo1.target.title # Resolved todo is still visible
+        find_by_testid('filtered-search-term-input').click # Move focus away from the list
+        expect(page).to have_content 'Not sure where to go next?' # Shows empty state
+        expect(page).not_to have_content todo1.target.title
+      end
+    end
+  end
+
+  describe '"Mark all as done" button' do
+    context 'with no pending todos' do
+      it 'does not show' do
+        visit dashboard_todos_path
+        expect(page).not_to have_content 'Mark all as done'
+      end
+    end
+
+    context 'with pending todos' do
+      let_it_be(:self_assigned) { create_todo(author: user, target: issue) }
+      let_it_be(:self_marked) { create_todo(author: user, target: issue2, action: :marked) }
+      let_it_be(:other_assigned) { create_todo(author: user2, target: issue3) }
+
+      context 'with no filters applied' do
+        it 'marks all pending todos as done' do
+          visit dashboard_todos_path
+          click_on 'Mark all as done'
+
+          expect(page).to have_content 'Not sure where to go next?'
+          within('.gl-toast') do
+            expect(page).to have_content 'Marked 3 to-dos as done'
+            find('a.gl-toast-action', text: 'Undo').click
+          end
+          expect(page).to have_content 'Restored 3 to-dos'
+          expect(page).to have_selector('ul[data-testid=todo-item-list-container] li', count: 3)
+        end
+      end
+
+      context 'with filters applied' do
+        it 'only marks the filtered todos as done' do
+          visit dashboard_todos_path(author_id: user.id)
+          click_on 'Mark all as done'
+
+          expect(page).to have_content 'Sorry, your filter produced no results'
+          click_on 'Clear'
+          expect(page).to have_selector('ul[data-testid=todo-item-list-container] li', count: 1)
+          expect(page).to have_content(other_assigned.author.name)
+        end
+      end
+    end
+  end
+
   def create_todo(action: :assigned, state: :pending, created_at: nil, updated_at: nil, target: issue, author: user2)
     create(
       :todo,

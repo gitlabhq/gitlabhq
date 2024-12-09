@@ -26,6 +26,8 @@ DETAILS:
 > - [Admin terraform state introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) in GitLab 16.8.
 > - Ability to create and remove an instance-wide custom role on GitLab self-managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
 
+Use this API to interact with member roles for your GitLab.com groups or entire self-managed instance.
+
 ## Manage instance member roles
 
 DETAILS:
@@ -35,8 +37,6 @@ DETAILS:
 Prerequisites:
 
 - [Authenticate yourself](rest/authentication.md) as an administrator.
-
-You can get, create and delete instance-wide member roles.
 
 ### Get all instance member roles
 
@@ -194,8 +194,6 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-Use this API to manage group specific member roles. You can only create member roles at the root level of the group.
-
 ### Get all group member roles
 
 ```plaintext
@@ -279,7 +277,7 @@ Example response:
 
 > - Ability to add a name and description when creating a custom role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 
-Adds a member role to a group.
+Adds a member role to a group. You can only add member roles at the root level of the group.
 
 ```plaintext
 POST /groups/:id/member_roles

@@ -11,11 +11,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
+Use this API to allow third-party services to access GitLab resources for a user
 with the [OAuth 2.0](https://oauth.net/2/) protocol.
-
-To configure GitLab for this, see
-[Configure GitLab as an OAuth 2.0 authentication identity provider](../integration/oauth_provider.md).
+For more information, see [Configure GitLab as an OAuth 2.0 authentication identity provider](../integration/oauth_provider.md).
 
 This functionality is based on the [doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
 

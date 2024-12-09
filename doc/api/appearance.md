@@ -10,9 +10,11 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-The appearance API allows you to maintain the appearance of GitLab as if
-you're using the GitLab UI at `/admin/appearance`. The API requires
-administrator privileges.
+Use this API to control the appearance of your GitLab instance. For more information, see [GitLab Appearance](../administration/appearance.md).
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ## Get current appearance configuration
 

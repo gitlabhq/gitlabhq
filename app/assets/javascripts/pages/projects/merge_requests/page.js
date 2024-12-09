@@ -33,8 +33,12 @@ export function initMrPage() {
       changesCountBadge.textContent = fileCount;
 
       const DIFF_TAB_INDEX = 3;
-      const diffTab = tabData.tabs[tabData.tabs.length - 1];
-      diffTab[DIFF_TAB_INDEX] = fileCount;
+      const diffTab = tabData.tabs ? tabData.tabs[tabData.tabs.length - 1] : [];
+
+      const hasDiffTab = diffTab?.length >= DIFF_TAB_INDEX + 1;
+      if (hasDiffTab) {
+        diffTab[DIFF_TAB_INDEX] = fileCount;
+      }
     }
   });
 }
@@ -46,6 +50,15 @@ requestIdleCallback(() => {
 
   if (el) {
     const { data } = el.dataset;
+
+    let parsedData;
+
+    try {
+      parsedData = JSON.parse(data);
+    } catch {
+      parsedData = {};
+    }
+
     const {
       iid,
       projectPath,
@@ -55,7 +68,7 @@ requestIdleCallback(() => {
       sourceProjectPath,
       blocksMerge,
       imported,
-    } = JSON.parse(data);
+    } = parsedData;
 
     tabData.tabs = tabs;
 

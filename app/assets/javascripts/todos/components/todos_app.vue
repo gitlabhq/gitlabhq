@@ -277,7 +277,7 @@ export default {
 
       <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
         <todos-mark-all-done-button
-          v-if="showMarkAllAsDone"
+          v-show="showMarkAllAsDone"
           :filters="queryFilterValues"
           @change="updateAllQueries"
         />

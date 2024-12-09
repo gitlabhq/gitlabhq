@@ -10,8 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-You can manage [personal access tokens](../user/profile/personal_access_tokens.md) and
-[impersonation tokens](rest/authentication.md#impersonation-tokens) by using the REST API.
+Use this API to interact with personal access tokens and impersonation tokens. For more information, see [personal access tokens](../user/profile/personal_access_tokens.md) and [impersonation tokens](rest/authentication.md#impersonation-tokens).
 
 ## Create a personal access token
 

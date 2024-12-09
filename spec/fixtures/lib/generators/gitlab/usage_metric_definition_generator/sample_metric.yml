@@ -12,9 +12,6 @@ data_source:
 data_category: optional
 instrumentation_class: Count
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tier:
 - free
 - premium

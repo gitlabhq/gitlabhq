@@ -11,12 +11,14 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
-The GitLab SCIM API manages SCIM identities within groups and provides the `/groups/:groups_id/scim/identities` and `/groups/:groups_id/scim/:uid` endpoints. The base URL is `<http|https>://<GitLab host>/api/v4`.
+Use this API to manage SCIM identities in groups.
 
-To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
-This API is only in use where [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
+Prerequisites:
 
-This API is different to the [internal group SCIM API](../development/internal_api/index.md#group-scim-api) and the [instance SCIM API](../development/internal_api/index.md#instance-scim-api):
+- You must enable [Group SSO](../user/group/saml_sso/index.md).
+- You must enable [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md).
+
+This API differs from the [internal group SCIM API](../development/internal_api/index.md#group-scim-api) and the [instance SCIM API](../development/internal_api/index.md#instance-scim-api):
 
 - This API:
   - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).

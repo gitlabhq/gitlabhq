@@ -757,7 +757,7 @@ GEM
       nokogiri (~> 1, >= 1.10.8)
     gitlab-glfm-markdown (0.0.23)
       rb_sys (= 0.9.94)
-    gitlab-kas-grpc (17.5.1)
+    gitlab-kas-grpc (17.6.1)
       grpc (~> 1.0)
     gitlab-labkit (0.37.0)
       actionpack (>= 5.0.0, < 8.1.0)
@@ -937,7 +937,7 @@ GEM
       faraday (~> 2.0)
       graphql-client
     graphlyte (1.0.0)
-    graphql (2.4.4)
+    graphql (2.4.6)
       base64
       fiber-storage
     graphql-client (0.23.0)
@@ -2104,7 +2104,7 @@ DEPENDENCIES
   gitlab-glfm-markdown (~> 0.0.21)
   gitlab-housekeeper!
   gitlab-http!
-  gitlab-kas-grpc (~> 17.5.0)
+  gitlab-kas-grpc (~> 17.6.1)
   gitlab-labkit (~> 0.37.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)

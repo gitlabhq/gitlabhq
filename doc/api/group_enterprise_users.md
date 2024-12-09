@@ -10,13 +10,13 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-Interact with [enterprise users](../user/enterprise_user/index.md) using the REST API.
+Use this API to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/index.md).
 
-These API endpoints only work for top-level groups. Users do not have to be a member of the group.
+This API endpoint only works for top-level groups. Users do not have to be a member of the group.
 
 Prerequisites:
 
-- You must have the Owner role in the group.
+- You must have the Owner role in the top-level group.
 
 ## List enterprise users
 

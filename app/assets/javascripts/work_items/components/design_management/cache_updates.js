@@ -2,12 +2,13 @@ import produce from 'immer';
 import { differenceBy } from 'lodash';
 import { createAlert } from '~/alert';
 import { findDesignWidget } from '~/work_items/utils';
-import { designWidgetOf } from './utils';
+import { designWidgetOf, extractCurrentDiscussion } from './utils';
 import {
   designArchiveError,
   ADD_IMAGE_DIFF_NOTE_ERROR,
   TYPENAME_DISCUSSION,
   TYPENAME_USER,
+  UPDATE_IMAGE_DIFF_NOTE_ERROR,
 } from './constants';
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
@@ -195,10 +196,46 @@ export const updateWorkItemDesignCurrentTodosWidget = ({ store, todos, query }) 
 };
 
 // eslint-disable-next-line max-params
+const updateImageDiffNoteInStore = (store, repositionImageDiffNote, query, variables) => {
+  const sourceData = store.readQuery({
+    query,
+    variables,
+  });
+
+  const data = produce(sourceData, (draftData) => {
+    const currentDesign = draftData.localDesign;
+    const discussion = extractCurrentDiscussion(
+      currentDesign.discussions,
+      repositionImageDiffNote.note.discussion.id,
+    );
+
+    discussion.notes = {
+      ...discussion.notes,
+      nodes: [repositionImageDiffNote.note, ...discussion.notes.nodes.slice(1)],
+    };
+  });
+
+  store.writeQuery({
+    query,
+    variables,
+    data,
+  });
+};
+
+// eslint-disable-next-line max-params
 export const updateStoreAfterAddImageDiffNote = (store, data, query, variables) => {
   if (hasErrors(data)) {
     onError(data, ADD_IMAGE_DIFF_NOTE_ERROR);
   } else {
     addImageDiffNoteToStore(store, data, query, variables);
+  }
+};
+
+// eslint-disable-next-line max-params
+export const updateStoreAfterRepositionImageDiffNote = (store, data, query, queryVariables) => {
+  if (hasErrors(data)) {
+    onError(data, UPDATE_IMAGE_DIFF_NOTE_ERROR);
+  } else {
+    updateImageDiffNoteInStore(store, data, query, queryVariables);
   }
 };

@@ -147,9 +147,6 @@ The `whitespace` tokenizer was selected to have more control over how tokens are
 
 See the `code` filter for an explanation on how tokens are split.
 
-NOTE:
-The [Elasticsearch `code_analyzer` doesn't account for all code cases](../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-code_analyzer-doesnt-account-for-all-code-cases).
-
 ### Tokenizers
 
 #### `sha_tokenizer`

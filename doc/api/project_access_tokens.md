@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can read more about [project access tokens](../user/project/settings/project_access_tokens.md).
+Use this API to interact with project access tokens. For more information, see [Project access tokens](../user/project/settings/project_access_tokens.md).
 
 ## List project access tokens
 

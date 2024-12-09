@@ -105,18 +105,24 @@ This method of user contribution and membership mapping is available for
 For information on the other method available for GitLab self-managed without enabled feature flags,
 see [user contribution and membership mapping](../../group/import/direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 
-With user contribution and membership mapping, you can assign imported contributions and memberships to users on the
-destination instance after import has completed. Unlike the previous method of user contribution and membership mapping,
-no preparation is needed before the import.
+Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
+These placeholders are created on the destination instance even if
+users with the same email addresses exist on the source instance.
+Until you reassign contributions on the destination instance,
+all contributions display as associated with placeholders.
+For the behavior associated with subsequent imports to the same top-level group,
+see [placeholder user limits](#placeholder-user-limits).
 
-The process doesn't rely on email addresses, so you can map contributions for users who have different emails on source
-and destination instances.
+After the import has completed, you can:
 
-Each user on the destination instance that is assigned a mapping can:
+- Reassign memberships and contributions to existing users on the destination instance
+  after you review the results.
+  You can map memberships and contributions for users with different email addresses
+  on source and destination instances.
+- Create new users on the destination instance to reassign memberships and contributions to.
 
-- [Explicitly accept](#accept-contribution-reassignment) the assignment before any imported contributions are
-  attributed to them.
-- Reject the assignment.
+When you reassign a contribution to a user on the destination instance, the user can
+[accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
 
 ### Requirements
 
@@ -127,6 +133,10 @@ Each user on the destination instance that is assigned a mapping can:
 
 Instead of immediately assigning contributions and memberships to users on the destination instance, a
 placeholder user is created for any active, inactive, or bot user with imported contributions or memberships.
+For deleted users on the source instance, placeholders are created
+without all [placeholder user attributes](#placeholder-user-attributes).
+You should [keep these users as placeholders](#keep-as-placeholder).
+For more information, see [issue 506432](https://gitlab.com/gitlab-org/gitlab/-/issues/506432).
 
 Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
 to existing users on the destination instance.

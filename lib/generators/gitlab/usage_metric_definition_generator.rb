@@ -68,10 +68,6 @@ module Gitlab
       directory&.value_type
     end
 
-    def distribution
-      (ee? ? ['- ee'] : ['- ce', '- ee']).join("\n")
-    end
-
     def tier
       (ee? ? ['#- premium', '- ultimate'] : ['- free', '- premium', '- ultimate']).join("\n")
     end

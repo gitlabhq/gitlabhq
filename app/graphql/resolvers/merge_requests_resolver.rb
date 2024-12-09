@@ -88,9 +88,7 @@ module Resolvers
       DESC
 
     argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
-      description: 'Merge requests the current user is subscribed to. Is ignored if ' \
-        '`filter_subscriptions` feature flag is disabled.',
-      experiment: { milestone: '17.5' },
+      description: 'Merge requests the current user is subscribed to.',
       required: false
 
     argument :created_after, Types::TimeType,

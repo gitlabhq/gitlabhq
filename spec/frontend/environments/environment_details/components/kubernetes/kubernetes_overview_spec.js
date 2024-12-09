@@ -354,7 +354,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       it('toggles the details drawer when receives select-item event from the tabs', () => {
         findKubernetesTabs().vm.$emit('select-item', mockPodsTableItems[0]);
 
-        expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(mockPodsTableItems[0]);
+        expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(mockPodsTableItems[0], undefined);
       });
 
       describe('when receives show-flux-resource-details event from the status bar', () => {
@@ -366,7 +366,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           });
           await waitForPromises();
 
-          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', fluxKustomization);
+          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', 'actions');
         });
 
         it('toggles the details drawer', () => {
@@ -382,7 +382,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             actions: [FLUX_RECONCILE_ACTION, FLUX_SUSPEND_ACTION],
           };
 
-          expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(selectedItem);
+          expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(selectedItem, 'actions');
         });
       });
     });

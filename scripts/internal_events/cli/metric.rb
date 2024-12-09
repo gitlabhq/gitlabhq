@@ -14,7 +14,6 @@ module InternalEventsCli
     :time_frame,
     :data_source,
     :data_category,
-    :distribution,
     :tiers,
     :events
   ].freeze
@@ -78,13 +77,17 @@ module InternalEventsCli
     def file_path
       File.join(
         *[
-          distribution.directory_name,
+          distribution_path,
           'config',
           'metrics',
           time_frame.directory_name,
           file_name
         ].compact
       )
+    end
+
+    def distribution_path
+      'ee' unless tiers.include?('free')
     end
 
     def file_name
@@ -101,10 +104,6 @@ module InternalEventsCli
 
     def identifier
       Metric::Identifier.new(self[:identifier])
-    end
-
-    def distribution
-      Metric::Distribution.new(self[:distribution])
     end
 
     def key
@@ -255,12 +254,6 @@ module InternalEventsCli
       # additional_properties
       def default?
         %w[user project namespace].include?(value)
-      end
-    end
-
-    Distribution = Struct.new(:value) do
-      def directory_name
-        'ee' unless value.include?('ce')
       end
     end
 

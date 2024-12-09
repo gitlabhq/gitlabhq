@@ -10,8 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can manage [user SSH keys](../user/ssh.md) and [user GPG keys](../user/project/repository/signed_commits/gpg.md) by
-using the REST API.
+Use this API to interact with SSH and GPG keys for users. For more information, see [SSH keys](../user/ssh.md) and [GPG keys](../user/project/repository/signed_commits/gpg.md).
 
 ## List your SSH keys
 

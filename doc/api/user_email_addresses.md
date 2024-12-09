@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can manage [user email addresses](../user/profile/index.md) by using the REST API.
+Use this API to interact with email addresses for user accounts. For more information, see [User account](../user/profile/index.md).
 
 ## List your email addresses
 

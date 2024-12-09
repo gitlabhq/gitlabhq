@@ -11,7 +11,11 @@ import { stringify } from 'yaml';
 import { s__ } from '~/locale';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
 import getK8sEventsQuery from '~/environments/graphql/queries/k8s_events.query.graphql';
-import { WORKLOAD_STATUS_BADGE_VARIANTS, STATUS_LABELS } from '../constants';
+import {
+  WORKLOAD_STATUS_BADGE_VARIANTS,
+  STATUS_LABELS,
+  WORKLOAD_DETAILS_SECTIONS as SECTIONS,
+} from '../constants';
 import WorkloadDetailsItem from './workload_details_item.vue';
 import K8sEventItem from './k8s_event_item.vue';
 
@@ -39,6 +43,11 @@ export default {
       type: Object,
       required: true,
       validator: (item) => ['name', 'kind', 'labels', 'annotations'].every((key) => item[key]),
+    },
+    selectedSection: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -99,6 +108,11 @@ export default {
     },
     hasActions() {
       return Boolean(this.item.actions?.length);
+    },
+    expanded() {
+      return {
+        status: this.selectedSection === SECTIONS.STATUS,
+      };
     },
   },
   methods: {
@@ -170,7 +184,12 @@ export default {
         $options.STATUS_LABELS[item.status]
       }}</gl-badge>
     </workload-details-item>
-    <workload-details-item v-if="item.fullStatus" :label="$options.i18n.status" collapsible>
+    <workload-details-item
+      v-if="item.fullStatus"
+      :label="$options.i18n.status"
+      :is-expanded="expanded.status"
+      collapsible
+    >
       <template v-if="item.status" #label>
         <span class="gl-mr-2 gl-font-bold">{{ $options.i18n.status }}</span>
         <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{

@@ -6,12 +6,14 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Google Cloud Integration API
+# Google Cloud integration API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 **Status:** Experiment
+
+Use this API to interact with the Google Cloud integration. For more information, see [GitLab and Google Cloud integration](../ci/gitlab_google_cloud_integration/index.md).
 
 ## Project-level Google Cloud integration scripts
 

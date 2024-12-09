@@ -17,10 +17,15 @@ export default {
       required: false,
       default: false,
     },
+    isExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      isVisible: false,
+      isVisible: this.isExpanded,
     };
   },
   computed: {
