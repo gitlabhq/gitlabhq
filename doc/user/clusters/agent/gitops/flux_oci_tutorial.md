@@ -25,7 +25,7 @@ To deploy an OCI artifact using Flux:
 1. [Configure Flux to sync your artifact](#configure-flux-to-sync-your-artifact)
 1. [Verify your configuration](#verify-your-configuration)
 
-Prerequisites:
+Before you begin:
 
 - You have a Flux repository connected to a Kubernetes cluster.
   If you're starting from scratch, see [Set up Flux for GitOps](flux_tutorial.md).

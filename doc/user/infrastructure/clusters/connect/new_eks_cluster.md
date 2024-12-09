@@ -11,7 +11,7 @@ You can create a cluster on Amazon Elastic Kubernetes Service (EKS) through
 Kubernetes Terraform providers to create EKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
-**Prerequisites:**
+**Before you begin:**
 
 - An Amazon Web Services (AWS) account, with a set of configured
   [security credentials](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-prereqs.html).

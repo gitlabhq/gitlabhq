@@ -11,7 +11,7 @@
 - if protocol == 'kerberos'
   - git_push_target = content_tag(:span, @project.kerberos_url_to_repo, class: 'js-clone')
 
-%h4.gl-text-base= _('Create a new repository')
+%h4= _('Create a new repository')
 %pre.code.js-syntax-highlight
   :preserve
     git clone #{git_push_target}
@@ -23,10 +23,14 @@
   - if @project.can_current_user_push_to_default_branch?
     %span><
       git push --set-upstream origin #{h escaped_default_branch_name}
-%h4.gl-text-base= _('Push an existing folder')
+%h4= _('Push an existing folder')
+%h5= _('Go to your folder')
 %pre.code.js-syntax-highlight
   :preserve
     cd existing_folder
+%h5= _('Configure the Git repository')
+%pre.code.js-syntax-highlight
+  :preserve
     git init --initial-branch=#{h escaped_default_branch_name}
     git remote add origin #{git_push_target}
     git add .
@@ -34,10 +38,15 @@
   - if @project.can_current_user_push_to_default_branch?
     %span><
       git push --set-upstream origin #{h escaped_default_branch_name}
-%h4.gl-text-base= _('Push an existing Git repository')
+
+%h4= _('Push an existing Git repository')
+%h5= _('Go to your repository')
 %pre.code.js-syntax-highlight
   :preserve
     cd existing_repo
+%h5= _('Configure the Git repository')
+%pre.code.js-syntax-highlight
+  :preserve
     git remote rename origin old-origin
     git remote add origin #{git_push_target}
   - if @project.can_current_user_push_to_default_branch?

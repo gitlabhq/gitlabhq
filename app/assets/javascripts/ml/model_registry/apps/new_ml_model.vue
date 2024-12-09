@@ -13,6 +13,10 @@ export default {
     };
   },
   props: {
+    indexModelsPath: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -30,5 +34,10 @@ export default {
 </script>
 
 <template>
-  <model-create v-if="canWriteModelRegistry" />
+  <model-create
+    v-if="canWriteModelRegistry"
+    :project-path="projectPath"
+    :markdown-preview-path="markdownPreviewPath"
+    :index-models-path="indexModelsPath"
+  />
 </template>

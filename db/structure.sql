@@ -9344,7 +9344,8 @@ CREATE TABLE ci_job_token_group_scope_links (
     added_by_id bigint,
     created_at timestamp with time zone NOT NULL,
     job_token_policies jsonb DEFAULT '[]'::jsonb,
-    default_permissions boolean DEFAULT true NOT NULL
+    default_permissions boolean DEFAULT true NOT NULL,
+    autopopulated boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE ci_job_token_group_scope_links_id_seq
@@ -9364,7 +9365,8 @@ CREATE TABLE ci_job_token_project_scope_links (
     created_at timestamp with time zone NOT NULL,
     direction smallint DEFAULT 0 NOT NULL,
     job_token_policies jsonb DEFAULT '[]'::jsonb,
-    default_permissions boolean DEFAULT true NOT NULL
+    default_permissions boolean DEFAULT true NOT NULL,
+    autopopulated boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE ci_job_token_project_scope_links_id_seq

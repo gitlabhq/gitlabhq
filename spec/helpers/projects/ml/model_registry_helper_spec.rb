@@ -50,6 +50,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       stub_member_access_level(project, owner: user)
 
       is_expected.to eq({
+        'indexModelsPath' => "/#{project.full_path}/-/ml/models",
         'projectPath' => project.full_path,
         'canWriteModelRegistry' => true,
         'markdownPreviewPath' => "/#{project.full_path}/-/preview_markdown"

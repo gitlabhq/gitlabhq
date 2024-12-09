@@ -8,6 +8,7 @@ describe('ml/model_registry/apps/new_ml_model.vue', () => {
   const mountComponent = (canWriteModelRegistry) => {
     wrapper = shallowMountExtended(NewMlModel, {
       propsData: {
+        indexModelsPath: 'some/project/models',
         projectPath: 'project/path',
         maxAllowedFileSize: 1000,
         markdownPreviewPath: 'markdown/preview/path',

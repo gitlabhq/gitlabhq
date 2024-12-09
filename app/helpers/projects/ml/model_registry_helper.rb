@@ -20,6 +20,7 @@ module Projects
 
       def new_ml_model_data(project, user)
         data = {
+          index_models_path: project_ml_models_path(project),
           projectPath: project.full_path,
           can_write_model_registry: can_write_model_registry?(user, project),
           markdown_preview_path: preview_markdown_path(project)

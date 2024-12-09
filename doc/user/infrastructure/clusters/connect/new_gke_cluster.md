@@ -18,7 +18,7 @@ GCP accounts to get started with the GitLab integration with Google Kubernetes E
 [Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ&hl=en#contact-form)
 and apply for credit.
 
-**Prerequisites:**
+**Before you begin:**
 
 - A [Google Cloud Platform (GCP) service account](https://cloud.google.com/docs/authentication#service-accounts).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.

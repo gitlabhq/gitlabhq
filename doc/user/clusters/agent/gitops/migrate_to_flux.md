@@ -87,7 +87,7 @@ If you have multiple items under `gitops.manifest_projects` or under the `paths`
 
 ## Bootstrap Flux
 
-Prerequisites:
+Before you begin:
 
 - You disabled the GitOps functionality in your agent.
 - You installed the Flux CLI in a terminal with access to your cluster.

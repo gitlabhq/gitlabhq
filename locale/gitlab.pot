@@ -14759,6 +14759,9 @@ msgstr ""
 msgid "Configure the %{link} integration."
 msgstr ""
 
+msgid "Configure the Git repository"
+msgstr ""
+
 msgid "Configure the default first day of the week, time tracking units, and default language."
 msgstr ""
 
@@ -25852,6 +25855,9 @@ msgstr ""
 msgid "Go to your To-Do List"
 msgstr ""
 
+msgid "Go to your folder"
+msgstr ""
+
 msgid "Go to your fork"
 msgstr ""
 
@@ -25865,6 +25871,9 @@ msgid "Go to your merge requests"
 msgstr ""
 
 msgid "Go to your projects"
+msgstr ""
+
+msgid "Go to your repository"
 msgstr ""
 
 msgid "Go to your review requests"
@@ -48589,6 +48598,9 @@ msgid "ScanResultPolicy|Age criteria can only be added for pre-existing vulnerab
 msgstr ""
 
 msgid "ScanResultPolicy|Age is:"
+msgstr ""
+
+msgid "ScanResultPolicy|All licenses have been selected"
 msgstr ""
 
 msgid "ScanResultPolicy|Allow except on"

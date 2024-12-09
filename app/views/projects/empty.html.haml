@@ -27,45 +27,43 @@
           %p.gl-m-0.gl-mt-2.gl-text-subtle= _('To get started, clone the repository or upload some files.')
 
     - if can?(current_user, :push_code, @project)
-      = render Pajamas::CardComponent.new(header_options: { class: 'gl-py-4' }) do |c|
-        - c.with_header do
-          %h2.gl-text-lg.gl-m-0= _('Command line instructions')
-        - c.with_body do
-          %p
-            = _('You can also upload existing files from your computer using the instructions below.')
-          .git-empty.js-git-empty
-            %h3.gl-text-lg= _('Configure your Git identity')
-            - git_get_started_doc = link_to('', help_page_path('topics/git/get_started.md'), target: '_blank', rel: 'noopener noreferrer')
-            - git_config_doc = link_to('', help_page_path('topics/git/how_to_install_git/index.md', anchor: 'configure-git'), target: '_blank', rel: 'noopener noreferrer')
-            %p= safe_format(_("%{get_started}Get started with Git%{get_started_end} and learn %{git_config}how to configure it%{git_config_end}."), tag_pair(git_get_started_doc, :get_started, :get_started_end), tag_pair(git_config_doc, :git_config, :git_config_end))
-            .scrolling-tabs-container.inner-page-scroll-tabs
-            = gl_tabs_nav({ class: 'js-configure-git-tabs' }) do
-              = gl_tab_link_to '#', item_active: true, 'aria-controls': 'local' do
-                = _('Local')
-              = gl_tab_link_to '#', 'aria-controls': 'global' do
-                = _('Global')
-            .tab-content
-              .tab-pane.active#local
-                = render partial: 'empty_git_config', locals: { scope: 'local' }
-              .tab-pane#global
-                = render partial: 'empty_git_config', locals: { scope: 'global' }
-            %h3.gl-text-lg= _('Add files')
-            - if ssh_enabled?
-              %p= _("Push files to this repository using SSH or HTTPS. If you're unsure, we recommend SSH.")
-              .scrolling-tabs-container.inner-page-scroll-tabs
-              = gl_tabs_nav({ class: 'js-empty-project-tabs' }) do
-                = gl_tab_link_to '#', item_active: true, 'aria-controls': 'ssh' do
-                  = _('SSH')
-                = gl_tab_link_to '#', 'aria-controls': 'https' do
-                  = _('HTTPS')
-                = render_if_exists 'projects/empty_kerberos_tab_link'
-              .tab-content
-                .tab-pane.active#ssh
-                  = render partial: 'empty_git_instructions', locals: { protocol: 'ssh' }
-                .tab-pane#https
-                  = render partial: 'empty_git_instructions', locals: { protocol: 'https' }
-                = render_if_exists 'projects/empty_kerberos_pane'
-            - else
+
+      %h2= _('Command line instructions')
+      %p
+        = _('You can also upload existing files from your computer using the instructions below.')
+      .git-empty.js-git-empty
+        %h3.h4= _('Configure your Git identity')
+        - git_get_started_doc = link_to('', help_page_path('topics/git/get_started.md'), target: '_blank', rel: 'noopener noreferrer')
+        - git_config_doc = link_to('', help_page_path('topics/git/how_to_install_git/index.md', anchor: 'configure-git'), target: '_blank', rel: 'noopener noreferrer')
+        %p= safe_format(_("%{get_started}Get started with Git%{get_started_end} and learn %{git_config}how to configure it%{git_config_end}."), tag_pair(git_get_started_doc, :get_started, :get_started_end), tag_pair(git_config_doc, :git_config, :git_config_end))
+        .scrolling-tabs-container.inner-page-scroll-tabs
+        = gl_tabs_nav({ class: 'js-configure-git-tabs' }) do
+          = gl_tab_link_to '#', item_active: true, 'aria-controls': 'local' do
+            = _('Local')
+          = gl_tab_link_to '#', 'aria-controls': 'global' do
+            = _('Global')
+        .tab-content
+          .tab-pane.active#local
+            = render partial: 'empty_git_config', locals: { scope: 'local' }
+          .tab-pane#global
+            = render partial: 'empty_git_config', locals: { scope: 'global' }
+        %h3.h4= _('Add files')
+        - if ssh_enabled?
+          %p= _("Push files to this repository using SSH or HTTPS. If you're unsure, we recommend SSH.")
+          .scrolling-tabs-container.inner-page-scroll-tabs
+          = gl_tabs_nav({ class: 'js-empty-project-tabs' }) do
+            = gl_tab_link_to '#', item_active: true, 'aria-controls': 'ssh' do
+              = _('SSH')
+            = gl_tab_link_to '#', 'aria-controls': 'https' do
+              = _('HTTPS')
+            = render_if_exists 'projects/empty_kerberos_tab_link'
+          .tab-content
+            .tab-pane.active#ssh
+              = render partial: 'empty_git_instructions', locals: { protocol: 'ssh' }
+            .tab-pane#https
               = render partial: 'empty_git_instructions', locals: { protocol: 'https' }
+            = render_if_exists 'projects/empty_kerberos_pane'
+        - else
+          = render partial: 'empty_git_instructions', locals: { protocol: 'https' }
   .project-page-layout-sidebar.js-show-on-project-root.gl-mt-5
     = render "sidebar"

@@ -17,7 +17,7 @@ If you encounter any issues with the GitLab Workflow extension for VS Code, or h
 
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
 
-1. In VS Code, on the top bar, go to **Code > Preferences > Settings**.
+1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add this line, or edit it if it already exists:
 

@@ -20,12 +20,23 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
-  inject: ['projectPath', 'markdownPreviewPath'],
   props: {
     disableAttachments: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    indexModelsPath: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -85,11 +96,8 @@ export default {
         this.errorMessage = error;
       }
     },
-    resetForm() {
-      this.name = null;
-      this.description = '';
-      this.errorMessage = null;
-      this.modelData = null;
+    cancel() {
+      visitUrl(this.indexModelsPath);
     },
     hideAlert() {
       this.errorMessage = null;
@@ -186,7 +194,7 @@ export default {
           @click="create"
           >{{ $options.i18n.actionPrimaryText }}
         </gl-button>
-        <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
+        <gl-button data-testid="secondary-button" variant="default" @click="cancel"
           >{{ $options.i18n.actionSecondaryText }}
         </gl-button>
       </div>

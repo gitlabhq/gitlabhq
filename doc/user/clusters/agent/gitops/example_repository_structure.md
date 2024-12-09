@@ -26,7 +26,7 @@ To set up a repository for GitOps deployments:
 1. [Configure Flux to sync your manifests](#configure-flux-to-sync-your-manifests)
 1. [Verify your configuration](#verify-your-configuration)
 
-Prerequisites:
+Before you begin:
 
 - You have a Flux repository connected to a Kubernetes cluster.
   If you're starting from scratch, see [Set up Flux for GitOps](flux_tutorial.md).
