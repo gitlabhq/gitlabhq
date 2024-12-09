@@ -439,12 +439,11 @@ module ProjectsHelper
   end
 
   def show_lfs_misconfiguration_banner?(project)
-    return false unless Feature.enabled?(:lfs_misconfiguration_banner)
-    return false unless project.repository
-    return false unless project.lfs_enabled?
+    return false unless Feature.enabled?(:lfs_misconfiguration_banner, project)
+    return false unless project.repository && project.lfs_enabled?
 
     Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
-      project.lfs_objects.any? && !project.repository.has_gitattributes?
+      project.lfs_objects_projects.project_repository_type.any? && !project.repository.has_gitattributes?
     end
   end
 

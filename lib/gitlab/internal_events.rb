@@ -12,12 +12,26 @@ module Gitlab
       include Gitlab::UsageDataCounters::RedisCounter
       include Gitlab::UsageDataCounters::RedisSum
 
-      def track_event(
-        event_name, category: nil, send_snowplow_event: true,
-        additional_properties: {}, **kwargs)
-
+      def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
+        event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
+        send_snowplow_event = kwargs.fetch(:send_snowplow_event, true)
+
+        track_analytics_event(event_name, send_snowplow_event, category: category,
+          additional_properties: additional_properties, **kwargs)
+
+        return if Feature.disabled?(:move_ai_tracking_to_instrumentation_layer, kwargs[:user])
+
+        kwargs[:additional_properties] = additional_properties
+        event_definition.extra_tracking_classes.each do |tracking_class|
+          tracking_class.track_event(event_name, **kwargs)
+        end
+      end
+
+      private
+
+      def track_analytics_event(event_name, send_snowplow_event, category: nil, additional_properties: {}, **kwargs)
         extra = custom_additional_properties(additional_properties)
         base_additional_properties = additional_properties.slice(*base_additional_properties_keys)
 
@@ -44,8 +58,6 @@ module Gitlab
         )
         nil
       end
-
-      private
 
       def update_redis_values(event_name, additional_properties, kwargs)
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)

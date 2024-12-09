@@ -12,7 +12,7 @@ The location for all official GitLab component projects is the [`gitlab.com/comp
 This group contains all components that are designed to be generic, served to all GitLab users, and maintained by GitLab.
 For example: SAST, Secret Detection and Code Quality components.
 A component project can initially be created under a different group (for example `gitlab-org`)
-but it needs to be moved into the `components` group before the first version gets published to the catalog.
+but it needs to be moved into the `components` group before the first version gets published to the catalog. All projects under [`gitlab.com/components`](https://gitlab.com/components) group must be public
 
 Components that are for GitLab internal use only, for example specific to `gitlab-org/gitlab` project, should be
 implemented under `gitlab-org` group.

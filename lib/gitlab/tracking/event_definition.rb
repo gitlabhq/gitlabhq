@@ -75,6 +75,10 @@ module Gitlab
         attributes[:action]
       end
 
+      def extra_tracking_classes
+        attributes[:extra_tracking_classes]&.map(&:constantize) || []
+      end
+
       private
 
       def find_event_selection_rules

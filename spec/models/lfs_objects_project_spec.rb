@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LfsObjectsProject do
+RSpec.describe LfsObjectsProject, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
 
   subject(:lfs_objects_project) do
@@ -22,6 +22,37 @@ RSpec.describe LfsObjectsProject do
       is_expected.to validate_uniqueness_of(:lfs_object_id)
         .scoped_to(:project_id, :repository_type)
         .with_message("already exists in repository")
+    end
+  end
+
+  describe 'scopes' do
+    let_it_be(:project_repository_type) { create(:lfs_objects_project, :project_repository_type, project: project) }
+    let_it_be(:wiki_repository_type) { create(:lfs_objects_project, :wiki_repository_type, project: project) }
+    let_it_be(:design_repository_type) { create(:lfs_objects_project, :design_repository_type, project: project) }
+    let_it_be(:null_repository_type) { create(:lfs_objects_project, :null_repository_type, project: project) }
+
+    describe 'project' do
+      subject(:scope) { described_class.project }
+
+      it { is_expected.to contain_exactly(project_repository_type) }
+    end
+
+    describe 'project_repository_type' do
+      subject(:scope) { described_class.project_repository_type }
+
+      it { is_expected.to contain_exactly(project_repository_type) }
+    end
+
+    describe 'wiki' do
+      subject(:scope) { described_class.wiki }
+
+      it { is_expected.to contain_exactly(wiki_repository_type) }
+    end
+
+    describe 'design' do
+      subject(:scope) { described_class.design }
+
+      it { is_expected.to contain_exactly(design_repository_type) }
     end
   end
 

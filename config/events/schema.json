@@ -172,6 +172,12 @@
           "ultimate"
         ]
       }
+    },
+    "extra_tracking_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }

@@ -1,0 +1,9 @@
+---
+name: move_ai_tracking_to_instrumentation_layer
+feature_issue_url: https://gitlab.com/gitlab-org/architecture/gitlab-data-analytics/design-doc/-/issues/53
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167415
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506471
+milestone: '17.7'
+group: group::analytics instrumentation
+type: gitlab_com_derisk
+default_enabled: false

@@ -27,6 +27,10 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clea
       to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event2').and_return(event_definition2)
+
+    allow(event_definition).to receive(:extra_tracking_classes).and_return([])
+    allow(event_definition1).to receive(:extra_tracking_classes).and_return([])
+    allow(event_definition2).to receive(:extra_tracking_classes).and_return([])
   end
 
   context 'with multiple similar events' do

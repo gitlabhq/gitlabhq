@@ -23,7 +23,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
       allow(instance).to receive(:validate!)
     end
-    allow(event_definition).to receive(:event_selection_rules).and_return(event_selection_rules)
+    allow(event_definition).to receive_messages(event_selection_rules: event_selection_rules, attributes: {})
+    allow(event_definition).to receive(:extra_tracking_classes).and_return([])
     allow(fake_snowplow).to receive(:event)
   end
 
@@ -726,6 +727,27 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         end
 
         it_behaves_like 'does not create early access program tracking event'
+      end
+    end
+  end
+
+  describe 'custom tracking classes' do
+    let(:event_kwargs) { { additional_properties: additional_properties, user: user, project: project } }
+    let(:custom_tracking_class) do
+      Class.new do
+        def self.track_event(event_name, **kwargs); end
+      end
+    end
+
+    context 'when custom classes are defined' do
+      before do
+        allow(event_definition).to receive(:extra_tracking_classes).and_return([custom_tracking_class])
+      end
+
+      it 'calls the custom classes' do
+        expect(custom_tracking_class).to receive(:track_event).with(event_name, **event_kwargs)
+
+        described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
       end
     end
   end
