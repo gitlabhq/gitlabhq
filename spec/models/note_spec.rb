@@ -279,20 +279,24 @@ RSpec.describe Note, feature_category: :team_planning do
         note.save!
       end
 
-      it "skips #keep_around_commit if 'skip_keep_around_commits' is true" do
-        note = build(:note, project: noteable.project, noteable: noteable, skip_keep_around_commits: true)
-
-        expect(note).not_to receive(:keep_around_commit)
-
-        note.save!
-      end
-
       it "skips #keep_around_commit if 'importing' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, importing: true)
 
         expect(note).not_to receive(:keep_around_commit)
 
         note.save!
+      end
+
+      describe 'on merge request' do
+        let!(:noteable) { create(:merge_request) }
+
+        it "skips #keep_around_commit" do
+          note = build(:note, project: noteable.project, noteable: noteable)
+
+          expect(note).not_to receive(:keep_around_commit)
+
+          note.save!
+        end
       end
     end
 

@@ -37,6 +37,17 @@ SAST supports the following official analyzers:
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow), based on Sobelow.
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs), based on SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT).
 
+### Supported versions
+
+Official analyzers are released as container images, separate from the GitLab platform.
+Each analyzer version is compatible with a limited set of GitLab versions.
+
+When an analyzer version will no longer be supported in a future GitLab version, this change is announced in advance.
+For example, see the [announcement for GitLab 17.0](../../../update/deprecations.md#secure-analyzers-major-version-update).
+
+The supported major version for each official analyzer is reflected in its job definition in the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
+To see the analyzer version supported in a previous GitLab version, select a historical version of the SAST template file, such as [v16.11.0-ee](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.11.0-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml?ref_type=tags) for GitLab 16.11.0.
+
 ## Analyzers that have reached End of Support
 
 The following GitLab analyzers have reached [End of Support](../../../update/terminology.md#end-of-support)

@@ -9,10 +9,8 @@ module MergeRequests
       def execute
         if merge_request.can_be_merged?
           success
-        elsif merge_request.cannot_be_merged?
-          failure
         else
-          checking
+          failure
         end
       end
 
