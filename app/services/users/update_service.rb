@@ -3,10 +3,13 @@
 module Users
   class UpdateService < BaseService
     include NewUserNotifier
+    include Gitlab::Utils::StrongMemoize
+
     attr_reader :user, :identity_params
 
     ATTRS_REQUIRING_PASSWORD_CHECK = %w[email].freeze
     BATCH_SIZE = 100
+    ORGANIZATION_USERS_LIMIT = 1 # users can only belong to a single organization for Cells 1.0
 
     def initialize(current_user, params = {})
       @current_user = current_user
@@ -18,6 +21,8 @@ module Users
     end
 
     def execute(validate: true, check_password: false, &block)
+      return organization_users_error if organization_users_error
+
       yield(@user) if block
 
       user_exists = @user.persisted?
@@ -50,6 +55,50 @@ module Users
     end
 
     private
+
+    def organization_users_attributes
+      params[:organization_users_attributes] || []
+    end
+
+    def error_message(content)
+      @user.errors.add(:base, content)
+      error(content)
+    end
+
+    def organization_ids_invalid_error
+      error_message(_('Organization ID cannot be nil'))
+    end
+
+    def organization_permission_error
+      error_message(_('Insufficient permission to modify user organizations'))
+    end
+
+    def organization_users_limit_exceeded_error
+      message = format(_('Cannot update more than %{limit} organization data at once'), limit: ORGANIZATION_USERS_LIMIT)
+      error_message(message)
+    end
+
+    def organization_ids_invalid?
+      organization_ids.include?(nil)
+    end
+
+    def organization_users_limit_exceeded?
+      organization_users_attributes.count > ORGANIZATION_USERS_LIMIT
+    end
+
+    def organization_users_error
+      return if organization_users_attributes.blank?
+      return organization_permission_error unless current_user.can_admin_all_resources?
+      return organization_users_limit_exceeded_error if organization_users_limit_exceeded?
+      return organization_ids_invalid_error if organization_ids_invalid?
+
+      nil
+    end
+    strong_memoize_attr :organization_users_error
+
+    def organization_ids
+      organization_users_attributes.pluck(:organization_id).uniq # rubocop:disable Database/AvoidUsingPluckWithoutLimit, CodeReuse/ActiveRecord -- Capped to ORGANIZATION_USERS_LIMIT and plucks on an array of plain hashes
+    end
 
     def require_password_check?
       return false unless @user.persisted?

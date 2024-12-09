@@ -118,7 +118,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             put :reset_registration_token
             post :create_deploy_token, path: 'deploy_token/create', to: 'repository#create_deploy_token'
             get :runner_setup_scripts, format: :json
-            get :export_job_token_authorizations, format: :csv
+            get :export_job_token_authorizations, defaults: { format: :csv }
           end
 
           resource :operations, only: [:show, :update] do

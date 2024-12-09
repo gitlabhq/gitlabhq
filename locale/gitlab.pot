@@ -11069,6 +11069,9 @@ msgstr ""
 msgid "Cannot skip two factor authentication setup"
 msgstr ""
 
+msgid "Cannot update more than %{limit} organization data at once"
+msgstr ""
+
 msgid "Cannot validate connection to host because the URL is empty."
 msgstr ""
 
@@ -29244,6 +29247,9 @@ msgstr ""
 msgid "Instance runners help link"
 msgstr ""
 
+msgid "Insufficient permission to modify user organizations"
+msgstr ""
+
 msgid "Insufficient permissions"
 msgstr ""
 
@@ -38470,6 +38476,9 @@ msgid "Ordered list"
 msgstr ""
 
 msgid "Organization"
+msgstr ""
+
+msgid "Organization ID cannot be nil"
 msgstr ""
 
 msgid "Organizations"

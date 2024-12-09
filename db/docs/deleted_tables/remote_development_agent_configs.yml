@@ -19,3 +19,5 @@ desired_sharding_key:
         belongs_to: agent
 desired_sharding_key_migration_job_name: BackfillRemoteDevelopmentAgentConfigsProjectId
 table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164032
+removed_in_milestone: '17.7'

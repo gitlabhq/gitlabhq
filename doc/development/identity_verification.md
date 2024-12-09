@@ -16,7 +16,6 @@ Before you enable these features, ensure [hard email confirmation](../security/u
 
 | Feature flag name | Description |
 |---------|-------------|
-| `identity_verification_phone_number` | Turns on phone verification for medium risk users for all flows. |
 | `identity_verification_credit_card` | Turns on credit card verification for high risk users for all flows. |
 
 ## Logging

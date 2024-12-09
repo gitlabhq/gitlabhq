@@ -486,7 +486,12 @@ module Ci
     end
 
     # Overriden on EE
-    def pages; end
+    # rubocop:disable Gitlab/NoCodeCoverageComment -- Fully tested in EE and tested in Foss through feature specs in spec/models/ci/build_spec.rb
+    # :nocov:
+    def pages
+      {}
+    end
+    # rubocop:enable Gitlab/NoCodeCoverageComment
 
     def runnable?
       true
@@ -573,6 +578,7 @@ module Ci
           .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
           .concat(scoped_variables)
+          .concat(pages_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
       end
@@ -652,6 +658,18 @@ module Ci
       return [] unless diffblue_cover_integration.try(:activated?)
 
       Gitlab::Ci::Variables::Collection.new(diffblue_cover_integration.ci_variables)
+    end
+
+    def pages_variables
+      ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        next variables unless pages_generator? && Feature.enabled?(:fix_pages_ci_variables, project)
+
+        pages_url_builder = ::Gitlab::Pages::UrlBuilder.new(project, pages)
+
+        variables
+          .append(key: 'CI_PAGES_HOSTNAME', value: pages_url_builder.hostname)
+          .append(key: 'CI_PAGES_URL', value: pages_url_builder.pages_url)
+      end
     end
 
     def features

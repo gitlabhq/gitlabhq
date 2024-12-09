@@ -2580,7 +2580,7 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+      variables.append(key: 'CI_PAGES_URL', value: pages_url) if Feature.disabled?(:fix_pages_ci_variables, self)
     end
   end
 
@@ -3437,12 +3437,12 @@ class Project < ApplicationRecord
     )
   end
 
-  def uploads_sharding_key
-    { namespace_id: namespace_id }
+  def pages_url(options = nil)
+    Gitlab::Pages::UrlBuilder.new(self, options).pages_url
   end
 
-  def pages_url
-    Gitlab::Pages::UrlBuilder.new(self).pages_url
+  def uploads_sharding_key
+    { namespace_id: namespace_id }
   end
 
   private

@@ -48,8 +48,12 @@ module Projects
       path_prefix.present?
     end
 
+    def url_builder
+      @url_builder ||= ::Gitlab::Pages::UrlBuilder.new(project, config)
+    end
+
     def path_prefix
-      ::Gitlab::Utils.slugify(config.fetch(:path_prefix, nil) || '')
+      url_builder.path_prefix
     end
 
     def success

@@ -119,6 +119,10 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
   let(:builder) { described_class.new(pipeline) }
 
+  before do
+    stub_feature_flags(fix_pages_ci_variables: false)
+  end
+
   describe '#scoped_variables' do
     let(:environment_name) { job.expanded_environment_name }
     let(:dependencies) { true }

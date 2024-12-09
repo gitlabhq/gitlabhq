@@ -19073,36 +19073,6 @@ CREATE SEQUENCE releases_id_seq
 
 ALTER SEQUENCE releases_id_seq OWNED BY releases.id;
 
-CREATE TABLE remote_development_agent_configs (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    cluster_agent_id bigint NOT NULL,
-    enabled boolean NOT NULL,
-    dns_zone text NOT NULL,
-    network_policy_enabled boolean DEFAULT true NOT NULL,
-    gitlab_workspaces_proxy_namespace text DEFAULT 'gitlab-workspaces'::text NOT NULL,
-    network_policy_egress jsonb DEFAULT '[{"allow": "0.0.0.0/0", "except": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]}]'::jsonb NOT NULL,
-    default_resources_per_workspace_container jsonb DEFAULT '{}'::jsonb NOT NULL,
-    max_resources_per_workspace jsonb DEFAULT '{}'::jsonb NOT NULL,
-    workspaces_quota bigint DEFAULT '-1'::integer NOT NULL,
-    workspaces_per_user_quota bigint DEFAULT '-1'::integer NOT NULL,
-    project_id bigint,
-    default_max_hours_before_termination smallint DEFAULT 24 NOT NULL,
-    max_hours_before_termination_limit smallint DEFAULT 120 NOT NULL,
-    CONSTRAINT check_72947a4495 CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63)),
-    CONSTRAINT check_9f5cd54d1c CHECK ((char_length(dns_zone) <= 256))
-);
-
-CREATE SEQUENCE remote_development_agent_configs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE remote_development_agent_configs_id_seq OWNED BY remote_development_agent_configs.id;
-
 CREATE TABLE remote_development_namespace_cluster_agent_mappings (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24212,8 +24182,6 @@ ALTER TABLE ONLY release_links ALTER COLUMN id SET DEFAULT nextval('release_link
 
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
 
-ALTER TABLE ONLY remote_development_agent_configs ALTER COLUMN id SET DEFAULT nextval('remote_development_agent_configs_id_seq'::regclass);
-
 ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('remote_development_namespace_cluster_agent_mappings_id_seq'::regclass);
 
 ALTER TABLE ONLY remote_mirrors ALTER COLUMN id SET DEFAULT nextval('remote_mirrors_id_seq'::regclass);
@@ -26917,9 +26885,6 @@ ALTER TABLE releases
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT releases_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY remote_development_agent_configs
-    ADD CONSTRAINT remote_development_agent_configs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
     ADD CONSTRAINT remote_development_namespace_cluster_agent_mappings_pkey PRIMARY KEY (id);
@@ -32440,10 +32405,6 @@ CREATE UNIQUE INDEX index_releases_on_project_tag_unique ON releases USING btree
 
 CREATE INDEX index_releases_on_released_at ON releases USING btree (released_at);
 
-CREATE INDEX index_remote_development_agent_configs_on_project_id ON remote_development_agent_configs USING btree (project_id);
-
-CREATE UNIQUE INDEX index_remote_development_agent_configs_on_unique_agent_id ON remote_development_agent_configs USING btree (cluster_agent_id);
-
 CREATE INDEX index_remote_mirrors_on_last_successful_update_at ON remote_mirrors USING btree (last_successful_update_at);
 
 CREATE INDEX index_remote_mirrors_on_project_id ON remote_mirrors USING btree (project_id);
@@ -35726,8 +35687,6 @@ CREATE TRIGGER trigger_2dafd0d13605 BEFORE INSERT OR UPDATE ON pages_domain_acme
 
 CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_alert_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_30209d0fba3e();
 
-CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
-
 CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_388de55cd36c();
 
 CREATE TRIGGER trigger_38bfee591e40 BEFORE INSERT OR UPDATE ON dependency_proxy_blob_states FOR EACH ROW EXECUTE FUNCTION trigger_38bfee591e40();
@@ -36067,9 +36026,6 @@ ALTER TABLE ONLY merge_request_assignment_events
 
 ALTER TABLE ONLY catalog_resource_component_last_usages
     ADD CONSTRAINT fk_094c686785 FOREIGN KEY (component_project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY remote_development_agent_configs
-    ADD CONSTRAINT fk_0a3c0ada56 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT fk_0a57f2271b FOREIGN KEY (dast_site_validation_id) REFERENCES dast_site_validations(id) ON DELETE SET NULL;
@@ -36679,9 +36635,6 @@ ALTER TABLE p_ci_builds
 
 ALTER TABLE ONLY ai_conversation_messages
     ADD CONSTRAINT fk_68774ec148 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY remote_development_agent_configs
-    ADD CONSTRAINT fk_6a09894a0f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

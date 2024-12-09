@@ -12,7 +12,7 @@ export default {
   organizationsQuery,
   organizationInputId: 'user_organization_id',
   organizationUserInputId: 'user_organization_users_id',
-  organizationUserInputName: 'user[organization_users][][id]',
+  organizationUserInputName: 'user[organization_users_attributes][][id]',
   i18n: {
     organizationSelectLabel: s__('Organization|Select an organization'),
   },

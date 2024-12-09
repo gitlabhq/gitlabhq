@@ -679,7 +679,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
           request
 
           errors = assigns[:user].errors
-          expect(errors).to contain_exactly("Namespace organization can't be blank", "Organization users is invalid")
+          expect(errors).to contain_exactly(_("Namespace organization can't be blank"), _('Organization users organization must exist'))
         end
       end
     end
@@ -698,6 +698,103 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
   end
 
   describe 'POST update' do
+    let_it_be(:organization) { create(:organization, organization_users: create_list(:organization_owner, 3)) }
+    let_it_be(:organization_user) { organization.organization_users.first }
+    let_it_be(:current_user) { organization_user.user }
+
+    Organizations::OrganizationUser.access_levels.each_key do |organization_access_level|
+      context "when organization_access_level param is #{organization_access_level}" do
+        it "updates organization user access level to #{organization_access_level}" do
+          post :update, params: {
+            id: current_user.to_param,
+            user: {
+              organization_users_attributes: [{
+                id: organization_user.id,
+                organization_id: organization_user.organization_id,
+                access_level: organization_access_level
+              }]
+            }
+          }
+
+          expect(organization_user.reload.access_level).to eq(organization_access_level)
+        end
+      end
+    end
+
+    context 'when target user does not belong to the organization' do
+      let_it_be(:new_user) { create(:user) }
+
+      it 'adds user to the organization' do
+        post :update, params: {
+          id: new_user.to_param,
+          user: { organization_users_attributes: [{ organization_id: organization.id }] }
+        }
+
+        expect(organization.user?(new_user)).to eq(true)
+      end
+    end
+
+    context 'when organization parameters is invalid' do
+      let_it_be(:params) do
+        {
+          id: current_user.to_param,
+          user: { organization_users_attributes: [{ organization_id: non_existing_record_id }] }
+        }
+      end
+
+      it 'returns error message' do
+        post :update, params: params
+
+        expect(assigns[:user].errors).to contain_exactly(_('Organization users organization must exist'))
+      end
+
+      context 'when format is json' do
+        it 'returns json with error message', :aggregate_failures do
+          post :update, params: params, format: :json
+
+          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(json_response).to contain_exactly(_('Organization users organization must exist'))
+        end
+      end
+    end
+
+    context 'when organization_users param count exceeds limit' do
+      before do
+        stub_const("#{described_class}::ORGANIZATION_USERS_LIMIT", 1)
+      end
+
+      let_it_be(:organization_users_attributes) do
+        create_list(:organization_user, Users::UpdateService::ORGANIZATION_USERS_LIMIT + 1, user: current_user)
+          .map { |o| o.slice(:id) }
+      end
+
+      let_it_be(:error_message) do
+        format(
+          _('Cannot update more than %{limit} organization data at once'),
+          limit: Users::UpdateService::ORGANIZATION_USERS_LIMIT
+        )
+      end
+
+      let_it_be(:params) do
+        { id: current_user.to_param, user: { organization_users_attributes: organization_users_attributes } }
+      end
+
+      it 'returns error message' do
+        post :update, params: params
+
+        expect(assigns[:user].errors).to contain_exactly(error_message)
+      end
+
+      context 'when format is json' do
+        it 'returns json with error message', :aggregate_failures do
+          post :update, params: params, format: :json
+
+          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(json_response).to contain_exactly(error_message)
+        end
+      end
+    end
+
     context 'when the password has changed' do
       def update_password(user, password = User.random_password, password_confirmation = password, format = :html)
         params = {

@@ -111,11 +111,11 @@ RSpec.describe RuboCop::Cop::RSpec::FeatureCategory, feature_category: :tooling 
   it 'flags missing feature category in top level example group' do
     expect_offense(<<~RUBY)
       RSpec.describe 'foo' do
-      ^^^^^^^^^^^^^^^^^^^^^^^ Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
+      ^^^^^^^^^^^^^^^^^^^^ Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
       end
 
       RSpec.describe 'foo', some: :tag do
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
       end
     RUBY
   end

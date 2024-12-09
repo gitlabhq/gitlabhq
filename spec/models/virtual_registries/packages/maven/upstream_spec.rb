@@ -36,8 +36,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
     it { is_expected.to validate_presence_of(:url) }
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:password) }
-    it { is_expected.to validate_uniqueness_of(:encrypted_username_iv).ignoring_case_sensitivity }
-    it { is_expected.to validate_uniqueness_of(:encrypted_password_iv).ignoring_case_sensitivity }
+    it { is_expected.to validate_uniqueness_of(:encrypted_username_iv).ignoring_case_sensitivity.allow_nil }
+    it { is_expected.to validate_uniqueness_of(:encrypted_password_iv).ignoring_case_sensitivity.allow_nil }
     it { is_expected.to validate_length_of(:url).is_at_most(255) }
     it { is_expected.to validate_length_of(:username).is_at_most(255) }
     it { is_expected.to validate_length_of(:password).is_at_most(255) }

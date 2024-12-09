@@ -35,7 +35,7 @@ module VirtualRegistries
         validates :password, presence: true, if: :username?
         validates :url, :username, :password, length: { maximum: 255 }
         validates :cache_validity_hours, numericality: { greater_than_or_equal_to: 0, only_integer: true }
-        validates :encrypted_username_iv, :encrypted_password_iv, uniqueness: true
+        validates :encrypted_username_iv, :encrypted_password_iv, uniqueness: true, allow_nil: true
 
         before_validation :set_cache_validity_hours_for_maven_central, if: :url?, on: :create
         after_validation :reset_credentials, if: -> { persisted? && url_changed? }

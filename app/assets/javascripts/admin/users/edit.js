@@ -25,8 +25,8 @@ export const initAdminNewUserOrganizationField = () => {
           organizationUser,
           initialOrganization,
           hasMultipleOrganizations: false,
-          organizationInputName: 'user[organization_users][][organization_id]',
-          organizationRoleInputName: 'user[organization_users][][access_level]',
+          organizationInputName: 'user[organization_users_attributes][][organization_id]',
+          organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
         },
       });
     },

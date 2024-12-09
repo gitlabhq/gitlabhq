@@ -36,7 +36,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
         banned: [],
         include_relations: [:inherited, :direct],
         search: nil,
-        pending_members_count: [],
+        pending_members_count: nil,
         placeholder_users: {
           pagination: {
             total_items: 3,
@@ -121,7 +121,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
             banned: [],
             include_relations: include_relations,
             search: nil,
-            pending_members_count: [],
+            pending_members_count: nil,
             placeholder_users: {}
           )
         end

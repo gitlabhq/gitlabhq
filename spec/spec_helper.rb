@@ -602,6 +602,16 @@ module UsersInternalAllowExclusiveLease
         super
       end
     end
+
+    # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
+    # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
+    # constraint violations when creating internal users. We're not seeding organizations before all specs for
+    # performance.
+    def create_unique_internal(scope, username, email_pattern, &creation_block)
+      Organizations::Organization.first || FactoryBot.create(:organization)
+
+      super
+    end
   end
 end
 

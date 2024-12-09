@@ -140,7 +140,9 @@ module ValueStreamsDashboardHelpers
     create_mock_dora_metrics(environment)
     create_mock_flow_metrics(project)
     create_mock_merge_request_metrics(project)
-    create_mock_vulnerabilities_metrics(project)
+    create_mock_vulnerabilities_metrics('vulnerability_historical_statistic', { project: project })
+    create_mock_vulnerabilities_metrics('vulnerability_namespace_historical_statistic',
+      { namespace: project.namespace })
   end
 
   # On the 1st day of any month, the metrics table intentionally uses the previous month
@@ -207,20 +209,20 @@ module ValueStreamsDashboardHelpers
     end
   end
 
-  def create_mock_vulnerabilities_metrics(project)
+  def create_mock_vulnerabilities_metrics(table_name, record_identifier)
     [
       [n_months_ago(1).end_of_month, 3, 2],
       [n_months_ago(2).end_of_month, 5, 4],
       [n_months_ago(3).end_of_month, 2, 3]
     ].each do |date, critical, high|
-      create(
-        :vulnerability_historical_statistic,
+      params = {
         date: date,
         high: high,
         critical: critical,
-        total: critical + high,
-        project: project
-      )
+        total: critical + high
+      }.merge(record_identifier)
+
+      create(table_name.to_sym, params)
     end
   end
 end

@@ -283,6 +283,7 @@ class User < ApplicationRecord
   belongs_to :created_by, class_name: 'User', optional: true
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
+
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
     disable_joins: true
   has_many :owned_organizations, -> { where(organization_users: { access_level: Gitlab::Access::OWNER }) },
@@ -469,6 +470,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
   accepts_nested_attributes_for :credit_card_validation, update_only: true, allow_destroy: true
+  accepts_nested_attributes_for :organization_users, update_only: true
 
   state_machine :state, initial: :active do
     # state_machine uses this method at class loading time to fetch the default

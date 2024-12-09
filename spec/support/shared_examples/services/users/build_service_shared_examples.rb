@@ -20,7 +20,7 @@ RSpec.shared_examples 'organization user creation and validation in service' do
 
     it 'adds invalid organization user error', :aggregate_failures do
       expect(user.valid?).to be(false)
-      expect(user.errors.full_messages).to include('Organization users is invalid')
+      expect(user.errors.full_messages).to include(_('Organization users organization must exist'))
     end
   end
 end

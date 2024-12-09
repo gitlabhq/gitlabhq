@@ -30,7 +30,7 @@ describe('NewUserOrganizationField', () => {
   const findHiddenOrganizationField = () =>
     wrapper.find('input[name="user[organization_id]"][type="hidden"]');
   const findHiddenOrganizationUserField = () =>
-    wrapper.find('input[name="user[organization_users][][id]"][type="hidden"]');
+    wrapper.find('input[name="user[organization_users_attributes][][id]"][type="hidden"]');
   const findOrganizationSelect = () => wrapper.findComponent(OrganizationSelect);
   const findOrganizationRoleField = () => wrapper.findComponent(OrganizationRoleField);
 
@@ -89,11 +89,13 @@ describe('NewUserOrganizationField', () => {
 
   it('passes organizationRoleInputName prop to role field', () => {
     createComponent({
-      propsData: { organizationRoleInputName: 'user[organization_user][][access_level]' },
+      propsData: {
+        organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
+      },
     });
 
     expect(findOrganizationRoleField().props('inputName')).toBe(
-      'user[organization_user][][access_level]',
+      'user[organization_users_attributes][][access_level]',
     );
   });
 
