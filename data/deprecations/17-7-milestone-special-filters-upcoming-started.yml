@@ -1,0 +1,16 @@
+- title: "Behavior change for Upcoming and Started milestone filters"
+  announcement_milestone: "17.7"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: kushalpandya  # The GitLab username of the person reporting the change
+  stage: plan
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501294
+  impact: low
+  scope: group, project
+  window: 2
+  resolution_role: Owner
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
+    The new behavior of both the filters is outlined in
+    [issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).

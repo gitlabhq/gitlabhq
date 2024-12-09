@@ -45,6 +45,7 @@ import {
 const protectedBranchesHelpDocLink = helpPagePath('user/project/repository/branches/protected');
 const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/index');
 const pushRulesHelpDocLink = helpPagePath('user/project/repository/push_rules');
+const squashSettingsHelpDocLink = helpPagePath('user/project/merge_requests/squash_and_merge');
 
 export default {
   name: 'RuleView',
@@ -53,6 +54,7 @@ export default {
   protectedBranchesHelpDocLink,
   codeOwnersHelpDocLink,
   pushRulesHelpDocLink,
+  squashSettingsHelpDocLink,
   directives: {
     GlModal: GlModalDirective,
   },
@@ -219,6 +221,12 @@ export default {
     },
     showStatusChecksSection() {
       return this.showStatusChecks && this.branch !== this.$options.i18n.allProtectedBranches;
+    },
+    showMergeRequestsSection() {
+      return this.showApprovers || this.showSquashSetting;
+    },
+    showSquashSetting() {
+      return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
     },
   },
   methods: {
@@ -507,34 +515,56 @@ export default {
         />
       </settings-section>
 
-      <!-- Approvals -->
+      <!-- Merge requests -->
       <settings-section
-        v-if="showApprovers"
-        :heading="$options.i18n.approvalsTitle"
+        v-if="showMergeRequestsSection"
+        :heading="$options.i18n.mergeRequestsTitle"
         class="gl-mt-5"
       >
-        <template #description>
-          <gl-sprintf :message="$options.i18n.approvalsDescription">
-            <template #link="{ content }">
-              <gl-link :href="$options.approvalsHelpDocLink">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </template>
-
         <!-- eslint-disable-next-line vue/no-undef-components -->
         <approval-rules-app
+          v-if="showApprovers"
           :is-mr-edit="false"
           :is-branch-rules-edit="true"
           class="!gl-mt-0"
           @submitted="$apollo.queries.project.refetch()"
         >
+          <template #description>
+            <gl-sprintf :message="$options.i18n.approvalsDescription">
+              <template #link="{ content }">
+                <gl-link :href="$options.approvalsHelpDocLink">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+
           <template #rules>
             <!-- eslint-disable-next-line vue/no-undef-components -->
             <project-rules :is-branch-rules-edit="true" />
           </template>
         </approval-rules-app>
+
+        <!-- Squash setting-->
+        <protection
+          v-if="showSquashSetting"
+          :header="$options.i18n.squashSettingHeader"
+          :empty-state-copy="$options.i18n.squashSettingEmptyState"
+          :is-edit-available="false"
+          :icon="null"
+          class="gl-mt-5"
+          data-testid="squash-setting-content"
+        >
+          <template #description>
+            <gl-sprintf :message="$options.i18n.squashSettingHelpText">
+              <template #link="{ content }">
+                <gl-link :href="$options.squashSettingsHelpDocLink">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+        </protection>
       </settings-section>
 
       <!-- Status checks -->

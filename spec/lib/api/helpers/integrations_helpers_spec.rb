@@ -7,21 +7,6 @@ RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integration
   let(:development_classes) { [Integrations::MockCi, Integrations::MockMonitoring] }
   let(:instance_level_classes) { [Integrations::BeyondIdentity] }
 
-  describe '.chat_notification_flags' do
-    it 'returns correct values' do
-      expect(described_class.chat_notification_flags).to match_array(
-        [
-          {
-            required: false,
-            name: :notify_only_broken_pipelines,
-            type: ::Grape::API::Boolean,
-            desc: 'Send notifications for broken pipelines'
-          }
-        ]
-      )
-    end
-  end
-
   describe '.integrations' do
     it 'has correct integrations' do
       expect(described_class.integrations.keys.map(&:underscore))

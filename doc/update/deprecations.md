@@ -234,6 +234,24 @@ This is one small step towards moving away from CI/CD templates in preference of
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Behavior change for Upcoming and Started milestone filters
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501294).
+
+</div>
+
+The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
+The new behavior of both the filters is outlined in
+[issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### CI/CD job token - **Authorized groups and projects** allowlist enforcement
 
 <div class="deprecation-notes">

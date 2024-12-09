@@ -9825,7 +9825,7 @@ msgstr ""
 msgid "BranchRules|Manage in status checks"
 msgstr ""
 
-msgid "BranchRules|Merge request approvals"
+msgid "BranchRules|Merge requests"
 msgstr ""
 
 msgid "BranchRules|No data to display"
@@ -9841,6 +9841,9 @@ msgid "BranchRules|No one is allowed to merge changes."
 msgstr ""
 
 msgid "BranchRules|No one is allowed to push and merge changes."
+msgstr ""
+
+msgid "BranchRules|No squash settings defined"
 msgstr ""
 
 msgid "BranchRules|No status checks have been added."
@@ -9882,6 +9885,9 @@ msgstr ""
 msgid "BranchRules|Select Branch or create wildcard"
 msgstr ""
 
+msgid "BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}"
+msgstr ""
+
 msgid "BranchRules|Something went wrong while creating branch rule."
 msgstr ""
 
@@ -9889,6 +9895,9 @@ msgid "BranchRules|Something went wrong while deleting branch rule."
 msgstr ""
 
 msgid "BranchRules|Something went wrong while updating branch rule."
+msgstr ""
+
+msgid "BranchRules|Squash commits when merging"
 msgstr ""
 
 msgid "BranchRules|Squash commits: %{setting}"
@@ -55343,6 +55352,9 @@ msgid "The Matrix access token (for example, `syt-zyx57W2v1u123ew11`)."
 msgstr ""
 
 msgid "The Mattermost token."
+msgstr ""
+
+msgid "The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`)."
 msgstr ""
 
 msgid "The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code."

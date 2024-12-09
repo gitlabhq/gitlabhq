@@ -320,6 +320,7 @@ ci_pipelines:
 - processables
 - generic_commit_statuses
 - trigger_requests
+- trigger
 - variables
 - auto_canceled_by
 - auto_canceled_pipelines

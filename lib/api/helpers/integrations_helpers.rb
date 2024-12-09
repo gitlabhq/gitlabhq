@@ -7,17 +7,6 @@ module API
     # The data structures inside this model are returned using class methods,
     # allowing EE to extend them where necessary.
     module IntegrationsHelpers
-      def self.chat_notification_flags
-        [
-          {
-            required: false,
-            name: :notify_only_broken_pipelines,
-            type: ::Grape::API::Boolean,
-            desc: 'Send notifications for broken pipelines'
-          }
-        ].freeze
-      end
-
       def self.chat_notification_channels
         [
           {
@@ -110,7 +99,6 @@ module API
           'diffblue-cover' => ::Integrations::DiffblueCover.api_arguments,
           'discord' => [
             ::Integrations::Discord.api_arguments,
-            chat_notification_flags,
             chat_notification_channels
           ].flatten,
           'drone-ci' => ::Integrations::DroneCi.api_arguments,
@@ -319,21 +307,7 @@ module API
             ::Integrations::Slack.api_arguments,
             chat_notification_channels
           ].flatten,
-          'microsoft-teams' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent'
-            },
-            chat_notification_flags
-          ].flatten,
+          'microsoft-teams' => ::Integrations::MicrosoftTeams.api_arguments,
           'mattermost' => [
             ::Integrations::Mattermost.api_arguments,
             chat_notification_channels

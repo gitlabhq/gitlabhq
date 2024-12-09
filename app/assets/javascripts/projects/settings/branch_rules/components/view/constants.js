@@ -20,7 +20,7 @@ export const I18N = {
   protectBranchDescription: s__(
     'BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}',
   ),
-  approvalsTitle: s__('BranchRules|Merge request approvals'),
+  mergeRequestsTitle: s__('BranchRules|Merge requests'),
   manageApprovalsLinkTitle: s__('BranchRules|Manage in merge request approvals'),
   approvalsDescription: s__(
     'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}',
@@ -33,6 +33,11 @@ export const I18N = {
   statusChecksHeader: s__('BranchRules|Status checks'),
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge'),
+  squashSettingHeader: s__('BranchRules|Squash commits when merging'),
+  squashSettingHelpText: s__(
+    'BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}',
+  ),
+  squashSettingEmptyState: s__('BranchRules|No squash settings defined'),
   allowForcePushLabel: s__('BranchRules|Allow force push'),
   allowForcePushTitle: s__('BranchRules|Allows force push'),
   doesNotAllowForcePushTitle: s__('BranchRules|Does not allow force push'),

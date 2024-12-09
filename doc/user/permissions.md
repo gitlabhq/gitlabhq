@@ -242,8 +242,10 @@ Project permissions for [issues](project/issues/index.md):
 | Create [test cases](../ci/test_cases/index.md)                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Move [test cases](../ci/test_cases/index.md)                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Reopen [test cases](../ci/test_cases/index.md)                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Manage [Feature flags](../operations/feature_flags.md)                |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| [Import](project/issues/csv_import.md) issues from a CSV file         |       |    ✓    |          |     ✓     |     ✓      |   ✓   |       |
+| [Export](project/issues/csv_export.md) issues to a CSV file           |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Delete issues                                                         |       |    ✓    |          |           |            |   ✓   |       |
+| Manage [Feature flags](../operations/feature_flags.md)                |       |         |          |     ✓     |     ✓      |   ✓   |       |
 
 Project permissions for [tasks](tasks.md):
 

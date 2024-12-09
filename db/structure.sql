@@ -9670,6 +9670,7 @@ CREATE TABLE p_ci_pipelines (
     id bigint NOT NULL,
     auto_canceled_by_id bigint,
     auto_canceled_by_partition_id bigint,
+    trigger_id bigint,
     CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 )
@@ -9707,6 +9708,7 @@ CREATE TABLE ci_pipelines (
     id bigint NOT NULL,
     auto_canceled_by_id bigint,
     auto_canceled_by_partition_id bigint,
+    trigger_id bigint,
     CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );

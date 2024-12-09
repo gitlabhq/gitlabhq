@@ -237,7 +237,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`. Disabled by default.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/480195) from "multiple deployments" to "parallel deployments" in GitLab 17.4.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting.

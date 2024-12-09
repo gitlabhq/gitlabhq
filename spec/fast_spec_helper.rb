@@ -43,6 +43,11 @@ module FastSpecHelper
       config.mock_with :rspec do |mocks|
         mocks.verify_doubled_constant_names = false # Allow mocking of non-lib module/class names from Rails
       end
+
+      # Mock out the GettextI18nRails `_` method to just pass through the key as the text
+      config.before do
+        allow(described_class).to(receive(:_)) { |key| key }
+      end
     end
 
     Time.zone = 'UTC' # rubocop:disable Gitlab/ChangeTimezone -- allow Time.zone to not be nil in fast_spec_helper, so Time.zone.now works

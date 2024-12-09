@@ -389,10 +389,10 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:terraform`
 
-The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/iac/mr_integration.md#configure-terraform-report-artifacts).
-The collected Terraform plan report uploads to GitLab as an artifact.
+The `terraform` report obtains an OpenTofu `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/iac/mr_integration.md#configure-opentofu-report-artifacts).
+The collected OpenTofu plan report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in the merge request
-[Terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
+[OpenTofu widget](../../user/infrastructure/iac/mr_integration.md#output-opentofu-plan-information-into-a-merge-request).
 
-For more information, see [Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).
+For more information, see [Output `tofu plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).

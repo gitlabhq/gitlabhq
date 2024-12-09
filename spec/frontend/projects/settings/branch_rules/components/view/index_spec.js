@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlCollapsibleListbox, GlToast } from '@gitlab/ui';
+import { GlModal, GlCollapsibleListbox, GlToast, GlSprintf } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -79,7 +79,7 @@ describe('View branch rules', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = async ({
-    glFeatures = { editBranchRules: true },
+    glFeatures = { editBranchRules: true, branchRuleSquashSettings: true },
     canAdminProtectedBranches = true,
     branchRulesQueryHandler = branchRulesMockRequestHandler,
     deleteMutationHandler = deleteBranchRuleSuccessHandler,
@@ -111,6 +111,7 @@ describe('View branch rules', () => {
         RuleDrawer,
         PageHeading,
         CrudComponent,
+        GlSprintf,
         GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
       mocks: {
@@ -137,7 +138,6 @@ describe('View branch rules', () => {
   const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
   const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
   const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
-  const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
   const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
@@ -154,6 +154,37 @@ describe('View branch rules', () => {
         subject: 'branches',
       }),
     );
+
+  const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
+
+  describe('Squash settings', () => {
+    it('does not render squash settings section when feature flag is disabled', async () => {
+      await createComponent({ glFeatures: { branchRuleSquashSettings: false } });
+
+      expect(findSquashSettingSection().exists()).toBe(false);
+    });
+
+    it('renders squash settings section', () => {
+      expect(findSquashSettingSection().exists()).toBe(true);
+    });
+
+    it('renders squash heading and content', () => {
+      const content = findSquashSettingSection().text();
+
+      expect(content).toContain('Squash commits when merging');
+      expect(content).toContain(
+        'Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.',
+      );
+      expect(content).toContain('No squash settings defined');
+    });
+
+    it('does not render squash settings for wildcard branch rules', async () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('*');
+      await createComponent();
+
+      expect(findSquashSettingSection().exists()).toBe(false);
+    });
+  });
 
   it('renders page title', () => {
     const pageTitle = wrapper.findComponent(PageHeading).props('heading');
@@ -238,10 +269,6 @@ describe('View branch rules', () => {
 
   it('passes expected roles form merge rules via props', () => {
     expect(findAllowedToMerge().props('roles')).toEqual(protectionPropsMock.roles);
-  });
-
-  it('does not render a branch protection component for approvals', () => {
-    expect(findApprovalsTitle().exists()).toBe(false);
   });
 
   it('does not render a branch protection component for status checks', () => {

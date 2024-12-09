@@ -13,11 +13,15 @@ module WorkItems
         end
 
         def execute
-          cleanup_work_item_widgets_data
+          cleanup_work_item_widgets_data if cleanup_data_source_work_item_data?
           cleanup_work_item
         end
 
         private
+
+        def cleanup_data_source_work_item_data?
+          Feature.enabled?(:cleanup_data_source_work_item_data, work_item.resource_parent)
+        end
 
         def cleanup_work_item_widgets_data
           work_item.widgets.each do |widget|

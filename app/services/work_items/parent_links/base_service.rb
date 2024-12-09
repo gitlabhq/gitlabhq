@@ -5,10 +5,16 @@ module WorkItems
     class BaseService < IssuableLinks::CreateService
       extend ::Gitlab::Utils::Override
 
+      def initialize(issuable, user, params)
+        @previous_parents = Set.new
+        super
+      end
+
       private
 
       def set_parent(issuable, work_item)
         link = WorkItems::ParentLink.for_work_item(work_item)
+        previous_parents.add(link.work_item_parent) if link.work_item_parent
         link.work_item_parent = issuable
         link
       end
@@ -38,6 +44,18 @@ module WorkItems
         can_admin_link?(parent_work_item)
       end
 
+      def track_event
+        events = previous_parents.map do |previous_parent|
+          WorkItems::WorkItemUpdatedEvent.new(data: {
+            id: previous_parent.id,
+            namespace_id: previous_parent.namespace_id,
+            updated_widgets: ['hierarchy_widget']
+          })
+        end
+
+        Gitlab::EventStore.publish_group(events) if events.any?
+      end
+
       override :previous_related_issuables
       def previous_related_issuables
         @previous_related_issuables ||= issuable.work_item_children.to_a
@@ -53,6 +71,8 @@ module WorkItems
         format(_('No matching %{issuable} found. Make sure that you are adding a valid %{issuable} ID.'),
           issuable: target_issuable_type)
       end
+
+      attr_accessor :previous_parents
     end
   end
 end

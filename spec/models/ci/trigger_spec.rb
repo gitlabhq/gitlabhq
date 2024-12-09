@@ -9,6 +9,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:owner) }
     it { is_expected.to have_many(:trigger_requests) }
+    it { is_expected.to have_many(:pipelines) }
   end
 
   describe 'validations' do

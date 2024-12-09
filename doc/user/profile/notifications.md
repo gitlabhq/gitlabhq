@@ -37,11 +37,12 @@ You might receive notifications for one of the following reasons:
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
 - You're subscribed to group or project pipeline notifications through the pipeline emails [integration](../project/integrations/index.md).
 
-1. GitLab doesn't send a notification when
-   [a comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
-
-NOTE:
-Administrators can block notifications, preventing them from being sent.
+> GitLab does not send a notification when:
+>
+> - The account is a project bot or service account. 
+> - The account is blocked (banned) or deactivated.
+> - [A comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
+> - An administrator has blocked notifications.
 
 ## Edit notification settings
 

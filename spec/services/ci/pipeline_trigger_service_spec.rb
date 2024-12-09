@@ -78,6 +78,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             expect(result[:pipeline].user).to eq(trigger.owner)
             expect(result[:pipeline].trigger_requests.to_a)
               .to eq(result[:pipeline].builds.map(&:trigger_request).uniq)
+            expect(result[:pipeline].trigger).to eq(trigger)
             expect(result[:status]).to eq(:success)
           end
 

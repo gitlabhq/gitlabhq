@@ -121,7 +121,22 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       end
 
       it_behaves_like 'cloneable and moveable work item'
-      it_behaves_like 'cloneable and moveable widget data'
+
+      context 'when cleanup original data is enabled' do
+        before do
+          stub_feature_flags(cleanup_data_source_work_item_data: true)
+        end
+
+        it_behaves_like 'cloneable and moveable widget data'
+      end
+
+      context 'when cleanup original data is disabled' do
+        before do
+          stub_feature_flags(cleanup_data_source_work_item_data: false)
+        end
+
+        it_behaves_like 'cloneable and moveable widget data'
+      end
     end
   end
 end

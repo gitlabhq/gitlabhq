@@ -27,6 +27,20 @@ describe('Branch rule protection', () => {
     });
   };
 
+  const createComponentWithSlot = (slotName, slotContent, props = {}) => {
+    wrapper = shallowMountExtended(Protection, {
+      propsData: {
+        ...protectionPropsMock,
+        ...props,
+      },
+      slots: {
+        [slotName]: slotContent,
+      },
+      stubs: { CrudComponent },
+      provide: { glFeatures: { editBranchRules: true } },
+    });
+  };
+
   beforeEach(() => createComponent());
 
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
@@ -115,6 +129,40 @@ describe('Branch rule protection', () => {
       });
 
       expect(findProtectionRows().at(1).props('showDivider')).toBe(true);
+    });
+  });
+
+  describe('description slot', () => {
+    it('renders help text when no description slot is provided', () => {
+      const helpText = 'This is help text';
+      createComponent({ editBranchRules: true }, { helpText });
+
+      expect(findCrudComponent().text()).toContain(helpText);
+    });
+
+    it('renders description slot content when provided', () => {
+      const slotContent = 'Custom description content';
+      createComponentWithSlot('description', slotContent, {
+        helpText: 'Help text that should not show',
+      });
+
+      expect(findCrudComponent().text()).toContain(slotContent);
+      expect(findCrudComponent().text()).not.toContain('Help text that should not show');
+    });
+  });
+
+  describe('content slot', () => {
+    it('renders content slot when provided', () => {
+      const slotContent = 'Custom content';
+      createComponentWithSlot('content', slotContent);
+
+      expect(wrapper.text()).toContain(slotContent);
+    });
+
+    it('does not show empty state when content slot is provided', () => {
+      createComponentWithSlot('content', 'Custom content', protectionEmptyStatePropsMock);
+
+      expect(findEmptyState().exists()).toBe(false);
     });
   });
 });

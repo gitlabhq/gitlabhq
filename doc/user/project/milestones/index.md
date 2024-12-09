@@ -273,6 +273,19 @@ When filtering by milestone, in addition to choosing a specific project mileston
 - **Upcoming**: Show issues or merge requests that have been assigned the open milestone and has the nearest due date in the future.
 - **Started**: Show issues or merge requests that have an open assigned milestone with a start date that is before today.
 
+<!--- When Upcoming and Started milestones change in GitLab 18.0, integrate the contents
+of the below topic into "Special milestone filters" -->
+
+#### "Upcoming" and "Started" filters (deprecated)
+
+WARNING:
+This feature was [deprecated](https://issue-link) in GitLab 17.7
+and is [planned for change](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in 18.0.
+
+The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
+The new behavior of both the filters is outlined in
+[issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -26,6 +26,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to belong_to(:pipeline_schedule) }
   it { is_expected.to belong_to(:merge_request) }
   it { is_expected.to belong_to(:external_pull_request) }
+  it { is_expected.to belong_to(:ci_ref).class_name('Ci::Ref').inverse_of(:pipelines).with_foreign_key(:ci_ref_id) }
+  it { is_expected.to belong_to(:trigger).class_name('Ci::Trigger').inverse_of(:pipelines) }
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests).with_foreign_key(:commit_id).inverse_of(:pipeline) }

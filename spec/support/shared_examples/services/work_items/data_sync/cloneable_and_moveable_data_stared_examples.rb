@@ -242,6 +242,12 @@ RSpec.shared_context 'for clone and move services' do
       expect(widget_value).to be_blank
     end
 
-    expect(original_work_item.reload.public_send(widget_name)).to be_blank if described_class == move
+    cleanup_data = Feature.enabled?(:cleanup_data_source_work_item_data, original_work_item.resource_parent)
+    if cleanup_data && described_class == move
+      expect(original_work_item.reload.public_send(widget_name)).to be_blank
+    elsif widget_name != :sent_notifications
+      # sent notifications are moved from original work item to new work item rather than deleted afterwards.
+      expect(original_work_item.reload.public_send(widget_name)).not_to be_blank
+    end
   end
 end
