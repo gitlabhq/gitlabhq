@@ -12,7 +12,9 @@ export const initAdminOrganizationsIndex = () => {
   const {
     dataset: { appData },
   } = el;
-  const { newOrganizationUrl } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { newOrganizationUrl, canCreateOrganization } = convertObjectPropsToCamelCase(
+    JSON.parse(appData),
+  );
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -24,6 +26,7 @@ export const initAdminOrganizationsIndex = () => {
     apolloProvider,
     provide: {
       newOrganizationUrl,
+      canCreateOrganization,
     },
     render(createElement) {
       return createElement(App);

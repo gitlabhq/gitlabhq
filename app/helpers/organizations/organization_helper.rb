@@ -37,7 +37,7 @@ module Organizations
     end
 
     def organization_index_app_data
-      shared_organization_index_app_data
+      shared_organization_index_app_data.to_json
     end
 
     def organization_user_app_data(organization)
@@ -111,7 +111,9 @@ module Organizations
 
     def shared_organization_index_app_data
       {
-        new_organization_url: new_organization_path
+        new_organization_url: new_organization_path,
+        can_create_organization: Feature.enabled?(:allow_organization_creation, current_user) &&
+          can?(current_user, :create_organization)
       }
     end
 

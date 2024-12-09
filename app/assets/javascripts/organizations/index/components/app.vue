@@ -19,7 +19,7 @@ export default {
     GlButton,
     OrganizationsView,
   },
-  inject: ['newOrganizationUrl'],
+  inject: ['newOrganizationUrl', 'canCreateOrganization'],
   data() {
     return {
       organizations: {},
@@ -48,9 +48,6 @@ export default {
   computed: {
     showHeader() {
       return this.loading || this.organizations.nodes?.length;
-    },
-    showNewOrganizationButton() {
-      return gon.features?.allowOrganizationCreation;
     },
     loading() {
       return this.$apollo.queries.organizations.loading;
@@ -82,7 +79,7 @@ export default {
     <div v-if="showHeader" class="gl-flex gl-items-center">
       <h1 class="gl-my-4 gl-text-size-h-display">{{ $options.i18n.organizations }}</h1>
       <div class="gl-ml-auto">
-        <gl-button v-if="showNewOrganizationButton" :href="newOrganizationUrl" variant="confirm">{{
+        <gl-button v-if="canCreateOrganization" :href="newOrganizationUrl" variant="confirm">{{
           $options.i18n.newOrganization
         }}</gl-button>
       </div>

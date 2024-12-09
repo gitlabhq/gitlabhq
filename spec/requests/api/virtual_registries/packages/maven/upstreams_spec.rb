@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe API::VirtualRegistries::Packages::Maven::Upstreams, :aggregate_failures, feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include_context 'for maven virtual registry api setup'
 
@@ -64,22 +64,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     context 'for authentication' do
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :ok
-        :personal_access_token | :basic_auth | :ok
         :deploy_token          | :header     | :ok
-        :deploy_token          | :basic_auth | :ok
         :job_token             | :header     | :ok
-        :job_token             | :basic_auth | :ok
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         it_behaves_like 'returning response status', params[:status]
       end
@@ -94,12 +84,16 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     subject(:api_request) { post api(url), headers: headers, params: params }
 
     shared_examples 'successful response' do
+      let(:upstream_model) { ::VirtualRegistries::Packages::Maven::Upstream }
+
       it 'returns a successful response' do
-        expect { api_request }.to change { ::VirtualRegistries::Packages::Maven::Upstream.count }.by(1)
+        expect { api_request }.to change { upstream_model.count }.by(1)
           .and change { ::VirtualRegistries::Packages::Maven::RegistryUpstream.count }.by(1)
 
-        expect(::VirtualRegistries::Packages::Maven::Upstream.last.cache_validity_hours).to eq(
-          params[:cache_validity_hours] || ::VirtualRegistries::Packages::Maven::Upstream.new.cache_validity_hours
+        expect(response).to have_gitlab_http_status(:created)
+        expect(Gitlab::Json.parse(response.body)).to eq(upstream_model.last.as_json)
+        expect(upstream_model.last.cache_validity_hours).to eq(
+          params[:cache_validity_hours] || upstream_model.new.cache_validity_hours
         )
       end
     end
@@ -191,22 +185,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :created
-        :personal_access_token | :basic_auth | :created
         :deploy_token          | :header     | :forbidden
-        :deploy_token          | :basic_auth | :forbidden
         :job_token             | :header     | :created
-        :job_token             | :basic_auth | :created
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         if params[:status] == :created
           it_behaves_like 'successful response'
@@ -217,8 +201,8 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     end
   end
 
-  describe 'GET /api/v4/virtual_registries/packages/maven/registries/:id/upstreams/:upstream_id' do
-    let(:url) { "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream.id}" }
+  describe 'GET /api/v4/virtual_registries/packages/maven/upstreams/:id' do
+    let(:url) { "/virtual_registries/packages/maven/upstreams/#{upstream.id}" }
 
     subject(:api_request) { get api(url), headers: headers }
 
@@ -262,30 +246,20 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     context 'for authentication' do
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :ok
-        :personal_access_token | :basic_auth | :ok
         :deploy_token          | :header     | :ok
-        :deploy_token          | :basic_auth | :ok
         :job_token             | :header     | :ok
-        :job_token             | :basic_auth | :ok
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         it_behaves_like 'returning response status', params[:status]
       end
     end
   end
 
-  describe 'PATCH /api/v4/virtual_registries/packages/maven/registries/:id/upstreams/:upstream_id' do
-    let(:url) { "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream.id}" }
+  describe 'PATCH /api/v4/virtual_registries/packages/maven/upstreams/:id' do
+    let(:url) { "/virtual_registries/packages/maven/upstreams/#{upstream.id}" }
 
     subject(:api_request) { patch api(url), params: params, headers: headers }
 
@@ -321,22 +295,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
         where(:token, :sent_as, :status) do
           :personal_access_token | :header     | :ok
-          :personal_access_token | :basic_auth | :ok
           :deploy_token          | :header     | :forbidden
-          :deploy_token          | :basic_auth | :forbidden
           :job_token             | :header     | :ok
-          :job_token             | :basic_auth | :ok
         end
 
         with_them do
-          let(:headers) do
-            case sent_as
-            when :header
-              token_header(token)
-            when :basic_auth
-              token_basic_auth(token)
-            end
-          end
+          let(:headers) { token_header(token) }
 
           it_behaves_like 'returning response status', params[:status]
         end
@@ -372,8 +336,8 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     end
   end
 
-  describe 'DELETE /api/v4/virtual_registries/packages/maven/registries/:id/upstreams/:upstream_id' do
-    let(:url) { "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream.id}" }
+  describe 'DELETE /api/v4/virtual_registries/packages/maven/upstreams/:id' do
+    let(:url) { "/virtual_registries/packages/maven/upstreams/#{upstream.id}" }
 
     subject(:api_request) { delete api(url), headers: headers }
 
@@ -419,22 +383,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :no_content
-        :personal_access_token | :basic_auth | :no_content
         :deploy_token          | :header     | :forbidden
-        :deploy_token          | :basic_auth | :forbidden
         :job_token             | :header     | :no_content
-        :job_token             | :basic_auth | :no_content
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         if params[:status] == :no_content
           it_behaves_like 'successful response'

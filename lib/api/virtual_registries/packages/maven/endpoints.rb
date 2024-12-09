@@ -63,8 +63,6 @@ module API
             namespace :registries do
               route_param :id, type: Integer, desc: 'The ID of the maven virtual registry' do
                 namespace :upstreams do
-                  include ::API::Concerns::VirtualRegistries::Packages::Maven::UpstreamEndpoints
-
                   route_param :upstream_id, type: Integer, desc: 'The ID of the maven virtual registry upstream' do
                     namespace :cached_responses do
                       include ::API::Concerns::VirtualRegistries::Packages::Maven::CachedResponseEndpoints

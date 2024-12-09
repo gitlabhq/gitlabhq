@@ -281,6 +281,10 @@ export const makeDrawerItemFullPath = (activeItem, fullPath, issuableType = TYPE
   if (activeItem?.fullPath) {
     return activeItem.fullPath;
   }
+  if (activeItem?.namespace?.fullPath) {
+    return activeItem.namespace.fullPath;
+  }
+
   const delimiter = issuableType === TYPE_EPIC ? '&' : '#';
   if (!activeItem?.referencePath) {
     return fullPath;

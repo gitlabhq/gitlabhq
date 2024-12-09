@@ -150,12 +150,14 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
     subject(:commit) { logger.commit(pipeline: pipeline, caller: 'source') }
 
     before do
-      stub_feature_flags(ci_pipeline_creation_logger: flag)
-      allow(logger).to receive(:current_monotonic_time) { Time.current.to_i }
+      freeze_time do
+        stub_feature_flags(ci_pipeline_creation_logger: flag)
+        allow(logger).to receive(:current_monotonic_time) { Time.current.to_i }
 
-      logger.instrument(:pipeline_save) { travel(60.seconds) }
-      logger.observe(:pipeline_creation_duration_s, 30)
-      logger.observe(:pipeline_creation_duration_s, 10)
+        logger.instrument(:pipeline_save) { travel(60.seconds) }
+        logger.observe(:pipeline_creation_duration_s, 30)
+        logger.observe(:pipeline_creation_duration_s, 10)
+      end
     end
 
     context 'when the feature flag is enabled' do

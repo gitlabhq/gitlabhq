@@ -18,7 +18,7 @@ export default {
     OrganizationsList,
     GlEmptyState,
   },
-  inject: ['newOrganizationUrl'],
+  inject: ['newOrganizationUrl', 'canCreateOrganization'],
   props: {
     organizations: {
       type: Object,
@@ -43,7 +43,7 @@ export default {
         description: this.$options.i18n.emptyStateDescription,
       };
 
-      if (gon.features?.allowOrganizationCreation) {
+      if (this.canCreateOrganization) {
         return {
           ...baseProps,
           primaryButtonLink: this.newOrganizationUrl,

@@ -34,13 +34,15 @@ describe('OrganizationsIndexApp', () => {
 
   const successHandler = jest.fn().mockResolvedValue(currentUserOrganizationsGraphQlResponse);
 
-  const createComponent = (handler = successHandler) => {
+  const createComponent = ({ handler = successHandler, provide = {} } = {}) => {
     mockApollo = createMockApollo([[currentUserOrganizationsQuery, handler]]);
 
     wrapper = shallowMountExtended(OrganizationsIndexApp, {
       apolloProvider: mockApollo,
       provide: {
         newOrganizationUrl: MOCK_NEW_ORG_URL,
+        canCreateOrganization: true,
+        ...provide,
       },
     });
   };
@@ -85,14 +87,10 @@ describe('OrganizationsIndexApp', () => {
     });
   };
 
-  describe('`allowOrganizationCreation` is enabled', () => {
-    beforeEach(() => {
-      gon.features = { allowOrganizationCreation: true };
-    });
-
+  describe('`canCreateOrganization` is true', () => {
     describe('when API call is loading', () => {
       beforeEach(() => {
-        createComponent(jest.fn().mockResolvedValue({}));
+        createComponent({ handler: jest.fn().mockResolvedValue({}) });
       });
 
       itRendersHeaderText();
@@ -122,14 +120,13 @@ describe('OrganizationsIndexApp', () => {
     });
   });
 
-  describe('`allowOrganizationCreation` is disabled', () => {
-    beforeEach(() => {
-      gon.features = { allowOrganizationCreation: false };
-    });
-
+  describe('`canCreateOrganization` is false', () => {
     describe('when API call is loading', () => {
       beforeEach(() => {
-        createComponent(jest.fn().mockResolvedValue({}));
+        createComponent({
+          handler: jest.fn().mockResolvedValue({}),
+          provide: { canCreateOrganization: false },
+        });
       });
 
       itRendersHeaderText();
@@ -142,7 +139,7 @@ describe('OrganizationsIndexApp', () => {
     });
     describe('when API call is successful', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({ provide: { canCreateOrganization: false } });
         return waitForPromises();
       });
 
@@ -161,8 +158,8 @@ describe('OrganizationsIndexApp', () => {
 
   describe('when API call is successful and returns no organizations', () => {
     beforeEach(async () => {
-      createComponent(
-        jest.fn().mockResolvedValue({
+      createComponent({
+        handler: jest.fn().mockResolvedValue({
           data: {
             currentUser: {
               id: 'gid://gitlab/User/1',
@@ -170,7 +167,7 @@ describe('OrganizationsIndexApp', () => {
             },
           },
         }),
-      );
+      });
       await waitForPromises();
     });
 
@@ -190,7 +187,7 @@ describe('OrganizationsIndexApp', () => {
     const error = new Error();
 
     beforeEach(async () => {
-      createComponent(jest.fn().mockRejectedValue(error));
+      createComponent({ handler: jest.fn().mockRejectedValue(error) });
       await waitForPromises();
     });
 

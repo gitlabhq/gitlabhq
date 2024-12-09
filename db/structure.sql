@@ -19616,8 +19616,10 @@ CREATE TABLE scan_result_policies (
     fallback_behavior jsonb DEFAULT '{}'::jsonb NOT NULL,
     policy_tuning jsonb DEFAULT '{}'::jsonb NOT NULL,
     action_idx smallint DEFAULT 0 NOT NULL,
+    custom_roles bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
-    CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
+    CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0))),
+    CONSTRAINT custom_roles_array_check CHECK ((array_position(custom_roles, NULL::bigint) IS NULL))
 );
 
 CREATE SEQUENCE scan_result_policies_id_seq
@@ -22723,7 +22725,8 @@ CREATE TABLE zoekt_enabled_namespaces (
     root_namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    search boolean DEFAULT true NOT NULL
+    search boolean DEFAULT true NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE zoekt_enabled_namespaces_id_seq

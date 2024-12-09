@@ -69,9 +69,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Registries, :aggregate_f
       end
 
       with_them do
-        let(:headers) do
-          token_header(token)
-        end
+        let(:headers) { token_header(token) }
 
         it_behaves_like 'returning response status', params[:status]
       end

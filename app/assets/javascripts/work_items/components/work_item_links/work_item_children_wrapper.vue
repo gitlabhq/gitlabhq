@@ -554,6 +554,7 @@ export default {
       @removeChild="removeChild"
       @error="$emit('error', $event)"
       @click="onClick($event, child)"
+      @click.native="onClick($event, child)"
     />
   </component>
 </template>

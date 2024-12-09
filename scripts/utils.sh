@@ -107,6 +107,9 @@ function bundle_install_script() {
   run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
 
   if [[ $(bundle info pg) ]]; then
+    # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
+    # This appears to happen when the gems are uncached, since the Runner uses a restrictive umask.
+    find vendor -type d -exec chmod 700 {} +
     # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
     # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
     # Uncomment the following line if multiple versions of PG are tested in the same pipeline.

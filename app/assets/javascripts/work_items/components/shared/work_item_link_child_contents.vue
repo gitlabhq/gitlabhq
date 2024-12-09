@@ -220,7 +220,7 @@ export default {
             :href="childItemWebUrl"
             :class="{ '!gl-text-subtle': !isChildItemOpen }"
             class="gl-hyphens-auto gl-break-words gl-font-semibold"
-            @click.exact="handleTitleClick"
+            @click.exact.stop="handleTitleClick"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"
           >
@@ -241,7 +241,7 @@ export default {
           >
             <template #avatar="{ avatar }">
               <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
-                <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="16" />
+                <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="16" @click.stop />
               </gl-avatar-link>
             </template>
           </gl-avatars-inline>
@@ -286,6 +286,7 @@ export default {
           :scoped="showScopedLabel(label)"
           class="gl-mb-auto gl-mr-2 gl-mt-2"
           tooltip-placement="top"
+          @click.stop
         />
       </div>
     </div>
@@ -299,7 +300,7 @@ export default {
         :aria-label="$options.i18n.remove"
         :title="$options.i18n.remove"
         data-testid="remove-work-item-link"
-        @click="$emit('removeChild', childItem)"
+        @click.stop="$emit('removeChild', childItem)"
       />
     </div>
   </div>

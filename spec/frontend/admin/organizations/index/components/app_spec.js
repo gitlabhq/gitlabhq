@@ -32,13 +32,15 @@ describe('AdminOrganizationsIndexApp', () => {
 
   const successHandler = jest.fn().mockResolvedValue(organizationsGraphQlResponse);
 
-  const createComponent = (handler = successHandler) => {
+  const createComponent = ({ handler = successHandler, provide = {} } = {}) => {
     mockApollo = createMockApollo([[organizationsQuery, handler]]);
 
     wrapper = shallowMountExtended(OrganizationsIndexApp, {
       apolloProvider: mockApollo,
       provide: {
         newOrganizationUrl: MOCK_NEW_ORG_URL,
+        canCreateOrganization: true,
+        ...provide,
       },
     });
   };
@@ -89,7 +91,7 @@ describe('AdminOrganizationsIndexApp', () => {
 
   describe('when API call is loading', () => {
     beforeEach(() => {
-      createComponent(jest.fn().mockReturnValue(new Promise(() => {})));
+      createComponent({ handler: jest.fn().mockReturnValue(new Promise(() => {})) });
     });
 
     itRendersHeaderText();
@@ -119,11 +121,9 @@ describe('AdminOrganizationsIndexApp', () => {
     });
   });
 
-  describe('when `allowOrganizationCreation` feature flag is disabled', () => {
+  describe('when `canCreateOrganization` is false', () => {
     beforeEach(() => {
-      gon.features = { allowOrganizationCreation: false };
-
-      createComponent();
+      createComponent({ provide: { canCreateOrganization: false } });
       return waitForPromises();
     });
 
@@ -132,13 +132,13 @@ describe('AdminOrganizationsIndexApp', () => {
 
   describe('when API call is successful and returns no organizations', () => {
     beforeEach(async () => {
-      createComponent(
-        jest.fn().mockResolvedValue({
+      createComponent({
+        handler: jest.fn().mockResolvedValue({
           data: {
             organizations: organizationEmpty,
           },
         }),
-      );
+      });
       await waitForPromises();
     });
 
@@ -158,7 +158,7 @@ describe('AdminOrganizationsIndexApp', () => {
     const error = new Error();
 
     beforeEach(async () => {
-      createComponent(jest.fn().mockRejectedValue(error));
+      createComponent({ handler: jest.fn().mockRejectedValue(error) });
       await waitForPromises();
     });
 
