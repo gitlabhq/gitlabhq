@@ -166,7 +166,8 @@ module Import
         .new(project)
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
-          optional_stages: params[:optional_stages]
+          optional_stages: params[:optional_stages],
+          pagination_limit: params[:pagination_limit]
         )
     end
   end

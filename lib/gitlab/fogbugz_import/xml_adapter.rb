@@ -8,17 +8,22 @@ module Gitlab
       module Conversions
         module Document
           def to_hash
-            objects = object_count(root)
-
-            if objects > XmlAdapter::MAX_ALLOWED_OBJECTS
-              raise XmlAdapter::ResponseTooLargeError,
-                "XML exceeds permitted complexity: #{objects}/#{XmlAdapter::MAX_ALLOWED_OBJECTS} objects"
+            if ActiveSupport::XmlMini.backend == Gitlab::FogbugzImport::NokogiriBackendWithLimits
+              check_object_count!(root)
             end
 
             super
           end
 
           private
+
+          def check_object_count!(document)
+            objects = object_count(document)
+            return if objects <= XmlAdapter::MAX_ALLOWED_OBJECTS
+
+            raise XmlAdapter::ResponseTooLargeError,
+              "XML exceeds permitted complexity: #{objects}/#{XmlAdapter::MAX_ALLOWED_OBJECTS} objects"
+          end
 
           def object_count(object)
             return 0 if object.text? || object.cdata?

@@ -12,16 +12,13 @@ DETAILS:
 
 Use this API to interact with email addresses for user accounts. For more information, see [User account](../user/profile/index.md).
 
-## List your email addresses
+## List all email addresses
 
-Get a list of your email addresses.
+Lists all email addresses for your user account.
 
 Prerequisites:
 
 - You must be authenticated.
-
-This endpoint does not return the primary email address, but [issue 25077](https://gitlab.com/gitlab-org/gitlab/-/issues/25077)
-proposes to change this behavior.
 
 ```plaintext
 GET /user/emails
@@ -44,20 +41,17 @@ Example response:
 ]
 ```
 
-## List email addresses for a user
+## List all email addresses for a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Get a list of a specified user's emails.
+Lists all email addresses for a given user account.
 
 Prerequisites:
 
-- You must be an administrator.
-
-This endpoint does not return the primary email address, but [issue 25077](https://gitlab.com/gitlab-org/gitlab/-/issues/25077)
-proposes to change this behavior.
+- You must have administrator access to the instance.
 
 ```plaintext
 GET /users/:id/emails
@@ -67,11 +61,11 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of specified user |
+| `id`      | integer | yes      | ID of user account |
 
-## Get a single email address
+## Get details on an email address
 
-Get a single email address.
+Gets details on a given email address for your user account.
 
 ```plaintext
 GET /user/emails/:email_id
@@ -81,7 +75,7 @@ Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
-| `email_id` | integer | yes      | Email ID    |
+| `email_id` | integer | yes      | ID of email address |
 
 Example response:
 
@@ -95,7 +89,7 @@ Example response:
 
 ## Add an email address
 
-Creates a new email owned by the authenticated user.
+Adds an email address for your user account.
 
 ```plaintext
 POST /user/emails
@@ -134,11 +128,11 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Create a new email address owned by the specified user.
+Adds an email address for a given user account.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/emails
@@ -148,22 +142,19 @@ Supported attributes:
 
 | Attribute           | Type    | Required | Description |
 |:--------------------|:--------|:---------|:------------|
-| `id`                | string  | yes      | ID of specified user |
+| `id`                | string  | yes      | ID of user account|
 | `email`             | string  | yes      | Email address |
-| `skip_confirmation` | boolean | no       | Skip confirmation and assume email is verified - true or false (default) |
+| `skip_confirmation` | boolean | no       | Skip confirmation and assume email is verified. Possible values: `true`, `false`. Default value: `false`. |
 
-## Delete one of your email addresses
+## Delete an email address
 
-Delete one of your email addresses, other than your primary email address.
+Deletes an email address for your user account. You cannot delete a primary email address.
+
+Any future emails sent to the deleted email address are sent to the primary email address instead.
 
 Prerequisites:
 
 - You must be authenticated.
-
-If the deleted email address is used for any user emails, those user emails are sent to the primary email address instead.
-
-Because of [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
-the deleted email address.
 
 ```plaintext
 DELETE /user/emails/:email_id
@@ -173,7 +164,7 @@ Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
-| `email_id` | integer | yes      | Email ID    |
+| `email_id` | integer | yes      | ID of email address |
 
 Returns:
 
@@ -186,13 +177,11 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Delete an email address for a user.
+Deletes an email address for a given user account. You cannot delete a primary email address.
 
 Prerequisites:
 
-- You must be an administrator.
-
-Deletes an email address of a specified user. You cannot delete a primary email address.
+- You must have administrator access to the instance.
 
 ```plaintext
 DELETE /users/:id/emails/:email_id
@@ -202,5 +191,5 @@ Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
-| `id`       | integer | yes      | ID of specified user |
-| `email_id` | integer | yes      | Email ID    |
+| `id`       | integer | yes      | ID of user account |
+| `email_id` | integer | yes      | ID of email address |

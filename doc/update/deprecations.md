@@ -745,6 +745,25 @@ Instead, use [CI/CD jobs with pipeline trigger tokens](https://docs.gitlab.com/e
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Pipelines API cancel endpoint returns error for non-cancelable pipelines
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
+
+</div>
+
+The Pipelines API cancel endpoint [`POST /projects/:id/pipelines/:pipeline_id/cancel`](https://docs.gitlab.com/ee/api/pipelines.html#cancel-a-pipelines-jobs)
+returns a `200` success response regardless of whether a pipeline can be canceled.
+Starting in GitLab 18.0, the endpoint will return a `422 Unprocessable Entity` error when a pipeline cannot be canceled.
+Update your API integration to handle the `422` status code when making pipeline cancellation requests.
+
+</div>
+
 <div class="deprecation " data-milestone="18.0">
 
 ### Project page in group settings is deprecated

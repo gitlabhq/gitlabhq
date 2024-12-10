@@ -20,6 +20,14 @@ as well as
 After you enable GitLab Duo Chat, it might take a few minutes for the
 button to appear.
 
+If this does not work, you can also check the following troubleshooting documentation:
+
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/troubleshooting.md)
+- [VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md)
+- [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md)
+- [JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md)
+- [Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md)
+
 ## `Error M2000`
 
 You might get an error that states

@@ -16,7 +16,7 @@
     - if oauth_applications_enabled
       = render ::Layouts::CrudComponent.new(_('Your applications'),
         icon: 'applications',
-        count: @applications.size,
+        count: @applications.count,
         toggle_text: _('Add new application'),
         toggle_options: { class: hide_class },
         form_options: { form_errors: form_errors(@application) },
@@ -49,6 +49,9 @@
                         %div{ class: '!gl-flex !gl-pl-0' }
                           = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip gl-mr-3', 'title': _('Edit'), 'aria-label': _('Edit') })
                           = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
+
+              - if @group.present?
+                = keyset_paginate @applications
           - else
             .gl-text-subtle= _("You don't have any applications.")
 

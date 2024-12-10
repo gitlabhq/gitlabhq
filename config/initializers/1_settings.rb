@@ -257,7 +257,6 @@ end
 #
 Gitlab.ee do
   Settings['elasticsearch'] ||= {}
-  Settings.elasticsearch['enabled'] = false if Settings.elasticsearch['enabled'].nil?
   Settings.elasticsearch['indexer_path'] ||= Gitlab::Utils.which('gitlab-elasticsearch-indexer')
 end
 

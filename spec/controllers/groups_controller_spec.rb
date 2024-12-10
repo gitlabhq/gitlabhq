@@ -505,16 +505,6 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       end
     end
 
-    context 'when creating a group with the `role` attribute present' do
-      it 'changes the users role' do
-        sign_in(user)
-
-        expect do
-          post :create, params: { group: { name: 'new_group', path: 'new_group' }, user: { role: 'devops_engineer' } }
-        end.to change { user.reload.role }.to('devops_engineer')
-      end
-    end
-
     context 'when creating a group with the `setup_for_company` attribute present' do
       before do
         sign_in(user)

@@ -57,7 +57,7 @@ If a push that uses a deploy key triggers additional processes, the creator of t
 Deploy keys are meant to facilitate non-human interaction with GitLab. For example, you can use a deploy key
 to grant permissions to a script that automatically runs on a server in your organization.
 
-You should create a dedicated account to act as a service account, and create the deploy key with the service account.
+You should use [a service account](../../profile/service_accounts.md), and create the deploy key with the service account.
 If you use another user account to create deploy keys, that user is granted privileges that persist until the deploy key is revoked.
 
 In addition:
@@ -68,6 +68,7 @@ In addition:
   - Gains access to the protected branch, as well as to the deploy key itself.
   - Can push to the protected branch, if the deploy key has read-write permission.
     This is true even if the branch is protected against changes from all users.
+- Deploy keys are invalidated when the user is blocked or removed from the instance.
 
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
 For human interactions, use credentials tied to users such as personal access tokens.
@@ -248,4 +249,17 @@ DeployKeysProject.with_write_access.find_each do |deploy_key_mapping|
        ", Can push to default branch #{project.repository.root_ref}?: " + (can_push_to_default ? 'YES' : 'NO') +
        ", User: #{username}, User state: #{user_state}"
 end
+```
+
+#### Set the owner of a deploy key
+
+Deploy keys belong to a specific user and are deactivated when the user is blocked or removed from the instance.
+To keep a deploy key working when a user is removed, change its owner to an active user.
+
+If you have the fingerprint of the deploy key, you can change the user associated with a deploy key with the following commands:
+
+```shell
+k = Key.find_by(fingerprint: '5e:51:92:11:27:90:01:b5:83:c3:87:e3:38:82:47:2e')
+k.user_id = User.find_by(username: 'anactiveuser').id
+k.save()
 ```

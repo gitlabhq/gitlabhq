@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::Settings::ApplicationsController do
+RSpec.describe Groups::Settings::ApplicationsController, feature_category: :system_access do
   let_it_be(:user)  { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:group) { create(:group) }
   let_it_be(:application) { create(:oauth_application, owner_id: group.id, owner_type: 'Namespace') }
+  let(:pagination_limit) { 20 }
 
   before do
     sign_in(user)
@@ -23,6 +24,35 @@ RSpec.describe Groups::Settings::ApplicationsController do
 
         expect(response).to render_template :index
         expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
+      end
+
+      context 'when it renders all group applications' do
+        before do
+          21.times do
+            create(:oauth_application, owner_id: group.id, owner_type: 'Namespace')
+          end
+        end
+
+        render_views
+
+        it 'returns the maximum paginated limit per page', :aggregate_failures do
+          get :index, params: { group_id: group }
+
+          expect(assigns(:applications).count).to eq(pagination_limit)
+          expect(assigns(:applications).has_next_page?).to be_truthy
+          expect(response.body).to have_css('.gl-pagination-item[rel=next]')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'returns the second page with the remaining applications', :aggregate_failures do
+          get :index, params: { group_id: group }
+          get :index, params: { group_id: group, cursor: assigns(:applications).cursor_for_next_page }
+
+          expect(assigns(:applications).count).to eq(2) # extra 1 from let_it_be(:application)
+          expect(assigns(:applications).has_next_page?).to be_falsey
+          expect(response.body).to have_css('.gl-pagination-item[rel=prev]')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
       context 'when admin mode is enabled' do

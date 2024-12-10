@@ -1,9 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.modal-footer {
-  background-color: $gray-10;
-}
-
 .invalid-dropdown {
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-button.gl-dropdown-toggle {

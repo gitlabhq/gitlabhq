@@ -23,12 +23,12 @@ include:
       when: never
     - <<: *code-pattern-with-selective-enabled-knapsack-unset
     - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Blocking/
+    - if: $QA_SUITES =~ /Test::Instance::All/
 
 .rules:gdk:qa-parallel:
   rules:
     # To account for cases where a group label is set which may trigger selective execution
-    # But we want to execute full blocking suite on gdk in case of code-pattern-changes
+    # But we want to execute full suite on gdk in case of code-pattern-changes
     - <<: *code-pattern-changes-with-selective-disabled
       variables:
         QA_TESTS: ""
@@ -37,7 +37,7 @@ include:
       when: never
     - <<: *code-pattern-with-selective-enabled-knapsack-set
     - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Blocking/
+    - if: $QA_SUITES =~ /Test::Instance::All/
     - !reference [.rules:test:manual, rules]
 
 .rules:test:gdk-load-balancer-changes:
@@ -135,84 +135,50 @@ download-knapsack-report:
 # Test stage
 # ==========================================
 
-# ------------------------------------------
-# Blocking tests
-# ------------------------------------------
-gdk-qa-blocking:
+gdk-instance:
   extends:
     - .gdk-qa-base
     - .with-parallel
     - .rules:gdk:qa-parallel
   variables:
-    QA_SCENARIO: Test::Instance::Blocking
-    QA_RUN_TYPE: gdk-qa-blocking
+    QA_SCENARIO: Test::Instance::All
+    QA_RUN_TYPE: gdk-instance
 
-gdk-qa-blocking-ff-inverse:
-  extends: gdk-qa-blocking
+gdk-instance-ff-inverse:
+  extends: gdk-instance
   variables:
     QA_FEATURE_FLAGS: $FEATURE_FLAGS
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
 
-gdk-qa-blocking-selective:
+gdk-instance-selective:
   extends:
     - .gdk-qa-base
     - .rules:gdk:qa-selective
   variables:
-    QA_SCENARIO: Test::Instance::Blocking
-    QA_RUN_TYPE: gdk-qa-blocking
+    QA_SCENARIO: Test::Instance::All
+    QA_RUN_TYPE: gdk-instance
 
-gdk-qa-blocking-gitaly-transactions:
-  extends: gdk-qa-blocking
+gdk-instance-gitaly-transactions:
+  extends: gdk-instance
   variables:
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
   rules:
     - !reference [.rules:test:never-schedule-pipeline, rules]
     - !reference [.rules:test:gdk-gitaly-version-change, rules]
 
-# ------------------------------------------
-# Non Blocking tests
-# ------------------------------------------
-gdk-qa-blocking-with-load-balancer:
+gdk-instance-with-load-balancer:
   extends:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
-    - .with-gdk-log
     - .with-parallel
   variables:
-    QA_SCENARIO: Test::Instance::Blocking
-    QA_RUN_TYPE: gdk-qa-blocking
-  artifacts:
-    paths:
-      - log
-    reports:
-      dotenv: ""
+    QA_SCENARIO: Test::Instance::All
+    QA_RUN_TYPE: gdk-instance
   rules:
     - !reference [".rules:test:never-schedule-pipeline", rules]
     - !reference [".rules:test:gdk-load-balancer-changes", rules]
 
-gdk-qa-non-blocking:
-  extends:
-    - .gdk-qa-base
-    - .with-gdk-log
-  variables:
-    QA_SCENARIO: Test::Instance::NonBlocking
-    QA_RUN_TYPE: gdk-qa-non-blocking
-  allow_failure: true
-  artifacts:
-    paths:
-      - '*.log'
-      - qa/tmp/test-metrics-*.json
-      - qa/tmp/*.txt
-      - qa/tmp/*.log
-      - qa/tmp/qa-test-*/*
-    reports:
-      dotenv: ""
-  rules:
-    # run tests on master pipelines to collect metrics and move tests to `blocking` job until `non-blocking` job
-    # is removed entirely
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    - when: manual
 
 # ==========================================
 # Post test stage

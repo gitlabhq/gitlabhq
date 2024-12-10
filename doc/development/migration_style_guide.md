@@ -189,7 +189,7 @@ part of the migration file.
 git rebase master
 
 # Rollback changes
-VERSION=<migration ID> bundle exec rails db:rollback:main
+VERSION=<migration ID> bundle exec rails db:migrate:down:main
 
 # Checkout db/structure.sql from master
 git checkout origin/master db/structure.sql

@@ -36,11 +36,4 @@ RSpec.describe 'groups/new.html.haml' do
       expect(rendered).to have_field('Public')
     end
   end
-
-  describe 'role field' do
-    it 'does have a default selection' do
-      expect(rendered).to have_content('Role')
-      expect(rendered).to have_select('Role', selected: 'Software Developer')
-    end
-  end
 end

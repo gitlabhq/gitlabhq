@@ -7,11 +7,6 @@
 
 .row
   .form-group.col-sm-4
-    = label :user, :role, _('Role')
-    = select :user, :role, ::User.roles.keys.map { |role| [localized_user_roles[role] || role.titleize, role] }, { selected: @current_user.role }, class: 'form-control'
-
-.row
-  .form-group.col-sm-4
     = f.label :setup_for_company, _('Who will be using this group?')
     .gl-flex.gl-flex-col.lg:gl-flex-row
       .gl-grow.gl-flex.gl-items-center

@@ -57088,9 +57088,6 @@ msgstr ""
 msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"
 msgstr ""
 
-msgid "This subscription is for"
-msgstr ""
-
 msgid "This suggestion already matches its content."
 msgstr ""
 
@@ -60845,33 +60842,6 @@ msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
 msgstr ""
 
 msgid "UsersSelect|Unassigned"
-msgstr ""
-
-msgid "User|Data Analyst"
-msgstr ""
-
-msgid "User|Development Team Lead"
-msgstr ""
-
-msgid "User|Devops Engineer"
-msgstr ""
-
-msgid "User|Other"
-msgstr ""
-
-msgid "User|Product Designer"
-msgstr ""
-
-msgid "User|Product Manager"
-msgstr ""
-
-msgid "User|Security Analyst"
-msgstr ""
-
-msgid "User|Software Developer"
-msgstr ""
-
-msgid "User|Systems Administrator"
 msgstr ""
 
 msgid "Uses GitLab as an alternative to Sentry."
@@ -65070,9 +65040,6 @@ msgid "[Redacted]"
 msgstr ""
 
 msgid "[Supports GitLab-flavored markdown, including quick actions]"
-msgstr ""
-
-msgid "[redacted]"
 msgstr ""
 
 msgid "`.campfirenow.com` subdomain when you're signed in."

@@ -1,8 +1,6 @@
 ---
 RSpec/BeforeAllRoleAssignment:
   Exclude:
-    - 'ee/spec/components/namespaces/storage/pre_enforcement_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/storage/subgroup_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/controllers/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/ee/dashboard/projects_controller_spec.rb'

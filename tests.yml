@@ -316,6 +316,7 @@ mapping:
     test:
     - 'ee/spec/features/gitlab_subscriptions/trials/creation_*_spec.rb'
     - ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb
+    - ee/spec/features/trials/lead_creation_form_validation_spec.rb
 
   # duo pro trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller\.rb'

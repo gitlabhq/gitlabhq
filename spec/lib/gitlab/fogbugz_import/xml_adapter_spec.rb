@@ -12,13 +12,13 @@ RSpec.describe Gitlab::FogbugzImport::XmlAdapter, feature_category: :importers d
   context 'when parsing an XML response' do
     let(:xml) do
       <<~XML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <response>
-        <case>
-          <ixBug>1234</ixBug>
-          <sTitle>Sample Bug</sTitle>
-        </case>
-      </response>
+        <?xml version="1.0" encoding="UTF-8"?>
+        <response>
+          <case>
+            <ixBug>1234</ixBug>
+            <sTitle>Sample Bug</sTitle>
+          </case>
+        </response>
       XML
     end
 
@@ -28,10 +28,10 @@ RSpec.describe Gitlab::FogbugzImport::XmlAdapter, feature_category: :importers d
   context 'when given an HTML response' do
     let(:xml) do
       <<~HTML
-      <html lang="en">
-        <head><title>Object moved</title></head>
-        <body><h2>Object moved to <a href="/new-location">here</a>.</h2></body>
-      </html>
+        <html lang="en">
+          <head><title>Object moved</title></head>
+          <body><h2>Object moved to <a href="/new-location">here</a>.</h2></body>
+        </html>
       HTML
     end
 
@@ -61,6 +61,16 @@ RSpec.describe Gitlab::FogbugzImport::XmlAdapter, feature_category: :importers d
 
     it 'raises a ResponseTooLargeError' do
       expect { parsed_xml }.to raise_error(described_class::ResponseTooLargeError, /XML exceeds permitted complexity/)
+    end
+
+    context 'when using the standard Nokogiri adapter' do
+      it 'does not raise' do
+        expect do
+          ActiveSupport::XmlMini.with_backend('Nokogiri') do
+            Hash.from_xml(xml)['response']
+          end
+        end.not_to raise_error
+      end
     end
   end
 end

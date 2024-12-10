@@ -36,6 +36,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low |  |  |
 | [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low |  |  |
 | [Public use of Secure container registries is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) | Low | Secure | Instance |
+| [Pipelines API cancel endpoint returns error for non-cancelable pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/414963) | High | Verify | Instance, group, project |
 | [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |
 | [Pipeline job limits extended to the Commits API](https://gitlab.com/gitlab-org/gitlab/-/issues/436361) | Low | Verify | Project |
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |

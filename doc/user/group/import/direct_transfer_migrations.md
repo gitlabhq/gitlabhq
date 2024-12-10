@@ -62,6 +62,8 @@ GitLab 16.8.
 - You must have a role in the destination namespace that enables you to
   [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
   namespace.
+- To import project snippets, ensure snippets are
+  [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
 - To import items stored in object storage, you must either:
   - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
   - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.

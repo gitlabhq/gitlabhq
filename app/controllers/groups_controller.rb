@@ -358,17 +358,14 @@ class GroupsController < Groups::ApplicationController
   end
 
   def successful_creation_hooks
-    update_user_role_and_setup_for_company
+    update_user_setup_for_company
   end
 
-  def update_user_role_and_setup_for_company
-    user_params = params.fetch(:user, {}).permit(:role)
+  def update_user_setup_for_company
+    return if @group.setup_for_company.nil? || current_user.setup_for_company.present?
 
-    if !@group.setup_for_company.nil? && current_user.setup_for_company.nil?
-      user_params[:setup_for_company] = @group.setup_for_company
-    end
-
-    Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute if user_params.present?
+    Users::UpdateService.new(current_user,
+      { setup_for_company: @group.setup_for_company }.merge(user: current_user)).execute
   end
 
   def groups

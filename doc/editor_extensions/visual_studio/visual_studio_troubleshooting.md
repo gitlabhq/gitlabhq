@@ -12,15 +12,8 @@ If the steps on this page don't solve your problem, check the
 in the Visual Studio plugin's project. If an issue matches your problem, update the issue.
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/new).
 
-## Code Suggestions not displayed
-
-1. Check all the steps in [Code Suggestions aren't displayed](../../user/project/repository/code_suggestions/troubleshooting.md#suggestions-not-displayed-in-microsoft-visual-studio) first.
-1. Ensure you have properly [configured the extension](index.md#configure-the-extension).
-1. Ensure you are working on a [supported language](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages).
-1. If another extension provides similar suggestion or completion features, the extension might not return suggestions. To resolve this:
-   1. Disable all other Visual Studio extensions.
-   1. Confirm that you now receive Code Suggestions.
-   1. Re-enable extensions one at a time, testing for Code Suggestions each time, to find the extension that conflicts.
+For troubleshooting the extension for GitLab Duo Code Suggestions,
+see [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)..
 
 ## View more logs
 

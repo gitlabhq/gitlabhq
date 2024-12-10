@@ -24,6 +24,6 @@ start-release-environments-security-pipeline:
     strategy: depend
     include:
       - project: 'gitlab-org/security/gitlab'
-        ref: 'master'
+        ref: '$CI_COMMIT_REF_NAME'
         file: '.gitlab/ci/release-environments/security.gitlab-ci.yml'
   resource_group: release-environment-${CI_COMMIT_REF_SLUG}

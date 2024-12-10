@@ -13,6 +13,9 @@ If you encounter any issues with the GitLab Workflow extension for VS Code, or h
 1. Report bugs or request features in the
    [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
 
+For troubleshooting VS Code for GitLab Duo Code Suggestions,
+see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
+
 ## Enable debug logs
 
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
@@ -63,64 +66,6 @@ Prerequisites:
 | `gitlab.cert`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If your self-managed GitLab instance requires a custom certificate or key pair, set this option to point to your certificate file. See `gitlab.certKey`. |
 | `gitlab.certKey`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If your self-managed GitLab instance requires a custom certificate or key pair, set this option to point to your certificate key file. See `gitlab.cert`. |
 | `gitlab.ignoreCertificateErrors` | false   | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If you use a self-managed GitLab instance with no SSL certificate, or have certificate issues that prevent you from using the extension, set this option to `true` to ignore certificate errors. |
-
-## Disable Code Suggestions
-
-Code completion is enabled by default. To disable it:
-
-1. In VS Code, on the left sidebar, select **Extensions > GitLab Workflow**.
-1. Select **Manage** (**{settings}**) **> Extension Settings**.
-1. In **GitLab > Duo Code Suggestions**, clear **Enable GitLab Duo Code Suggestions**.
-
-## Disable streaming of code generation results
-
-By default, code generation streams AI-generated code. Streaming sends generated code
-to your editor incrementally, rather than waiting for the full code snippet to generate.
-This allows for a more interactive and responsive experience.
-
-If you prefer to see code generation results only when they are complete, you can turn off streaming.
-Disabling streaming means that code generation requests might be perceived
-as taking longer to resolve. To disable streaming:
-
-1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
-1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
-
-   ![The icons on the top right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
-1. In your `settings.json` file, add this line, or set it to `false` it already exists:
-
-   ```json
-   "gitlab.featureFlags.streamCodeGenerations": false,
-   ```
-
-1. Save your changes.
-
-## Error: Direct connection fails
-
-> - Direct connection [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13252) in GitLab 17.2.
-
-To reduce latency, the Workflow extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
-bypassing the GitLab instance. This network connection does not use the proxy and certificate settings of the VS Code extension.
-
-If your GitLab instance doesn't support direct connections, or your network prevents the extension from connecting to
-GitLab Cloud Connector, you might see these warnings in your logs:
-
-```plaintext
-Failed to fetch direct connection details from GitLab instance.
-Code suggestion requests will be sent to GitLab instance.
-```
-
-This error means your instance either doesn't support direct connections, or is misconfigured.
-To fix the problem, see the [troubleshooting guide for Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md).
-
-If you see this error, the extension can't connect to GitLab Cloud Connector, and is reverting to use your GitLab instance:
-
-```plaintext
-Direct connection for code suggestions failed.
-Code suggestion requests will be sent to your GitLab instance.
-```
-
-The indirect connection through your GitLab instance is about 100 ms slower, but otherwise works the same.
-This issue is often caused by network connection problems, like with your LAN firewall or proxy settings.
 
 ## HTTPS project cloning works but SSH cloning fails
 

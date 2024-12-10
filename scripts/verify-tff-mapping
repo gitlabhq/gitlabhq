@@ -588,6 +588,7 @@ tests = [
       ee/spec/features/gitlab_subscriptions/trials/creation_with_one_existing_namespace_flow_spec.rb
       ee/spec/requests/gitlab_subscriptions/trials_controller_spec.rb
       ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb
+      ee/spec/features/trials/lead_creation_form_validation_spec.rb
     ]
   },
 

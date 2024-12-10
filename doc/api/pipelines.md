@@ -470,6 +470,10 @@ Response:
 POST /projects/:id/pipelines/:pipeline_id/cancel
 ```
 
+NOTE:
+This endpoint returns a success response `200` regardless of the pipeline's state.
+For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
+
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |

@@ -101,7 +101,7 @@ To delete an email address from your account:
 1. On the left sidebar, select **Emails**.
 1. Select **Delete** (**{remove}**) and confirm you want to **Remove**.
 
-You can also [use the API to delete a secondary email address](../../api/user_email_addresses.md#delete-one-of-your-email-addresses).
+You can also [use the API to delete a secondary email address](../../api/user_email_addresses.md#delete-an-email-address).
 
 ## Make your user profile page private
 

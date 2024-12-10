@@ -135,8 +135,8 @@ export default {
       return this.sortOrder === DESC;
     },
     markdownPreviewPath() {
-      const { fullPath, isGroup, workItemIid: iid } = this;
-      return markdownPreviewPath({ fullPath, iid, isGroup });
+      const { fullPath, workItemIid: iid } = this;
+      return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
     },
     isGroupWorkItem() {
       return this.workItemNamespace?.id?.includes?.('Group');

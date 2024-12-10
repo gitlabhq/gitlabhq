@@ -35,6 +35,7 @@ module API
       optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
       optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
         desc: 'Strategy for behavior on timeouts'
+      optional :pagination_limit, type: Integer, desc: 'Pagination limit', values: ->(v) { v > 0 && v <= 100 }
     end
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)

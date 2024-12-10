@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor do
-  describe '.initialize' do
-    subject { described_class.new(audit_event) }
+RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor, feature_category: :runner do
+  let(:token_args) { details.slice(:runner_authentication_token, :runner_registration_token) }
 
-    let(:details) {}
-    let(:audit_event) { instance_double(AuditEvent, details: details, entity_type: 'Project', entity_path: 'd/e') }
+  describe '.initialize' do
+    subject do
+      described_class.new(entity_type: 'Project', entity_path: 'd/e', **token_args)
+    end
 
     context 'with runner_authentication_token' do
       let(:details) do
@@ -41,12 +42,18 @@ RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor do
   end
 
   describe '#full_path' do
-    subject { author.full_path }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
 
-    let(:author) { described_class.new(audit_event) }
+    let(:details) { { runner_authentication_token: 'grlt-abc1234567' } } # gitleaks:allow
+    let(:author) { described_class.new(entity_type: entity_type, entity_path: entity_path, **token_args) }
+
+    subject(:full_path) { author.full_path }
 
     context 'with instance registration token' do
-      let(:audit_event) { instance_double(AuditEvent, details: { runner_registration_token: 'abc1234567' }, entity_type: 'User', entity_path: nil) }
+      let(:details) { { runner_registration_token: 'abc1234567' } }
+      let(:entity_type) { 'Gitlab::Audit::InstanceScope' }
+      let(:entity_path) { 'gitlab_instance' }
 
       it 'returns correct url' do
         is_expected.to eq('/admin/runners')
@@ -54,29 +61,26 @@ RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor do
     end
 
     context 'with group registration token' do
-      let(:audit_event) { instance_double(AuditEvent, details: { runner_registration_token: 'abc1234567' }, entity_type: 'Group', entity_path: 'a/b') }
+      let(:entity_type) { 'Group' }
+      let(:entity_path) { group.full_path }
 
       it 'returns correct url' do
-        expect(::Gitlab::Routing.url_helpers).to receive(:group_settings_ci_cd_path)
-          .once
-          .with('a/b', { anchor: 'js-runners-settings' })
-          .and_return('/path/to/group/runners')
+        expect(::Gitlab::Routing.url_helpers).to receive(:group_runners).with(entity_path).and_return('runners path')
 
-        is_expected.to eq('/path/to/group/runners')
+        is_expected.to eq('runners path')
       end
     end
 
     context 'with project registration token' do
-      let(:audit_event) { instance_double(AuditEvent, details: { runner_registration_token: 'abc1234567' }, entity_type: 'Project', entity_path: project.full_path) }
-      let(:project) { create(:project) }
+      let(:entity_type) { 'Project' }
+      let(:entity_path) { project.full_path }
 
       it 'returns correct url' do
         expect(::Gitlab::Routing.url_helpers).to receive(:project_settings_ci_cd_path)
-          .once
           .with(project, { anchor: 'js-runners-settings' })
-          .and_return('/path/to/project/runners')
+          .and_return('runners path')
 
-        is_expected.to eq('/path/to/project/runners')
+        is_expected.to eq('runners path')
       end
     end
   end

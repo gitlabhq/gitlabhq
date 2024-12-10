@@ -12,6 +12,9 @@ If the steps on this page don't solve your problem, check the
 in the JetBrains plugin's project. If an issue matches your problem, update the issue.
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/new).
 
+For troubleshooting JetBrains IDEs for GitLab Duo Code Suggestions,
+see [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting).
+
 ## Enable debug mode
 
 To enable debug logs in JetBrains:
@@ -20,6 +23,17 @@ To enable debug logs in JetBrains:
    search for the action by going to **Help > Find Action > Debug log settings**.
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
+
+## Use an HTTP proxy
+
+If you experience [certificate errors](#certificate-errors) or other connection errors, and
+use a HTTP proxy to connect to your GitLab instance, you must
+[configure the Language Server to use a proxy](../language_server/index.md#configure-the-language-server-to-use-a-proxy)
+for the GitLab Language Server.
+
+You can also [enable proxy authentication](../language_server/index.md#enable-proxy-authentication).
+
+## Enable GitLab Language Server debug logs
 
 To enable GitLab Language Server debug logs:
 
@@ -35,20 +49,6 @@ The debug logs are available in the `idea.log` log file. To view this file, eith
 - In your IDE, go to **Help > Show Log in Finder**.
 - Go to the directory `/Users/<user>/Library/Logs/JetBrains/IntelliJIdea<build_version>`, replacing
   `<user>` and `<build_version>` with the appropriate values.
-
-## Use an HTTP proxy
-
-If you experience [certificate errors](#certificate-errors) or other connection errors, and
-use a HTTP proxy to connect to your GitLab instance, you must
-[configure the Language Server to use a proxy](../language_server/index.md#configure-the-language-server-to-use-a-proxy)
-for the GitLab Language Server.
-
-You can also [enable proxy authentication](../language_server/index.md#enable-proxy-authentication).
-
-## Error: `unable to find valid certification path to requested target`
-
-The GitLab Duo plugin verifies TLS certificate information before connecting to your GitLab instance.
-You can [add a custom SSL certificate](index.md#add-a-custom-certificate-for-code-suggestions).
 
 ## Certificate errors
 
@@ -96,16 +96,4 @@ To do this:
 1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.
-1. Select **OK** or **Save**.
-
-## Error: `Failed to check token`
-
-This error occurs when the provided connection instance URL and authentication token passed through to the
-GitLab Language Server process are invalid. To re-enable Code Suggestions:
-
-1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools > GitLab Duo**.
-1. Under **Connection**, select **Verify setup**.
-1. Update your **Connection** details as needed.
-1. Select **Verify setup**, and confirm that authentication succeeds.
 1. Select **OK** or **Save**.

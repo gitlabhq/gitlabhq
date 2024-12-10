@@ -54,7 +54,8 @@ module Gitlab
           data: {
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy],
-            user_contribution_mapping_enabled: user_contribution_mapping_enabled?
+            user_contribution_mapping_enabled: user_contribution_mapping_enabled?,
+            pagination_limit: user_settings[:pagination_limit]
           },
           credentials: project.import_data&.credentials
         )

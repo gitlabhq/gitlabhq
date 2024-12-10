@@ -275,6 +275,37 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
       end
     end
+
+    Ci::HasStatus::COMPLETED_STATUSES.each do |bridge_starting_status|
+      context "when initial bridge status is a completed status #{bridge_starting_status}" do
+        before do
+          bridge.status = bridge_starting_status
+          create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
+        end
+
+        using RSpec::Parameterized::TableSyntax
+        where(:downstream_status, :expected_bridge_status) do
+          [
+            %w[success success],
+            %w[failed failed],
+            %w[skipped failed]
+          ]
+        end
+
+        with_them do
+          it 'inherits the downstream status' do
+            perform_transition = -> { subject }
+            if bridge.status == expected_bridge_status
+              expect { perform_transition.call }.not_to change { bridge.status }
+            else
+              expect { perform_transition.call }.to change { bridge.status }
+                .from(bridge_starting_status)
+                .to(expected_bridge_status)
+            end
+          end
+        end
+      end
+    end
   end
 
   describe '#dependent?' do

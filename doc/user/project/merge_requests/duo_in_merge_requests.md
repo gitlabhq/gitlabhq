@@ -105,10 +105,6 @@ DETAILS:
 > - Feature flag `generate_commit_message_flag` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) in GitLab 17.2.
 > - Feature flag `generate_commit_message_flag` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173262) in GitLab 17.7.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
 When preparing to merge your merge request, edit the proposed merge commit message
 by using GitLab Duo Merge Commit Message Generation.
 
@@ -116,7 +112,7 @@ by using GitLab Duo Merge Commit Message Generation.
 1. Select **Code > Merge requests** and find your merge request.
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
-1. Review the commit message provide and choose **Insert** to add it to the commit.
+1. Review the commit message provided and choose **Insert** to add it to the commit.
 
 **Data usage**: When you use this feature, the following data is sent to the large language model:
 

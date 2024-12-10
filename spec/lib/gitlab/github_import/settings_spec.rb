@@ -23,6 +23,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
         collaborators_import: false,
         foo: :bar
       },
+      pagination_limit: 50,
       timeout_strategy: "optimistic"
     }.stringify_keys
   end
@@ -58,7 +59,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   end
 
   describe '#write' do
-    it 'puts optional steps, timeout strategy, and user mapping setting into projects import_data' do
+    it 'puts optional steps, timeout strategy, user mapping setting and pagination_limit into projects import_data' do
       project.build_or_assign_import_data(credentials: { user: 'token' })
 
       settings.write(data_input)
@@ -69,6 +70,8 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
         .to eq("optimistic")
       expect(project.import_data.data['user_contribution_mapping_enabled'])
         .to be true
+      expect(project.import_data.data['pagination_limit'])
+        .to eq(50)
     end
   end
 

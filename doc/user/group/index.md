@@ -174,7 +174,6 @@ To create a group:
 1. In the **Group URL** text box, enter the path for the group used for the [namespace](../namespace/index.md).
 1. Select the [**Visibility level**](../public_access.md) of the group.
 1. Optional. To personalize your GitLab experience:
-   - From the **Role** dropdown list, select your role.
    - For **Who will be using this group?**, select an option.
    - From the **What will you use this group for?** dropdown list, select an option.
 1. Optional. To invite members to the group, in the **Email 1** text box, enter the email address of the user you want to invite. To invite more users, select **Invite another member** and enter the user's email address.

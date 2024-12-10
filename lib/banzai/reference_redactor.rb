@@ -67,9 +67,6 @@ module Banzai
       original_content = node.attr('data-original')
       original_content = CGI.escape_html(original_content) if original_content
 
-      # Redact gollum wiki links completely
-      redacted_content = _('[redacted]') if node.attr('data-reference-type') == 'wiki_page'
-
       # Build the raw <a> tag just with a link as href and content if
       # it's originally a link pattern. We shouldn't return a plain text href.
       original_link =
@@ -81,7 +78,7 @@ module Banzai
 
       # The reference should be replaced by the original link's content,
       # which is not always the same as the rendered one.
-      redacted_content || original_link || original_content || node.inner_html
+      original_link || original_content || node.inner_html
     end
 
     def redact_cross_project_references(documents)

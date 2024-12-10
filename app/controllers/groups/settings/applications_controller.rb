@@ -61,9 +61,7 @@ module Groups
       private
 
       def set_index_vars
-        # TODO: Remove limit(100) and implement pagination
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/324187
-        @applications = @group.oauth_applications.limit(100)
+        @applications = @group.oauth_applications.keyset_paginate(cursor: params[:cursor])
 
         # Don't overwrite a value possibly set by `create`
         @application ||= Doorkeeper::Application.new

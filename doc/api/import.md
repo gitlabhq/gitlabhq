@@ -42,6 +42,7 @@ POST /import/github
 | `github_hostname`          | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com. From GitLab 16.5 to GitLab 17.1, you must include the path `/api/v3`.                                                                    |
 | `optional_stages`          | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
 | `timeout_strategy`          | string | no  | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
+| `pagination_limit`          | integer | no  | Number of items retrieved per API request to GitHub. The default value is 100 items per page. For project imports from large repositories, reducing this to a lower number can reduce the risk of GitHub API endpoints returning `500` or `502` errors. However, decreasing the page size will result in longer migration times. |
 
 ```shell
 curl --request POST \
