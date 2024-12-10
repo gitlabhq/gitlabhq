@@ -22,6 +22,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, @project)
   end
+  before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
   BRANCH_SEARCH_LIMIT = 1000
   COMMIT_DIFFS_PER_PAGE = 20
@@ -53,7 +54,9 @@ class Projects::CommitController < Projects::ApplicationController
   def diff_files
     respond_to do |format|
       format.html do
-        render template: 'projects/commit/diff_files', layout: false, locals: { diffs: @diffs, environment: @environment }
+        render template: 'projects/commit/diff_files',
+          layout: false,
+          locals: { diffs: @diffs.with_highlights_preloaded, environment: @environment }
       end
     end
   end
@@ -260,6 +263,12 @@ class Projects::CommitController < Projects::ApplicationController
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @diffs.size
+  end
+
+  def rate_limit_for_expanded_diff_files
+    return unless diffs_expanded?
+
+    check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
   end
 end
 

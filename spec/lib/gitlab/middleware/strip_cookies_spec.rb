@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Middleware::StripCookies, feature_category: :shared do
   let(:app) { mock_app.new }
 
   subject do
-    described_class.new(app, paths: [%r{^/assets/}, %r{^/v2$}, %r{^/v2/}])
+    described_class.new(app, paths: [%r{^/assets/}])
   end
 
   describe '#call' do
@@ -36,10 +36,6 @@ RSpec.describe Gitlab::Middleware::StripCookies, feature_category: :shared do
       "/assets/test.css" | false
       "/something/assets/test.css" | true
       "/merge_requests/1" | true
-      "/v2" | false
-      "/v2/" | false
-      "/v2/something" | false
-      "/v2something" | true
     end
 
     with_them do

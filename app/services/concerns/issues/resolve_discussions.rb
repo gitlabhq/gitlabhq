@@ -37,7 +37,7 @@ module Issues
         else
           merge_request_to_resolve_discussions_of
             .discussions_to_be_resolved
-        end
+        end.reject(&:confidential?)
     end
   end
 end
