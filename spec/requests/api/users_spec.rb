@@ -1559,6 +1559,34 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
       end
     end
 
+    context 'with existing pages unique domain' do
+      let_it_be(:project) { create(:project) }
+
+      before do
+        stub_pages_setting(enabled: true)
+
+        create(
+          :project_setting,
+          project: project,
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: 'unique-domain')
+      end
+
+      it 'returns 400 bad request error if same username is already used by pages unique domain' do
+        expect do
+          post api(path, admin, admin_mode: true),
+            params: {
+              name: 'foo',
+              email: 'foo@example.com',
+              password: User.random_password,
+              username: 'unique-domain'
+            }
+        end.to change { User.count }.by(0)
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ "username" => ["has already been taken"] })
+      end
+    end
+
     context 'when user with a primary email exists' do
       context 'when the primary email is confirmed' do
         let!(:confirmed_user) { create(:user, email: 'foo@example.com') }
@@ -1845,6 +1873,26 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['username']).to eq(user.username)
       expect(user.reload.username).to eq(user.username)
+    end
+
+    context 'with existing pages unique domain' do
+      let_it_be(:project) { create(:project) }
+
+      before do
+        stub_pages_setting(enabled: true)
+
+        create(
+          :project_setting,
+          project: project,
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: 'unique-domain')
+      end
+
+      it 'returns 400 bad request error if same username is already used by pages unique domain' do
+        put api(path, admin, admin_mode: true), params: { username: 'unique-domain' }
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ "username" => ["has already been taken"] })
+      end
     end
 
     it "updates user's existing identity" do

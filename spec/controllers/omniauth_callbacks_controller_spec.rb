@@ -284,6 +284,46 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
         it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
       end
+
+      context 'when redirect fragment contains special characters' do
+        before do
+          request.env['omniauth.params'] = { 'redirect_fragment' => 'confirm-merge_request_diff_id-context' }
+        end
+
+        it 'redirects with fragment' do
+          post provider, session: { user_return_to: '/fake/url' }
+
+          expect(response).to redirect_to('/fake/url#confirm-merge_request_diff_id-context')
+        end
+      end
+
+      context 'when stored redirect fragment is malicious' do
+        let(:malicious_redirect_fragment) { '#code=test_code&' }
+
+        before do
+          request.env['omniauth.params'] = { 'redirect_fragment' => malicious_redirect_fragment }
+        end
+
+        it 'fails login and redirects to login path' do
+          post provider, session: { user_return_to: '/fake/url#replaceme' }
+
+          expect(response.redirect?).to be true
+          expect(response).to redirect_to(new_user_session_path)
+          expect(flash[:alert]).to match(/Invalid state/)
+        end
+
+        context 'when fragment has encoded content' do
+          let_it_be(:malicious_redirect_fragment, reload: true) { '#code%3Dtest_code&L90' }
+
+          it 'fails login and redirects to login path' do
+            post provider, session: { user_return_to: '/fake/url#replaceme' }
+
+            expect(response.redirect?).to be true
+            expect(response).to redirect_to(new_user_session_path)
+            expect(flash[:alert]).to match(/Invalid state/)
+          end
+        end
+      end
     end
 
     context 'with strategies' do
@@ -682,7 +722,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           post :saml, params: { SAMLResponse: mock_saml_response }
 
-          expect(flash[:alert]).to eq('Signing in using your SAML account without a pre-existing account in localhost is not allowed. Create an account in localhost first, and then <a href="/help/user/profile/index.md#sign-in-services">connect it to your SAML account</a>.')
+          expect(flash[:alert]).to eq("Signing in using your SAML account without a pre-existing account in #{Gitlab.config.gitlab.host} is not allowed. Create an account in #{Gitlab.config.gitlab.host} first, and then <a href=\"/help/user/profile/index.md#sign-in-services\">connect it to your SAML account</a>.")
           expect(response).to redirect_to(new_user_registration_path)
         end
       end
@@ -697,7 +737,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           post :saml, params: { SAMLResponse: mock_saml_response }
 
-          expect(flash[:alert]).to eq('Signing in using your SAML account without a pre-existing account in localhost is not allowed.')
+          expect(flash[:alert]).to eq("Signing in using your SAML account without a pre-existing account in #{Gitlab.config.gitlab.host} is not allowed.")
           expect(response).to redirect_to(new_user_session_path)
         end
       end

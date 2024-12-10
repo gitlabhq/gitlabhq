@@ -14,6 +14,7 @@ module Groups
       skip_before_action :authenticate_user!, raise: false
 
       prepend_before_action :authenticate_user_from_jwt_token!
+      before_action :skip_session
 
       def authenticate_user_from_jwt_token!
         authenticate_with_http_token do |token, _|
@@ -54,6 +55,10 @@ module Groups
 
       def set_auth_result(actor, type)
         @authentication_result = Gitlab::Auth::Result.new(actor, nil, type, [])
+      end
+
+      def skip_session
+        request.session_options[:skip] = true
       end
     end
   end

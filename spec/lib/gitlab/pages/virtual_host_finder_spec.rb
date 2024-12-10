@@ -123,9 +123,10 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
         context 'when a project path conflicts with a unique domain' do
           it 'prioritizes the unique domain project' do
-            group = create(:group, path: 'unique-domain')
+            group = build(:group, path: 'unique-domain')
+                      .tap { |g| g.save!(validate: false) }
             other_project = build(:project, path: 'unique-domain.example.com', group: group)
-              .tap { |project| project.save!(validate: false) }
+                              .tap { |project| project.save!(validate: false) }
 
             create(:pages_deployment, project: project)
             create(:pages_deployment, project: other_project)
