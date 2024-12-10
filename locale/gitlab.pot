@@ -22745,6 +22745,15 @@ msgstr ""
 msgid "Experiment features' settings not allowed."
 msgstr ""
 
+msgid "ExperimentTracking|Candidate"
+msgstr ""
+
+msgid "ExperimentTracking|Metric value"
+msgstr ""
+
+msgid "ExperimentTracking|Performance"
+msgstr ""
+
 msgid "Experiments"
 msgstr ""
 

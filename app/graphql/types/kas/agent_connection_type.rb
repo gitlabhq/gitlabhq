@@ -23,6 +23,11 @@ module Types
         null: true,
         description: 'Information about the Agent.'
 
+      field :warnings,
+        [Types::Kas::AgentWarningType],
+        null: true,
+        description: 'Agent warnings list.'
+
       def connected_at
         Time.at(object.connected_at.seconds)
       end

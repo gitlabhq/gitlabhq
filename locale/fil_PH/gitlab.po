@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: fil\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2024-12-09 10:25\n"
+"PO-Revision-Date: 2024-12-09 15:29\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -5880,6 +5880,39 @@ msgstr ""
 msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
 msgstr ""
 
+msgid "Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Amazon Q Configuration"
+msgstr ""
+
+msgid "AmazonQ|Beta"
+msgstr ""
+
+msgid "AmazonQ|Configure GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Configure GitLab Duo with Amazon Q (Beta)"
+msgstr ""
+
+msgid "AmazonQ|Get started"
+msgstr ""
+
+msgid "AmazonQ|GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java.%{br}GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise. %{help_link_start}Learn more%{help_link_end}."
+msgstr ""
+
+msgid "AmazonQ|View configuration setup"
+msgstr ""
+
 msgid "AmbiguousRef|There is a branch and a tag with the same name of %{ref}."
 msgstr ""
 
@@ -11034,6 +11067,9 @@ msgid "Cannot show preview. For previews on sketch files, they must have the fil
 msgstr ""
 
 msgid "Cannot skip two factor authentication setup"
+msgstr ""
+
+msgid "Cannot update more than %{limit} organization data at once"
 msgstr ""
 
 msgid "Cannot validate connection to host because the URL is empty."
@@ -17407,6 +17443,12 @@ msgstr ""
 msgid "DastProfiles|/graphql"
 msgstr ""
 
+msgid "DastProfiles|A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions."
+msgstr ""
+
+msgid "DastProfiles|A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form."
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr ""
 
@@ -17423,6 +17465,9 @@ msgid "DastProfiles|API endpoint URL"
 msgstr ""
 
 msgid "DastProfiles|Active"
+msgstr ""
+
+msgid "DastProfiles|Add DAST variable"
 msgstr ""
 
 msgid "DastProfiles|Add variable"
@@ -17495,6 +17540,9 @@ msgid "DastProfiles|Debug messages"
 msgstr ""
 
 msgid "DastProfiles|Delete profile"
+msgstr ""
+
+msgid "DastProfiles|Disables clearing of username and password fields before attempting manual login. Set to false by default."
 msgstr ""
 
 msgid "DastProfiles|Edit profile"
@@ -17578,6 +17626,9 @@ msgstr ""
 msgid "DastProfiles|No site profiles created yet"
 msgstr ""
 
+msgid "DastProfiles|No variables found"
+msgstr ""
+
 msgid "DastProfiles|Not Validated"
 msgstr ""
 
@@ -17632,10 +17683,16 @@ msgstr ""
 msgid "DastProfiles|Scanner profiles"
 msgstr ""
 
+msgid "DastProfiles|Search..."
+msgstr ""
+
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr ""
 
 msgid "DastProfiles|Select a site profile to run a DAST scan"
+msgstr ""
+
+msgid "DastProfiles|Select a variable"
 msgstr ""
 
 msgid "DastProfiles|Select scanner profile"
@@ -17671,10 +17728,16 @@ msgstr ""
 msgid "DastProfiles|Target timeout"
 msgstr ""
 
+msgid "DastProfiles|The maximum amount of time to wait for the active scan phase of the scan to complete. Defaults to 3h."
+msgstr ""
+
 msgid "DastProfiles|The maximum number of minutes allowed for the crawler to traverse the site."
 msgstr ""
 
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
+msgstr ""
+
+msgid "DastProfiles|The number of active checks to run in parallel. Defaults to 3."
 msgstr ""
 
 msgid "DastProfiles|This profile is currently being used in a policy."
@@ -17708,6 +17771,12 @@ msgid "DastProfiles|Validated"
 msgstr ""
 
 msgid "DastProfiles|Validation status"
+msgstr ""
+
+msgid "DastProfiles|Value"
+msgstr ""
+
+msgid "DastProfiles|Variable"
 msgstr ""
 
 msgid "DastProfiles|Website"
@@ -18509,6 +18578,9 @@ msgid "Dependencies|Toggle vulnerability list"
 msgstr ""
 
 msgid "Dependencies|Unknown path"
+msgstr ""
+
+msgid "Dependencies|Vulnerabilities"
 msgstr ""
 
 msgid "Dependencies|Vulnerable components"
@@ -21801,6 +21873,9 @@ msgid "Environment|Unhealthy"
 msgstr ""
 
 msgid "Environment|Unknown"
+msgstr ""
+
+msgid "Environment|View details."
 msgstr ""
 
 msgid "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it."
@@ -29170,6 +29245,9 @@ msgid "Instance overview"
 msgstr ""
 
 msgid "Instance runners help link"
+msgstr ""
+
+msgid "Insufficient permission to modify user organizations"
 msgstr ""
 
 msgid "Insufficient permissions"
@@ -38398,6 +38476,9 @@ msgid "Ordered list"
 msgstr ""
 
 msgid "Organization"
+msgstr ""
+
+msgid "Organization ID cannot be nil"
 msgstr ""
 
 msgid "Organizations"

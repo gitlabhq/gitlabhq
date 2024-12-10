@@ -28905,6 +28905,8 @@ CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_
 
 CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), before_expiry_notification_delivered_at) WHERE (before_expiry_notification_delivered_at IS NULL);
 
+CREATE INDEX idx_member_roles_on_base_access_level ON member_roles USING btree (base_access_level);
+
 CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
 
 CREATE UNIQUE INDEX idx_members_deletion_schedules_on_namespace_id_and_user_id ON members_deletion_schedules USING btree (namespace_id, user_id);

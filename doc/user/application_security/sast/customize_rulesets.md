@@ -17,7 +17,7 @@ repository being scanned. There are two kinds of customization:
 
 - Modifying the behavior of **predefined rules**. This includes:
   - [Disabling predefined rules](#disable-predefined-rules). Available for all analyzers.
-  - [Overriding predefined rules](#override-predefined-rules). Available for all analyzers.
+  - [Overriding metadata of predefined rules](#override-metadata-of-predefined-rules). Available for all analyzers.
 - Replacing predefined rules by [building a custom configuration](#build-a-custom-configuration)
   using **passthroughs**. Available only for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 
@@ -41,9 +41,9 @@ The Semgrep-based analyzer handles disabled rules differently:
 See the [Schema](#schema) and [Examples](#examples) sections for information on how
 to configure this behavior.
 
-## Override predefined rules
+## Override metadata of predefined rules
 
-Certain attributes of predefined rules can be overridden for any SAST analyzer. This
+You can override certain attributes of predefined rules for any SAST analyzer. This
 can be useful when adapting SAST to your existing workflow or tools. For example, you
 might want to override the severity of a vulnerability based on organizational policy,
 or choose a different message to display in the Vulnerability Report.
@@ -319,7 +319,40 @@ analyzer fails to parse your custom ruleset unless the indentation is represente
 
 ## Examples
 
-### Disable predefined rules of SAST analyzers
+### Disable predefined Advanced SAST rules
+
+You can disable Advanced SAST rules or edit their metadata.
+The following example disables rules based on different criteria:
+
+- A CWE identifier, which identifies an entire class of vulnerabilities.
+- An Advanced SAST rule ID, which identifies a specific detection strategy used in Advanced SAST.
+- An associated Semgrep rule ID, which is included in Advanced SAST findings for compatibility. This additional metadata allows findings to be automatically transitioned when both analyzers create similar findings in the same location.
+
+These identifiers are shown in the [vulnerability details](../vulnerabilities/index.md) of each vulnerability.
+You can also see each identifier and its associated `type` in the [downloadable SAST report artifact](index.md#download-a-sast-report).
+
+```toml
+[gitlab-advanced-sast]
+  [[gitlab-advanced-sast.ruleset]]
+    disable = true
+    [gitlab-advanced-sast.ruleset.identifier]
+      type = "cwe"
+      value = "89"
+
+  [[gitlab-advanced-sast.ruleset]]
+    disable = true
+    [gitlab-advanced-sast.ruleset.identifier]
+      type = "gitlab-advanced-sast_id"
+      value = "java-spring-csrf-unrestricted-requestmapping-atomic"
+
+  [[gitlab-advanced-sast.ruleset]]
+    disable = true
+    [gitlab-advanced-sast.ruleset.identifier]
+      type = "semgrep_id"
+      value = "java_cookie_rule-CookieHTTPOnly"
+```
+
+### Disable predefined rules of other SAST analyzers
 
 With the following custom ruleset configuration, the following rules are omitted from the report:
 
@@ -356,7 +389,7 @@ With the following custom ruleset configuration, the following rules are omitted
       value = "memcpy"
 ```
 
-### Override predefined rules of SAST analyzers
+### Override predefined rule metadata
 
 With the following custom ruleset configuration, vulnerabilities found with
 `semgrep` with a type `CWE` and a value `322` have their severity overridden to `Critical`.

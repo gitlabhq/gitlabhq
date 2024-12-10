@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Types::Kas::AgentConnectionType do
   include GraphqlHelpers
 
-  let(:fields) { %i[connected_at connection_id metadata] }
+  let(:fields) { %i[connected_at connection_id metadata warnings] }
 
   it { expect(described_class.graphql_name).to eq('ConnectedAgent') }
   it { expect(described_class.description).to eq('Connection details for an Agent') }

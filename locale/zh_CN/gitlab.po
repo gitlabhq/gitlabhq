@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2024-12-09 10:23\n"
+"PO-Revision-Date: 2024-12-09 15:27\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -5714,6 +5714,39 @@ msgstr "Amazon EKS"
 msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
 msgstr "Amazon EKS集成允许您从GitLab管理EKS集群。"
 
+msgid "Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Amazon Q Configuration"
+msgstr ""
+
+msgid "AmazonQ|Beta"
+msgstr ""
+
+msgid "AmazonQ|Configure GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Configure GitLab Duo with Amazon Q (Beta)"
+msgstr ""
+
+msgid "AmazonQ|Get started"
+msgstr ""
+
+msgid "AmazonQ|GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java.%{br}GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise. %{help_link_start}Learn more%{help_link_end}."
+msgstr ""
+
+msgid "AmazonQ|View configuration setup"
+msgstr ""
+
 msgid "AmbiguousRef|There is a branch and a tag with the same name of %{ref}."
 msgstr "有一个分支和名称同为%{ref}的标签。"
 
@@ -10838,6 +10871,9 @@ msgstr "无法显示预览。如需预览，草图文件必须具有Sketch 43及
 
 msgid "Cannot skip two factor authentication setup"
 msgstr "无法跳过双重认证设置"
+
+msgid "Cannot update more than %{limit} organization data at once"
+msgstr ""
 
 msgid "Cannot validate connection to host because the URL is empty."
 msgstr ""
@@ -17197,6 +17233,12 @@ msgstr "%{linkStart}可能出现在漏洞报告中的表头%{linkEnd}。"
 msgid "DastProfiles|/graphql"
 msgstr "/graphql"
 
+msgid "DastProfiles|A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions."
+msgstr ""
+
+msgid "DastProfiles|A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form."
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr "被动扫描监控发送到目标的所有HTTP消息(请求和响应)。主动扫描会对目标进行攻击以发现潜在漏洞。"
 
@@ -17214,6 +17256,9 @@ msgstr "API 端点 URL"
 
 msgid "DastProfiles|Active"
 msgstr "主动"
+
+msgid "DastProfiles|Add DAST variable"
+msgstr ""
 
 msgid "DastProfiles|Add variable"
 msgstr ""
@@ -17286,6 +17331,9 @@ msgstr "调试消息"
 
 msgid "DastProfiles|Delete profile"
 msgstr "删除配置"
+
+msgid "DastProfiles|Disables clearing of username and password fields before attempting manual login. Set to false by default."
+msgstr ""
 
 msgid "DastProfiles|Edit profile"
 msgstr "编辑配置文件"
@@ -17368,6 +17416,9 @@ msgstr "未选择站点配置文件"
 msgid "DastProfiles|No site profiles created yet"
 msgstr "尚未创建站点配置文件"
 
+msgid "DastProfiles|No variables found"
+msgstr ""
+
 msgid "DastProfiles|Not Validated"
 msgstr "未验证"
 
@@ -17422,11 +17473,17 @@ msgstr "扫描器配置文件"
 msgid "DastProfiles|Scanner profiles"
 msgstr "扫描器配置文件"
 
+msgid "DastProfiles|Search..."
+msgstr ""
+
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr "选择扫描器配置文件来运行 DAST 扫描"
 
 msgid "DastProfiles|Select a site profile to run a DAST scan"
 msgstr "选择站点配置文件来运行 DAST 扫描"
+
+msgid "DastProfiles|Select a variable"
+msgstr ""
 
 msgid "DastProfiles|Select scanner profile"
 msgstr "选择扫描器配置文件"
@@ -17461,11 +17518,17 @@ msgstr "目标URL"
 msgid "DastProfiles|Target timeout"
 msgstr "目标超时"
 
+msgid "DastProfiles|The maximum amount of time to wait for the active scan phase of the scan to complete. Defaults to 3h."
+msgstr ""
+
 msgid "DastProfiles|The maximum number of minutes allowed for the crawler to traverse the site."
 msgstr "允许爬虫遍历站点的最大分钟数。"
 
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr "被测站点响应请求所允许的最大秒数。"
+
+msgid "DastProfiles|The number of active checks to run in parallel. Defaults to 3."
+msgstr ""
 
 msgid "DastProfiles|This profile is currently being used in a policy."
 msgstr "此配置文件当前正在策略中使用。"
@@ -17499,6 +17562,12 @@ msgstr "已验证"
 
 msgid "DastProfiles|Validation status"
 msgstr "验证状态"
+
+msgid "DastProfiles|Value"
+msgstr ""
+
+msgid "DastProfiles|Variable"
+msgstr ""
 
 msgid "DastProfiles|Website"
 msgstr "网站"
@@ -18291,6 +18360,9 @@ msgstr "切换漏洞列表"
 
 msgid "Dependencies|Unknown path"
 msgstr "未知路径"
+
+msgid "Dependencies|Vulnerabilities"
+msgstr ""
 
 msgid "Dependencies|Vulnerable components"
 msgstr "有漏洞的组件"
@@ -21572,6 +21644,9 @@ msgstr "不健康"
 
 msgid "Environment|Unknown"
 msgstr "未知"
+
+msgid "Environment|View details."
+msgstr ""
 
 msgid "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it."
 msgstr "您没有权限查看集群中的所有命名空间。 如果没有显示命名空间, 您仍然可以输入它的名称来选择它。"
@@ -28918,6 +28993,9 @@ msgstr "实例概览"
 
 msgid "Instance runners help link"
 msgstr "实例 Runners 帮助链接"
+
+msgid "Insufficient permission to modify user organizations"
+msgstr ""
 
 msgid "Insufficient permissions"
 msgstr "权限不足"
@@ -38113,6 +38191,9 @@ msgstr "有序列表"
 
 msgid "Organization"
 msgstr "组织"
+
+msgid "Organization ID cannot be nil"
+msgstr ""
 
 msgid "Organizations"
 msgstr "组织"

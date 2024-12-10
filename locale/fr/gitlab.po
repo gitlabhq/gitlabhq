@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2024-12-09 10:09\n"
+"PO-Revision-Date: 2024-12-09 15:24\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} à %{end}"
@@ -5880,6 +5880,39 @@ msgstr "Amazon EKS"
 msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
 msgstr "L'intégration d'Amazon EKS vous permet de provisionner des clusters EKS depuis GitLab."
 
+msgid "Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Amazon Q Configuration"
+msgstr ""
+
+msgid "AmazonQ|Beta"
+msgstr ""
+
+msgid "AmazonQ|Configure GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Configure GitLab Duo with Amazon Q (Beta)"
+msgstr ""
+
+msgid "AmazonQ|Get started"
+msgstr ""
+
+msgid "AmazonQ|GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java.%{br}GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise. %{help_link_start}Learn more%{help_link_end}."
+msgstr ""
+
+msgid "AmazonQ|View configuration setup"
+msgstr ""
+
 msgid "AmbiguousRef|There is a branch and a tag with the same name of %{ref}."
 msgstr "Une branche et une étiquette portent le même nom « %{ref} »."
 
@@ -11035,6 +11068,9 @@ msgstr "Impossible d'afficher l'aperçu. Pour les aperçus sur fichiers Sketch, 
 
 msgid "Cannot skip two factor authentication setup"
 msgstr "Impossible d'ignorer la configuration de l'authentification à deux facteurs"
+
+msgid "Cannot update more than %{limit} organization data at once"
+msgstr ""
 
 msgid "Cannot validate connection to host because the URL is empty."
 msgstr "Impossible de valider la connexion à l'hôte car l'URL est vide."
@@ -17407,6 +17443,12 @@ msgstr "%{linkStart}Les en-têtes peuvent apparaître dans les rapports de vuln�
 msgid "DastProfiles|/graphql"
 msgstr "/graphql"
 
+msgid "DastProfiles|A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions."
+msgstr ""
+
+msgid "DastProfiles|A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form."
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr "Une analyse passive surveille tous les messages HTTP (requêtes et réponses) envoyés à la cible. Une analyse active attaque la cible pour trouver des vulnérabilités potentielles."
 
@@ -17424,6 +17466,9 @@ msgstr "URL du point de terminaison de l'API"
 
 msgid "DastProfiles|Active"
 msgstr "Active"
+
+msgid "DastProfiles|Add DAST variable"
+msgstr ""
 
 msgid "DastProfiles|Add variable"
 msgstr ""
@@ -17496,6 +17541,9 @@ msgstr "Messages de débogage"
 
 msgid "DastProfiles|Delete profile"
 msgstr "Supprimer le profil"
+
+msgid "DastProfiles|Disables clearing of username and password fields before attempting manual login. Set to false by default."
+msgstr ""
 
 msgid "DastProfiles|Edit profile"
 msgstr "Modifier le profil"
@@ -17578,6 +17626,9 @@ msgstr "Aucun profil de site sélectionné"
 msgid "DastProfiles|No site profiles created yet"
 msgstr "Aucun profil de site n'a encore été créé"
 
+msgid "DastProfiles|No variables found"
+msgstr ""
+
 msgid "DastProfiles|Not Validated"
 msgstr "Non validé"
 
@@ -17632,11 +17683,17 @@ msgstr "Profil de scanner"
 msgid "DastProfiles|Scanner profiles"
 msgstr "Profils de scanners"
 
+msgid "DastProfiles|Search..."
+msgstr ""
+
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr "Sélectionnez un profil de scanner pour lancer une analyse DAST"
 
 msgid "DastProfiles|Select a site profile to run a DAST scan"
 msgstr "Sélectionnez un profil de site pour lancer une analyse DAST"
+
+msgid "DastProfiles|Select a variable"
+msgstr ""
 
 msgid "DastProfiles|Select scanner profile"
 msgstr "Sélectionner le profil du scanner"
@@ -17671,11 +17728,17 @@ msgstr "URL cible"
 msgid "DastProfiles|Target timeout"
 msgstr "Délai d'expiration pour la cible"
 
+msgid "DastProfiles|The maximum amount of time to wait for the active scan phase of the scan to complete. Defaults to 3h."
+msgstr ""
+
 msgid "DastProfiles|The maximum number of minutes allowed for the crawler to traverse the site."
 msgstr "Le nombre maximal de minutes autorisé pour le parcours du site par le robot d'indexation."
 
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr "Le nombre maximal de secondes autorisé pour que le site en cours de test réponde à une requête."
+
+msgid "DastProfiles|The number of active checks to run in parallel. Defaults to 3."
+msgstr ""
 
 msgid "DastProfiles|This profile is currently being used in a policy."
 msgstr "Ce profil est actuellement utilisé par une stratégie."
@@ -17709,6 +17772,12 @@ msgstr "Validé"
 
 msgid "DastProfiles|Validation status"
 msgstr "État de la validation"
+
+msgid "DastProfiles|Value"
+msgstr ""
+
+msgid "DastProfiles|Variable"
+msgstr ""
 
 msgid "DastProfiles|Website"
 msgstr "Site Web"
@@ -18510,6 +18579,9 @@ msgstr "Basculer la liste des vulnérabilités"
 
 msgid "Dependencies|Unknown path"
 msgstr "Chemin d'accès inconnu"
+
+msgid "Dependencies|Vulnerabilities"
+msgstr ""
 
 msgid "Dependencies|Vulnerable components"
 msgstr "Composants vulnérables"
@@ -21802,6 +21874,9 @@ msgstr "En mauvaise santé"
 
 msgid "Environment|Unknown"
 msgstr "Inconnu"
+
+msgid "Environment|View details."
+msgstr ""
 
 msgid "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it."
 msgstr "Vous n'avez pas l'autorisation de voir tous les espaces de nommage dans le cluster. Si un espace de nommage n'est pas affiché, vous pouvez toujours entrer son nom pour le sélectionner."
@@ -29171,6 +29246,9 @@ msgstr "Vue d'ensemble de l'instance"
 
 msgid "Instance runners help link"
 msgstr "Lien d'aide sur les runners d'instance"
+
+msgid "Insufficient permission to modify user organizations"
+msgstr ""
 
 msgid "Insufficient permissions"
 msgstr "Permissions insuffisantes"
@@ -38399,6 +38477,9 @@ msgstr "Liste numérotée"
 
 msgid "Organization"
 msgstr "Entreprise"
+
+msgid "Organization ID cannot be nil"
+msgstr ""
 
 msgid "Organizations"
 msgstr "Entreprises"

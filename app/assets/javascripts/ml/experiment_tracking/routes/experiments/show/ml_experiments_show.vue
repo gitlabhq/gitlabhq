@@ -10,6 +10,8 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import KeysetPagination from '~/ml/experiment_tracking/components/pagination.vue';
+import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
+import { s__ } from '~/locale';
 
 import { CREATE_EXPERIMENT_HELP_PATH as CREATE_CANDIDATE_HELP_PATH } from '../index/constants';
 import { LIST_KEY_CREATED_AT, BASE_SORT_FIELDS, METRIC_KEY_PREFIX } from './constants';
@@ -27,6 +29,7 @@ export default {
     KeysetPagination,
     ModelExperimentsHeader,
     DeleteButton,
+    PerformanceGraph,
   },
   props: {
     experiment: {
@@ -141,6 +144,9 @@ export default {
         modalTitle: translations.DELETE_EXPERIMENT_MODAL_TITLE,
       };
     },
+    showGraph() {
+      return this.hasItems && this.metricNames.length > 0;
+    },
   },
   methods: {
     submitFilters() {
@@ -163,7 +169,10 @@ export default {
       visitUrl(`${currentPath}.csv${currentSearch}`);
     },
   },
-  i18n: translations,
+  i18n: {
+    ...translations,
+    PERFORMANCE_LABEL: s__('ExperimentTracking|Performance'),
+  },
   constants: {
     FEATURE_NAME,
     FEATURE_FEEDBACK_ISSUE,
@@ -268,6 +277,11 @@ export default {
 
         <div v-else class="gl-text-subtle">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
       </div>
+    </section>
+
+    <section v-if="showGraph">
+      <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.PERFORMANCE_LABEL }}</h3>
+      <performance-graph v-bind="candidates" :candidates="candidates" :metric-names="metricNames" />
     </section>
   </div>
 </template>

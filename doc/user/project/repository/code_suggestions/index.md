@@ -19,36 +19,26 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 NOTE:
-GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/index.md#upgrade-gitlab) for the best experience.
 
-Write code more efficiently by using generative AI to suggest code while you're developing.
+Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
-With GitLab Duo Code Suggestions, you get code completion and code generation.
+Code Suggestions uses code completion and code generation:
 
-## Code completion
+|  | Code completion | Code generation |
+| :---- | :---- | :---- |
+| Purpose | Provides suggestions for completing the current line of code.  | Generates new code based on a natural language comment. |
+| Trigger | Triggers when typing, usually with a short delay.  | Triggers when pressing <kbd>Enter</kbd> after writing a comment that includes specific keywords. |
+| Scope | Limited to the current line or small block of code.  | Can generate entire methods, functions, or even classes based on the context. |
+| Accuracy | More accurate for small tasks and short blocks of code.  | Is more accurate for complex tasks and large blocks of code because a bigger large language model (LLM) is used, additional context is sent in the request (for example, the libraries used by the project), and your instructions are passed to the LLM. |
+| How to use | Code completion automatically suggests completions to the line you are typing. | You write a comment and press <kbd>Enter</kbd>, or you enter an empty function or method. |
+| When to use | Use code completion to quickly complete one or a few lines of code. | Use code generation for more complex tasks, larger codebases, when you want to write new code from scratch based on a natural language description, or when the file you're editing has fewer than five lines of code. |
 
-Code completion suggests completions to the line you are typing.
-Code completion is used in most situations to quickly complete one
-or a few lines of code.
+Code Suggestions always uses both of these features. You cannot use only code
+generation or only code completion.
 
-## Code generation
-
-Code generation generates code based on a natural language code
-comment block. Write a comment like `# check if code suggestions are
-enabled for current user`, then press <kbd>Enter</kbd> to generate code based
-on the context of your comment and the rest of your code.
-
-Code generation is used when:
-
-- You write a comment and press <kbd>Enter</kbd>.
-- You enter an empty function or method.
-- The file you're editing has fewer than five lines of code.
-
-Code generation requests take longer than code completion requests, but provide more accurate responses because:
-
-- A larger LLM is used.
-- Additional context is sent in the request, for example, the libraries used by the project.
-- Your instructions are passed to the LLM.
+NOTE:
+Before you start using Code Suggestions, decide if you want to use the default GitLab-hosted LLM to manage Code Suggestions requests, or [deploy a self-hosted model](../../../../administration/self_hosted_models/index.md). Self-hosted models maximize security and privacy by making sure nothing is sent to an external model.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
@@ -58,19 +48,92 @@ Code generation requests take longer than code completion requests, but provide 
 [View a code completion vs. code generation comparison demo](https://www.youtube.com/watch?v=9dsyqMt9yg4).
   <!-- Video published on 2024-09-26 -->
 
-## Use Code Suggestions
+## Set up Code Suggestions
 
 Prerequisites:
 
-- You must have [one of the supported IDE extensions](supported_extensions.md#supported-editor-extensions).
-- Your organization must have purchased the GitLab Duo Pro add-on and
-  [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-- For self-managed GitLab, you must have GitLab 16.8 or later, and have
-  [configured proxy settings](../../../../subscriptions/subscription-add-ons.md#configure-network-and-proxy-settings).
+- You should have the latest version of GitLab.
+
+To set up Code Suggestions:
+
+1. Configure GitLab Duo.
+1. Check that your preferred language is supported.
+1. Configure your editor extension.
+
+### Configure GitLab Duo
+
+1. [Create a personal access token](../../../profile/personal_access_tokens.md#create-a-personal-access-token)
+   with at least the [`ai_features` scope](../../../profile/personal_access_tokens.md#personal-access-token-scopes).
+1. [Turn on GitLab Duo](../../../gitlab_duo/turn_on_off.md).
+1. Purchase the [GitLab Duo Pro add-on subscription](../../../../subscriptions/subscription-add-ons.md).
+1. [Get a Duo Pro seat assigned to you](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats),
+   either individually or [in bulk](../../../../subscriptions/subscription-add-ons.md#assign-and-remove-gitlab-duo-seats-in-bulk).
+1. For GitLab self-managed, you must:
+
+   - Fulfill the [prerequisites](../../../gitlab_duo/turn_on_off.md#prerequisites).
+   - Have GitLab 16.8 or later.
+   - [Configure proxy settings](../../../../subscriptions/subscription-add-ons.md#configure-network-and-proxy-settings).
+
+For more information, see how to [Get started with GitLab Duo](../../../get_started/getting_started_gitlab_duo.md).
+
+### Check language support
+
+Code Suggestions supports a range of programming languages and development concepts.
+
+Check that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages).
+
+Different IDEs support different languages.
+
+### Configure editor extension
+
+NOTE:
+You might have already completed this as part of [getting started with GitLab Duo](../../../get_started/getting_started_gitlab_duo.md).
+
+To use Code Suggestions, if you are not using the [GitLab Web IDE](../../web_ide/index.md), you must
+configure one of the following [editor extensions](supported_extensions.md#supported-editor-extensions)
+to then use an equivalent IDE:
+
+- GitLab Workflow for VS Code.
+- Visual Studio GitLab Extension.
+- GitLab Duo Plugin for JetBrains.
+- `gitlab.vim` plugin for Neovim.
+
+Regardless of the extension you use, you must:
+
+1. Install the extension in your IDE.
+1. Authenticate with GitLab from the IDE. You can use either OAuth or the [personal access token](../../../profile/personal_access_tokens.md#create-a-personal-access-token) you created when configuring GitLab Duo.
+1. Configure the extension.
+
+#### GitLab Workflow for VS Code
+
+1. [Install the extension](../../../../editor_extensions/visual_studio_code/index.md#install-the-extension).
+1. [Authenticate with GitLab](../../../../editor_extensions/visual_studio_code/index.md#authenticate-with-gitlab).
+1. [Configure the extension](../../../../editor_extensions/visual_studio_code/index.md#configure-the-extension).
+
+#### Visual Studio GitLab extension
+
+1. [Install the extension](../../../../editor_extensions/visual_studio/index.md#install-the-extension).
+1. [Authenticate with GitLab](../../../../editor_extensions/visual_studio/index.md#authenticate-with-gitlab).
+1. [Configure the extension](../../../../editor_extensions/visual_studio/index.md#configure-the-extension).
+
+#### GitLab Duo plugin for JetBrains IDEs
+
+1. [Install the extension](../../../../editor_extensions/jetbrains_ide/index.md#install-the-extension).
+1. [Configure the extension](../../../../editor_extensions/jetbrains_ide/index.md#configure-the-extension).
+1. [Authenticate with GitLab](../../../../editor_extensions/jetbrains_ide/index.md#authenticate-with-gitlab).
+
+#### `gitlab.vim` plugin for Neovim
+
+1. [Install the extension](../../../../editor_extensions/neovim/index.md#install-the-extension).
+1. [Authenticate with GitLab](../../../../editor_extensions/neovim/index.md#authenticate-with-gitlab).
+1. [Configure the extension](../../../../editor_extensions/neovim/index.md#configure-the-extension).
+1. [Enable Omni Completion](../../../../editor_extensions/neovim/index.md#configure-omni-completion).
+
+## Use Code Suggestions
 
 To use Code Suggestions:
 
-1. Open your Git project in a supported IDE.
+1. Open your Git project in a [supported IDE](supported_extensions.md#supported-editor-extensions).
 1. Add the project as a remote of your local repository using
    [`git remote add`](../../../../topics/git/commands.md#git-remote-add).
 1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
@@ -99,7 +162,7 @@ Visual Studio:
 | ![The status icon for fetching Code Suggestions.](../../../../editor_extensions/img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
 | ![The status icon for a Code Suggestions error.](../../../../editor_extensions/img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
 
-## Best practices
+### Best practices
 
 To get the best results from code generation:
 
@@ -126,6 +189,56 @@ AI is non-deterministic, so you may not get the same suggestion every time with 
 To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
+
+## Turn off Code Suggestions
+
+How you turn off Code Suggestions differs depending on which editor extension and IDE you use.
+
+NOTE:
+When turning off Code Suggestions, you cannot turn off code generation and code completion separately.
+
+### VS Code
+
+To turn off Code Suggestions in the UI:
+
+1. In VS Code, go to **Code > Settings > Extensions**.
+1. Select **Manage** (**{settings}**) **> Settings**.
+1. Clear the **GitLab Duo Code Suggestions** checkbox.
+
+You can also [set `gitlab.duoCodeSuggestions.enabled` to `false` in the VS Code `settings.json` file](../../../../editor_extensions/visual_studio_code/settings.md#extension-settings).
+
+### Visual Studio
+
+To turn Code Suggestions on or off without uninstalling the extension,
+[assign a keyboard shortcut to the `GitLab.ToggleCodeSuggestions` custom command](../../../../editor_extensions/visual_studio/index.md#configure-the-extension).
+
+To disable or uninstall the extension, see the [Microsoft Visual Studio documentation on uninstalling or disabling the extension](https://learn.microsoft.com/en-us/visualstudio/ide/finding-and-using-visual-studio-extensions?view=vs-2022#uninstall-or-disable-an-extension).
+
+### JetBrains IDEs
+
+The process to disable GitLab Duo, including Code Suggestions, is the same
+regardless of which JetBrains IDE you use.
+
+1. In your JetBrains IDE, go to settings and select the plugins menu.
+1. Under the installed plugins, find the GitLab Duo plugin.
+1. Disable the plugin.
+
+For more information, see the [JetBrains product documentation](https://www.jetbrains.com/help/).
+
+### Neovim
+
+1. Go to the [Neovim `defaults.lua` settings file](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/lua/gitlab/config/defaults.lua).
+1. Under `code_suggestions`, change the `enabled =` flag to `false`:
+
+   ```lua
+   code_suggestions = {
+   ...
+    enabled = false,
+   ```
+
+### Turn off GitLab Duo
+
+Alternatively, you can [turn off GitLab Duo](../../../../user/gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features) (which includes Code Suggestions) completely for a group, project, or instance.
 
 ## Open tabs as context
 
@@ -281,13 +394,6 @@ This API connection securely transmits a context window from your IDE/editor to 
 Streaming of Code Generation responses is supported in VS Code, leading to faster average response times.
 Other supported IDEs offer slower response times and will return the generated code in a single block.
 
-### Use a self-hosted model
-
-Instead of using the default model to manage Code Suggestions requests, you can
-[deploy a self-hosted model](../../../../administration/self_hosted_models/index.md).
-This maximizes security and privacy by making sure nothing is sent to an
-external model.
-
 ### Direct and indirect connections
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
@@ -326,14 +432,6 @@ Prerequisites:
    - To disable direct connections, select the **Disable direct connections for code suggestions** checkbox.
 
 ::EndTabs
-
-## Disable Code Suggestions
-
-To disable Code Suggestions, disable the feature in your IDE editor extension.
-For details, see the documentation for your extension.
-
-If you'd prefer, you can
-[turn off GitLab Duo for a group, project, or instance](../../../../user/gitlab_duo/turn_on_off.md).
 
 ## Feedback
 

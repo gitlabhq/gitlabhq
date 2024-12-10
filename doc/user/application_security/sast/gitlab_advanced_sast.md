@@ -54,7 +54,7 @@ To minimize noise, Advanced SAST only reports taint-based vulnerabilities when t
 Other products may report vulnerabilities with less validation.
 
 Advanced SAST is tuned to emphasize input that crosses trust boundaries, like values that are sourced from HTTP requests.
-The set of untrusted input sources does not include command-line arguments, enviroment variables, or other inputs that are typically provided by the user operating the program.
+The set of untrusted input sources does not include command-line arguments, environment variables, or other inputs that are typically provided by the user operating the program.
 
 For details of which types of vulnerabilities Advanced SAST detects, see [Advanced SAST CWE coverage](advanced_sast_coverage.md).
 
@@ -179,6 +179,11 @@ On GitLab self-managed, you can activate the view by [enabling the required feat
 ## Troubleshooting
 
 If you encounter issues while using GitLab Advanced SAST, refer to the [troubleshooting guide](troubleshooting.md).
+
+## Customize Advanced SAST
+
+You can disable Advanced SAST rules or edit their metadata, just as you can other analyzers.
+For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-advanced-sast-rules).
 
 ## Feedback
 

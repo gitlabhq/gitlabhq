@@ -9542,6 +9542,28 @@ Input type: `SetContainerScanningForRegistryInput`
 | <a id="mutationsetcontainerscanningforregistrycontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
 | <a id="mutationsetcontainerscanningforregistryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.setGroupSecretPushProtection`
+
+Enable or disable Secret Push Protection for a group.
+
+Input type: `SetGroupSecretPushProtectionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetgroupsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetgroupsecretpushprotectionnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the group. |
+| <a id="mutationsetgroupsecretpushprotectionprojectstoexclude"></a>`projectsToExclude` | [`[Int!]`](#int) | IDs of projects to exclude from the feature. |
+| <a id="mutationsetgroupsecretpushprotectionsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean!`](#boolean) | Whether to enable the feature. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetgroupsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetgroupsecretpushprotectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.setPreReceiveSecretDetection`
 
 Enable/disable secret push protection for the given project.
@@ -18494,6 +18516,27 @@ Information about a connected Agent.
 | <a id="agentmetadatapodnamespace"></a>`podNamespace` | [`String`](#string) | Namespace of the pod running the Agent. |
 | <a id="agentmetadataversion"></a>`version` | [`String`](#string) | Agent version tag. |
 
+### `AgentVersionWarning`
+
+Version-related warning for a connected Agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentversionwarningmessage"></a>`message` | [`String`](#string) | Warning message related to the version. |
+| <a id="agentversionwarningtype"></a>`type` | [`String`](#string) | Warning type related to the version. |
+
+### `AgentWarning`
+
+Warning object for a connected Agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentwarningversion"></a>`version` | [`AgentVersionWarning`](#agentversionwarning) | Agent warning related to the version. |
+
 ### `AggregationStatus`
 
 #### Fields
@@ -21268,6 +21311,7 @@ Connection details for an Agent.
 | <a id="connectedagentconnectedat"></a>`connectedAt` | [`Time`](#time) | When the connection was established. |
 | <a id="connectedagentconnectionid"></a>`connectionId` | [`BigInt`](#bigint) | ID of the connection. |
 | <a id="connectedagentmetadata"></a>`metadata` | [`AgentMetadata`](#agentmetadata) | Information about the Agent. |
+| <a id="connectedagentwarnings"></a>`warnings` | [`[AgentWarning!]`](#agentwarning) | Agent warnings list. |
 
 ### `ContactStateCounts`
 
@@ -31154,6 +31198,7 @@ Represents the details of merge request approval policy violations.
 | <a id="policyviolationdetailsnewscanfinding"></a>`newScanFinding` | [`[PolicyScanFindingViolation!]!`](#policyscanfindingviolation) | Represents the newly detected violations of `scan_finding` rules. |
 | <a id="policyviolationdetailspolicies"></a>`policies` | [`[PolicyViolationInfo!]!`](#policyviolationinfo) | Information about policies that were violated. |
 | <a id="policyviolationdetailspreviousscanfinding"></a>`previousScanFinding` | [`[PolicyScanFindingViolation!]!`](#policyscanfindingviolation) | Represents the violations of `scan_finding` rules for previously existing vulnerabilities. |
+| <a id="policyviolationdetailsviolationscount"></a>`violationsCount` | [`Int!`](#int) | Total count of violations. |
 
 ### `PolicyViolationInfo`
 
