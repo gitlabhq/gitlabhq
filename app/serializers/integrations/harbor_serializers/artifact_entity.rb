@@ -10,7 +10,7 @@ module Integrations
       end
 
       expose :digest do |item|
-        strip_tags(item['digest'])
+        validate_path(item['digest']).then { |digest| strip_tags(digest) }
       end
 
       expose :size do |item|
@@ -23,6 +23,19 @@ module Integrations
 
       expose :tags do |item|
         item['tags'].map { |tag| strip_tags(tag['name']) }
+      end
+
+      private
+
+      def validate_path(path)
+        ::Gitlab::PathTraversal.check_path_traversal!(path)
+      rescue ::Gitlab::PathTraversal::PathTraversalAttackError => e
+        ::Gitlab::ErrorTracking.track_exception(
+          e,
+          message: "Path traversal attack detected #{path}",
+          class: self.class.name
+        )
+        ''
       end
     end
   end

@@ -699,6 +699,18 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
+      context 'when the username is assigned to another project pages unique domain' do
+        let(:username) { 'existing-domain' }
+
+        it 'is invalid' do
+          # Simulate the existing domain being in use
+          create(:project_setting, pages_unique_domain: 'existing-domain')
+
+          expect(user).not_to be_valid
+          expect(user.errors.full_messages).to eq(['Username has already been taken'])
+        end
+      end
+
       Mime::EXTENSION_LOOKUP.keys.each do |type|
         context 'with extension format' do
           let(:username) { "test.#{type}" }
@@ -6254,6 +6266,14 @@ RSpec.describe User, feature_category: :user_profile do
               expect(user).to be_invalid
               expect(user.errors[:base]).to include('A user, alias, or group already exists with that username.')
             end
+          end
+
+          it 'when the username is assigned to another project pages unique domain' do
+            # Simulate the existing domain being in use
+            create(:project_setting, pages_unique_domain: 'existing-domain')
+
+            expect(user.update(username: 'existing-domain')).to be_falsey
+            expect(user.errors.full_messages).to eq(['Username has already been taken'])
           end
         end
 

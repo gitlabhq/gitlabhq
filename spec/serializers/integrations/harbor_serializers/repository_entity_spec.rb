@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::HarborSerializers::RepositoryEntity do
+RSpec.describe Integrations::HarborSerializers::RepositoryEntity, feature_category: :container_registry do
   let_it_be(:harbor_integration) { create(:harbor_integration) }
 
   let(:repo) do
@@ -37,14 +37,17 @@ RSpec.describe Integrations::HarborSerializers::RepositoryEntity do
   context 'with data that may contain path traversal attacks' do
     before do
       repo["project_id"] = './../../../../../etc/hosts'
+      repo['name'] = './../../../../../etc/hosts'
     end
 
-    it 'returns empty location' do
+    it 'logs an error and forbids the path traversal values' do
+      expect(Gitlab::AppLogger).to receive(:error).with(/Path traversal attack detected/).twice
+
       expect(subject).to include({
         artifact_count: 1,
         creation_time: "2022-03-13T09:36:43.240Z".to_datetime,
         harbor_id: 1,
-        name: "jihuprivate/busybox",
+        name: '',
         harbor_project_id: './../../../../../etc/hosts',
         pull_count: 0,
         update_time: "2022-03-13T09:36:43.240Z".to_datetime,
