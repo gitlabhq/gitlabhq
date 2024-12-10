@@ -111,9 +111,11 @@ for definitions and usage.
 
 ## Customize the changelog output
 
-To customize the changelog output, edit the changelog configuration file, and commit these changes to your project's Git repository.
-The default location for this configuration is `.gitlab/changelog_config.yml`. The file supports
-these variables:
+To customize the changelog output, edit the changelog configuration file, and commit these changes to your project's Git repository. The default location for this configuration is `.gitlab/changelog_config.yml`.
+
+For performance and security reasons, parsing the changelog configuration is limited to `2` seconds.
+If parsing the configuration results in timeout errors, consider reducing the size of the configuration.
+The file supports these variables:
 
 - `date_format`: The date format, in `strftime` format, used in the title of the newly added changelog data.
 - `template`: A custom template to use when generating the changelog data.
