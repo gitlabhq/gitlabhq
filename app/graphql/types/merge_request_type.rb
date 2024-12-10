@@ -144,6 +144,10 @@ module Types
       description: 'Number of upvotes for the merge request.',
       resolver: Resolvers::UpVotesCountResolver
 
+    field :resolvable_discussions_count, GraphQL::Types::Int, null: true,
+      description: 'Number of user discussions that are resolvable in the merge request.'
+    field :resolved_discussions_count, GraphQL::Types::Int, null: true,
+      description: 'Number of user discussions that are resolved in the merge request.'
     field :user_discussions_count, GraphQL::Types::Int, null: true,
       description: 'Number of user discussions in the merge request.',
       resolver: Resolvers::UserDiscussionsCountResolver
@@ -300,30 +304,6 @@ module Types
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 
-    def user_notes_count
-      BatchLoader::GraphQL.for(object.id).batch(key: :merge_request_user_notes_count) do |ids, loader, args|
-        counts = Note.count_for_collection(ids, 'MergeRequest').index_by(&:noteable_id)
-
-        ids.each do |id|
-          loader.call(id, counts[id]&.count || 0)
-        end
-      end
-    end
-
-    def user_discussions_count
-      BatchLoader::GraphQL.for(object.id).batch(key: :merge_request_user_discussions_count) do |ids, loader, args|
-        counts = Note.count_for_collection(
-          ids,
-          'MergeRequest',
-          'COUNT(DISTINCT discussion_id) as count'
-        ).index_by(&:noteable_id)
-
-        ids.each do |id|
-          loader.call(id, counts[id]&.count || 0)
-        end
-      end
-    end
-
     def diff_stats(path: nil)
       stats = Array.wrap(object.diff_stats&.to_a)
 
@@ -395,6 +375,29 @@ module Types
 
     def web_path
       ::Gitlab::Routing.url_helpers.project_merge_request_path(object.project, object)
+    end
+
+    def resolvable_discussions_count
+      notes_count_for_collection(:merge_request_resolvable_discussions_count, &:resolvable)
+    end
+
+    def resolved_discussions_count
+      notes_count_for_collection(:merge_request_resolved_discussions_count, &:resolved)
+    end
+
+    def notes_count_for_collection(key)
+      BatchLoader::GraphQL.for(object.id).batch(key: key) do |ids, loader, args|
+        counts = Note.count_for_collection(
+          ids,
+          'MergeRequest',
+          'COUNT(DISTINCT discussion_id) as count'
+        )
+        counts = yield(counts).index_by(&:noteable_id)
+
+        ids.each do |id|
+          loader.call(id, counts[id]&.count || 0)
+        end
+      end
     end
   end
 end

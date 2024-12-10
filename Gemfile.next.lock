@@ -544,7 +544,7 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.8.0)
+    doorkeeper (5.8.1)
       railties (>= 5)
     doorkeeper-device_authorization_grant (1.0.3)
       doorkeeper (~> 5.5)
@@ -2060,7 +2060,7 @@ DEPENDENCIES
   diff_match_patch (~> 0.1.0)!
   diffy (~> 3.4)
   discordrb-webhooks (~> 3.5)
-  doorkeeper (~> 5.8, >= 5.8.0)
+  doorkeeper (~> 5.8, >= 5.8.1)
   doorkeeper-device_authorization_grant (~> 1.0.0)
   doorkeeper-openid_connect (~> 1.8.10)
   duo_api (~> 1.3)

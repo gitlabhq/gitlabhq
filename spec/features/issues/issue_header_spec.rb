@@ -10,6 +10,7 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
   let_it_be(:closed_issue) { create(:issue, :closed, project: project) }
   let_it_be(:closed_locked_issue) { create(:issue, :closed, :locked, project: project) }
   let_it_be(:authored_issue) { create(:issue, project: project, author: user) }
+  let_it_be(:confidential_issue) { create(:issue, :confidential, project: project) }
 
   context 'when user has permission to update' do
     before do
@@ -74,6 +75,32 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
         expect(page).not_to have_button 'Report abuse'
       end
     end
+
+    context 'when the issue is not confidential' do
+      before do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+      end
+
+      it 'shows "Turn on confidentiality" button in dropdown' do
+        click_button 'Issue actions'
+
+        expect(page).to have_button 'Turn on confidentiality'
+      end
+    end
+
+    context 'when the issue is confidential' do
+      before do
+        visit project_issue_path(project, confidential_issue)
+        wait_for_requests
+      end
+
+      it 'shows "Turn off confidentiality" button in dropdown' do
+        click_button 'Issue actions'
+
+        expect(page).to have_button 'Turn off confidentiality'
+      end
+    end
   end
 
   context 'when user is admin and the project is set up for spam' do
@@ -119,6 +146,7 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
         expect(page).to have_button 'Report abuse'
         expect(page).not_to have_link 'Submit as spam'
         expect(page).not_to have_button 'Delete issue'
+        expect(page).not_to have_button 'Turn on confidentiality'
       end
     end
 

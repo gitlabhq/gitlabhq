@@ -279,7 +279,7 @@ of the below topic into "Special milestone filters" -->
 #### "Upcoming" and "Started" filters (deprecated)
 
 WARNING:
-This feature was [deprecated](https://issue-link) in GitLab 17.7
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) in GitLab 17.7
 and is [planned for change](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in 18.0.
 
 The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.

@@ -5,6 +5,7 @@ import issuableDatesUpdatedSubscription from '~/graphql_shared/subscriptions/wor
 import {
   TYPE_ALERT,
   TYPE_EPIC,
+  TYPE_INCIDENT,
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
   TYPE_TEST_CASE,
@@ -115,6 +116,10 @@ export const userSearchQueries = {
 };
 
 export const confidentialityQueries = {
+  [TYPE_INCIDENT]: {
+    query: issueConfidentialQuery,
+    mutation: updateIssueConfidentialMutation,
+  },
   [TYPE_ISSUE]: {
     query: issueConfidentialQuery,
     mutation: updateIssueConfidentialMutation,

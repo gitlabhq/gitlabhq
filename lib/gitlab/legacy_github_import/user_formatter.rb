@@ -33,8 +33,8 @@ module Gitlab
         return if !project.import_data.user_mapping_enabled? || ghost_user?
 
         source_user_mapper.find_or_create_source_user(
-          source_name: gitea_user[:login],
-          source_username: gitea_user[:full_name] || gitea_user[:login],
+          source_name: gitea_user[:full_name].presence || gitea_user[:login],
+          source_username: gitea_user[:login],
           source_user_identifier: raw[:id]
         )
       end

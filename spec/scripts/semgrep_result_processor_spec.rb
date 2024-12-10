@@ -125,27 +125,31 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
 
     let(:existing_comments) do
       [
-        { "body" => "<!-- {\"fingerprint\":\"abc123\"} --> Some comment ", "author" => { "id" => 123 } },
-        { "body" => "<!-- {\"fingerprint\":\"def456\"} --> Another comment ", "author" => { "id" => 123 } },
-        { "body" => "<!-- {\"fingerprint\":\"ghi789\"} --> Yet another comment ", "author" => { "id" => 123 } }
+        { "body" => "<!-- {\"fingerprint\":\"abc123\",\"check_id\":\"RULE5\"} --> Some comment ",
+          "author" => { "id" => 123 } },
+        { "body" => "<!-- {\"fingerprint\":\"def456\",\"check_id\":\"RULE6\"} --> Another comment ",
+          "author" => { "id" => 123 } },
+        { "body" => "<!-- {\"fingerprint\":\"ghi789\",\"check_id\":\"RULE7\"} --> Yet another comment ",
+          "author" => { "id" => 123 } }
       ]
     end
 
-    let(:fingerprint_messages) do
+    let(:first_unique_rule_id) { described_class::UNIQUE_COMMENT_RULES_IDS.first }
+    let(:new_run_findings) do
       {
-        "abc123" => "Duplicate finding 1",
-        "def456" => "Duplicate finding 2",
-        "new123" => "New finding 1",
-        "new456" => "New finding 2"
+        "abc123" => { path: "path/to/file1.rb", line: 10, message: "Duplicate finding 1", check_id: "RULE1" },
+        "def456" => { path: "path/to/file2.rb", line: 20, message: "Duplicate finding 2", check_id: "RULE2" },
+        "new123" => { path: "path/to/file3.rb", line: 30, message: "New finding 1", check_id: "RULE3" },
+        "new456" => { path: "path/to/file4.rb", line: 40, message: "New finding 2", check_id: "RULE4" }
       }
     end
 
     it 'filters out findings with fingerprints that are already in comments from the bot' do
-      result = processor.filter_duplicate_findings(fingerprint_messages)
+      result = processor.filter_duplicate_findings(new_run_findings)
 
       expect(result).to eq({
-        "new123" => "New finding 1",
-        "new456" => "New finding 2"
+        "new123" => { path: "path/to/file3.rb", line: 30, message: "New finding 1", check_id: "RULE3" },
+        "new456" => { path: "path/to/file4.rb", line: 40, message: "New finding 2", check_id: "RULE4" }
       })
     end
 
@@ -155,9 +159,9 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         { "body" => "<!-- {\"fingerprint\":\"def456\"} --> Another comment", "author" => { "id" => 456 } }
       ])
 
-      result = processor.filter_duplicate_findings(fingerprint_messages)
+      result = processor.filter_duplicate_findings(new_run_findings)
 
-      expect(result).to eq(fingerprint_messages)
+      expect(result).to eq(new_run_findings)
     end
 
     it 'returns an empty hash if all fingerprints are already in bot comments' do
@@ -168,9 +172,26 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         { "body" => "<!-- {\"fingerprint\":\"new456\"} --> Another existing comment", "author" => { "id" => 123 } }
       ])
 
-      result = processor.filter_duplicate_findings(fingerprint_messages)
+      result = processor.filter_duplicate_findings(new_run_findings)
 
       expect(result).to eq({})
+    end
+
+    it 'filters out findings with check_ids that are in the UNIQUE_COMMENT_RULES_IDS list' do
+      new_run_findings["new789"] =
+        { path: "path/to/file4.rb", line: 40, message: "New finding 2", check_id: first_unique_rule_id }
+      new_run_findings["new890"] =
+        { path: "path/to/file4.rb", line: 40, message: "New finding 2", check_id: first_unique_rule_id }
+      result = processor.filter_duplicate_findings(new_run_findings)
+
+      expect(result).to eq({
+        "new123" => { path: "path/to/file3.rb", line: 30, message: "New finding 1",
+                      check_id: "RULE3" },
+        "new456" => { path: "path/to/file4.rb", line: 40, message: "New finding 2",
+                      check_id: "RULE4" },
+        "new789" => { path: "path/to/file4.rb", line: 40, message: "New finding 2",
+                      check_id: first_unique_rule_id }
+      })
     end
   end
 
@@ -178,7 +199,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     let(:sample_non_versioned_fingerprint) { "a5adf24a2512f31141f460e0bc18f39c8388105e564f" }
     let(:sample_message) { "This is a sample SAST finding message" }
     let(:scanned_path) { "ee/lib/ai/context/dependencies/config_files/python_pip.rb" }
-
+    let(:check_id) { "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex" }
     let(:sample_data) do
       {
         "errors" => [],
@@ -194,7 +215,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         },
         "results" => [
           {
-            "check_id" => "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex",
+            "check_id" => check_id,
             "path" => scanned_path,
             "start" => { "line" => 9, "col" => 11, "offset" => 178 },
             "end" => { "line" => 9, "col" => 93, "offset" => 260 },
@@ -204,7 +225,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
             }
           },
           {
-            "check_id" => "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex",
+            "check_id" => check_id,
             "path" => scanned_path,
             "start" => { "line" => 9, "col" => 32, "offset" => 199 },
             "end" => { "line" => 9, "col" => 93, "offset" => 260 },
@@ -227,12 +248,12 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     it 'parses the SAST report and prints findings correctly' do
       expected_output = {
         sample_non_versioned_fingerprint => {
+          check_id: "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex",
           path: "ee/lib/ai/context/dependencies/config_files/python_pip.rb",
           line: 9,
           message: sample_message
         }
       }
-
       result = processor.get_sast_results
 
       expect(result).to eq(expected_output)
@@ -251,6 +272,23 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
       allow(File).to receive(:read).with(report_file).and_return(JSON.generate(empty_data)) # rubocop:disable Gitlab/Json -- Used only in CI scripts
 
       expect { processor.get_sast_results }.to raise_error(SystemExit).and output(/No findings./).to_stdout
+    end
+
+    context 'when check_id is absent from SAST results' do
+      let(:check_id) { nil }
+
+      it 'returns an empty check_id' do
+        expected_output = {
+          sample_non_versioned_fingerprint => {
+            check_id: check_id,
+            path: "ee/lib/ai/context/dependencies/config_files/python_pip.rb",
+            line: 9,
+            message: sample_message
+          }
+        }
+        result = processor.get_sast_results
+        expect(result).to eq(expected_output)
+      end
     end
   end
 

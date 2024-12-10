@@ -10,6 +10,7 @@ module Ci
   module JobToken
     class Authorization < Ci::ApplicationRecord
       extend Gitlab::InternalEventsTracking
+      include EachBatch
 
       self.table_name = 'ci_job_token_authorizations'
 

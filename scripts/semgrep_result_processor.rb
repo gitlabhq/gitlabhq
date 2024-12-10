@@ -10,6 +10,7 @@ class SemgrepResultProcessor
   ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
   ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
 
+  UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
   # Remove this when the feature is fully working
   MESSAGE_FOOTER = <<~FOOTER
 
@@ -36,6 +37,7 @@ class SemgrepResultProcessor
       return
     end
 
+    puts "Found the following unique results: #{unique_results}"
     create_inline_comments(unique_results)
 
   rescue StandardError => e
@@ -77,10 +79,11 @@ class SemgrepResultProcessor
       # Remove version suffix from fingerprint
       fingerprint = result["extra"]["fingerprint"].sub(/_\d+$/, '')
       path = result["path"]
+      check_id = result["check_id"]
       line = result["start"]["line"]
       message = result["extra"]["message"].tr('"\'', '')
 
-      fingerprint_message_dict[fingerprint] = { path: path, line: line, message: message }
+      fingerprint_message_dict[fingerprint] = { path: path, line: line, message: message, check_id: check_id }
     end
 
     # Print the results to console
@@ -106,6 +109,14 @@ class SemgrepResultProcessor
     existing_fingerprints = existing_headers.map do |message|
       JSON.parse(message)["fingerprint"]
     end
+    unique_rule_findings = {}
+    fingerprint_messages.each do |fingerprint, finding|
+      next unless UNIQUE_COMMENT_RULES_IDS.include?(finding[:check_id])
+
+      fingerprint_messages.delete(fingerprint) if unique_rule_findings[finding[:check_id]]
+
+      unique_rule_findings[finding[:check_id]] = true
+    end
     fingerprint_messages.reject do |fingerprint, _|
       existing_fingerprints.include?(fingerprint)
     end
@@ -116,7 +127,7 @@ class SemgrepResultProcessor
 
     # Create new comments for remaining findings
     path_line_message_dict.each do |fingerprint, finding|
-      header_information = JSON.dump({ 'fingerprint' => fingerprint })
+      header_information = JSON.dump({ 'fingerprint' => fingerprint, 'check_id' => finding[:check_id] })
       message_header = "<!-- #{header_information} -->"
       new_line = finding[:line]
       message = finding[:message]

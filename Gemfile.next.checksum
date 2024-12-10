@@ -128,7 +128,7 @@
 {"name":"discordrb-webhooks","version":"3.5.0","platform":"ruby","checksum":"52fba8bce3b08059d4a41a1e73a9a152958e788a9330275450126b44f01c23b1"},
 {"name":"docile","version":"1.4.0","platform":"ruby","checksum":"5f1734bde23721245c20c3d723e76c104208e1aa01277a69901ce770f0ebb8d3"},
 {"name":"domain_name","version":"0.5.20190701","platform":"ruby","checksum":"000a600454cb4a344769b2f10b531765ea7bd3a304fe47ed12e5ca1eab969851"},
-{"name":"doorkeeper","version":"5.8.0","platform":"ruby","checksum":"5abc747ee0eaa3140e165b41e937941f05d5ce5bcd8b8ed6718e6711623a8105"},
+{"name":"doorkeeper","version":"5.8.1","platform":"ruby","checksum":"6d54f3c36755d8cfcb7e4f04fbcf1ff3492c816090ad78126ec8a722c292d26c"},
 {"name":"doorkeeper-device_authorization_grant","version":"1.0.3","platform":"ruby","checksum":"94c3ac12a0d50942850ecd58ed64298b397a5e903e8880cb68d4085600932679"},
 {"name":"doorkeeper-openid_connect","version":"1.8.10","platform":"ruby","checksum":"b28efaa9b52cbe9aca4efc825a7ef63cc950ae6a96f4a72ed8362f278a453742"},
 {"name":"dotenv","version":"2.7.6","platform":"ruby","checksum":"2451ed5e8e43776d7a787e51d6f8903b98e446146c7ad143d5678cc2c409d547"},

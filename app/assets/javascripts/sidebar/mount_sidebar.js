@@ -16,7 +16,6 @@ import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
-import SidebarConfidentialityWidget from './components/confidential/sidebar_confidentiality_widget.vue';
 import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
 import SidebarDueDateWidget from './components/date/sidebar_date_widget.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
@@ -322,39 +321,6 @@ export function mountSidebarLabelsWidget() {
         class: ['block labels js-labels-block'],
         scopedSlots: {
           default: () => __('None'),
-        },
-      }),
-  });
-}
-
-function mountSidebarConfidentialityWidget() {
-  const el = document.querySelector('.js-sidebar-confidential-widget-root');
-
-  if (!el) {
-    return null;
-  }
-
-  const { fullPath, iid } = getSidebarOptions();
-  const dataNode = document.getElementById('js-confidential-issue-data');
-  const initialData = JSON.parse(dataNode.innerHTML);
-
-  return new Vue({
-    el,
-    name: 'SidebarConfidentialityWidgetRoot',
-    apolloProvider,
-    provide: {
-      canUpdate: initialData.is_editable,
-      isClassicSidebar: true,
-    },
-    render: (createElement) =>
-      createElement(SidebarConfidentialityWidget, {
-        props: {
-          iid: String(iid),
-          fullPath,
-          issuableType:
-            isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? TYPE_ISSUE
-              : TYPE_MERGE_REQUEST,
         },
       }),
   });
@@ -762,7 +728,6 @@ export function mountSidebar(mediator, store) {
   mountSidebarCrmContacts();
   mountSidebarLabelsWidget();
   mountSidebarMilestoneWidget();
-  mountSidebarConfidentialityWidget();
   mountSidebarDueDateWidget();
   mountSidebarReferenceWidget();
   mountIssuableLockForm(store);

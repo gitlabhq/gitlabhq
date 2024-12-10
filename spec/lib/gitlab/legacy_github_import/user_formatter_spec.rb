@@ -139,6 +139,30 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
           expect { user_formatter.source_user }.to change { Import::SourceUser.count }.from(0).to(1)
           expect(user_formatter.source_user.class).to eq(Import::SourceUser)
         end
+
+        it "creates a placeholder with the user's full name and username" do
+          source_user = user_formatter.source_user
+
+          expect(source_user).to have_attributes(
+            source_user_identifier: gitea_user[:id].to_s,
+            source_username: gitea_user[:login],
+            source_name: gitea_user[:full_name]
+          )
+        end
+
+        context 'when the gitea user has no full name' do
+          let(:gitea_user) { { id: 123456, login: 'octocat', email: 'user@email.com', full_name: '' } }
+
+          it 'falls back to the gitea username' do
+            source_user = user_formatter.source_user
+
+            expect(source_user).to have_attributes(
+              source_user_identifier: gitea_user[:id].to_s,
+              source_username: gitea_user[:login],
+              source_name: gitea_user[:login]
+            )
+          end
+        end
       end
 
       context 'and a source user already exists' do

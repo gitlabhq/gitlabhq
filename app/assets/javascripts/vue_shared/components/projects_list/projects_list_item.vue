@@ -15,6 +15,7 @@ import {
   deleteParams,
 } from 'ee_else_ce/vue_shared/components/resource_lists/utils';
 import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
+import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -23,8 +24,7 @@ import { __, s__ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -47,7 +47,6 @@ export default {
     moreTopics: __('More topics'),
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
-    actions: __('Actions'),
     project: __('Project'),
     deleteErrorMessage: s__(
       'Projects|An error occurred deleting the project. Please refresh the page to try again.',
@@ -63,8 +62,8 @@ export default {
     GlSprintf,
     TimeAgoTooltip,
     DeleteModal,
-    ListActions,
     ProjectListItemDescription,
+    ProjectListItemActions,
     ProjectListItemInactiveBadge,
     ProjectListItemDelayedDeletionModalFooter: () =>
       import(
@@ -206,16 +205,6 @@ export default {
       }
 
       return numberToMetricPrefix(this.project.openIssuesCount);
-    },
-    actions() {
-      return {
-        [ACTION_EDIT]: {
-          href: this.project.editPath,
-        },
-        [ACTION_DELETE]: {
-          action: this.onActionDelete,
-        },
-      };
     },
     hasActions() {
       return this.project.availableActions?.length;
@@ -407,11 +396,11 @@ export default {
         </div>
       </div>
     </div>
-    <div class="gl-ml-3 gl-flex gl-h-9 gl-items-center">
-      <list-actions
-        v-if="hasActions"
-        :actions="actions"
-        :available-actions="project.availableActions"
+    <div v-if="hasActions" class="gl-ml-3 gl-flex gl-h-9 gl-items-center">
+      <project-list-item-actions
+        :project="project"
+        @refetch="$emit('refetch')"
+        @delete="onActionDelete"
       />
     </div>
 

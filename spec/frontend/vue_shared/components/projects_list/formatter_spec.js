@@ -5,7 +5,7 @@ import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions
 
 const MOCK_AVAILABLE_ACTIONS = [ACTION_EDIT, ACTION_DELETE];
 
-jest.mock('~/vue_shared/components/projects_list/utils', () => ({
+jest.mock('ee_else_ce/vue_shared/components/projects_list/utils', () => ({
   availableGraphQLProjectActions: jest.fn(() => MOCK_AVAILABLE_ACTIONS),
 }));
 

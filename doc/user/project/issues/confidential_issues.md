@@ -52,8 +52,7 @@ To change the confidentiality of an existing issue:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. Select the title of your issue to view it.
-1. On the right sidebar, next to **Confidentiality**, select **Edit**.
-1. Select **Turn on** (or **Turn off** to make the issue non-confidential).
+1. In the upper-right corner, select **Issue actions** (**{ellipsis_v}**) and then **Turn on confidentiality** (or **Turn off confidentiality** to make the issue non-confidential).
 
 Alternatively, you can use the `/confidential` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
