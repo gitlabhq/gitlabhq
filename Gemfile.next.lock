@@ -518,7 +518,7 @@ GEM
       thor (>= 0.19, < 2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    devfile (0.1.0)
+    devfile (0.1.1)
     device_detector (1.0.0)
     devise (4.9.3)
       bcrypt (~> 3.0)
@@ -1020,7 +1020,7 @@ GEM
     influxdb-client (3.1.0)
     invisible_captcha (2.1.0)
       rails (>= 5.2)
-    io-console (0.7.2)
+    io-console (0.8.0)
     io-event (1.6.5)
     ipaddr (1.2.5)
     ipaddress (0.8.3)
@@ -1177,7 +1177,7 @@ GEM
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.2)
       mustermann (>= 1.0.0)
-    mutex_m (0.2.0)
+    mutex_m (0.3.0)
     nap (1.1.0)
     neighbor (0.3.2)
       activerecord (>= 6.1)
@@ -1465,7 +1465,8 @@ GEM
       pry (>= 0.13.0)
       tty-markdown
       tty-prompt
-    psych (5.2.0)
+    psych (5.2.1)
+      date
       stringio
     public_suffix (6.0.1)
     puma (6.4.3)
@@ -1548,7 +1549,7 @@ GEM
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.7.0)
+    rdoc (6.8.1)
       psych (>= 4.0.0)
     re2 (2.7.0)
       mini_portile2 (~> 2.8.5)
@@ -1578,7 +1579,7 @@ GEM
       redis (>= 4, < 6)
     regexp_parser (2.6.0)
     regexp_property_values (1.0.0)
-    reline (0.5.11)
+    reline (0.5.12)
       io-console (~> 0.5)
     representable (3.2.0)
       declarative (< 0.1.0)
@@ -2045,7 +2046,7 @@ DEPENDENCIES
   declarative_policy (~> 1.1.0)
   deprecation_toolkit (~> 1.5.1)
   derailed_benchmarks
-  devfile (~> 0.1.0)
+  devfile (~> 0.1.1)
   device_detector
   devise (~> 4.9.3)
   devise-pbkdf2-encryptable (~> 0.0.0)!
