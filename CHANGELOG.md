@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.5.4 (2024-12-10)
+
+### Fixed (1 change)
+
+- [Fix 401 errors when installing the GitLab for Jira app](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5499b8941f6d0dec42bbd7469ca806890edae35e)
+
+### Security (11 changes)
+
+- [Add timeout around Parslet in template parser](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b9ce9e051da449add787b16f7cf2d08f8eb11115) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4654))
+- [Add authorization check to protectableBranches field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3f870e741e15034bca056fba125a0badbbe264bf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4595))
+- [Check harbor name & digest for path traversal](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2257cdf16e6ddbfdfddbbecd694e30589581be4e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4628))
+- [Ignore titles for GFM links in rich text editor](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2215af32dfa6074844e4b39a5ce12dc8b2590d09) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4650))
+- [Restrict user and group creation when same pages unique domain exist](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c7c6fbba10470644b4d532b3ba1aa00240bde391) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4576))
+- [DoS by repeatedly sending unauthenticated requests for diff-files of a commit or merge request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f0c1b73b4e2584aba7866653828b15283d10a90) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4638))
+- [Add query to filter_parameters](https://gitlab.com/gitlab-org/security/gitlab/-/commit/707d7792996ebe8e4c8da2a587810e3339432352) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4626))
+- [Added invalid redirect fragment check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e2760b5a3425f50c3444ff264d4e3381f11894ea) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4605))
+- [Make confidential threads unresolvable via new issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a7ff5a159f7d699eec9e9844e5ab0727219ecb91) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4634))
+- [Do not set session cookie for /v2 endpoints in the response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/542c5b0dbc4744dab0d89bc42b34bfe16e760e54) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4631))
+- [HTML injection in vulnerability details, leads to XSS on self hosted servers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7e572e94c2360b93fe6e04a65b9874975382693) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4553))
+
 ## 17.5.3 (2024-11-26)
 
 ### Fixed (1 change)
