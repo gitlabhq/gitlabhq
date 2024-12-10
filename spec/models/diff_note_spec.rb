@@ -68,6 +68,46 @@ RSpec.describe DiffNote do
       expect(note.errors[:noteable]).to include("doesn't support new-style diff notes")
     end
 
+    context 'when diff note is set on SHA256 repository' do
+      let(:feature_branch) { 'feature' }
+      let(:target_branch) { 'master' }
+      let(:project) do
+        create(
+          :project,
+          :custom_repo,
+          object_format: Repository::FORMAT_SHA256,
+          files: { 'README.md' => 'Test' }
+        ).tap do |p|
+          p.repository.create_file(p.creator, 'foo', 'bar', message: 'Add foo', branch_name: feature_branch)
+        end
+      end
+
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          source_branch: feature_branch,
+          target_branch: target_branch
+        )
+      end
+
+      let(:position) do
+        Gitlab::Diff::Position.new(
+          old_path: 'foo',
+          new_path: 'foo',
+          old_line: nil,
+          new_line: 1,
+          diff_refs: merge_request.diff_refs
+        )
+      end
+
+      it 'creates a note without an error' do
+        note = build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request)
+
+        expect(note).to be_valid
+      end
+    end
+
     context 'when importing' do
       it "does not check if it's supported" do
         note = build(:diff_note_on_merge_request, project: project, noteable: nil)

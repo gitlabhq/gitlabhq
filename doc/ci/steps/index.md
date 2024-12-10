@@ -16,20 +16,12 @@ While you are not required to use steps, the reusability, composability, testabi
 of steps make it easier to understand and maintain CI/CD pipeline.
 
 To get started, you can try the [Set up steps tutorial](../../tutorials/setup_steps/index.md).
-To start creating your own steps, see [Creating your own step](#create-your-own-step).
+To start creating your own steps, see [Creating your own step](#create-your-own-step). To understand how pipelines can benefit
+from using both CI/CD Components and CI/CD Steps, see [Combine CI/CD Components and CI/CD Steps](#combine-cicd-components-and-cicd-steps).
 
 This experimental feature is still in active development and might have breaking
 changes at any time. Review the [changelog](https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md)
 for full details on any breaking changes.
-
-CI/CD steps are different than [CI/CD components](../components/index.md). Components
-are reusable single pipeline configuration units. They are included in a pipeline when it is created,
-adding jobs and configuration to the pipeline. Files such as common scripts or programs
-from the component project cannot be referenced from a CI/CD job.
-
-CI/CD Steps are reusable units of a job. When the job runs, the referenced step is downloaded to
-the execution environment or image, bringing along any extra files included with the step.
-Execution of the step replaces the `script` in the job.
 
 ## Step workflow
 
@@ -227,16 +219,16 @@ just prior to step execution in the job environment and can be used in:
 
 Expressions can reference the following variables:
 
-| Variable                    | Example                            | Description |
-|:----------------------------|:-----------------------------------|:------------|
-| `env`                       | `${{env.HOME}}`                    | Access to environment variables set on the execution environment or in previous steps. |
-| `export_file`               | `echo name=FRED >${{export_file}}` | The path to the export file. Write to this file to export environment variables for use by subsequent running steps. |
-| `inputs`                    | `${{inputs.message}}`              | Access inputs to the step. |
-| `job`                       | `${{job.GITLAB_USER_NAME}}`        | Access GitLab CI/CD job variables, limited to those starting with `CI_`, `DOCKER_` or `GITLAB_`. |
-| `output_file`               | `echo name=Fred >${{output_file}}` | The path to the output file. Write to this file to set output variables from the step. |
-| `step_dir`                  | `work_dir: ${{step_dir}}`          | The folder to where the step has been downloaded. Use to refer to files in the step, or to set the work directory of an executable step. |
-| `steps.[step-name].outputs` | `${{steps.my-step.outputs.name}}`  | Access to outputs from previously executed steps. Choose the specific step using the step name. |
-| `work_dir`                  | `${{work_dir}}`                    | The work directory of an executing step. |
+| Variable                    | Example                                                       | Description |
+|:----------------------------|:--------------------------------------------------------------|:------------|
+| `env`                       | `${{env.HOME}}`                                               | Access environment variables set in the execution environment or in previous steps. |
+| `export_file`               | `echo '{"name":"NAME","value":"Fred"}' >${{export_file}}`     | The path to the [export file](#export-an-environment-variable). Write to this file to export environment variables for use by subsequent running steps. |
+| `inputs`                    | `${{inputs.message}}`                                         | Access the step's inputs. |
+| `job`                       | `${{job.GITLAB_USER_NAME}}`                                   | Access GitLab CI/CD variables, limited to those starting with `CI_`, `DOCKER_` or `GITLAB_`. |
+| `output_file`               | `echo '{"name":"meaning_life","value":42}' >${{output_file}}` | The path to the [output file](#return-an-output). Write to this file to set output variables from the step. |
+| `step_dir`                  | `work_dir: ${{step_dir}}`                                     | The directory where the step has been downloaded. Use to refer to files in the step, or to set the working directory of an executable step. |
+| `steps.[step_name].outputs` | `${{steps.my_step.outputs.name}}`                             | Access [outputs](#specify-outputs) from previously executed steps. Choose the specific step using the step name. |
+| `work_dir`                  | `${{work_dir}}`                                               | The working directory of an executing step. |
 
 Expressions are different from template interpolation which uses double square-brackets (`$[[ ]]`)
 and are evaluated during job generation.
@@ -381,7 +373,7 @@ For example, the following step returns outputs returned by the `random-generato
 spec:
   outputs: delegate
 ---
-steps:
+run:
   - name: random_generator
     step: ./random-generator
 delegate: random-generator
@@ -420,7 +412,7 @@ spec:
 env:
   FIRST_NAME: Sally
   LAST_NAME: Seashells
-steps:
+run:
   # omitted for brevity
 ```
 
@@ -453,11 +445,19 @@ For example, if a step calls `go`, it should first install it.
 
 ##### Return an output
 
-Executable steps return an output by adding a line to the `${{output_file}}` in the format `name=value`,
-where the value is a JSON representation of the output type. The type of value written by the step
-must match the type of the output in the step specification.
+Executable steps return an output by adding a line to the `${{output_file}}` in JSON Line format.
+Each line is a JSON object with `name` and `value` key pairs. The `name` must be a string,
+and the `value` must be a type that matches the output type in the step specification:
 
-For example, to return the output named `car` with `string` value `range rover`:
+| Step specification type | Expected JSONL value type |
+|:------------------------|:--------------------------|
+| `array`                 | `array`                   |
+| `boolean`               | `boolean`                 |
+| `number`                | `number`                  |
+| `string`                | `string`                  |
+| `struct`                | `object`                  |
+
+For example, to return the output named `car` with `string` value `Range Rover`:
 
 ```yaml
 spec:
@@ -469,13 +469,13 @@ exec:
   command:
     - bash
     - -c
-    - echo car=\"range rover\" >>${{output_file}}
+    - echo '{"name":"car","value":"Range Rover"}' >${{output_file}}
 ```
 
 ##### Export an environment variable
 
-Executable steps export an environment variable by adding a line to the `${{export_file}}`
-in the format `name=value`. Double quotation marks are not required around the value.
+Executable steps export an environment variable by adding a line to the `${{export_file}}` in JSON Line format.
+Each line is a JSON object with `name` and `value` key pairs. Both `name` and `value` must be strings.
 
 For example, to set the variable `GOPATH` to value `/go`:
 
@@ -486,7 +486,7 @@ exec:
   command:
     - bash
     - -c
-    - echo GOPATH=/go >${{export_file}}
+    - echo '{"name":"GOPATH","value":"/go"}' >${{export_file}}
 ```
 
 #### Run a sequence of steps
@@ -502,7 +502,7 @@ have been installed:
 ```yaml
 spec:
 ---
-steps:
+run:
   - name: install_go
     step: ./go-steps/install-go
     inputs:
@@ -527,7 +527,7 @@ spec:
     java_version:
       type: string
 ---
-steps:
+run:
   - name: install_java
     step: ./common/install-java
 outputs:
@@ -541,8 +541,66 @@ For example:
 spec:
   outputs: delegate
 ---
-steps:
+run:
   - name: install_java
     step: ./common/install-java
 delegate: install_java
 ```
+
+## Combine CI/CD Components and CI/CD Steps
+
+[CI/CD components](../components/index.md) are reusable single pipeline configuration units. They are included in a pipeline when it is
+created, adding jobs and configuration to the pipeline. Files such as common scripts or programs
+from the component project cannot be referenced from a CI/CD job.
+
+CI/CD Steps are reusable units of a job. When the job runs, the referenced step is downloaded to
+the execution environment or image, bringing along any extra files included with the step.
+Execution of the step replaces the `script` in the job.
+
+Components and steps work well together to create solutions for CI/CD pipelines. Steps handle the complexity of
+how jobs are composed, and automatically retrieve the files necessary to run the job. Components provide
+a method to import job configuration, but hide the underlying job composition from the user.
+
+Steps and components use different syntax for expressions to help differentiate the expression types.
+Component expressions use square brackets `$[[ ]]` and are evaluated during pipeline creation.
+Step expressions use braces `${{ }}` and are evaluated during job execution, just before executing the step.
+
+For example, a project could use a component that adds a job to format Go code:
+
+- In the project's `.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+  - component: gitlab.com/my-components/go@main
+    inputs:
+      fmt_packages: "./..."
+  ```
+
+- Internally, the component uses CI/CD steps to compose the job, which installs Go then runs
+  the formatter. In the component's `templates/go.yml` file:
+
+  ```yaml
+  spec:
+    inputs:
+      fmt_packages:
+        description: The Go packages that will be formatted using the Go formatter.
+      go_version:
+        default: "1.22"
+        description: The version of Go to install before running go fmt.
+  ---
+
+  format code:
+    run:
+      - name: install_go
+        step: ./languages/go/install
+        inputs:
+          version: $[[ inputs.go_version ]]                    # version set to the value of the component input go_version
+      - name: format_code
+        step: ./languages/go/go-fmt
+        inputs:
+          go_binary: ${{ steps.install_go.outputs.go_binary }} # go_binary set to the value of the go_binary output from the previous step
+          fmt_packages: $[[ inputs.fmt_packages ]]             # fmt_packages set to the value of the component input fmt_packages
+  ```
+
+In this example, the complexity of the steps the component author used to compose the job are hidden from the user
+in the CI/CD component.

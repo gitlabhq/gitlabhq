@@ -22,7 +22,7 @@ module Keeps
       end
 
       def reviewer_has_matching_role?(person, role)
-        person.dig(:user, :type).any? { |role_pair| role_pair[:r] == role }
+        person.dig(:user, :type).any? { |role_pair| role_pair[:p] == GITLAB_PROJECT && role_pair[:r] == role }
       end
 
       def average_type?(person)

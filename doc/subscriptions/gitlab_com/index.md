@@ -75,7 +75,7 @@ The following information is displayed:
 
 Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
 
-You can renew your subscription [manually](../self_managed/index.md#renew-subscription-manually) or automatically.
+You can renew your subscription [manually](../self_managed/index.md#renew-subscription-manually) or [automatically](#automatic-subscription-renewal).
 Your updated subscription is applied to your namespace.
 The renewal period start date is displayed on the group Billing page under **Next subscription term start date**.
 
@@ -90,9 +90,9 @@ if it exceeds the number of seats you want to renew for.
 To manually renew your subscription for fewer seats, you can either:
 
 - [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of the
-subscription renewal date. Ensure that you specify the seat quantity when you renew.
+  subscription renewal date. Ensure that you specify the seat quantity when you renew.
 - [Disable automatic renewal of your subscription](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal),
-and contact the GitLab Sales team to renew it for the number of seats you want.
+  and contact the [sales team](https://about.gitlab.com/sales/) to renew it for the number of seats you want.
 
 ### Automatic subscription renewal
 

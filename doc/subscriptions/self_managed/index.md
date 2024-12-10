@@ -409,12 +409,12 @@ or manually.
 You should [renew your subscription manually](#renew-subscription-manually) if
 you want to either:
 
-- [Upgrade your subscription tier](#upgrade-your-subscription-tier).
 - [Renew for fewer seats](#renew-for-fewer-seats).
+- Increase or decrease the quantities of products being renewed.
 
 Before your subscription renewal date, you should review your account.
 
-Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need help accessing the Customers Portal, changing the contact person who manages your subscription, or renewing your subscription.
+Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need help accessing the Customers Portal or changing the contact person who manages your subscription. Contact the [sales team](https://about.gitlab.com/sales/) if you need help renewing your subscription.
 
 ### Review your account
 
@@ -469,12 +469,7 @@ To manually renew your subscription:
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Under your existing subscription, select **Renew**. This button does not display
    until 15 days before the subscription expires.
-1. Under **Upgrade your plan**, select the [subscription tier](https://about.gitlab.com/pricing/) you want.
-
-   You can upgrade your subscription tier, but you cannot change to a lower tier.
-
-   To change to a lower tier, [contact the GitLab sales team](https://about.gitlab.com/sales/).
-1. Under **Subscription details**, in the **Billable users** text box, enter the
+1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
    total number of user seats you'll need for the upcoming year.
 
    NOTE:
@@ -486,12 +481,15 @@ To manually renew your subscription:
 
    In the **Users over license** text box, enter the number of
    [users over subscription](#users-over-subscription) for the user overage incurred.
+1. Optional. If renewing additional products, review and update the desired quantity.
 1. Review your renewal details and select **Renew subscription** to complete the
    payment process.
 1. On the [Subscriptions & purchases](https://customers.gitlab.com/subscriptions)
    page on the relevant subscription card, select **Copy activation code** to get
    a copy of the renewal term activation code.
 1. [Add the activation code](../../administration/license.md) to your instance.
+
+To add or remove products from your subscription, or to upgrade your subscription tier, please [contact the sales team](https://about.gitlab.com/sales/).
 
 ### Automatic subscription renewal
 
