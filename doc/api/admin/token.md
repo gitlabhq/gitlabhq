@@ -30,11 +30,9 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Identify Token
+## Get information on a token
 
-Returns information about a token.
-
-Supported tokens:
+Gets information for a given token. This endpoint supports the following tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Impersonation tokens](../../api/rest/authentication.md#impersonation-tokens)
@@ -46,14 +44,14 @@ Supported tokens:
 - [Pipeline trigger tokens](../../ci/triggers/index.md#create-a-pipeline-trigger-token)
 
 ```plaintext
-POST /api/v4/admin/token
+POST /api/v4/admin/:token
 ```
 
 Supported attributes:
 
-| Attribute    | Type    | Required | Description                      |
-|--------------|---------|----------|----------------------------------|
-| `token`      | string  | Yes      | Token that should be identified. |
+| Attribute    | Type    | Required | Description                 |
+|--------------|---------|----------|-----------------------------|
+| `token`      | string  | Yes      | Existing token to identify. |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the token.
 

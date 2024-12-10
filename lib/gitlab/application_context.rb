@@ -48,7 +48,7 @@ module Gitlab
     private_constant :WEB_ONLY_KEYS
 
     APPLICATION_ATTRIBUTES = [
-      Attribute.new(:organization, Organizations::Organization),
+      Attribute.new(:organization, ::Organizations::Organization),
       Attribute.new(:project, Project),
       Attribute.new(:namespace, Namespace),
       Attribute.new(:user, User),

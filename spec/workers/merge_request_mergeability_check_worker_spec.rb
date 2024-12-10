@@ -38,6 +38,7 @@ RSpec.describe MergeRequestMergeabilityCheckWorker, feature_category: :code_revi
 
         expect(Sidekiq.logger).to receive(:error).once
           .with(
+            'correlation_id' => an_instance_of(String),
             merge_request_id: merge_request.id,
             worker: "MergeRequestMergeabilityCheckWorker",
             message: 'Failed to check mergeability of merge request: solar flares')

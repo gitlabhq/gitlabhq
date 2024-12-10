@@ -118,8 +118,6 @@ RSpec.describe Current, feature_category: :cell do
     end
 
     context 'when organization is assigned' do
-      let_it_be(:event) { 'fallback_current_organization_to_default' }
-
       before do
         described_class.organization = current_organization
       end
@@ -128,27 +126,10 @@ RSpec.describe Current, feature_category: :cell do
         expect(assigned_organization).to eq(current_organization)
       end
 
-      it_behaves_like 'internal event not tracked'
+      it 'triggers FallbackOrganizationTracker' do
+        expect(Gitlab::Organizations::FallbackOrganizationTracker).to receive(:trigger).and_call_original
 
-      context 'when `fallback_organization_used` request store is true', :request_store do
-        let(:category) { described_class.name }
-        let(:additional_properties) { { label: 'foo' } }
-
-        before do
-          allow(Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return('foo')
-
-          Gitlab::SafeRequestStore.write(:fallback_organization_used, true)
-        end
-
-        it_behaves_like 'internal event tracking'
-
-        context 'when `track_organization_fallback` flag is disabled' do
-          before do
-            stub_feature_flags(track_organization_fallback: false)
-          end
-
-          it_behaves_like 'internal event not tracked'
-        end
+        assigned_organization
       end
     end
   end

@@ -67,7 +67,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/approval_rules/create_service_spec.rb'
     - 'ee/spec/services/audit_event_service_spec.rb'
     - 'ee/spec/services/audit_events/protected_branch_audit_event_service_spec.rb'
-    - 'ee/spec/services/audit_events/runner_custom_audit_event_service_spec.rb'
     - 'ee/spec/services/audit_events/runners_token_audit_event_service_spec.rb'
     - 'ee/spec/services/boards/create_service_spec.rb'
     - 'ee/spec/services/ci/audit_variable_change_service_spec.rb'

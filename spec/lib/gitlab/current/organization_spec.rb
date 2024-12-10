@@ -40,10 +40,10 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
         expect(current_organization).to eq(organization)
       end
 
-      it 'does not set "fallback_organization_used" request store', :request_store do
+      it 'does not enable fallback organization tracking', :request_store do
         current_organization
 
-        expect(Gitlab::SafeRequestStore.read(:fallback_organization_used)).to be_nil
+        expect(Gitlab::Organizations::FallbackOrganizationTracker.enabled?).to be(false)
       end
     end
 
@@ -58,10 +58,10 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
         expect(current_organization).to eq(default_organization)
       end
 
-      it 'sets "fallback_organization_used" request store to true', :request_store do
+      it 'enables fallback organization tracking', :request_store do
         current_organization
 
-        expect(Gitlab::SafeRequestStore.read(:fallback_organization_used)).to be(true)
+        expect(Gitlab::Organizations::FallbackOrganizationTracker.enabled?).to be(true)
       end
     end
   end

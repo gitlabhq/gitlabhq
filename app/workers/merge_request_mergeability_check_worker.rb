@@ -27,6 +27,12 @@ class MergeRequestMergeabilityCheckWorker
         .new(merge_request)
         .execute(recheck: false, retry_lease: false)
 
-    logger.error(worker: self.class.name, message: "Failed to check mergeability of merge request: #{result.message}", merge_request_id: merge_request_id) if result.error?
+    return unless result.error?
+
+    payload = Gitlab::ApplicationContext.current.merge(
+      worker: self.class.name,
+      message: "Failed to check mergeability of merge request: #{result.message}",
+      merge_request_id: merge_request_id)
+    logger.error(**payload)
   end
 end

@@ -162,7 +162,7 @@ module Users
         )
 
         # https://gitlab.com/gitlab-org/gitlab/-/issues/442780
-        user.assign_personal_namespace(Organizations::Organization.first)
+        user.assign_personal_namespace(::Organizations::Organization.first)
 
         Users::UpdateService.new(user, user: user).execute(validate: false)
         user

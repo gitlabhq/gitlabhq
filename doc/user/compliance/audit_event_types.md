@@ -480,7 +480,9 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Associated projects are successfully assigned to a CI/CD runner | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | User |
+| [`ci_runner_assigned_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81508) | Triggered when a runner is assigned to a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
+| [`ci_runner_unassigned_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81540) | Triggered when a runner is unassigned from a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
+| [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Associated projects are successfully assigned to a CI/CD runner | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Project |
 
 ### Secret detection
 

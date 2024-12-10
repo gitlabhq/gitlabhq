@@ -700,7 +700,6 @@ Layout/LineLength:
     - 'ee/app/services/app_sec/dast/site_profiles/update_service.rb'
     - 'ee/app/services/app_sec/dast/site_validations/runner_service.rb'
     - 'ee/app/services/audit_events/runner_audit_event_service.rb'
-    - 'ee/app/services/audit_events/runner_custom_audit_event_service.rb'
     - 'ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb'
     - 'ee/app/services/boards/epics/create_service.rb'
     - 'ee/app/services/boards/epics/move_service.rb'

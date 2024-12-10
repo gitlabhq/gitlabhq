@@ -7,8 +7,7 @@ include:
       # use a different prefix.
       # See https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml
       dangerfile: "${DANGER_DANGERFILE_PREFIX}Dangerfile"
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/466701
-      dry_run: false
+      dry_run: true
 
 danger-review:
   extends:

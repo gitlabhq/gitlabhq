@@ -1869,7 +1869,6 @@
 - './ee/spec/services/audit_events/release_associate_milestone_audit_event_service_spec.rb'
 - './ee/spec/services/audit_events/release_created_audit_event_service_spec.rb'
 - './ee/spec/services/audit_events/release_updated_audit_event_service_spec.rb'
-- './ee/spec/services/audit_events/runner_custom_audit_event_service_spec.rb'
 - './ee/spec/services/audit_events/runners_token_audit_event_service_spec.rb'
 - './ee/spec/services/audit_events/streaming/headers/base_spec.rb'
 - './ee/spec/services/audit_events/streaming/headers/create_service_spec.rb'

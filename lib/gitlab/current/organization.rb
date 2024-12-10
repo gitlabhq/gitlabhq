@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def fallback_organization
-        Gitlab::SafeRequestStore.write(:fallback_organization_used, true)
+        Gitlab::Organizations::FallbackOrganizationTracker.enable
 
         ::Organizations::Organization.default_organization
       end

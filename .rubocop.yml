@@ -1006,6 +1006,7 @@ Cop/UserAdmin:
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+    - 'qa/**/*.rb'
 
 Style/InlineDisableAnnotation:
   Enabled: true

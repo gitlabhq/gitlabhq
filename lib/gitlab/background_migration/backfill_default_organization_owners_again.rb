@@ -24,7 +24,7 @@ module Gitlab
             }
           end
 
-          Organizations::OrganizationUser.upsert_all(
+          ::Organizations::OrganizationUser.upsert_all(
             organization_users_attributes,
             returning: false,
             unique_by: [:organization_id, :user_id]

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Cop/UserAdmin -- does not apply to test resource
 module QA
   module Resource
     class User < Base
@@ -346,6 +345,5 @@ module QA
     end
   end
 end
-# rubocop:enable Cop/UserAdmin
 
 QA::Resource::User.prepend_mod_with("Resource::User", namespace: QA)

@@ -30,5 +30,6 @@ export const i18n = {
       improvement,
       degradation,
     }),
-  singularCopy: (findings) => sprintf(__('Code Quality scans found %{findings}.'), { findings }),
+  singularCopy: (findings) =>
+    sprintf(__('Code Quality scans found %{findings}.'), { findings }, false),
 };

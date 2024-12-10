@@ -63,7 +63,7 @@ $crud-header-min-height: px-to-rem(49px);
     }
 
     tr th, tr td {
-      border-color: var(--gl-border-color-section);
+      @apply gl-border-section;
     }
   }
 

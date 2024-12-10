@@ -18,30 +18,30 @@ Prerequisites:
 
 - You must have the Owner role in the top-level group.
 
-## List enterprise users
+## List all enterprise users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438366) in GitLab 17.7.
 
-Gets a list of enterprise users for a given top-level group.
+Lists all enterprise users for a given top-level group.
 
-Takes [pagination parameters](rest/index.md#offset-based-pagination) `page` and `per_page` to restrict the list of enterprise users.
+Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
 
 ```plaintext
 GET /groups/:id/enterprise_users
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
 | `id`             | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
-| `username`       | string         | no       | Return single user with a specific username. |
-| `search`         | string         | no       | Search users by name, email, username. |
+| `username`       | string         | no       | Return a user with a given username. |
+| `search`         | string         | no       | Return users with a matching name, email, or username. Use partial values to increase results. |
 | `active`         | boolean        | no       | Return only active users. |
 | `blocked`        | boolean        | no       | Return only blocked users. |
 | `created_after`  | datetime       | no       | Return users created after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). |
 | `created_before` | datetime       | no       | Return users created before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). |
-| `two_factor`     | string         | no       | Filter users by two-factor authentication (2FA). Filter values are `enabled` or `disabled`. By default it returns all users. |
+| `two_factor`     | string         | no       | Return users based on their two-factor authentication (2FA) enrollment status. Possible values: `enabled`, `disabled`. |
 
 Example request:
 
