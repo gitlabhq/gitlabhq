@@ -37,6 +37,11 @@ RSpec.shared_examples 'with cross-reference system notes' do
   it 'avoids Git calls and N+1 SQL queries', :request_store do
     expect_any_instance_of(Repository).not_to receive(:find_commit).with(commit.id)
 
+    # Ensure last_used_at doesn't get updated later to skew the results
+    get api(url, user, personal_access_token: pat)
+    # Clear cached permission checks so the control doesn't have skewed results
+    RequestStore.clear!
+
     control = ActiveRecord::QueryRecorder.new do
       get api(url, user, personal_access_token: pat)
     end

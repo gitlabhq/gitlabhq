@@ -11,8 +11,6 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
 
   let(:help_page_href) { help_page_path('administration/packages/container_registry_metadata_database.md') }
 
-  subject { visit project_settings_packages_and_registries_path(project) }
-
   before do
     project.project_feature.update!(container_registry_access_level: container_registry_enabled_on_project)
     project.container_expiration_policy.update!(enabled: true)
@@ -24,37 +22,15 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
 
   describe 'layout', :js do
     it 'renders sections' do
-      subject
+      visit_page
 
       expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
       expect(page).to have_selector 'h2', text: 'Package registry'
       expect(page).to have_selector 'h2', text: 'Container registry'
     end
 
-    it 'passes axe automated accessibility testing' do
-      subject
-
-      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
-                                  .skipping :'link-in-text-block'
-    end
-  end
-
-  context 'with feature flag disabled', :js do
-    before do
-      stub_feature_flags(reorganize_project_level_registry_settings: false)
-    end
-
-    it 'passes axe automated accessibility testing' do
-      subject
-
-      wait_for_requests
-
-      expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
-      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
-    end
-
     it 'shows active tab on sidebar' do
-      subject
+      visit_page
 
       within_testid('super-sidebar') do
         expect(page).to have_selector('button[aria-expanded="true"]', text: 'Settings')
@@ -62,15 +38,30 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
       end
     end
 
+    it 'passes axe automated accessibility testing' do
+      visit_page
+
+      click_button 'Expand Package registry'
+
+      click_button 'Expand Container registry'
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+                                  .skipping :'link-in-text-block'
+    end
+  end
+
+  shared_examples 'tags cleanup policy settings' do
     it 'shows available section' do
-      subject
+      visit_method
 
       settings_block = find_by_testid('container-expiration-policy-project-settings')
       expect(settings_block).to have_text 'Container registry cleanup policies'
     end
 
     it 'contains link to cleanup policies page' do
-      subject
+      visit_method
 
       expect(page).to have_link('Edit cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
     end
@@ -78,7 +69,7 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
     it 'has link to next generation container registry docs' do
       allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
 
-      subject
+      visit_method
 
       expect(page).to have_link('next-generation container registry', href: help_page_href)
     end
@@ -94,7 +85,7 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
         end
 
         it 'displays the related section' do
-          subject
+          visit_method
 
           within_testid 'container-expiration-policy-project-settings' do
             expect(page).to have_link('Set cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
@@ -108,7 +99,7 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
         end
 
         it 'does not display the related section' do
-          subject
+          visit_method
 
           within_testid 'container-expiration-policy-project-settings' do
             expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
@@ -118,11 +109,36 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
     end
   end
 
+  describe 'container registry tags cleanup policy', :js do
+    it_behaves_like 'tags cleanup policy settings' do
+      let(:visit_method) { visit_and_expand_section }
+    end
+  end
+
+  context 'with feature flag disabled', :js do
+    before do
+      stub_feature_flags(reorganize_project_level_registry_settings: false)
+    end
+
+    it 'passes axe automated accessibility testing' do
+      visit_page
+
+      wait_for_requests
+
+      expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+    end
+
+    it_behaves_like 'tags cleanup policy settings' do
+      let(:visit_method) { visit_page }
+    end
+  end
+
   context 'when registry is disabled' do
     let(:container_registry_enabled) { false }
 
     it 'does not exists' do
-      subject
+      visit_page
 
       expect(page).not_to have_selector('[data-testid="container-expiration-policy-project-settings"]')
     end
@@ -132,9 +148,21 @@ RSpec.describe 'Project > Settings > Packages and registries', feature_category:
     let(:container_registry_enabled_on_project) { ProjectFeature::DISABLED }
 
     it 'does not exists' do
-      subject
+      visit_page
 
       expect(page).not_to have_selector('[data-testid="container-expiration-policy-project-settings"]')
     end
+  end
+
+  private
+
+  def visit_page
+    visit project_settings_packages_and_registries_path(project)
+  end
+
+  def visit_and_expand_section
+    visit_page
+
+    click_button 'Expand Container registry'
   end
 end

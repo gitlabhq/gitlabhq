@@ -1,13 +1,24 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
+import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 
 export default {
   components: {
     GlLink,
     GlSprintf,
+    ContainerExpirationPolicy,
+    ContainerProtectionRules,
     SettingsBlock,
+  },
+  mixins: [glFeatureFlagsMixin()],
+  computed: {
+    showProtectedContainersSettings() {
+      return this.glFeatures.containerRegistryProtectedContainers;
+    },
   },
   containerRegistryHelpPath: helpPagePath('user/packages/container_registry/index.md'),
 };
@@ -30,6 +41,10 @@ export default {
           <gl-link :href="$options.containerRegistryHelpPath">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
+    </template>
+    <template #default>
+      <container-protection-rules v-if="showProtectedContainersSettings" />
+      <container-expiration-policy />
     </template>
   </settings-block>
 </template>

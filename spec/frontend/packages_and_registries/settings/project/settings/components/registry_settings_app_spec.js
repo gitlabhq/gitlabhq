@@ -37,7 +37,6 @@ describe('Registry Settings app', () => {
     showContainerRegistrySettings: true,
     showPackageRegistrySettings: true,
     showDependencyProxySettings: false,
-    ...(IS_EE && { showDependencyProxySettings: true }),
     glFeatures: {
       containerRegistryProtectedContainers: true,
       reorganizeProjectLevelRegistrySettings: false,
@@ -131,16 +130,14 @@ describe('Registry Settings app', () => {
       },
     );
 
-    if (IS_EE) {
-      it.each([true, false])('when showDependencyProxySettings is %s', (value) => {
-        mountComponent({
-          ...defaultProvide,
-          showDependencyProxySettings: value,
-        });
-
-        expect(findDependencyProxyPackagesSettings().exists()).toBe(value);
+    it.each([true, false])('when showDependencyProxySettings is %s', (value) => {
+      mountComponent({
+        ...defaultProvide,
+        showDependencyProxySettings: value,
       });
-    }
+
+      expect(findDependencyProxyPackagesSettings().exists()).toBe(value);
+    });
 
     describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
       it.each([true, false])(

@@ -84,12 +84,12 @@ export default {
     >
       {{ $options.i18n.UPDATE_SETTINGS_SUCCESS_MESSAGE }}
     </gl-alert>
+    <metadata-database-alert v-if="!isContainerRegistryMetadataDatabaseEnabled" class="gl-mt-5" />
     <template v-if="showReorganizedSettings">
       <package-registry-section v-if="showPackageRegistrySettings" />
       <container-registry-section v-if="showContainerRegistrySettings" />
     </template>
     <template v-else>
-      <metadata-database-alert v-if="!isContainerRegistryMetadataDatabaseEnabled" class="gl-mt-5" />
       <template v-if="showPackageRegistrySettings">
         <packages-protection-rules />
         <packages-cleanup-policy />
