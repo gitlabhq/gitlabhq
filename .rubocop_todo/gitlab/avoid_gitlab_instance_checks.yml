@@ -70,7 +70,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/services/gitlab_subscriptions/activate_service.rb'
     - 'ee/app/services/gitlab_subscriptions/add_on_purchases/create_service.rb'
     - 'ee/app/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service.rb'
-    - 'ee/app/services/llm/base_service.rb'
     - 'ee/app/services/namespaces/service_accounts/create_service.rb'
     - 'ee/app/workers/ee/ci/build_finished_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/refresh_seats_worker.rb'

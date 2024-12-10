@@ -12,8 +12,8 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
 
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
-  let(:mutation) { graphql_mutation(:delete_container_registry_protection_rule, input) }
-  let(:mutation_response) { graphql_mutation_response(:delete_container_registry_protection_rule) }
+  let(:mutation) { graphql_mutation(:delete_container_protection_repository_rule, input) }
+  let(:mutation_response) { graphql_mutation_response(:delete_container_protection_repository_rule) }
   let(:input) { { id: container_protection_rule.to_global_id } }
 
   subject(:post_graphql_mutation_delete_container_registry_protection_rule) do
@@ -39,7 +39,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
 
     expect(mutation_response).to include(
       'errors' => be_blank,
-      'containerRegistryProtectionRule' => {
+      'containerProtectionRepositoryRule' => {
         'id' => container_protection_rule.to_global_id.to_s,
         'repositoryPathPattern' => container_protection_rule.repository_path_pattern,
         'minimumAccessLevelForDelete' => container_protection_rule.minimum_access_level_for_delete.upcase,

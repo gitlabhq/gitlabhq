@@ -1,6 +1,8 @@
-mutation createContainerProtectionRule($input: CreateContainerRegistryProtectionRuleInput!) {
-  createContainerRegistryProtectionRule(input: $input) {
-    containerRegistryProtectionRule {
+mutation createContainerProtectionRepositoryRule(
+  $input: CreateContainerProtectionRepositoryRuleInput!
+) {
+  createContainerProtectionRepositoryRule(input: $input) {
+    containerProtectionRepositoryRule {
       id
       repositoryPathPattern
       minimumAccessLevelForPush

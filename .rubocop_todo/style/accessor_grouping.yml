@@ -64,4 +64,3 @@ Style/AccessorGrouping:
     - 'lib/safe_zip/entry.rb'
     - 'lib/system_check/simple_executor.rb'
     - 'qa/qa/ee/resource/geo/node.rb'
-    - 'qa/qa/ee/resource/settings/elasticsearch.rb'

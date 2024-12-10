@@ -11,7 +11,7 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
     create(
       :bulk_import_entity,
       :project_entity,
-      project: project,
+      project_id: project.id,
       bulk_import: bulk_import,
       source_full_path: 'source/full/path',
       destination_slug: 'My-Destination-Project',
@@ -27,7 +27,7 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
     {
       sha: "fakesha",
       ref: "fakeref",
-      project: project,
+      project_id: project.id,
       source: "web"
     }.merge(ci_pipeline_attributes)
   end
@@ -36,7 +36,7 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
     {
       sha: "fakesha2",
       ref: "fakeref2",
-      project: project,
+      project_id: project.id,
       source: "web"
     }.merge(ci_pipeline_attributes)
   end

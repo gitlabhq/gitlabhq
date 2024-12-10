@@ -22,6 +22,5 @@ Layout/ArgumentAlignment:
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/checks/changes_access_spec.rb'
     - 'spec/lib/gitlab/checks/single_change_access_spec.rb'
-    - 'spec/lib/gitlab/conan_token_spec.rb'
     - 'spec/lib/gitlab/config_checker/external_database_checker_spec.rb'
     - 'spec/lib/gitlab/cross_project_access/class_methods_spec.rb'

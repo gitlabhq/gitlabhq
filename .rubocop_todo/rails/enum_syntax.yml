@@ -75,7 +75,6 @@ Rails/EnumSyntax:
     - 'app/models/issuable_severity.rb'
     - 'app/models/jira_import_state.rb'
     - 'app/models/key.rb'
-    - 'app/models/lfs_objects_project.rb'
     - 'app/models/list.rb'
     - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'app/models/members/members/member_approval.rb'

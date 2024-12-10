@@ -47,7 +47,8 @@ module ReleasesHelper
     {
       project_id: @project.id,
       project_path: @project.full_path,
-      tag_name: @release.tag
+      tag_name: @release.tag,
+      deployments: deployments_for_release.to_json
     }
   end
 
@@ -87,6 +88,45 @@ module ReleasesHelper
       edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release'),
       upcoming_release_docs_path: releases_help_page_path(anchor: 'upcoming-releases')
     }
+  end
+
+  def deployments_for_release
+    return [] unless can?(current_user, :read_deployment, @project)
+
+    project = @release.project
+    deployments = @release.related_deployments
+    commit = project.repository.commit(@release.tag)
+
+    deployments.map do |deployment|
+      user = deployment.deployable.user
+      environment = deployment.environment
+
+      {
+        environment: {
+          name: environment&.name,
+          url: environment ? project_environment_url(project, environment) : nil
+        },
+        status: deployment.status,
+        deployment: {
+          id: deployment.id,
+          url: project_environment_deployment_path(project, environment, deployment)
+        },
+        commit: {
+          sha: commit.id,
+          name: commit.author_name,
+          commit_url: project_commit_url(project, commit),
+          short_sha: commit.short_id,
+          title: commit.title
+        },
+        triggerer: {
+          name: user&.name,
+          web_url: user ? user_url(user) : nil,
+          avatar_url: user&.avatar_url
+        },
+        created_at: deployment.created_at,
+        finished_at: deployment.finished_at
+      }
+    end
   end
 end
 

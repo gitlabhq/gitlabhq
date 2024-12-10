@@ -1097,3 +1097,35 @@ NoteDiffFile:
   - b_mode
   - new_path
   - old_path
+Vulnerability:
+  - project_id
+  - author_id
+  - title
+  - description
+  - severity
+  - report_type
+Vulnerabilities::Finding:
+  - severity
+  - report_type
+  - project_id
+  - project_fingerprint
+  - location_fingerprint
+  - name
+  - metadata_version
+  - raw_metadata
+  - detection_method
+  - uuid
+Vulnerabilities::Scanner:
+  - project_id
+  - external_id
+  - name
+  - vendor
+Vulnerabilities::Identifier:
+  - project_id
+  - fingerprint
+  - external_type
+  - external_id
+  - name
+  - url
+Vulnerabilities::Read:
+  - project_id

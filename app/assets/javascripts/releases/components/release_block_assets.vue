@@ -21,10 +21,15 @@ export default {
       type: Object,
       required: true,
     },
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
-      isAssetsExpanded: true,
+      isAssetsExpanded: this.expanded,
     };
   },
   computed: {

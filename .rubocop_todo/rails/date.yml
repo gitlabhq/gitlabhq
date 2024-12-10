@@ -127,7 +127,6 @@ Rails/Date:
     - 'ee/spec/support/shared_examples/requests/api/graphql/issue_list_shared_examples.rb'
     - 'ee/spec/support/shared_examples/requests/api/milestone_burndown_shared_examples.rb'
     - 'lib/gitlab/ci/charts.rb'
-    - 'lib/gitlab/database/partitioning/monthly_strategy.rb'
     - 'lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb'
     - 'lib/gitlab/database/reindexing/index_selection.rb'
     - 'lib/gitlab/usage/event_selection_rule.rb'

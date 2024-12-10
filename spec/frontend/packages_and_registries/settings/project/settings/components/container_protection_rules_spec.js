@@ -109,7 +109,7 @@ describe('Container protection rules project settings', () => {
 
       expect(findTable().exists()).toBe(true);
 
-      containerProtectionRuleQueryPayload().data.project.containerRegistryProtectionRules.nodes.forEach(
+      containerProtectionRuleQueryPayload().data.project.containerProtectionRepositoryRules.nodes.forEach(
         (protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
           expect(findTableRowCellComboboxSelectedOption(i, 1).text).toBe('Maintainer');
@@ -303,12 +303,7 @@ describe('Container protection rules project settings', () => {
             .findAllComponents('option')
             .wrappers.map((w) => w.text());
 
-          expect(accessLevelOptions).toEqual([
-            'Developer (default)',
-            'Maintainer',
-            'Owner',
-            'Admin',
-          ]);
+          expect(accessLevelOptions).toEqual(['Maintainer', 'Owner', 'Admin']);
         });
 
         describe('when value changes', () => {

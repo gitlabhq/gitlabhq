@@ -5,7 +5,7 @@ module Mutations
     module Protection
       module Rule
         class Delete < ::Mutations::BaseMutation
-          graphql_name 'DeleteContainerRegistryProtectionRule'
+          graphql_name 'DeleteContainerProtectionRepositoryRule'
           description 'Deletes a container registry protection rule. ' \
             'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
@@ -16,7 +16,7 @@ module Mutations
             required: true,
             description: 'Global ID of the container registry protection rule to delete.'
 
-          field :container_registry_protection_rule,
+          field :container_protection_repository_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
             experiment: { milestone: '16.7' },
@@ -33,7 +33,7 @@ module Mutations
             response = ::ContainerRegistry::Protection::DeleteRuleService.new(container_registry_protection_rule,
               current_user: current_user).execute
 
-            { container_registry_protection_rule: response.payload[:container_registry_protection_rule],
+            { container_protection_repository_rule: response.payload[:container_registry_protection_rule],
               errors: response.errors }
           end
         end

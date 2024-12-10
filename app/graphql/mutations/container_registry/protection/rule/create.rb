@@ -5,7 +5,7 @@ module Mutations
     module Protection
       module Rule
         class Create < ::Mutations::BaseMutation
-          graphql_name 'CreateContainerRegistryProtectionRule'
+          graphql_name 'CreateContainerProtectionRepositoryRule'
           description 'Creates a protection rule to restrict access to a project\'s container registry. ' \
             'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
@@ -43,7 +43,7 @@ module Mutations
               :minimum_access_level_for_push
             )
 
-          field :container_registry_protection_rule,
+          field :container_protection_repository_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
             experiment: { milestone: '16.6' },
@@ -58,7 +58,7 @@ module Mutations
 
             response = ::ContainerRegistry::Protection::CreateRuleService.new(project, current_user, kwargs).execute
 
-            { container_registry_protection_rule: response.payload[:container_registry_protection_rule],
+            { container_protection_repository_rule: response.payload[:container_registry_protection_rule],
               errors: response.errors }
           end
         end

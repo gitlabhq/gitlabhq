@@ -32,7 +32,7 @@ module Gitlab
 
         TOKEN_RESET_MODELS = %i[Project Namespace Group Ci::Trigger Ci::Build Ci::Runner ProjectHook ErrorTracking::ProjectErrorTrackingSetting].freeze
 
-        attr_reader :relation_name, :importable
+        attr_reader :relation_name, :relation_hash, :importable
 
         def self.create(*args, **kwargs)
           new(*args, **kwargs).create
@@ -341,7 +341,9 @@ module Gitlab
 
         def existing_object?
           strong_memoize(:_existing_object) do
-            self.class.existing_object_relations.include?(@relation_name) || unique_relation?
+            self.class.existing_object_relations.include?(@relation_name) ||
+              self.class.existing_object_relations.include?(@relation_sym) ||
+              unique_relation?
           end
         end
 

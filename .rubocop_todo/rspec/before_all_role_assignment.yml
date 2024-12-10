@@ -826,7 +826,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/finders/ci/commit_statuses_finder_spec.rb'
     - 'spec/finders/ci/jobs_finder_spec.rb'
     - 'spec/finders/ci/pipelines_finder_spec.rb'
-    - 'spec/finders/ci/runners_finder_spec.rb'
     - 'spec/finders/clusters/agent_tokens_finder_spec.rb'
     - 'spec/finders/concerns/finder_with_group_hierarchy_spec.rb'
     - 'spec/finders/container_repositories_finder_spec.rb'

@@ -162,10 +162,14 @@ module Resolvers
       argument :author_username, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to exclude any that are authored by the given user.'
-      argument :labels, [GraphQL::Types::String],
+      argument :label_name, [GraphQL::Types::String],
         required: false,
-        as: :label_name,
         description: 'Filters merge requests to exclude any that have the labels provided in the given array.'
+      argument :labels, [GraphQL::Types::String],
+        as: :label_name,
+        required: false,
+        description: 'Filters merge requests to exclude any that have the labels provided in the given array.',
+        deprecated: { reason: 'Use `labelName`', milestone: '17.7' }
       argument :milestone_title, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to those not in the given milestone.'

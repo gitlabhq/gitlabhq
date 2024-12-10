@@ -230,6 +230,7 @@ Returns [`BlobSearch`](#blobsearch).
 | <a id="queryblobsearchchunkcount"></a>`chunkCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum chunks per file. |
 | <a id="queryblobsearchgroupid"></a>`groupId` **{warning-solid}** | [`GroupID`](#groupid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Group to search in. |
 | <a id="queryblobsearchincludearchived"></a>`includeArchived` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.7. **Status**: Experiment. Includes archived projects in the search. Always true for project search. Default is false. |
+| <a id="queryblobsearchincludeforked"></a>`includeForked` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.7. **Status**: Experiment. Includes forked projects in the search. Always true for project search. Not available for global search. Default is false. |
 | <a id="queryblobsearchpage"></a>`page` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Page number to fetch the results. |
 | <a id="queryblobsearchperpage"></a>`perPage` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Number of results per page. |
 | <a id="queryblobsearchprojectid"></a>`projectId` **{warning-solid}** | [`ProjectID`](#projectid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Project to search in. |
@@ -3639,7 +3640,7 @@ Input type: `CreateComplianceRequirementInput`
 | <a id="mutationcreatecompliancerequirementerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatecompliancerequirementrequirement"></a>`requirement` | [`ComplianceRequirement`](#compliancerequirement) | Created compliance requirement. |
 
-### `Mutation.createContainerRegistryProtectionRule`
+### `Mutation.createContainerProtectionRepositoryRule`
 
 Creates a protection rule to restrict access to a project's container registry. Available only when feature flag `container_registry_protected_containers` is enabled.
 
@@ -3647,25 +3648,25 @@ DETAILS:
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
-Input type: `CreateContainerRegistryProtectionRuleInput`
+Input type: `CreateContainerProtectionRepositoryRuleInput`
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. Introduced in GitLab 16.6: **Status**: Experiment. |
-| <a id="mutationcreatecontainerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. Introduced in GitLab 16.6: **Status**: Experiment. |
-| <a id="mutationcreatecontainerregistryprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
-| <a id="mutationcreatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. Introduced in GitLab 16.6: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. Introduced in GitLab 16.6: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. Introduced in GitLab 16.6: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
+| <a id="mutationcreatecontainerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. Introduced in GitLab 16.6: **Status**: Experiment. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` **{warning-solid}** | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
-| <a id="mutationcreatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` **{warning-solid}** | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createCustomEmoji`
 
@@ -4486,7 +4487,7 @@ Input type: `DeleteAnnotationInput`
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.deleteContainerRegistryProtectionRule`
+### `Mutation.deleteContainerProtectionRepositoryRule`
 
 Deletes a container registry protection rule. Available only when feature flag `container_registry_protected_containers` is enabled.
 
@@ -4494,22 +4495,22 @@ DETAILS:
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
-Input type: `DeleteContainerRegistryProtectionRuleInput`
+Input type: `DeleteContainerProtectionRepositoryRuleInput`
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletecontainerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to delete. |
+| <a id="mutationdeletecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to delete. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` **{warning-solid}** | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
-| <a id="mutationdeletecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationdeletecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` **{warning-solid}** | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationdeletecontainerprotectionrepositoryruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.deletePackagesProtectionRule`
 
@@ -10152,7 +10153,7 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | <a id="mutationupdatecontainerexpirationpolicycontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy after mutation. |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.updateContainerRegistryProtectionRule`
+### `Mutation.updateContainerProtectionRepositoryRule`
 
 Updates a container registry protection rule to restrict access to project containers. You can prevent users without certain roles from altering containers. Available only when feature flag `container_registry_protected_containers` is enabled.
 
@@ -10160,25 +10161,25 @@ DETAILS:
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
-Input type: `UpdateContainerRegistryProtectionRuleInput`
+Input type: `UpdateContainerProtectionRepositoryRuleInput`
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to be updated. |
-| <a id="mutationupdatecontainerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
-| <a id="mutationupdatecontainerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
-| <a id="mutationupdatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to be updated. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` **{warning-solid}** | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
-| <a id="mutationupdatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` **{warning-solid}** | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
 
@@ -13171,28 +13172,28 @@ The edge type for [`ConnectedAgent`](#connectedagent).
 | <a id="connectedagentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="connectedagentedgenode"></a>`node` | [`ConnectedAgent`](#connectedagent) | The item at the end of the edge. |
 
-#### `ContainerRegistryProtectionRuleConnection`
+#### `ContainerProtectionRepositoryRuleConnection`
 
-The connection type for [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="containerregistryprotectionruleconnectionedges"></a>`edges` | [`[ContainerRegistryProtectionRuleEdge]`](#containerregistryprotectionruleedge) | A list of edges. |
-| <a id="containerregistryprotectionruleconnectionnodes"></a>`nodes` | [`[ContainerRegistryProtectionRule]`](#containerregistryprotectionrule) | A list of nodes. |
-| <a id="containerregistryprotectionruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `ContainerRegistryProtectionRuleEdge`
-
-The edge type for [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule).
+The connection type for [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule).
 
 ##### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryprotectionruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="containerregistryprotectionruleedgenode"></a>`node` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | The item at the end of the edge. |
+| <a id="containerprotectionrepositoryruleconnectionedges"></a>`edges` | [`[ContainerProtectionRepositoryRuleEdge]`](#containerprotectionrepositoryruleedge) | A list of edges. |
+| <a id="containerprotectionrepositoryruleconnectionnodes"></a>`nodes` | [`[ContainerProtectionRepositoryRule]`](#containerprotectionrepositoryrule) | A list of nodes. |
+| <a id="containerprotectionrepositoryruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContainerProtectionRepositoryRuleEdge`
+
+The edge type for [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectionrepositoryruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerprotectionrepositoryruleedgenode"></a>`node` | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | The item at the end of the edge. |
 
 #### `ContainerRepositoryConnection`
 
@@ -21343,7 +21344,7 @@ A tag expiration policy designed to keep only the images that matter most.
 | <a id="containerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older than the given age will expire. |
 | <a id="containerexpirationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the container expiration policy was updated. |
 
-### `ContainerRegistryProtectionRule`
+### `ContainerProtectionRepositoryRule`
 
 A container repository protection rule designed to prevent users with a certain access level or lower from altering the container registry.
 
@@ -21351,10 +21352,10 @@ A container repository protection rule designed to prevent users with a certain 
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryprotectionruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | **Introduced** in GitLab 16.6. **Status**: Experiment. ID of the container repository protection rule. |
-| <a id="containerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. |
-| <a id="containerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. |
-| <a id="containerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
+| <a id="containerprotectionrepositoryruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | **Introduced** in GitLab 16.6. **Status**: Experiment. ID of the container repository protection rule. |
+| <a id="containerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. |
+| <a id="containerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. |
+| <a id="containerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
 
@@ -31266,8 +31267,8 @@ Project-level settings for product analytics provider.
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` **{warning-solid}** | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
+| <a id="projectcontainerprotectionrepositoryrules"></a>`containerProtectionRepositoryRules` **{warning-solid}** | [`ContainerProtectionRepositoryRuleConnection`](#containerprotectionrepositoryruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
-| <a id="projectcontainerregistryprotectionrules"></a>`containerRegistryProtectionRules` **{warning-solid}** | [`ContainerRegistryProtectionRuleConnection`](#containerregistryprotectionruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy of the project. |
 | <a id="projectcorpuses"></a>`corpuses` | [`CoverageFuzzingCorpusConnection`](#coveragefuzzingcorpusconnection) | Find corpuses of the project. (see [Connections](#connections)) |
@@ -34580,6 +34581,7 @@ Security policy validation error.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="securitypolicyvalidationerrorfield"></a>`field` | [`String!`](#string) | Error field. |
+| <a id="securitypolicyvalidationerrorindex"></a>`index` | [`Int`](#int) | Index of the errored action. |
 | <a id="securitypolicyvalidationerrorlevel"></a>`level` | [`String!`](#string) | Error level. |
 | <a id="securitypolicyvalidationerrormessage"></a>`message` | [`String!`](#string) | Error message. |
 | <a id="securitypolicyvalidationerrortitle"></a>`title` | [`String`](#string) | Error title. |
@@ -38610,15 +38612,15 @@ Values for sorting contacts.
 | <a id="containerexpirationpolicyolderthanenumsixty_days"></a>`SIXTY_DAYS` | 60 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumthirty_days"></a>`THIRTY_DAYS` | 30 days until tags are automatically removed. |
 
-### `ContainerRegistryProtectionRuleAccessLevel`
+### `ContainerProtectionRepositoryRuleAccessLevel`
 
 Access level of a container registry protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="containerregistryprotectionruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Admin access. |
-| <a id="containerregistryprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Maintainer access. |
-| <a id="containerregistryprotectionruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Owner access. |
+| <a id="containerprotectionrepositoryruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Admin access. |
+| <a id="containerprotectionrepositoryruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Maintainer access. |
+| <a id="containerprotectionrepositoryruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Owner access. |
 
 ### `ContainerRepositoryCleanupStatus`
 
@@ -44110,7 +44112,8 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsresolvernegatedparamsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Filters merge requests to exclude any that are approved by usernames in the given array. |
 | <a id="mergerequestsresolvernegatedparamsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters merge requests to exclude any that are assigned to the usernames in the given array. |
 | <a id="mergerequestsresolvernegatedparamsauthorusername"></a>`authorUsername` | [`String`](#string) | Filters merge requests to exclude any that are authored by the given user. |
-| <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` | [`[String!]`](#string) | Filters merge requests to exclude any that have the labels provided in the given array. |
+| <a id="mergerequestsresolvernegatedparamslabelname"></a>`labelName` | [`[String!]`](#string) | Filters merge requests to exclude any that have the labels provided in the given array. |
+| <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use `labelName`. Deprecated in GitLab 17.7. |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filters merge requests to those not in the given milestone. |
 | <a id="mergerequestsresolvernegatedparamsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filters merge requests to those without the given reaction from the authenticated user. |
 | <a id="mergerequestsresolvernegatedparamsreleasetag"></a>`releaseTag` | [`String`](#string) | Filters merge requests to those without the given release tag. |

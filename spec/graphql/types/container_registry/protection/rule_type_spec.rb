@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ContainerRegistryProtectionRule'], feature_category: :container_registry do
-  specify { expect(described_class.graphql_name).to eq('ContainerRegistryProtectionRule') }
+RSpec.describe GitlabSchema.types['ContainerProtectionRepositoryRule'], feature_category: :container_registry do
+  specify { expect(described_class.graphql_name).to eq('ContainerProtectionRepositoryRule') }
 
   specify { expect(described_class.description).to be_present }
 

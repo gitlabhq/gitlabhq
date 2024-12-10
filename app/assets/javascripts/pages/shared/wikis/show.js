@@ -7,6 +7,7 @@ import SidebarResizer from './components/sidebar_resizer.vue';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
 import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
+import initNotesApp from './wiki_notes/index';
 
 const mountSidebarResizer = () => {
   const resizer = document.querySelector('.js-wiki-sidebar-resizer');
@@ -107,6 +108,7 @@ export const mountWikiSidebarEntries = () => {
 export const mountApplications = () => {
   mountWikiContentApp();
   mountSidebarResizer();
+  initNotesApp();
 
   new Wikis(); // eslint-disable-line no-new
 };

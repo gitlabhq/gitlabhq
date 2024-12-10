@@ -44,7 +44,7 @@ Gets information for a given token. This endpoint supports the following tokens:
 - [Pipeline trigger tokens](../../ci/triggers/index.md#create-a-pipeline-trigger-token)
 
 ```plaintext
-POST /api/v4/admin/:token
+POST /api/v4/admin/token
 ```
 
 Supported attributes:

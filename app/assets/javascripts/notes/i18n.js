@@ -7,6 +7,7 @@ export const COMMENT_FORM = {
   error: __('Comment could not be submitted: %{reason}.'),
   note: __('Note'),
   comment: __('Comment'),
+  wiki: __('Wiki'),
   internalComment: __('Add internal note'),
   issue: __('issue'),
   startThread: __('Start thread'),

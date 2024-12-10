@@ -17,9 +17,9 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
   end
 
   let(:mutation) do
-    graphql_mutation(:update_container_registry_protection_rule, input,
+    graphql_mutation(:update_container_protection_repository_rule, input,
       <<~QUERY
-      containerRegistryProtectionRule {
+      containerProtectionRepositoryRule {
         repositoryPathPattern
         minimumAccessLevelForDelete
         minimumAccessLevelForPush
@@ -39,7 +39,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     }
   end
 
-  let(:mutation_response) { graphql_mutation_response(:update_container_registry_protection_rule) }
+  let(:mutation_response) { graphql_mutation_response(:update_container_protection_repository_rule) }
 
   subject(:post_graphql_mutation_update_container_registry_protection_rule) do
     post_graphql_mutation(mutation, current_user: current_user)
@@ -52,7 +52,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
       subject
 
       expect(mutation_response).to include(
-        'containerRegistryProtectionRule' => {
+        'containerProtectionRepositoryRule' => {
           'repositoryPathPattern' => input[:repository_path_pattern],
           'minimumAccessLevelForDelete' => input[:minimum_access_level_for_delete],
           'minimumAccessLevelForPush' => input[:minimum_access_level_for_push]
@@ -90,7 +90,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     it { is_expected.tap { expect_graphql_errors_to_be_empty } }
 
     it 'returns a blank container registry protection rule' do
-      is_expected.tap { expect(mutation_response['containerRegistryProtectionRule']).to be_blank }
+      is_expected.tap { expect(mutation_response['containerProtectionRepositoryRule']).to be_blank }
     end
 
     it 'includes error message in response' do

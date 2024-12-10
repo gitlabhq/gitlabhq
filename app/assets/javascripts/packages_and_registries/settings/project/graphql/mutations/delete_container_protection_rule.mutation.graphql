@@ -1,8 +1,8 @@
-mutation deleteContainerRegistryProtectionRule(
-  $input: DeleteContainerRegistryProtectionRuleInput!
+mutation deleteContainerProtectionRepositoryRule(
+  $input: DeleteContainerProtectionRepositoryRuleInput!
 ) {
-  deleteContainerRegistryProtectionRule(input: $input) {
-    containerRegistryProtectionRule {
+  deleteContainerProtectionRepositoryRule(input: $input) {
+    containerProtectionRepositoryRule {
       id
       repositoryPathPattern
       minimumAccessLevelForPush

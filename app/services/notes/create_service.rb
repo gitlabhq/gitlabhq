@@ -7,51 +7,44 @@ module Notes
     def execute(
       skip_capture_diff_note_position: false, skip_merge_status_trigger: false, executing_user: nil,
       importing: false)
-      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-        %w[
-          notes
-          vulnerability_user_mentions
-        ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/482744'
-      ) do
-        note = build_note(executing_user)
+      note = build_note(executing_user)
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
-        note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do
-          # We may set errors manually in Notes::BuildService for this reason
-          # we also need to check for already existing errors.
-          note.errors.empty? && note.valid?
-        end
-
-        return note unless note_valid # rubocop:disable Cop/AvoidReturnFromBlocks -- Temp for decomp exemption
-
-        # We execute commands (extracted from `params[:note]`) on the noteable
-        # **before** we save the note because if the note consists of commands
-        # only, there is no need be create a note!
-
-        execute_quick_actions(note) do |only_commands|
-          note.check_for_spam(action: :create, user: current_user) if check_for_spam?(only_commands)
-
-          after_commit(note) unless importing
-
-          note_saved = note.with_transaction_returning_status do
-            break false if only_commands
-
-            note.save.tap do
-              update_discussions(note)
-            end
-          end
-
-          if note_saved
-            when_saved(
-              note,
-              skip_capture_diff_note_position: skip_capture_diff_note_position,
-              skip_merge_status_trigger: skip_merge_status_trigger
-            )
-          end
-        end
-
-        note
+      # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
+      note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do
+        # We may set errors manually in Notes::BuildService for this reason
+        # we also need to check for already existing errors.
+        note.errors.empty? && note.valid?
       end
+
+      return note unless note_valid
+
+      # We execute commands (extracted from `params[:note]`) on the noteable
+      # **before** we save the note because if the note consists of commands
+      # only, there is no need be create a note!
+
+      execute_quick_actions(note) do |only_commands|
+        note.check_for_spam(action: :create, user: current_user) if check_for_spam?(only_commands)
+
+        after_commit(note) unless importing
+
+        note_saved = note.with_transaction_returning_status do
+          break false if only_commands
+
+          note.save.tap do
+            update_discussions(note)
+          end
+        end
+
+        if note_saved
+          when_saved(
+            note,
+            skip_capture_diff_note_position: skip_capture_diff_note_position,
+            skip_merge_status_trigger: skip_merge_status_trigger
+          )
+        end
+      end
+
+      note
     end
 
     private

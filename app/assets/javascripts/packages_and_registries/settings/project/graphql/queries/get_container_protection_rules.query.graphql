@@ -1,6 +1,6 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
-query getProjectContainerProtectionRules(
+query getProjectcontainerProtectionRepositoryRules(
   $projectPath: ID!
   $first: Int
   $last: Int
@@ -9,7 +9,7 @@ query getProjectContainerProtectionRules(
 ) {
   project(fullPath: $projectPath) {
     id
-    containerRegistryProtectionRules(first: $first, last: $last, after: $after, before: $before) {
+    containerProtectionRepositoryRules(first: $first, last: $last, after: $after, before: $before) {
       nodes {
         id
         repositoryPathPattern

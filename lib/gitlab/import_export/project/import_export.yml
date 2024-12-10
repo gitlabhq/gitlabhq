@@ -1224,6 +1224,14 @@ ee:
       - approval_rules:
         - :approval_project_rules_protected_branches
         - :approval_project_rules_users
+      - vulnerabilities:
+        - vulnerability_finding:
+          - :scanner
+          - :primary_identifier
+          - :initial_finding_pipeline
+          - :latest_finding_pipeline
+        - vulnerability_read:
+          - :scanner
 
   included_attributes:
     issuable_sla:
@@ -1299,6 +1307,53 @@ ee:
       - :protected_branch
     approval_project_rules_users:
       - :user_id
+    vulnerabilities:
+      - :project_id
+      - :author_id
+      - :title
+      - :description
+      - :severity
+      - :report_type
+      - :findings
+    findings:
+      - :project_fingerprint
+      - :project_id
+      - :location_fingerprint
+      - :name
+      - :report_type
+      - :severity
+      - :detection_method
+      - :metadata_version
+      - :raw_metadata
+    scanner:
+      - :project_id
+      - :name
+      - :vendor
+      - :external_id
+    primary_identifier:
+      - :project_id
+      - :external_type
+      - :external_id
+      - :fingerprint
+      - :name
+      - :url
+    vulnerability_finding:
+      - :uuid
+      - :project_fingerprint
+      - :project_id
+      - :location_fingerprint
+      - :name
+      - :report_type
+      - :severity
+      - :detection_method
+      - :metadata_version
+      - :raw_metadata
+    initial_finding_pipeline:
+      - :iid
+    latest_finding_pipeline:
+      - :iid
+    vulnerability_read:
+      - :project_id
   excluded_attributes:
     project:
       - :vulnerability_hooks_integrations

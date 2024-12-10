@@ -21,6 +21,13 @@ export default {
       default: '',
     },
   },
+  props: {
+    deployments: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     release: {
@@ -71,6 +78,6 @@ export default {
   <div class="gl-mt-3">
     <release-skeleton-loader v-if="$apollo.queries.release.loading" />
 
-    <release-block v-else-if="release" :release="release" />
+    <release-block v-else-if="release" :release="release" :deployments="deployments" />
   </div>
 </template>

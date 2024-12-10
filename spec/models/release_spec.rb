@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Release, feature_category: :release_orchestration do
-  let_it_be(:user)    { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
 
-  let(:release) { create(:release, project: project, author: user) }
+  let_it_be_with_reload(:release) { create(:release, project: project, author: user) }
 
   it { expect(release).to be_valid }
 
@@ -49,7 +49,6 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
     describe 'scopes' do
       let_it_be(:another_project) { create(:project) }
-      let_it_be(:release) { create(:release, project: project, author: user, tag: 'v1') }
       let_it_be(:another_release) { create(:release, project: another_project, tag: 'v2') }
 
       describe '.for_projects' do
@@ -398,6 +397,35 @@ RSpec.describe Release, feature_category: :release_orchestration do
         expect(version).not_to receive(:sync_with_release!)
 
         release.update!(released_at: '2023-01-01T00:00:00Z')
+      end
+    end
+  end
+
+  describe '#related_deployments' do
+    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
+    let_it_be(:ref) { release.tag }
+    let_it_be(:environment) { create(:environment, project: project) }
+    let_it_be_with_reload(:deployment) { create(:deployment, environment: environment, ref: ref) }
+
+    it 'returns deployments for the release tag in the available environments' do
+      expect(release.related_deployments).to contain_exactly(deployment)
+    end
+
+    context 'when environment is not available' do
+      before do
+        environment.stop
+      end
+
+      it 'does not return deployments' do
+        expect(release.related_deployments).to be_empty
+      end
+    end
+
+    context 'when deployment ref does not match the release tag' do
+      it 'does not return deployments' do
+        deployment.update!(ref: 'other-tag')
+
+        expect(release.related_deployments).to be_empty
       end
     end
   end

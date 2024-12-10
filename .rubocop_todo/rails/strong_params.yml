@@ -314,8 +314,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/projects/target_branch_rules_controller.rb'
     - 'ee/app/controllers/projects/tracing_controller.rb'
     - 'ee/app/controllers/projects/vulnerability_feedback_controller.rb'
-    - 'ee/app/controllers/registrations/company_controller.rb'
-    - 'ee/app/controllers/registrations/welcome_controller.rb'
     - 'ee/app/controllers/security/application_controller.rb'
     - 'ee/app/controllers/security/projects_controller.rb'
     - 'ee/app/controllers/smartcard_controller.rb'

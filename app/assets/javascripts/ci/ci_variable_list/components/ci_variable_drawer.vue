@@ -10,7 +10,6 @@ import {
   GlFormInput,
   GlCollapsibleListbox,
   GlFormTextarea,
-  GlIcon,
   GlLink,
   GlModal,
   GlModalDirective,
@@ -24,6 +23,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
 import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   defaultVariableState,
   ADD_VARIABLE_ACTION,
@@ -122,12 +122,12 @@ export default {
     GlFormInput,
     GlCollapsibleListbox,
     GlFormTextarea,
-    GlIcon,
     GlLink,
     GlModal,
     GlSprintf,
     GlFormRadio,
     GlFormRadioGroup,
+    HelpIcon,
   },
   directives: {
     GlModalDirective,
@@ -494,7 +494,7 @@ export default {
               target="_blank"
               data-testid="environment-scope-link"
             >
-              <gl-icon name="question-o" :size="14" />
+              <help-icon />
             </gl-link>
           </div>
         </template>
@@ -562,7 +562,7 @@ export default {
               data-testid="ci-variable-flags-docs-link"
               target="_blank"
             >
-              <gl-icon name="question-o" :size="14" />
+              <help-icon />
             </gl-link>
           </div>
         </template>

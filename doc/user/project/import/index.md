@@ -87,6 +87,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) for direct transfer in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
 > - Introduced in GitLab 17.6 [for Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`, and [for GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+> - Introduced in GitLab 17.7 [for Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) for direct transfer in GitLab 17.7.
 
 FLAG:

@@ -302,7 +302,7 @@ merge_schedule:
 - merge_request
 cleanup_schedule:
 - merge_request
-ci_pipelines:
+ci_pipelines: &pipeline_definition
 - project
 - user
 - ci_ref
@@ -1168,3 +1168,56 @@ timelog_category:
   - billing_rate
 note_diff_file:
   - diff_note
+vulnerabilities:
+  - vulnerability_finding
+  - findings
+  - vulnerability_read
+  - award_emoji
+  - author
+  - resolved_by
+  - dismissed_by
+  - confirmed_by
+  - group
+  - representation_information
+  - dismissed_findings
+  - merge_request_links
+  - merge_requests
+  - external_issue_links
+  - issue_links
+  - related_issues
+  - state_transitions
+  - notes
+  - user_mentions
+vulnerability_finding:
+  - scanner
+  - primary_identifier
+  - vulnerability
+  - one_vulnerability
+  - state_transitions
+  - issue_links
+  - external_issue_links
+  - merge_request_links
+  - finding_identifiers
+  - identifiers
+  - finding_links
+  - finding_remediations
+  - remediations
+  - initial_finding_pipeline
+  - latest_finding_pipeline
+  - signatures
+  - vulnerability_flags
+  - feedbacks
+  - finding_evidence
+  - security_findings
+scanner:
+  - findings
+  - security_findings
+primary_identifier:
+  - finding_identifiers
+  - findings
+  - primary_findings
+initial_finding_pipeline: *pipeline_definition
+latest_finding_pipeline: *pipeline_definition
+vulnerability_read:
+  - vulnerability
+  - scanner

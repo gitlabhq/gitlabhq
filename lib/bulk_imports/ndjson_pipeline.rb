@@ -73,8 +73,6 @@ module BulkImports
       end
 
       def deep_transform_relation!(relation_hash, relation_key, relation_definition, &block)
-        relation_key = relation_key_override(relation_key)
-
         relation_definition.each do |sub_relation_key, sub_relation_definition|
           sub_relation = relation_hash[sub_relation_key]
 

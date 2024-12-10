@@ -26,7 +26,7 @@ This API endpoint manages protection rules for container repositories in a proje
 Gets a list of container repository protection rules from a project's container registry.
 
 ```plaintext
-GET /api/v4/projects/:id/registry/protection/rules
+GET /api/v4/projects/:id/registry/protection/repository/rules
 ```
 
 Supported attributes:
@@ -79,7 +79,7 @@ Example response:
 Create a container repository protection rule for a project's container registry.
 
 ```plaintext
-POST /api/v4/projects/:id/registry/protection/rules
+POST /api/v4/projects/:id/registry/protection/repository/rules
 ```
 
 Supported attributes:
@@ -108,7 +108,7 @@ Example request:
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
-  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/rules" \
+  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/repository/rules" \
   --data '{
         "repository_path_pattern": "flightjs/flight-needs-to-be-a-unique-path",
         "minimum_access_level_for_push": "maintainer",
@@ -123,7 +123,7 @@ curl --request POST \
 Update a container repository protection rule for a project's container registry.
 
 ```plaintext
-PATCH /api/v4/projects/:id/registry/protection/rules/:protection_rule_id
+PATCH /api/v4/projects/:id/registry/protection/repository/rules/:protection_rule_id
 ```
 
 Supported attributes:
@@ -153,7 +153,7 @@ Example request:
 curl --request PATCH \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
-  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/rules/32" \
+  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/repository/rules/32" \
   --data '{
        "repository_path_pattern": "flight/flight-*"
     }'
@@ -166,7 +166,7 @@ curl --request PATCH \
 Deletes a container repository protection rule from a project's container registry.
 
 ```plaintext
-DELETE /api/v4/projects/:id/registry/protection/rules/:protection_rule_id
+DELETE /api/v4/projects/:id/registry/protection/repository/rules/:protection_rule_id
 ```
 
 Supported attributes:
@@ -190,5 +190,5 @@ Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/rules/1"
+  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/repository/rules/1"
 ```

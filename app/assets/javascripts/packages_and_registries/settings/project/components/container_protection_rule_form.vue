@@ -87,7 +87,7 @@ export default {
           },
         })
         .then(({ data }) => {
-          const errorMessages = data?.createContainerRegistryProtectionRule?.errors ?? [];
+          const errorMessages = data?.createContainerProtectionRepositoryRule?.errors ?? [];
           if (errorMessages?.length) {
             this.alertErrorMessages = Array.isArray(errorMessages)
               ? errorMessages
@@ -97,7 +97,7 @@ export default {
 
           this.$emit(
             'submit',
-            data.createContainerRegistryProtectionRule.containerRegistryProtectionRule,
+            data.createContainerProtectionRepositoryRule.containerProtectionRepositoryRule,
           );
         })
         .catch(() => {

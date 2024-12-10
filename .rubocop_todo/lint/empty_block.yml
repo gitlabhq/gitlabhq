@@ -143,7 +143,6 @@ Lint/EmptyBlock:
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_artifacts_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_request_post_spec.rb'
-    - 'spec/requests/api/ci/runner/runners_verify_post_spec.rb'
     - 'spec/requests/api/ci/triggers_spec.rb'
     - 'spec/requests/api/graphql/boards/board_list_issues_query_spec.rb'
     - 'spec/requests/api/graphql/boards/board_lists_query_spec.rb'

@@ -325,7 +325,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/lib/sidebars/projects/menus/deployments_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/hidden_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/infrastructure_menu_spec.rb'
-    - 'spec/lib/sidebars/projects/menus/issues_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/merge_requests_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/monitor_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/packages_registries_menu_spec.rb'

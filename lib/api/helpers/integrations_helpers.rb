@@ -219,20 +219,7 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ],
-          'pivotaltracker' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Pivotaltracker token'
-            },
-            {
-              required: false,
-              name: :restrict_to_branch,
-              type: String,
-              desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
-            }
-          ],
+          'pivotaltracker' => ::Integrations::Pivotaltracker.api_arguments,
           'prometheus' => [
             {
               required: false,

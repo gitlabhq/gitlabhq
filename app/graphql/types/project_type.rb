@@ -522,7 +522,7 @@ module Types
       deprecated: { reason: 'Use `container_tags_expiration_policy`', milestone: '17.5' },
       description: 'Container expiration policy of the project.'
 
-    field :container_registry_protection_rules,
+    field :container_protection_repository_rules,
       Types::ContainerRegistry::Protection::RuleType.connection_type,
       null: true,
       description: 'Container protection rules for the project.',

@@ -175,7 +175,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
         end
 
         transformed['labels'].each do |label|
-          expect(label[:relation_key]).to eq('group_labels')
+          expect(label[:relation_key]).to eq('labels')
         end
       end
     end
@@ -192,7 +192,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           hash.merge(relation_key: key)
         end
 
-        expect(transformed['label'][:relation_key]).to eq('group_label')
+        expect(transformed['label'][:relation_key]).to eq('label')
       end
     end
 
@@ -205,7 +205,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
         relation_definition = { 'label' => {} }
 
         transformed = subject.deep_transform_relation!(relation_hash, 'test', relation_definition) do |key, hash|
-          if key == 'group_label'
+          if key == 'label'
             nil
           else
             hash

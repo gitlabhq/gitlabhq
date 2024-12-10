@@ -4,7 +4,7 @@ module Types
   module ContainerRegistry
     module Protection
       class RuleType < ::Types::BaseObject
-        graphql_name 'ContainerRegistryProtectionRule'
+        graphql_name 'ContainerProtectionRepositoryRule'
         description 'A container repository protection rule designed to prevent users with a certain ' \
           'access level or lower from altering the container registry.'
 

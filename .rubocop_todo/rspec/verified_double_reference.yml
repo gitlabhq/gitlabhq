@@ -189,7 +189,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/lib/gitlab/project_search_results_spec.rb'
     - 'spec/lib/gitlab/rack_attack_spec.rb'
     - 'spec/lib/gitlab/repository_archive_rate_limiter_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_middleware/concurrency_limit/queue_manager_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/skip_jobs_spec.rb'
     - 'spec/lib/gitlab/sidekiq_sharding/router_spec.rb'
     - 'spec/lib/gitlab/slash_commands/global_slack_handler_spec.rb'

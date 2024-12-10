@@ -71,7 +71,7 @@ export default {
         };
       },
       update(data) {
-        return data.project?.containerRegistryProtectionRules ?? this.protectionRulesQueryPayload;
+        return data.project?.containerProtectionRepositoryRules ?? this.protectionRulesQueryPayload;
       },
       error(e) {
         this.alertErrorMessage = e.message;
@@ -128,7 +128,6 @@ export default {
     },
     minimumAccessLevelOptions() {
       return [
-        { value: undefined, text: __('Developer (default)') },
         { value: 'MAINTAINER', text: __('Maintainer') },
         { value: 'OWNER', text: __('Owner') },
         { value: 'ADMIN', text: __('Admin') },
@@ -188,7 +187,7 @@ export default {
           variables: { input: { id: protectionRule.id } },
         })
         .then(({ data }) => {
-          const [errorMessage] = data?.deleteContainerRegistryProtectionRule?.errors ?? [];
+          const [errorMessage] = data?.deleteContainerProtectionRepositoryRule?.errors ?? [];
           if (errorMessage) {
             this.alertErrorMessage = errorMessage;
             return;
@@ -225,7 +224,7 @@ export default {
           },
         })
         .then(({ data }) => {
-          const [errorMessage] = data?.updateContainerRegistryProtectionRule?.errors ?? [];
+          const [errorMessage] = data?.updateContainerProtectionRepositoryRule?.errors ?? [];
           if (errorMessage) {
             this.alertErrorMessage = errorMessage;
             return;
@@ -267,6 +266,7 @@ export default {
   <settings-section
     :heading="$options.i18n.settingBlockTitle"
     :description="$options.i18n.settingBlockDescription"
+    data-testid="project-container-repository-protection-rules-settings"
   >
     <template #default>
       <crud-component

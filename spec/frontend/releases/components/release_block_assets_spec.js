@@ -77,6 +77,17 @@ describe('Release block assets', () => {
     });
   });
 
+  describe('when there is release deployments block', () => {
+    beforeEach(() => createComponent({ ...defaultProps, expanded: false }));
+
+    it('renders the accordion as collapsed', () => {
+      const accordion = wrapper.findComponent(GlCollapse);
+
+      expect(accordion.exists()).toBe(true);
+      expect(accordion.props('visible')).toBe(false);
+    });
+  });
+
   describe("when a release doesn't have a link with a certain asset type", () => {
     const typeToExclude = ASSET_LINK_TYPE.IMAGE;
 

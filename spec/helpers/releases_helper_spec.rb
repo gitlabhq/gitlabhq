@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ReleasesHelper do
+RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
   describe '#illustration' do
     it 'returns the correct image path' do
       expect(helper.illustration).to match(%r{illustrations/rocket-launch-md-(\w+)\.svg})
@@ -28,8 +28,8 @@ RSpec.describe ReleasesHelper do
       helper.instance_variable_set(:@release, release)
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?)
-                    .with(user, :create_release, project)
-                    .and_return(can_user_create_release)
+                         .with(user, :create_release, project)
+                         .and_return(can_user_create_release)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -100,12 +100,85 @@ RSpec.describe ReleasesHelper do
     end
 
     describe '#data_for_show_page' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:commit) { create(:commit, project: project, id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+      let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0', sha: commit.id) }
+      let_it_be(:environment) { create(:environment, project: project) }
+      let_it_be(:deployable) { create(:ci_build, user: user, project: project) }
+      let_it_be(:deployment) do
+        create(:deployment,
+          project: project,
+          environment: environment,
+          deployable: deployable,
+          ref: release.tag,
+          sha: release.sha)
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord -- mock for can? is incorrectly flagged
+      before do
+        helper.instance_variable_set(:@project, project)
+        helper.instance_variable_set(:@release, release)
+
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(release).to receive(:related_deployments).and_return([deployment])
+        allow(helper).to receive(:can?)
+                          .with(user, :read_deployment, project)
+                          .and_return(true)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       it 'has the needed data to display the individual "release" page' do
         keys = %i[project_id
                   project_path
-                  tag_name]
+                  tag_name
+                  deployments]
 
         expect(helper.data_for_show_page.keys).to match_array(keys)
+      end
+
+      context 'deployments field' do
+        context 'when user can read deployments' do
+          it 'returns deployments data' do
+            deployment_data = Gitlab::Json.parse(helper.data_for_show_page[:deployments]).first
+            environment_url = project_environment_url(project, environment)
+            deployment_url = project_environment_deployment_path(project, environment, deployment)
+
+            expect(deployment_data['environment']['name']).to eq(environment.name)
+            expect(deployment_data['environment']['url']).to eq(environment_url)
+
+            expect(deployment_data['deployment']['id']).to eq(deployment.id)
+            expect(deployment_data['deployment']['url']).to eq(deployment_url)
+
+            expect(deployment_data['commit']['name']).to eq(project.repository.commit(release.tag).author_name)
+            expect(deployment_data['commit']['sha']).to eq(project.repository.commit(release.tag).id)
+            expect(deployment_data['commit']['commit_url']).to eq(project_commit_url(deployment.project, commit))
+            expect(deployment_data['commit']['short_sha']).to eq(project.repository.commit(release.tag).short_id)
+            expect(deployment_data['commit']['title']).to eq(project.repository.commit(release.tag).title)
+
+            expect(deployment_data['triggerer']['name']).to eq(user.name)
+            expect(deployment_data['triggerer']['avatar_url']).to eq(user.avatar_url)
+            expect(deployment_data['triggerer']['web_url']).to eq(user_url(user))
+
+            expect(deployment_data['status']).to eq(deployment.status)
+            expect(deployment_data['created_at']).to be_present
+            expect(deployment_data['finished_at']).to be_nil
+          end
+        end
+
+        context 'when user cannot read deployments' do
+          # rubocop: disable CodeReuse/ActiveRecord -- mock for can? is incorrectly flagged
+          before do
+            allow(helper).to receive(:can?)
+                              .with(user, :read_deployment, project)
+                              .and_return(false)
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
+
+          it 'returns an empty array' do
+            expect(helper.data_for_show_page[:deployments]).to eq('[]')
+          end
+        end
       end
     end
   end

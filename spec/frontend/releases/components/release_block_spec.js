@@ -5,22 +5,26 @@ import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import * as commonUtils from '~/lib/utils/common_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
+import ReleaseBlockDeployments from '~/releases/components/release_block_deployments.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { mockDeployment } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('Release block', () => {
   let wrapper;
   let release;
+  let deployments = [mockDeployment];
 
   const factory = async (releaseProp, featureFlags = {}) => {
     wrapper = mount(ReleaseBlock, {
       propsData: {
         release: releaseProp,
+        deployments,
       },
       provide: {
         projectPath: 'project/path',
@@ -125,6 +129,22 @@ describe('Release block', () => {
 
     return factory(release).then(() => {
       expect(wrapper.attributes().id).toBeUndefined();
+    });
+  });
+
+  describe('release block deployments', () => {
+    it('renders the release block deployments when the deployments list is not empty', async () => {
+      await factory(release);
+
+      expect(wrapper.findComponent(ReleaseBlockDeployments).exists()).toBe(true);
+    });
+
+    it('does not render the release block deployments when the deployments list is empty', async () => {
+      deployments = [];
+
+      await factory(release);
+
+      expect(wrapper.findComponent(ReleaseBlockDeployments).exists()).toBe(false);
     });
   });
 

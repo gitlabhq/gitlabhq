@@ -443,7 +443,6 @@ Layout/ClassStructure:
     - 'qa/qa/page/base.rb'
     - 'qa/qa/page/dashboard/projects.rb'
     - 'qa/qa/page/dashboard/welcome.rb'
-    - 'qa/qa/page/main/login.rb'
     - 'qa/qa/page/mattermost/login.rb'
     - 'qa/qa/page/view.rb'
     - 'qa/qa/resource/project.rb'
