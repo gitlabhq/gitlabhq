@@ -347,7 +347,7 @@ class Namespace < ApplicationRecord
     def clean_path(path, limited_to: Namespace.all)
       slug = Gitlab::Slug::Path.new(path).generate
       path = Namespaces::RandomizedSuffixPath.new(slug)
-      Gitlab::Utils::Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) }
+      Gitlab::Utils::Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) || ProjectSetting.unique_domain_exists?(s) }
     end
 
     def clean_name(value)

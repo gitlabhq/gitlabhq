@@ -1505,12 +1505,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it "cleans the path and makes sure it's available", time_travel_to: '2023-04-20 00:07 -0700' do
       create :user, username: "johngitlab-etc"
       create :namespace, path: "JohnGitLab-etc1"
+      create :project_setting, pages_unique_domain: 'existing-domain'
       [nil, 1, 2, 3].each do |count|
         create :namespace, path: "pickle#{count}"
       end
 
       expect(described_class.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
       expect(described_class.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
+      expect(described_class.clean_path("existing-domain")).to eq("existing-domain1")
 
       # when we have more than MAX_TRIES count of a path use a more randomized suffix
       expect(described_class.clean_path("pickle@gmail.com")).to eq("pickle4")

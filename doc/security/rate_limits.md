@@ -214,6 +214,13 @@ There is a rate limit for triggering project imports from FogBugz.
 
 The **rate limit** is 1 triggered import per minute per user.
 
+### Commit diff files
+
+This is a rate limit for expanded commit diff files (`/[group]/[project]/-/commit/[:sha]/diff_files?expanded=1`),
+which is enforced to prevent from abusing this endpoint.
+
+The **rate limit** is 6 requests per minute per user (authenticated) or per IP address (unauthenticated).
+
 ## Troubleshooting
 
 ### Rack Attack is denylisting the load balancer
