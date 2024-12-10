@@ -487,6 +487,10 @@ When you create a value stream, you can create and add custom stages that align 
 1. To re-order the stages, select the up or down arrows.
 1. Select **New value stream**.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video explanation, see [Optimizing merge request review process with Value Stream Analytics](https://www.youtube.com/watch?v=kblpge6xeL8).
+<!-- Video published on 2024-07-29 -->
+
 #### Label-based stages for custom value streams
 
 To measure complex workflows, you can use [scoped labels](../../project/labels.md#scoped-labels). For example, to measure deployment

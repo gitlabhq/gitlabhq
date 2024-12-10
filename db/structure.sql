@@ -384,6 +384,7 @@ CREATE TABLE users (
     onboarding_in_progress boolean DEFAULT false NOT NULL,
     color_mode_id smallint DEFAULT 1 NOT NULL,
     last_access_from_pipl_country_at timestamp with time zone,
+    composite_identity_enforced boolean DEFAULT false NOT NULL,
     CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
     CONSTRAINT check_3a60c18afc CHECK ((hide_no_password IS NOT NULL)),
@@ -35960,6 +35961,8 @@ CREATE TRIGGER trigger_update_vulnerability_reads_on_vulnerability_update AFTER 
 CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER virtual_registries_packages_maven_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_maven_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER vulnerabilities_loose_fk_trigger AFTER DELETE ON vulnerabilities REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 ALTER TABLE ONLY ai_conversation_threads
     ADD CONSTRAINT fk_00234c7444 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

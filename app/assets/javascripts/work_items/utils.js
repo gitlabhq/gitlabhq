@@ -334,3 +334,18 @@ export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => 
   const canProjectNavigate = projectRegex.test(webUrl) && issueAsWorkItem;
   return canGroupNavigate || canProjectNavigate;
 };
+
+export const createBranchMRApiPathHelper = {
+  canCreateBranch({ fullPath, workItemIid }) {
+    return `/${fullPath}/-/issues/${workItemIid}/can_create_branch`;
+  },
+  createBranch({ fullPath, workItemIid, sourceBranch, targetBranch }) {
+    return `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`;
+  },
+  createMR({ fullPath, workItemIid, sourceBranch, targetBranch }) {
+    return `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`;
+  },
+  getRefs({ fullPath }) {
+    return `/${fullPath}/refs?search=`;
+  },
+};

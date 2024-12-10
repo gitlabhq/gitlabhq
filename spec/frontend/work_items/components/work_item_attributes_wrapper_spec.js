@@ -8,7 +8,6 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
-import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -50,7 +49,6 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
-  const findWorkItemDevelopment = () => wrapper.findComponent(WorkItemDevelopment);
   const findWorkItemCrmContacts = () => wrapper.findComponent(WorkItemCrmContacts);
 
   const createComponent = ({
@@ -250,15 +248,6 @@ describe('WorkItemAttributesWrapper component', () => {
       await waitForPromises();
 
       expect(findWorkItemParticipants().exists()).toBe(exists);
-    });
-  });
-
-  describe('development widget', () => {
-    it('renders work item development widget', () => {
-      const response = workItemResponseFactory({ developmentWidgetPresent: true });
-      createComponent({ workItem: response.data.workItem });
-
-      expect(findWorkItemDevelopment().exists()).toBe(true);
     });
   });
 });

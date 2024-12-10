@@ -288,7 +288,6 @@ Layout/LineLength:
     - 'app/services/groups/transfer_service.rb'
     - 'app/services/groups/update_service.rb'
     - 'app/services/import/bitbucket_server_service.rb'
-    - 'app/services/import/github_service.rb'
     - 'app/services/issuable/process_assignees.rb'
     - 'app/services/issuable_base_service.rb'
     - 'app/services/issues/clone_service.rb'

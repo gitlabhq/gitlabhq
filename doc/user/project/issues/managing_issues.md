@@ -36,6 +36,7 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com
 **Status:** Experiment
+**LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/development_stages_support.md#experiment).
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
@@ -62,7 +63,7 @@ The issue description is replaced with AI-generated text.
 Provide feedback on this experimental feature in [issue 409844](https://gitlab.com/gitlab-org/gitlab/-/issues/409844).
 
 **Data usage**: When you use this feature, the text you enter is sent to
-the [large language model listed on the GitLab Duo page](../../gitlab_duo/index.md#issue-description-generation).
+the large language model.
 
 ## Bulk edit issues from a project
 

@@ -159,7 +159,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/git/tag_hooks_service.rb'
     - 'app/services/git/wiki_push_service/change.rb'
     - 'app/services/groups/open_issues_count_service.rb'
-    - 'app/services/import/github_service.rb'
     - 'app/services/import/gitlab_projects/file_acquisition_strategies/remote_file_s3.rb'
     - 'app/services/incident_management/issuable_escalation_statuses/prepare_update_service.rb'
     - 'app/services/incident_management/pager_duty/process_webhook_service.rb'

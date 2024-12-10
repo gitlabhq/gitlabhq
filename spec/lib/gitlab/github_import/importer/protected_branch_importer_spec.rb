@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_category: :importers do
+  include Import::UserMappingHelper
+
   subject(:importer) { described_class.new(github_protected_branch, project, client) }
 
   let(:branch_name) { 'protection' }
@@ -30,7 +32,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
     )
   end
 
-  let(:project) { create(:project, :repository) }
+  let(:project) do
+    create(:project, :repository, :with_import_url, :import_user_mapping_enabled, import_type: Import::SOURCE_GITHUB)
+  end
+
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
 
   describe '#execute' do
@@ -43,18 +48,24 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
           push_access_levels_attributes: push_access_levels_attributes,
           merge_access_levels_attributes: [{ access_level: expected_merge_access_level }],
           allow_force_push: expected_allow_force_push,
-          code_owner_approval_required: expected_code_owner_approval_required
+          code_owner_approval_required: expected_code_owner_approval_required,
+          importing: true
         }
       end
 
       it 'calls service with the correct arguments' do
+        valid_protected_branch = instance_double('ProtectedBranch',
+          validate!: true,
+          push_access_levels: []
+        )
+
         expect(ProtectedBranches::CreateService).to receive(:new).with(
           project,
           project.creator,
           expected_ruleset
         ).and_return(create_service)
 
-        expect(create_service).to receive(:execute).with(skip_authorization: true)
+        expect(create_service).to receive(:execute).with(skip_authorization: true).and_return(valid_protected_branch)
         importer.execute
       end
 
@@ -235,74 +246,123 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
       end
 
       context 'when there are users who are allowed to bypass push restrictions' do
-        let(:owner_id) { project.owner.id }
-        let(:owner_username) { project.owner.username }
-        let(:other_user) { create(:user) }
-        let(:other_user_id) { other_user.id }
-        let(:other_user_username) { other_user.username }
-        let(:allowed_to_push_users) do
-          [
-            { id: owner_id, login: owner_username },
-            { id: other_user_id, login: other_user_username }
-          ]
-        end
+        let(:user_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
 
         context 'when the protected_refs_for_users feature is available', if: Gitlab.ee? do
           let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+          let(:allowed_to_push_users) do
+            [Gitlab::GithubImport::Representation::User.new(id: 1, login: 'github_username')]
+          end
+
+          let(:push_access_levels_number) { 1 }
+          let(:push_access_levels_attributes) do
+            [
+              { user_id: kind_of(Integer), importing: true }
+            ]
+          end
 
           before do
             stub_licensed_features(protected_refs_for_users: true)
           end
 
-          context 'when the users are found on GitLab' do
-            let(:push_access_levels_number) { 2 }
-            let(:push_access_levels_attributes) do
+          it_behaves_like 'create branch protection by the strictest ruleset'
+
+          it 'pushes placeholder references' do
+            importer.execute
+
+            imported_push_access_level = project.protected_branches.first.push_access_levels.first
+            source_user = Import::SourceUser.last
+
+            expect(source_user).to have_attributes(
+              source_user_identifier: '1',
+              source_username: 'github_username'
+            )
+            expect(user_references).to match_array([
+              ['ProtectedBranch::PushAccessLevel', imported_push_access_level.id, 'user_id', source_user.id]
+            ])
+          end
+
+          context 'when user mapping is disabled' do
+            let(:owner_id) { project.owner.id }
+            let(:owner_username) { project.owner.username }
+            let(:other_user) { create(:user) }
+            let(:other_user_id) { other_user.id }
+            let(:other_user_username) { other_user.username }
+            let(:allowed_to_push_users) do
               [
-                { user_id: owner_id },
-                { user_id: other_user_id }
+                Gitlab::GithubImport::Representation::User.new(id: owner_id, login: owner_username),
+                Gitlab::GithubImport::Representation::User.new(id: other_user_id, login: other_user_username)
               ]
             end
 
             before do
-              project.add_member(other_user, :maintainer)
-              allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-                allow(finder).to receive(:find).with(owner_id, owner_username).and_return(owner_id)
-                allow(finder).to receive(:find).with(other_user_id, other_user_username).and_return(other_user_id)
+              project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+            end
+
+            context 'when the users are found on GitLab' do
+              let(:push_access_levels_number) { 2 }
+              let(:push_access_levels_attributes) do
+                [
+                  { user_id: owner_id, importing: true },
+                  { user_id: other_user_id, importing: true }
+                ]
+              end
+
+              before do
+                project.add_member(other_user, :maintainer)
+                allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+                  allow(finder).to receive(:find).with(owner_id, owner_username).and_return(owner_id)
+                  allow(finder).to receive(:find).with(other_user_id, other_user_username).and_return(other_user_id)
+                end
+              end
+
+              it_behaves_like 'create branch protection by the strictest ruleset'
+
+              it 'does not push placeholder references' do
+                importer.execute
+
+                expect(user_references).to be_empty
               end
             end
 
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
+            context 'when one of found users is not a member of the imported project' do
+              let(:push_access_levels_number) { 1 }
+              let(:push_access_levels_attributes) do
+                [
+                  { user_id: owner_id, importing: true }
+                ]
+              end
 
-          context 'when one of found users is not a member of the imported project' do
-            let(:push_access_levels_number) { 1 }
-            let(:push_access_levels_attributes) do
-              [
-                { user_id: owner_id }
-              ]
-            end
+              before do
+                allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+                  allow(finder).to receive(:find).with(owner_id, owner_username).and_return(owner_id)
+                  allow(finder).to receive(:find).with(other_user_id, other_user_username).and_return(other_user_id)
+                end
+              end
 
-            before do
-              allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-                allow(finder).to receive(:find).with(owner_id, owner_username).and_return(owner_id)
-                allow(finder).to receive(:find).with(other_user_id, other_user_username).and_return(other_user_id)
+              it_behaves_like 'create branch protection by the strictest ruleset'
+
+              it 'does not push placeholder references' do
+                importer.execute
+
+                expect(user_references).to be_empty
               end
             end
 
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
-
-          context 'when the user are not found on GitLab' do
-            before do
-              allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-                allow(finder).to receive(:find).and_return(nil)
+            context 'when the users are not found on GitLab' do
+              before do
+                allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+                  allow(finder).to receive(:find).and_return(nil)
+                end
               end
+
+              let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
+              let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+              let(:push_access_levels_attributes) { [{ access_level: expected_push_access_level }] }
+
+              it_behaves_like 'create branch protection by the strictest ruleset'
             end
-
-            let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
-            let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
           end
         end
 
@@ -313,8 +373,14 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
 
           let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
           let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+          let(:push_access_levels_attributes) { [{ access_level: expected_push_access_level }] }
 
           it_behaves_like 'create branch protection by the strictest ruleset'
+
+          it 'does not push any placeholder references' do
+            expect { importer.execute }.not_to change(Import::SourceUser, :count)
+            expect(user_references).to be_empty
+          end
         end
       end
     end
@@ -476,6 +542,18 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
       let(:expected_code_owner_approval_required) { false }
 
       it_behaves_like 'create branch protection by the strictest ruleset'
+    end
+
+    context 'when branch is invalid' do
+      before do
+        allow_next_instance_of(ProtectedBranches::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(ProtectedBranch.new)
+        end
+      end
+
+      it 'raises a ActiveRecord::RecordInvalid error' do
+        expect { importer.execute }.to raise_error(ActiveRecord::RecordInvalid)
+      end
     end
   end
 end

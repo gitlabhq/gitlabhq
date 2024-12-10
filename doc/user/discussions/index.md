@@ -321,6 +321,7 @@ such as move unresolved threads to an issue or prevent merging until all threads
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/development_stages_support.md#experiment).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
@@ -342,4 +343,4 @@ The comments in the issue are summarized in as many as 10 list items.
 You can ask follow up questions based on the response.
 
 **Data usage**: When you use this feature, the text of all comments on the issue are sent to
-the large [language model listed on the GitLab Duo page](../gitlab_duo/index.md#discussion-summary).
+the large language model.

@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
-> - Changed to require GitLab Duo add-on (GitLab Duo Pro for `AiUserMetrics`) in GitLab 17.6.
+> - Changed to require GitLab Duo add-on in GitLab 17.6.
 
 AI Impact analytics displays software development lifecycle (SDLC) metrics for a project or group in the month-to-date and the past six months.
 
@@ -49,17 +49,15 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 #### AI usage metrics
 
-- **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
+**Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
 
-  - The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
-  - The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
-  - To analyze the performance of teams that use AI versus teams that don't, you can create a custom [Value Streams Dashboard Scheduled Report](https://gitlab.com/explore/catalog/components/vsd-reports-generator) based on the AI Impact view of projects and groups with and without GitLab Duo.
+- The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
+- The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
+- To analyze the performance of teams that use AI versus teams that don't, you can create a custom [Value Streams Dashboard Scheduled Report](https://gitlab.com/explore/catalog/components/vsd-reports-generator) based on the AI Impact view of projects and groups with and without GitLab Duo.
 
-  NOTE:
-  Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
-  For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
-
-To retrieve AI Impact metrics, you can use the GraphQL API [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics) and [`AiUsageData`](../../api/graphql/reference/index.md#aiusagedata).
+NOTE:
+Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
+For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
 
 ## View AI Impact analytics
 
@@ -71,3 +69,10 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Analytics Dashboards**.
 1. Select **AI impact analytics**.
+
+To retrieve AI Impact metrics, you can also use the following GraphQL APIs:
+
+- [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics) 
+  - Requires ClickHouse
+  - Ultimate with GitLab Duo Pro or Enterprise
+- [`AiUsageData`](../../api/graphql/reference/index.md#aiusagedata) - Does not require ClickHouse

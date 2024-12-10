@@ -171,5 +171,11 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         cleaner_service.execute
       end
     end
+
+    # The spec for Loose Foreign Keys (LFK) with conditions has been relocated to
+    # ee/spec/services/loose_foreign_keys/cleaner_service_spec.rb.
+    # This allows testing LFK with conditions for Notes related to Vulnerabilities, which is
+    # currently the only example available.
+    # The spec can be moved here once we have an example that is not exclusive to EE.
   end
 end

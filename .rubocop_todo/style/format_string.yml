@@ -93,7 +93,6 @@ Style/FormatString:
     - 'app/services/groups/transfer_service.rb'
     - 'app/services/import/bitbucket_server_service.rb'
     - 'app/services/import/fogbugz_service.rb'
-    - 'app/services/import/github_service.rb'
     - 'app/services/issuable_links/create_service.rb'
     - 'app/services/issues/clone_service.rb'
     - 'app/services/issues/close_service.rb'

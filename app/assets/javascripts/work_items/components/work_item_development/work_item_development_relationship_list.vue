@@ -1,14 +1,11 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { sprintf, __ } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { TYPENAME_FEATURE_FLAG } from '~/graphql_shared/constants';
 
 import WorkItemDevelopmentMrItem from './work_item_development_mr_item.vue';
 import WorkItemDevelopmentBranchItem from './work_item_development_branch_item.vue';
-
-const DEFAULT_RENDER_COUNT = 3;
 
 export default {
   components: {
@@ -24,11 +21,11 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      showLess: true,
-    };
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     list() {
@@ -49,21 +46,6 @@ export default {
       const disabledFlags = flagsSortedByRelationshipDate.filter((flag) => !flag.active);
 
       return [...enabledFlags, ...disabledFlags];
-    },
-    hiddenItemsLabel() {
-      const { moreCount } = this;
-      return sprintf(__('+ %{moreCount} more'), { moreCount });
-    },
-    renderShowMoreSection() {
-      return this.list.length > DEFAULT_RENDER_COUNT;
-    },
-    moreCount() {
-      return this.list.length - DEFAULT_RENDER_COUNT;
-    },
-    uncollapsedItems() {
-      return this.showLess && this.list.length > DEFAULT_RENDER_COUNT
-        ? this.list.slice(0, DEFAULT_RENDER_COUNT)
-        : this.list;
     },
   },
   mounted() {
@@ -113,20 +95,13 @@ export default {
 <template>
   <div>
     <ul ref="list-body" class="gl-m-0 gl-list-none gl-p-0" data-testid="work-item-dev-items-list">
-      <li v-for="item in uncollapsedItems" :key="itemId(item)" class="gl-mr-3">
-        <component :is="itemComponent(item)" :item-content="itemObject(item)" />
+      <li
+        v-for="item in list"
+        :key="itemId(item)"
+        class="gl-border-b gl-py-4 first:!gl-pt-0 last:gl-border-none last:!gl-pb-0"
+      >
+        <component :is="itemComponent(item)" :item-content="itemObject(item)" :is-modal="isModal" />
       </li>
     </ul>
-    <gl-button
-      v-if="renderShowMoreSection"
-      category="tertiary"
-      size="small"
-      @click="toggleShowLess"
-    >
-      <template v-if="showLess">
-        {{ hiddenItemsLabel }}
-      </template>
-      <template v-else>{{ __('- show less') }}</template>
-    </gl-button>
   </div>
 </template>

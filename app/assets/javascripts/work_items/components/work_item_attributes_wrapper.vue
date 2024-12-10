@@ -28,7 +28,6 @@ import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
-import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
 export default {
@@ -41,7 +40,6 @@ export default {
     WorkItemDueDate,
     WorkItemParent,
     WorkItemTimeTracking,
-    WorkItemDevelopment,
     WorkItemCrmContacts,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
@@ -321,12 +319,6 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-development
-      :work-item-iid="workItem.iid"
-      :work-item-id="workItem.id"
-      :work-item-full-path="fullPath"
-      @error="$emit('error', $event)"
-    />
     <work-item-time-tracking
       v-if="workItemTimeTracking"
       class="work-item-attributes-item"

@@ -35,6 +35,9 @@ module LooseForeignKeys
 
     def execute
       loose_foreign_key_definitions.each do |loose_foreign_key_definition|
+        next if ::Feature.disabled?(:loose_foreign_keys_for_polymorphic_associations) && # rubocop:disable Gitlab/FeatureFlagWithoutActor -- LFK does not know about AR models and associations so we cannot pass an actor
+          loose_foreign_key_definition.options.key?(:conditions)
+
         run_cleaner_service(loose_foreign_key_definition, with_skip_locked: true)
 
         if modification_tracker.over_limit?
@@ -48,16 +51,16 @@ module LooseForeignKeys
           handle_over_limit
           break
         end
+
+        break if modification_tracker.over_limit?
+
+        # At this point, all associations are cleaned up, we can update the status of the parent records
+        update_count = Gitlab::Database::SharedModel.using_connection(connection) do
+          LooseForeignKeys::DeletedRecord.mark_records_processed(deleted_parent_records)
+        end
+
+        deleted_records_counter.increment({ table: parent_table, db_config_name: db_config_name }, update_count)
       end
-
-      return if modification_tracker.over_limit?
-
-      # At this point, all associations are cleaned up, we can update the status of the parent records
-      update_count = Gitlab::Database::SharedModel.using_connection(connection) do
-        LooseForeignKeys::DeletedRecord.mark_records_processed(deleted_parent_records)
-      end
-
-      deleted_records_counter.increment({ table: parent_table, db_config_name: db_config_name }, update_count)
     end
 
     private

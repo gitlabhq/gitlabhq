@@ -17,6 +17,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 
 DETAILS:
 **Status:** Beta
+**LLM:** Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment).
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to beta in GitLab 16.10.
@@ -41,6 +42,7 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 DETAILS:
 **Status:** Experiment
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/development_stages_support.md#experiment).
 > - Feature flag `ai_review_merge_request` [disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/456106).
@@ -65,7 +67,7 @@ When your merge request is ready to be reviewed, use GitLab Duo Code Review to p
 1. Select **Code > Merge requests** and find your merge request.
 1. In a comment box enter the quick action `/duo_code_review`.
 
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
+**Data usage**: When you use this feature, the following data is sent to the large language model:
 
 - Contents of the file
 - The filename
@@ -74,6 +76,7 @@ When your merge request is ready to be reviewed, use GitLab Duo Code Review to p
 
 DETAILS:
 **Status:** Experiment
+**LLM:** Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment).
 
@@ -96,6 +99,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment) [with a flag](../../../administration/feature_flags.md) named `generate_commit_message_flag`. Disabled by default.
 > - Feature flag `generate_commit_message_flag` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) in GitLab 17.2.
@@ -114,7 +118,7 @@ by using GitLab Duo Merge Commit Message Generation.
 1. Select **Generate commit message**.
 1. Review the commit message provide and choose **Insert** to add it to the commit.
 
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
+**Data usage**: When you use this feature, the following data is sent to the large language model:
 
 - Contents of the file
 - The filename

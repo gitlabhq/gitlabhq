@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillGroupWikiActivityEvents
+description: Backfills group_id for group wiki activity events that don't have it
+feature_category: wiki
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174778
+milestone: '17.7'
+queued_migration_version: 20241204201518
+finalized_by: # version of the migration that finalized this BBM

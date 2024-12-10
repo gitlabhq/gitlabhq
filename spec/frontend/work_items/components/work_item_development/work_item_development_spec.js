@@ -1,7 +1,11 @@
 import Vue from 'vue';
-import { GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdown,
+} from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -16,6 +20,9 @@ import {
 
 import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
 import WorkItemDevelopmentRelationshipList from '~/work_items/components/work_item_development/work_item_development_relationship_list.vue';
+import WorkItemCreateBranchMergeRequestModal from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 
 describe('WorkItemDevelopment CE', () => {
   Vue.use(VueApollo);
@@ -24,10 +31,6 @@ describe('WorkItemDevelopment CE', () => {
   let mockApollo;
 
   const workItem = workItemResponseFactory({ developmentWidgetPresent: true, canUpdate: true });
-  const noUpdateWorkItem = workItemResponseFactory({
-    developmentWidgetPresent: true,
-    canUpdate: false,
-  });
   const workItemWithOneMR = workItemResponseFactory({
     developmentWidgetPresent: true,
     developmentItems: workItemDevelopmentFragmentResponse({
@@ -53,16 +56,6 @@ describe('WorkItemDevelopment CE', () => {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
         workItem: workItem.data.workItem,
-      },
-    },
-  };
-
-  const noUpdateProjectWorkItemResponseWithMRList = {
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: noUpdateWorkItem.data.workItem,
       },
     },
   };
@@ -101,16 +94,6 @@ describe('WorkItemDevelopment CE', () => {
   };
 
   const successQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponseWithMRList);
-  const workItemWithNoDevItems = workItemResponseFactory({
-    canUpdate: true,
-    developmentWidgetPresent: true,
-    developmentItems: workItemDevelopmentFragmentResponse({
-      mrNodes: [],
-      willAutoCloseByMergeRequest: false,
-      featureFlagNodes: null,
-      branchNodes: [],
-    }),
-  });
 
   const workItemWithAutoCloseFlagEnabled = workItemResponseFactory({
     developmentWidgetPresent: true,
@@ -120,16 +103,6 @@ describe('WorkItemDevelopment CE', () => {
       featureFlagNodes: null,
       branchNodes: [],
     }),
-  });
-
-  const successQueryHandlerWithNoDevItems = jest.fn().mockResolvedValue({
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: workItemWithNoDevItems.data.workItem,
-      },
-    },
   });
 
   const successQueryHandlerWorkItemWithAutoCloseFlagEnabled = jest.fn().mockResolvedValue({
@@ -153,15 +126,17 @@ describe('WorkItemDevelopment CE', () => {
     .mockResolvedValue(closedWorkItemWithAutoCloseFlagEnabled);
 
   const createComponent = ({
+    mountFn = shallowMountExtended,
     workItemId = 'gid://gitlab/WorkItem/1',
     workItemIid = '1',
     workItemFullPath = 'full-path',
+    workItemType = 'Issue',
     workItemQueryHandler = successQueryHandler,
     workItemsAlphaEnabled = true,
   } = {}) => {
     mockApollo = createMockApollo([[workItemByIidQuery, workItemQueryHandler]]);
 
-    wrapper = shallowMountExtended(WorkItemDevelopment, {
+    wrapper = mountFn(WorkItemDevelopment, {
       apolloProvider: mockApollo,
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -171,89 +146,49 @@ describe('WorkItemDevelopment CE', () => {
         workItemId,
         workItemIid,
         workItemFullPath,
+        workItemType,
       },
       provide: {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
         },
       },
+      stubs: {
+        WorkItemCreateBranchMergeRequestModal: true,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
+        GlDisclosureDropdownGroup,
+      },
     });
   };
 
-  const findLabel = () => wrapper.findByTestId('dev-widget-label');
-  const findAddButton = () => wrapper.findByTestId('add-item');
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findCreateMRButton = () => wrapper.findByTestId('create-mr-button');
-  const findCreateBranchButton = () => wrapper.findByTestId('create-branch-button');
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findAddButton = () => wrapper.findComponent(WorkItemActionsSplitButton);
   const findMoreInformation = () => wrapper.findByTestId('more-information');
   const findRelationshipList = () => wrapper.findComponent(WorkItemDevelopmentRelationshipList);
+  const findCreateOptionsDropdown = () => wrapper.findByTestId('create-options-dropdown');
+  const findCreateBranchMergeRequestModal = () =>
+    wrapper.findComponent(WorkItemCreateBranchMergeRequestModal);
+  const findDropdownGroups = () =>
+    findCreateOptionsDropdown().findAllComponents(GlDisclosureDropdownGroup);
 
   describe('Default', () => {
     it('should show the widget label', async () => {
       createComponent();
       await waitForPromises();
 
-      expect(findLabel().exists()).toBe(true);
+      expect(findCrudComponent().props('title')).toBe('Development');
     });
 
     it('should render the add button when `canUpdate` is true and `workItemsAlpha` is on', async () => {
-      createComponent({ workItemsAlphaEnabled: true });
+      createComponent({ workItemsAlphaEnabled: true, mountFn: mountExtended });
       await waitForPromises();
 
       expect(findAddButton().exists()).toBe(true);
     });
-
-    it('should not render the add button when `canUpdate` is true and `workItemsAlpha` is off', async () => {
-      createComponent({ workItemsAlphaEnabled: false });
-      await waitForPromises();
-
-      expect(findAddButton().exists()).toBe(false);
-    });
-
-    it('should not render the add button when `canUpdate` is false and `workItemsAlpha` is off', async () => {
-      const handlerWithCanUpdateFalse = jest
-        .fn()
-        .mockResolvedValue(noUpdateProjectWorkItemResponseWithMRList);
-      createComponent({ workItemsAlphaEnabled: false, queryHandler: handlerWithCanUpdateFalse });
-      await waitForPromises();
-
-      expect(findAddButton().exists()).toBe(false);
-    });
-  });
-
-  describe('when the query is loading', () => {
-    it('should show the loading icon', () => {
-      createComponent();
-      expect(findLoadingIcon().exists()).toBe(true);
-    });
   });
 
   describe('when the response is successful', () => {
-    describe.each`
-      workItemsAlphaFFEnabled | shouldShowActionCtaButtons
-      ${true}                 | ${true}
-      ${false}                | ${false}
-    `(
-      'when the list of dev items is empty and workItemsAlpha is `$workItemsAlphaFFEnabled`',
-      ({ workItemsAlphaFFEnabled, shouldShowActionCtaButtons }) => {
-        beforeEach(async () => {
-          createComponent({
-            workItemQueryHandler: successQueryHandlerWithNoDevItems,
-            workItemsAlphaEnabled: workItemsAlphaFFEnabled,
-          });
-          await waitForPromises();
-        });
-
-        it(`should ${shouldShowActionCtaButtons ? '' : 'not '} show the 'Create MR' button`, () => {
-          expect(findCreateMRButton().exists()).toBe(shouldShowActionCtaButtons);
-        });
-
-        it(`should ${shouldShowActionCtaButtons ? '' : 'not '} show the 'Create branch' button`, () => {
-          expect(findCreateBranchButton().exists()).toBe(shouldShowActionCtaButtons);
-        });
-      },
-    );
-
     describe('when there is a list of MR`s', () => {
       beforeEach(async () => {
         createComponent();
@@ -299,5 +234,36 @@ describe('WorkItemDevelopment CE', () => {
         expect(findMoreInformation().attributes('aria-label')).toBe(message);
       },
     );
+  });
+
+  describe('Create branch/merge request flow', () => {
+    beforeEach(() => {
+      createComponent({ mountFn: mountExtended });
+      return waitForPromises();
+    });
+
+    it('should not show the create branch or merge request flow by default', () => {
+      expect(findCreateBranchMergeRequestModal().props('showModal')).toBe(false);
+    });
+
+    describe('Add button', () => {
+      it('should show the options in dropdown on click', () => {
+        const groups = findDropdownGroups();
+        const mergeRequestGroup = groups.at(0);
+        const branchGroup = groups.at(1);
+
+        expect(groups).toHaveLength(2);
+
+        expect(mergeRequestGroup.props('group').name).toBe('Merge request');
+        expect(mergeRequestGroup.props('group').items).toEqual([
+          expect.objectContaining({ text: 'Create merge request' }),
+        ]);
+
+        expect(branchGroup.props('group').name).toBe('Branch');
+        expect(branchGroup.props('group').items).toEqual([
+          expect.objectContaining({ text: 'Create branch' }),
+        ]);
+      });
+    });
   });
 });

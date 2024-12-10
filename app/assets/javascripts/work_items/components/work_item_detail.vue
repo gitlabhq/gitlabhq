@@ -27,6 +27,7 @@ import {
   WORK_ITEM_TYPE_VALUE_TASK,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_DEVELOPMENT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -68,6 +69,8 @@ import WorkItemAbuseModal from './work_item_abuse_modal.vue';
 import WorkItemDrawer from './work_item_drawer.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 import DesignUploadButton from './design_management/upload_button.vue';
+import WorkItemDevelopment from './work_item_development/work_item_development.vue';
+import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development/work_item_create_branch_merge_request_split_button.vue';
 
 const defaultWorkspacePermissions = {
   createDesign: false,
@@ -102,6 +105,8 @@ export default {
     WorkItemLoading,
     WorkItemAbuseModal,
     WorkItemDrawer,
+    WorkItemDevelopment,
+    WorkItemCreateBranchMergeRequestSplitButton,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -366,6 +371,9 @@ export default {
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    workItemDevelopment() {
+      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT);
     },
     workItemBodyClass() {
       return {
@@ -816,7 +824,7 @@ export default {
                 @cancelEditing="cancelEditing"
                 @error="updateError = $event"
               />
-              <div class="gl-flex gl-flex-col gl-flex-wrap sm:gl-flex-row sm:gl-gap-5">
+              <div class="gl-flex gl-flex-wrap gl-justify-between">
                 <work-item-award-emoji
                   v-if="workItemAwardEmoji"
                   :work-item-id="workItem.id"
@@ -826,13 +834,22 @@ export default {
                   @error="updateError = $event"
                   @emoji-updated="$emit('work-item-emoji-updated', $event)"
                 />
-                <design-upload-button
-                  v-if="showUploadDesign"
-                  :is-saving="isSaving"
-                  data-testid="design-upload-button"
-                  @upload="onUploadDesign"
-                  @error="onUploadDesignError"
-                />
+                <div class="gl-flex gl-gap-3">
+                  <design-upload-button
+                    v-if="showUploadDesign"
+                    :is-saving="isSaving"
+                    data-testid="design-upload-button"
+                    @upload="onUploadDesign"
+                    @error="onUploadDesignError"
+                  />
+                  <work-item-create-branch-merge-request-split-button
+                    v-if="workItemsAlphaEnabled && workItemDevelopment"
+                    :work-item-id="workItem.id"
+                    :work-item-iid="iid"
+                    :work-item-full-path="workItemFullPath"
+                    :work-item-type="workItem.workItemType.name"
+                  />
+                </div>
               </div>
             </section>
             <aside
@@ -889,6 +906,15 @@ export default {
               :work-item-type="workItem.workItemType.name"
               :can-admin-work-item-link="canAdminWorkItemLink"
               @showModal="openContextualView"
+            />
+
+            <work-item-development
+              v-if="workItemDevelopment"
+              :is-modal="isModal"
+              :work-item-id="workItem.id"
+              :work-item-iid="iid"
+              :work-item-full-path="workItemFullPath"
+              :work-item-type="workItem.workItemType.name"
             />
             <work-item-notes
               v-if="workItemNotes"

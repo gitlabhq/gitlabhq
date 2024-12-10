@@ -320,6 +320,7 @@ export const LINK_ITEM_FORM_HEADER_LABEL = {
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
+export const DEVELOPMENT_ITEMS_ANCHOR = 'developmentitems';
 
 export const ISSUABLE_EPIC = 'issue-type-epic';
 
@@ -382,3 +383,6 @@ export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelati
 export const INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION = Symbol(
   'injection:prevent-router-navigation',
 );
+
+export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE = 'source';
+export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH = 'branch';

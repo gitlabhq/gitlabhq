@@ -3249,9 +3249,6 @@ msgstr ""
 msgid "Add approval rule"
 msgstr ""
 
-msgid "Add branch or merge request"
-msgstr ""
-
 msgid "Add branch target"
 msgstr ""
 
@@ -3292,6 +3289,9 @@ msgid "Add deploy freeze"
 msgstr ""
 
 msgid "Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}"
+msgstr ""
+
+msgid "Add development item"
 msgstr ""
 
 msgid "Add email participants that don't have a GitLab account."
@@ -9609,6 +9609,9 @@ msgstr ""
 msgid "Branch changed"
 msgstr ""
 
+msgid "Branch created."
+msgstr ""
+
 msgid "Branch defaults"
 msgstr ""
 
@@ -9619,6 +9622,12 @@ msgid "Branch is already taken"
 msgstr ""
 
 msgid "Branch name"
+msgstr ""
+
+msgid "Branch name is available"
+msgstr ""
+
+msgid "Branch name is required"
 msgstr ""
 
 msgid "Branch name pattern"
@@ -10670,6 +10679,9 @@ msgstr ""
 msgid "CICD|Automatic deployment to staging, manual deployment to production"
 msgstr ""
 
+msgid "CICD|Automatic pipeline cleanup"
+msgstr ""
+
 msgid "CICD|CI/CD job token allowlist"
 msgstr ""
 
@@ -10689,9 +10701,6 @@ msgid "CICD|Default to Auto DevOps pipeline"
 msgstr ""
 
 msgid "CICD|Default to Auto DevOps pipeline for all projects"
-msgstr ""
-
-msgid "CICD|Delete old pipelines"
 msgstr ""
 
 msgid "CICD|Deployment strategy"
@@ -10742,7 +10751,7 @@ msgstr ""
 msgid "CICD|Pipelines and jobs cannot be cancelled"
 msgstr ""
 
-msgid "CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Minimum value is 1 day and maximum value is 1 year."
+msgid "CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in seconds, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Can be between 1 day to 1 year. Subject to the %{terms_link}."
 msgstr ""
 
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
@@ -11405,10 +11414,22 @@ msgstr ""
 msgid "Checking branch availability…"
 msgstr ""
 
+msgid "Checking branch validity"
+msgstr ""
+
+msgid "Checking branch validity..."
+msgstr ""
+
 msgid "Checking group path availability..."
 msgstr ""
 
 msgid "Checking if merge request can be merged..."
+msgstr ""
+
+msgid "Checking source validity"
+msgstr ""
+
+msgid "Checking source validity..."
 msgstr ""
 
 msgid "Checking username availability..."
@@ -15758,7 +15779,16 @@ msgstr ""
 msgid "Copied"
 msgstr ""
 
+msgid "Copied branch name."
+msgstr ""
+
+msgid "Copied branch."
+msgstr ""
+
 msgid "Copied labels and milestone from %{source_issuable_reference}."
+msgstr ""
+
+msgid "Copied reference."
 msgstr ""
 
 msgid "Copy"
@@ -23308,9 +23338,6 @@ msgid "Feature Flags"
 msgstr ""
 
 msgid "Feature disabled"
-msgstr ""
-
-msgid "Feature flag"
 msgstr ""
 
 msgid "Feature flag status"
@@ -50857,6 +50884,9 @@ msgstr ""
 msgid "SecurityReports|A comment is required when dismissing."
 msgstr ""
 
+msgid "SecurityReports|A dismissal reason is required."
+msgstr ""
+
 msgid "SecurityReports|Activity"
 msgstr ""
 
@@ -50908,6 +50938,9 @@ msgstr ""
 msgid "SecurityReports|Cluster"
 msgstr ""
 
+msgid "SecurityReports|Comment (required)"
+msgstr ""
+
 msgid "SecurityReports|Configure security testing"
 msgstr ""
 
@@ -50941,13 +50974,10 @@ msgstr ""
 msgid "SecurityReports|Development vulnerabilities"
 msgstr ""
 
-msgid "SecurityReports|Dismiss as"
-msgstr ""
-
 msgid "SecurityReports|Dismiss vulnerability"
 msgstr ""
 
-msgid "SecurityReports|Dismissal comment"
+msgid "SecurityReports|Dismissal reason (required)"
 msgstr ""
 
 msgid "SecurityReports|Dismissed (all reasons)"
@@ -51130,10 +51160,10 @@ msgstr ""
 msgid "SecurityReports|Select a project to add by using the project search field above."
 msgstr ""
 
-msgid "SecurityReports|Set dismissal reason"
+msgid "SecurityReports|Select dismissal reason"
 msgstr ""
 
-msgid "SecurityReports|Set status"
+msgid "SecurityReports|Select status"
 msgstr ""
 
 msgid "SecurityReports|Severity"
@@ -51352,9 +51382,6 @@ msgid "Select a new namespace"
 msgstr ""
 
 msgid "Select a project"
-msgstr ""
-
-msgid "Select a reason"
 msgstr ""
 
 msgid "Select a repository containing templates for common files."
@@ -53380,7 +53407,13 @@ msgstr ""
 msgid "Source code (%{fileExtension})"
 msgstr ""
 
+msgid "Source is available"
+msgstr ""
+
 msgid "Source is not available"
+msgstr ""
+
+msgid "Source name is required"
 msgstr ""
 
 msgid "Source project"
@@ -61160,6 +61193,9 @@ msgstr ""
 msgid "View blame prior to this change"
 msgstr ""
 
+msgid "View branch"
+msgstr ""
+
 msgid "View card matches"
 msgstr ""
 
@@ -63045,6 +63081,9 @@ msgstr ""
 msgid "WorkItem|Existing task"
 msgstr ""
 
+msgid "WorkItem|Failed to create a branch for this %{workItemType}. Please try again."
+msgstr ""
+
 msgid "WorkItem|Field"
 msgstr ""
 
@@ -63109,6 +63148,9 @@ msgid "WorkItem|Magenta"
 msgstr ""
 
 msgid "WorkItem|Mark as done"
+msgstr ""
+
+msgid "WorkItem|Merged"
 msgstr ""
 
 msgid "WorkItem|Milestone"

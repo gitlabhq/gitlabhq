@@ -91,15 +91,24 @@ describe('when a paragraph contains a link', () => {
 
 `);
   });
+});
 
-  it('serializes a paragraph with an HTML tag containing markdown as markdown', () => {
-    // HTML paragraph tags by definition cannot contain any markdown tags,
-    // so we serialize it to markdown despite being defined in source markdown as an HTML tag
-    expect(
-      serialize(
-        paragraph(sourceTag('p'), 'some', bold('bold'), 'text'),
-        paragraph(sourceTag('p'), 'A quick ', link({ href: '#' }, 'link'), ' to the docs'),
-      ),
-    ).toBe(`some**bold**text\n\nA quick [link](#) to the docs`);
-  });
+it('serializes a text-only paragraph without a <p> tag as markdown', () => {
+  expect(
+    serialize(
+      paragraph(sourceTag('h1'), 'hello world'),
+      paragraph(sourceTag('h2'), 'A quick brown fox jumps over the lazy dog'),
+    ),
+  ).toBe(`hello world\n\nA quick brown fox jumps over the lazy dog`);
+});
+
+it('serializes a paragraph with an HTML tag containing markdown as markdown', () => {
+  // HTML paragraph tags by definition cannot contain any markdown tags,
+  // so we serialize it to markdown despite being defined in source markdown as an HTML tag
+  expect(
+    serialize(
+      paragraph(sourceTag('p'), 'some', bold('bold'), 'text'),
+      paragraph(sourceTag('p'), 'A quick ', link({ href: '#' }, 'link'), ' to the docs'),
+    ),
+  ).toBe(`some**bold**text\n\nA quick [link](#) to the docs`);
 });

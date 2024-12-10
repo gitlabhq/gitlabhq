@@ -1635,6 +1635,7 @@ Supported general project attributes:
 | `build_timeout`                                    | integer           | No       | The maximum amount of time, in seconds, that a job can run. |
 | `ci_config_path`                                   | string            | No       | The path to CI configuration file. |
 | `ci_default_git_depth`                             | integer           | No       | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
+| `ci_delete_pipelines_in_seconds`                   | integer           | No       | Pipelines older than the configured time are deleted. |
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |

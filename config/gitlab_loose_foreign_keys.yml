@@ -381,6 +381,13 @@ namespaces:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+notes:
+  - table: vulnerabilities
+    column: noteable_id
+    conditions:
+      - column: noteable_type
+        value: "Vulnerability"
+    on_delete: async_delete
 notification_settings:
   - table: users
     column: user_id

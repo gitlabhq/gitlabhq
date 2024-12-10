@@ -198,6 +198,7 @@ export default {
     '#work-item-confirm-delete',
     '.work-item-link-child',
     '.modal-content',
+    '#create-merge-request-modal',
   ],
 };
 </script>

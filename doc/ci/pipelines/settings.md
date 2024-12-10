@@ -256,3 +256,26 @@ To disable GitLab CI/CD in your project:
 1. Select **Save changes**.
 
 These changes do not apply to projects in an [external integration](../../user/project/integrations/index.md#available-integrations).
+
+## Automatic pipeline cleanup
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status**: Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+You can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
+The system automatically deletes pipelines that were created before the configured value.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. In the **Automatic pipeline cleanup** field, enter the number of seconds, or a human-readable value like `2 weeks`.
+   Must be one day or more, and less than one year. Leave empty to never delete pipelines automatically.
+   Empty by default.
+1. Select **Save changes**.

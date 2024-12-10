@@ -26,7 +26,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'app/services/ci/components/fetch_service.rb'
     - 'app/services/concerns/ci/job_token_scope/edit_scope_validations.rb'
     - 'app/services/feature_flags/update_service.rb'
-    - 'app/services/import/github_service.rb'
     - 'app/services/integrations/slack_interactions/incident_management/incident_modal_submit_service.rb'
     - 'app/services/issues/build_service.rb'
     - 'app/services/jira_connect_subscriptions/create_service.rb'

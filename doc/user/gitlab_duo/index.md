@@ -34,12 +34,6 @@ DETAILS:
 
 - Help you write and understand code faster, get up to speed on the status of projects,
   and quickly learn about GitLab by answering your questions in a chat window.
-- LLMs: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet),
-  Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku),
-  and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
-  For more information, see the [Duo Chat examples](../gitlab_duo_chat_examples.md).
-  For self-managed, the models also depend on your GitLab version.
-  For the most benefit, use the latest GitLab version whenever possible.
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/index.md).
 
@@ -52,7 +46,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
 - [View documentation](../discussions/index.md#summarize-issue-discussions-with-duo-chat).
 
@@ -63,8 +56,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you write code more efficiently by generating code and showing suggestions as you type.
-- LLM for code completion: Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko).
-- LLM for code generation: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - [View documentation](../project/repository/code_suggestions/index.md).
 
@@ -75,7 +66,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you understand the selected code by explaining it more clearly.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - View documentation for explaining code in:
   - [The IDE](../gitlab_duo_chat/examples.md#explain-selected-code).
   - [A file](../../user/project/repository/code_explain.md).
@@ -88,7 +78,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps catch bugs early by generating tests for the selected code.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide).
 
@@ -99,7 +88,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Improve or refactor the selected code.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide).
 
@@ -110,7 +98,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Fix quality problems such as bugs or typos in the selected code.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/examples.md#fix-code-in-the-ide).
 
@@ -123,7 +110,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - `glab duo ask` helps you discover or recall `git` commands when and where you need them.
-- LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
 - [View documentation](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli).
 
 ### Merge Commit Message Generation
@@ -135,7 +121,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps you merge more quickly by generating meaningful commit messages.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message).
 
 ### Root Cause Analysis
@@ -149,7 +134,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
@@ -162,7 +146,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps you understand vulnerabilities, how they can be exploited, and how to fix them.
-- LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
 
@@ -193,9 +176,9 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-Use your own language models to power AI features in GitLab. Code Suggestions and Duo Chat are supported.
+Host the language models that power AI features in GitLab. Code Suggestions and Duo Chat are supported.
 
-You can use language model vendors provided by GitLab or fully manage language models in your self-hosted environment.
+You can use language model vendors provided by GitLab or fully manage specific language models in your self-hosted environment.
 
 - Use GitLab model vendors: Connect with default external model providers, like Google Vertex AI or Anthropic, by
   using the GitLab-managed AI gateway.
@@ -213,7 +196,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps populate a merge request more quickly by generating a description based on the code changes.
-- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=CKjkVsfyFd8&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes).
 
@@ -227,7 +209,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Help resolve a vulnerability by generating a merge request that addresses it.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
 
@@ -243,7 +224,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
-- LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 - [View documentation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation).
 
 ### Code Review
@@ -256,7 +236,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Automated code review of the proposed changes in your merge request.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code).
 
 ### Code Review Summary
@@ -269,7 +248,6 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps make merge request handover to reviewers easier by summarizing all the comments in a merge request review.
-- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review).
 
@@ -281,7 +259,6 @@ DETAILS:
 **Status:** Experiment
 
 - Automate tasks and help increase productivity in your development workflow.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - [View documentation](../duo_workflow/index.md).
 
 ## Disable GitLab Duo features for specific groups or projects or an entire instance

@@ -472,12 +472,13 @@ After merging, a maintainer should stay as the reviewer listed on the merge requ
 
 ### Dogfooding the Reviewers feature
 
-On March 18th 2021, an updated process was put in place aimed at efficiently and consistently dogfooding the Reviewers feature.
-
-Here is a summary of the changes, also reflected in this section above.
+Our code review process dogfoods the [Merge request reviews feature](../user/project/merge_requests/reviews/index.md).
+Here is a summary, which is also reflected in other sections.
 
 - Merge request authors and DRIs stay as Assignees.
-- Authors request a review by assigning users as Reviewers.
+- Merge request reviewers stay as Reviewers even after they have reviewed.
+- Authors [request a review](../user/project/merge_requests/reviews/index.md#request-a-review) by assigning users as Reviewers.
+- Authors [re-request a review](../user/project/merge_requests/reviews/index.md#re-request-a-review) when they have made changes and wish a reviewer to re-review.
 
 ## Best practices
 
@@ -555,6 +556,9 @@ For example, when a merge request has both `backend` and `frontend` concerns, yo
 `@john_doe can you please review ~backend?` or `@jane_doe - could you please give this MR a ~frontend maintainer review?`
 
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
+
+When re-requesting a review, click the [**Re-request a review** icon](../user/project/merge_requests/reviews/index.md#re-request-a-review) (**{redo}**) next to the reviewer's name, or use the `/request_review @user` quick action.
+This ensures the merge request appears in the reviewer's **Reviews requested** section of their merge request homepage.
 
 When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
 

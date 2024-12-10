@@ -3,7 +3,7 @@ import { renderHTMLNode } from './html_node';
 
 const paragraph = preserveUnchanged((state, node) => {
   const { sourceMarkdown, sourceTagName } = node.attrs;
-  if (sourceTagName && !sourceMarkdown && containsOnlyText(node)) {
+  if (sourceTagName === 'p' && !sourceMarkdown && containsOnlyText(node)) {
     renderHTMLNode(sourceTagName, true)(state, node);
     return;
   }

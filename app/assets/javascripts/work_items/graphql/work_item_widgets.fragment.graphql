@@ -111,6 +111,19 @@ fragment WorkItemWidgets on WorkItemWidget {
           title
           webUrl
           state
+          sourceBranch
+          reference
+          headPipeline {
+            detailedStatus {
+              id
+              icon
+              text
+              detailsPath
+            }
+          }
+          milestone {
+            ...MilestoneFragment
+          }
           project {
             id
             name
