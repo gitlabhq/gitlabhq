@@ -164,12 +164,14 @@ module Gitlab
       end
 
       def parse_and_transform(input)
-        AST::Transformer.new.apply(parse(input))
+        Timeout.timeout(2.seconds) { AST::Transformer.new.apply(parse(input)) }
       rescue Parslet::ParseFailed => ex
         # We raise a custom error so it's easier to catch different parser
         # related errors. In addition, this ensures the caller of this method
         # doesn't depend on a Parslet specific error class.
         raise Error, "Failed to parse the template: #{ex.message}"
+      rescue Timeout::Error
+        raise Error, 'Template parser timeout. Consider reducing the size of the template'
       end
     end
   end
