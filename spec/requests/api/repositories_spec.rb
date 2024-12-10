@@ -941,6 +941,19 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'rate limits user when thresholds hit' do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+      get(
+        api("/projects/#{project.id}/repository/changelog", user),
+        params: {
+          version: '1.0.0'
+        }
+      )
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+    end
+
     context 'when previous tag version does not exist' do
       it_behaves_like '422 response' do
         let(:request) { get api("/projects/#{project.id}/repository/changelog", user), params: { version: 'v0.0.0' } }
@@ -1101,6 +1114,19 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       )
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'rate limits user when thresholds hit' do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+      post(
+        api("/projects/#{project.id}/repository/changelog", user),
+        params: {
+          version: '1.0.0'
+        }
+      )
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
     end
   end
 end
