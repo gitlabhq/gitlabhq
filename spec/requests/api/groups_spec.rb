@@ -1261,6 +1261,25 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           expect(json_response['description']).to eq('it works')
         end
       end
+
+      context 'update path with existing pages unique domain' do
+        before do
+          stub_pages_setting(enabled: true)
+
+          create(
+            :project_setting,
+            project: project1,
+            pages_unique_domain_enabled: true,
+            pages_unique_domain: 'existing-domain')
+        end
+
+        it "returns 400 bad request error" do
+          put api("/groups/#{group1.id}", user1), params: { path: 'existing-domain' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq({ "path" => ["has already been taken"] })
+        end
+      end
     end
 
     context 'when authenticated as the admin' do
@@ -2906,6 +2925,27 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         post api("/groups", user3), params: { name: 'test' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      context 'with existing pages unique domain' do
+        before do
+          stub_pages_setting(enabled: true)
+
+          create(
+            :project_setting,
+            project: project1,
+            pages_unique_domain_enabled: true,
+            pages_unique_domain: 'existing-domain')
+        end
+
+        it "returns 400 bad request error if path is already used by pages unique domain" do
+          expect do
+            post api("/groups", user3), params: { name: 'test', path: 'existing-domain' }
+          end.not_to change { Group.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("Failed to save group {:path=>[\"has already been taken\"]}")
+        end
       end
     end
   end

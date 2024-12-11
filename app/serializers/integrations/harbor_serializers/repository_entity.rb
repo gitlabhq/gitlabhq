@@ -10,7 +10,7 @@ module Integrations
       end
 
       expose :name do |item|
-        strip_tags(item['name'])
+        validate_path(item['name']).then { |name| strip_tags(name) }
       end
 
       expose :artifact_count do |item|

@@ -723,7 +723,8 @@ module Types
       description: 'List of unprotected branches, ignoring any wildcard branch rules',
       null: true,
       calls_gitaly: true,
-      alpha: { milestone: '16.9' }
+      alpha: { milestone: '16.9' },
+      authorize: :read_code
 
     field :project_plan_limits, Types::ProjectPlanLimitsType,
       resolver: Resolvers::Projects::PlanLimitsResolver,

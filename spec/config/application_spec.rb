@@ -27,6 +27,7 @@ RSpec.describe Gitlab::Application, feature_category: :scalability do # rubocop:
           '/?safe[note]=secret&target_type=1'      | { 'safe' => { 'note' => filtered }, 'target_type' => '1' }
           '/?safe[selectedText]=secret'            | { 'safe' => { 'selectedText' => filtered } }
           '/?selectedText=secret'                  | { 'selectedText' => filtered }
+          '/?query=secret'                         | { 'query' => filtered }
         end
 
         with_them do

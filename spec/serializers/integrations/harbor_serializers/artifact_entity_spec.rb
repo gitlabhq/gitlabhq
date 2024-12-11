@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::HarborSerializers::ArtifactEntity do
+RSpec.describe Integrations::HarborSerializers::ArtifactEntity, feature_category: :container_registry do
   let_it_be(:harbor_integration) { create(:harbor_integration) }
 
   let(:artifact) do
@@ -47,5 +47,21 @@ RSpec.describe Integrations::HarborSerializers::ArtifactEntity do
       digest: "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
       tags: %w[2 1]
     })
+  end
+
+  context 'with data that may contain path traversal attacks' do
+    before do
+      artifact['digest'] = './../../../../../etc/hosts'
+    end
+
+    it 'logs an error and forbids the path traversal values' do
+      expect(::Gitlab::ErrorTracking).to receive(:track_exception).with(
+        an_instance_of(::Gitlab::PathTraversal::PathTraversalAttackError),
+        message: /Path traversal attack detected/,
+        class: described_class.name
+      )
+
+      expect(subject[:digest]).to eq('')
+    end
   end
 end

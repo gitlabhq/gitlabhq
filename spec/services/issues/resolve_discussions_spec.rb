@@ -102,6 +102,49 @@ RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
         expect(discussion_ids).to contain_exactly(discussion.id)
       end
 
+      it "contains only non-confidential discussions" do
+        _second_discussion = Discussion.new([
+          create(
+            :discussion_note_on_merge_request,
+            :confidential,
+            noteable: merge_request,
+            project: merge_request.target_project
+          )
+        ])
+        service = DummyService.new(
+          container: project,
+          current_user: user,
+          params: { merge_request_to_resolve_discussions_of: merge_request.iid }
+        )
+        # We need to compare discussion id's because the Discussion-objects are rebuilt
+        # which causes the object-id's not to be different.
+        discussion_ids = service.discussions_to_resolve.map(&:id)
+
+        expect(discussion_ids).to contain_exactly(discussion.id)
+      end
+
+      it "is empty when the discussion is confidential" do
+        second_discussion = Discussion.new([
+          create(
+            :discussion_note_on_merge_request,
+            :confidential,
+            noteable: merge_request,
+            project: merge_request.target_project
+          )
+        ])
+
+        service = DummyService.new(
+          container: project,
+          current_user: user,
+          params: {
+            discussion_to_resolve: second_discussion.id,
+            merge_request_to_resolve_discussions_of: merge_request.iid
+          }
+        )
+
+        expect(service.discussions_to_resolve).to be_empty
+      end
+
       it "is empty when a discussion and another merge request are passed" do
         service = DummyService.new(
           container: project,
