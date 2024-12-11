@@ -8863,6 +8863,18 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#composite_identity_enforced' do
+    it 'is false' do
+      expect(build(:user).composite_identity_enforced).to be false
+    end
+  end
+
+  describe '#composite_identity_enforced=' do
+    it 'is no-op' do
+      expect(build(:user).composite_identity_enforced).to be false
+    end
+  end
+
   describe 'color_mode_id' do
     context 'when theme_id is 11' do
       let(:user) { build(:user, theme_id: 11) }

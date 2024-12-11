@@ -307,7 +307,6 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`ci_runner_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173885) | Triggered when a runner is created | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | Instance, Group, Project |
 | [`ci_runner_usage_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139578) | A runner usage report is generated | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/426560) | Instance |
 | [`ci_runners_bulk_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173886) | Triggered when runners are deleted in bulk | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | User |
 
@@ -482,9 +481,7 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`ci_runner_assigned_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81508) | Triggered when a runner is assigned to a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
-| [`ci_runner_registered`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77109) | Triggered when an instance, group or project runner is registered | **{check-circle}** Yes | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Instance, Group, Project |
 | [`ci_runner_unassigned_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81540) | Triggered when a runner is unassigned from a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
-| [`ci_runner_unregistered`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79754) | Triggered when an instance, group or project runner is unregistered | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) | Instance, Group, Project |
 | [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Associated projects are successfully assigned to a CI/CD runner | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Project |
 
 ### Secret detection

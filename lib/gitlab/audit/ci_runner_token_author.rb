@@ -3,29 +3,24 @@
 module Gitlab
   module Audit
     class CiRunnerTokenAuthor < Gitlab::Audit::NullAuthor
-      attr_reader :entity_type, :entity_path
-
       # Represents a CI Runner token (registration or authentication)
       #
-      # @param ["gitlab_instance", "Group", "Project"] entity_type type of the scope that the token applies to
-      # @param [String] entity_path full path to the scope that the token applies to
-      # @param [String] runner_authentication_token authentication token used in a runner registration/un-registration
-      #   operation
-      # @param [String] runner_registration_token authentication token used in a runner registration operation
-      def initialize(entity_type:, entity_path:, runner_authentication_token: nil, runner_registration_token: nil)
-        name =
-          if runner_authentication_token.present?
-            "Authentication token: #{runner_authentication_token}"
-          elsif runner_registration_token.present?
-            "Registration token: #{runner_registration_token}"
-          else
-            "Token not available"
-          end
+      # @param [AuditEvent] audit_event event representing a runner registration/un-registration operation
+      def initialize(audit_event)
+        if audit_event.details.include?(:runner_authentication_token)
+          token = audit_event.details[:runner_authentication_token]
+          name = "Authentication token: #{token}"
+        elsif audit_event.details.include?(:runner_registration_token)
+          token = audit_event.details[:runner_registration_token]
+          name = "Registration token: #{token}"
+        else
+          name = "Token not available"
+        end
 
         super(id: -1, name: name)
 
-        @entity_type = entity_type
-        @entity_path = entity_path
+        @entity_type = audit_event.entity_type
+        @entity_path = audit_event.entity_path
       end
 
       def full_path
@@ -33,7 +28,7 @@ module Gitlab
 
         case @entity_type
         when 'Group'
-          url_helpers.group_runners(@entity_path)
+          url_helpers.group_settings_ci_cd_path(@entity_path, anchor: 'js-runners-settings')
         when 'Project'
           project = Project.find_by_full_path(@entity_path)
           url_helpers.project_settings_ci_cd_path(project, anchor: 'js-runners-settings') if project

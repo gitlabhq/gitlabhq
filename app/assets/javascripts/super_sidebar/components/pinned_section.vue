@@ -133,11 +133,7 @@ export default {
         @nav-link-click="writePinnedClick"
       />
     </draggable>
-    <li
-      v-else
-      class="super-sidebar-mix-blend-mode gl-py-3 gl-text-sm gl-text-subtle"
-      style="margin-left: 2.5rem"
-    >
+    <li v-else class="gl-py-3 gl-text-sm gl-text-subtle" style="margin-left: 2.5rem">
       {{ $options.i18n.emptyHint }}
     </li>
   </menu-section>

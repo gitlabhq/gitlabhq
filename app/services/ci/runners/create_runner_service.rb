@@ -49,7 +49,7 @@ module Ci
 
       private
 
-      attr_reader :user, :scope, :params, :strategy
+      attr_reader :user, :params, :strategy
 
       def track_runner_event(runner)
         return if params[:maintenance_note].blank?
@@ -73,5 +73,3 @@ module Ci
     end
   end
 end
-
-Ci::Runners::CreateRunnerService.prepend_mod
