@@ -1,7 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import StatusBadge from '~/issuable/components/status_badge.vue';
-import { s__ } from '~/locale';
 import { STATUS_OPEN, TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import {
   TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
@@ -25,11 +24,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
   computed: {
     isIssue() {
       return this.todo.targetType === TODO_TARGET_TYPE_ISSUE;
@@ -39,9 +33,6 @@ export default {
     },
     isAlert() {
       return this.todo.targetType === TODO_TARGET_TYPE_ALERT;
-    },
-    isDesign() {
-      return this.todo.targetType === TODO_TARGET_TYPE_DESIGN;
     },
     isMemberAccessRequestAction() {
       return this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED;
@@ -82,13 +73,16 @@ export default {
       );
     },
     targetTitle() {
-      if (this.isDesign || this.isMemberAccessRequestAction) {
+      if (this.isMemberAccessRequestAction) {
         return '';
       }
 
       return this.todo.targetEntity?.name ?? '';
     },
     targetReference() {
+      if (this.todo.targetEntity?.issue?.reference) {
+        return this.todo.targetEntity.issue.reference;
+      }
       return this.todo.targetEntity?.reference ?? '';
     },
     parentPath() {
@@ -101,6 +95,21 @@ export default {
       }
 
       return '';
+    },
+    showSeparator() {
+      if (!this.targetTitle) {
+        return false;
+      }
+
+      if (this.parentPath) {
+        return true;
+      }
+
+      if (this.targetReference) {
+        return true;
+      }
+
+      return false;
     },
     icon() {
       switch (this.todo.targetType) {
@@ -123,24 +132,18 @@ export default {
       }
     },
   },
-  i18n: {
-    removed: s__('Todos|(removed)'),
-  },
 };
 </script>
 
 <template>
-  <div
-    class="gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-whitespace-nowrap gl-px-2 gl-pb-3 gl-pt-2 gl-text-sm gl-text-subtle sm:gl-mr-0 sm:gl-pr-4 md:gl-mb-1"
-  >
+  <div>
     <status-badge v-if="showStatusBadge" :issuable-type="issuableType" :state="issuableState" />
     <gl-icon v-if="icon" :name="icon" />
-    <div class="gl-overflow-hidden gl-text-ellipsis">
+    <div class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
       <span v-if="targetTitle" class="todo-target-title">{{ targetTitle }}</span>
-      <span v-if="!isDesign && !isMemberAccessRequestAction">&middot;</span>
+      <span v-if="showSeparator">&middot;</span>
       <span>{{ parentPath }}</span>
       <span v-if="targetReference">{{ targetReference }}</span>
-      <span v-else>{{ $options.i18n.removed }}</span>
     </div>
   </div>
 </template>

@@ -47,8 +47,7 @@ For information on how to create and upload a package, view the GitLab documenta
 
 ## Authenticate with the registry
 
-Authentication depends on the package manager being used. For more information, see the docs on the
-specific package format you want to use.
+Authentication depends on the package manager being used. To learn what authentication protocols are supported for a specific package type, see [Authentication protocols](../../packages/package_registry/supported_functionality.md#authentication-protocols). 
 
 For most package types, the following credential types are valid:
 

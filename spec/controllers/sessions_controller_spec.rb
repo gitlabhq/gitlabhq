@@ -209,6 +209,22 @@ RSpec.describe SessionsController, feature_category: :system_access do
           end
         end
 
+        context 'when password authentication is disabled for SSO users' do
+          let_it_be(:user) { create(:omniauth_user, password_automatically_set: false) }
+
+          before do
+            stub_application_setting(disable_password_authentication_for_users_with_sso_identities: true)
+          end
+
+          it 'does not authenticate the user' do
+            post(:create, params: { user: user_params })
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(@request.env['warden']).not_to be_authenticated
+            expect(flash[:alert]).to include(I18n.t('devise.failure.invalid'))
+          end
+        end
+
         it 'creates an audit log record' do
           expect { post(:create, params: { user: user_params }) }.to change { AuditEvent.count }.by(1)
           expect(AuditEvent.last.details[:with]).to eq('standard')

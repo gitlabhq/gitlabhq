@@ -21,6 +21,13 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     stub_feature_flags(disallow_database_ddl_feature_flags: false)
   end
 
+  describe 'gitlab:db:sos task' do
+    it 'calls Gitlab::Database::Sos.run' do
+      expect(Gitlab::Database::Sos).to receive(:run).and_call_original
+      expect { run_rake_task('gitlab:db:sos') }.not_to raise_error
+    end
+  end
+
   describe 'mark_migration_complete' do
     context 'with a single database' do
       let(:main_model) { ApplicationRecord }

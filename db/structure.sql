@@ -18688,6 +18688,24 @@ CREATE SEQUENCE project_wiki_repositories_id_seq
 
 ALTER SEQUENCE project_wiki_repositories_id_seq OWNED BY project_wiki_repositories.id;
 
+CREATE TABLE projects_branch_rules_squash_options (
+    id bigint NOT NULL,
+    protected_branch_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    squash_option smallint DEFAULT 3 NOT NULL
+);
+
+CREATE SEQUENCE projects_branch_rules_squash_options_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE projects_branch_rules_squash_options_id_seq OWNED BY projects_branch_rules_squash_options.id;
+
 CREATE SEQUENCE projects_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -24151,6 +24169,8 @@ ALTER TABLE ONLY project_wiki_repositories ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY projects ALTER COLUMN id SET DEFAULT nextval('projects_id_seq'::regclass);
 
+ALTER TABLE ONLY projects_branch_rules_squash_options ALTER COLUMN id SET DEFAULT nextval('projects_branch_rules_squash_options_id_seq'::regclass);
+
 ALTER TABLE ONLY projects_sync_events ALTER COLUMN id SET DEFAULT nextval('projects_sync_events_id_seq'::regclass);
 
 ALTER TABLE ONLY projects_visits ALTER COLUMN id SET DEFAULT nextval('projects_visits_id_seq'::regclass);
@@ -26824,6 +26844,9 @@ ALTER TABLE ONLY project_type_ci_runners_e59bb2812d
 
 ALTER TABLE ONLY project_wiki_repositories
     ADD CONSTRAINT project_wiki_repositories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY projects_branch_rules_squash_options
+    ADD CONSTRAINT projects_branch_rules_squash_options_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY projects
     ADD CONSTRAINT projects_pkey PRIMARY KEY (id);
@@ -29566,6 +29589,8 @@ CREATE INDEX index_boards_on_milestone_id ON boards USING btree (milestone_id);
 
 CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
 
+CREATE UNIQUE INDEX index_branch_rule_squash_options_on_protected_branch_id ON projects_branch_rules_squash_options USING btree (protected_branch_id);
+
 CREATE UNIQUE INDEX index_broadcast_dismissals_on_user_id_and_broadcast_message_id ON user_broadcast_message_dismissals USING btree (user_id, broadcast_message_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON broadcast_messages USING btree (ends_at, broadcast_type, id);
@@ -32091,6 +32116,8 @@ CREATE INDEX index_project_aliases_on_project_id ON project_aliases USING btree 
 CREATE UNIQUE INDEX index_project_authorizations_on_project_user_access_level ON project_authorizations USING btree (project_id, user_id, access_level);
 
 CREATE UNIQUE INDEX index_project_auto_devops_on_project_id ON project_auto_devops USING btree (project_id);
+
+CREATE INDEX index_project_branch_rule_squash_options_on_project_id ON projects_branch_rules_squash_options USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_build_artifacts_size_refreshes_on_project_id ON project_build_artifacts_size_refreshes USING btree (project_id);
 
@@ -36324,6 +36351,9 @@ ALTER TABLE ONLY issue_tracker_data
 ALTER TABLE ONLY user_project_callouts
     ADD CONSTRAINT fk_33b4814f6b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY projects_branch_rules_squash_options
+    ADD CONSTRAINT fk_33b614a558 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_3448c97865 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
 
@@ -36530,6 +36560,9 @@ ALTER TABLE ONLY merge_request_diffs
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY projects_branch_rules_squash_options
+    ADD CONSTRAINT fk_574b8d531f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_report_notes
     ADD CONSTRAINT fk_57fb3e3bf2 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE CASCADE;

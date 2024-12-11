@@ -1,6 +1,5 @@
 <script>
 import { GlBadge, GlForm, GlFormCheckbox, GlLink, GlModal, GlTooltipDirective } from '@gitlab/ui';
-import { reportToSentry } from '~/ci/utils';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
@@ -283,9 +282,6 @@ export default {
       this.currentSkipModalValue = val;
       this.shouldTriggerActionClick = false;
     },
-  },
-  errorCaptured(err, _vm, info) {
-    reportToSentry('job_item', `error: ${err}, info: ${info}`);
   },
   methods: {
     handleConfirmationModalPreferences() {

@@ -5,6 +5,7 @@ import TodoItemTitle from './todo_item_title.vue';
 import TodoItemBody from './todo_item_body.vue';
 import TodoItemTimestamp from './todo_item_timestamp.vue';
 import TodoItemActions from './todo_item_actions.vue';
+import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
 
 export default {
   TRACK_ACTION: INSTRUMENT_TODO_ITEM_FOLLOW,
@@ -14,6 +15,7 @@ export default {
     TodoItemBody,
     TodoItemTimestamp,
     TodoItemActions,
+    TodoItemTitleHiddenBySaml,
   },
   inject: ['currentTab'],
   props: {
@@ -27,6 +29,12 @@ export default {
     },
   },
   computed: {
+    isHiddenBySaml() {
+      return !this.todo.targetEntity;
+    },
+    titleComponent() {
+      return this.isHiddenBySaml ? TodoItemTitleHiddenBySaml : TodoItemTitle;
+    },
     isDone() {
       return this.todo.state === TODO_STATE_DONE;
     },
@@ -55,8 +63,16 @@ export default {
       <div
         class="gl-w-64 gl-flex-grow-2 gl-self-center gl-overflow-hidden gl-overflow-x-auto sm:gl-w-auto"
       >
-        <todo-item-title :todo="todo" />
-        <todo-item-body :todo="todo" :current-user-id="currentUserId" />
+        <component
+          :is="titleComponent"
+          :todo="todo"
+          class="gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-whitespace-nowrap gl-px-2 gl-pb-3 gl-pt-2 gl-text-sm gl-text-subtle sm:gl-mr-0 sm:gl-pr-4 md:gl-mb-1"
+        />
+        <todo-item-body
+          :todo="todo"
+          :current-user-id="currentUserId"
+          :is-hidden-by-saml="isHiddenBySaml"
+        />
       </div>
       <div class="sm:gl-order-3">
         <todo-item-actions

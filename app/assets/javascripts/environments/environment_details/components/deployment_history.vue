@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlSorting } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
@@ -168,13 +167,6 @@ export default {
 
       this.isPrefetchingPages = false;
     },
-  },
-  errorCaptured(error) {
-    Sentry.captureException(error, {
-      tags: {
-        vue_component: 'EnvironmentDetailsIndex',
-      },
-    });
   },
   mounted() {
     if (this.graphqlEtagKey) {

@@ -5,5 +5,6 @@ export const createGon = (IS_EE) => {
     gitlab_url: TEST_HOST,
     relative_url_root: '',
     ee: IS_EE,
+    default_avatar_url: `${TEST_HOST}/default_avatar.png`,
   };
 };

@@ -1,72 +1,119 @@
+export const MR_REVIEW_REQUEST_TODO = {
+  id: 'gid://gitlab/Todo/29',
+  state: 'pending',
+  createdAt: '2024-08-02T20:17:18Z',
+  action: 'review_requested',
+  targetType: 'MERGEREQUEST',
+  targetUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/merge_requests/8',
+  memberAccessType: 'mergerequest',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Administrator',
+    webUrl: 'http://gdk.test:3000/root',
+    avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
+    __typename: 'UserCore',
+  },
+  note: null,
+  group: null,
+  project: {
+    id: 'gid://gitlab/Project/2',
+    nameWithNamespace: 'Gitlab Org / Gitlab Test',
+    __typename: 'Project',
+  },
+  targetEntity: {
+    mergeRequestState: 'opened',
+    name: 'Can be automatically merged',
+    reference: '!8',
+    webPath: '/gitlab-org/gitlab-test/-/merge_requests/8',
+    __typename: 'MergeRequest',
+  },
+  __typename: 'Todo',
+};
+
+export const MR_BUILD_FAILED_TODO = {
+  id: 'gid://gitlab/Todo/28',
+  state: 'pending',
+  createdAt: '2024-07-23T16:18:54Z',
+  action: 'build_failed',
+  targetType: 'MERGEREQUEST',
+  targetUrl: 'http://gdk.test:3000/flightjs/Flight/-/merge_requests/17/pipelines',
+  memberAccessType: 'mergerequest',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Administrator',
+    webUrl: 'http://gdk.test:3000/root',
+    avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
+    __typename: 'UserCore',
+  },
+  note: null,
+  group: null,
+  project: {
+    id: 'gid://gitlab/Project/7',
+    nameWithNamespace: 'Flightjs / Flight',
+    __typename: 'Project',
+  },
+  targetEntity: {
+    mergeRequestState: 'opened',
+    name: 'Update file .gitlab-ci.yml',
+    reference: '!17',
+    webPath: '/flightjs/Flight/-/merge_requests/17',
+    __typename: 'MergeRequest',
+  },
+  __typename: 'Todo',
+};
+
+export const DESIGN_TODO = {
+  id: 'gid://gitlab/Todo/435',
+  state: 'pending',
+  createdAt: '2024-12-06T11:33:29Z',
+  action: 'directly_addressed',
+  targetType: 'DESIGN',
+  targetUrl:
+    'http://gdk.test:3000/flightjs/Flight/-/issues/35/designs/Screenshot_2024-11-22_at_16.11.25.png#note_1760',
+  memberAccessType: 'designmanagement::design',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Administrator',
+    webUrl: 'http://gdk.test:3000/root',
+    avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
+    __typename: 'UserCore',
+  },
+  note: {
+    id: 'gid://gitlab/DiffNote/1760',
+    bodyFirstLineHtml:
+      '<p><a href="/root" data-reference-type="user" data-user="1" class="gfm gfm-project_member js-user-link current-user" title="Administrator">@root</a> What is this?</p>',
+    __typename: 'Note',
+  },
+  group: null,
+  project: {
+    id: 'gid://gitlab/Project/7',
+    nameWithNamespace: 'Flightjs / Flight',
+    __typename: 'Project',
+  },
+  targetEntity: {
+    name: 'Screenshot_2024-11-22_at_16.11.25.png',
+    issue: {
+      reference: '#35',
+    },
+    __typename: 'Design',
+  },
+  __typename: 'Todo',
+};
+
+export const SAML_HIDDEN_TODO = {
+  ...MR_REVIEW_REQUEST_TODO,
+  targetEntity: null,
+  project: null,
+  group: null,
+  note: null,
+};
+
 export const todosResponse = {
   data: {
     currentUser: {
       id: 'gid://gitlab/User/1',
       todos: {
-        nodes: [
-          {
-            id: 'gid://gitlab/Todo/29',
-            state: 'pending',
-            createdAt: '2024-08-02T20:17:18Z',
-            action: 'review_requested',
-            targetType: 'MERGEREQUEST',
-            targetUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/merge_requests/8',
-            memberAccessType: 'mergerequest',
-            author: {
-              id: 'gid://gitlab/User/1',
-              name: 'Administrator',
-              webUrl: 'http://gdk.test:3000/root',
-              avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
-              __typename: 'UserCore',
-            },
-            note: null,
-            group: null,
-            project: {
-              id: 'gid://gitlab/Project/2',
-              nameWithNamespace: 'Gitlab Org / Gitlab Test',
-              __typename: 'Project',
-            },
-            targetEntity: {
-              mergeRequestState: 'opened',
-              name: 'Can be automatically merged',
-              reference: '!8',
-              webPath: '/gitlab-org/gitlab-test/-/merge_requests/8',
-              __typename: 'MergeRequest',
-            },
-            __typename: 'Todo',
-          },
-          {
-            id: 'gid://gitlab/Todo/28',
-            state: 'pending',
-            createdAt: '2024-07-23T16:18:54Z',
-            action: 'build_failed',
-            targetType: 'MERGEREQUEST',
-            targetUrl: 'http://gdk.test:3000/flightjs/Flight/-/merge_requests/17/pipelines',
-            memberAccessType: 'mergerequest',
-            author: {
-              id: 'gid://gitlab/User/1',
-              name: 'Administrator',
-              webUrl: 'http://gdk.test:3000/root',
-              avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
-              __typename: 'UserCore',
-            },
-            note: null,
-            group: null,
-            project: {
-              id: 'gid://gitlab/Project/7',
-              nameWithNamespace: 'Flightjs / Flight',
-              __typename: 'Project',
-            },
-            targetEntity: {
-              mergeRequestState: 'opened',
-              name: 'Update file .gitlab-ci.yml',
-              reference: '!17',
-              webPath: '/flightjs/Flight/-/merge_requests/17',
-              __typename: 'MergeRequest',
-            },
-            __typename: 'Todo',
-          },
-        ],
+        nodes: [MR_REVIEW_REQUEST_TODO, MR_BUILD_FAILED_TODO],
         pageInfo: {
           hasNextPage: false,
           hasPreviousPage: false,

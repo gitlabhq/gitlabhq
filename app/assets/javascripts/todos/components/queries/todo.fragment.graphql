@@ -26,6 +26,12 @@ fragment Todo on Todo {
   }
   targetEntity {
     name
+    ... on Design {
+      issue {
+        id
+        reference
+      }
+    }
     ... on Issue {
       issueState: state
       reference

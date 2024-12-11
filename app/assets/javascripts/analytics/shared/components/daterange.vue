@@ -73,11 +73,11 @@ export default {
 <template>
   <div
     v-if="show"
-    class="align-items-lg-center justify-content-lg-end gl-flex gl-flex-col lg:gl-flex-row"
+    class="align-items-lg-center justify-content-lg-end gl-flex gl-flex-col md:gl-flex-row"
   >
     <gl-daterange-picker
       v-model="dateRange"
-      class="gl-flex gl-flex-col lg:gl-flex-row"
+      class="gl-flex gl-flex-col gl-flex-wrap gl-justify-end !gl-gap-3 sm:gl-flex-row md:gl-flex-nowrap"
       :default-start-date="startDate"
       :default-end-date="endDate"
       :default-min-date="minDate"
@@ -88,12 +88,15 @@ export default {
       :from-label="__('From')"
       :to-label="__('To')"
       theme="animate-picker"
-      start-picker-class="js-daterange-picker-from gl-flex gl-flex-col lg:gl-flex-row lg:gl-items-center lg:gl-mr-3 gl-mb-2 lg:gl-mb-0"
-      end-picker-class="js-daterange-picker-to gl-flex gl-flex-col lg:gl-flex-row lg:gl-items-center gl-mb-2 lg:gl-mb-0"
-      label-class="gl-mb-2 lg:gl-mb-0"
+      width="full"
+      start-picker-class="js-daterange-picker-from gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-grow"
+      end-picker-class="js-daterange-picker-to gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-grow"
+      label-class="gl-mb-3 sm:gl-mb-0"
     >
       <template #default="{ daysSelected }">
-        {{ numberOfDays(daysSelected) }}
+        <div class="gl-text-right">
+          {{ numberOfDays(daysSelected) }}
+        </div>
       </template>
     </gl-daterange-picker>
   </div>

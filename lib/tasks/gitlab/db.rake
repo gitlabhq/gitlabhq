@@ -19,6 +19,11 @@ namespace :gitlab do
       mark_migration_complete(args[:version])
     end
 
+    desc 'Gitlab | DB | Troubleshoot issues with the database'
+    task sos: :environment do
+      Gitlab::Database::Sos.run
+    end
+
     namespace :mark_migration_complete do
       each_database(databases) do |database_name|
         desc "Gitlab | DB | Manually insert schema migration version on #{database_name} database"

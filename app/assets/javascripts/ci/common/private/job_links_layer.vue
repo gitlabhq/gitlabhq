@@ -1,6 +1,5 @@
 <script>
 import { memoize } from 'lodash';
-import { reportToSentry } from '~/ci/utils';
 import { parseData } from '~/ci/pipeline_details/utils/parsing_utils';
 import LinksInner from '~/ci/pipeline_details/graph/components/links_inner.vue';
 
@@ -50,9 +49,6 @@ export default {
     showLinkedLayers() {
       return this.showLinks && !this.containerZero;
     },
-  },
-  errorCaptured(err, _vm, info) {
-    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
 };
 </script>

@@ -26,16 +26,9 @@ using the GitLab Advanced SAST predefined ruleset.
 The Semgrep analyzer will not scan these files.
 
 All vulnerabilities identified by the GitLab Advanced SAST analyzer will be reported,
-including vulnerabilities previously reported by the Semgrep analyzer.
-An automated transition process is proposed for the future,
-in which the Vulnerability Management system will automatically de-duplicate findings
-that were identified by both the GitLab Advanced SAST analyzer and the Semgrep analyzer.
-It's proposed that the capability will be based on the advanced tracking algorithm
-and will keep the original record of the vulnerability
-(if it was first identified by Semgrep, then the Semgrep finding).
-
-NOTE:
-In case a duplicated vulnerability was already introduced (in the interim time until the deduplication is available),the deduplication capability will not deduplicate it. The capability will be relevant only for validating new vulnerabilities that are not already duplicated.
+including vulnerabilities previously reported by the Semgrep-based analyzer.
+An automated transition automatically de-duplicates findings
+when Advanced SAST locates the same type of vulnerability in the same location as the Semgrep-based analyzer.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).

@@ -1,5 +1,4 @@
 <script>
-import { reportToSentry } from '~/ci/utils';
 import {
   generateColumnsFromLayersListMemoized,
   keepLatestDownstreamPipelines,
@@ -132,9 +131,6 @@ export default {
     upstreamPipelines() {
       return this.hasUpstreamPipelines ? this.pipeline.upstream : [];
     },
-  },
-  errorCaptured(err, _vm, info) {
-    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   mounted() {
     this.getMeasurements();

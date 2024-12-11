@@ -216,9 +216,6 @@ export default {
     toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
     this.skipRetryModal = Boolean(JSON.parse(localStorage.getItem(SKIP_RETRY_MODAL_KEY)));
   },
-  errorCaptured(err, _vm, info) {
-    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
-  },
   methods: {
     getPipelineInfo() {
       if (this.currentViewType === LAYER_VIEW && !this.computedPipelineInfo) {

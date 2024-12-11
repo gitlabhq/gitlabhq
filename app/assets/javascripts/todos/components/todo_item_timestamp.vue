@@ -19,13 +19,16 @@ export default {
   },
   computed: {
     dueDate() {
+      if (!this.todo?.targetEntity?.dueDate) {
+        return null;
+      }
       return newDate(this.todo.targetEntity.dueDate);
     },
     formattedCreatedAt() {
       return this.timeFormatted(this.todo.createdAt);
     },
     formattedDueDate() {
-      if (!this.todo?.targetEntity?.dueDate) {
+      if (!this.dueDate) {
         return null;
       }
 
@@ -38,10 +41,10 @@ export default {
       });
     },
     showDueDateAsError() {
-      return this.formattedDueDate && isInPast(this.dueDate);
+      return this.dueDate && isInPast(this.dueDate);
     },
     showDueDateAsWarning() {
-      return this.formattedDueDate && isToday(this.dueDate);
+      return this.dueDate && isToday(this.dueDate);
     },
   },
 };

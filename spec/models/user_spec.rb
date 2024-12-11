@@ -6223,6 +6223,12 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#allow_password_authentication?' do
+    subject(:allow_password_authentication?) { user.allow_password_authentication? }
+
+    it_behaves_like 'OmniAuth user password authentication'
+  end
+
   describe '#allow_password_authentication_for_web?' do
     subject(:allow_password_authentication_for_web?) { user.allow_password_authentication_for_web? }
 
@@ -7541,10 +7547,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         it { is_expected.to eq(true) }
 
-        context 'when password authentication for web is disabled' do
+        context 'when password authentication is disabled' do
           before do
             stub_application_setting(password_authentication_enabled_for_web: false)
-            stub_application_setting(password_authentication_enabled_for_git: true)
+            stub_application_setting(password_authentication_enabled_for_git: false)
           end
 
           it { is_expected.to eq(false) }

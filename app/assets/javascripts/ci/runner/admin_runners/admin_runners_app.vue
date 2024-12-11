@@ -174,9 +174,6 @@ export default {
       },
     },
   },
-  errorCaptured(error) {
-    this.reportToSentry(error);
-  },
   methods: {
     jobsUrl(runner) {
       const url = new URL(runner.adminUrl);

@@ -115,9 +115,6 @@ export default {
       });
     },
   },
-  errorCaptured(err, _vm, info) {
-    reportToSentry('stage_column_component', `error: ${err}, info: ${info}`);
-  },
   mounted() {
     this.$emit('updateMeasurements');
   },

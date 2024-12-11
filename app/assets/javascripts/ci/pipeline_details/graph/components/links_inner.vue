@@ -109,9 +109,6 @@ export default {
       });
     },
   },
-  errorCaptured(err, _vm, info) {
-    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
-  },
   mounted() {
     if (!isEmpty(this.linksData)) {
       this.calculateLinkData();

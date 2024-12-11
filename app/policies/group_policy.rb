@@ -65,15 +65,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
   end
 
-  condition(:owner_access, scope: :subject) do
+  condition(:owner_project_creation_level, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::OWNER_PROJECT_ACCESS
   end
 
-  condition(:maintainer_access, scope: :subject) do
+  condition(:maintainer_project_creation_level, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
   end
 
-  condition(:developer_maintainer_access, scope: :subject) do
+  condition(:developer_project_creation_level, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
   end
 
@@ -335,9 +335,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock)
   end.enable :change_share_with_group_lock
 
-  rule { owner & owner_access }.enable :create_projects
-  rule { maintainer & maintainer_access }.enable :create_projects
-  rule { developer & developer_maintainer_access }.enable :create_projects
+  rule { owner & owner_project_creation_level }.enable :create_projects
+  rule { maintainer & maintainer_project_creation_level }.enable :create_projects
+  rule { developer & developer_project_creation_level }.enable :create_projects
   rule { create_projects_disabled }.policy do
     prevent :create_projects
     prevent :import_projects

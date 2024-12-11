@@ -57916,6 +57916,9 @@ msgstr ""
 msgid "Todos|Henceforth, you shall be known as \"To-Do Destroyer\""
 msgstr ""
 
+msgid "Todos|Hidden"
+msgstr ""
+
 msgid "Todos|Isn't an empty To-Do List beautiful?"
 msgstr ""
 
@@ -58014,6 +58017,12 @@ msgid "Todos|SSH key expired"
 msgstr ""
 
 msgid "Todos|SSH key expiring soon"
+msgstr ""
+
+msgid "Todos|Select this item to sign in with SAML and view it."
+msgstr ""
+
+msgid "Todos|Someone"
 msgstr ""
 
 msgid "Todos|Something went wrong. Please try again."

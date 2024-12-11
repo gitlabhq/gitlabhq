@@ -20,7 +20,7 @@ Use Pipeline execution policies to enforce CI/CD jobs for all applicable project
 ## Pipeline execution policies schema
 
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) the `suffix` field in GitLab 17.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7. [with a flag](../../../administration/feature_flags.md) named `ensure_pipeline_policy_pre_stage_complete`. Disabled by default.
 
 The YAML file with pipeline execution policies consists of an array of objects matching pipeline execution
 policy schema nested under the `pipeline_execution_policy` key. You can configure a maximum of five

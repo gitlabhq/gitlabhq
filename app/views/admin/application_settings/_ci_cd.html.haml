@@ -74,8 +74,6 @@
       .form-group
         = f.gitlab_ui_checkbox_component :enable_artifact_external_redirect_warning_page, s_('AdminSettings|Enable the external redirect warning page for job artifacts'), help_text: s_('AdminSettings|Show a redirect page that warns you about user-generated content in GitLab Pages.')
 
-      = render_if_exists 'admin/application_settings/security_policy_scheduled_scans_max_concurrency', form: f
-
     = f.submit _('Save changes'), pajamas_button: true
 
   .gl-mt-7

@@ -1,10 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
+import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
 import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import TodoItemTimestamp from '~/todos/components/todo_item_timestamp.vue';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
+import { SAML_HIDDEN_TODO, MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
 describe('TodoItem', () => {
   let wrapper;
@@ -14,10 +16,7 @@ describe('TodoItem', () => {
       propsData: {
         currentUserId: '1',
         todo: {
-          id: '1',
-          state: TODO_STATE_PENDING,
-          targetType: 'Issue',
-          targetUrl: '/project/issue/1',
+          ...MR_REVIEW_REQUEST_TODO,
         },
         ...props,
       },
@@ -32,9 +31,14 @@ describe('TodoItem', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('renders TodoItemTitle component', () => {
+  it('renders TodoItemTitle component for normal todos', () => {
     createComponent();
     expect(wrapper.findComponent(TodoItemTitle).exists()).toBe(true);
+  });
+
+  it('renders TodoItemTitleHiddenBySaml component for hidden todos', () => {
+    createComponent({ todo: SAML_HIDDEN_TODO });
+    expect(wrapper.findComponent(TodoItemTitleHiddenBySaml).exists()).toBe(true);
   });
 
   it('renders TodoItemBody component', () => {

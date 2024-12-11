@@ -106,22 +106,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
     end
   end
 
-  describe '#human_squash_option' do
-    where(:squash_option, :human_squash_option) do
-      'never'       | 'Do not allow'
-      'always'      | 'Require'
-      'default_on'  | 'Encourage'
-      'default_off' | 'Allow'
-    end
-
-    with_them do
-      let(:project_setting) { create(:project_setting, squash_option: ProjectSetting.squash_options[squash_option]) }
-
-      subject { project_setting.human_squash_option }
-
-      it { is_expected.to eq(human_squash_option) }
-    end
-  end
+  it_behaves_like 'projects squash option'
 
   def valid_target_platform_combinations
     target_platforms = described_class::ALLOWED_TARGET_PLATFORMS

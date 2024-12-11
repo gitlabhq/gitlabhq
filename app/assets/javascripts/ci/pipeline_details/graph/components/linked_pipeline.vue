@@ -14,7 +14,6 @@ import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import { reportToSentry } from '~/ci/utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from '../constants';
 
 export default {
@@ -173,9 +172,6 @@ export default {
       return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label} -
       ${this.sourceJobInfo}`;
     },
-  },
-  errorCaptured(err, _vm, info) {
-    reportToSentry('linked_pipeline', `error: ${err}, info: ${info}`);
   },
   methods: {
     cancelPipeline() {
