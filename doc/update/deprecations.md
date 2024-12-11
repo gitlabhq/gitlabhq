@@ -645,14 +645,14 @@ Project Owners and Maintainers should review their private projects' lists of me
 
 </div>
 
-<div class="deprecation " data-milestone="18.0">
+<div class="deprecation breaking-change" data-milestone="18.0">
 
 ### Increased default security for use of pipeline variables
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.7</span>
-- Removal in GitLab <span class="milestone">18.0</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/502382).
 
 </div>

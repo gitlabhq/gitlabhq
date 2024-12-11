@@ -14,6 +14,8 @@ module Keeps
   class UpdateTableSizes < ::Gitlab::Housekeeper::Keep
     include Gitlab::Utils::StrongMemoize
 
+    RUBOCOP_PATH = 'rubocop/rubocop-migrations.yml'
+
     def each_change
       return unless tables_to_update.any?
 
@@ -23,6 +25,9 @@ module Keeps
       tables_to_update.each do |table_name, classification|
         change.changed_files << update_dictionary_file(table_name, classification)
       end
+
+      update_rubocop_migrations_file(tables_to_update)
+      change.changed_files << RUBOCOP_PATH
 
       yield(change)
     end
@@ -98,6 +103,48 @@ module Keeps
       File.write(dictionary_path, dictionary.to_yaml)
 
       dictionary_path
+    end
+
+    def update_rubocop_migrations_file(table_names)
+      yaml_content = load_rubocop_migrations_config
+
+      update_tables_in_config(yaml_content, group_tables_by_classification(table_names))
+
+      File.write(RUBOCOP_PATH, yaml_content.to_yaml)
+    end
+
+    def load_rubocop_migrations_config
+      @rubocop_migrations_config ||= YAML.load_file(RUBOCOP_PATH)
+    end
+
+    def group_tables_by_classification(table_names)
+      table_names.group_by { |_k, v| v }.transform_values { |v| v.map(&:first) }
+    end
+
+    def update_tables_in_config(config, tables_by_classification)
+      tables_by_classification.each do |size, new_tables|
+        rubocop_classification = rubocop_size_classification(size)
+        next unless rubocop_classification
+
+        existing_tables = config.dig('Migration/UpdateLargeTable', rubocop_classification) || []
+        updated_tables = merge_and_sort_tables(existing_tables, new_tables)
+
+        config['Migration/UpdateLargeTable'][rubocop_classification] = updated_tables
+        @rubocop_migrations_config[rubocop_classification] = updated_tables
+      end
+    end
+
+    def merge_and_sort_tables(existing_tables, new_tables)
+      (existing_tables + new_tables.map(&:to_sym)).uniq.sort
+    end
+
+    def rubocop_size_classification(size)
+      case size
+      when 'large'
+        'LargeTables'
+      when 'over_limit'
+        'OverLimitTables'
+      end
     end
 
     def labels

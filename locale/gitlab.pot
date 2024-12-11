@@ -48714,6 +48714,9 @@ msgstr ""
 msgid "ScanResultPolicy|Don't show me this again"
 msgstr ""
 
+msgid "ScanResultPolicy|Duplicates will be removed"
+msgstr ""
+
 msgid "ScanResultPolicy|Edge case settings"
 msgstr ""
 
@@ -48892,6 +48895,9 @@ msgid "ScanResultPolicy|The product %{verb} use the selected licenses"
 msgstr ""
 
 msgid "ScanResultPolicy|Unknown"
+msgstr ""
+
+msgid "ScanResultPolicy|Use this format for package paths: path/file.yaml@group-name/project-name. For multiple packages, separate paths with comma \",\"."
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
@@ -49932,6 +49938,9 @@ msgid "SecurityOrchestration|Add new rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
+msgstr ""
+
+msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
 msgstr ""
 
 msgid "SecurityOrchestration|Add protected branches"

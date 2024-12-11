@@ -167,9 +167,39 @@ To disable diff previews for all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Clear **Include diff previews**.
 1. Select **Save changes**.
+
+## Expiry emails for group and project access tokens
+
+> - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+
+FLAG:
+The availability of emails to inherited project and group members is controlled by a feature flag. For more information, see the history.
+
+The following group and project members receive notification emails about access tokens that are expiring soon:
+
+- For group access tokens:
+  - Members with the Owner role.
+  - In GitLab 17.7 and later, members who inherit the Owner role for the group, if that group or its parent group has the appropriate setting configured.
+- For project access tokens:
+  - Members of the project with at least the Maintainer role.
+  - In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group, if that group or its parent group has the appropriate setting configured.
+
+You can enable notifications to inherited members of a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Expiry notification emails about group and project access tokens within this group should be sent to:**, select **All direct and inherited members of the group or project**.
+1. Optional. Check the **Enforce for all subgroups** checkbox.
+1. Select **Save changes**.
+
+For more information, see:
+
+- For groups, the [group access tokens documentation](settings/group_access_tokens.md#group-access-token-expiry-emails).
+- For projects, the [project access tokens documentation](../project/settings/project_access_tokens.md#project-access-token-expiry-emails).
 
 ## Disable group mentions
 

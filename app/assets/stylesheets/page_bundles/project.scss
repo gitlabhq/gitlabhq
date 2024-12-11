@@ -116,7 +116,7 @@
 
     .stat-link {
       border-bottom: 0;
-      color: var(--black, $black);
+      @apply gl-text-default;
 
       &:hover,
       &:focus {
@@ -124,7 +124,7 @@
       }
 
       .project-stat-value {
-        color: var(--gl-text-color-default);
+        @apply gl-text-default;
       }
 
       .icon {

@@ -5,15 +5,16 @@
   removal_milestone: "18.0"
   announcement_milestone: "17.7"
   # Change breaking_change to false if needed.
-  breaking_change: false
+  breaking_change: true
+  window: 3
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: jreporter
   stage: verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502382
   impact: medium  # Can be one of: [critical, high, medium, low]
-  scope: [project]  # Can be one or a combination of: [instance, group, project]
-  resolution_role: [Maintainer]  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: false  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     GitLab believes in secure-by-default practices. To honor this, we are making some changes to support least privilege principles relating to the use of CI/CD variables.
