@@ -16,6 +16,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
   let(:base_initialization_params) { { ref: ref, before: '00000000', after: project.commit(ref).sha, variables_attributes: nil } }
   let(:initialization_params)      { base_initialization_params }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+  end
+
   context 'job:rules' do
     let(:regular_job) { find_job('regular-job') }
     let(:rules_job)   { find_job('rules-job') }

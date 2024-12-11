@@ -220,6 +220,7 @@ module Gitlab
       /key$/,
       /^body$/,
       /^description$/,
+      /^query$/,
       /^note$/,
       /^text$/,
       /^title$/,

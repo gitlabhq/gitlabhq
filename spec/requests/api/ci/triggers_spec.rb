@@ -15,6 +15,10 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   let_it_be(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2, owner: user2) }
   let_it_be(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+  end
+
   describe 'POST /projects/:project_id/trigger/pipeline' do
     let(:options) do
       {

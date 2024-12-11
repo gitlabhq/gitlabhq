@@ -31,6 +31,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
     end
 
+    before do
+      project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+    end
+
     shared_examples 'not including the file' do
       it 'does not include the job in the file' do
         expect(pipeline).to be_created_successfully

@@ -25,12 +25,12 @@ module Gitlab
       end
 
       def gitlab_id
-        project.import_data.user_mapping_enabled? ? gitlab_user&.id : find_by_email
+        user_mapping_enabled? ? gitlab_user&.id : find_by_email
       end
       strong_memoize_attr :gitlab_id
 
       def source_user
-        return if !project.import_data.user_mapping_enabled? || ghost_user?
+        return if !user_mapping_enabled? || ghost_user?
 
         source_user_mapper.find_or_create_source_user(
           source_name: gitea_user[:full_name].presence || gitea_user[:login],
@@ -78,6 +78,11 @@ module Gitlab
         source_user.mapped_user
       end
       strong_memoize_attr :gitlab_user
+
+      def user_mapping_enabled?
+        project.import_data.reset.user_mapping_enabled?
+      end
+      strong_memoize_attr :user_mapping_enabled?
     end
   end
 end

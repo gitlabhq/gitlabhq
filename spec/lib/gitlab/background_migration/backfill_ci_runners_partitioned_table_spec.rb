@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnersPartitionedTable,
-  feature_category: :runner,
-  schema: 20241023144448,
-  migration: :gitlab_ci do
+  feature_category: :runner, migration: :gitlab_ci do
   let(:connection) { Ci::ApplicationRecord.connection }
 
   describe '#perform' do
@@ -27,24 +25,19 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnersPartitionedTable,
     end
 
     before do
-      # Don't sync records to partitioned table
       connection.execute <<~SQL
-        DROP TRIGGER table_sync_trigger_61879721b5 ON ci_runners;
-      SQL
+        BEGIN;
+        ALTER TABLE ci_runners DISABLE TRIGGER ALL; -- Don't sync records to partitioned table
 
-      runners.create!(runner_type: 1)
-      runners.create!(runner_type: 2, sharding_key_id: 89)
-      runners.create!(runner_type: 2, sharding_key_id: nil)
-      runners.create!(runner_type: 3, sharding_key_id: 10)
-      runners.create!(runner_type: 3, sharding_key_id: nil)
-      runners.create!(runner_type: 3, sharding_key_id: 100)
+        INSERT INTO ci_runners(runner_type) VALUES (1);
+        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (2, 89);
+        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (2, NULL);
+        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, 10);
+        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, NULL);
+        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, 100);
 
-    ensure
-      connection.execute <<~SQL
-        CREATE TRIGGER table_sync_trigger_61879721b5
-        AFTER INSERT OR DELETE OR UPDATE ON ci_runners
-        FOR EACH ROW
-        EXECUTE FUNCTION table_sync_function_686d6c7993 ();
+        ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+        COMMIT;
       SQL
     end
 

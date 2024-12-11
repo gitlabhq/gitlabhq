@@ -775,6 +775,10 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         context 'variables given' do
           let(:variables) { [{ 'variable_type' => 'file', 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
 
+          before do
+            project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+          end
+
           it 'creates and returns a new pipeline using the given variables', :aggregate_failures do
             expect do
               post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch, variables: variables }
@@ -794,6 +798,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           before do
             config = YAML.dump(test: { script: 'test', only: { variables: ['$STAGING'] } })
             stub_ci_pipeline_yaml_file(config)
+            project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'creates and returns a new pipeline using the given variables', :aggregate_failures do

@@ -35,11 +35,6 @@ export default {
       [Image.name]: __('Edit image description'),
       [Video.name]: __('Edit video description'),
     },
-    replaceLabels: {
-      [Audio.name]: __('Replace audio'),
-      [Image.name]: __('Replace image'),
-      [Video.name]: __('Replace video'),
-    },
     deleteLabels: {
       [Audio.name]: __('Delete audio'),
       [DrawioDiagram.name]: __('Delete diagram'),
@@ -84,9 +79,6 @@ export default {
     },
     editLabel() {
       return this.$options.i18n.editLabels[this.mediaType];
-    },
-    replaceLabel() {
-      return this.$options.i18n.replaceLabels[this.mediaType];
     },
     deleteLabel() {
       return this.$options.i18n.deleteLabels[this.mediaType];
@@ -176,10 +168,6 @@ export default {
       this.uploading = false;
 
       this.uploadProgress = 0;
-    },
-
-    replaceMedia() {
-      this.$refs.fileSelector.click();
     },
 
     editDiagram() {
@@ -274,18 +262,6 @@ export default {
           :title="editLabel"
           icon="diagram"
           @click="editDiagram"
-        />
-        <gl-button
-          v-else
-          v-gl-tooltip
-          variant="default"
-          category="tertiary"
-          size="medium"
-          data-testid="replace-media"
-          :aria-label="replaceLabel"
-          :title="replaceLabel"
-          icon="retry"
-          @click="replaceMedia"
         />
       </gl-button-group>
       <gl-form v-else class="bubble-menu-form gl-w-full gl-p-4" @submit.prevent="saveEditedMedia">

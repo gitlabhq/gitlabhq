@@ -356,7 +356,7 @@ class Namespace < ApplicationRecord
     def clean_path(path, limited_to: Namespace.all)
       slug = Gitlab::Slug::Path.new(path).generate
       path = Namespaces::RandomizedSuffixPath.new(slug)
-      Gitlab::Utils::Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) }
+      Gitlab::Utils::Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) || ProjectSetting.unique_domain_exists?(s) }
     end
 
     def clean_name(value)
@@ -757,6 +757,14 @@ class Namespace < ApplicationRecord
 
   def uploads_sharding_key
     { organization_id: organization_id }
+  end
+
+  def pipeline_variables_default_role
+    return namespace_settings.pipeline_variables_default_role if namespace_settings.present?
+
+    # We could have old namespaces that don't have an associated `namespace_settings` record.
+    # To avoid returning `nil` we return the database-level default.
+    NamespaceSetting.column_defaults['pipeline_variables_default_role']
   end
 
   private

@@ -2,15 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggregate_failures, feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include_context 'for maven virtual registry api setup'
 
-  describe 'GET /api/v4/virtual_registries/packages/maven/registries/:id/upstreams/:upstream_id/cached_responses' do
+  describe 'GET /api/v4/virtual_registries/packages/maven/upstreams/:id/cached_responses' do
     let(:upstream_id) { upstream.id }
-    let(:url) do
-      "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream_id}/cached_responses"
-    end
+    let(:url) { "/virtual_registries/packages/maven/upstreams/#{upstream_id}/cached_responses" }
 
     let_it_be(:processing_cached_response) do
       create(
@@ -32,8 +30,8 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
         expect(Gitlab::Json.parse(response.body)).to contain_exactly(
           cached_response
             .as_json
-            .merge('cached_response_id' => Base64.urlsafe_encode64(cached_response.relative_path))
-            .except('id', 'object_storage_key', 'file_store', 'status', 'file_final_path')
+            .merge('id' => Base64.urlsafe_encode64("#{upstream.id} #{cached_response.relative_path}"))
+            .except('object_storage_key', 'file_store', 'status', 'file_final_path')
         )
       end
     end
@@ -77,22 +75,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     context 'for authentication' do
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :ok
-        :personal_access_token | :basic_auth | :ok
         :deploy_token          | :header     | :ok
-        :deploy_token          | :basic_auth | :ok
         :job_token             | :header     | :ok
-        :job_token             | :basic_auth | :ok
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         it_behaves_like 'returning response status', params[:status]
       end
@@ -123,13 +111,9 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
     end
   end
 
-  describe 'DELETE /api/v4/virtual_registries/packages/maven/registries/:id/upstreams/' \
-    ':upstream_id/cached_responses/:cached_response_id' do
-    let(:cached_response_id) { Base64.urlsafe_encode64(cached_response.relative_path) }
-    let(:url) do
-      "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream.id}/" \
-        "cached_responses/#{cached_response_id}"
-    end
+  describe 'DELETE /api/v4/virtual_registries/packages/maven/cached_responses/:id' do
+    let(:id) { Base64.urlsafe_encode64("#{upstream.id} #{cached_response.relative_path}") }
+    let(:url) { "/virtual_registries/packages/maven/cached_responses/#{id}" }
 
     let_it_be(:processing_cached_response) do
       create(
@@ -185,22 +169,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
       where(:token, :sent_as, :status) do
         :personal_access_token | :header     | :no_content
-        :personal_access_token | :basic_auth | :no_content
         :deploy_token          | :header     | :forbidden
-        :deploy_token          | :basic_auth | :forbidden
         :job_token             | :header     | :no_content
-        :job_token             | :basic_auth | :no_content
       end
 
       with_them do
-        let(:headers) do
-          case sent_as
-          when :header
-            token_header(token)
-          when :basic_auth
-            token_basic_auth(token)
-          end
-        end
+        let(:headers) { token_header(token) }
 
         if params[:status] == :no_content
           it_behaves_like 'successful response'

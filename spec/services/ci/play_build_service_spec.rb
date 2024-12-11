@@ -12,6 +12,10 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     described_class.new(project, user)
   end
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+  end
+
   context 'when project does not have repository yet' do
     let(:project) { create(:project) }
 
@@ -96,7 +100,8 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
 
       context 'when user defined variables are restricted' do
         before do
-          project.update!(restrict_user_defined_variables: true)
+          project.update!(restrict_user_defined_variables: true,
+            ci_pipeline_variables_minimum_override_role: :maintainer)
         end
 
         context 'when user is maintainer' do

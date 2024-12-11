@@ -4931,9 +4931,6 @@ msgstr ""
 msgid "AdminUsers|user cap"
 msgstr ""
 
-msgid "Administrator"
-msgstr ""
-
 msgid "Administrator Account Setup"
 msgstr ""
 
@@ -7456,9 +7453,6 @@ msgid "Are you sure that you want to unarchive this project?"
 msgstr ""
 
 msgid "Are you sure you want to %{action} %{name}?"
-msgstr ""
-
-msgid "Are you sure you want to %{action} this directory?"
 msgstr ""
 
 msgid "Are you sure you want to approve %{user}?"
@@ -46181,16 +46175,7 @@ msgstr ""
 msgid "Replace all labels"
 msgstr ""
 
-msgid "Replace audio"
-msgstr ""
-
 msgid "Replace file"
-msgstr ""
-
-msgid "Replace image"
-msgstr ""
-
-msgid "Replace video"
 msgstr ""
 
 msgid "Replaced all labels with %{label_references} %{label_text}."
@@ -64230,6 +64215,9 @@ msgid "You do not have permission to approve a member"
 msgstr ""
 
 msgid "You do not have permission to leave this %{namespaceType}."
+msgstr ""
+
+msgid "You do not have permission to lock this"
 msgstr ""
 
 msgid "You do not have permission to run a pipeline on this branch."

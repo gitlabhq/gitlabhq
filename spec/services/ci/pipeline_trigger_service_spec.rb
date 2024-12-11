@@ -9,6 +9,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
 
   before do
     stub_ci_pipeline_to_return_yaml_file
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
   end
 
   describe '#execute' do

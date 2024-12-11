@@ -6,8 +6,8 @@ module API
       module Packages
         module Maven
           class CachedResponse < Grape::Entity
-            expose :cached_response_id do |cached_response, _options|
-              Base64.urlsafe_encode64(cached_response.relative_path)
+            expose :id do |cached_response, _options|
+              Base64.urlsafe_encode64("#{cached_response.upstream_id} #{cached_response.relative_path}")
             end
 
             expose :group_id,

@@ -16,6 +16,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   let_it_be(:guest) { create(:user) }
 
   before_all do
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
     project.add_owner(owner)
     project.add_maintainer(maintainer)
     project.add_developer(developer)

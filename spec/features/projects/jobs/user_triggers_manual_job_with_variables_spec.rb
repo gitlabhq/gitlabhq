@@ -10,6 +10,7 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
   let!(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
   before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
     project.add_maintainer(user)
     project.enable_ci
 

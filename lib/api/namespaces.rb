@@ -93,7 +93,7 @@ module API
         namespace_path = params[:id]
         existing_namespaces_within_the_parent = Namespace.without_project_namespaces.by_parent(params[:parent_id])
 
-        exists = existing_namespaces_within_the_parent.filter_by_path(namespace_path).exists?
+        exists = existing_namespaces_within_the_parent.filter_by_path(namespace_path).exists? || ProjectSetting.unique_domain_exists?(namespace_path)
         suggestions = exists ? [Namespace.clean_path(namespace_path, limited_to: existing_namespaces_within_the_parent)] : []
 
         present :exists, exists

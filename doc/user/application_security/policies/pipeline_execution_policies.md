@@ -46,6 +46,7 @@ the following sections and tables provide an alternative.
 | `pipeline_config_strategy` | `string` | false | Can either be `inject_ci` or `override_project_ci`. See [Pipeline strategies](#pipeline-strategies) for more information. |
 | `policy_scope` | `object` of [`policy_scope`](index.md#scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
+| `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped. |
 
 Note the following:
 
@@ -163,6 +164,19 @@ Prerequisites:
   specified in a security policy project using the `content` type. To do so, enable the setting **Pipeline execution policies** in the general settings of the security policy project.
   Enabling this setting grants the user who triggered the pipeline access to
   read the CI/CD configuration file enforced by the pipeline execution policy. This setting does not grant the user access to any other parts of the project where the configuration file is stored.
+
+### `skip_ci` type
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173480) in GitLab 17.7.
+
+Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip-ci` directive to skip the pipelines.
+When the keyword is not specified, the `skip-ci` directive is ignored, preventing all users
+from bypassing the pipeline execution policies.
+
+| Field                   | Type     | Possible values          | Description |
+|-------------------------|----------|--------------------------|-------------|
+| `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
+| `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
 ### Policy scope schema
 

@@ -31,6 +31,8 @@ module QA
       before do
         Flow::Login.sign_in
 
+        project.change_pipeline_variables_minimum_override_role('developer')
+
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)

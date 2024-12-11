@@ -1242,6 +1242,26 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
           expect(protectable_branches).to match_array(branch_names)
         end
       end
+
+      context 'without read_code permissions' do
+        before do
+          project.add_guest(current_user)
+        end
+
+        it 'returns an empty array' do
+          expect(protectable_branches).to be_nil
+        end
+      end
+
+      context 'with read_code permissions' do
+        before do
+          project.add_member(current_user, Gitlab::Access::REPORTER)
+        end
+
+        it 'returns all the branch names' do
+          expect(protectable_branches).to match_array(branch_names)
+        end
+      end
     end
   end
 

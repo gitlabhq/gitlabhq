@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  include Import::GiteaHelper
+
   let_it_be(:project) do
     create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITEA)
   end
@@ -191,7 +193,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       let(:raw) { base.merge(user: octocat) }
 
       before do
-        allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+        stub_user_mapping_chain(project, false)
       end
 
       context 'when author is a GitLab user' do
@@ -277,7 +279,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
     context 'when user contribution mapping is disabled' do
       before do
-        allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+        stub_user_mapping_chain(project, false)
       end
 
       it 'does not push any placeholder references' do

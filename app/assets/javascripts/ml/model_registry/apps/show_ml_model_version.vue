@@ -4,7 +4,7 @@ import { GlAvatar, GlTab, GlTabs, GlBadge, GlButton, GlSprintf, GlIcon, GlLink }
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { setUrlFragment, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
@@ -232,7 +232,7 @@ export default {
     },
   },
   i18n: {
-    editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
+    editModelVersionButtonLabel: __('Edit'),
     authorTitle: s__('MlModelRegistry|Publisher'),
     tabs: {
       modelVersionCard: s__('MlModelRegistry|Version card'),
@@ -280,7 +280,7 @@ export default {
         <gl-button
           v-if="canWriteModelRegistry"
           data-testid="edit-model-version-button"
-          variant="confirm"
+          category="secondary"
           :href="editModelVersionPath"
           >{{ $options.i18n.editModelVersionButtonLabel }}</gl-button
         >

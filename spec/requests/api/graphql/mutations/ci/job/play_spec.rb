@@ -6,7 +6,7 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, maintainers: user) }
+  let_it_be_with_reload(:project) { create(:project, maintainers: user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
   let(:variables) do
@@ -32,6 +32,10 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
   end
 
   let(:mutation_response) { graphql_mutation_response(:job_play) }
+
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+  end
 
   shared_examples 'playing a job' do
     it 'returns an error if the user is not allowed to play the job' do

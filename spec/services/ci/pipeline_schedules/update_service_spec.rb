@@ -17,6 +17,7 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
   let_it_be_with_reload(:repository) { project.repository }
 
   before_all do
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
     project.add_maintainer(user)
     project.add_owner(project_owner)
     project.add_reporter(reporter)

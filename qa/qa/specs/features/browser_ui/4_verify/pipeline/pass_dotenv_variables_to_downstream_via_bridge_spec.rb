@@ -14,6 +14,9 @@ module QA
         Flow::Login.sign_in
         add_ci_file(downstream_project, downstream_ci_file)
         add_ci_file(upstream_project, upstream_ci_file)
+
+        upstream_project.change_pipeline_variables_minimum_override_role('developer')
+        downstream_project.change_pipeline_variables_minimum_override_role('developer')
         upstream_project.visit!
         Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
       end

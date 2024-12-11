@@ -1041,6 +1041,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     let(:params) { {} }
 
     before do
+      project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user), params: params
     end
 

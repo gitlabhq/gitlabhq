@@ -21,3 +21,17 @@ export const captureException = (...args) => {
 
   Sentry?.captureException(...args);
 };
+
+/** @type {import('@sentry/core').addBreadcrumb} */
+export const addBreadcrumb = (...args) => {
+  // eslint-disable-next-line no-underscore-dangle
+  const Sentry = window._Sentry;
+
+  // When Sentry is not configured during development, show console error
+  if (process.env.NODE_ENV === 'development' && !Sentry) {
+    console.debug('[Sentry stub]', 'addBreadcrumb(...) called with:', { ...args });
+    return;
+  }
+
+  Sentry?.addBreadcrumb(...args);
+};

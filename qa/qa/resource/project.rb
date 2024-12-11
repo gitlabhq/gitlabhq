@@ -297,6 +297,18 @@ module QA
         end
       end
 
+      def change_pipeline_variables_minimum_override_role(new_role)
+        response = put(request_url(api_put_path), ci_pipeline_variables_minimum_override_role: new_role)
+
+        return if response.code == HTTP_STATUS_OK
+
+        raise(
+          ResourceUpdateFailedError,
+          "Failed to update pipeline_variables_minimum_override_role to '#{new_role}'. " \
+            "Response (#{response.code}): `#{response}`."
+        )
+      end
+
       def change_repository_storage(new_storage)
         response = put(request_url(api_put_path), repository_storage: new_storage)
 

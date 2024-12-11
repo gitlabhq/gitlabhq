@@ -6,7 +6,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
   let(:mutation) do
     variables = {
@@ -61,6 +61,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
 
   context 'when authorized' do
     before_all do
+      project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       project.add_developer(current_user)
     end
 

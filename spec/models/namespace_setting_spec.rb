@@ -451,4 +451,59 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
     end
   end
+
+  describe 'pipeline_variables_default_role' do
+    subject { group.namespace_settings.pipeline_variables_default_role }
+
+    context 'validations' do
+      let(:namespace_settings) { build(:namespace_settings) }
+
+      context 'when pipeline_variables_default_role is valid' do
+        it 'does not add an error' do
+          valid_roles = ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES.keys.map(&:to_s)
+
+          valid_roles.each do |role|
+            namespace_settings.pipeline_variables_default_role = role
+            expect(namespace_settings).to be_valid
+          end
+        end
+      end
+    end
+
+    context 'when an invalid role is assigned to pipeline_variables_default_role' do
+      it 'raises an ArgumentError' do
+        expect do
+          namespace_settings.pipeline_variables_default_role = 'invalid_role'
+        end.to raise_error(ArgumentError, "'invalid_role' is not a valid pipeline_variables_default_role")
+      end
+    end
+
+    context 'when namespace is root' do
+      let(:group) { create(:group) }
+      let(:variables_default_role) { group.namespace_settings.pipeline_variables_default_role }
+
+      it { expect(variables_default_role).to eq('no_one_allowed') }
+
+      context 'when feature flag `change_namespace_default_role_for_pipeline_variables` is disabled' do
+        before do
+          stub_feature_flags(change_namespace_default_role_for_pipeline_variables: false)
+        end
+
+        it { expect(variables_default_role).to eq('developer') }
+      end
+    end
+
+    context 'when namespace is not root' do
+      let(:root_group) { create(:group) }
+
+      before do
+        group.parent = root_group
+
+        root_settings = group.parent.namespace_settings
+        root_settings.pipeline_variables_default_role = 'maintainer'
+      end
+
+      it { is_expected.to eq('maintainer') }
+    end
+  end
 end

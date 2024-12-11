@@ -74,5 +74,19 @@ RSpec.describe Gitlab::TemplateParser::Parser do
       expect { parser.parse_and_transform('{% each') }
         .to raise_error(Gitlab::TemplateParser::Error)
     end
+
+    context 'when Parslet times out' do
+      before do
+        allow_next_instance_of(Gitlab::TemplateParser::AST::Transformer) do |instance|
+          allow(instance).to receive(:apply).and_raise(Timeout::Error)
+        end
+      end
+
+      it 'raises a custom timeout error' do
+        expect { parser.parse_and_transform('foo') }
+          .to raise_error(Gitlab::TemplateParser::Error,
+            'Template parser timeout. Consider reducing the size of the template')
+      end
+    end
   end
 end

@@ -130,11 +130,17 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
 
     context 'with oauth token' do
-      let(:application) { Doorkeeper::Application.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
-      let(:doorkeeper_access_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api', organization_id: organization.id) }
+      let_it_be(:oauth_application) { create(:oauth_application, owner: user) }
+      let(:oauth_access_token) do
+        create(:oauth_access_token,
+          application_id: oauth_application.id,
+          resource_owner_id: user.id,
+          scopes: 'api',
+          organization_id: organization.id)
+      end
 
       before do
-        set_bearer_token(doorkeeper_access_token.plaintext_token)
+        set_bearer_token(oauth_access_token.plaintext_token)
       end
 
       it { is_expected.to eq user }
@@ -708,18 +714,11 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#find_oauth_access_token' do
+    let_it_be(:oauth_application) { create(:oauth_application, owner: user) }
     let(:scopes) { 'api' }
-
-    let(:application) do
-      Doorkeeper::Application.create!(
-        name: 'MyApp',
-        redirect_uri: 'https://app.com',
-        owner: user)
-    end
-
-    let(:doorkeeper_access_token) do
-      Doorkeeper::AccessToken.create!(
-        application_id: application.id,
+    let(:oauth_access_token) do
+      create(:oauth_access_token,
+        application_id: oauth_application.id,
         resource_owner_id: user.id,
         scopes: scopes,
         organization_id: organization.id)
@@ -727,19 +726,19 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
     context 'passed as header' do
       before do
-        set_bearer_token(doorkeeper_access_token.plaintext_token)
+        set_bearer_token(oauth_access_token.plaintext_token)
       end
 
       it 'returns token if valid oauth_access_token' do
-        expect(find_oauth_access_token.token).to eq doorkeeper_access_token.token
+        expect(find_oauth_access_token.token).to eq oauth_access_token.token
       end
     end
 
     context 'passed as param' do
       it 'returns user if valid oauth_access_token' do
-        set_param(:access_token, doorkeeper_access_token.plaintext_token)
+        set_param(:access_token, oauth_access_token.plaintext_token)
 
-        expect(find_oauth_access_token.token).to eq doorkeeper_access_token.token
+        expect(find_oauth_access_token.token).to eq oauth_access_token.token
       end
     end
 
@@ -765,7 +764,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           user.username == 'gitlab-duo'
         end
 
-        set_bearer_token(doorkeeper_access_token.plaintext_token)
+        set_bearer_token(oauth_access_token.plaintext_token)
       end
 
       context 'when scoped user is specified' do
@@ -773,7 +772,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
         context 'when linking composite identitiy succeeds' do
           it 'returns the oauth token' do
-            expect(find_oauth_access_token.token).to eq(doorkeeper_access_token.token)
+            expect(find_oauth_access_token.token).to eq(oauth_access_token.token)
           end
         end
 

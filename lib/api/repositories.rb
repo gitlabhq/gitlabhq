@@ -288,6 +288,10 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/repository/changelog' do
+        check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
+          render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
+        end
+
         service = ::Repositories::ChangelogService.new(
           user_project,
           current_user,
@@ -329,6 +333,10 @@ module API
           documentation: { example: 'Initial commit' }
       end
       post ':id/repository/changelog' do
+        check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
+          render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
+        end
+
         branch = params[:branch] || user_project.default_branch_or_main
         access = Gitlab::UserAccess.new(current_user, container: user_project)
 

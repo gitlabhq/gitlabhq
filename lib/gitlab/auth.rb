@@ -228,9 +228,12 @@ module Gitlab
 
       def oauth_access_token_check(password)
         if password.present?
-          token = Doorkeeper::AccessToken.by_token(password)
+          token = OauthAccessToken.by_token(password)
 
           if valid_oauth_token?(token)
+            identity = ::Gitlab::Auth::Identity.link_from_oauth_token(token)
+            return if identity && !identity.valid?
+
             user = User.id_in(token.resource_owner_id).first
             return unless user && user.can_log_in_with_non_expired_password?
 

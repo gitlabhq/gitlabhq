@@ -13,6 +13,7 @@ import { getInstrumentationLink } from './apollo/instrumentation_link';
 import { getSuppressNetworkErrorsDuringNavigationLink } from './apollo/suppress_network_errors_during_navigation_link';
 import { getPersistLink } from './apollo/persist_link';
 import { persistenceMapper } from './apollo/persistence_mapper';
+import { sentryBreadcrumbLink } from './apollo/sentry_breadcrumb_link';
 import { correlationIdLink } from './apollo/correlation_id_link';
 
 export const fetchPolicies = {
@@ -253,6 +254,7 @@ function createApolloClient(resolvers = {}, config = {}) {
       [
         getSuppressNetworkErrorsDuringNavigationLink(),
         getInstrumentationLink(),
+        sentryBreadcrumbLink,
         correlationIdLink,
         requestCounterLink,
         performanceBarLink,

@@ -789,6 +789,10 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           context 'when variables are specified' do
+            before do
+              project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+            end
+
             it 'creates a new pipeline with variables' do
               within_testid('ci-variable-row-container') do
                 find_by_testid('pipeline-form-ci-variable-key-field').set('key_name')

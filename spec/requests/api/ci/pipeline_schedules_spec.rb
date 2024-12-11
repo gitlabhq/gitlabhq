@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integration do
   let_it_be(:developer) { create(:user) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, public_builds: false) }
+  let_it_be_with_reload(:project) { create(:project, :repository, public_builds: false) }
 
   before do
     project.add_developer(developer)
@@ -687,7 +687,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         context 'when project restricts use of user defined variables' do
           before do
-            project.update!(restrict_user_defined_variables: true)
+            project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           context 'as developer' do
@@ -743,6 +743,10 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       end
 
       context 'when key has validation error' do
+        before do
+          project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+        end
+
         it 'does not create pipeline_schedule_variable' do
           post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
             params: params.merge('key' => '!?!?')
@@ -815,7 +819,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when project restricts use of user defined variables' do
         before do
-          project.update!(restrict_user_defined_variables: true)
+          project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
         end
 
         context 'as developer' do
@@ -928,7 +932,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when project restricts use of user defined variables' do
         before do
-          project.update!(restrict_user_defined_variables: true)
+          project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
         end
 
         context 'as developer' do

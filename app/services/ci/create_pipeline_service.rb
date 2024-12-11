@@ -8,9 +8,9 @@ module Ci
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
-      Gitlab::Ci::Pipeline::Chain::Build::Associations,
       Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
       Gitlab::Ci::Pipeline::Chain::Validate::Repository,
+      Gitlab::Ci::Pipeline::Chain::Build::Associations,
       Gitlab::Ci::Pipeline::Chain::Limit::RateLimit,
       Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy,
       Gitlab::Ci::Pipeline::Chain::AssignPartition,

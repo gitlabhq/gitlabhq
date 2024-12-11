@@ -15,6 +15,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   ACTIVE_SINCE_KEY = 'active_since'
 
+  # Following https://www.rfc-editor.org/rfc/rfc3986.txt
+  # to check for the present of reserved characters
+  # in redirect_fragment
+  INVALID_FRAGMENT_EXP = %r{[;/?:@&=+$,]+}
+
+  InvalidFragmentError = Class.new(StandardError)
+
   after_action :verify_known_sign_in
 
   protect_from_forgery except: [:failure] + AuthHelper.saml_providers, with: :exception, prepend: true
@@ -102,6 +109,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  def verify_redirect_fragment(fragment)
+    if URI.decode_uri_component(fragment).match(INVALID_FRAGMENT_EXP)
+      raise InvalidFragmentError
+    else
+      fragment
+    end
+  end
+
   def track_event(user, provider, status)
     log_audit_event(user, with: provider)
     update_login_counter_metric(provider, status)
@@ -172,6 +187,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       sign_in_user_flow(auth_module::User)
     end
+  rescue InvalidFragmentError
+    fail_login_with_message("Invalid state")
   end
 
   def link_identity(identity_linker)
@@ -369,7 +386,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     key = stored_location_key_for(:user)
     location = session[key]
     if uri = parse_uri(location)
-      uri.fragment = redirect_fragment
+      uri.fragment = verify_redirect_fragment(redirect_fragment)
       store_location_for(:user, uri.to_s)
     end
   end

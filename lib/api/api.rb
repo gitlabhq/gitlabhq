@@ -358,6 +358,7 @@ module API
         mount ::API::UserRunners
         mount ::API::VirtualRegistries::Packages::Maven::Registries
         mount ::API::VirtualRegistries::Packages::Maven::Upstreams
+        mount ::API::VirtualRegistries::Packages::Maven::CachedResponses
         mount ::API::VirtualRegistries::Packages::Maven::Endpoints
         mount ::API::WebCommits
         mount ::API::Wikis

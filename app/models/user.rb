@@ -328,6 +328,7 @@ class User < ApplicationRecord
     presence: true,
     exclusion: { in: Gitlab::PathRegex::TOP_LEVEL_ROUTES, message: N_('%{value} is a reserved name') }
   validates :username, uniqueness: true, unless: :namespace
+  validate :username_not_assigned_to_pages_unique_domain, if: :username_changed?
   validates :name, presence: true, length: { maximum: 255 }
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
@@ -2882,6 +2883,13 @@ class User < ApplicationRecord
 
   # method overridden in EE
   def audit_unlock_access(author: self); end
+
+  def username_not_assigned_to_pages_unique_domain
+    if ProjectSetting.unique_domain_exists?(username)
+      # We cannot disclose the Pages unique domain, hence returning generic error message
+      errors.add(:username, _('has already been taken'))
+    end
+  end
 end
 
 User.prepend_mod_with('User')

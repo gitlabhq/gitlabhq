@@ -6,6 +6,8 @@ class NamespaceSetting < ApplicationRecord
   include ChronicDurationAttribute
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
+  enum pipeline_variables_default_role: ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, _prefix: true
+
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
 
@@ -28,6 +30,8 @@ class NamespaceSetting < ApplicationRecord
   validates :resource_access_token_creation_allowed, presence: true, if: :subgroup?
 
   sanitizes! :default_branch_name
+
+  before_validation :set_pipeline_variables_default_role, on: :create
 
   before_validation :normalize_default_branch_name
 
@@ -68,6 +72,15 @@ class NamespaceSetting < ApplicationRecord
     namespace.root_ancestor.prevent_sharing_groups_outside_hierarchy
   end
 
+  def pipeline_variables_default_role
+    # We consider only the root namespace setting to cascade the default value to all projects.
+    # By ignoring settings from sub-groups we don't need to deal with complexities from
+    # hierarchical settings.
+    return namespace.root_ancestor.pipeline_variables_default_role unless namespace.root?
+
+    super
+  end
+
   def emails_enabled?
     return emails_enabled unless namespace.has_parent?
 
@@ -100,6 +113,18 @@ class NamespaceSetting < ApplicationRecord
   end
 
   private
+
+  def set_pipeline_variables_default_role
+    # After FF  `change_namespace_default_role_for_pipeline_variables` rollout - we have to remove both FF and pipeline_variables_default_role = NO_ONE_ALLOWED_ROLE
+    # As any self-managed and Dedicated instance should opt-in by changing their namespace settings explicitly.
+    # NO_ONE_ALLOWED will be set as the default value for namespace_settings through a database migration.
+
+    # WARNING: Removing this FF could cause breaking changes for self-hosted and dedicated instances.
+
+    return if Feature.disabled?(:change_namespace_default_role_for_pipeline_variables, namespace)
+
+    self.pipeline_variables_default_role = ProjectCiCdSetting::NO_ONE_ALLOWED_ROLE
+  end
 
   def all_ancestors_have_emails_enabled?
     self.class.where(namespace_id: namespace.self_and_ancestors, emails_enabled: false).none?

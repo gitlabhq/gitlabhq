@@ -1087,7 +1087,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         context 'when project restricts use of user defined variables' do
           before do
-            project.update!(restrict_user_defined_variables: true)
+            project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it { is_expected.not_to be_allowed(:set_pipeline_variables) }
@@ -1107,7 +1107,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         context 'when project restricts use of user defined variables' do
           before do
-            project.update!(restrict_user_defined_variables: true)
+            project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it { is_expected.to be_allowed(:set_pipeline_variables) }

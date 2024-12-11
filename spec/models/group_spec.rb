@@ -324,6 +324,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         expect(group).not_to be_valid
       end
+
+      it 'rejects paths already assigned to any pages unique domain' do
+        # Simulate the existing domain being in use
+        create(:project_setting, pages_unique_domain: 'existing-domain')
+
+        group = build(:group, path: 'existing-domain')
+
+        expect(group).not_to be_valid
+        expect(group.errors.full_messages.to_sentence).to eq('Group URL has already been taken')
+      end
     end
 
     describe '#notification_settings' do
@@ -2827,6 +2837,18 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           expect(group).not_to receive(:system_hook_service)
 
           group.update!(name: 'new name')
+        end
+      end
+
+      context 'when the path is changed to existing pages unique domain' do
+        let(:new_path) { 'existing-domain' }
+
+        it 'rejects path' do
+          # Simulate the existing domain being in use
+          create(:project_setting, pages_unique_domain: 'existing-domain')
+
+          expect(group.update(path: new_path)).to be_falsey
+          expect(group.errors.full_messages.to_sentence).to eq('Group URL has already been taken')
         end
       end
     end

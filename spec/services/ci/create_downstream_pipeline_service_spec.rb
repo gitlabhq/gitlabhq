@@ -431,7 +431,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           before do
             bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
 
-            upstream_pipeline.project.update!(restrict_user_defined_variables: true)
+            upstream_pipeline.project.update!(restrict_user_defined_variables: true,
+              ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'creates a new pipeline allowing variables to be passed downstream' do
@@ -626,6 +627,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     context 'when bridge job has YAML variables defined' do
       before do
         bridge.yaml_variables = [{ key: 'BRIDGE', value: 'var', public: true }]
+        downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       end
 
       it 'passes bridge variables to downstream pipeline' do
@@ -648,6 +650,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       context 'when using YAML variables interpolation' do
         before do
           bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
+          downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
         it 'makes it possible to pass pipeline variable downstream' do
@@ -658,7 +661,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
         context 'when downstream project does not allow user-defined variables for multi-project pipelines' do
           before do
-            downstream_project.update!(restrict_user_defined_variables: true)
+            downstream_project.update!(restrict_user_defined_variables: true,
+              ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'does not create a new pipeline' do
@@ -818,6 +822,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     context 'when downstream pipeline has workflow rule' do
       before do
         stub_ci_pipeline_yaml_file(config)
+        downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       end
 
       let(:config) do

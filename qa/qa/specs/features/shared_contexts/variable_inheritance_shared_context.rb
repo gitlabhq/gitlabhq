@@ -31,6 +31,9 @@ module QA
 
     before do
       Flow::Login.sign_in
+      upstream_project.change_pipeline_variables_minimum_override_role('developer')
+      downstream1_project.change_pipeline_variables_minimum_override_role('developer')
+      downstream2_project.change_pipeline_variables_minimum_override_role('developer')
     end
 
     after do

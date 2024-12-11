@@ -56,7 +56,9 @@ module Gitlab
       def generate_unique_domain(project)
         10.times do
           pages_unique_domain = Gitlab::Pages::RandomDomain.generate(project_path: project.path)
-          return pages_unique_domain unless ProjectSetting.unique_domain_exists?(pages_unique_domain)
+          return pages_unique_domain unless
+            ProjectSetting.unique_domain_exists?(pages_unique_domain) ||
+              Namespace.top_level.by_path(pages_unique_domain).present?
         end
 
         raise UniqueDomainGenerationFailure

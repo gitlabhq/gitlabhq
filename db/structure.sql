@@ -201,7 +201,8 @@ CREATE TABLE namespaces (
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    organization_id bigint DEFAULT 1
+    organization_id bigint DEFAULT 1,
+    CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE FUNCTION find_namespaces_by_id(namespaces_id bigint) RETURNS namespaces
@@ -15589,6 +15590,7 @@ CREATE TABLE namespace_settings (
     token_expiry_notify_inherited boolean DEFAULT true NOT NULL,
     resource_access_token_notify_inherited boolean,
     lock_resource_access_token_notify_inherited boolean DEFAULT false NOT NULL,
+    pipeline_variables_default_role smallint DEFAULT 2 NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -25396,9 +25398,6 @@ ALTER TABLE workspaces
 
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE namespaces
-    ADD CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;

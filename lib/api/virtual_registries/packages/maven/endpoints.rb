@@ -6,6 +6,7 @@ module API
       module Maven
         class Endpoints < ::API::Base
           include ::API::Helpers::Authentication
+          include ::API::Concerns::VirtualRegistries::Packages::Endpoint
 
           feature_category :virtual_registry
           urgency :low
@@ -39,6 +40,13 @@ module API
             end
             strong_memoize_attr :registry
 
+            def download_file_extra_response_headers(action_params:)
+              {
+                SHA1_CHECKSUM_HEADER => action_params[:file_sha1],
+                MD5_CHECKSUM_HEADER => action_params[:file_md5]
+              }
+            end
+
             params :id_and_path do
               requires :id,
                 type: Integer,
@@ -59,108 +67,83 @@ module API
             authenticate!
           end
 
-          namespace 'virtual_registries/packages/maven' do
-            namespace :registries do
-              route_param :id, type: Integer, desc: 'The ID of the maven virtual registry' do
-                namespace :upstreams do
-                  route_param :upstream_id, type: Integer, desc: 'The ID of the maven virtual registry upstream' do
-                    namespace :cached_responses do
-                      include ::API::Concerns::VirtualRegistries::Packages::Maven::CachedResponseEndpoints
-                    end
-                  end
-                end
-              end
+          namespace 'virtual_registries/packages/maven/:id/*path' do
+            desc 'Download endpoint of the Maven virtual registry.' do
+              detail 'This feature was introduced in GitLab 17.3. \
+                      This feature is currently in experiment state. \
+                      This feature is behind the `virtual_registry_maven` feature flag.'
+              success [
+                { code: 200 }
+              ]
+              failure [
+                { code: 400, message: 'Bad request' },
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[maven_virtual_registries]
+              hidden true
+            end
+            params do
+              use :id_and_path
+            end
+            get format: false do
+              service_response = ::VirtualRegistries::Packages::Maven::HandleFileRequestService.new(
+                registry: registry,
+                current_user: current_user,
+                params: { path: declared_params[:path] }
+              ).execute
+
+              send_error_response_from!(service_response: service_response) if service_response.error?
+              send_successful_response_from(service_response: service_response)
             end
 
-            namespace ':id/*path' do
-              include ::API::Concerns::VirtualRegistries::Packages::Endpoint
-
-              helpers do
-                def download_file_extra_response_headers(action_params:)
-                  {
-                    SHA1_CHECKSUM_HEADER => action_params[:file_sha1],
-                    MD5_CHECKSUM_HEADER => action_params[:file_md5]
-                  }
-                end
-              end
-
-              desc 'Download endpoint of the Maven virtual registry.' do
-                detail 'This feature was introduced in GitLab 17.3. \
+            desc 'Workhorse upload endpoint of the Maven virtual registry. Only workhorse can access it.' do
+              detail 'This feature was introduced in GitLab 17.4. \
                       This feature is currently in experiment state. \
                       This feature is behind the `virtual_registry_maven` feature flag.'
-                success [
-                  { code: 200 }
-                ]
-                failure [
-                  { code: 400, message: 'Bad request' },
-                  { code: 401, message: 'Unauthorized' },
-                  { code: 403, message: 'Forbidden' },
-                  { code: 404, message: 'Not Found' }
-                ]
-                tags %w[maven_virtual_registries]
-                hidden true
-              end
-              params do
-                use :id_and_path
-              end
-              get format: false do
-                service_response = ::VirtualRegistries::Packages::Maven::HandleFileRequestService.new(
-                  registry: registry,
-                  current_user: current_user,
-                  params: { path: declared_params[:path] }
-                ).execute
+              success [
+                { code: 200 }
+              ]
+              failure [
+                { code: 400, message: 'Bad request' },
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[maven_virtual_registries]
+              hidden true
+            end
+            params do
+              use :id_and_path
+              requires :file,
+                type: ::API::Validations::Types::WorkhorseFile,
+                desc: 'The file being uploaded',
+                documentation: { type: 'file' }
+            end
+            post 'upload' do
+              require_gitlab_workhorse!
+              authorize!(:read_virtual_registry, registry)
 
-                send_error_response_from!(service_response: service_response) if service_response.error?
-                send_successful_response_from(service_response: service_response)
-              end
+              etag, content_type, upstream_gid = request.headers.fetch_values(
+                'Etag',
+                ::Gitlab::Workhorse::SEND_DEPENDENCY_CONTENT_TYPE_HEADER,
+                UPSTREAM_GID_HEADER
+              ) { nil }
 
-              desc 'Workhorse upload endpoint of the Maven virtual registry. Only workhorse can access it.' do
-                detail 'This feature was introduced in GitLab 17.4. \
-                      This feature is currently in experiment state. \
-                      This feature is behind the `virtual_registry_maven` feature flag.'
-                success [
-                  { code: 200 }
-                ]
-                failure [
-                  { code: 400, message: 'Bad request' },
-                  { code: 401, message: 'Unauthorized' },
-                  { code: 403, message: 'Forbidden' },
-                  { code: 404, message: 'Not Found' }
-                ]
-                tags %w[maven_virtual_registries]
-                hidden true
-              end
-              params do
-                use :id_and_path
-                requires :file,
-                  type: ::API::Validations::Types::WorkhorseFile,
-                  desc: 'The file being uploaded',
-                  documentation: { type: 'file' }
-              end
-              post 'upload' do
-                require_gitlab_workhorse!
-                authorize!(:read_virtual_registry, registry)
+              # TODO: revisit this part when multiple upstreams are supported
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
+              # coherence check
+              not_found!('Upstream') unless upstream == GlobalID::Locator.locate(upstream_gid)
 
-                etag, content_type, upstream_gid = request.headers.fetch_values(
-                  'Etag',
-                  ::Gitlab::Workhorse::SEND_DEPENDENCY_CONTENT_TYPE_HEADER,
-                  UPSTREAM_GID_HEADER
-                ) { nil }
+              service_response = ::VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpdateService.new(
+                upstream: upstream,
+                current_user: current_user,
+                params: declared_params.merge(etag: etag, content_type: content_type)
+              ).execute
 
-                # TODO: revisit this part when multiple upstreams are supported
-                # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
-                # coherence check
-                not_found!('Upstream') unless upstream == GlobalID::Locator.locate(upstream_gid)
-
-                service_response = ::VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpdateService.new(
-                  upstream: upstream,
-                  current_user: current_user,
-                  params: declared_params.merge(etag: etag, content_type: content_type)
-                ).execute
-
-                send_error_response_from!(service_response: service_response) if service_response.error?
-                ok_empty_response
-              end
+              send_error_response_from!(service_response: service_response) if service_response.error?
+              ok_empty_response
             end
           end
         end
