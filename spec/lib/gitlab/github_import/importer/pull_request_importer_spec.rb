@@ -32,9 +32,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
     )
   end
 
-  let_it_be(:client) { double(:client) }
   let_it_be(:user) { create(:user) }
 
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:created_at) { DateTime.strptime('2024-11-05T20:10:15Z') }
   let(:updated_at) { DateTime.strptime('2024-11-06T20:10:15Z') }
   let(:merged_at) { DateTime.strptime('2024-11-07T20:10:15Z') }
@@ -224,6 +224,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
       context 'when merge request is open' do
         let(:project) { create(:project, :repository, :with_import_url, :import_user_mapping_enabled) }
         let(:state) { :opened }
+
+        before do
+          allow(client).to receive(:user).and_return({ name: 'Github user name' })
+        end
 
         it 'creates the source branch' do
           importer.execute

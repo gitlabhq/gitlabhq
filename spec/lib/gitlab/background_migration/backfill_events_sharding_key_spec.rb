@@ -40,7 +40,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEventsShardingKey, :migratio
     end
 
     let!(:personal_namespace) do
-      table(:namespaces).create!(name: 'personal', path: 'personal', owner_id: user.id, type: 'User')
+      table(:namespaces).create!(name: 'personal', path: 'personal', owner_id: user.id, type: 'User',
+        organization_id: organization.id)
     end
 
     let!(:deleted_user) { table(:users).create!(username: 'deleted', email: 'deleted@gitlab.com', projects_limit: 1) }

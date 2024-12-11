@@ -169,6 +169,8 @@ module Gitlab
             :crm_contacts,
             :current_user_todos,
             :description,
+            :designs,
+            :development,
             :email_participants,
             :health_status,
             :hierarchy,

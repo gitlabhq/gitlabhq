@@ -7,11 +7,12 @@ RSpec.describe Gitlab::BackgroundMigration::FixNamespaceIdForWorkItemParentLinks
   let(:issues) { table(:issues) }
   let(:namespaces) { table(:namespaces) }
   let!(:work_item_type_id) { table(:work_item_types).where(base_type: 1).first.id }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
 
   let!(:author) { table(:users).create!(username: 'tester', projects_limit: 100) }
 
-  let!(:namespace1) { namespaces.create!(name: 'Namespace 1', path: 'namespace1') }
-  let!(:namespace2) { namespaces.create!(name: 'Namespace 2', path: 'namespace2') }
+  let!(:namespace1) { namespaces.create!(name: 'Namespace 1', path: 'namespace1', organization_id: organization.id) }
+  let!(:namespace2) { namespaces.create!(name: 'Namespace 2', path: 'namespace2', organization_id: organization.id) }
 
   let!(:parent) { issues.create!(title: 'Parent', namespace_id: namespace1.id, work_item_type_id: work_item_type_id) }
   let!(:issue1) { issues.create!(title: 'Issue 1', namespace_id: namespace1.id, work_item_type_id: work_item_type_id) }

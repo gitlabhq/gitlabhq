@@ -18668,7 +18668,8 @@ Self-hosted LLM servers.
 | <a id="aiselfhostedmodelhasapitoken"></a>`hasApiToken` | [`Boolean!`](#boolean) | Indicates if an API key is set for the self-hosted model server. |
 | <a id="aiselfhostedmodelid"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | ID of the self-hosted model server. |
 | <a id="aiselfhostedmodelidentifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
-| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | Display name of the AI model deployed. |
+| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | AI model deployed. |
+| <a id="aiselfhostedmodelmodeldisplayname"></a>`modelDisplayName` | [`String!`](#string) | Display name of the AI model deployed. |
 | <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
 | <a id="aiselfhostedmodelupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
 

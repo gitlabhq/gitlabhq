@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::ResyncEpicDatesToWorkItemsDatesSources, feature_category: :team_planning do
   let!(:epic_type_id) { table(:work_item_types).find_by(base_type: 7).id }
   let!(:author) { table(:users).create!(username: 'tester', projects_limit: 100) }
-  let!(:namespace) { table(:namespaces).create!(name: 'my test group1', path: 'my-test-group1') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:namespace) do
+    table(:namespaces).create!(name: 'my test group1', path: 'my-test-group1', organization_id: organization.id)
+  end
 
   let(:milestone) do
     table(:milestones).create!(

@@ -16273,8 +16273,6 @@ CREATE TABLE packages_conan_file_metadata (
     package_file_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    recipe_revision character varying(255) DEFAULT '0'::character varying NOT NULL,
-    package_revision character varying(255),
     conan_package_reference character varying(255),
     conan_file_type smallint NOT NULL,
     recipe_revision_id bigint,

@@ -38,6 +38,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
 
+  before do
+    allow(client).to receive(:user).and_return({ name: 'Github user name' })
+  end
+
   describe '#execute' do
     let(:create_service) { instance_double('ProtectedBranches::CreateService') }
 

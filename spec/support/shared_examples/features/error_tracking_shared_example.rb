@@ -11,7 +11,7 @@ RSpec.shared_examples 'error tracking index page' do
       expect(page).to have_content('Open errors')
       expect(page).to have_content('Events')
       expect(page).to have_content('Users')
-      expect(page).to have_content('Last Seen')
+      expect(page).to have_content('Last seen')
     end
   end
 

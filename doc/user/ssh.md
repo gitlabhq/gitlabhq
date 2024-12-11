@@ -397,7 +397,7 @@ git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-file
 This command does not use the SSH Agent and requires Git 2.10 or later. For more information
 on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
-## View your account's SSH keys
+## View your SSH keys
 
 To view the SSH keys for your account:
 
@@ -407,16 +407,40 @@ To view the SSH keys for your account:
 
 Your existing SSH keys are listed at the bottom of the page. The information includes:
 
-- The key's:
-  - Name.
-  - Public fingerprint.
-  - Expiry date.
-  - Permitted usage types.
-- The time a key was last used.
+- The title for the key
+- Public fingerprint
+- Permitted usage types
+- Creation date
+- Last used date
+- Expiry date
 
-## Delete an SSH key
+## Remove an SSH key
 
-To permanently delete an SSH key:
+You can revoke or delete your SSH key to permanently remove it from your account.
+
+Removing your SSH key has additional implications if you sign your commits with the key. For more information, see [Signed commits with removed SSH keys](../user/project/repository/signed_commits/ssh.md#signed-commits-with-removed-ssh-keys).
+
+### Revoke an SSH key
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
+
+If your SSH key becomes compromised, revoke the key.
+
+Prerequisites:
+
+- The SSH key must have the `Signing` or `Authentication & Signing` usage type.
+
+To revoke an SSH key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **SSH Keys**.
+1. Next to the SSH key you want to revoke, select **Revoke**.
+1. Select **Revoke**.
+
+### Delete an SSH key
+
+To delete an SSH key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.

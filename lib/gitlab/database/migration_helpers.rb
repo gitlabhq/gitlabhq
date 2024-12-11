@@ -36,8 +36,13 @@ module Gitlab
 
       DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze
 
-      def define_batchable_model(table_name, connection: self.connection, primary_key: nil)
-        super(table_name, connection: connection, primary_key: primary_key)
+      def define_batchable_model(
+        table_name,
+        connection: self.connection,
+        primary_key: nil,
+        base_class: ActiveRecord::Base
+      )
+        super
       end
 
       def each_batch(table_name, connection: self.connection, **kwargs)

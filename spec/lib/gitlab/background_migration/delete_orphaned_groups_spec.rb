@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_category: :groups_and_projects do
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
   let(:namespaces) { table(:namespaces) }
-  let!(:parent) { namespaces.create!(name: 'Group', type: 'Group', path: 'space1') }
-  let!(:group) { namespaces.create!(name: 'GitLab', type: 'Group', path: 'group1') }
+  let!(:parent) { namespaces.create!(name: 'Group', type: 'Group', path: 'space1', organization_id: organization.id) }
+  let!(:group) { namespaces.create!(name: 'GitLab', type: 'Group', path: 'group1', organization_id: organization.id) }
 
   subject(:background_migration) do
     described_class.new(
@@ -35,10 +36,12 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_catego
 
     it 'enqueues ::GroupDestroyWorker for each group whose parent\'s do not exist' do
       orphaned_groups = (1..4).map do |i|
-        namespaces.create!(name: "Group #{i}", path: "orphaned_group_#{i}", type: 'Group', parent_id: parent.id)
+        namespaces.create!(name: "Group #{i}", path: "orphaned_group_#{i}", type: 'Group', parent_id: parent.id,
+          organization_id: organization.id)
       end
       groups = (1..4).map do |i|
-        namespaces.create!(name: "Group #{i}", path: "group_#{i}", type: 'Group', parent_id: group.id)
+        namespaces.create!(name: "Group #{i}", path: "group_#{i}", type: 'Group', parent_id: group.id,
+          organization_id: organization.id)
       end
       parent.destroy!
 

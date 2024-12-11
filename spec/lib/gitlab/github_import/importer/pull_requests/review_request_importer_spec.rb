@@ -33,6 +33,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
 
   subject(:importer) { described_class.new(review_request, project, client) }
 
+  before do
+    allow(client).to receive(:user).and_return({ name: 'Github user name' })
+  end
+
   it 'imports unique merge request reviewers as placeholders', :aggregate_failures do
     expect { 2.times { importer.execute } }.not_to raise_error
 

@@ -443,7 +443,7 @@ describe('ErrorTrackingList', () => {
       store.state.list.recentSearches = ['great', 'search'];
 
       await nextTick();
-      const dropdownItems = wrapper.findAll('.filtered-search-box li');
+      const dropdownItems = wrapper.findAll('[data-testid="recent-searches-dropdown"] li');
       expect(dropdownItems.length).toBe(3);
       expect(dropdownItems.at(0).text()).toBe('great');
       expect(dropdownItems.at(1).text()).toBe('search');

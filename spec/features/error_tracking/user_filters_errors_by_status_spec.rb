@@ -30,7 +30,7 @@ RSpec.describe 'When a user filters Sentry errors by status', :js, :use_clean_ra
       expect(results.count).to be(3)
     end
 
-    find('.status-dropdown .dropdown-toggle').click
+    find('[data-testid="status-dropdown"] .dropdown-toggle').click
     find('.dropdown-item', text: 'Ignored').click
 
     page.within(find('.gl-table')) do

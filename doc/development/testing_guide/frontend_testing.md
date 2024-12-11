@@ -943,6 +943,12 @@ For running the frontend tests, you need the following commands:
   fixtures are up-to-date before running tests that require them.
 - `yarn jest` runs Jest tests.
 
+### Running CE and EE tests
+
+Whenever you create tests for both CE and EE environments, because your changes have EE features, you need to take some steps to ensure that both tests pass locally and on the pipeline when run.
+
+Check [this section](../ee_features.md#running-ee-vs-ce-tests) to learn more about testing both environments.
+
 ### Live testing and focused testing -- Jest
 
 While you work on a test suite, you may want to run these specs in watch mode, so they rerun automatically on every save.

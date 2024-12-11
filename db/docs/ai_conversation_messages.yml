@@ -11,3 +11,4 @@ milestone: '17.7'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   organization_id: organizations
+table_size: small
