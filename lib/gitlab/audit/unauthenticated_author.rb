@@ -12,10 +12,6 @@ module Gitlab
       def name
         @name || _('An unauthenticated user')
       end
-
-      def impersonated?
-        false
-      end
     end
   end
 end

@@ -8,11 +8,13 @@ module Auth
 
     DpopProof = Struct.new(:ssh_public_key, :public_key_in_jwk, :openssl_private_key, :fingerprint, :proof)
 
-    def generate_dpop_proof_for(user, alg: VALID_ALG, typ: VALID_TYP, kty: VALID_KTY, fingerprint: nil)
-      # `ssh_public_key` and `ssh_private_key` are not real secrets. They are a
-      # key pair generated solely for testing.
+    def generate_dpop_proof_for(
+      user, ssh_public_key: nil, alg: VALID_ALG, typ: VALID_TYP,
+      kty: VALID_KTY, fingerprint: nil, ath: nil, public_key_in_jwk: nil)
+      # NOTE: `ssh_public_key` and `ssh_private_key` are not real secrets.
+      # They are a key pair generated solely for testing.
       #
-      ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1ZgRbeixURy9/HxU5r5O3Xobnw1bmQx3dyFMkRLMFCy" \
+      ssh_public_key ||= "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1ZgRbeixURy9/HxU5r5O3Xobnw1bmQx3dyFMkRLMFCy" \
         "8aVkBvMw6CAc+81miOv+Sg/CZA2DKBAiEz0YwgPlD32o0q/OR5JdFAMH7e5IObm/4wr8dqm4JDE6eZ6f" \
         "eO+0tFwlrPnV8oiymw4SXeJLJf0n9f7HhH7xJJdWOOQZ2Ku/KMuNdf0aWYhbywUFWN4k5JtwCdEBxZYM" \
         "NqRYv28i76j3rTm7hBMyor7B2+3lPfeUQpTJkW1UBwUDAYeKZAl6HgZPE9DmcaDSRVViLErp00/iaQSs" \
@@ -60,17 +62,17 @@ module Auth
         "\ny1Y0tD9WVuVwFMEfkENQzOEJxVHwQpsxBRQ5snustS/HmrF5SIZyeg==" \
         "\n-----END RSA PRIVATE KEY-----"
 
-      user.keys.create!(title: "Sample key #{user.id}", key: ssh_public_key)
-
-      keys = user.keys.signing
+      key = user.keys.create!(title: "Sample key #{user.id}", key: ssh_public_key)
+      fingerprint ||= create_fingerprint(key.key)
       openssl_private_key = OpenSSL::PKey::RSA.new(ssh_private_key)
-      fingerprint ||= create_fingerprint(keys.find_by(key: ssh_public_key).key)
 
-      public_key_in_jwk = {
+      public_key_in_jwk ||= {
         kty: kty,
         n: Base64.urlsafe_encode64(openssl_private_key.n.to_s(2), padding: false),
         e: Base64.urlsafe_encode64(openssl_private_key.e.to_s(2), padding: false)
       }
+
+      ath ||= generate_ath(personal_access_token)
 
       dpop_proof = create_dpop_proof(
         alg,
@@ -78,7 +80,7 @@ module Auth
         fingerprint,
         public_key_in_jwk,
         openssl_private_key,
-        ath: generate_ath(personal_access_token)
+        ath: ath
       )
 
       DpopProof.new(ssh_public_key, public_key_in_jwk, openssl_private_key, fingerprint, dpop_proof)

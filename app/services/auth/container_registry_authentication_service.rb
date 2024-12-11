@@ -13,6 +13,7 @@ module Auth
       :build_create_container_image,
       :build_destroy_container_image
     ].freeze
+    PROTECTED_TAG_ACTIONS = %w[push delete].freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
@@ -88,7 +89,7 @@ module Auth
           type: type,
           name: name,
           actions: actions,
-          meta: access_metadata(path: name, use_key_as_project_path: use_key_as_project_path)
+          meta: access_metadata(path: name, use_key_as_project_path: use_key_as_project_path, actions: actions)
         }.compact
       end
 
@@ -99,7 +100,7 @@ module Auth
       Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
-    def self.access_metadata(project: nil, path: nil, use_key_as_project_path: false)
+    def self.access_metadata(project: nil, path: nil, use_key_as_project_path: false, actions: [], user: nil)
       return { project_path: path.chomp('/*').downcase } if use_key_as_project_path
 
       # If the project is not given, try to infer it from the provided path
@@ -122,11 +123,45 @@ module Auth
       {
         project_path: project&.full_path&.downcase,
         project_id: project&.id,
-        root_namespace_id: project&.root_ancestor&.id
-      }
+        root_namespace_id: project&.root_ancestor&.id,
+        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions)
+      }.compact
     end
 
     private
+
+    def self.tag_deny_access_patterns(project, user, actions)
+      return if project.nil? || user.nil?
+      return unless Feature.enabled?(:container_registry_protected_tags, project)
+      return unless project.container_registry_protection_tag_rules.any?
+
+      # Expand the special `*` action into individual actions (pull + push + delete), which is what it represents. The
+      # `pull` action is not part of the protected tags feature, so we can ignore it right here. Additionally, although
+      # unexpected for realistic scenarios (known client tools), it's technically possible for repeated actions to get
+      # this far in the code, so deduplicate them.
+      actions_to_check = actions.include?('*') ? PROTECTED_TAG_ACTIONS : actions.uniq
+      actions_to_check.delete('pull')
+
+      patterns = actions_to_check.index_with { [] }
+      # Admins get unrestricted access, but the registry expects to always see an array for each granted actions, so we
+      # can return early here, but not any earlier.
+      return patterns if user.admin?
+
+      user_access_level = user.max_member_access_for_project(project.id)
+      applicable_rules = project.container_registry_protection_tag_rules.for_actions_and_access(actions_to_check, user_access_level)
+
+      applicable_rules.each do |rule|
+        if actions_to_check.include?('push') && rule.push_restricted?(user_access_level)
+          patterns['push'] << rule.tag_name_pattern
+        end
+
+        if actions_to_check.include?('delete') && rule.delete_restricted?(user_access_level)
+          patterns['delete'] << rule.tag_name_pattern
+        end
+      end
+
+      patterns
+    end
 
     def authorized_token(*accesses)
       JSONWebToken::RSAToken.new(registry.key).tap do |token|
@@ -213,7 +248,7 @@ module Auth
         type: type,
         name: path.to_s,
         actions: authorized_actions,
-        meta: self.class.access_metadata(project: requested_project)
+        meta: self.class.access_metadata(project: requested_project, path: path, actions: authorized_actions, user: current_user)
       }
     end
 

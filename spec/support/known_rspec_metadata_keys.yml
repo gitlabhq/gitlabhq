@@ -3,6 +3,7 @@
 - :aggregate_failures
 - :allow_forgery_protection
 - :allow_unrouted_sidekiq_calls
+- :allowed_to_be_slow
 - :api
 - :assume_throttled
 - :aws_s3

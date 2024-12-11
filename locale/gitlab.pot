@@ -43148,7 +43148,7 @@ msgstr ""
 msgid "ProjectMaintenance|Blobs removal is scheduled."
 msgstr ""
 
-msgid "ProjectMaintenance|Cancel"
+msgid "ProjectMaintenance|Commit signatures are dropped during the rewrite process."
 msgstr ""
 
 msgid "ProjectMaintenance|Enter a list of object IDs to be removed to reduce repository size."
@@ -43157,10 +43157,13 @@ msgstr ""
 msgid "ProjectMaintenance|Enter multiple entries on separate lines."
 msgstr ""
 
+msgid "ProjectMaintenance|Existing local clones are incompatible with the updated repository and must be re-cloned."
+msgstr ""
+
 msgid "ProjectMaintenance|Go to housekeeping"
 msgstr ""
 
-msgid "ProjectMaintenance|Historical tags and branches based on the old commit history might no longer work correctly."
+msgid "ProjectMaintenance|Historical tags and branches based on the old commit history might not function correctly."
 msgstr ""
 
 msgid "ProjectMaintenance|How do I get a list of object IDs?"
@@ -43169,7 +43172,7 @@ msgstr ""
 msgid "ProjectMaintenance|How does blobs removal work?"
 msgstr ""
 
-msgid "ProjectMaintenance|Local copies become incompatible with the updated repository and must be re-cloned."
+msgid "ProjectMaintenance|How does text redaction work?"
 msgstr ""
 
 msgid "ProjectMaintenance|Manage repository storage and cleanup."
@@ -43199,9 +43202,6 @@ msgstr ""
 msgid "ProjectMaintenance|Redact text"
 msgstr ""
 
-msgid "ProjectMaintenance|Redacting strings does not produce a preview and cannot be undone. Are you sure you want to continue?"
-msgstr ""
-
 msgid "ProjectMaintenance|Regex and glob patterns supported. Enter multiple entries on separate lines."
 msgstr ""
 
@@ -43220,9 +43220,6 @@ msgstr ""
 msgid "ProjectMaintenance|Text redaction removal is scheduled."
 msgstr ""
 
-msgid "ProjectMaintenance|To confirm, enter the following:"
-msgstr ""
-
 msgid "ProjectMaintenance|To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}."
 msgstr ""
 
@@ -43230,6 +43227,9 @@ msgid "ProjectMaintenance|Yes, redact matching strings"
 msgstr ""
 
 msgid "ProjectMaintenance|Yes, remove blobs"
+msgstr ""
+
+msgid "ProjectMaintenance|You are about to permanently redact text from this project."
 msgstr ""
 
 msgid "ProjectMaintenance|You are about to permanently remove blobs from this project."
@@ -60394,6 +60394,12 @@ msgstr ""
 msgid "UserMapping|For more information, see accept contribution reassignment (%{help_link}). If you do not recognize this request, report abuse (%{report_link})."
 msgstr ""
 
+msgid "UserMapping|Full user details could not be fetched from source instance. %{linkStart}Why are placeholder users created%{linkEnd}?"
+msgstr ""
+
+msgid "UserMapping|Full user details missing"
+msgstr ""
+
 msgid "UserMapping|How do I accept reassignments?"
 msgstr ""
 
@@ -60563,6 +60569,9 @@ msgid "UserMapping|Upload the completed CSV file."
 msgstr ""
 
 msgid "UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. For more information, see %{linkStart}reassign contributions and memberships%{linkEnd}."
+msgstr ""
+
+msgid "UserMapping|User ID"
 msgstr ""
 
 msgid "UserMapping|You can assign only active users with regular or auditor access. To assign users with administrator access, ask your GitLab administrator to enable the \"Allow contribution mapping to admins\" setting."

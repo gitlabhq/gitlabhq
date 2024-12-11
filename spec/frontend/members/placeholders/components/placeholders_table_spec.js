@@ -28,6 +28,8 @@ import {
   PLACEHOLDER_SORT_STATUS_ASC,
 } from '~/import_entities/import_groups/constants';
 
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
+
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { mockSourceUsersQueryResponse, mockSourceUsers } from '../mock_data';
 
@@ -165,12 +167,37 @@ describe('PlaceholdersTable', () => {
       expect(avatar.attributes('src')).toBe(placeholderUser.avatarUrl);
     });
 
-    it('renders source info', async () => {
-      await waitForPromises();
+    describe('when the source user exists', () => {
+      it('renders source info', async () => {
+        await waitForPromises();
 
-      expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceHostname);
-      expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceName);
-      expect(findTableRows().at(0).text()).toContain(`@${mockSourceUsers[0].sourceUsername}`);
+        expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceHostname);
+        expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceName);
+        expect(findTableRows().at(0).text()).toContain(`@${mockSourceUsers[0].sourceUsername}`);
+      });
+
+      it('does not render the source user id', async () => {
+        await waitForPromises();
+
+        expect(findTableRows().at(0).text()).not.toContain('User ID');
+      });
+    });
+
+    describe('when the source user does not exist', () => {
+      it('renders the source user id', async () => {
+        await waitForPromises();
+
+        expect(findTableRows().at(6).text()).toContain(
+          `User ID: ${mockSourceUsers[6].sourceUserIdentifier}`,
+        );
+      });
+
+      it('renders a help popover', async () => {
+        await waitForPromises();
+
+        const helpPopover = findTableRows().at(6).findComponent(HelpPopover);
+        expect(helpPopover.exists()).toBe(true);
+      });
     });
 
     it('renders status badge with tooltip', async () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillPCiRunnerMachineBuildsProjectId,
+RSpec.describe Gitlab::BackgroundMigration::BackfillPCiRunnerMachineBuildsProjectId, :allowed_to_be_slow,
   migration: :gitlab_ci, feature_category: :fleet_visibility do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :p_ci_runner_machine_builds }

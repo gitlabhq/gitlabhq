@@ -1,12 +1,27 @@
 <script>
 import { GlModal, GlAlert, GlFormInput } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export default {
   i18n: {
     title: __('Are you absolutely sure?'),
     confirmText: __('Enter the following to confirm:'),
+    warningListItems: [
+      s__(
+        'ProjectMaintenance|Open merge requests might fail to merge and require manual rebasing.',
+      ),
+      s__(
+        'ProjectMaintenance|Existing local clones are incompatible with the updated repository and must be re-cloned.',
+      ),
+      s__(
+        'ProjectMaintenance|Pipelines referencing old commit SHAs might break and require reconfiguration.',
+      ),
+      s__(
+        'ProjectMaintenance|Historical tags and branches based on the old commit history might not function correctly.',
+      ),
+      s__('ProjectMaintenance|Commit signatures are dropped during the rewrite process.'),
+    ],
   },
   components: { GlModal, GlAlert, GlFormInput },
   props: {
@@ -76,6 +91,17 @@ export default {
         <h4 class="gl-alert-title">
           {{ title }}
         </h4>
+
+        <ul class="mb-0">
+          <li
+            v-for="(item, index) in $options.i18n.warningListItems"
+            :key="index"
+            data-test-id="warning-item"
+          >
+            {{ item }}
+          </li>
+        </ul>
+
         <slot></slot>
       </gl-alert>
 

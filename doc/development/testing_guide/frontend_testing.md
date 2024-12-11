@@ -175,6 +175,24 @@ expect(idGenerator.create()).toBe('1234')
 expect(wrapper.find('div').html()).toBe('<div id="1234">...</div>')
 ```
 
+### Don't use imported values in assertions
+
+Prefer literal values in assertions rather than importing constants. This makes tests easier to read, and resilient to changes. This is discussed further in [internationalization recommendations](../i18n/externalization.md#recommendations).
+
+```javascript
+// Bad: MY_CONSTANT could accidentally be set to undefined, have a typo etc. and test would still pass
+import { MY_CONSTANT } from '../constants';
+
+it('returns the correct value', () => {
+  expect(ding()).toBe(MY_CONSTANT);
+});
+
+// Good: explicit value is asserted
+it('returns the correct value', () => {
+  expect(ding()).toBe('expected literal value');
+});
+```
+
 ### Follow the user
 
 The line between unit and integration tests can be quite blurry in a component heavy world. The most important guideline to give is the following:

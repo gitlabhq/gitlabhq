@@ -106,10 +106,6 @@ While in the merge request, open Chat and type your question. For example:
 - `How can this merge request be improved?`
 - `Which files and changes should I review first?`
 
-Chat is not aware of pipelines or commits. However, you can use
-[root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)
-to troubleshoot the jobs in your pipeline.
-
 ## Ask about a specific commit
 
 DETAILS:

@@ -1526,6 +1526,107 @@ RSpec.shared_examples 'a container registry auth service' do
     end
   end
 
+  context 'with protected tags' do
+    let_it_be(:current_project) { create(:project) }
+    let_it_be(:container_repository_path) { current_project.full_path }
+    let_it_be(:project_developer) { create(:user, developer_of: current_project) }
+    let_it_be(:project_maintainer) { create(:user, maintainer_of: current_project) }
+    let_it_be(:project_owner) { current_project.owner }
+    let_it_be(:instance_admin) { create(:admin) }
+
+    let_it_be(:rules) do
+      [
+        create(:container_registry_protection_tag_rule,
+          project: current_project,
+          tag_name_pattern: 'v1.*',
+          minimum_access_level_for_push: :maintainer,
+          minimum_access_level_for_delete: :maintainer),
+        create(:container_registry_protection_tag_rule,
+          project: current_project,
+          tag_name_pattern: 'latest',
+          minimum_access_level_for_push: :owner,
+          minimum_access_level_for_delete: :maintainer),
+        create(:container_registry_protection_tag_rule,
+          project: current_project,
+          tag_name_pattern: 'admin-only',
+          minimum_access_level_for_push: :admin,
+          minimum_access_level_for_delete: :owner)
+      ]
+    end
+
+    before do
+      enable_admin_mode!(current_user) if current_user == instance_admin
+    end
+
+    using RSpec::Parameterized::TableSyntax
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
+    where(:user, :requested_scopes, :expected_access, :expected_deny_patterns) do
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:pull"] }                | true  | {}
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:push"] }                | true  | { 'push' => %w[v1.* latest admin-only] }
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:delete"] }              | false | nil # developers can't obtain delete access
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:pull,push"] }           | true  | { 'push' => %w[v1.* latest admin-only] }
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:pull,delete"] }         | true  | {}
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:push,delete"] }         | true  | { 'push' => %w[v1.* latest admin-only] }
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:pull,push,delete"] }    | true  | { 'push' => %w[v1.* latest admin-only] }
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:*"] }                   | false | nil # developers can't obtain full access
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:push,push"] }           | true  | { 'push' => %w[v1.* latest admin-only] } # single test for edge case where access may be repeated
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:push,foo"] }            | true  | { 'push' => %w[v1.* latest admin-only] } # test for (today impossible) case where an access is unknown
+      ref(:project_developer)  | lazy { ["repository:#{container_repository_path}:foo"] }                 | false | {} # test for (today impossible) case where the access is unknown
+
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:pull"] }                | true  | {}
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:push"] }                | true  | { 'push' => %w[latest admin-only] }
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:delete"] }              | true  | { 'delete' => %w[admin-only] }
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:pull,push"] }           | true  | { 'push' => %w[latest admin-only] }
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:pull,delete"] }         | true  | { 'delete' => %w[admin-only] }
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:push,delete"] }         | true  | { 'push' => %w[latest admin-only], 'delete' => %w[admin-only] }
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:pull,push,delete"] }    | true  | { 'push' => %w[latest admin-only], 'delete' => %w[admin-only] }
+      ref(:project_maintainer) | lazy { ["repository:#{container_repository_path}:*"] }                   | true  | { 'push' => %w[latest admin-only], 'delete' => %w[admin-only] }
+
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:pull"] }                | true  | {}
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:push"] }                | true  | { 'push' => %w[admin-only] }
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:delete"] }              | true  | { 'delete' => [] }
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:pull,push"] }           | true  | { 'push' => %w[admin-only] }
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:pull,delete"] }         | true  | { 'delete' => [] }
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:push,delete"] }         | true  | { 'push' => %w[admin-only], 'delete' => [] }
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:pull,push,delete"] }    | true  | { 'push' => %w[admin-only], 'delete' => [] }
+      ref(:project_owner)      | lazy { ["repository:#{container_repository_path}:*"] }                   | true  | { 'push' => %w[admin-only], 'delete' => [] }
+
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:pull"] }                | true  | {}
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:push"] }                | true  | { 'push' => [] }
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:delete"] }              | true  | { 'delete' => [] }
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:pull,push"] }           | true  | { 'push' => [] }
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:pull,delete"] }         | true  | { 'delete' => [] }
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:push,delete"] }         | true  | { 'push' => [], 'delete' => [] }
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:pull,push,delete"] }    | true  | { 'push' => [], 'delete' => [] }
+      ref(:instance_admin)     | lazy { ["repository:#{container_repository_path}:*"] }                   | true  | { 'push' => [], 'delete' => [] }
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      let(:current_user) { user }
+      let(:current_params) { { scopes: requested_scopes } }
+
+      it 'returns the expected tag deny access patterns' do
+        is_expected.to include(:token)
+
+        if expected_access
+          expect(payload['access']).not_to be_empty
+          expect(payload['access'].first['meta']).to include('tag_deny_access_patterns')
+
+          # Not using direct comparison to avoid flakiness due to ordering changes
+          actual_patterns = payload['access'].first['meta']['tag_deny_access_patterns']
+          expect(actual_patterns.keys).to match_array(expected_deny_patterns.keys)
+          expected_deny_patterns.each do |action, expected_patterns|
+            expect(actual_patterns[action]).to match_array(expected_patterns)
+          end
+        else
+          expect(payload['access']).to be_empty
+        end
+      end
+    end
+  end
+
   def decode_user_info_from_payload(payload)
     JWT.decode(payload["user"], nil, false)[0]["user_info"]
   end

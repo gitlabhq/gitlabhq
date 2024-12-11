@@ -104,16 +104,14 @@ GitLab sends an email notification with the recalculated repository size after t
 Use this method to permanently delete files containing sensitive or confidential information from your repository.
 
 WARNING:
-**This action cannot be undone.**
-After the history is rewritten and housekeeping is run, the changes are permanent.
-When removing files from your repository using this method, be aware of the following impacts.
-
-When you remove blobs:
+**This action is irreversible.**
+After rewriting history and running housekeeping, the changes are permanent.
+Be aware of the following impacts when removing blobs from your repository:
 
 - Open merge requests might fail to merge and require manual rebasing.
-- Existing local clones become incompatible with the updated repository and must be re-cloned.
+- Existing local clones are incompatible with the updated repository and must be re-cloned.
 - Pipelines referencing old commit SHAs might break and require reconfiguration.
-- Historical tags and branches based on the old commit history might no longer work correctly.
+- Historical tags and branches based on the old commit history might not function correctly.
 - Commit signatures are dropped during the rewrite process.
 
 NOTE:

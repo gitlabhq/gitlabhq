@@ -28,6 +28,7 @@ describe('WarningModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
+  const findListItems = () => wrapper.findAllByRole('listitem');
 
   beforeEach(() => createComponent());
 
@@ -47,6 +48,21 @@ describe('WarningModal', () => {
   describe('modal content', () => {
     it('displays correct title', () => {
       expect(findModal().text()).toContain('some title');
+    });
+
+    it('displays a list of warnings', () => {
+      expect(findListItems().at(0).text()).toBe(
+        'Open merge requests might fail to merge and require manual rebasing.',
+      );
+      expect(findListItems().at(1).text()).toBe(
+        'Existing local clones are incompatible with the updated repository and must be re-cloned.',
+      );
+      expect(findListItems().at(2).text()).toBe(
+        'Pipelines referencing old commit SHAs might break and require reconfiguration.',
+      );
+      expect(findListItems().at(3).text()).toBe(
+        'Historical tags and branches based on the old commit history might not function correctly.',
+      );
     });
 
     it('displays a confirm phrase', () => {

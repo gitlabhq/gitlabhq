@@ -111,7 +111,7 @@ Sections are groups of entries. A section begins with a section heading in squar
 
 #### Section headings
 
-Section headings must have a name and can:
+Section headings must have a name. For protected branches only, they can:
 
 - Require approval (default).
 - Be optional (prefixed with `^`).

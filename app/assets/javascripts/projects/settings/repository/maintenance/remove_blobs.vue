@@ -33,18 +33,6 @@ const i18n = {
     'ProjectMaintenance|You are about to permanently remove blobs from this project.',
   ),
   warningModalPrimaryText: s__('ProjectMaintenance|Yes, remove blobs'),
-  warningModalListItems: [
-    s__('ProjectMaintenance|Open merge requests might fail to merge and require manual rebasing.'),
-    s__(
-      'ProjectMaintenance|Local copies become incompatible with the updated repository and must be re-cloned.',
-    ),
-    s__(
-      'ProjectMaintenance|Pipelines referencing old commit SHAs might break and require reconfiguration.',
-    ),
-    s__(
-      'ProjectMaintenance|Historical tags and branches based on the old commit history might no longer work correctly.',
-    ),
-  ],
 };
 
 export default {
@@ -197,12 +185,6 @@ export default {
       @confirm="removeBlobsConfirm"
       @hide="showConfirmationModal = false"
     >
-      <ul class="mb-0">
-        <li v-for="(item, index) in $options.i18n.warningModalListItems" :key="index">
-          {{ item }}
-        </li>
-      </ul>
-
       <gl-link :href="$options.removeBlobsWarningHelpLink" target="_blank">{{
         $options.i18n.warningHelpLink
       }}</gl-link>

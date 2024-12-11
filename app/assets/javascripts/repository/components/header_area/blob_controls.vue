@@ -70,22 +70,7 @@ export default {
   },
   data() {
     return {
-      project: {
-        repository: {
-          blobs: {
-            nodes: [
-              {
-                findFilePath: null,
-                blamePath: null,
-                historyPath: null,
-                permalinkPath: null,
-                storedExternally: null,
-                externalStorage: null,
-              },
-            ],
-          },
-        },
-      },
+      project: {},
     };
   },
   computed: {
@@ -154,7 +139,6 @@ export default {
   },
 };
 </script>
-
 <template>
   <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
     <gl-button

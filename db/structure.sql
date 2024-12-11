@@ -28847,6 +28847,8 @@ CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at ON container_e
 
 CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at_enabled ON container_expiration_policies USING btree (project_id, next_run_at, enabled);
 
+CREATE INDEX idx_container_registry_protection_tag_rules_on_min_access_level ON container_registry_protection_tag_rules USING btree (project_id, minimum_access_level_for_push, minimum_access_level_for_delete);
+
 CREATE INDEX idx_container_repos_on_exp_cleanup_status_project_id_start_date ON container_repositories USING btree (expiration_policy_cleanup_status, project_id, expiration_policy_started_at);
 
 CREATE INDEX idx_cpmt_last_usages_on_catalog_resource_id ON catalog_resource_component_last_usages USING btree (catalog_resource_id);

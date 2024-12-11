@@ -87,9 +87,7 @@ export const blobControlsDataMock = {
       nodes: [
         {
           id: '5678',
-          findFilePath: 'find/file.js',
           blamePath: 'blame/file.js',
-          historyPath: 'history/file.js',
           permalinkPath: 'permalink/file.js',
           storedExternally: false,
           externalStorage: '',

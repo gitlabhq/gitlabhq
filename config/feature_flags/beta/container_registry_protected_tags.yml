@@ -1,0 +1,9 @@
+---
+name: container_registry_protected_tags
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499874
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171566
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505455
+milestone: '17.7'
+group: group::container registry
+type: beta
+default_enabled: false

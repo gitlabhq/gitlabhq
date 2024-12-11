@@ -323,7 +323,7 @@ export default {
         <todos-pagination v-if="!showEmptyState" v-bind="pageInfo" @cursor-changed="updateCursor" />
 
         <div class="gl-mt-5 gl-text-center">
-          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/498315" target="_blank">{{
+          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/506387" target="_blank">{{
             s__('Todos|Leave feedback')
           }}</gl-link>
         </div>
