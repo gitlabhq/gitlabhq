@@ -53,7 +53,7 @@ describe('TodoItemTitle', () => {
       ['to-do for MR', 'Update file .gitlab-ci.yml · Flightjs / Flight !17', MR_BUILD_FAILED_TODO],
       [
         'to-do for design',
-        'Screenshot_2024-11-22_at_16.11.25.png · Flightjs / Flight #35',
+        'Important issue › Screenshot_2024-11-22_at_16.11.25.png · Flightjs / Flight #35',
         DESIGN_TODO,
       ],
     ])(`renders %s as %s`, (_a, b, c) => {
@@ -66,7 +66,7 @@ describe('TodoItemTitle', () => {
     it.each`
       targetType                        | icon               | showsIcon
       ${TODO_TARGET_TYPE_ALERT}         | ${'status-alert'}  | ${true}
-      ${TODO_TARGET_TYPE_DESIGN}        | ${'issues'}        | ${true}
+      ${TODO_TARGET_TYPE_DESIGN}        | ${'media'}         | ${true}
       ${TODO_TARGET_TYPE_EPIC}          | ${'epic'}          | ${true}
       ${TODO_TARGET_TYPE_ISSUE}         | ${'issues'}        | ${true}
       ${TODO_TARGET_TYPE_MERGE_REQUEST} | ${'merge-request'} | ${true}

@@ -78,40 +78,23 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
 
   describe '#scope_user' do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_refind(:oauth_access_token) { create(:oauth_access_token) }
-    let(:user_id) { user.id }
-
-    before do
-      allow(oauth_access_token).to receive(:scopes).and_return(scopes)
-    end
 
     context 'when scopes match expected format' do
-      context 'when scopes only include the composite scope' do
-        let(:scopes) { "user:#{user_id}" }
-
-        it 'returns the user' do
-          expect(oauth_access_token.scope_user).to eq user
-        end
+      where(:scopes) do
+        [
+          "user:%{user_id}",
+          "other:scope user:%{user_id}",
+          "user:%{user_id} other:scope",
+          "api user:%{user_id} read_api"
+        ]
       end
 
-      context 'when scopes include another scope before composite scope' do
-        let(:scopes) { "other:scope user:#{user_id}" }
-
-        it 'returns the user' do
-          expect(oauth_access_token.scope_user).to eq user
+      with_them do
+        let(:formatted_scopes) do
+          format(scopes, user_id: user.id)
         end
-      end
 
-      context "when scopes include another scope after composite scope" do
-        let(:scopes) { "user:#{user_id} other:scope" }
-
-        it 'returns the user' do
-          expect(oauth_access_token.scope_user).to eq user
-        end
-      end
-
-      context 'when scopes include another scope before and after composite scope' do
-        let(:scopes) { "api user:#{user_id} read_api" }
+        let(:oauth_access_token) { create(:oauth_access_token, scopes: formatted_scopes) }
 
         it 'returns the user' do
           expect(oauth_access_token.scope_user).to eq user
@@ -123,12 +106,24 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
       where(:scopes) do
         [
           "user:#{non_existing_record_id}",
+          'fuser:%{user_id}',
+          'user:%{user_id}f',
+          'user:%{user_id} user:2',
           'user:not_a_number',
           'some:other:scope',
           nil,
           ""
         ]
       end
+      let(:formatted_scopes) do
+        if scopes.presence
+          format(scopes, user_id: user.id)
+        else
+          scopes
+        end
+      end
+
+      let(:oauth_access_token) { create(:oauth_access_token, scopes: formatted_scopes) }
 
       with_them do
         it 'returns false' do

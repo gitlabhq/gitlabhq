@@ -24,6 +24,8 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
 
       visit user_settings_personal_access_tokens_path
 
+      expect(active_access_tokens_counter).to have_text('0')
+
       click_button 'Add new token'
       fill_in "Token name", with: name
 
@@ -47,6 +49,7 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
       expect(active_access_tokens).to have_text('read_api')
       expect(active_access_tokens).to have_text('read_user')
       expect(created_access_token).to match(/[\w-]{20}/)
+      expect(active_access_tokens_counter).to have_text('1')
     end
 
     context "when creation fails" do
@@ -126,11 +129,13 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
 
     it "displays the newly created token" do
       visit user_settings_personal_access_tokens_path
+      expect(active_access_tokens_counter).to have_text('1')
       accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
       wait_for_all_requests
       expect(page).to have_content("Your new personal access token has been created.")
       expect(active_access_tokens).to have_text(personal_access_token.name)
       expect(created_access_token).to match(/[\w-]{20}/)
+      expect(active_access_tokens_counter).to have_text('1')
     end
 
     context "when rotation fails" do

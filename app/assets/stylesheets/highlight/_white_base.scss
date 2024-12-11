@@ -78,22 +78,6 @@ $white-gc-bg: #eaf2f5;
   background-color: $gl-color-neutral-10;
 }
 
-@mixin diff-match-line {
-  &.expansion {
-    &.match .diff-td {
-      color: $gl-color-neutral-400;
-    }
-
-    .diff-td {
-      background-color: $gl-color-neutral-50;
-
-      &:first-child {
-        border-color: $gl-color-neutral-100;
-      }
-    }
-  }
-}
-
 @mixin white-base {
   // Line numbers
   .file-line-blame {
@@ -155,7 +139,19 @@ $white-gc-bg: #eaf2f5;
     &.diff-grid-row {
       --diff-expansion-background-color: #{$gl-color-neutral-100};
 
-      @include diff-match-line;
+      &.expansion {
+        &.match .diff-td {
+          color: $gl-color-neutral-400;
+        }
+
+        .diff-td {
+          background-color: $gl-color-neutral-50;
+
+          &:first-child {
+            border-color: $gl-color-neutral-100;
+          }
+        }
+      }
     }
 
     &:not(.match) .diff-grid-left:hover,

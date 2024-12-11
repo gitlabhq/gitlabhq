@@ -12,7 +12,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
   let_it_be(:package2) { create(:npm_package, version: '2.0.6', project: project, name: package_name) }
   let_it_be(:latest_package) { create(:npm_package, version: '2.0.11', project: project, name: package_name) }
 
-  let(:packages) { project.packages.npm.with_name(package_name) }
+  let(:packages) { ::Packages::Npm::Package.for_projects(project).with_name(package_name) }
   let(:metadata) { described_class.new(package_name, packages).execute }
 
   describe '#versions' do
@@ -74,7 +74,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
         end
 
         context 'when generate dependencies' do
-          let(:packages) { ::Packages::Package.where(id: package1.id) }
+          let(:packages) { ::Packages::Npm::Package.where(id: package1.id) }
 
           it 'loads grouped dependency links', :aggregate_failures do
             expect(::Packages::DependencyLink).to receive(:dependency_ids_grouped_by_type).and_call_original
@@ -166,7 +166,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
           let_it_be(:package_tag1) { create(:packages_tag, package: package1, name: 'latest') }
           let_it_be(:package_tag2) { create(:packages_tag, package: package2, name: 'latest') }
 
-          let(:packages) { ::Packages::Package.for_projects([project.id, project2.id]).with_name(package_name) }
+          let(:packages) { ::Packages::Npm::Package.for_projects([project.id, project2.id]).with_name(package_name) }
 
           it "returns the tag of the latest package's version" do
             expect(subject['latest']).to eq(package2.version)
@@ -193,7 +193,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
         end
 
         it 'returns all tags' do
-          expect(::Packages::Package).to receive(:preload_tags).and_call_original
+          expect(::Packages::Npm::Package).to receive(:preload_tags).and_call_original
 
           expect(subject.size).to eq(Packages::Tag.count)
         end
@@ -210,14 +210,14 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
   end
 
   def check_n_plus_one(only_dist_tags: false)
-    pkgs = project.packages.npm.with_name(package_name).preload_files
+    pkgs = ::Packages::Npm::Package.for_projects(project).with_name(package_name).preload_files
     control = ActiveRecord::QueryRecorder.new do
       described_class.new(package_name, pkgs).execute(only_dist_tags: only_dist_tags)
     end
 
     yield
 
-    pkgs = project.packages.npm.with_name(package_name).preload_files
+    pkgs = ::Packages::Npm::Package.for_projects(project).with_name(package_name).preload_files
 
     expect do
       described_class.new(package_name, pkgs).execute(only_dist_tags: only_dist_tags)

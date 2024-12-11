@@ -912,15 +912,6 @@ module ProjectsHelper
     end
   end
 
-  def find_file_path(ref_type: nil)
-    return unless @project && !@project.empty_repo?
-    return unless can?(current_user, :read_code, @project)
-
-    ref = @ref || @project.repository.root_ref
-
-    project_find_file_path(@project, ref, ref_type: ref_type)
-  end
-
   def can_show_last_commit_in_list?(project)
     can?(current_user, :read_cross_project) &&
       can?(current_user, :read_commit_status, project) &&

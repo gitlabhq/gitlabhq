@@ -34,6 +34,8 @@
   - c.with_body do
     = render 'import_and_export'
 
+= render_if_exists 'admin/application_settings/integrations_settings'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Diff limits'),
   id: 'js-merge-request-settings',
   expanded: expanded_by_default?) do |c|

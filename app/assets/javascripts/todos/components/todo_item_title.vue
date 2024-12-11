@@ -34,6 +34,9 @@ export default {
     isAlert() {
       return this.todo.targetType === TODO_TARGET_TYPE_ALERT;
     },
+    isDesign() {
+      return this.todo.targetType === TODO_TARGET_TYPE_DESIGN;
+    },
     isMemberAccessRequestAction() {
       return this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED;
     },
@@ -72,19 +75,49 @@ export default {
         (this.isMergeRequest || this.isIssue || this.isAlert) && this.issuableState !== STATUS_OPEN
       );
     },
-    targetTitle() {
+    /**
+     * Full title line of the todo title + full reference, joined by a middot
+     */
+    todoTitle() {
+      return [this.targetName, this.targetFullReference].filter(Boolean).join(' · ');
+    },
+    /**
+     * Right half of a todo title: Full reference to the todo (parentPath + Target Reference)
+     */
+    targetFullReference() {
+      return [this.parentPath, this.targetReference].filter(Boolean).join(' ');
+    },
+    /**
+     * Left half of a To-Do title, often the entity name
+     */
+    targetName() {
       if (this.isMemberAccessRequestAction) {
         return '';
       }
 
-      return this.todo.targetEntity?.name ?? '';
+      const name = this.todo.targetEntity?.name ?? '';
+
+      if (this.isDesign && this.todo.targetEntity?.issue?.name) {
+        if (name) {
+          return `${this.todo.targetEntity.issue.name} › ${name}`;
+        }
+        return this.todo.targetEntity.issue.name;
+      }
+
+      return name;
     },
+    /**
+     * Reference of the target entity
+     */
     targetReference() {
-      if (this.todo.targetEntity?.issue?.reference) {
+      if (this.isDesign && this.todo.targetEntity?.issue?.reference) {
         return this.todo.targetEntity.issue.reference;
       }
       return this.todo.targetEntity?.reference ?? '';
     },
+    /**
+     * Parent path of the target entity Reference of the target entity
+     */
     parentPath() {
       if (this.todo.group) {
         return this.todo.group.fullName;
@@ -95,21 +128,6 @@ export default {
       }
 
       return '';
-    },
-    showSeparator() {
-      if (!this.targetTitle) {
-        return false;
-      }
-
-      if (this.parentPath) {
-        return true;
-      }
-
-      if (this.targetReference) {
-        return true;
-      }
-
-      return false;
     },
     icon() {
       switch (this.todo.targetType) {
@@ -122,7 +140,7 @@ export default {
         case TODO_TARGET_TYPE_ALERT:
           return 'status-alert';
         case TODO_TARGET_TYPE_DESIGN:
-          return 'issues';
+          return 'media';
         case TODO_TARGET_TYPE_SSH_KEY:
           return 'token';
         case TODO_TARGET_TYPE_EPIC:
@@ -140,10 +158,7 @@ export default {
     <status-badge v-if="showStatusBadge" :issuable-type="issuableType" :state="issuableState" />
     <gl-icon v-if="icon" :name="icon" />
     <div class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
-      <span v-if="targetTitle" class="todo-target-title">{{ targetTitle }}</span>
-      <span v-if="showSeparator">&middot;</span>
-      <span>{{ parentPath }}</span>
-      <span v-if="targetReference">{{ targetReference }}</span>
+      {{ todoTitle }}
     </div>
   </div>
 </template>

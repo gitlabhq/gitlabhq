@@ -12,5 +12,9 @@ module Features
         find_field('new-access-token').value
       end
     end
+
+    def active_access_tokens_counter
+      find_by_testid('active-token-count')
+    end
   end
 end

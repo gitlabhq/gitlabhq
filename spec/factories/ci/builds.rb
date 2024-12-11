@@ -57,6 +57,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_build_source do
+      after(:create) do |build, _|
+        create(:ci_build_source, build: build)
+      end
+    end
+
     trait :degenerated do
       options { nil }
       yaml_variables { nil }

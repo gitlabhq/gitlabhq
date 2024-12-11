@@ -1706,6 +1706,9 @@ msgid_plural "+%d more"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "+%{count} more"
+msgstr ""
+
 msgid "+%{more_assignees_count}"
 msgstr ""
 
@@ -4043,10 +4046,16 @@ msgstr ""
 msgid "AdminSettings|All new projects can use instance runners by default."
 msgstr ""
 
+msgid "AdminSettings|Allow all integrations"
+msgstr ""
+
 msgid "AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}"
 msgstr ""
 
 msgid "AdminSettings|Allow migrating GitLab groups and projects by direct transfer"
+msgstr ""
+
+msgid "AdminSettings|Allow only integrations on this allowlist"
 msgstr ""
 
 msgid "AdminSettings|Allow runner registration token"
@@ -4220,6 +4229,9 @@ msgstr ""
 msgid "AdminSettings|Instance runners expiration"
 msgstr ""
 
+msgid "AdminSettings|Integration settings"
+msgstr ""
+
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -4230,6 +4242,9 @@ msgid "AdminSettings|Limit the amount of namespace and project data to index"
 msgstr ""
 
 msgid "AdminSettings|Make new users' profiles private by default"
+msgstr ""
+
+msgid "AdminSettings|Manage which integrations can be enabled on this instance."
 msgstr ""
 
 msgid "AdminSettings|Maximum downstream pipeline trigger rate"
@@ -28650,6 +28665,12 @@ msgstr ""
 msgid "Import|Partially completed"
 msgstr ""
 
+msgid "Import|Placeholder user record reassignment complete"
+msgstr ""
+
+msgid "Import|Rescheduling placeholder user records reassignment: database health"
+msgstr ""
+
 msgid "Import|Show errors"
 msgstr ""
 
@@ -50938,6 +50959,9 @@ msgstr ""
 msgid "SecurityReports|All tools"
 msgstr ""
 
+msgid "SecurityReports|CVSS v%{version}:"
+msgstr ""
+
 msgid "SecurityReports|Change status"
 msgstr ""
 
@@ -51013,6 +51037,9 @@ msgstr ""
 msgid "SecurityReports|Download scanned URLs"
 msgstr ""
 
+msgid "SecurityReports|EPSS:"
+msgstr ""
+
 msgid "SecurityReports|Edit dismissal"
 msgstr ""
 
@@ -51077,6 +51104,9 @@ msgid "SecurityReports|Issue"
 msgstr ""
 
 msgid "SecurityReports|Issues created from a vulnerability cannot be removed."
+msgstr ""
+
+msgid "SecurityReports|KEV:"
 msgstr ""
 
 msgid "SecurityReports|Learn more about security configuration"

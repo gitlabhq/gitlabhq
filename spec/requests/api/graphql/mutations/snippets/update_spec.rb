@@ -171,7 +171,7 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
 
     context 'when the author is a member of the project', :snowplow do
       before do
-        project.add_developer(current_user)
+        project.add_developer(snippet.author)
       end
 
       it_behaves_like 'graphql update actions'
@@ -196,17 +196,15 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
       end
 
       context 'when not sessionless', :clean_gitlab_redis_sessions do
+        let(:current_user) { nil }
+
         before do
-          stub_session(
-            session_data: {
-              'warden.user.user.key' => [[current_user.id], current_user.authenticatable_salt]
-            }
-          )
+          sign_in(snippet.author)
         end
 
         it_behaves_like 'internal event tracking' do
           let(:event) { 'g_edit_by_snippet_ide' }
-          let(:user) { current_user }
+          let(:user) { snippet.author }
         end
       end
     end

@@ -513,7 +513,6 @@ RSpec.describe ApplicationHelper do
           {
             page: 'application',
             page_type_id: nil,
-            find_file: nil,
             group: nil,
             group_full_path: nil
           }
@@ -530,7 +529,6 @@ RSpec.describe ApplicationHelper do
             {
               page: 'application',
               page_type_id: nil,
-              find_file: nil,
               group: group.path,
               group_full_path: group.full_path
             }
@@ -549,12 +547,10 @@ RSpec.describe ApplicationHelper do
       end
 
       it 'includes all possible body data elements and associates the project elements with project' do
-        expect(helper).to receive(:can?).with(nil, :read_code, project)
         expect(helper.body_data).to eq(
           {
             page: 'application',
             page_type_id: nil,
-            find_file: nil,
             group: nil,
             group_full_path: nil,
             project_id: project.id,
@@ -569,12 +565,10 @@ RSpec.describe ApplicationHelper do
         let_it_be(:project) { create(:project, :repository, group: create(:group)) }
 
         it 'includes all possible body data elements and associates the project elements with project' do
-          expect(helper).to receive(:can?).with(nil, :read_code, project)
           expect(helper.body_data).to eq(
             {
               page: 'application',
               page_type_id: nil,
-              find_file: nil,
               group: project.group.name,
               group_full_path: project.group.full_path,
               project_id: project.id,
@@ -597,12 +591,10 @@ RSpec.describe ApplicationHelper do
             stub_controller_method(:action_name, 'show')
             stub_controller_method(:params, { id: issue.id })
 
-            expect(helper).to receive(:can?).with(nil, :read_code, project).and_return(false)
             expect(helper.body_data).to eq(
               {
                 page: 'projects:issues:show',
                 page_type_id: issue.id,
-                find_file: nil,
                 group: nil,
                 group_full_path: nil,
                 project_id: issue.project.id,
@@ -611,37 +603,6 @@ RSpec.describe ApplicationHelper do
                 namespace_id: issue.project.namespace.id
               }
             )
-          end
-        end
-      end
-
-      describe 'find_file attribute' do
-        subject { helper.body_data[:find_file] }
-
-        before do
-          allow(helper).to receive(:current_user).and_return(user)
-        end
-
-        context 'when the project has no repository' do
-          before do
-            allow(project).to receive(:empty_repo?).and_return(true)
-          end
-
-          it { is_expected.to be_nil }
-        end
-
-        context 'when user cannot read_code for the project' do
-          before do
-            allow(helper).to receive(:can?).with(user, :read_code, project).and_return(false)
-          end
-
-          it { is_expected.to be_nil }
-        end
-
-        context 'when current_user has read_code permission' do
-          it 'returns find_file with the default branch' do
-            expect(helper).to receive(:can?).with(user, :read_code, project).and_return(true)
-            expect(subject).to end_with(project.default_branch)
           end
         end
       end

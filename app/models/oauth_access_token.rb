@@ -15,7 +15,7 @@ class OauthAccessToken < Doorkeeper::AccessToken
   scope :preload_application, -> { preload(:application) }
 
   # user scope format is: `user:$USER_ID`
-  SCOPED_USER_REGEX = /user:(\d+)(?:\s|$)/
+  SCOPED_USER_REGEX = /\Auser:(\d+)\z/
 
   def scopes=(value)
     if value.is_a?(Array)
@@ -53,8 +53,10 @@ class OauthAccessToken < Doorkeeper::AccessToken
   private
 
   def extract_user_id_from_scopes
-    return false unless scopes.present?
+    # scopes are an instance of Doorkeeper:OAuth::Scopes class
+    matches = scopes.grep(SCOPED_USER_REGEX)
+    return unless matches.length == 1
 
-    scopes.to_s[SCOPED_USER_REGEX, 1]&.to_i
+    matches[0][SCOPED_USER_REGEX, 1].to_i
   end
 end

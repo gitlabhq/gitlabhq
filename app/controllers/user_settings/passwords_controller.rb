@@ -6,6 +6,7 @@ module UserSettings
 
     skip_before_action :check_password_expiration, only: [:new, :create]
     skip_before_action :check_two_factor_requirement, only: [:new, :create]
+    skip_before_action :active_user_check, only: [:new, :create]
 
     before_action :set_user
     before_action :authorize_change_password!
@@ -14,7 +15,9 @@ module UserSettings
 
     feature_category :system_access
 
-    def new; end
+    def new
+      current_user.activate if user_signed_in? && current_user.deactivated?
+    end
 
     def create
       unless @user.password_automatically_set || @user.valid_password?(user_params[:password])

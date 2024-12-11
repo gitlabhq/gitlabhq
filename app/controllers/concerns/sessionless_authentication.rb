@@ -16,10 +16,16 @@ module SessionlessAuthentication
   end
 
   def sessionless_user?
-    current_user && !session.key?('warden.user.user.key')
+    if Feature.enabled?(:fix_graphql_csrf, Feature.current_request)
+      current_user && @sessionless_sign_in # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used within this module
+    else
+      current_user && !session.key?('warden.user.user.key')
+    end
   end
 
   def sessionless_sign_in(user)
+    @sessionless_sign_in = true # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used within this module
+
     signed_in_user =
       if user.can_log_in_with_non_expired_password?
         # Notice we are passing store false, so the user is not
@@ -32,7 +38,9 @@ module SessionlessAuthentication
         sign_in(user, store: false, message: :sessionless_sign_in, run_callbacks: false)
       end
 
-    reset_auth_user! if respond_to?(:reset_auth_user!, true)
+    if respond_to?(:reset_auth_user!, true) && Feature.disabled?(:fix_graphql_csrf, Feature.current_request)
+      reset_auth_user!
+    end
 
     signed_in_user
   end

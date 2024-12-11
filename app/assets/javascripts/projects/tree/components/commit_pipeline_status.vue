@@ -99,13 +99,11 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-ml-5">
-    <gl-loading-icon v-if="isLoading" size="sm" :label="__('Loading pipeline status')" />
-    <ci-icon
-      v-else-if="hasCiStatus"
-      :status="ciStatus"
-      :title="statusTitle"
-      :aria-label="statusTitle"
-    />
-  </div>
+  <gl-loading-icon v-if="isLoading" size="sm" :label="__('Loading pipeline status')" />
+  <ci-icon
+    v-else-if="hasCiStatus"
+    :status="ciStatus"
+    :title="statusTitle"
+    :aria-label="statusTitle"
+  />
 </template>

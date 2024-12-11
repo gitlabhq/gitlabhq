@@ -187,7 +187,7 @@ export function getActionFromHref(pathName) {
 export const pageBundles = {
   show: () => import(/* webpackPrefetch: true */ '~/mr_notes/mount_app'),
   diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
-  reports: () => import('ee_else_ce/merge_requests/reports'),
+  reports: () => import('~/merge_requests/reports'),
 };
 
 export default class MergeRequestTabs {

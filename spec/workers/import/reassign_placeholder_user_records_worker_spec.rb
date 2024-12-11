@@ -60,6 +60,23 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
     end
   end
 
+  context 'when database is unhealthy' do
+    let(:service_response) { ServiceResponse.new(status: :success, reason: :db_health_check_failed) }
+    let(:backoff_period) { described_class::BACKOFF_PERIOD }
+
+    before do
+      allow_next_instance_of(Import::ReassignPlaceholderUserRecordsService) do |service|
+        allow(service).to receive(:execute).and_return(service_response)
+      end
+    end
+
+    it 're-enqueues the job' do
+      expect(described_class).to receive(:perform_in).with(backoff_period, import_source_user.id, {})
+
+      described_class.new.perform(import_source_user.id)
+    end
+  end
+
   describe '#sidekiq_retries_exhausted' do
     it 'logs the failure and sets the source user status to failed', :aggregate_failures do
       exception = StandardError.new('Some error')

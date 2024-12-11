@@ -15,7 +15,7 @@
     = render ::Layouts::CrudComponent.new(_('Active personal access tokens'),
       icon: 'token',
       count: @active_access_tokens_size,
-      count_options: { class: 'js-token-count' },
+      count_options: { class: 'js-token-count', data: { testid: 'active-token-count' } },
       toggle_text: _('Add new token'),
       toggle_options: { data: { testid: 'add-new-token-button' } },
       form_options: { class: 'js-add-new-token-form' },

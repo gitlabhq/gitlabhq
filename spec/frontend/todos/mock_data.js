@@ -93,7 +93,9 @@ export const DESIGN_TODO = {
   targetEntity: {
     name: 'Screenshot_2024-11-22_at_16.11.25.png',
     issue: {
+      id: 'gid://gitlab/Issue/35',
       reference: '#35',
+      name: 'Important issue',
     },
     __typename: 'Design',
   },

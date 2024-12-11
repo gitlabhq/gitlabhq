@@ -88,6 +88,11 @@
     @apply gl-inline-block gl-mb-0;
   }
 
+  // make default paragraph of summary text behave nicely with the summary marker
+  summary > p {
+    max-width: calc(100% - 1rem);
+  }
+
   // Single code lines should wrap
   code {
     @apply gl-font-monospace;

@@ -194,6 +194,16 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         it_behaves_like 'successfully downloads the file'
       end
+
+      context 'when npm_extract_npm_package_model is disabled' do
+        let_it_be(:package, reload: true) { create(:npm_package_legacy, project: project, name: FFaker::Lorem.word, version: '1.2.3') }
+
+        before do
+          stub_feature_flags(npm_extract_npm_package_model: false)
+        end
+
+        it_behaves_like 'successfully downloads the file'
+      end
     end
 
     context 'private project' do

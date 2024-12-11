@@ -1,7 +1,6 @@
 - status             = local_assigns.fetch(:status)
 - path               = local_assigns.fetch(:path, status.has_details? ? status.details_path : nil)
 - tooltip_placement  = local_assigns.fetch(:tooltip_placement, "left")
-- option_css_classes = local_assigns.fetch(:option_css_classes, nil)
 - show_status_text   = local_assigns.fetch(:show_status_text, false)
 
-= render_ci_icon(status, path, tooltip_placement: tooltip_placement, option_css_classes: option_css_classes, show_status_text: show_status_text)
+= render_ci_icon(status, path, tooltip_placement: tooltip_placement, show_status_text: show_status_text)

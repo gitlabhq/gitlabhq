@@ -30,9 +30,9 @@
     = author_avatar(commit, size: 32, has_tooltip: false, css_class: 'gl-inline-block')
 
   .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-start.gl-grow.gl-min-w-0.gl-mb-3
-    .commit-content{ data: { testid: 'commit-content' } }
+    .commit-content.gl-self-center{ data: { testid: 'commit-content' } }
       - if is_blob_page
-        .gl-flex.sm:gl-hidden.gl-gap-4.gl-pt-3
+        .gl-flex.sm:gl-hidden.gl-gap-3.gl-items-center
           .committer.gl-text-sm
             - commit_authored_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
             = commit_authored_timeago.html_safe
@@ -57,8 +57,8 @@
           %pre{ class: ["commit-row-description gl-whitespace-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")] }
             = preserve(markdown_field(commit, :description))
 
-    .commit-actions.gl-flex.gl-items-center
-      %div{ class: is_blob_page ? "gl-hidden sm:gl-flex gl-items-center": "gl-block" }
+    .commit-actions.gl-flex.gl-items-center.gl-gap-3
+      %div{ class: is_blob_page ? "gl-hidden sm:gl-flex gl-items-center gl-gap-3": "gl-flex gl-items-center gl-gap-3" }
         - if tags.present?
           = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace') do
             - if tags.size > 1
@@ -80,10 +80,9 @@
           = link_to_browse_code(project, commit)
 
       - if is_blob_page
-        .gl-block.sm:gl-hidden.gl-pt-3
+        .gl-block.sm:gl-hidden
           = render Pajamas::ButtonComponent.new(icon: 'ellipsis_h', button_options: { class: 'button-ellipsis-horizontal text-expander js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
-        .gl-pt-3.sm:gl-pt-0
-          #js-commit-history-link{ data: { history_link: project_commits_path(@project, @id, ref_type: @ref_type), event_tracking: 'click_history_control_on_blob_page' } }
+        #js-commit-history-link{ data: { history_link: project_commits_path(@project, @id, ref_type: @ref_type), event_tracking: 'click_history_control_on_blob_page' } }
 
   - if is_blob_page
     .gl-block.sm:gl-hidden

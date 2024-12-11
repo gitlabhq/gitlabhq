@@ -29,6 +29,7 @@ fragment Todo on Todo {
     ... on Design {
       issue {
         id
+        name
         reference
       }
     }

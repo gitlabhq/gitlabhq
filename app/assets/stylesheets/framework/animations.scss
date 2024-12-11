@@ -56,15 +56,6 @@
   transition: $unfolded-transitions;
 }
 
-@mixin disable-all-animation {
-  /*CSS transitions*/
-  transition-property: none !important;
-  /*CSS transforms*/
-  transform: none !important;
-  /*CSS animations*/
-  animation: none !important;
-}
-
 @function unfold-transition ($transition) {
   // Default values
   $property: all;

@@ -433,6 +433,11 @@ Parameters:
 | `internal`                    | boolean           | no       | The internal flag of a note. Default is false. |
 | `merge_request_diff_head_sha` | string            | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes?body=note"
+```
+
 ### Modify existing merge request note
 
 Modify existing note of a merge request.

@@ -68,17 +68,6 @@
   }
 }
 
-.commit-actions {
-  .ci-status-icon svg {
-    vertical-align: text-bottom;
-  }
-
-  > .btn,
-  > .commit-sha-group {
-    margin-left: $gl-padding;
-  }
-}
-
 .commit-nav-buttons {
   margin: 0 0.5rem;
 

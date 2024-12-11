@@ -147,17 +147,6 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-@mixin hierarchy-path-chevron {
-  content: '';
-  position: absolute;
-  background-color: inherit;
-  top: 0.39rem;
-  right: px-to-rem(-9px);
-  width: $disclosure-hierarchy-chevron-dimension;
-  height: $disclosure-hierarchy-chevron-dimension;
-  transform: rotate(45deg) skew(14deg, 14deg);
-}
-
 .disclosure-hierarchy {
   @include media-breakpoint-up(sm) {
     margin-right: $gl-spacing-scale-7;
@@ -189,7 +178,14 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   &::before,
   &::after {
-    @include hierarchy-path-chevron;
+    content: '';
+    position: absolute;
+    background-color: inherit;
+    top: 0.39rem;
+    right: px-to-rem(-9px);
+    width: $disclosure-hierarchy-chevron-dimension;
+    height: $disclosure-hierarchy-chevron-dimension;
+    transform: rotate(45deg) skew(14deg, 14deg);
     border: 1px solid var(--gray-100, $gray-100);
     border-color: inherit;
     border-bottom-color: transparent;

@@ -31804,6 +31804,8 @@ CREATE INDEX index_p_ci_build_sources_on_pipeline_source ON ONLY p_ci_build_sour
 
 CREATE INDEX index_p_ci_build_sources_on_project_id_and_build_id ON ONLY p_ci_build_sources USING btree (project_id, build_id);
 
+CREATE INDEX index_p_ci_build_sources_on_search_columns ON ONLY p_ci_build_sources USING btree (project_id, source, build_id, partition_id);
+
 CREATE INDEX index_p_ci_build_tags_on_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (build_id, partition_id);
 
 CREATE INDEX index_p_ci_build_tags_on_project_id ON ONLY p_ci_build_tags USING btree (project_id);

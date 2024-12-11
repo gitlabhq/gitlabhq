@@ -1,0 +1,9 @@
+---
+name: fix_graphql_csrf
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/379326
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173972
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/508617
+milestone: '17.7'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

@@ -32309,6 +32309,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectjobsname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Filter jobs by name. |
+| <a id="projectjobssources"></a>`sources` **{warning-solid}** | [`[CiJobSource!]`](#cijobsource) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter jobs by source. Ignored if 'populate_and_use_build_source_table' feature flag is disabled. |
 | <a id="projectjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 | <a id="projectjobswithartifacts"></a>`withArtifacts` | [`Boolean`](#boolean) | Filter by artifacts presence. |
 
@@ -34558,7 +34559,7 @@ JSON structure of a file with matches.
 | <a id="searchblobfiletypeblameurl"></a>`blameUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Blame URL of the file. |
 | <a id="searchblobfiletypechunks"></a>`chunks` **{warning-solid}** | [`[SearchBlobChunk!]`](#searchblobchunk) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum matches per file. |
 | <a id="searchblobfiletypefileurl"></a>`fileUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. URL of the file. |
-| <a id="searchblobfiletypematchcount"></a>`matchCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Matches per file in maximum 50 chunks. |
+| <a id="searchblobfiletypematchcount"></a>`matchCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Matches per file up to a max of 50 chunks. Default is 3. |
 | <a id="searchblobfiletypematchcounttotal"></a>`matchCountTotal` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of matches per file. |
 | <a id="searchblobfiletypepath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Path of the file. |
 | <a id="searchblobfiletypeprojectpath"></a>`projectPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Full path of the project. |
@@ -38226,6 +38227,31 @@ Values for sorting inherited variables.
 | ----- | ----------- |
 | <a id="cijobkindbridge"></a>`BRIDGE` | Bridge CI job connecting a parent and child pipeline. |
 | <a id="cijobkindbuild"></a>`BUILD` | Standard CI job. |
+
+### `CiJobSource`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobsourceapi"></a>`API` | A job initiated by api. |
+| <a id="cijobsourcechat"></a>`CHAT` | A job initiated by chat. |
+| <a id="cijobsourcecontainer_registry_push"></a>`CONTAINER_REGISTRY_PUSH` | A job initiated by container registry push. |
+| <a id="cijobsourceduo_workflow"></a>`DUO_WORKFLOW` | A job initiated by duo workflow. |
+| <a id="cijobsourceexternal"></a>`EXTERNAL` | A job initiated by external. |
+| <a id="cijobsourceexternal_pull_request_event"></a>`EXTERNAL_PULL_REQUEST_EVENT` | A job initiated by external pull request event. |
+| <a id="cijobsourcemerge_request_event"></a>`MERGE_REQUEST_EVENT` | A job initiated by merge request event. |
+| <a id="cijobsourceondemand_dast_scan"></a>`ONDEMAND_DAST_SCAN` | A job initiated by ondemand dast scan. |
+| <a id="cijobsourceondemand_dast_validation"></a>`ONDEMAND_DAST_VALIDATION` | A job initiated by ondemand dast validation. |
+| <a id="cijobsourceparent_pipeline"></a>`PARENT_PIPELINE` | A job initiated by parent pipeline. |
+| <a id="cijobsourcepipeline"></a>`PIPELINE` | A job initiated by pipeline. |
+| <a id="cijobsourcepipeline_execution_policy"></a>`PIPELINE_EXECUTION_POLICY` | A job initiated by pipeline execution policy. |
+| <a id="cijobsourcepush"></a>`PUSH` | A job initiated by push. |
+| <a id="cijobsourcescan_execution_policy"></a>`SCAN_EXECUTION_POLICY` | A job initiated by scan execution policy. |
+| <a id="cijobsourceschedule"></a>`SCHEDULE` | A job initiated by schedule. |
+| <a id="cijobsourcesecurity_orchestration_policy"></a>`SECURITY_ORCHESTRATION_POLICY` | A job initiated by security orchestration policy. |
+| <a id="cijobsourcetrigger"></a>`TRIGGER` | A job initiated by trigger. |
+| <a id="cijobsourceunknown"></a>`UNKNOWN` | A job initiated by unknown. |
+| <a id="cijobsourceweb"></a>`WEB` | A job initiated by web. |
+| <a id="cijobsourcewebide"></a>`WEBIDE` | A job initiated by webide. |
 
 ### `CiJobStatus`
 

@@ -1,0 +1,9 @@
+---
+name: reassignment_throttling
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493977
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173292
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/504995
+milestone: '17.7'
+group: group::import and integrate
+type: gitlab_com_derisk
+default_enabled: false

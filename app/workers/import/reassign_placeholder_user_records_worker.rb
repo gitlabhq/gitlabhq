@@ -5,6 +5,8 @@ module Import
     include ApplicationWorker
     include Gitlab::Utils::StrongMemoize
 
+    BACKOFF_PERIOD = 1.minute.freeze
+
     idempotent!
     data_consistency :sticky
     feature_category :importers
@@ -12,19 +14,23 @@ module Import
     sidekiq_options retry: 5, dead: false
     sidekiq_options max_retries_after_interruption: 20
 
-    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/493977
+    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
     concurrency_limit -> { 4 }
 
     sidekiq_retries_exhausted do |msg, exception|
       new.perform_failure(exception, msg['args'])
     end
 
-    def perform(import_source_user_id, _params = {})
+    def perform(import_source_user_id, params = {})
       @import_source_user = Import::SourceUser.find_by_id(import_source_user_id)
-
       return unless import_source_user_valid?
 
-      Import::ReassignPlaceholderUserRecordsService.new(import_source_user).execute
+      response = Import::ReassignPlaceholderUserRecordsService.new(import_source_user).execute
+
+      if response&.reason == :db_health_check_failed
+        return self.class.perform_in(BACKOFF_PERIOD, import_source_user.id, params)
+      end
+
       Import::DeletePlaceholderUserWorker.perform_async(import_source_user.id)
     end
 

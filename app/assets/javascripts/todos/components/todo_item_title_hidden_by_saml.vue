@@ -25,7 +25,7 @@ export default {
       {{ $options.i18n.hiddenTodoBadgeText }}
     </gl-badge>
     <div class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
-      <span class="todo-target-title">{{ $options.i18n.hiddenTodoTitle }}</span>
+      {{ $options.i18n.hiddenTodoTitle }}
     </div>
   </div>
 </template>

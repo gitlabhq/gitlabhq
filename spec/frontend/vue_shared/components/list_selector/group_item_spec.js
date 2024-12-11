@@ -1,5 +1,5 @@
-import { GlAvatar } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { GlAvatarLabeled } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GroupItem from '~/vue_shared/components/list_selector/group_item.vue';
 import HiddenGroupsItem from 'ee_component/approvals/components/hidden_groups_item.vue';
 
@@ -9,7 +9,7 @@ describe('GroupItem spec', () => {
   const MOCK_GROUP = { id: 123, fullName: 'Group 1', name: 'group1', avatarUrl: 'some/avatar.jpg' };
 
   const createComponent = (props, options) => {
-    wrapper = mountExtended(GroupItem, {
+    wrapper = shallowMountExtended(GroupItem, {
       propsData: {
         data: MOCK_GROUP,
         ...props,
@@ -18,20 +18,20 @@ describe('GroupItem spec', () => {
     });
   };
 
-  const findAvatar = () => wrapper.findComponent(GlAvatar);
+  const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findDeleteButton = () => wrapper.findByTestId('delete-group-btn');
 
   beforeEach(() => createComponent());
 
-  it('renders an Avatar component', () => {
-    expect(findAvatar().props('size')).toBe(32);
-    expect(findAvatar().props('src')).toBe(MOCK_GROUP.avatarUrl);
-    expect(findAvatar().attributes('alt')).toBe(MOCK_GROUP.fullName);
-  });
-
-  it('renders a fullName and name', () => {
-    expect(wrapper.text()).toContain('Group 1');
-    expect(wrapper.text()).toContain('group1');
+  it('renders AvatarLabeled component', () => {
+    expect(findAvatarLabeled().props()).toMatchObject({
+      label: 'Group 1',
+      subLabel: '@group1',
+    });
+    expect(findAvatarLabeled().attributes()).toMatchObject({
+      size: '32',
+      src: 'some/avatar.jpg',
+    });
   });
 
   it('does not render a delete button by default', () => {
@@ -62,7 +62,7 @@ describe('GroupItem spec', () => {
     });
 
     it('emits a delete event if the delete button is clicked', () => {
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
 
       expect(wrapper.emitted('delete')).toEqual([[MOCK_GROUP.id]]);
     });

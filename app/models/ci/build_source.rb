@@ -3,16 +3,17 @@
 module Ci
   class BuildSource < Ci::ApplicationRecord
     include Ci::Partitionable
+    include EachBatch
 
     self.table_name = :p_ci_build_sources
     self.primary_key = :build_id
 
-    enum source: {
-      scan_execution_policy: 1,
-      pipeline_execution_policy: 2
-    }
+    ignore_column :pipeline_source, remove_with: '17.9', remove_after: '2025-01-15'
 
-    enum pipeline_source: Enums::Ci::Pipeline.sources
+    enum source: {
+      scan_execution_policy: 1001,
+      pipeline_execution_policy: 1002
+    }.merge(::Enums::Ci::Pipeline.sources)
 
     query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true

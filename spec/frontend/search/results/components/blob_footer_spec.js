@@ -100,7 +100,7 @@ describe('BlobFooter', () => {
       await nextTick();
       expect(findGlLink().exists()).toBe(true);
       expect(wrapper.text()).toContain(
-        'Show less - Too many matches found. Showing 50 chunks out of 200 results. Open the file to view all.',
+        `Show less - Too many matches found. Showing 5 chunks out of 200 results. Open the file to view all.`,
       );
     });
 

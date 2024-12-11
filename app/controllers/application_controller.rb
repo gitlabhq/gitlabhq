@@ -90,6 +90,10 @@ class ApplicationController < BaseActionController
     render_403
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do
+    render_403
+  end
+
   rescue_from Browser::Error do |e|
     render plain: e.message, status: :forbidden
   end
