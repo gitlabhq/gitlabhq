@@ -459,7 +459,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       {
         namespace_id: project.namespace,
         project_id: project,
-        id: commit.id,
+        id: master_pickable_sha,
         format: format
       }
     end
@@ -469,6 +469,25 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
       expect(assigns(:diffs)).to be_a(Gitlab::Diff::FileCollection::Commit)
       expect(assigns(:environment)).to be_nil
+    end
+
+    it 'preloads highlights' do
+      allow(Process).to receive(:clock_gettime).and_call_original
+      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC, :second).and_return(0, 4, 8, 12, 16, 20)
+
+      diff_highlight = instance_double(Gitlab::Diff::Highlight, highlight: [])
+      allow(Gitlab::Diff::Highlight).to receive(:new).and_return(diff_highlight)
+
+      send_request
+
+      assigns(:diffs).diff_files.each do |diff_file|
+        expect(diff_file.instance_variable_get(:@highlighted_diff_lines)).not_to be_nil
+      end
+
+      expect(Gitlab::Diff::Highlight)
+        .to have_received(:new).with(anything, hash_including(plain: false)).twice.times
+      expect(Gitlab::Diff::Highlight)
+        .to have_received(:new).with(anything, hash_including(plain: true)).exactly(4).times
     end
 
     context 'when format is not html' do

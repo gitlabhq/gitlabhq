@@ -367,6 +367,17 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
         expect(response.body).to eq(expected_json)
       end
 
+      it 'returns JSON indicating the namespace exists and a suggestion when same pages unique domain exists' do
+        # Simulate the existing domain being in use
+        create(:project_setting, pages_unique_domain: 'existing-domain')
+
+        get api("#{path}/existing-domain/exists", user)
+
+        expected_json = { exists: true, suggests: ["existing-domain1"] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
       it 'ignores paths of groups present in other hierarchies when making suggestions' do
         (1..2).to_a.each do |suffix|
           create(:group, name: "mygroup#{suffix}", path: "mygroup#{suffix}", parent: namespace2)

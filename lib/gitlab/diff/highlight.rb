@@ -9,9 +9,10 @@ module Gitlab
 
       delegate :old_path, :new_path, :old_sha, :new_sha, to: :diff_file, prefix: :diff
 
-      def initialize(diff_lines, repository: nil)
+      def initialize(diff_lines, repository: nil, plain: false)
         @repository = repository
         @project = repository&.project
+        @plain = plain
 
         if diff_lines.is_a?(Gitlab::Diff::File)
           @diff_file = diff_lines
@@ -41,6 +42,8 @@ module Gitlab
       end
 
       private
+
+      attr_reader :plain
 
       def populate_marker_ranges
         pair_selector = Gitlab::Diff::PairSelector.new(@raw_lines)
@@ -77,7 +80,7 @@ module Gitlab
 
       def highlight_line(diff_line)
         return unless diff_file && diff_file.diff_refs
-        return diff_line_highlighting(diff_line, plain: true) if blobs_too_large?
+        return diff_line_highlighting(diff_line, plain: true) if blobs_too_large? || plain
 
         if Feature.enabled?(:diff_line_syntax_highlighting, project)
           diff_line_highlighting(diff_line)

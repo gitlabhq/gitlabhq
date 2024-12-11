@@ -50,7 +50,8 @@ export default Link.extend({
       },
       title: {
         title: null,
-        parseHTML: (element) => element.getAttribute('title'),
+        parseHTML: (element) =>
+          element.classList.contains('gfm') ? null : element.getAttribute('title'),
       },
       // only for gollum links (wikis)
       isGollumLink: {
