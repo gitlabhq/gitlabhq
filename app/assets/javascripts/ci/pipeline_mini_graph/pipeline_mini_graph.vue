@@ -50,7 +50,7 @@ export default {
       default: false,
     },
   },
-  emits: ['miniGraphStageClick'],
+  emits: ['jobActionExecuted', 'miniGraphStageClick'],
   data() {
     return {
       pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
@@ -128,6 +128,7 @@ export default {
     },
     onJobActionExecuted() {
       this.resetPollInterval();
+      this.$emit('jobActionExecuted');
     },
     resetPollInterval() {
       this.pollInterval = PIPELINE_POLL_INTERVAL_DEFAULT;

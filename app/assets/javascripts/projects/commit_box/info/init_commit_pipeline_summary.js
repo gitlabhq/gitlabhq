@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import CommitBoxPipelineStatus from './components/commit_box_pipeline_status.vue';
+import PipelineSummary from '~/ci/common/pipeline_summary/pipeline_summary.vue';
 
 Vue.use(VueApollo);
 
@@ -9,7 +9,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default (selector = '.js-commit-box-pipeline-status') => {
+export default (selector = '.js-commit-box-pipeline-summary') => {
   const el = document.querySelector(selector);
 
   if (!el) {
@@ -22,13 +22,10 @@ export default (selector = '.js-commit-box-pipeline-status') => {
   new Vue({
     el,
     apolloProvider,
-    provide: {
-      fullPath,
-      iid,
-      graphqlResourceEtag,
-    },
     render(createElement) {
-      return createElement(CommitBoxPipelineStatus);
+      return createElement(PipelineSummary, {
+        props: { fullPath, iid, pipelineEtag: graphqlResourceEtag },
+      });
     },
   });
 };

@@ -38,7 +38,6 @@ class ProjectsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
-    push_frontend_feature_flag(:upgrade_pdfjs, current_user)
     push_frontend_feature_flag(:issue_email_participants, @project)
     push_frontend_feature_flag(:edit_branch_rules, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles

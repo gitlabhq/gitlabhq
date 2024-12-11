@@ -43,7 +43,7 @@ GitLab already generates this document when the following requirements are met:
   supported by Gemnasium.
 - A successful pipeline was run on the default branch.
   You should not change the default behavior of allowing the
-  [application security jobs](../../application_security/index.md#application-coverage) to fail.
+  [application security jobs](../../application_security/detect/index.md) to fail.
 
 ## View project dependencies
 

@@ -1,6 +1,8 @@
 ---
 name: sidekiq_concurrency_limit_middleware
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139851
+# We closed the rollout issue because the feature flag is globally enabled,
+# but we want to keep it in the codebase as a safety net for the middleware.
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435391
 milestone: '16.9'
 type: ops

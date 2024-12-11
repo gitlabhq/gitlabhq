@@ -10,6 +10,94 @@ RSpec.describe Issue, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:reusable_project) { create(:project) }
 
+  # TODO: Remove when issues.work_item_type_id cleanup is complete
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  describe 'database triggers' do
+    let_it_be(:type1) { create(:work_item_type, :non_default).tap { |type| type.update!(id: -type.id) } }
+    let_it_be(:type2) { create(:work_item_type, :non_default).tap { |type| type.update!(id: -type.id) } }
+
+    context 'when creating an issue' do
+      let(:basic_issue_attributes) do
+        { project_id: reusable_project.id, namespace_id: reusable_project.project_namespace_id }
+      end
+
+      let(:issue) do
+        id = ApplicationRecord.legacy_bulk_insert( # rubocop:disable Gitlab/BulkInsert -- Necessary for raw insert in test
+          described_class.table_name,
+          [basic_issue_attributes.merge(type_attributes)],
+          return_ids: true
+        ).first
+        described_class.find(id)
+      end
+
+      context 'when only work_item_type_id is provided' do
+        let(:type_attributes) { { work_item_type_id: type1.id } }
+
+        it 'sets correct_work_item_type_id with the correct value' do
+          expect(issue.work_item_type_id).to eq(type1.id)
+          expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
+        end
+      end
+
+      context 'when only correct_work_item_type_id is provided' do
+        let(:type_attributes) { { correct_work_item_type_id: type1.correct_id } }
+
+        it 'sets correct_work_item_type_id with the correct value' do
+          expect(issue.work_item_type_id).to eq(type1.id)
+          expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
+        end
+      end
+
+      context 'when both work_item_type_id and correct_work_item_type_id are provided' do
+        let(:type_attributes) { { work_item_type_id: type1.id, correct_work_item_type_id: type2.correct_id } }
+
+        it 'does not overwrite any of the provided values' do
+          expect(issue.work_item_type_id).to eq(type1.id)
+          expect(issue.correct_work_item_type_id).to eq(type2.correct_id)
+        end
+      end
+    end
+
+    context 'when updating an issue' do
+      let_it_be_with_reload(:issue) do
+        create(:issue, project: reusable_project, work_item_type: create(:work_item_type, :non_default))
+      end
+
+      context 'when only work_item_type_id is update' do
+        it 'updates correct_work_item_type_id with the correct value' do
+          expect do
+            issue.update_columns(work_item_type_id: type1.id)
+            issue.reload
+          end.to change { issue.work_item_type_id }.to(type1.id).and(
+            change { issue.correct_work_item_type_id }.to(type1.correct_id)
+          )
+        end
+      end
+
+      context 'when only correct_work_item_type_id is update' do
+        it 'updates work_item_type_id with the correct value' do
+          expect do
+            issue.update_columns(correct_work_item_type_id: type1.correct_id)
+            issue.reload
+          end.to change { issue.work_item_type_id }.to(type1.id).and(
+            change { issue.correct_work_item_type_id }.to(type1.correct_id)
+          )
+        end
+      end
+
+      context 'when both work_item_type_id correct_work_item_type_id are updated' do
+        it 'updates both columns with the specified value, no overwrites by the trigger' do
+          expect do
+            issue.update_columns(work_item_type_id: type1.id, correct_work_item_type_id: type2.correct_id)
+            issue.reload
+          end.to change { issue.work_item_type_id }.to(type1.id).and(
+            change { issue.correct_work_item_type_id }.to(type2.correct_id)
+          )
+        end
+      end
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:project) }
@@ -411,26 +499,24 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.due_before' do
-    subject { described_class.due_before(Date.today) }
+    subject { described_class.due_before(Date.current) }
 
-    let!(:issue) { create(:issue, due_date: 1.day.ago) }
-    let!(:issue2) { create(:issue, due_date: 1.day.from_now) }
+    let!(:issue) { create(:issue, project: reusable_project, due_date: 1.day.ago) }
+    let!(:issue2) { create(:issue, project: reusable_project, due_date: 1.day.from_now) }
 
     it 'returns issues which are over due' do
       expect(subject).to contain_exactly(issue)
-      expect(subject).not_to include(issue2)
     end
   end
 
   describe '.due_after' do
-    subject { described_class.due_after(Date.today) }
+    subject { described_class.due_after(Date.current) }
 
-    let!(:issue) { create(:issue, due_date: 1.day.ago) }
-    let!(:issue2) { create(:issue, due_date: 1.day.from_now) }
+    let!(:issue) { create(:issue, project: reusable_project, due_date: 1.day.ago) }
+    let!(:issue2) { create(:issue, project: reusable_project, due_date: 1.day.from_now) }
 
     it 'returns issues which are due in the future' do
       expect(subject).to contain_exactly(issue2)
-      expect(subject).not_to include(issue)
     end
   end
 
@@ -2578,21 +2664,82 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#work_item_type_id=', :aggregate_failures do
-    it 'also sets correct_work_item_type_id' do
+    let_it_be(:type1) do
+      create(:work_item_type, :non_default).tap do |type|
+        type.update!(old_id: type.id, id: -type.id, correct_id: type.id * 1000)
+      end
+    end
+
+    it 'assigns correct values if a correct_id is passed' do
       issue = build(:issue, project: reusable_project, work_item_type: nil)
-      work_item_type = create(:work_item_type, :non_default)
 
       expect(issue.work_item_type_id).to be_nil
       expect(issue.correct_work_item_type_id).to be_nil
 
-      issue.work_item_type_id = work_item_type.id
+      issue.work_item_type_id = type1.correct_id
 
-      expect(issue.work_item_type_id).to eq(work_item_type.id)
-      expect(issue.correct_work_item_type_id).to eq(work_item_type.correct_id)
+      expect(issue.work_item_type_id).to eq(type1.id)
+      expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
+    end
+
+    it 'fallbacks to work_item_types.old_id if passed' do
+      issue = build(:issue, project: reusable_project, work_item_type: nil)
+
+      expect(issue.work_item_type_id).to be_nil
+      expect(issue.correct_work_item_type_id).to be_nil
+
+      issue.work_item_type_id = type1.old_id
+
+      expect(issue.work_item_type_id).to eq(type1.id)
+      expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
+    end
+
+    it 'does not assign default type when only setting the correct_work_item_type_id column' do
+      issue = build(:issue, project: reusable_project, work_item_type: nil)
+
+      expect(issue.work_item_type_id).to be_nil
+      expect(issue.correct_work_item_type_id).to be_nil
+
+      issue.work_item_type_id = type1.correct_id
+      issue.save!
+      issue.reload
+
+      expect(issue.work_item_type_id).to eq(type1.id)
+      expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
+    end
+
+    context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+      before do
+        stub_feature_flags(issues_set_correct_work_item_type_id: false)
+      end
+
+      it 'does not find the type by correct_id' do
+        issue = build(:issue, project: reusable_project, work_item_type: nil)
+
+        expect(issue.work_item_type_id).to be_nil
+        expect(issue.correct_work_item_type_id).to be_nil
+
+        issue.work_item_type_id = type1.correct_id
+
+        expect(issue.work_item_type_id).to be_nil
+        expect(issue.correct_work_item_type_id).to be_nil
+      end
+
+      it 'also sets correct_work_item_type_id when setting id' do
+        issue = build(:issue, project: reusable_project, work_item_type: nil)
+
+        expect(issue.work_item_type_id).to be_nil
+        expect(issue.correct_work_item_type_id).to be_nil
+
+        issue.work_item_type_id = type1.id
+
+        expect(issue.work_item_type_id).to eq(type1.id)
+        expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
+      end
     end
 
     context 'when work_item_type_id does not exist in the DB' do
-      it 'validates work item type presence correctly' do
+      it 'does not set type id values' do
         issue = build(:issue, project: reusable_project, work_item_type: nil)
 
         expect(issue.work_item_type_id).to be_nil
@@ -2600,24 +2747,8 @@ RSpec.describe Issue, feature_category: :team_planning do
 
         issue.work_item_type_id = non_existing_record_id
 
-        expect(issue).to be_invalid
-        expect(issue.errors.full_messages).to contain_exactly("Work item type can't be blank")
-      end
-    end
-
-    context 'when work_item_type_id is nil' do
-      it 'validates work item type presence correctly' do
-        issue = build(:issue, project: reusable_project)
-
-        expect(issue.work_item_type_id).to be_present
-        expect(issue.correct_work_item_type_id).to be_present
-
-        issue.work_item_type = nil
-        issue.work_item_type_id = nil
-
-        # A before_validation callback will set the default type if it's nil. Just testing that setting a nil
-        # work_item_type_id doesn't break anything
-        expect(issue).to be_valid
+        expect(issue.work_item_type_id).to be_nil
+        expect(issue.correct_work_item_type_id).to be_nil
       end
     end
   end

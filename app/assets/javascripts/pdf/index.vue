@@ -38,25 +38,19 @@ export default {
   },
   methods: {
     async loadPDFJS() {
-      pdfjs = this.glFeatures.upgradePdfjs
-        ? // eslint-disable-next-line import/extensions
-          await import('pdfjs-dist-v4/legacy/build/pdf.mjs')
-        : await import('pdfjs-dist-v3/legacy/build/pdf');
+      // eslint-disable-next-line import/extensions
+      pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
       ({ getDocument, GlobalWorkerOptions } = pdfjs);
-      GlobalWorkerOptions.workerSrc = this.glFeatures.upgradePdfjs
-        ? process.env.PDF_JS_WORKER_V4_PUBLIC_PATH
-        : process.env.PDF_JS_WORKER_V3_PUBLIC_PATH;
+      GlobalWorkerOptions.workerSrc = process.env.PDF_JS_WORKER_PUBLIC_PATH;
     },
     async load() {
       await this.loadPDFJS();
       this.pages = [];
       return getDocument({
         url: this.document,
-        cMapUrl: this.glFeatures.upgradePdfjs
-          ? process.env.PDF_JS_CMAPS_V4_PUBLIC_PATH
-          : process.env.PDF_JS_CMAPS_V3_PUBLIC_PATH,
+        cMapUrl: process.env.PDF_JS_CMAPS_PUBLIC_PATH,
         cMapPacked: true,
-        isEvalSupported: this.glFeatures.upgradePdfjs,
+        isEvalSupported: true,
       })
         .promise.then(this.renderPages)
         .then((pages) => {

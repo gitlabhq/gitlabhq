@@ -13,7 +13,7 @@ DETAILS:
 ## Security Dashboards
 
 Security Dashboards are used to assess the security posture of your applications. GitLab provides
-you with a collection of metrics, ratings, and charts for the vulnerabilities detected by the [security scanners](../index.md#application-coverage) run on your project. The security dashboard provides data such as:
+you with a collection of metrics, ratings, and charts for the vulnerabilities detected by the [security scanners](../detect/index.md) run on your project. The security dashboard provides data such as:
 
 - Vulnerability trends over a 30, 60, or 90-day time-frame for all projects in a group
 - A letter grade rating for each project based on vulnerability severity
@@ -35,7 +35,7 @@ You can view vulnerability metrics also in the [Value Streams Dashboard](../../.
 To view the Security Dashboards, the following is required:
 
 - You must have the Developer role for the group or project.
-- At least one [security scanner](../index.md#application-coverage) configured within your project.
+- At least one [security scanner](../detect/index.md) configured in your project.
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
 - At least 1 detected vulnerability in the project.
 

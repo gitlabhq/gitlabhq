@@ -11,8 +11,7 @@ const indexedDB = new IDBFactory();
 Dexie.dependencies.indexedDB = indexedDB;
 Dexie.dependencies.IDBKeyRange = IDBKeyRange;
 
-process.env.PDF_JS_WORKER_V4_PUBLIC_PATH = 'mock/path/v4/pdf.worker.js';
-process.env.PDF_JS_WORKER_V3_PUBLIC_PATH = 'mock/path/v3/pdf.worker.js';
+process.env.PDF_JS_WORKER_PUBLIC_PATH = 'mock/path/v4/pdf.worker.js';
 
 afterEach(() =>
   // give Promises a bit more time so they fail the right test

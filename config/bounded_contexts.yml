@@ -87,7 +87,7 @@ domains:
       - fleet_visibility
       - job_artifacts
       - pipeline_reports
-      - secure_artifacts
+      - artifact_security
       - code_testing
 
   CloudConnector:

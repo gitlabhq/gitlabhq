@@ -39,7 +39,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
         {
           column: 'parent_id',
           on_delete: :async_delete,
-          gitlab_schema: :gitlab_main
+          gitlab_schema: :gitlab_main,
+          conditions: nil
         }
       ),
       ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
@@ -48,7 +49,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
         {
           column: 'parent_id_with_different_column',
           on_delete: :async_nullify,
-          gitlab_schema: :gitlab_main
+          gitlab_schema: :gitlab_main,
+          conditions: nil
         }
       ),
       ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
@@ -59,7 +61,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
           on_delete: :update_column_to,
           gitlab_schema: :gitlab_main,
           target_column: 'status',
-          target_value: 4
+          target_value: 4,
+          conditions: nil
         }
       ),
       ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(

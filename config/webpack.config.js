@@ -44,12 +44,7 @@ const {
   GITLAB_WEB_IDE_PUBLIC_PATH,
   copyFilesPatterns,
 } = require('./webpack.constants');
-const {
-  PDF_JS_WORKER_V3_PUBLIC_PATH,
-  PDF_JS_WORKER_V4_PUBLIC_PATH,
-  PDF_JS_CMAPS_V3_PUBLIC_PATH,
-  PDF_JS_CMAPS_V4_PUBLIC_PATH,
-} = require('./pdfjs.constants');
+const { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } = require('./pdfjs.constants');
 const { generateEntries } = require('./webpack.helpers');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
@@ -746,7 +741,7 @@ module.exports = {
     }),
 
     new webpack.ContextReplacementPlugin(/^\.$/, (context) => {
-      if (/\/node_modules\/pdfjs-dist-v[34]/.test(context.context)) {
+      if (/\/node_modules\/pdfjs-dist/.test(context.context)) {
         for (const d of context.dependencies) {
           if (d.critical) d.critical = false;
         }
@@ -879,10 +874,8 @@ module.exports = {
       'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
       'window.IS_VITE': JSON.stringify(false),
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
-      'process.env.PDF_JS_WORKER_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V3_PUBLIC_PATH),
-      'process.env.PDF_JS_WORKER_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V4_PUBLIC_PATH),
-      'process.env.PDF_JS_CMAPS_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V3_PUBLIC_PATH),
-      'process.env.PDF_JS_CMAPS_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V4_PUBLIC_PATH),
+      'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
+      'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
     }),
 
     /* Pikaday has a optional dependency to moment.

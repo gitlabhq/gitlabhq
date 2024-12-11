@@ -19,84 +19,15 @@ GitLab can check your application for security vulnerabilities including:
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
 
+For details of what GitLab security scanners can detect and how they cover application's development
+lifecycle see [Detect](detect/index.md).
+
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
 
 To help with the task of managing and addressing vulnerabilities, GitLab provides a security
 dashboard you can access from your project or group. For more details, see
 [Security Dashboard](security_dashboard/index.md).
-
-## Application coverage
-
-GitLab analyzes various details of your application, either as part of your CI/CD pipeline or on a
-schedule. Coverage includes:
-
-- Source code.
-- Dependencies in your projects or container images.
-- Vulnerabilities in a running web application.
-- Infrastructure as code configuration.
-
-Each of the GitLab application security tools is relevant to specific stages of the feature development workflow.
-
-- Commit
-  - SAST
-  - Secret Detection
-  - IaC Scanning
-  - Dependency Scanning
-  - Coverage-guided Fuzz Testing
-- Build
-  - Container Scanning
-- Test
-  - API Security
-  - DAST
-- Deploy
-  - Operational Container Scanning
-
-![CI/CD stages and matching GitLab application security tools](img/secure_tools_and_cicd_stages_v15_5.png)
-
-### Source code analysis
-
-Source code analysis occurs on every code commit. Details of vulnerabilities detected are provided
-in the merge request.
-
-A source code analysis can:
-
-- Analyze source code for vulnerabilities - [Static Application Security Testing (SAST)](sast/index.md).
-- Analyze the Git repository's history for secrets - [Secret Detection](secret_detection/index.md).
-
-### Analysis of the running web application
-
-Analysis of the web application occurs on every code commit. As part of the CI/CD pipeline, your
-application is built, deployed to a test environment, and subjected to the following tests:
-
-- Test application for known attack vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
-- Analysis of APIs for known attack vectors - [API Security](api_security_testing/index.md).
-- Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
-
-### Dependency analysis
-
-Dependency analysis occurs on every code commit. Your application's dependencies are collated and
-checked against a database of known vulnerabilities.
-
-Dependency analysis can run:
-
-- At build time - [Dependency Scanning](dependency_scanning/index.md).
-- For projects that use container images, also after the final container
-  image is built - [Container Scanning](container_scanning/index.md).
-
-For more details, see
-[Dependency Scanning compared to Container Scanning](comparison_dependency_and_container_scanning.md).
-
-Additionally, dependencies in operational container images can be analyzed for vulnerabilities
-on a regular schedule or cadence. For more details, see [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md).
-
-### Infrastructure analysis
-
-Your application's infrastructure is a source of potential vulnerabilities. To help defend
-against this, infrastructure analysis occurs on every merge request. Checks are run against:
-
-- Infrastructure as Code (IaC) configuration files that define your application's deployment
-  environment - [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md).
 
 ## Data privacy
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::LatestPipelineInformation, feature_category: :secure_artifacts do
+RSpec.describe Security::LatestPipelineInformation, feature_category: :artifact_security do
   subject { my_class.latest_builds_reports }
 
   let(:my_class) do

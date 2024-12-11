@@ -1707,10 +1707,10 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
 
       describe 'eager loading' do
-        let(:runner) { shared_runner }
+        let!(:runner) { shared_runner }
 
-        it 'avoids N+1 DB queries', :use_sql_query_cache do
-          get api(path, current_user)
+        it 'avoids N+1 DB queries', :use_sql_query_cache, :freeze_time do
+          another_admin = create(:admin, last_activity_on: Time.current) # Avoid noise from Users::ActivityService
           pipeline = create(:ci_pipeline, project: project2, sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b')
 
           control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -1720,8 +1720,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           create(:ci_build, :failed, runner: shared_runner, project: project2, pipeline: pipeline)
 
           expect do
-            get api(path, current_user)
-          end.not_to exceed_query_limit(control.count)
+            get api(path, another_admin)
+          end.not_to exceed_all_query_limit(control)
         end
 
         it 'batches loading of commits' do

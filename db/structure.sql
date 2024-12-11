@@ -657,6 +657,41 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION sync_issues_correct_work_item_type_id_bidirectional() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+if NEW."work_item_type_id" IS NOT NULL
+AND (
+  NEW."correct_work_item_type_id" = OLD."correct_work_item_type_id"
+  OR (OLD."correct_work_item_type_id" IS NULL AND NEW."correct_work_item_type_id" IS NULL)
+) then
+SELECT
+  "correct_id" INTO NEW."correct_work_item_type_id"
+FROM
+  "work_item_types"
+WHERE
+  "work_item_types"."id" = NEW."work_item_type_id";
+end if;
+
+if NEW."correct_work_item_type_id" IS NOT NULL
+AND (
+  NEW."work_item_type_id" = OLD."work_item_type_id"
+  OR (OLD."work_item_type_id" IS NULL AND NEW."work_item_type_id" IS NULL)
+) then
+SELECT
+  "id" INTO NEW."work_item_type_id"
+FROM
+  "work_item_types"
+WHERE
+  "work_item_types"."correct_id" = NEW."correct_work_item_type_id";
+end if;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION sync_issues_dates_with_work_item_dates_sources() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3253,19 +3288,6 @@ BEGIN
     vulnerability_id = OLD.vulnerability_id;
 
   RETURN NULL;
-END
-$$;
-
-CREATE FUNCTION update_issue_correct_work_item_type_id_sync_event() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-SELECT "correct_id"
-INTO NEW."correct_work_item_type_id"
-FROM "work_item_types"
-WHERE "work_item_types"."id" = NEW."work_item_type_id";
-RETURN NEW;
-
 END
 $$;
 
@@ -14087,7 +14109,7 @@ CREATE TABLE issues (
     start_date date,
     tmp_epic_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
-    correct_work_item_type_id bigint DEFAULT 0 NOT NULL,
+    correct_work_item_type_id bigint NOT NULL,
     author_id_convert_to_bigint bigint,
     closed_by_id_convert_to_bigint bigint,
     duplicated_to_id_convert_to_bigint bigint,
@@ -35888,8 +35910,6 @@ CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDAT
 
 CREATE TRIGGER trigger_cf646a118cbb BEFORE INSERT OR UPDATE ON milestone_releases FOR EACH ROW EXECUTE FUNCTION trigger_cf646a118cbb();
 
-CREATE TRIGGER trigger_correct_work_item_type_id_sync_event_on_issue_update BEFORE INSERT OR UPDATE OF work_item_type_id ON issues FOR EACH ROW EXECUTE FUNCTION update_issue_correct_work_item_type_id_sync_event();
-
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
 
 CREATE TRIGGER trigger_d5c895007948 BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_d5c895007948();
@@ -35957,6 +35977,8 @@ CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON integrations 
 CREATE TRIGGER trigger_insert_or_update_vulnerability_reads_from_occurrences AFTER INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION insert_or_update_vulnerability_reads();
 
 CREATE TRIGGER trigger_insert_vulnerability_reads_from_vulnerability AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.present_on_default_branch IS NOT TRUE) AND (new.present_on_default_branch IS TRUE))) EXECUTE FUNCTION insert_vulnerability_reads_from_vulnerability();
+
+CREATE TRIGGER trigger_issues_work_item_type_id_bidirectional_sync BEFORE INSERT OR UPDATE OF work_item_type_id, correct_work_item_type_id ON issues FOR EACH ROW EXECUTE FUNCTION sync_issues_correct_work_item_type_id_bidirectional();
 
 CREATE TRIGGER trigger_namespaces_traversal_ids_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.traversal_ids IS DISTINCT FROM new.traversal_ids)) EXECUTE FUNCTION insert_namespaces_sync_event();
 

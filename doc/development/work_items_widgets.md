@@ -365,8 +365,44 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
 1. Assign the widget to the appropriate work item types, by:
    - Adding it to the `WIDGETS_FOR_TYPE` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
    - Creating a migration in `db/migrate/<version>_add_<widget_name>_widget_to_work_item_types.rb`.
-     Refer to `db/migrate/20240812081354_add_email_participants_widget_to_work_item_types.rb` for the latest best practice.
-     There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680).
+     Refer to `db/migrate/20241127161525_add_designs_and_development_widgets_to_ticket_work_item_type.rb` for [the latest best practice](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174135/diffs#diff-content-94894df588ba8ac84a6ac5fbd86188f07053ba00).
+     There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680). 
+     See `lib/gitlab/database/migration_helpers/work_items/widgets.rb` if you want to learn more about the structure of the migration.
+
+     ```ruby
+     # frozen_string_literal: true
+
+     class AddDesignsAndDevelopmentWidgetsToTicketWorkItemType < Gitlab::Database::Migration[2.2]
+       # Include this helper module as it's not included in Gitlab::Database::migration by default
+       include Gitlab::Database::MigrationHelpers::WorkItems::Widgets
+
+       restrict_gitlab_migration gitlab_schema: :gitlab_main
+       disable_ddl_transaction!
+       milestone '17.7'
+
+       WORK_ITEM_TYPE_ENUM_VALUE = 8 # ticket
+       # If you want to add one widget, only use one item here.
+       WIDGETS = [
+         {
+           name: 'Designs',
+           widget_type: 22
+         },
+         {
+           name: 'Development',
+           widget_type: 23
+         }
+       ]
+
+       def up
+         add_widget_definitions(type_enum_value: WORK_ITEM_TYPE_ENUM_VALUE, widgets: WIDGETS)
+       end
+
+       def down
+         remove_widget_definitions(type_enum_value: WORK_ITEM_TYPE_ENUM_VALUE, widgets: WIDGETS)
+       end
+     end
+     ```
+
 1. Update the GraphQL docs: `bundle exec rake gitlab:graphql:compile_docs`.
 1. Update translations: `tooling/bin/gettext_extractor locale/gitlab.pot`.
 
@@ -385,4 +421,16 @@ Now you can update tests for existing files and write tests for the new files:
 1. GraphQL input type(s):
    - CE: `spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
    - EE: `ee/spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `ee/spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `ee/spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
-1. Migration: `spec/migrations/<version>_add_<widget_name>_widget_to_work_item_types_spec.rb`.
+1. Migration: `spec/migrations/<version>_add_<widget_name>_widget_to_work_item_types_spec.rb`. Add the shared example that uses the constants from `described_class`.
+   
+   ```ruby
+   # frozen_string_literal: true
+
+   require 'spec_helper'
+   require_migration!
+
+   RSpec.describe AddDesignsAndDevelopmentWidgetsToTicketWorkItemType, :migration, feature_category: :team_planning do
+     # Tests for `n` widgets in your migration when using the work items widgets migration helper
+     it_behaves_like 'migration that adds widgets to a work item type'
+   end
+   ```

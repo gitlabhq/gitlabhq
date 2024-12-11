@@ -1147,7 +1147,7 @@ For more information on Gitaly server configuration, see our
 
 1. Configure the storage location for Git data by setting `gitaly['configuration'][:storage]` in
    `/etc/gitlab/gitlab.rb`. Each Gitaly node should have a unique storage name
-   (such as `gitaly-1`).
+   (such as `gitaly-1`) and should not be duplicated on other Gitaly nodes.
 
    ```ruby
    gitaly['configuration'] = {
