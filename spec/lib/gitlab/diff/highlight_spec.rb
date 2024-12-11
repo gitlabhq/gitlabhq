@@ -140,6 +140,17 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
           expect(subject[2].rich_text).to be_html_safe
         end
       end
+
+      context 'when blob highlight is plain' do
+        let(:subject) { described_class.new(diff_file, repository: project.repository, plain: true).highlight }
+
+        it 'blobs are highlighted as plain text without loading all data' do
+          expect(diff_file.blob).not_to receive(:load_all_data!)
+
+          expect(subject[2].rich_text).to eq(%{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n})
+          expect(subject[2].rich_text).to be_html_safe
+        end
+      end
     end
 
     it_behaves_like 'diff highlighter'

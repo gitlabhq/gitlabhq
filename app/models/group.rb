@@ -174,6 +174,8 @@ class Group < Namespace
 
   validates :group_feature, presence: true
 
+  validate :top_level_group_name_not_assigned_to_pages_unique_domain, if: :path_changed?
+
   add_authentication_token_field :runners_token,
     encrypted: :required,
     format_with_prefix: :runners_token_prefix,
@@ -1149,6 +1151,15 @@ class Group < Namespace
 
   def runners_token_prefix
     RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+  end
+
+  def top_level_group_name_not_assigned_to_pages_unique_domain
+    return unless parent_id.nil?
+
+    return unless ProjectSetting.unique_domain_exists?(path)
+
+    # We cannot disclose the Pages unique domain, hence returning generic error message
+    errors.add(:path, _('has already been taken'))
   end
 end
 

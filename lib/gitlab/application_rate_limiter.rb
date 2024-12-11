@@ -23,6 +23,7 @@ module Gitlab
           project_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_download_export: { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
           project_repositories_archive: { threshold: 5, interval: 1.minute },
+          project_repositories_changelog: { threshold: 5, interval: 1.minute },
           project_generate_new_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_import: { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
           play_pipeline_schedule: { threshold: 1, interval: 1.minute },
@@ -92,7 +93,8 @@ module Gitlab
           },
           downstream_pipeline_trigger: {
             threshold: -> { application_settings.downstream_pipeline_trigger_limit_per_project_user_sha }, interval: 1.minute
-          }
+          },
+          expanded_diff_files: { threshold: 6, interval: 1.minute }
         }.freeze
       end
 

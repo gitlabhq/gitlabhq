@@ -330,6 +330,10 @@ of commits, GitLab generates a changelog for all commits that use a particular
 a new Markdown-formatted section to a changelog file in the Git repository of
 the project. The output format can be customized.
 
+For performance and security reasons, parsing the changelog configuration is limited to `2` seconds.
+This limitation helps prevent potential DoS attacks from malformed changelog templates.
+If the request times out, consider reducing the size of your `changelog_config.yml` file.
+
 For user-facing documentation, see [Changelogs](../user/project/changelogs.md).
 
 ```plaintext

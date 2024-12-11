@@ -146,6 +146,24 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
         end
       end
 
+      RSpec.shared_examples 'generates a different unique domain' do |entity|
+        let!(:existing_entity) { create(entity, path: 'existing-path') }
+
+        context "when #{entity} path is already in use" do
+          it 'assigns a different unique domain to pages' do
+            allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return('existing-path', 'new-unique-domain')
+
+            described_class.add_unique_domain_to(project)
+
+            expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+            expect(project.project_setting.pages_unique_domain).to eq('new-unique-domain')
+          end
+        end
+      end
+
+      it_behaves_like 'generates a different unique domain', :group
+      it_behaves_like 'generates a different unique domain', :namespace
+
       context 'when generated 10 unique domains are already in use' do
         it 'raises an error' do
           allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return('existing-domain')
