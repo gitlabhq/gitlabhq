@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::UnidirectionalCopyTrigger do
+RSpec.describe Gitlab::Database::UnidirectionalCopyTrigger, feature_category: :database do
   include Database::TriggerHelpers
 
   let(:table_name) { '_test_table' }
@@ -75,6 +75,18 @@ RSpec.describe Gitlab::Database::UnidirectionalCopyTrigger do
 
         record.update!({ id: 20 })
         expect(record.reload).to have_attributes(other_id: 20)
+      end
+
+      context 'when other_id is dropped after trigger is created' do
+        it 'does not raise any error on inserting/updating record' do
+          copy_trigger.create('id', 'other_id')
+          connection.execute(<<~SQL)
+            ALTER TABLE #{table_name} DROP COLUMN other_id;
+          SQL
+
+          expect { model.create!(id: 10).update!(id: 20) }
+            .not_to raise_error
+        end
       end
     end
 

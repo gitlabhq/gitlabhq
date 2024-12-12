@@ -23,8 +23,11 @@ module Gitlab
           CREATE OR REPLACE FUNCTION #{trigger_name}()
           RETURNS trigger AS
           $BODY$
+          DECLARE
+            row_data JSONB;
           BEGIN
-            #{assignment_clauses};
+            row_data := to_jsonb(NEW);
+            #{assignment_clauses.gsub(/(?<=\n)^/, '  ')}
             RETURN NEW;
           END;
           $BODY$
@@ -82,15 +85,21 @@ module Gitlab
 
       def assignment_clauses_for_columns(from_column_names, to_column_names)
         combined_column_names = to_column_names.zip(from_column_names)
+        return if combined_column_names.blank?
 
         assignment_clauses = combined_column_names.map do |(new_name, old_name)|
-          new_name = connection.quote_column_name(new_name)
-          old_name = connection.quote_column_name(old_name)
+          quoted_new_name = connection.quote_column_name(new_name)
+          quoted_old_name = connection.quote_column_name(old_name)
 
-          "NEW.#{new_name} := NEW.#{old_name}"
+          # check if the new column exists in the row being inserted/updated
+          ApplicationRecord.sanitize_sql_array([<<~SQL.chomp, { new_column: new_name }])
+            IF row_data ? :new_column THEN
+              NEW.#{quoted_new_name} := NEW.#{quoted_old_name};
+            END IF
+          SQL
         end
 
-        assignment_clauses.join(";\n  ")
+        assignment_clauses.join(";\n") + ';'
       end
     end
   end

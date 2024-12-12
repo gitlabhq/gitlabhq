@@ -2436,7 +2436,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/database/type/indifferent_jsonb_spec.rb'
     - 'spec/lib/gitlab/database/type/json_pg_safe_spec.rb'
     - 'spec/lib/gitlab/database/type/symbolized_jsonb_spec.rb'
-    - 'spec/lib/gitlab/database/unidirectional_copy_trigger_spec.rb'
     - 'spec/lib/gitlab/default_branch_spec.rb'
     - 'spec/lib/gitlab/dependency_linker/base_linker_spec.rb'
     - 'spec/lib/gitlab/dependency_linker/cartfile_linker_spec.rb'

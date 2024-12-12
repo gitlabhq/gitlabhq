@@ -81,7 +81,7 @@
       = form.gitlab_ui_checkbox_component :resource_access_token_events,
           integration_webhook_event_human_name(:resource_access_token_events),
           help_text: s_('Webhooks|An access token is going to expire in the next 7 days. %{help_link}?').html_safe % { help_link: access_token_help_link }
-
+    = render_if_exists 'shared/web_hooks/vulnerability_events', form: form
 
 .form-group
   = form.label :custom_webhook_template, s_('Webhooks|Custom webhook template (optional)'), class: 'label-bold'

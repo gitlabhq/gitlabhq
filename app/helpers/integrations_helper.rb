@@ -216,7 +216,8 @@ module IntegrationsHelper
       resource_access_token_events: s_('Webhooks|Project or group access token events'),
       subgroup_events: s_('Webhooks|Subgroup events'),
       tag_push_events: s_('Webhooks|Tag push events'),
-      wiki_page_events: s_('Webhooks|Wiki page events')
+      wiki_page_events: s_('Webhooks|Wiki page events'),
+      vulnerability_events: s_('Webhooks|Vulnerability events')
     }
 
     event_i18n_map[event] || event.to_s.humanize

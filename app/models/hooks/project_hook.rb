@@ -6,11 +6,7 @@ class ProjectHook < WebHook
   include Limitable
   extend ::Gitlab::Utils::Override
 
-  self.allow_legacy_sti_class = true
-
-  self.limit_scope = :project
-
-  triggerable_hooks [
+  AVAILABLE_HOOKS = [
     :confidential_issue_hooks,
     :confidential_note_hooks,
     :deployment_hooks,
@@ -26,12 +22,22 @@ class ProjectHook < WebHook
     :resource_access_token_hooks,
     :tag_push_hooks,
     :wiki_page_hooks
-  ]
+  ].freeze
+
+  self.allow_legacy_sti_class = true
+
+  self.limit_scope = :project
 
   belongs_to :project
   validates :project, presence: true
 
   scope :for_projects, ->(project) { where(project: project) }
+
+  def self.available_hooks
+    AVAILABLE_HOOKS
+  end
+
+  triggerable_hooks available_hooks
 
   def pluralized_name
     _('Webhooks')

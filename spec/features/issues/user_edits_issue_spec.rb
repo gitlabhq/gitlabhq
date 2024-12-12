@@ -127,7 +127,6 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
 
           expect(issuable_form).to have_selector(content_editor_focused_selector)
 
-          stub_feature_flags(rich_text_editor_as_default: true)
           refresh
 
           click_edit_issue_description

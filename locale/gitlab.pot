@@ -41936,6 +41936,9 @@ msgstr ""
 msgid "Preferences|Enable Gitpod integration"
 msgstr ""
 
+msgid "Preferences|Enable default text editor"
+msgstr ""
+
 msgid "Preferences|Enable exact code search"
 msgstr ""
 
@@ -62283,6 +62286,9 @@ msgstr ""
 msgid "Webhooks|A subgroup is created or removed."
 msgstr ""
 
+msgid "Webhooks|A vulnerability is updated."
+msgstr ""
+
 msgid "Webhooks|A webhook in this group was automatically disabled after being retried multiple times."
 msgstr ""
 
@@ -62470,6 +62476,9 @@ msgid "Webhooks|URL preview"
 msgstr ""
 
 msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token%{code_end} HTTP header."
+msgstr ""
+
+msgid "Webhooks|Vulnerability events"
 msgstr ""
 
 msgid "Webhooks|Webhook disabled"

@@ -164,22 +164,3 @@ To do this:
 1. Select **OK**.
 
 ::EndTabs
-
-## View multiple code suggestions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
-
-For a code completion suggestion in VS Code, multiple suggestion options
-might be available. To view all available suggestions:
-
-1. Hover over the code completion suggestion.
-1. Scroll through the alternatives. Either:
-   - Use keyboard shortcuts:
-     - On a Mac, press <kbd>Option</kbd> + <kbd>]</kbd> to view the
-       next suggestion, and <kbd>Option</kbd> + <kbd>&#91;</kbd> to view the previous
-       suggestions.
-     - On Windows, press <kbd>Alt</kbd> + <kbd>]</kbd> to view the
-       next suggestion, and <kbd>Alt</kbd> + <kbd>&#91;</kbd> to view the previous
-       suggestions.
-   - On the dialog that's displayed, select the right or left arrow to see next or previous options.
-1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.

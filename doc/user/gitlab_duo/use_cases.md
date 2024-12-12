@@ -692,7 +692,7 @@ please explain this error: undefined method `icon` for
 
 ## Code generation prompts
 
-The following examples provide [code generation](../project/repository/code_suggestions/index.md#best-practices)
+The following examples provide [code generation](../project/repository/code_suggestions/index.md#best-practices-for-code-generation)
 prompts for the [supported languages](../project/repository/code_suggestions/supported_extensions.md) in GitLab Duo.
 You can use multi-line comments to refine code generation prompts.
 

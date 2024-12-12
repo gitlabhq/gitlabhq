@@ -77,4 +77,19 @@ RSpec.describe ProjectHook, feature_category: :webhooks do
       )
     end
   end
+
+  describe '.available_hooks' do
+    context 'without EE license', unless: Gitlab.ee? do
+      it 'returns all available hooks' do
+        expect(described_class.available_hooks).to match_array(described_class::AVAILABLE_HOOKS)
+      end
+    end
+
+    context 'with EE license', if: Gitlab.ee? do
+      it 'returns all available hooks, including EE hooks' do
+        expect(described_class.available_hooks).to match_array(
+          described_class::AVAILABLE_HOOKS + EE::ProjectHook::EE_AVAILABLE_HOOKS)
+      end
+    end
+  end
 end

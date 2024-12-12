@@ -8,58 +8,9 @@ description: "Connect and use GitLab Duo in JetBrains IDEs."
 # GitLab plugin for JetBrains IDEs
 
 The [GitLab Duo plugin](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) integrates GitLab Duo with JetBrains IDEs
-like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine. The plugin supports these GitLab features:
+like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
-- [GitLab Duo Chat](../../user/gitlab_duo_chat.md).
-
-While coding, accept Code Suggestions by pressing <kbd>Tab</kbd>. To dismiss Code Suggestions,
-press <kbd>Escape</kbd>.
-
-## Install the extension
-
-Download the plugin from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
-and install it.
-
-Prerequisites:
-
-- JetBrains IDEs: **2023.2.X** and later.
-- GitLab version 16.8 or later.
-
-If you use an older version of a JetBrains IDE, check the version compatibility list on the marketplace listing.
-It contains a table of plugin versions and their
-[supported IDE versions](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/versions).
-
-### Configure the extension
-
-Prerequisites:
-
-- GitLab Duo [is available and configured](../../user/gitlab_duo/turn_on_off.md) for your project.
-- You have created a [GitLab personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)
-  with the `api` and `read_user` scope.
-- You have created a project in JetBrains.
-
-To enable the plugin:
-
-1. In your IDE, on the top bar, select your IDE's name, then select **Settings**.
-1. On the left sidebar, select **Plugins**.
-1. Select the **GitLab Duo** plugin, and select **Install**.
-1. Select **OK** or **Save**.
-
-### Authenticate with GitLab
-
-After you configure the plugin in your IDE, connect it to your GitLab account:
-
-1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
-1. Select an authentication method:
-   - For GitLab.com, use `OAuth`.
-   - For self-managed and GitLab Dedicated, use `Personal access token`.
-1. Provide the **URL to GitLab instance**. For GitLab.com, use `https://gitlab.com`.
-1. For **GitLab Personal Access Token**, paste in the personal access token you created. The token is not displayed,
-   nor is it accessible to others.
-1. Select **Verify setup**.
-1. Select **OK** or **Save**.
+[Install and configure the extension](setup.md).
 
 ## Enable experimental or beta features
 
@@ -71,54 +22,6 @@ Some features in the plugin are in experiment or beta status. To use them, you m
 1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Select **Enable Experiment or BETA features**.
 1. To apply the changes, restart your IDE.
-
-### Install alpha versions of the plugin
-
-GitLab publishes pre-release (alpha) builds of the plugin to the
-[`Alpha` release channel](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/edit/versions/alpha)
-in the JetBrains Marketplace.
-
-To install a pre-release build, either:
-
-- Download the build from JetBrains Marketplace and
-  [install it from disk](https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk).
-- [Add the `alpha` plugin repository](https://www.jetbrains.com/help/idea/managing-plugins.html#add_plugin_repos)
-  to your IDE. For the repository URL, use `https://plugins.jetbrains.com/plugins/alpha/list`.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video tutorial of this process, see
-[Install alpha releases of the GitLab Duo plugin for JetBrains](https://www.youtube.com/watch?v=Z9AuKybmeRU).
-<!-- Video published on 2024-04-04 -->
-
-## Add a custom certificate for Code Suggestions
-
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/561) in GitLab Duo 2.10.0.
-
-GitLab Duo attempts to detect [trusted root certificates](https://www.jetbrains.com/help/idea/ssl-certificates.html)
-without configuration on your part. If needed, configure your JetBrains IDE to allow the GitLab Duo plugin
-to use a custom SSL certificate when connecting to your GitLab instance.
-
-To use a custom SSL certificate with GitLab Duo:
-
-1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
-1. Under **Connection**, enter the **URL to GitLab instance**.
-1. To verify your connection, select **Verify setup**.
-1. Select **OK** or **Save**.
-
-If your IDE detects a non-trusted SSL certificate:
-
-1. The GitLab Duo plugin displays a confirmation dialog.
-1. Review the SSL certificate details shown.
-   - Confirm the certificate details match the certificate shown when you connect to GitLab in your browser.
-1. If the certificate matches your expectations, select **Accept**.
-
-To review certificates you've already accepted:
-
-1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools > Server Certificates**.
-1. Select [**Server Certificates**](https://www.jetbrains.com/help/idea/settings-tools-server-certificates.html).
-1. Select a certificate to view it.
 
 ## Integrate with 1Password CLI
 

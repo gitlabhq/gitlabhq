@@ -24,7 +24,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In VS Code, go to the Extensions page and find "GitLab Workflow" in the list.
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option.
       1. Check a "GitLab: Debug" checkbox.
-   1. If you'd like to test that Code Suggestions is working from inside the GitLab Workflow extension for VS Code, then follow the [authenticate with GitLab steps](../../editor_extensions/visual_studio_code/index.md#authenticate-with-gitlab) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
+   1. If you'd like to test that Code Suggestions is working from inside the GitLab Workflow extension for VS Code, then follow the [authenticate with GitLab steps](../../editor_extensions/visual_studio_code/setup.md#authenticate-with-gitlab) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
       - Once you complete the steps below, to test you are hitting your local `/code_suggestions/completions` endpoint and not production, follow these steps:
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
         1. Open a new file inside of this VS Code window and begin typing to see Code Suggestions in action.

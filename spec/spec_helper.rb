@@ -345,10 +345,6 @@ RSpec.configure do |config|
       # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
       stub_feature_flags(allow_self_hosted_features_for_com: false)
 
-      # Our test suite is setup to test plain text editor by default with separate tests just
-      # for the rich text editor. Switch the flag off to continue testing the same way as before
-      stub_feature_flags(rich_text_editor_as_default: false)
-
       # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
       stub_feature_flags(cleanup_data_source_work_item_data: false)
     else

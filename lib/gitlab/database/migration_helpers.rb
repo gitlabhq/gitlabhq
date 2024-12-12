@@ -771,38 +771,10 @@ module Gitlab
       # table - The name of the database table containing the column
       # columns - The name, or array of names, of the column(s) that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
-      def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        integer_ids = table_integer_ids
-        columns = Array(columns)
-        pending_int_ids = Array(integer_ids[table.to_s]) - columns.map(&:to_s)
-
-        # This check can be removed once we convert all integer IDs to bigint
-        # in https://gitlab.com/gitlab-org/gitlab/-/issues/465805
-        if can_enforce_initializing_all_int_ids? && pending_int_ids.present?
-          raise format(PENDING_INT_IDS_ERROR_MSG, table: table, int_ids: pending_int_ids)
-        end
-
-        mappings = columns.map do |c|
-          {
-            c => {
-              from_type: :int,
-              to_type: :bigint,
-              default_value: 0
-            }
-          }
-        end.reduce(&:merge)
-
-        create_temporary_columns_and_triggers(
-          table,
-          mappings,
-          primary_key: primary_key,
-          old_bigint_column_naming: true
-        )
-
-        deleted = integer_ids.delete(table.to_s)
-        return unless can_enforce_initializing_all_int_ids? && deleted.present?
-
-        update_table_integer_ids_file(integer_ids)
+      def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id) # rubocop:disable Lint/UnusedMethodArgument -- for backward compatibility, don't remove primary_key
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .init
       end
 
       # Reverts `initialize_conversion_of_integer_to_bigint`
@@ -810,44 +782,28 @@ module Gitlab
       # table - The name of the database table containing the columns
       # columns - The name, or array of names, of the column(s) that we're converting to bigint.
       def revert_initialize_conversion_of_integer_to_bigint(table, columns)
-        columns = Array.wrap(columns)
-        temporary_columns = columns.map { |column| convert_to_bigint_column(column) }
-
-        trigger_name = rename_trigger_name(table, columns, temporary_columns)
-        remove_rename_triggers(table, trigger_name)
-
-        temporary_columns.each { |column| remove_column(table, column, if_exists: true) }
-
-        return unless can_enforce_initializing_all_int_ids?
-
-        integer_ids = table_integer_ids
-        integer_ids[table.to_s] = columns.map(&:to_s)
-        update_table_integer_ids_file(integer_ids)
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .revert_init
       end
-      alias_method :cleanup_conversion_of_integer_to_bigint, :revert_initialize_conversion_of_integer_to_bigint
+
+      # Similar to `revert_initialize_conversion_of_integer_to_bigint`,
+      # but `cleanup_conversion_of_integer_to_bigint` updates the yaml file
+      def cleanup_conversion_of_integer_to_bigint(table, columns)
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .cleanup
+      end
 
       # Reverts `cleanup_conversion_of_integer_to_bigint`
       #
       # table - The name of the database table containing the columns
       # columns - The name, or array of names, of the column(s) that we have converted to bigint.
       # primary_key - The name of the primary key column (most often :id)
-      def restore_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        mappings = Array(columns).map do |c|
-          {
-            c => {
-              from_type: :bigint,
-              to_type: :int,
-              default_value: 0
-            }
-          }
-        end.reduce(&:merge)
-
-        create_temporary_columns_and_triggers(
-          table,
-          mappings,
-          primary_key: primary_key,
-          old_bigint_column_naming: true
-        )
+      def restore_conversion_of_integer_to_bigint(table, columns, primary_key: :id) # rubocop:disable Lint/UnusedMethodArgument -- for backward compatibility, don't remove primary_key
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .restore_cleanup
       end
 
       # Backfills the new columns used in an integer-to-bigint conversion using background migrations.
@@ -895,34 +851,22 @@ module Gitlab
         pause_ms: 100,
         interval: 2.minutes
       )
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .backfill(
+            primary_key: primary_key,
+            batch_size: batch_size,
+            sub_batch_size: sub_batch_size,
+            pause_ms: pause_ms,
+            job_interval: interval
+          )
+      end
 
-        unless table_exists?(table)
-          raise "Table #{table} does not exist"
-        end
-
-        unless column_exists?(table, primary_key)
-          raise "Column #{primary_key} does not exist on #{table}"
-        end
-
-        conversions = Array.wrap(columns).to_h do |column|
-          raise ArgumentError, "Column #{column} does not exist on #{table}" unless column_exists?(table, column)
-
-          temporary_name = convert_to_bigint_column(column)
-          raise ArgumentError, "Column #{temporary_name} does not exist on #{table}" unless column_exists?(table, temporary_name)
-
-          [column, temporary_name]
-        end
-
-        queue_batched_background_migration(
-          'CopyColumnUsingBackgroundMigrationJob',
-          table,
-          primary_key,
-          conversions.keys,
-          conversions.values,
-          job_interval: interval,
-          pause_ms: pause_ms,
-          batch_size: batch_size,
-          sub_batch_size: sub_batch_size)
+      # Handy helper to ensure data finalization for bigint conversion process
+      def ensure_backfill_conversion_of_integer_to_bigint_is_finished(table, columns, primary_key: :id)
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .ensure_backfill(primary_key: primary_key)
       end
 
       # Reverts `backfill_conversion_of_integer_to_bigint`
@@ -931,18 +875,9 @@ module Gitlab
       # columns - The name, or an array of names, of the column(s) we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
       def revert_backfill_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        columns = Array.wrap(columns)
-
-        conditions = ActiveRecord::Base.sanitize_sql(
-          [
-            'job_class_name = :job_class_name AND table_name = :table_name AND column_name = :column_name AND job_arguments = :job_arguments',
-            { job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-              table_name: table,
-              column_name: primary_key,
-              job_arguments: [columns, columns.map { |column| convert_to_bigint_column(column) }].to_json }
-          ])
-
-        execute("DELETE FROM batched_background_migrations WHERE #{conditions}")
+        Gitlab::Database::Migrations::Conversions::BigintConverter
+          .new(self, table, columns)
+          .revert_backfill(primary_key: primary_key)
       end
 
       # Returns an Array containing the indexes for the given column
@@ -1174,87 +1109,6 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
       end
 
-      # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-      def create_temporary_columns_and_triggers(table, mappings, primary_key: :id, old_bigint_column_naming: false)
-        raise ArgumentError, "No mappings for column conversion provided" if mappings.blank?
-
-        unless mappings.values.all? { |values| mapping_has_required_columns?(values) }
-          raise ArgumentError, "Some mappings don't have required keys provided"
-        end
-
-        neutral_values_for_type = {
-          int: 0,
-          bigint: 0,
-          uuid: '00000000-0000-0000-0000-000000000000'
-        }
-
-        unless table_exists?(table)
-          raise "Table #{table} does not exist"
-        end
-
-        unless column_exists?(table, primary_key)
-          raise "Column #{primary_key} does not exist on #{table}"
-        end
-
-        columns = mappings.keys
-        columns.each do |column|
-          next if column_exists?(table, column)
-
-          raise ArgumentError, "Column #{column} does not exist on #{table}"
-        end
-
-        check_trigger_permissions!(table)
-
-        if old_bigint_column_naming
-          mappings.each do |column, params|
-            params.merge!(
-              temporary_column_name: convert_to_bigint_column(column)
-            )
-          end
-        else
-          mappings.each do |column, params|
-            params.merge!(
-              temporary_column_name: convert_to_type_column(column, params[:from_type], params[:to_type])
-            )
-          end
-        end
-
-        with_lock_retries do
-          mappings.each do |(column_name, params)|
-            column = column_for(table, column_name)
-            temporary_name = params[:temporary_column_name]
-            data_type = params[:to_type]
-            default_value = params[:default_value]
-
-            if (column.name.to_s == primary_key.to_s) || !column.null
-              # If the column to be converted is either a PK or is defined as NOT NULL,
-              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
-              # That way, we skip the expensive validation step required to add
-              #  a NOT NULL constraint at the end of the process
-              add_column(
-                table,
-                temporary_name,
-                data_type,
-                default: column.default || default_value || neutral_values_for_type.fetch(data_type),
-                null: false
-              )
-            else
-              add_column(
-                table,
-                temporary_name,
-                data_type,
-                default: column.default
-              )
-            end
-          end
-
-          old_column_names = mappings.keys
-          temporary_column_names = mappings.values.map { |v| v[:temporary_column_name] }
-          install_rename_triggers(table, old_column_names, temporary_column_names)
-        end
-      end
-      # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-
       # While it is safe to call `change_column_default` on a column without
       # default it would still require access exclusive lock on the table
       # and for tables with high autovacuum(wraparound prevention) it will
@@ -1427,22 +1281,6 @@ into similar problems in the future (e.g. when new tables are created).
             #{not_valid};
           SQL
         end
-      end
-
-      def update_table_integer_ids_file(integer_ids)
-        return unless Rails.env.development?
-
-        File.open(INTEGER_IDS_YET_TO_INITIALIZED_TO_BIGINT_FILE_PATH, 'w') do |file|
-          file.write(TABLE_INT_IDS_YAML_FILE_COMMENT)
-          file.write(integer_ids.to_yaml)
-        end
-      end
-
-      def can_enforce_initializing_all_int_ids?
-        return false unless respond_to?(:milestone)
-
-        Gitlab::VersionInfo.parse_from_milestone(milestone) >
-          Gitlab::VersionInfo.parse_from_milestone(ENFORCE_INITIALIZE_ALL_INT_IDS_FROM_MILESTONE)
       end
     end
   end

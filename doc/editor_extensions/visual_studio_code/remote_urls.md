@@ -48,7 +48,7 @@ HTTPS or Git URLs.
 Prerequisites:
 
 - To return search results from a GitLab instance, you must have
-  [added an access token](index.md#authenticate-with-gitlab) to that GitLab instance.
+  [added an access token](setup.md#authenticate-with-gitlab) to that GitLab instance.
 - You must be a member of a project for search to return it as a result.
 
 To search for, then clone, a GitLab project:
@@ -71,7 +71,7 @@ With this extension, you can browse a GitLab repository in read-only mode withou
 
 Prerequisites:
 
-- You have [registered an access token](index.md#authenticate-with-gitlab) for that GitLab instance.
+- You have [registered an access token](setup.md#authenticate-with-gitlab) for that GitLab instance.
 
 To browse a GitLab repository in read-only mode:
 

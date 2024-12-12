@@ -13,6 +13,7 @@ module TestHooks
 
     private
 
+    # rubocop:disable Metrics/CyclomaticComplexity -- despite a high count, this isn't that complex
     def data
       strong_memoize(:data) do
         case trigger
@@ -40,8 +41,11 @@ module TestHooks
           access_tokens_events_data
         when 'project_events'
           project_events_data
+        when 'vulnerability_events'
+          vulnerability_events_data
         end
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

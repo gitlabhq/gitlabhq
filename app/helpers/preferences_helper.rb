@@ -9,13 +9,6 @@ module PreferencesHelper
     ]
   end
 
-  def text_editor_choices
-    [
-      [s_('TextEditor|Rich text editor'), :rich_text_editor],
-      [s_('TextEditor|Plain text editor'), :plain_text_editor]
-    ]
-  end
-
   # Returns an Array usable by a select field for more user-friendly option text
   def dashboard_choices
     dashboards = User.dashboards.keys

@@ -26,7 +26,6 @@ class UserPreference < ApplicationRecord
   validates :time_display_relative, allow_nil: false, inclusion: { in: [true, false] }
   validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
-
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
@@ -43,7 +42,7 @@ class UserPreference < ApplicationRecord
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
 
-  enum text_editor_type: { plain_text_editor: 1, rich_text_editor: 2 }
+  enum text_editor_type: { not_set: 0, plain_text_editor: 1, rich_text_editor: 2 }
   enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
   enum organization_groups_projects_display: { projects: 0, groups: 1 }
 
@@ -111,11 +110,19 @@ class UserPreference < ApplicationRecord
   end
 
   def text_editor
-    text_editor_type || (Feature.enabled?(:rich_text_editor_as_default, user) ? :rich_text_editor : :plain_text_editor)
+    text_editor_type
   end
 
   def text_editor=(value)
     self.text_editor_type = value
+  end
+
+  def default_text_editor_enabled
+    text_editor == "rich_text_editor" || text_editor == "plain_text_editor"
+  end
+
+  def default_text_editor_enabled=(value)
+    self.text_editor = value ? "rich_text_editor" : "not_set"
   end
 
   private

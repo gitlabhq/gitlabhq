@@ -123,6 +123,9 @@
     "resource_access_token_events": {
       "type": "boolean"
     },
+    "vulnerability_events": {
+      "type": "boolean"
+    },
     "alert_status": {
       "type": "string",
       "enum": [

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob do
+RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob, feature_category: :database do
   it { expect(described_class).to be < Gitlab::BackgroundMigration::BatchedMigrationJob }
 
   describe '#perform' do
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
       )
     end
 
-    before do
+    let(:create_table) do
       connection.execute(<<~SQL)
         CREATE TABLE #{table_name}
         (
@@ -42,6 +42,10 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
          name_convert_to_text text DEFAULT 'no name'
         );
       SQL
+    end
+
+    before do
+      create_table
 
       # Insert some data, it doesn't make a difference
       test_table.create!(id: 11, name: 'test1', fk: 1)
@@ -146,6 +150,42 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
           expect(copy_job).to receive(:sleep).with(0)
 
           copy_job.perform
+        end
+      end
+    end
+
+    context 'when given column does not exist' do
+      let(:create_table) do
+        connection.execute(<<~SQL)
+          CREATE TABLE #{table_name}
+          (
+          id integer NOT NULL,
+          name character varying,
+          fk integer NOT NULL,
+          #{helpers.convert_to_bigint_column(:id)} bigint DEFAULT 0 NOT NULL,
+          #{helpers.convert_to_bigint_column(:fk)} bigint DEFAULT 0 NOT NULL
+          );
+        SQL
+      end
+
+      context 'when all given columns not exist' do
+        it 'does nothing' do
+          expect(copy_job.batch_metrics.timings).to be_empty
+
+          expect { copy_job.perform }.not_to raise_error
+
+          expect(copy_job.batch_metrics.timings).to be_empty
+        end
+      end
+
+      context 'when some of given columns not exist' do
+        let(:job_arguments) { [%w[id fk name], %w[id_convert_to_bigint fk_convert_to_bigint name_convert_to_text]] }
+
+        it 'copies the values for the columns exist' do
+          expect { copy_job.perform }.not_to raise_error
+
+          expect(test_table.where("id = id_convert_to_bigint AND fk = fk_convert_to_bigint").pluck(:id)).to contain_exactly(12, 15, 19)
+          expect(test_table.where(id_convert_to_bigint: 0).where(fk_convert_to_bigint: 0).pluck(:id)).to contain_exactly(11)
         end
       end
     end

@@ -20,6 +20,7 @@ module Gitlab
 
       def perform
         assignment_clauses = build_assignment_clauses(copy_from, copy_to)
+        return if assignment_clauses.blank?
 
         each_sub_batch do |relation|
           relation.update_all(assignment_clauses)
@@ -36,7 +37,9 @@ module Gitlab
           raise ArgumentError, 'number of source and destination columns must match'
         end
 
-        assignments = copy_from.zip(copy_to).map do |from_column, to_column|
+        assignments = copy_from.zip(copy_to).filter_map do |from_column, to_column|
+          next unless column_exist?(from_column) && column_exist?(to_column)
+
           from_column = connection.quote_column_name(from_column)
           to_column = connection.quote_column_name(to_column)
 
@@ -44,6 +47,14 @@ module Gitlab
         end
 
         assignments.join(', ')
+      end
+
+      def column_exist?(name)
+        all_column_names.include?(name)
+      end
+
+      def all_column_names
+        @all_column_names ||= connection.columns(batch_table).map(&:name)
       end
     end
   end

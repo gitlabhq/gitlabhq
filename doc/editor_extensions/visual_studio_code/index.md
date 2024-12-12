@@ -12,22 +12,26 @@ for Visual Studio Code integrates GitLab Duo and other GitLab features directly 
 GitLab Workflow panel to the VS Code sidebar. You can view your issues, merge requests, and pipelines,
 and extend your view with [custom queries](custom_queries.md).
 
+[Install and configure the extension](setup.md).
+
+## Features
+
 This extension brings the GitLab features you use every day directly into your VS Code environment:
 
-- [View issues](#view-issues-and-merge-requests) and merge requests.
-- Run [common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
+- [View issues and merge requests](#view-issues-and-merge-requests).
+- [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
 - Create and [review](#review-a-merge-request) merge requests.
 - [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
-- View [pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
+- [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
 - [Create](#create-a-snippet) and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
 - [View security findings](#view-security-findings).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
-- [**GitLab Duo Chat**](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code):
+- [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code):
   Interact with an AI assistant directly in VS Code.
-- [**GitLab Duo Code Suggestions**](../../user/project/repository/code_suggestions/index.md):
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md#use-code-suggestions):
   Suggest completions to your current line of code, or write natural-language code comments to get
   more substantive suggestions.
 
@@ -37,69 +41,6 @@ When you view a GitLab project in VS Code, the extension shows you information a
 - A link to the merge request for this branch.
 - If the merge request includes an [issue closing pattern](../../user/project/issues/managing_issues.md#closing-issues-automatically),
   a link to the issue.
-
-## Install the extension
-
-To install the GitLab Workflow extension for VS Code:
-
-- [Go to the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-  and install and enable the extension.
-- If you use an unofficial version of VS Code, install the
-  extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
-
-### Authenticate with GitLab
-
-After you download and install the extension, connect it to your GitLab account.
-
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. Type `GitLab: Authenticate` and press <kbd>Enter</kbd>.
-1. Select your GitLab instance URL from the options, or enter one manually.
-   - If you enter one manually, in **URL to GitLab instance**, paste the full URL,
-     including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
-1. Authenticate with GitLab. For `GitLab.com`, you can use the OAuth authentication method.
-   If you don't use OAuth, use a personal access token to sign in:
-   - If you have an existing personal access token with the `api` scope, select **Enter an existing token**.
-   - If you don't:
-     1. Select **Create a token first**. The token settings page opens.
-        If this method fails, follow the instructions to
-        [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token).
-     1. Copy the token. For security reasons, this value is never displayed again.
-     1. Paste your GitLab personal access token and press <kbd>Enter</kbd>.
-        The token is not displayed, and it is not accessible to others.
-
-The extension matches your Git repository remote URL with the GitLab instance URL you specified
-for your token. If you have multiple accounts or projects, you can choose the one you want to use.
-For more details, see [Switch GitLab accounts in VS Code](#switch-gitlab-accounts-in-vs-code).
-
-The extension shows information in the VS Code status bar if both:
-
-- Your project has a pipeline for the last commit.
-- Your current branch is associated with a merge request.
-
-### Configure the extension
-
-After you have installed GitLab Workflow and authenticated with GitLab, go to **Settings > Extensions > GitLab Workflow**
-in VS Code to configure settings.
-
-- [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code).
-- [Features to display or hide](settings.md#extension-settings).
-- [Self-signed certificate](troubleshooting.md#configure-self-signed-certificates) information.
-- [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
-
-### Confirm that GitLab Duo is on
-
-If you are assigned a seat, GitLab Duo AI-powered features are turned on by default.
-However, to confirm that you have GitLab Duo (including Duo Chat and Code Suggestions)
-turned on:
-
-1. In VS Code, go to **Settings > Extensions > GitLab Workflow**.
-1. Select **Manage** (**{settings}**).
-1. Ensure that **GitLab › Duo Chat: Enabled** and **GitLab › Duo Code Suggestions: Enabled** are selected.
-1. Optional. For **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
-   select the languages you want to suggest or generate code for.
-1. Optional. For **GitLab › Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
 
 ### Customize keyboard shortcuts
 
@@ -299,7 +240,7 @@ Prerequisites:
 
 - You're a member of a GitLab project.
 - You've installed the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- You've signed in to your GitLab instance, as described in [Authenticate with GitLab](#authenticate-with-gitlab).
+- You've signed in to your GitLab instance, as described in [Authenticate with GitLab](setup.md#authenticate-with-gitlab).
 
 To search the titles and description fields in your project:
 

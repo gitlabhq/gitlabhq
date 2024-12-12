@@ -21,7 +21,7 @@ You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your
 
 If suggestions are not displayed, ensure that you:
 
-- Have [configured GitLab Duo correctly](set_up.md#configure-gitlab-duo).
+- Have [configured GitLab Duo correctly](../../../gitlab_duo/turn_on_off.md).
 - Are using a [supported language](supported_extensions.md#supported-languages)
   and [editor extension](supported_extensions.md#supported-editor-extensions).
 - Have [configured your editor extension correctly](set_up.md#configure-editor-extension).
@@ -150,7 +150,7 @@ For non-Code Suggestions troubleshooting for JetBrains IDEs, see [JetBrains trou
 ### Error: `unable to find valid certification path to requested target`
 
 The GitLab Duo plugin verifies TLS certificate information before connecting to your GitLab instance.
-You can [add a custom SSL certificate](../../../../editor_extensions/jetbrains_ide/index.md#add-a-custom-certificate-for-code-suggestions).
+You can [add a custom SSL certificate](set_up.md#add-a-custom-certificate-for-code-suggestions).
 
 ### Error: `Failed to check token`
 

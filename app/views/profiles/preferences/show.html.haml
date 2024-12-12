@@ -94,8 +94,11 @@
           = s_('Preferences|Default text editor')
           .gl-text-subtle{ class: '!gl-font-normal' }
             = s_('Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing.')
-        = f.gitlab_ui_radio_component :text_editor, text_editor_choices[0][1], text_editor_choices[0][0], help_text: rich_text_editor_help_text
-        = f.gitlab_ui_radio_component :text_editor, text_editor_choices[1][1], text_editor_choices[1][0], help_text: plain_text_editor_help_text
+        = f.gitlab_ui_checkbox_component :default_text_editor_enabled, s_('Preferences|Enable default text editor')
+        .gl-ml-6.gl-mt-1
+          = f.hidden_field(:text_editor, value: :not_set)
+          = f.gitlab_ui_radio_component :text_editor, :rich_text_editor, s_('TextEditor|Rich text editor'), help_text: rich_text_editor_help_text
+          = f.gitlab_ui_radio_component :text_editor, :plain_text_editor, s_('TextEditor|Plain text editor'), help_text: plain_text_editor_help_text
 
       - if Feature.enabled?(:ui_for_organizations, current_user)
         #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }

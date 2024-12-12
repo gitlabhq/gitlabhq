@@ -108,9 +108,8 @@ If you have selected code in the editor, this selection is sent along with your 
 
 Prerequisites:
 
-- You've [installed the VS Code extension](../../editor_extensions/visual_studio_code/index.md#install-the-extension).
-- You've [authenticated the extension with GitLab](../../editor_extensions/visual_studio_code/index.md#authenticate-with-gitlab).
-- [Confirm that GitLab Duo is on](../../editor_extensions/visual_studio_code/index.md#confirm-that-gitlab-duo-is-on).
+- You've [installed and configured the VS Code extension](../../editor_extensions/visual_studio_code/setup.md).
+- You've [confirmed that GitLab Duo is on](../project/repository/code_suggestions/set_up.md#vs-code).
 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
@@ -169,8 +168,8 @@ If you have selected code in the editor, this selection is sent along with your 
 To use GitLab Duo Chat in the GitLab Duo plugin for JetBrains IDEs:
 
 1. Install and set up the GitLab Duo plugin for JetBrains IDEs:
-   1. In the JetBrains marketplace, download and install the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/index.md#install-the-extension).
-   1. Configure the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/index.md#configure-the-extension).
+   1. In the JetBrains marketplace, download and install the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/index.md).
+   1. Configure the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/setup.md).
 1. In a JetBrains IDE, open a project.
 1. Open GitLab Duo Chat in either a chat window or an editor window:
 

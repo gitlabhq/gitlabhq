@@ -24,30 +24,11 @@ GitLab Duo requires GitLab 17.2 and later for the best user experience and resul
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
-Code Suggestions uses code completion and code generation:
-
-|  | Code completion | Code generation |
-| :---- | :---- | :---- |
-| Purpose | Provides suggestions for completing the current line of code.  | Generates new code based on a natural language comment. |
-| Trigger | Triggers when typing, usually with a short delay.  | Triggers when pressing <kbd>Enter</kbd> after writing a comment that includes specific keywords. |
-| Scope | Limited to the current line or small block of code.  | Can generate entire methods, functions, or even classes based on the context. |
-| Accuracy | More accurate for small tasks and short blocks of code.  | Is more accurate for complex tasks and large blocks of code because a bigger large language model (LLM) is used, additional context is sent in the request (for example, the libraries used by the project), and your instructions are passed to the LLM. |
-| How to use | Code completion automatically suggests completions to the line you are typing. | You write a comment and press <kbd>Enter</kbd>, or you enter an empty function or method. |
-| When to use | Use code completion to quickly complete one or a few lines of code. | Use code generation for more complex tasks, larger codebases, when you want to write new code from scratch based on a natural language description, or when the file you're editing has fewer than five lines of code. |
-
-Code Suggestions always uses both of these features. You cannot use only code
-generation or only code completion.
-
-NOTE:
 Before you start using Code Suggestions, decide if you want to use the default GitLab-hosted LLM to manage Code Suggestions requests, or [deploy a self-hosted model](../../../../administration/self_hosted_models/index.md). Self-hosted models maximize security and privacy by making sure nothing is sent to an external model.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[View a code completion vs. code generation comparison demo](https://www.youtube.com/watch?v=9dsyqMt9yg4).
-  <!-- Video published on 2024-09-26 -->
 
 ## Use Code Suggestions
 
@@ -74,19 +55,46 @@ To use Code Suggestions:
    - To reject a suggestion, press <kbd>Esc</kbd>.
    - To ignore a suggestion, keep typing as you usually would.
 
-All editor extensions from GitLab, except Neovim, add an icon to your IDE's status bar. For example, in
-Visual Studio:
+## View multiple code suggestions
 
-![The status bar in Visual Studio.](../../../../editor_extensions/img/visual_studio_status_bar_v17_4.png)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
 
-| Icon | Status | Meaning |
-| :--- | :----- | :------ |
-| **{tanuki-ai}** | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
-| **{tanuki-ai-off}** | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
-| ![The status icon for fetching Code Suggestions.](../../../../editor_extensions/img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
-| ![The status icon for a Code Suggestions error.](../../../../editor_extensions/img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
+For a code completion suggestion in VS Code, multiple suggestion options
+might be available. To view all available suggestions:
 
-### Best practices
+1. Hover over the code completion suggestion.
+1. Scroll through the alternatives. Either:
+   - Use keyboard shortcuts:
+     - On a Mac, press <kbd>Option</kbd> + <kbd>]</kbd> to view the
+       next suggestion, and <kbd>Option</kbd> + <kbd>&#91;</kbd> to view the previous
+       suggestions.
+     - On Windows, press <kbd>Alt</kbd> + <kbd>]</kbd> to view the
+       next suggestion, and <kbd>Alt</kbd> + <kbd>&#91;</kbd> to view the previous
+       suggestions.
+   - On the dialog that's displayed, select the right or left arrow to see next or previous options.
+1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.
+
+## Code completion and generation
+
+Code Suggestions uses code completion and code generation:
+
+|  | Code completion | Code generation |
+| :---- | :---- | :---- |
+| Purpose | Provides suggestions for completing the current line of code.  | Generates new code based on a natural language comment. |
+| Trigger | Triggers when typing, usually with a short delay.  | Triggers when pressing <kbd>Enter</kbd> after writing a comment that includes specific keywords. |
+| Scope | Limited to the current line or small block of code.  | Can generate entire methods, functions, or even classes based on the context. |
+| Accuracy | More accurate for small tasks and short blocks of code.  | Is more accurate for complex tasks and large blocks of code because a bigger large language model (LLM) is used, additional context is sent in the request (for example, the libraries used by the project), and your instructions are passed to the LLM. |
+| How to use | Code completion automatically suggests completions to the line you are typing. | You write a comment and press <kbd>Enter</kbd>, or you enter an empty function or method. |
+| When to use | Use code completion to quickly complete one or a few lines of code. | Use code generation for more complex tasks, larger codebases, when you want to write new code from scratch based on a natural language description, or when the file you're editing has fewer than five lines of code. |
+
+Code Suggestions always uses both of these features. You cannot use only code
+generation or only code completion.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[View a code completion vs. code generation comparison demo](https://www.youtube.com/watch?v=9dsyqMt9yg4).
+<!-- Video published on 2024-09-26 -->
+
+### Best practices for code generation
 
 To get the best results from code generation:
 
@@ -113,12 +121,6 @@ AI is non-deterministic, so you may not get the same suggestion every time with 
 To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
-
-## Turn off Code Suggestions
-
-How you turn off Code Suggestions differs depending on which editor extension and IDE you use.
-
-For more information, see [turn off Code Suggestions](set_up.md#turn-off-code-suggestions).
 
 ## Open tabs as context
 
@@ -216,12 +218,12 @@ The Advanced Context feature supports these languages:
 
 Code Suggestions inferences against:
 
-- The currently opened file
-- The content before and after the cursor
+- The currently opened file.
+- The content before and after the cursor.
 - The filename and extension.
 - In GitLab 17.2 and later when the `advanced_context_resolver` and `code_suggestions_context` feature flags are enabled.
   - Files opened in other tabs.
-  - User instructions
+  - User instructions.
 
 For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
