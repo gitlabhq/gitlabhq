@@ -4,11 +4,17 @@ import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ListItem from '~/ide/components/commit_sidebar/list_item.vue';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 
-describe('Multi-file editor commit sidebar list item', () => {
+const skipReason = new SkipReason({
+  name: 'Multi-file editor commit sidebar list item',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   let wrapper;
   let testFile;
   let findPathEl;

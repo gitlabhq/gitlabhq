@@ -40,6 +40,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |
 | [Pipeline job limits extended to the Commits API](https://gitlab.com/gitlab-org/gitlab/-/issues/436361) | Low | Verify | Project |
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |
+| [Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'](https://gitlab.com/gitlab-org/gitlab/-/issues/462504) | Low | Application_security_testing | Project |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |
 
 ## Window 2

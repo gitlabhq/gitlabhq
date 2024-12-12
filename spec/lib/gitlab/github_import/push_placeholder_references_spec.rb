@@ -56,6 +56,12 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
           source_user: import_source_user,
           user_reference_column: :author_id)
     end
+
+    it 'does not push a reference if source identifier is nil' do
+      importer.push_with_record(gitlab_note, :author_id, nil, user_mapper)
+
+      expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
+    end
   end
 
   describe '#push_refs_with_ids' do
@@ -65,7 +71,7 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
     end
 
     it 'pushes the reference using .new' do
-      importer.push_refs_with_ids([gitlab_note.id], Note, user_mapper)
+      importer.push_refs_with_ids([gitlab_note.id], Note, source_id, user_mapper)
 
       expect(::Import::PlaceholderReferences::PushService)
         .to have_received(:new)
@@ -78,6 +84,12 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
           user_reference_column: :author_id,
           numeric_key: gitlab_note.id
         )
+    end
+
+    it 'does not push a reference if source identifier is nil' do
+      importer.push_refs_with_ids([gitlab_note.id], Note, nil, user_mapper)
+
+      expect(::Import::PlaceholderReferences::PushService).not_to receive(:new)
     end
   end
 
@@ -103,6 +115,12 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
           user_reference_column: :user_id,
           composite_key: composite_key
         )
+    end
+
+    it 'does not push a reference if source identifier is nil' do
+      importer.push_with_composite_key(gitlab_note, :user_id, composite_key, nil, user_mapper)
+
+      expect(::Import::PlaceholderReferences::PushService).not_to receive(:new)
     end
   end
 end

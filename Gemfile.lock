@@ -726,7 +726,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.5)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (0.2.3)
+    gitlab-cloud-connector (0.2.5)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
     gitlab-dangerfiles (4.8.0)
@@ -2068,7 +2068,7 @@ DEPENDENCIES
   gitaly (~> 17.5.0.pre.rc1)
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
-  gitlab-cloud-connector (~> 0.2.1)
+  gitlab-cloud-connector (~> 0.2.5)
   gitlab-dangerfiles (~> 4.8.0)
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)

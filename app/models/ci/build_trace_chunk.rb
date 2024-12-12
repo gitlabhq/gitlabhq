@@ -9,6 +9,7 @@ module Ci
     include ::Gitlab::ExclusiveLeaseHelpers
     include ::Gitlab::OptimisticLocking
 
+    before_validation :set_project_id, on: :create
     belongs_to :build,
       ->(trace_chunks) { in_partition(trace_chunks) },
       class_name: 'Ci::Build',
@@ -321,6 +322,10 @@ module Ci
 
     def metrics
       @metrics ||= ::Gitlab::Ci::Trace::Metrics.new
+    end
+
+    def set_project_id
+      self.project_id ||= build&.project_id
     end
   end
 end

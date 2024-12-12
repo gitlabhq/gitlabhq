@@ -80,7 +80,7 @@ module Gitlab
 
           user_mapper = mapper.user_mapper
 
-          push_with_record(new_issue, :author_id, issue.author.id, user_mapper)
+          push_with_record(new_issue, :author_id, issue.author&.id, user_mapper)
 
           new_issue.issue_assignees.each do |issue_assignee|
             github_user_id = issue_assignee_map[issue_assignee.user_id]

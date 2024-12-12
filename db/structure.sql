@@ -9054,7 +9054,8 @@ CREATE TABLE ci_build_trace_chunks (
     checksum bytea,
     lock_version integer DEFAULT 0 NOT NULL,
     build_id bigint NOT NULL,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_build_trace_chunks_id_seq
@@ -29695,6 +29696,8 @@ CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_resu
 CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON ci_build_trace_chunks USING btree (build_id, chunk_index);
 
 CREATE INDEX index_ci_build_trace_chunks_on_partition_id_build_id ON ci_build_trace_chunks USING btree (partition_id, build_id);
+
+CREATE INDEX index_ci_build_trace_chunks_on_project_id ON ci_build_trace_chunks USING btree (project_id);
 
 CREATE INDEX p_ci_builds_metadata_build_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) WHERE (has_exposed_artifacts IS TRUE);
 

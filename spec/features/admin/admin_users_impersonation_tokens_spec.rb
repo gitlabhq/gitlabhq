@@ -99,4 +99,35 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
       expect(page).not_to have_content("Impersonation Tokens")
     end
   end
+
+  describe "rotating tokens" do
+    let!(:impersonation_token) do
+      create(:personal_access_token, :impersonation, user: user, organization: organization)
+    end
+
+    it "displays the newly created token" do
+      visit admin_user_impersonation_tokens_path(user_id: user.username)
+
+      accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
+      wait_for_all_requests
+
+      expect(page).to have_content("Your new impersonation token has been created.")
+      expect(active_access_tokens).to have_text(impersonation_token.name)
+      expect(created_access_token).to match(/[\w-]{20}/)
+    end
+
+    context "when rotation fails" do
+      it "displays an error message" do
+        visit admin_user_impersonation_tokens_path(user_id: user.username)
+
+        accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
+          impersonation_token.revoke!
+          click_on s_('AccessTokens|Rotate')
+        end
+        wait_for_all_requests
+
+        expect(page).to have_content(s_('AccessTokens|Token already revoked'))
+      end
+    end
+  end
 end

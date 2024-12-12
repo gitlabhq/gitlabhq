@@ -30,7 +30,7 @@ module Gitlab
 
               next unless mapper.user_mapping_enabled?
 
-              push_with_record(reviewer, :user_id, user.id, mapper.user_mapper)
+              push_with_record(reviewer, :user_id, user&.id, mapper.user_mapper)
             rescue PG::UniqueViolation, ActiveRecord::RecordNotUnique
             end
           end

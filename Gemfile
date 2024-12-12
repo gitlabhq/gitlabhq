@@ -742,4 +742,4 @@ gem 'paper_trail', '~> 15.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 0.2.1", require: 'cloud_connector', feature_category: :cloud_connector
+gem "gitlab-cloud-connector", "~> 0.2.5", require: 'cloud_connector', feature_category: :cloud_connector

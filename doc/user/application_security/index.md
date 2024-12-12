@@ -19,8 +19,8 @@ GitLab can check your application for security vulnerabilities including:
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
 
-For details of what GitLab security scanners can detect and how they cover application's development
-lifecycle see [Detect](detect/index.md).
+For details of how vulnerabilities are detected throughout your application's development lifecycle
+see [Detect](detect/index.md).
 
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.

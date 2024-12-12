@@ -129,6 +129,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             .with(
               array_including(be_an(Integer)),
               LegacyDiffNote,
+              note_representation.author.id,
               an_instance_of(Gitlab::Import::SourceUserMapper)
             )
 

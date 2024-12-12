@@ -85,7 +85,7 @@ module Gitlab
 
           return unless mapper.user_mapping_enabled?
 
-          push_refs_with_ids(ids, LegacyDiffNote, mapper.user_mapper)
+          push_refs_with_ids(ids, LegacyDiffNote, note[:author]&.id, mapper.user_mapper)
         end
         # rubocop:enabled Gitlab/BulkInsert
 
@@ -111,7 +111,7 @@ module Gitlab
 
           return unless mapper.user_mapping_enabled?
 
-          push_with_record(record, :author_id, note.author.id, mapper.user_mapper)
+          push_with_record(record, :author_id, note.author&.id, mapper.user_mapper)
         end
 
         def note_body

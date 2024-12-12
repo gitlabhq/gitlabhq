@@ -5898,10 +5898,34 @@ msgstr ""
 msgid "Amazon Q"
 msgstr ""
 
+msgid "AmazonQ|Active cloud connector token not found."
+msgstr ""
+
+msgid "AmazonQ|Always off"
+msgstr ""
+
 msgid "AmazonQ|Amazon Q Configuration"
 msgstr ""
 
+msgid "AmazonQ|Amazon Q will be turned off by default, but still be available to any groups or projects that have previously enabled it."
+msgstr ""
+
+msgid "AmazonQ|Amazon Q will be turned off for all groups, subgroups, and projects, even if they have previously enabled it."
+msgstr ""
+
+msgid "AmazonQ|An unexpected error occurred while submitting the form. Please see the browser console log for more details."
+msgstr ""
+
+msgid "AmazonQ|Audience"
+msgstr ""
+
+msgid "AmazonQ|Availability"
+msgstr ""
+
 msgid "AmazonQ|Beta"
+msgstr ""
+
+msgid "AmazonQ|Cloud connector token could not be decoded"
 msgstr ""
 
 msgid "AmazonQ|Configure GitLab Duo with Amazon Q"
@@ -5910,10 +5934,64 @@ msgstr ""
 msgid "AmazonQ|Configure GitLab Duo with Amazon Q (Beta)"
 msgstr ""
 
+msgid "AmazonQ|Copy to clipboard"
+msgstr ""
+
+msgid "AmazonQ|Create an identity provider for this GitLab instance within AWS using the following values. %{helpStart}Learn more%{helpEnd}."
+msgstr ""
+
+msgid "AmazonQ|Enter the IAM role's ARN."
+msgstr ""
+
+msgid "AmazonQ|Features are available. However, any group, subgroup, or project can turn them off."
+msgstr ""
+
+msgid "AmazonQ|Features are not available and cannot be turned on for any group, subgroup, or project."
+msgstr ""
+
+msgid "AmazonQ|Features are not available. However, any group, subgroup, or project can turn them on."
+msgstr ""
+
 msgid "AmazonQ|Get started"
 msgstr ""
 
 msgid "AmazonQ|GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
+msgstr ""
+
+msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
+msgstr ""
+
+msgid "AmazonQ|IAM role's ARN"
+msgstr ""
+
+msgid "AmazonQ|Instance ID"
+msgstr ""
+
+msgid "AmazonQ|Off by default"
+msgstr ""
+
+msgid "AmazonQ|On by default"
+msgstr ""
+
+msgid "AmazonQ|Provider URL"
+msgstr ""
+
+msgid "AmazonQ|Provider type"
+msgstr ""
+
+msgid "AmazonQ|Save changes"
+msgstr ""
+
+msgid "AmazonQ|Setup"
+msgstr ""
+
+msgid "AmazonQ|Something went wrong retrieving the identity provider payload."
+msgstr ""
+
+msgid "AmazonQ|Status"
 msgstr ""
 
 msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
@@ -5926,6 +6004,9 @@ msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests 
 msgstr ""
 
 msgid "AmazonQ|View configuration setup"
+msgstr ""
+
+msgid "AmazonQ|Within your AWS account, create an IAM role for Amazon Q and the relevant identity provider. %{helpStart}Learn how to create an IAM role%{helpEnd}."
 msgstr ""
 
 msgid "AmbiguousRef|There is a branch and a tag with the same name of %{ref}."
@@ -36111,6 +36192,9 @@ msgstr ""
 msgid "Needs attention"
 msgstr ""
 
+msgid "Neither gitlab_instance_uid or sub found on Cloud Connector token"
+msgstr ""
+
 msgid "Network"
 msgstr ""
 
@@ -50407,6 +50491,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy is invalid"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy override"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy scope"
 msgstr ""
 
@@ -50546,6 +50633,12 @@ msgid "SecurityOrchestration|Show more projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Show only linked security policy projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Some settings may be affected by policy %{policyName} based on its rules."
+msgstr ""
+
+msgid "SecurityOrchestration|Some settings may be affected by the following policies based on their rules:"
 msgstr ""
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch groups"

@@ -934,6 +934,22 @@ The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been r
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462504).
+
+</div>
+
+The 'setPreReceiveSecretDetection' GraphQL mutation has been renamed to 'setSecretPushProtection'.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Rename options to skip GitGuardian secret detection
 
 <div class="deprecation-notes">

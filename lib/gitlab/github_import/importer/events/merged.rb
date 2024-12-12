@@ -28,7 +28,7 @@ module Gitlab
             )
             return unless mapper.user_mapping_enabled?
 
-            push_with_record(event, :author_id, issue_event[:actor].id, mapper.user_mapper)
+            push_with_record(event, :author_id, issue_event[:actor]&.id, mapper.user_mapper)
           end
 
           def create_state_event(issue_event)
@@ -47,7 +47,7 @@ module Gitlab
 
             return unless mapper.user_mapping_enabled?
 
-            push_with_record(state_event, :user_id, issue_event[:actor].id, mapper.user_mapper)
+            push_with_record(state_event, :user_id, issue_event[:actor]&.id, mapper.user_mapper)
           end
 
           def create_note(issue_event)

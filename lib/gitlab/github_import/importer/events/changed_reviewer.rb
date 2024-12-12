@@ -38,7 +38,7 @@ module Gitlab
 
             return unless mapper.user_mapping_enabled?
 
-            push_with_record(created_note, :author_id, issue_event[:review_requester].id, mapper.user_mapper)
+            push_with_record(created_note, :author_id, issue_event[:review_requester]&.id, mapper.user_mapper)
           end
 
           def parse_body(issue_event)

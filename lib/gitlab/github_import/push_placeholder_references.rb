@@ -7,8 +7,9 @@ module Gitlab
       # Pushes a placeholder reference using .from_record
       # Used when the record is available and the reference only requires a numeric key
       def push_with_record(record, attribute, source_user_identifier, user_mapper)
-        source_user = user_mapper.find_source_user(source_user_identifier)
+        return if source_user_identifier.nil?
 
+        source_user = user_mapper.find_source_user(source_user_identifier)
         return if source_user.accepted_status?
 
         ::Import::PlaceholderReferences::PushService.from_record(
@@ -23,9 +24,11 @@ module Gitlab
       # Pushes placeholder references for each Note record found via an id look-up using .new
       # This is used as Note records are created using legacy_bulk_insert which
       # can return the ids of records created, but not the records themselves
-      def push_refs_with_ids(ids, model, user_mapper)
+      def push_refs_with_ids(ids, model, source_user_identifier, user_mapper)
+        return if source_user_identifier.nil?
+
         ids.each do |id|
-          source_user = user_mapper.find_source_user(note[:author].id)
+          source_user = user_mapper.find_source_user(source_user_identifier)
 
           next if source_user.accepted_status?
 
@@ -43,6 +46,8 @@ module Gitlab
       # Pushes a placeholder reference using a composite key.
       # This is used when the record requires a composite key for the reference.
       def push_with_composite_key(record, attribute, composite_key, source_user_identifier, user_mapper)
+        return if source_user_identifier.nil?
+
         source_user = user_mapper.find_source_user(source_user_identifier)
         return if source_user.accepted_status?
 

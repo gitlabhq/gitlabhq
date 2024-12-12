@@ -1,9 +1,15 @@
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubPerformanceWebAPI } from 'helpers/performance';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
 
-describe('IDE router', () => {
+const skipReason = new SkipReason({
+  name: 'IDE router',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   const PROJECT_NAMESPACE = 'my-group/sub-group';
   const PROJECT_NAME = 'my-project';
   const TEST_PATH = `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/merge_requests/2`;

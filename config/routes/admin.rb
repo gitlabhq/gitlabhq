@@ -7,6 +7,7 @@ namespace :admin do
     resources :impersonation_tokens, only: [:index, :create] do
       member do
         put :revoke
+        put :rotate
       end
     end
 

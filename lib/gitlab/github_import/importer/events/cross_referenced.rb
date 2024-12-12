@@ -48,7 +48,7 @@ module Gitlab
 
             return created_note unless mapper.user_mapping_enabled?
 
-            push_with_record(created_note, :author_id, issue_event[:actor].id, mapper.user_mapper)
+            push_with_record(created_note, :author_id, issue_event[:actor]&.id, mapper.user_mapper)
 
             created_note
           end

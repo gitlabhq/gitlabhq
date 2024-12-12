@@ -51,5 +51,5 @@ remediation.
 All GitLab application security scanning tools can be run in a CI/CD pipeline, triggered by code
 changes. Security scans can also be run on a schedule, outside the context of code changes, and some
 can be run manually. It's important to perform detection outside the CI/CD pipeline because risks
-arise outside the context of code changes. For example, a newly-discovered vulnerability in a
-dependency may be a risk to any application using it.
+can arise outside the context of code changes. For example, a newly-discovered vulnerability in a
+dependency might be a risk to any application using it.

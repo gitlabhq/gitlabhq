@@ -1,0 +1,14 @@
+- title: "Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.7"
+  breaking_change: true
+  window: 1
+  reporter: smeadzinger
+  stage: application_security_testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462504
+  impact: low
+  scope: project
+  resolution_role: Maintainer
+  manual_task: true
+  body: |
+    The 'setPreReceiveSecretDetection' GraphQL mutation has been renamed to 'setSecretPushProtection'.
