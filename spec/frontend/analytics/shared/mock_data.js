@@ -155,3 +155,16 @@ export const mockFlowMetricsResponseData = {
   },
   __typename: 'GroupValueStreamAnalyticsFlowMetrics',
 };
+
+export const mockFOSSFlowMetricsResponseData = {
+  issues,
+  deploys,
+  __typename: 'ProjectValueStreamAnalyticsFlowMetrics',
+};
+
+export const mockFlowMetricsCommitsResponseData = {
+  identifier: 'commits',
+  links: [],
+  title: 'Commits',
+  value: '10',
+};

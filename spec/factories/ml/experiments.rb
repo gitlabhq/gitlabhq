@@ -19,5 +19,9 @@ FactoryBot.define do
         end
       end
     end
+
+    trait :with_model do
+      association :model, factory: :ml_models
+    end
   end
 end

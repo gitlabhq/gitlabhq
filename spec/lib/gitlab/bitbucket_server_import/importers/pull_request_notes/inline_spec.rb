@@ -11,7 +11,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
 
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
-  let_it_be(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
   let_it_be(:reply) do
     {
       author_email: 'reply_author@example.org',
@@ -45,10 +44,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
   let_it_be(:reply_source_user) { generate_source_user(project, reply[:author_username]) }
   let_it_be(:note_source_user) { generate_source_user(project, pr_inline_comment[:author_username]) }
 
-  before do
-    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
-  end
-
   def expect_log(stage:, message:, iid:, comment_id:)
     allow(Gitlab::BitbucketServerImport::Logger).to receive(:info).and_call_original
     expect(Gitlab::BitbucketServerImport::Logger)
@@ -69,8 +64,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
     end
 
     it 'imports the threaded discussion' do
-      expect(mentions_converter).to receive(:convert).and_call_original.twice
-
       expect { importer.execute(pr_inline_comment) }.to change { Note.count }.by(2)
 
       expect(merge_request.discussions.count).to eq(1)
@@ -101,6 +94,51 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       importer.execute(pr_inline_comment)
     end
 
+    context 'when note has @ username mentions' do
+      let(:original_text) { "Attention: @ali has worked on this. @fred's work from @.ali-ce/group#9?" }
+      let(:expected_text) { "Attention: `@ali` has worked on this. `@fred`'s work from `@.ali-ce/group#9`?" }
+      let(:mention_reply) do
+        {
+          author_email: 'reply_author@example.org',
+          author_username: 'reply_author',
+          note: original_text,
+          created_at: now,
+          updated_at: now,
+          parent_comment_note: nil
+        }
+      end
+
+      let(:mention_comment) do
+        {
+          id: 7,
+          file_type: 'ADDED',
+          from_sha: 'c5f4288162e2e6218180779c7f6ac1735bb56eab',
+          to_sha: 'a4c2164330f2549f67c13f36a93884cf66e976be',
+          file_path: '.gitmodules',
+          old_pos: nil,
+          new_pos: 4,
+          note: original_text,
+          author_email: 'inline_note_author@example.org',
+          author_username: 'inline_note_author',
+          comments: [mention_reply],
+          created_at: now,
+          updated_at: now,
+          parent_comment_note: nil
+        }
+      end
+
+      it 'inserts backticks around the mentions' do
+        importer.execute(mention_comment)
+
+        notes = merge_request.notes.order(:id).to_a
+        start_note = notes.first
+        expect(start_note.note).to end_with(expected_text)
+
+        reply_note = notes.last
+        expect(reply_note.note).to eq(expected_text)
+      end
+    end
+
     context 'when note is invalid' do
       let(:invalid_comment) do
         pr_inline_comment.merge(
@@ -111,8 +149,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       end
 
       it 'fallback to basic note' do
-        expect(mentions_converter).to receive(:convert).and_call_original.twice
-
         expect { importer.execute(invalid_comment) }.to change { Note.count }.by(1)
 
         expect(merge_request.discussions.count).to eq(1)
@@ -125,7 +161,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       end
 
       it 'logs its fallback' do
-        expect(mentions_converter).to receive(:convert).and_call_original.twice
         expect_log(
           stage: 'create_diff_note',
           message: 'creating standalone fallback for DiffNote',
@@ -148,8 +183,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       end
 
       it 'imports the threaded discussion' do
-        expect(mentions_converter).to receive(:convert).and_call_original.twice
-
         expect { importer.execute(pr_inline_comment) }.to change { Note.count }.by(2)
 
         expect(merge_request.discussions.count).to eq(1)
@@ -160,16 +193,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
 
         reply_note = notes.last
         expect(reply_note.author_id).to eq(reply_author.id)
-      end
-
-      context 'when converting mention is failed' do
-        it 'logs its exception' do
-          expect(mentions_converter).to receive(:convert).and_raise(StandardError)
-          expect(Gitlab::ErrorTracking).to receive(:log_exception)
-            .with(StandardError, include(import_stage: 'create_diff_note'))
-
-          importer.execute(pr_inline_comment)
-        end
       end
 
       it 'does not push placeholder references' do

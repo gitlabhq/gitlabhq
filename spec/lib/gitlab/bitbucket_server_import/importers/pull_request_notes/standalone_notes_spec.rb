@@ -8,7 +8,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
   let_it_be(:project) { create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
-  let_it_be(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
   let_it_be(:author_details) do
     {
       author_name: 'John Notes',
@@ -30,10 +29,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
 
   let_it_be(:source_user) { generate_source_user(project, pr_comment[:author_username]) }
 
-  before do
-    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
-  end
-
   def expect_log(stage:, message:, iid:, comment_id:)
     allow(Gitlab::BitbucketServerImport::Logger).to receive(:info).and_call_original
     expect(Gitlab::BitbucketServerImport::Logger)
@@ -53,8 +48,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
     end
 
     it 'imports the stand alone comments' do
-      expect(mentions_converter).to receive(:convert).and_call_original
-
       expect { importer.execute(pr_comment) }.to change { Note.count }.by(1)
 
       expect(merge_request.notes.count).to eq(1)
@@ -93,8 +86,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
       end
 
       it 'imports multiple comments' do
-        expect(mentions_converter).to receive(:convert).and_call_original.twice
-
         expect { importer.execute(pr_comment) }.to change { Note.count }.by(2)
 
         expect(merge_request.notes.count).to eq(2)
@@ -112,6 +103,41 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
           updated_at: pr_comment_extra[:created_at],
           imported_from: 'bitbucket_server'
         )
+      end
+    end
+
+    context 'when note has @ username mentions' do
+      let(:original_text) { "Attention: @ali has worked on this. @fred's work from @.ali-ce/group#9?" }
+      let(:expected_text) { "Attention: `@ali` has worked on this. `@fred`'s work from `@.ali-ce/group#9`?" }
+      let(:mention_extra_comment) do
+        {
+          id: 6,
+          note: original_text,
+          comments: [],
+          created_at: now,
+          updated_at: now,
+          parent_comment_note: nil,
+          imported_from: 'bitbucket_server'
+        }.merge(author_details)
+      end
+
+      let(:mention_comment) do
+        {
+          id: 5,
+          note: original_text,
+          comments: [mention_extra_comment],
+          created_at: now,
+          updated_at: now,
+          parent_comment_note: nil,
+          imported_from: 'bitbucket_server'
+        }.merge(author_details)
+      end
+
+      it 'inserts backticks around the mentions' do
+        importer.execute(mention_comment)
+
+        expect(merge_request.notes.first.note).to eq(expected_text)
+        expect(merge_request.notes.last.note).to eq(expected_text)
       end
     end
 
@@ -158,7 +184,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
       end
 
       it 'logs its exception' do
-        expect(mentions_converter).to receive(:convert).and_call_original
         expect(Gitlab::ErrorTracking).to receive(:log_exception)
           .with(StandardError, include(import_stage: 'import_standalone_notes_comments'))
 

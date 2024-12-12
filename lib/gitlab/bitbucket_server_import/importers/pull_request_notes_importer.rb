@@ -5,6 +5,7 @@ module Gitlab
     module Importers
       class PullRequestNotesImporter
         include ::Gitlab::Import::MergeRequestHelpers
+        include ::Gitlab::Import::UsernameMentionRewriter
         include Loggable
         include ::Import::PlaceholderReferences::Pusher
 
@@ -12,7 +13,6 @@ module Gitlab
           @project = project
           @user_finder = UserFinder.new(project)
           @formatter = Gitlab::ImportFormatter.new
-          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project)
           @object = hash.with_indifferent_access
         end
 
@@ -30,7 +30,7 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
+        attr_reader :object, :project, :formatter, :user_finder
 
         def import_notes_in_batch(merge_request)
           activities = client.activities(project_key, repository_slug, merge_request.iid)
@@ -221,33 +221,26 @@ module Gitlab
             note = "*By #{comment.author_username} (#{comment.author_email})*\n\n"
           end
 
-          comment_note = if convert_mentions?
-                           mentions_converter.convert(comment.note)
-                         else
-                           comment.note
-                         end
+          comment_note = comment.note
 
           note +=
             # Provide some context for replying
             if comment.parent_comment
-              "> #{comment.parent_comment.note.truncate(80)}\n\n#{comment_note}"
+              parent_comment_note = comment.parent_comment.note.truncate(80, omission: ' ...')
+
+              "> #{parent_comment_note}\n\n#{comment_note}"
             else
               comment_note
             end
 
           {
             project: project,
-            note: note,
+            note: wrap_mentions_in_backticks(note),
             author_id: author,
             created_at: comment.created_at,
             updated_at: comment.updated_at,
             imported_from: ::Import::SOURCE_BITBUCKET_SERVER
           }
-        end
-
-        def convert_mentions?
-          Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator) &&
-            !user_mapping_enabled?(project)
         end
 
         def author(comment)

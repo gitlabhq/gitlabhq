@@ -500,7 +500,6 @@ export default {
           </gl-badge>
           <slot v-else name="status"></slot>
         </li>
-        <slot name="approval-status"></slot>
         <slot name="pipeline-status"></slot>
         <li v-if="assignees.length" class="!gl-mr-0">
           <issuable-assignees
@@ -511,20 +510,23 @@ export default {
           />
         </li>
         <slot name="reviewers"></slot>
-        <li
-          v-if="showDiscussions && notesCount"
-          class="!gl-mr-0 gl-hidden sm:gl-block"
-          data-testid="issuable-comments"
-        >
-          <div
-            v-gl-tooltip.top
-            :title="__('Comments')"
-            class="gl-flex gl-items-center !gl-text-inherit"
+        <slot name="approval-status"></slot>
+        <slot name="discussions">
+          <li
+            v-if="showDiscussions && notesCount"
+            class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+            data-testid="issuable-comments"
           >
-            <gl-icon name="comments" class="gl-mr-2" />
-            {{ notesCount }}
-          </div>
-        </li>
+            <div
+              v-gl-tooltip.top
+              :title="__('Comments')"
+              class="gl-flex gl-items-center !gl-text-inherit"
+            >
+              <gl-icon name="comments" class="gl-mr-2" />
+              {{ notesCount }}
+            </div>
+          </li>
+        </slot>
         <slot name="statistics"></slot>
         <work-item-relationship-icons
           v-if="isOpen && filteredLinkedItems.length > 0"

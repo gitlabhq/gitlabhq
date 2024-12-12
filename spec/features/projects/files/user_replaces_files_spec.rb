@@ -48,11 +48,10 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
       click_on('Replace')
       find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
-      page.within('#modal-replace-blob') do
+      within_testid('upload-blob-modal') do
         fill_in(:commit_message, with: 'Replacement file commit message')
+        click_button('Commit changes')
       end
-
-      click_button('Replace file')
 
       expect(page).to have_content('Lorem ipsum dolor sit amet')
       expect(page).to have_content('Sed ut perspiciatis unde omnis')
@@ -89,9 +88,8 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
 
       page.within('#modal-replace-blob') do
         fill_in(:commit_message, with: 'Replacement file commit message')
+        click_button('Commit changes')
       end
-
-      click_button('Replace file')
 
       expect(page).to have_content('Replacement file commit message')
 
@@ -124,13 +122,12 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
       click_on('Replace')
 
       epoch = Time.zone.now.strftime('%s%L').last(5)
-      expect(find_field(_('Target branch')).value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+      expect(find_field(_('Commit to a new branch')).value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
       find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
       page.within('#modal-replace-blob') do
         fill_in(:commit_message, with: 'Replacement file commit message')
+        click_button('Commit changes')
       end
-
-      click_button('Replace file')
 
       expect(page).to have_content('Replacement file commit message')
 

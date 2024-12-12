@@ -53,6 +53,26 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       )
     end
 
+    describe 'when handling @ username mentions' do
+      let(:original_body) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
+      let(:expected_body) do
+        "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?"
+      end
+
+      let(:pull_request_data) do
+        Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json'))
+        .merge({ "description" => original_body })
+      end
+
+      it 'inserts backticks around mentions' do
+        importer.execute
+
+        merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+        expect(merge_request.description).to eq(expected_body)
+      end
+    end
+
     describe 'refs/merge-requests/:iid/head creation' do
       before do
         project.repository.create_branch(pull_request.source_branch_name, 'master')
@@ -164,22 +184,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
         )
       end
 
-      context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-        end
-
-        it 'does not convert mentions' do
-          expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server', project).not_to receive(:convert)
-
-          importer.execute
-        end
-      end
-
       context 'when alternate UCM flags are disabled' do
         before do
           stub_feature_flags(
-            bitbucket_server_convert_mentions_to_users: false,
             bitbucket_server_user_mapping: false
           )
         end

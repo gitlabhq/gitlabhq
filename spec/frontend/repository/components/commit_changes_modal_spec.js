@@ -139,12 +139,41 @@ describe('CommitChangesModal', () => {
       });
       expect(findSlot().text()).toBe('test form fields slot');
     });
+
+    it('disables actionable while loading', () => {
+      createComponent({ props: { loading: true } });
+
+      expect(findModal().props('actionPrimary').attributes).toEqual(
+        expect.objectContaining({ disabled: true }),
+      );
+      expect(findModal().props('actionCancel').attributes).toEqual(
+        expect.objectContaining({ disabled: true }),
+      );
+      expect(findCommitTextarea().attributes()).toEqual(
+        expect.objectContaining({ disabled: 'true' }),
+      );
+      expect(findCurrentBranchRadioOption().attributes()).toEqual(
+        expect.objectContaining({ disabled: 'true' }),
+      );
+      expect(findNewBranchRadioOption().attributes()).toEqual(
+        expect.objectContaining({ disabled: 'true' }),
+      );
+    });
   });
 
   describe('form', () => {
     it('gets passed the path for action attribute', () => {
       createComponent();
       expect(findForm().attributes('action')).toBe(initialProps.actionPath);
+    });
+
+    it('shows the correct form fields when repo is empty', () => {
+      createComponent({ props: { emptyRepo: true } });
+      expect(findCommitTextarea().exists()).toBe(true);
+      expect(findRadioGroup().exists()).toBe(false);
+      expect(findModal().text()).toContain(
+        'GitLab will create a default branch, main, and commit your changes.',
+      );
     });
 
     it('shows the correct form fields when commit to current branch', () => {
@@ -176,12 +205,8 @@ describe('CommitChangesModal', () => {
     });
 
     describe('when `canPushToCode` is `false`', () => {
-      const commitInBranchMessage = sprintf(
-        'Your changes can be committed to %{branchName} because a merge request is open.',
-        {
-          branchName: 'main',
-        },
-      );
+      const commitInBranchMessage =
+        'Your changes can be committed to main because a merge request is open.';
 
       it('shows the correct form fields when `branchAllowsCollaboration` is `true`', () => {
         createComponent({ props: { canPushCode: false, branchAllowsCollaboration: true } });
@@ -292,15 +317,9 @@ describe('CommitChangesModal', () => {
   });
 
   describe('form submission', () => {
-    const handleFormSubmitSpy = jest.fn();
-
     beforeEach(async () => {
-      createFullComponent({ props: { handleFormSubmit: handleFormSubmitSpy } });
+      createFullComponent();
       await nextTick();
-    });
-
-    afterEach(() => {
-      handleFormSubmitSpy.mockRestore();
     });
 
     describe('invalid form', () => {
@@ -319,7 +338,24 @@ describe('CommitChangesModal', () => {
 
       it('does not submit form', () => {
         findModal().vm.$emit('primary', { preventDefault: () => {} });
-        expect(handleFormSubmitSpy).not.toHaveBeenCalled();
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
+      });
+    });
+
+    describe('invalid prop is passed in', () => {
+      beforeEach(() => {
+        createComponent({ props: { isValid: false } });
+      });
+
+      it('disables submit button', () => {
+        expect(findModal().props('actionPrimary').attributes).toEqual(
+          expect.objectContaining({ disabled: true }),
+        );
+      });
+
+      it('does not submit form', () => {
+        findModal().vm.$emit('primary', { preventDefault: () => {} });
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
       });
     });
 
@@ -339,9 +375,18 @@ describe('CommitChangesModal', () => {
         );
       });
 
-      it('submits form', () => {
-        findModal().vm.$emit('primary', { preventDefault: () => {} });
-        expect(handleFormSubmitSpy).toHaveBeenCalled();
+      it('submits form', async () => {
+        await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+        await nextTick();
+        const submission = wrapper.emitted('submit-form')[0][0];
+        expect(Object.fromEntries(submission)).toStrictEqual({
+          authenticity_token: 'mock-csrf-token',
+          branch_name: 'some valid target branch',
+          branch_selection: 'true',
+          commit_message: 'some valid commit message',
+          create_merge_request: '1',
+          original_branch: 'main',
+        });
       });
     });
   });

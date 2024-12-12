@@ -48,6 +48,9 @@ export default {
     COMMIT_IN_BRANCH_MESSAGE: __(
       'Your changes can be committed to %{branchName} because a merge request is open.',
     ),
+    COMMIT_IN_DEFAULT_BRANCH: __(
+      'GitLab will create a default branch, %{branchName}, and commit your changes.',
+    ),
     COMMIT_LABEL,
     COMMIT_MESSAGE_HINT: __(
       'Try to keep the first line under 52 characters and the others under 72.',
@@ -95,7 +98,8 @@ export default {
     },
     emptyRepo: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     isUsingLfs: {
       type: Boolean,
@@ -107,9 +111,15 @@ export default {
       required: false,
       default: false,
     },
-    handleFormSubmit: {
-      type: Function,
-      required: true,
+    valid: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -130,7 +140,6 @@ export default {
     };
     return {
       lfsWarningDismissed: false,
-      loading: false,
       createNewBranch: false,
       createNewMr: true,
       form,
@@ -143,7 +152,7 @@ export default {
         attributes: {
           variant: 'confirm',
           loading: this.loading,
-          disabled: this.loading || !this.form.state,
+          disabled: this.loading || !this.form.state || !this.valid,
         },
       };
 
@@ -235,17 +244,12 @@ export default {
         return;
       }
 
-      this.loading = true;
       this.form.showValidation = false;
 
       const form = this.$refs.form.$el;
       const formData = new FormData(form);
 
-      try {
-        this.handleFormSubmit(formData);
-      } finally {
-        this.loading = false;
-      }
+      this.$emit('submit-form', formData);
     },
   },
   deleteLfsHelpPath: helpPagePath('topics/git/lfs', {
@@ -273,7 +277,6 @@ export default {
           </template>
         </gl-sprintf>
       </p>
-
       <p>
         <gl-sprintf :message="$options.i18n.LFS_WARNING_SECONDARY_CONTENT">
           <template #link="{ content }">
@@ -286,33 +289,40 @@ export default {
       <gl-form ref="form" novalidate>
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
         <slot name="form-fields"></slot>
+        <gl-form-group
+          :label="$options.i18n.COMMIT_LABEL"
+          label-for="commit_message"
+          :invalid-feedback="form.fields['commit_message'].feedback"
+        >
+          <gl-form-textarea
+            id="commit_message"
+            ref="message"
+            v-model="form.fields['commit_message'].value"
+            v-validation:[form.showValidation]
+            name="commit_message"
+            no-resize
+            data-testid="commit-message-field"
+            :state="form.fields['commit_message'].state"
+            :disabled="loading"
+            required
+          />
+          <p v-if="showHint" class="form-text gl-text-subtle" data-testid="hint">
+            {{ $options.i18n.COMMIT_MESSAGE_HINT }}
+          </p>
+        </gl-form-group>
         <template v-if="emptyRepo">
           <input type="hidden" name="branch_name" :value="originalBranch" class="js-branch-name" />
+          <gl-alert v-if="emptyRepo" :dismissible="false" class="gl-my-3">
+            <gl-sprintf :message="$options.i18n.COMMIT_IN_DEFAULT_BRANCH">
+              <template #branchName
+                ><strong>{{ originalBranch }}</strong>
+              </template>
+            </gl-sprintf>
+          </gl-alert>
         </template>
         <template v-else>
           <input type="hidden" name="original_branch" :value="originalBranch" />
           <input v-if="createNewMr" type="hidden" name="create_merge_request" value="1" />
-          <gl-form-group
-            :label="$options.i18n.COMMIT_LABEL"
-            label-for="commit_message"
-            :invalid-feedback="form.fields['commit_message'].feedback"
-          >
-            <gl-form-textarea
-              id="commit_message"
-              ref="message"
-              v-model="form.fields['commit_message'].value"
-              v-validation:[form.showValidation]
-              name="commit_message"
-              no-resize
-              data-testid="commit-message-field"
-              :state="form.fields['commit_message'].state"
-              :disabled="loading"
-              required
-            />
-            <p v-if="showHint" class="form-text gl-text-subtle" data-testid="hint">
-              {{ $options.i18n.COMMIT_MESSAGE_HINT }}
-            </p>
-          </gl-form-group>
           <gl-form-group
             v-if="canPushCode"
             :label="$options.i18n.BRANCH"
@@ -324,14 +334,14 @@ export default {
                 name="branch_selection"
                 :label="$options.i18n.BRANCH"
               >
-                <gl-form-radio :value="false">
+                <gl-form-radio :value="false" :disabled="loading">
                   <gl-sprintf :message="$options.i18n.CURRENT_BRANCH_LABEL">
                     <template #branchName
                       ><code>{{ originalBranch }}</code>
                     </template>
                   </gl-sprintf>
                 </gl-form-radio>
-                <gl-form-radio :value="true">
+                <gl-form-radio :value="true" :disabled="loading">
                   {{ $options.i18n.NEW_BRANCH_LABEl }}
                 </gl-form-radio>
               </gl-form-radio-group>
@@ -353,7 +363,6 @@ export default {
                 </gl-form-checkbox>
               </div>
             </template>
-
             <template v-else>
               <label for="branchNameInput">
                 {{ $options.i18n.NEW_BRANCH_LABEl }}

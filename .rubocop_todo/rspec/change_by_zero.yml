@@ -117,7 +117,6 @@ RSpec/ChangeByZero:
     - 'spec/workers/gitlab/bitbucket_import/stage/import_pull_requests_worker_spec.rb'
     - 'spec/workers/gitlab/bitbucket_server_import/stage/import_pull_requests_worker_spec.rb'
     - 'spec/workers/gitlab/bitbucket_server_import/stage/import_repository_worker_spec.rb'
-    - 'spec/workers/gitlab/bitbucket_server_import/stage/import_users_worker_spec.rb'
     - 'spec/workers/packages/cleanup_package_file_worker_spec.rb'
     - 'spec/workers/packages/maven/metadata/sync_worker_spec.rb'
     - 'spec/workers/packages/rubygems/extraction_worker_spec.rb'

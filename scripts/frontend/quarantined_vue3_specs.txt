@@ -274,7 +274,6 @@ spec/frontend/releases/components/tag_create_spec.js
 spec/frontend/releases/components/tag_field_exsting_spec.js
 spec/frontend/releases/components/tag_search_spec.js
 spec/frontend/repository/components/header_area/blob_controls_spec.js
-spec/frontend/repository/components/header_area/breadcrumbs_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
 spec/frontend/repository/router_spec.js

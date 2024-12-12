@@ -115,6 +115,7 @@ module TreeHelper
     attrs = {
       selected_branch: selected_branch,
       can_push_code: can?(current_user, :push_code, @project).to_s,
+      can_push_to_branch: user_access(@project).can_push_to_branch?(@ref).to_s,
       can_collaborate: can_collaborate_with_project?(@project).to_s,
       new_blob_path: project_new_blob_path(@project, @ref),
       upload_path: project_create_blob_path(@project, @ref),

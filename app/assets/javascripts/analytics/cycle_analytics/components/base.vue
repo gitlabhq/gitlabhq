@@ -3,8 +3,8 @@ import { GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
-import LegacyValueStreamMetrics from '~/analytics/shared/components/legacy_value_stream_metrics.vue';
-import { VSA_METRICS_GROUPS } from '~/analytics/shared/constants';
+import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
+import { VSA_METRICS_GROUPS, FLOW_METRICS_QUERY_TYPE } from '~/analytics/shared/constants';
 import { toYmd, generateValueStreamsDashboardLink } from '~/analytics/shared/utils';
 import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
@@ -12,7 +12,6 @@ import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_str
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { __, s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import { SUMMARY_METRICS_REQUEST, METRICS_REQUESTS } from '../constants';
 
 const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
@@ -24,7 +23,7 @@ export default {
     PathNavigation,
     StageTable,
     ValueStreamFilters,
-    LegacyValueStreamMetrics,
+    ValueStreamMetrics,
     UrlSync,
   },
   props: {
@@ -101,12 +100,6 @@ export default {
       }
       return 0;
     },
-    hasCycleAnalyticsForGroups() {
-      return this.features?.cycleAnalyticsForGroups;
-    },
-    metricsRequests() {
-      return this.hasCycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
-    },
     showLinkToDashboard() {
       return Boolean(this.features?.groupLevelAnalyticsDashboard && this.groupPath);
     },
@@ -162,6 +155,7 @@ export default {
     recentActivity: __('Recent Project Activity'),
   },
   VSA_METRICS_GROUPS,
+  FLOW_METRICS_QUERY_TYPE,
 };
 </script>
 <template>
@@ -188,12 +182,14 @@ export default {
         @selected="onSelectStage"
       />
     </div>
-    <legacy-value-stream-metrics
+    <value-stream-metrics
       :request-path="namespace.fullPath"
       :request-params="filterParams"
-      :requests="metricsRequests"
       :group-by="$options.VSA_METRICS_GROUPS"
       :dashboards-path="dashboardsPath"
+      :query-type="$options.FLOW_METRICS_QUERY_TYPE"
+      :is-licensed="false"
+      is-project-namespace
     />
     <gl-loading-icon v-if="isLoading" size="lg" />
     <stage-table

@@ -85,8 +85,4 @@ Doorkeeper::OpenidConnect.configure do
       end
     end
   end
-
-  Doorkeeper::OpenidConnect::Request.class_eval do
-    belongs_to :organization, class_name: 'Organizations::Organization'
-  end
 end

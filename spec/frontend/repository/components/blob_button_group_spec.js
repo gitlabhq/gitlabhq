@@ -132,14 +132,12 @@ describe('BlobButtonGroup component', () => {
     const title = `Replace ${name}`;
 
     expect(findUploadBlobModal().props()).toMatchObject({
-      modalTitle: title,
       commitMessage: title,
       targetBranch,
       originalBranch,
       canPushCode,
       path,
       replacePath,
-      primaryBtnText: 'Replace file',
     });
   });
 
@@ -157,7 +155,6 @@ describe('BlobButtonGroup component', () => {
       canPushCode,
       emptyRepo,
       isUsingLfs,
-      handleFormSubmit: expect.any(Function),
     });
   });
 });

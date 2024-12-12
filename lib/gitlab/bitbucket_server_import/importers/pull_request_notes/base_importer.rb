@@ -7,6 +7,7 @@ module Gitlab
         # Base class for importing pull request notes during project import from Bitbucket Server
         class BaseImporter
           include Loggable
+          include ::Gitlab::Import::UsernameMentionRewriter
           include ::Import::PlaceholderReferences::Pusher
 
           # @param project [Project]
@@ -15,7 +16,6 @@ module Gitlab
             @project = project
             @user_finder = UserFinder.new(project)
             @formatter = Gitlab::ImportFormatter.new
-            @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project)
             @merge_request = merge_request
           end
 
@@ -25,7 +25,7 @@ module Gitlab
 
           private
 
-          attr_reader :project, :user_finder, :merge_request, :mentions_converter
+          attr_reader :project, :user_finder, :merge_request
         end
       end
     end

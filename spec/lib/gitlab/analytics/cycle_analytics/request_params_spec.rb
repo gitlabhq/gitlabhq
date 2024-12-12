@@ -18,7 +18,8 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RequestParams, feature_categor
           namespace: {
             name: project.name,
             full_path: project.full_path,
-            type: "Project"
+            type: "Project",
+            path: project.full_path
           }
         }))
       end

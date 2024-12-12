@@ -8,7 +8,7 @@ export const initUploadFileTrigger = () => {
 
   if (!uploadFileTriggerEl) return false;
 
-  const { targetBranch, originalBranch, canPushCode, path, projectPath } =
+  const { targetBranch, originalBranch, canPushCode, canPushToBranch, path, projectPath } =
     uploadFileTriggerEl.dataset;
 
   return new Vue({
@@ -18,8 +18,10 @@ export const initUploadFileTrigger = () => {
       targetBranch,
       originalBranch,
       canPushCode: parseBoolean(canPushCode),
+      canPushToBranch: parseBoolean(canPushToBranch),
       path,
       projectPath,
+      emptyRepo: true,
     },
     render(h) {
       return h(UploadButton);

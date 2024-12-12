@@ -62,19 +62,19 @@ module Gitlab
               note = "*By #{comment[:author_username]} (#{comment[:author_email]})*\n\n"
             end
 
-            comment_note = mentions_converter.convert(comment[:note])
-
             note +=
               # Provide some context for replying
               if comment[:parent_comment_note]
-                "> #{comment[:parent_comment_note].truncate(PARENT_COMMENT_CONTEXT_LENGTH)}\n\n#{comment_note}"
+                parent_comment_note = comment[:parent_comment_note].truncate(80, omission: ' ...')
+
+                "> #{parent_comment_note}\n\n#{comment[:note]}"
               else
-                comment_note
+                comment[:note]
               end
 
             {
               project: project,
-              note: note,
+              note: wrap_mentions_in_backticks(note),
               author_id: author,
               created_at: comment[:created_at],
               updated_at: comment[:updated_at]
@@ -98,7 +98,7 @@ module Gitlab
 
             note_text += " #{position.old_path}:#{position.old_line} -->" if position.old_line
             note_text += " #{position.new_path}:#{position.new_line}" if position.new_line
-            note_text += "*\n\n#{comment[:note]}"
+            note_text += "*\n\n#{wrap_mentions_in_backticks(comment[:note])}"
 
             attributes[:note] = note_text
 

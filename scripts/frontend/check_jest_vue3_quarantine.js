@@ -178,12 +178,14 @@ async function getRemovedQuarantinedSpecs() {
 
 function getTestArguments() {
   if (IS_CI) {
+    const nodeIndex = process.env.CI_NODE_INDEX ?? '1';
+    const nodeTotal = process.env.CI_NODE_TOTAL ?? '1';
+
     const ciArguments = (touchedFiles) => [
       '--findRelatedTests',
       ...touchedFiles,
       '--passWithNoTests',
-      // Explicitly have one shard, so that the `shard` method of the sequencer is called.
-      '--shard=1/1',
+      `--shard=${nodeIndex}/${nodeTotal}`,
       '--testSequencer',
       './scripts/frontend/check_jest_vue3_quarantine_sequencer.js',
     ];

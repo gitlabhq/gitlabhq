@@ -196,9 +196,20 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
-      await nextTick();
+      await waitForPromises();
 
       expect(findUploadBlobModal().exists()).toBe(true);
+      expect(findUploadBlobModal().props()).toStrictEqual({
+        canPushCode: false,
+        canPushToBranch: false,
+        commitMessage: 'Upload New File',
+        emptyRepo: false,
+        modalId: 'modal-upload-blob',
+        originalBranch: '',
+        path: '',
+        replacePath: null,
+        targetBranch: '',
+      });
     });
   });
 
@@ -211,7 +222,7 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
-      await nextTick();
+      await waitForPromises();
 
       expect(findNewDirectoryModal().exists()).toBe(true);
       expect(findNewDirectoryModal().props('path')).toBe('root/master/some_dir');

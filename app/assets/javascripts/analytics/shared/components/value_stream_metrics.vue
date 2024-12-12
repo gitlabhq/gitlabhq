@@ -12,7 +12,9 @@ import {
 import { rawMetricToMetricTile, extractQueryResponseFromNamespace } from '../utils';
 import { BUCKETING_INTERVAL_ALL } from '../graphql/constants';
 import FlowMetricsQuery from '../graphql/flow_metrics.query.graphql';
+import FOSSFlowMetricsQuery from '../graphql/foss.flow_metrics.query.graphql';
 import DoraMetricsQuery from '../graphql/dora_metrics.query.graphql';
+import FlowMetricsCommitsQuery from '../graphql/commits.flow_metrics.query.graphql';
 import ValueStreamsDashboardLink from './value_streams_dashboard_link.vue';
 import MetricTile from './metric_tile.vue';
 
@@ -73,20 +75,42 @@ export default {
       required: false,
       default: null,
     },
+    isProjectNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLicensed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
+      flowMetricsCommits: {},
       flowMetrics: [],
       doraMetrics: [],
     };
   },
   computed: {
+    flowMetricsVariables() {
+      const {
+        created_after: startDate,
+        created_before: endDate,
+        label_names: labelNames,
+      } = this.requestParams;
+      const additionalParams = labelNames?.length ? { labelNames } : {};
+      return { startDate, endDate, fullPath: this.requestPath, ...additionalParams };
+    },
     hasGroupedMetrics() {
       return Boolean(this.groupBy.length);
     },
     isLoading() {
       return Boolean(
-        this.$apollo.queries.doraMetrics.loading || this.$apollo.queries.flowMetrics.loading,
+        this.$apollo.queries.doraMetrics.loading ||
+          this.$apollo.queries.flowMetrics.loading ||
+          this.$apollo.queries.flowMetricsCommits.loading,
       );
     },
     groupedMetrics() {
@@ -100,12 +124,18 @@ export default {
     },
     displayableMetrics() {
       // NOTE: workaround while the flowMetrics/doraMetrics dont support including/excluding unwanted metrics from the response
+      // it would be useful to return this to the frontend with relevant permissions checks having occurred on the backend
       return Object.keys(VALUE_STREAM_METRIC_TILE_METADATA);
     },
+    flowMetricsCommitsResponse() {
+      return this.flowMetricsCommits?.identifier ? [this.flowMetricsCommits] : [];
+    },
     metrics() {
-      const combined = [...this.flowMetrics, ...this.doraMetrics].filter(({ identifier }) =>
-        this.displayableMetrics.includes(identifier),
-      );
+      const combined = [
+        ...this.flowMetrics,
+        ...this.doraMetrics,
+        ...this.flowMetricsCommitsResponse,
+      ].filter(({ identifier }) => this.displayableMetrics.includes(identifier));
       const filtered = this.filterFn ? this.filterFn(combined) : combined;
       return filtered.map((metric) => rawMetricToMetricTile(metric));
     },
@@ -116,16 +146,33 @@ export default {
         await Promise.all([
           this.$apollo.queries.doraMetrics.refetch(),
           this.$apollo.queries.flowMetrics.refetch(),
+          this.$apollo.queries.flowMetricsCommits.refetch(),
         ]);
       }
     },
   },
   apollo: {
-    flowMetrics: {
-      query: FlowMetricsQuery,
+    flowMetricsCommits: {
+      query: FlowMetricsCommitsQuery,
       variables() {
-        const { created_after: startDate, created_before: endDate } = this.requestParams;
-        return { startDate, endDate, fullPath: this.requestPath };
+        return this.flowMetricsVariables;
+      },
+      skip() {
+        return !this.isFlowMetricsQuery || !this.isProjectNamespace;
+      },
+      update(data) {
+        return data?.flowMetricsCommits ? data.flowMetricsCommits : {};
+      },
+    },
+    flowMetrics: {
+      query() {
+        // NOTE: we don't have a way to include/exclude fields from the query, the queries
+        //      subsequently fail if we query fields that arent available / applicable
+        //      Related issue created: https://gitlab.com/gitlab-org/gitlab/-/issues/506282
+        return this.isLicensed ? FlowMetricsQuery : FOSSFlowMetricsQuery;
+      },
+      variables() {
+        return this.flowMetricsVariables;
       },
       skip() {
         return !this.isFlowMetricsQuery;
@@ -156,7 +203,7 @@ export default {
         };
       },
       skip() {
-        return !this.isDoraMetricsQuery;
+        return !this.isLicensed || !this.isDoraMetricsQuery;
       },
       update(data) {
         const responseData = extractQueryResponseFromNamespace({

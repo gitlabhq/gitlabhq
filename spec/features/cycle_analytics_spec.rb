@@ -68,16 +68,17 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       # NOTE: in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68595 travel back
       # 5 days in time before we create data for these specs, to mitigate some flakiness
       # So setting the date range to be the last 2 days should skip past the existing data
-      from = 2.days.ago.to_date.iso8601
-      to = 1.day.ago.to_date.iso8601
+      from = 2.days.ago.utc.to_date.iso8601
+      to = 1.day.ago.utc.to_date.iso8601
       max_items_per_page = 3
 
       around do |example|
-        travel_to(5.days.ago) { example.run }
+        travel_to(5.days.ago.utc) { example.run }
       end
 
       before_all do
-        travel_to(5.days.ago.beginning_of_day) do
+        # travel_to Time.now.utc
+        travel_to(5.days.ago.utc) do
           create_cycle(user, project, issue, mr, milestone, pipeline)
           create_list(:issue, max_items_per_page, project: project, created_at: 2.weeks.ago, milestone: milestone)
           deploy_master(user, project)
@@ -108,9 +109,9 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
 
         aggregate_failures 'with relevant values' do
           expect(vsa_metrics_titles.length).to eq 3
-          expect(vsa_metrics_titles).to match_array ['New issues', 'Commits', 'Deploy']
+          expect(vsa_metrics_titles).to match_array ['New issues', 'Commits', 'Deploys']
 
-          expect(vsa_metrics_values).to match_array ["4", "-", "1"]
+          expect(vsa_metrics_values).to match_array %w[4 - -]
         end
       end
 
@@ -171,7 +172,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'can filter the metrics by date' do
-        expect(vsa_metrics_values).to match_array(%w[- 1 4])
+        expect(vsa_metrics_values).to match_array(%w[- - 4])
 
         set_daterange(from, to)
 
@@ -231,9 +232,9 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
 
       aggregate_failures 'with relevant values' do
         expect(vsa_metrics_titles.length).to eq 2
-        expect(vsa_metrics_titles).to match_array ['New issue', 'Deploy']
+        expect(vsa_metrics_titles).to match_array ['New issues', 'Deploys']
 
-        expect(vsa_metrics_values).to match_array %w[1 1]
+        expect(vsa_metrics_values).to match_array %w[- 1]
       end
     end
 

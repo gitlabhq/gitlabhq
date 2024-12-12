@@ -10,7 +10,8 @@ fragment MergeRequestFragment on MergeRequest {
   title
   updatedAt
   upvotes
-  userDiscussionsCount @include(if: $isSignedIn)
+  resolvedDiscussionsCount @include(if: $isSignedIn)
+  resolvableDiscussionsCount @include(if: $isSignedIn)
   webUrl
   assignees @skip(if: $hideUsers) {
     nodes {

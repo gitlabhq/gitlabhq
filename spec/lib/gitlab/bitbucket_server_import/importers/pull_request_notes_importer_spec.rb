@@ -13,7 +13,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let_it_be(:pull_request_data) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json')) }
   let_it_be(:pull_request) { BitbucketServer::Representation::PullRequest.new(pull_request_data) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, iid: pull_request.iid, source_project: project) }
-  let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
 
   let(:merge_event) do
     instance_double(
@@ -97,10 +96,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
       .to receive(:info).with(include(import_stage: stage, message: message))
   end
 
-  before do
-    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
-  end
-
   subject(:importer) { described_class.new(project.reload, pull_request.to_hash) }
 
   describe '#execute', :clean_gitlab_redis_shared_state do
@@ -167,7 +162,56 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           )
         end
 
-        context 'when the note has a parent note' do
+        context 'when the note has @ mentions' do
+          let(:original_note_text) { "I said to @sam_allen.greg follow @bob's advice. @.ali-ce/group#9?" }
+          let(:expected_note_text) { "I said to `@sam_allen.greg` follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+          let(:original_reply_text) { "@bachhus I don't agree. See @ali's evidence cc @.ali-ce/group#9?" }
+          let(:expected_reply_text) { "`@bachhus` I don't agree. See `@ali`'s evidence cc `@.ali-ce/group#9`?" }
+
+          let(:pr_note) do
+            instance_double(
+              BitbucketServer::Representation::Comment,
+              id: 456,
+              note: original_note_text,
+              author_name: 'Note Author',
+              author_email: 'note_author@example.org',
+              author_username: 'note_author',
+              comments: [pr_note_reply],
+              created_at: now,
+              updated_at: now,
+              parent_comment: nil)
+          end
+
+          let(:pr_note_reply) do
+            instance_double(
+              BitbucketServer::Representation::Comment,
+              note: original_reply_text,
+              author_name: 'Note Author',
+              author_email: 'note_author@example.org',
+              author_username: 'note_author',
+              comments: [],
+              created_at: now,
+              updated_at: now,
+              parent_comment: nil)
+          end
+
+          it 'inserts backticks around the mentions' do
+            importer.execute
+
+            expect(Note.first.note).to eq(expected_note_text)
+            expect(Note.last.note).to eq(expected_reply_text)
+          end
+        end
+
+        context 'when the note has a parent note with @ mentions' do
+          let(:original_parent_text) do
+            "Attention: To inform @ali has worked on this. @fred's work from @.ali-ce/group#9?"
+          end
+
+          let(:expected_parent_text) do
+            "Attention: To inform `@ali` has worked on this. `@fred`'s work from `@.ali-ce/gro` ..."
+          end
+
           let(:pr_note) do
             instance_double(
               BitbucketServer::Representation::Comment,
@@ -185,7 +229,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           let(:pr_parent_note) do
             instance_double(
               BitbucketServer::Representation::Comment,
-              note: 'Parent note',
+              note: original_parent_text,
               author_name: 'Note Author',
               author_email: 'note_author@example.org',
               author_username: 'note_author',
@@ -196,10 +240,10 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
             )
           end
 
-          it 'adds the parent note before the actual note' do
+          it 'adds the parent note before the actual note with backticks inserted' do
             importer.execute
 
-            expect(Note.first.note).to include("> #{pr_parent_note.note}\n\n")
+            expect(Note.first.note).to include("> #{expected_parent_text}")
           end
         end
 
@@ -218,18 +262,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
               error: exception.message,
               merge_request_id: merge_request.id
             )
-
-            importer.execute
-          end
-        end
-
-        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-          end
-
-          it 'does not convert mentions' do
-            expect(mentions_converter).not_to receive(:convert)
 
             importer.execute
           end
@@ -371,18 +403,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
               comment_id: 123,
               error: exception.message
             )
-
-            importer.execute
-          end
-        end
-
-        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-          end
-
-          it 'does not convert mentions' do
-            expect(mentions_converter).not_to receive(:convert)
 
             importer.execute
           end

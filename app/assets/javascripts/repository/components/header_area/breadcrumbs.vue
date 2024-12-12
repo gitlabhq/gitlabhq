@@ -79,6 +79,11 @@ export default {
       required: false,
       default: false,
     },
+    canPushToBranch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     selectedBranch: {
       type: String,
       required: false,
@@ -332,6 +337,7 @@ export default {
       :target-branch="selectedBranch"
       :original-branch="originalBranch"
       :can-push-code="canPushCode"
+      :can-push-to-branch="canPushToBranch"
       :path="uploadPath"
     />
     <new-directory-modal

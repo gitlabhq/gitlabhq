@@ -674,6 +674,7 @@ RSpec.describe ProjectPresenter do
             label: a_string_including('Upload file'),
             data: {
               "can_push_code" => "true",
+              "can_push_to_branch" => "true",
               "original_branch" => "master",
               "path" => "/#{project.full_path}/-/create/master",
               "project_path" => project.full_path,

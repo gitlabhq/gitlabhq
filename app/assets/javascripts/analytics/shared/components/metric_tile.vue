@@ -51,6 +51,7 @@ export default {
       :should-animate="true"
       :animation-decimal-places="decimalPlaces"
       :class="{ 'hover:gl-cursor-pointer': hasLinks }"
+      data-testid="metric-tile"
       tabindex="0"
       use-delimiters
       @click="clickHandler(metric)"

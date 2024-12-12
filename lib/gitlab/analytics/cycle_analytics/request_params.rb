@@ -175,7 +175,8 @@ module Gitlab
           {
             name: project.name,
             full_path: project.full_path,
-            type: namespace.type
+            type: namespace.type,
+            path: project.full_path
           }
         end
 

@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe OauthAccessToken, feature_category: :system_access do
-  let(:app_one) { create(:oauth_application) }
-  let(:app_two) { create(:oauth_application) }
-  let(:app_three) { create(:oauth_application) }
+  let_it_be(:app_one) { create(:oauth_application) }
+  let_it_be(:app_two) { create(:oauth_application) }
+  let_it_be(:app_three) { create(:oauth_application) }
+  let_it_be(:organization) { create(:organization) }
+
   let(:token) { create(:oauth_access_token, application_id: app_one.id) }
 
   describe 'scopes' do
@@ -61,7 +63,7 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
   describe '#expires_in' do
     context 'when token has expires_in value set' do
       it 'uses the expires_in value' do
-        token = described_class.new(expires_in: 1.minute)
+        token = described_class.new(organization: organization, expires_in: 1.minute)
 
         expect(token).to be_valid
       end
@@ -69,7 +71,7 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
 
     context 'when token has nil expires_in' do
       it 'uses default value' do
-        token = described_class.new(expires_in: nil)
+        token = described_class.new(organization: organization, expires_in: nil)
 
         expect(token).to be_invalid
       end

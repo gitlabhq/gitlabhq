@@ -5,14 +5,13 @@ module Gitlab
     module Importers
       class PullRequestImporter
         include Loggable
+        include Gitlab::Import::UsernameMentionRewriter
         include ::Import::PlaceholderReferences::Pusher
 
         def initialize(project, hash)
           @project = project
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
-          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project)
-
           # Object should behave as a object so we can remove object.is_a?(Hash) check
           # This will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/412328
           @object = hash.with_indifferent_access
@@ -55,21 +54,14 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
+        attr_reader :object, :project, :formatter, :user_finder
 
         def description
           description = ''
           description += author_line
           description += object[:description] if object[:description]
 
-          description = mentions_converter.convert(description) if convert_mentions?
-
-          description
-        end
-
-        def convert_mentions?
-          Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator) &&
-            !user_mapping_enabled?(project)
+          wrap_mentions_in_backticks(description)
         end
 
         def author_line

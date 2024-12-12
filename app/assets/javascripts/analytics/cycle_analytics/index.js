@@ -1,15 +1,18 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import {
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
 } from '~/analytics/shared/utils';
 import Translate from '~/vue_shared/translate';
+import { defaultClient } from '~/analytics/shared/graphql/client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import CycleAnalytics from './components/base.vue';
 import createStore from './store';
 import { buildCycleAnalyticsInitialData } from './utils';
 
 Vue.use(Translate);
+Vue.use(VueApollo);
 
 export default () => {
   const store = createStore();
@@ -34,7 +37,7 @@ export default () => {
   new Vue({
     el,
     name: 'CycleAnalytics',
-    apolloProvider: {},
+    apolloProvider: new VueApollo({ defaultClient }),
     provide: {
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
     },

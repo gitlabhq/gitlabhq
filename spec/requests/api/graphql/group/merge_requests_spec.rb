@@ -101,6 +101,30 @@ RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review_workf
     end
   end
 
+  context 'when filtering by reviewer' do
+    let(:query) do
+      <<~GQL
+      query($path: ID!, $user: String) {
+        group(fullPath: $path) {
+          mergeRequests(reviewerUsername: $user) { nodes { id } }
+        }
+      }
+      GQL
+    end
+
+    let_it_be(:reviewer) { create(:user) }
+
+    before do
+      mrs_a.first.reviewers << reviewer
+    end
+
+    it 'returns all merge requests assigned to reviewer' do
+      post_graphql(query, current_user: user, variables: { user: reviewer.username, path: group.full_path })
+
+      expect(mrs_data).to match_array(expected_mrs([mrs_a.first]))
+    end
+  end
+
   describe 'passing include_subgroups: true' do
     let(:query) do
       <<~GQL

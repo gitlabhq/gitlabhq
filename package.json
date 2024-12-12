@@ -24,8 +24,6 @@
     "jest:ci:vue3-mr:with-fixtures": "JEST_FIXTURE_JOBS_ONLY=1 jest --config jest.config.js --ci --testSequencer ./scripts/frontend/skip_specs_broken_in_vue_compat_fixture_ci_sequencer.js --shard \"${CI_NODE_INDEX:-1}/${CI_NODE_TOTAL:-1}\" --logHeapUsage",
     "jest:ci:vue3-mr:predictive-without-fixtures": "jest --config jest.config.js --ci --findRelatedTests $(cat $RSPEC_CHANGED_FILES_PATH) $(cat $RSPEC_MATCHING_JS_FILES_PATH) --passWithNoTests --testSequencer ./scripts/frontend/skip_specs_broken_in_vue_compat_fixture_ci_sequencer.js --shard \"${CI_NODE_INDEX:-1}/${CI_NODE_TOTAL:-1}\" --logHeapUsage",
     "jest:ci:vue3-mr:predictive-with-fixtures": "JEST_FIXTURE_JOBS_ONLY=1 jest --config jest.config.js --ci --findRelatedTests $(cat $RSPEC_CHANGED_FILES_PATH) $(cat $RSPEC_MATCHING_JS_FILES_PATH) --passWithNoTests --testSequencer ./scripts/frontend/skip_specs_broken_in_vue_compat_fixture_ci_sequencer.js --shard \"${CI_NODE_INDEX:-1}/${CI_NODE_TOTAL:-1}\" --logHeapUsage",
-    "jest:ci:vue3-mr:check-quarantined-without-fixtures": "./scripts/frontend/check_jest_vue3_quarantine.js",
-    "jest:ci:vue3-mr:check-quarantined-with-fixtures": "JEST_FIXTURE_JOBS_ONLY=1 ./scripts/frontend/check_jest_vue3_quarantine.js",
     "jest:contract": "PACT_DO_NOT_TRACK=true jest --config jest.config.contract.js --runInBand",
     "jest:integration": "jest --config jest.config.integration.js",
     "jest:scripts": "jest --config jest.config.scripts.js",

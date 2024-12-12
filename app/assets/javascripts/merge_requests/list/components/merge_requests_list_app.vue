@@ -83,6 +83,7 @@ import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 import EmptyState from './empty_state.vue';
+import DiscussionsBadge from './discussions_badge.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const BranchToken = () =>
@@ -118,6 +119,7 @@ export default {
     EmptyState,
     IssuableMilestone,
     IssuableByEmail,
+    DiscussionsBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -799,15 +801,21 @@ export default {
         </span>
       </template>
 
+      <template #discussions="{ issuable = {} }">
+        <li v-if="issuable.resolvableDiscussionsCount" class="!gl-mr-0 gl-hidden sm:gl-inline-flex">
+          <discussions-badge :merge-request="issuable" />
+        </li>
+      </template>
+
       <template #statistics="{ issuable = {} }">
-        <li class="!gl-mr-0">
+        <li v-if="issuable.upvotes || issuable.downvotes" class="!gl-mr-0">
           <merge-request-statistics :merge-request="issuable" />
         </li>
       </template>
 
       <template #approval-status="{ issuable = {} }">
-        <li class="!gl-mr-0">
-          <approval-count :merge-request="issuable" full-text />
+        <li v-if="issuable.approvalsRequired || issuable.approvedBy.nodes.length" class="!gl-mr-0">
+          <approval-count :merge-request="issuable" full-text class="gl-mt-1" />
         </li>
       </template>
 

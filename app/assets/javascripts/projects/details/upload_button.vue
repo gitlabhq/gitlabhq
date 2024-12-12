@@ -22,11 +22,17 @@ export default {
     canPushCode: {
       default: false,
     },
+    canPushToBranch: {
+      default: false,
+    },
     path: {
       default: '',
     },
     projectPath: {
       default: '',
+    },
+    emptyRepo: {
+      default: false,
     },
   },
   uploadBlobModalId: UPLOAD_BLOB_MODAL_ID,
@@ -49,7 +55,9 @@ export default {
       :target-branch="targetBranch"
       :original-branch="originalBranch"
       :can-push-code="canPushCode"
+      :can-push-to-branch="canPushToBranch"
       :path="path"
+      :empty-repo="emptyRepo"
     />
   </span>
 </template>

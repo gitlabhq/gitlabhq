@@ -1200,6 +1200,14 @@ msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approva
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount}"
+msgstr ""
+
+msgid "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount} thread resolved"
+msgid_plural "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount} threads resolved"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
@@ -5647,6 +5655,11 @@ msgstr ""
 
 msgid "All"
 msgstr ""
+
+msgid "All %{resolvableDiscussionsCount} thread resolved"
+msgid_plural "All %{resolvableDiscussionsCount} threads resolved"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "All (default)"
 msgstr ""
@@ -20013,6 +20026,9 @@ msgstr ""
 msgid "Dimension"
 msgstr ""
 
+msgid "Direct"
+msgstr ""
+
 msgid "Direct members"
 msgstr ""
 
@@ -23214,6 +23230,9 @@ msgstr ""
 msgid "Failed to delete custom emoji. Please try again."
 msgstr ""
 
+msgid "Failed to delete file! Please try again."
+msgstr ""
+
 msgid "Failed to deploy to"
 msgstr ""
 
@@ -24496,6 +24515,12 @@ msgstr ""
 msgid "Geo|Data type"
 msgstr ""
 
+msgid "Geo|Database Connection Type"
+msgstr ""
+
+msgid "Geo|Database Replication status"
+msgstr ""
+
 msgid "Geo|Disabled"
 msgstr ""
 
@@ -24667,6 +24692,9 @@ msgstr ""
 msgid "Geo|Replicated data is verified with the secondary site(s) using checksums."
 msgstr ""
 
+msgid "Geo|Replicating"
+msgstr ""
+
 msgid "Geo|Replication Details"
 msgstr ""
 
@@ -24674,9 +24702,6 @@ msgid "Geo|Replication slot WAL"
 msgstr ""
 
 msgid "Geo|Replication slots"
-msgstr ""
-
-msgid "Geo|Replication status"
 msgstr ""
 
 msgid "Geo|Replication summary"
@@ -24845,6 +24870,9 @@ msgid "Geo|Verification status"
 msgstr ""
 
 msgid "Geo|Verified"
+msgstr ""
+
+msgid "Geo|Whether this site's database is connected to the primary database directly or through data replication"
 msgstr ""
 
 msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere."
@@ -25145,6 +25173,9 @@ msgid "GitLab version"
 msgstr ""
 
 msgid "GitLab will create a branch in your fork and start a merge request."
+msgstr ""
+
+msgid "GitLab will create a default branch, %{branchName}, and commit your changes."
 msgstr ""
 
 msgid "GitLab.com (SaaS)"
@@ -46328,9 +46359,6 @@ msgstr ""
 msgid "Replace all labels"
 msgstr ""
 
-msgid "Replace file"
-msgstr ""
-
 msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
 
@@ -59779,9 +59807,6 @@ msgid "Upload could not be deleted."
 msgstr ""
 
 msgid "Upload file"
-msgstr ""
-
-msgid "Upload new file"
 msgstr ""
 
 msgid "Uploaded date"

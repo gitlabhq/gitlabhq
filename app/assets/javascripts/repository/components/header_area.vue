@@ -42,6 +42,7 @@ export default {
     'canCollaborate',
     'canEditTree',
     'canPushCode',
+    'canPushToBranch',
     'originalBranch',
     'selectedBranch',
     'newBranchPath',
@@ -179,6 +180,7 @@ export default {
         :can-collaborate="canCollaborate"
         :can-edit-tree="canEditTree"
         :can-push-code="canPushCode"
+        :can-push-to-branch="canPushToBranch"
         :original-branch="originalBranch"
         :selected-branch="selectedBranch"
         :new-branch-path="newBranchPath"
