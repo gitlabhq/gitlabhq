@@ -109,7 +109,6 @@ If you have selected code in the editor, this selection is sent along with your 
 Prerequisites:
 
 - You've [installed and configured the VS Code extension](../../editor_extensions/visual_studio_code/setup.md).
-- You've [confirmed that GitLab Duo is on](../project/repository/code_suggestions/set_up.md#vs-code).
 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
@@ -146,11 +145,12 @@ After Quick Chat opens:
 
 ## Use GitLab Duo Chat in Visual Studio for Windows
 
+Prerequisites:
+
+- You've [installed and configured the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
+
 To use GitLab Duo Chat in the GitLab extension for Visual Studio:
 
-1. Install and set up the extension for Visual Studio:
-   1. In Visual Studio, download and install the [GitLab extension for Visual Studio](../../editor_extensions/visual_studio/index.md).
-   1. Configure the [GitLab extension for Visual Studio](../../editor_extensions/visual_studio/index.md).
 1. In Visual Studio, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:
    - In the top menu bar, click on **Extensions** and then select **Open Duo Chat**.
@@ -165,13 +165,14 @@ If you have selected code in the editor, this selection is sent along with your 
 
 > - Introduced as generally available in GitLab 16.11.
 
-To use GitLab Duo Chat in the GitLab Duo plugin for JetBrains IDEs:
+Prerequisites:
 
-1. Install and set up the GitLab Duo plugin for JetBrains IDEs:
-   1. In the JetBrains marketplace, download and install the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/index.md).
-   1. Configure the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/setup.md).
+- You've [installed and configured the GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md).
+
+To use GitLab Duo Chat in the GitLab plugin for JetBrains IDEs:
+
 1. In a JetBrains IDE, open a project.
-1. Open GitLab Duo Chat in either a chat window or an editor window:
+1. Open GitLab Duo Chat in either a chat window or an editor window.
 
 ### In a chat window
 

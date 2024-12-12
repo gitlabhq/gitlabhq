@@ -14,9 +14,12 @@ describe('Blob Header Viewer Switcher', () => {
   let wrapper;
   let trackingSpy;
 
-  function createComponent(propsData = { showViewerToggles: true }) {
+  function createComponent(propsData = { showViewerToggles: true }, featureFlag = false) {
     wrapper = mountExtended(BlobHeaderViewerSwitcher, {
       propsData,
+      provide: {
+        glFeatures: { blobOverflowMenu: featureFlag },
+      },
     });
   }
 
@@ -24,7 +27,7 @@ describe('Blob Header Viewer Switcher', () => {
   const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
   const findBlameButton = () => wrapper.findByText('Blame');
 
-  describe('intiialization', () => {
+  describe('initialization', () => {
     it('is initialized with simple viewer as active', () => {
       createComponent();
       expect(findSimpleViewerButton().props('selected')).toBe(true);
@@ -86,9 +89,8 @@ describe('Blob Header Viewer Switcher', () => {
     });
   });
 
-  it('does not render simple and rich viewer buttons if `showViewerToggles` is `false`', async () => {
+  it('does not render simple and rich viewer buttons if `showViewerToggles` is `false`', () => {
     createComponent({ showViewerToggles: false });
-    await nextTick();
 
     expect(findSimpleViewerButton().exists()).toBe(false);
     expect(findRichViewerButton().exists()).toBe(false);
@@ -122,5 +124,25 @@ describe('Blob Header Viewer Switcher', () => {
       'open_blame_viewer_on_blob_page',
       expect.any(Object),
     );
+  });
+
+  describe('with blobOverflowMenu feature flag', () => {
+    it('renders icon toggles, when flag is disabled', () => {
+      createComponent();
+
+      expect(findSimpleViewerButton().props('icon')).toBe('code');
+      expect(findSimpleViewerButton().text()).toBe('');
+      expect(findRichViewerButton().props('icon')).toBe('document');
+      expect(findRichViewerButton().text()).toBe('');
+    });
+
+    it('renders text toggles, when flag is enabled', () => {
+      createComponent({ showViewerToggles: true }, true);
+
+      expect(findSimpleViewerButton().props('icon')).toBe('');
+      expect(findSimpleViewerButton().text()).toBe('Code');
+      expect(findRichViewerButton().props('icon')).toBe('');
+      expect(findRichViewerButton().text()).toBe('Preview');
+    });
   });
 });

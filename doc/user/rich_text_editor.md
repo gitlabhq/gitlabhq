@@ -124,5 +124,6 @@ To insert a diagram:
 
 ## Related topics
 
+- [Set the default text editor](profile/preferences.md#set-the-default-text-editor)
 - [Keyboard shortcuts](shortcuts.md#rich-text-editor) for rich text editor
 - [GitLab Flavored Markdown](markdown.md)

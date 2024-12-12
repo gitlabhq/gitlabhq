@@ -224,7 +224,6 @@ Layout/ClassStructure:
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/models/vulnerabilities/identifier.rb'
     - 'ee/app/models/vulnerabilities/projects_grade.rb'
-    - 'ee/app/models/work_items/widgets/rolledup_dates.rb'
     - 'ee/app/replicators/geo/lfs_object_replicator.rb'
     - 'ee/app/replicators/geo/terraform_state_version_replicator.rb'
     - 'ee/app/services/analytics/value_stream_dashboard/top_level_group_counter_service.rb'

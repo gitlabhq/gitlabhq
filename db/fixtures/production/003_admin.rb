@@ -16,9 +16,11 @@ end
 # Only admins can create other admin users in Users::CreateService so to solve
 # the chicken-and-egg problem, we pass a non-persisted admin user to the service.
 transient_admin = User.new(admin: true)
-user = Users::CreateService.new(transient_admin, user_args.merge!(skip_confirmation: true)).execute
+response = Users::CreateService.new(transient_admin, user_args.merge!(skip_confirmation: true)).execute
 
-if user.persisted?
+if response.success?
+  user = response.payload[:user]
+
   Organizations::Organization.default_organization.add_owner(user)
 
   puts Rainbow("Administrator account created:").green
@@ -38,9 +40,7 @@ if user.persisted?
 else
   puts Rainbow("Could not create the default administrator account:").red
   puts
-  user.errors.full_messages.map do |message|
-    puts Rainbow("--> #{message}").red
-  end
+  puts Rainbow("--> #{response.message}").red
   puts
 
   exit 1

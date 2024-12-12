@@ -69,7 +69,7 @@ in the catalog.
    - **Components**: Sub-sections for each component, each with:
      - **Usage**: Examples with and without inputs (when optional).
      - **Inputs**: A table showing the input names, types, default values (if any) and descriptions.
-     - **Variables** (when applicable): The variable names, possible values, and descriptions.
+     - **Variables** (when applicable): The variable names, supported values, and descriptions.
    - **Contribute**: Notes and how to get in touch with the maintainers.
      Usually the contribution process should follow the [official guide](../../ci/components/index.md).
 1. Use underscores `_` for composite input names and hyphens `-` as separators, if necessary. For example: `service_x-project_name`.

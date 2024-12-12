@@ -103,6 +103,7 @@ This method of user contribution and membership mapping is available for
 - GitLab.com
 - GitLab self-managed when two feature flags are enabled
 
+User contribution mapping is not supported when you import projects to a personal namespace.
 For information on the other method available for GitLab self-managed without enabled feature flags,
 see [user contribution and membership mapping](../../group/import/direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 

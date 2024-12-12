@@ -41,7 +41,7 @@ Each keyword entry in the reference:
 
 - Should include the following sections:
   - [Keyword type](#keyword-type)
-  - [Possible inputs](#possible-inputs)
+  - [Supported values](#supported-values)
   - [Example of `keyword-name`](#example-of-keyword-name)
 - (Optional) Can also include the following sections when needed:
   - [Additional details](#additional-details)
@@ -60,26 +60,26 @@ section, make note of that as well. For example:
 - `**Keyword type**: Job keyword. You can use it only as part of a job.`
 - ``**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).``
 
-### Possible inputs
+### Supported values
 
-List all the possible inputs, and any extra details about the inputs, such as defaults
+List all the supported values, and any extra details about the values, such as defaults
 or changes due to different GitLab versions. For example:
 
 ```markdown
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default if not defined) or `false`.
 ```
 
 ```markdown
-**Possible inputs**:
+**Supported values**:
 
 - A single exit code.
 - An array of exit codes.
 ```
 
 ```markdown
-**Possible inputs**:
+**Supported values**:
 
 - A string with the long description.
 - The path to a file that contains the description. Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/67).
@@ -90,11 +90,11 @@ or changes due to different GitLab versions. For example:
 
 #### CI/CD variables with keywords
 
-If CI/CD variables can be used with the keyword, add a line to the **Possible inputs**
+If CI/CD variables can be used with the keyword, add a line to the **Supported values**
 section. For example:
 
 ```markdown
-**Possible inputs**:
+**Supported values**:
 
 - A string with the long description.
 - [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -128,11 +128,11 @@ to select a specific site profile and scanner profile.
 ````
 
 If the example uses a CI/CD variable, like `new_keyword: "Description of $CI_COMMIT_BRANCH"`,
-the **Possible inputs** section must explain that CI/CD variables are supported.
-If this entry is missing from the possible inputs, check with the author to see if
+the **Supported values** section must explain that CI/CD variables are supported.
+If this entry is missing from the supported values, check with the author to see if
 variables are supported, then:
 
-- [Add CI/CD variables to the **possible inputs** section](#cicd-variables-with-keywords)
+- [Add CI/CD variables to the **Supported values** section](#cicd-variables-with-keywords)
   if variables are supported.
 - Remove the CI/CD variable from the example if variables are not supported.
 

@@ -1,6 +1,7 @@
 <script>
 import DefaultActions from 'jh_else_ce/blob/components/blob_header_default_actions.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
 import BlobFilepath from './blob_header_filepath.vue';
@@ -16,6 +17,7 @@ export default {
     TableOfContents,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentUser: {
@@ -151,8 +153,9 @@ export default {
 </script>
 <template>
   <div class="js-file-title file-title-flex-parent">
-    <div class="gl-flex">
-      <table-of-contents class="gl-pr-2" />
+    <div class="gl-mb-3 gl-flex gl-gap-3 md:gl-mb-0">
+      <table-of-contents v-if="!glFeatures.blobOverflowMenu" class="gl-pr-2" />
+
       <blob-filepath
         :blob="blob"
         :show-path="showPath"
@@ -165,7 +168,7 @@ export default {
       </blob-filepath>
     </div>
 
-    <div class="file-actions gl-flex gl-flex-wrap">
+    <div class="file-actions gl-flex gl-flex-wrap gl-gap-3">
       <viewer-switcher
         v-if="!hideViewerSwitcher"
         v-model="viewer"
@@ -175,11 +178,13 @@ export default {
         v-on="$listeners"
       />
 
+      <table-of-contents v-if="glFeatures.blobOverflowMenu" class="gl-pr-2" />
+
       <web-ide-link
         v-if="showWebIdeLink"
         :show-edit-button="!isBinary"
         :button-variant="editButtonVariant"
-        class="gl-mr-3"
+        class="sm:!gl-ml-0"
         :edit-url="blob.editBlobPath"
         :web-ide-url="blob.ideEditPath"
         :needs-to-fork="showForkSuggestion"

@@ -335,9 +335,10 @@ module API
           params[:private_profile] = Gitlab::CurrentSettings.user_defaults_to_private_profile
         end
 
-        user = ::Users::AuthorizedCreateService.new(current_user, params).execute
+        response = ::Users::AuthorizedCreateService.new(current_user, params).execute
+        user = response.payload[:user]
 
-        if user.persisted?
+        if response.success?
           present user, with: Entities::UserWithAdmin, current_user: current_user
         else
           conflict!('Email has already been taken') if User

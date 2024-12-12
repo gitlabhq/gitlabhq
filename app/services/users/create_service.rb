@@ -13,9 +13,7 @@ module Users
       user = build_class.new(current_user, params).execute
       reset_token = user.generate_reset_token if user.recently_sent_password_reset?
 
-      after_create_hook(user, reset_token) if user.save
-
-      user
+      create_user(user, reset_token)
     end
 
     private
@@ -27,6 +25,23 @@ module Users
     def build_class
       # overridden by inheriting classes
       Users::BuildService
+    end
+
+    def create_user(user, reset_token)
+      if user.save
+        after_create_hook(user, reset_token)
+        success({ user: user })
+      else
+        error(user.errors.full_messages.to_sentence, { user: user })
+      end
+    end
+
+    def error(message, payload)
+      ServiceResponse.error(message: message, payload: payload)
+    end
+
+    def success(payload)
+      ServiceResponse.success(payload: payload)
     end
   end
 end

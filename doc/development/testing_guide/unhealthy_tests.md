@@ -460,6 +460,15 @@ Reproducing a job failure in CI always helps with troubleshooting why and how a 
 1. Since we want to force the pipeline to run against a specific version, we do not want to run a merged results pipeline. We can introduce a merge conflict into the MR to achieve this.
 1. To preserve spec ordering, update the `spec/support/rspec_order.rb` file by hard coding `Kernel.srand` with the value shown in the originally failing job, as done [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128428/diffs#32f6fa4961481518204e227252552dba7483c3b0_62_62). You can fine the srand value in the job log by searching `Randomized with seed` which is followed by this value.
 
+### Metrics & Tracking
+
+- [(Snowflake) Flaky tests Dashboard](https://app.snowflake.com/ys68254/gitlab/#/flaky-tests-dcwtdvVO6) (internal)
+- [(Snowflake) Unhealthy tests Dashboard](https://app.snowflake.com/ys68254/gitlab/#/dx-unhealthy-tests-d9MEFZz14) (internal)
+- [(GitLab) GitLab.org Group Flaky Test Issue Board](https://gitlab.com/groups/gitlab-org/-/boards/1487067?label_name%5B%5D=failure::flaky-test)
+- [(GitLab) "Most flaky tests" Issue Board](https://gitlab.com/groups/gitlab-org/-/boards/7518854?label_name%5B%5D=flakiness::1)
+- [(Grafana) End-to-end test flakiness Dashboard](https://dashboards.quality.gitlab.net/d/tR_SmBDVk/main-runs?orgId=1) (internal)
+- [(Tableau) Flaky test issues](https://10az.online.tableau.com/#/site/gitlab/workbooks/2283052/views) (internal)
+
 ### Resources
 
 - [Flaky Tests: Are You Sure You Want to Rerun Them?](https://semaphoreci.com/blog/2017/04/20/flaky-tests.html)

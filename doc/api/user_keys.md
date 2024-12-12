@@ -12,23 +12,19 @@ DETAILS:
 
 Use this API to interact with SSH and GPG keys for users. For more information, see [SSH keys](../user/ssh.md) and [GPG keys](../user/project/repository/signed_commits/gpg.md).
 
-## List your SSH keys
+## List all SSH keys
 
-Get a list of your SSH keys.
+Lists all SSH keys for your user account.
+
+Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
-
-This endpoint takes pagination parameters `page` and `per_page` to restrict the list of keys.
+- You must be authenticated.
 
 ```plaintext
 GET /user/keys
 ```
-
-Supported attributes:
-
-- **none**
 
 Example request:
 
@@ -56,9 +52,9 @@ Example response:
 ]
 ```
 
-## List SSH keys for a user
+## List all SSH keys for a user
 
-Get a list of the specified user's SSH keys.
+Lists all SSH keys for a given user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id_or_username/keys
@@ -68,7 +64,7 @@ Supported attributes:
 
 | Attribute        | Type   | Required | Description |
 |:-----------------|:-------|:---------|:------------|
-| `id_or_username` | string | yes      | ID or username of the user to get the SSH keys for. |
+| `id_or_username` | string | yes      | ID or username of user account |
 
 Example request:
 
@@ -77,9 +73,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1/keys"
 ```
 
-## Get a single SSH key
+## Get an SSH key
 
-Get a single SSH key.
+Gets an SSH key for your user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /user/keys/:key_id
@@ -89,7 +85,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id`  | string | yes      | ID of an SSH key |
+| `key_id`  | string | yes      | ID of existing key |
 
 Example request:
 
@@ -109,9 +105,9 @@ Example response:
 }
 ```
 
-## Get a single SSH key for a user
+## Get an SSH key for a user
 
-Get a single SSH key for a given user.
+Gets an SSH key for a given user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id/keys/:key_id
@@ -121,8 +117,8 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of specified user |
-| `key_id`  | integer | yes      | SSH key ID  |
+| `id`      | integer | yes      | ID of user account |
+| `key_id`  | integer | yes      | ID of existing key  |
 
 Example request:
 
@@ -142,15 +138,15 @@ Example response:
 }
 ```
 
-## Add an SSH key to your account
+## Add an SSH key
 
 > - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
 
-Create a new SSH key for your account.
+Adds an SSH key for your user account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
+- You must be authenticated.
 
 ```plaintext
 POST /user/keys
@@ -160,10 +156,10 @@ Supported attributes:
 
 | Attribute    | Type   | Required | Description |
 |:-------------|:-------|:---------|:------------|
-| `title`      | string | yes      | New SSH key's title |
-| `key`        | string | yes      | New SSH key |
-| `expires_at` | string | no       | Expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `usage_type` | string | no       | Scope of usage for the SSH key: `auth`, `signing` or `auth_and_signing`. Default: `auth_and_signing` |
+| `title`      | string | yes      | Title for key |
+| `key`        | string | yes      | Public key value |
+| `expires_at` | string | no       | Expiration date of the key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `usage_type` | string | no       | Usage scope for the key. Possible values: `auth`, `signing` or `auth_and_signing`. Default value: `auth_and_signing` |
 
 Returns either:
 
@@ -198,14 +194,14 @@ Example response:
 
 > - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
 
-Create new key owned by the specified user.
+Adds an SSH key for a given user account.
 
 NOTE:
 This also adds an audit event.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/keys
@@ -215,11 +211,11 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description |
 |:-------------|:--------|:---------|:------------|
-| `id`         | integer | yes      | ID of specified user |
-| `title`      | string  | yes      | New SSH key's title |
-| `key`        | string  | yes      | New SSH key |
-| `expires_at` | string  | no       | Expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `usage_type` | string  | no       | Scope of usage for the SSH key: `auth`, `signing` or `auth_and_signing`. Default: `auth_and_signing` |
+| `id`         | integer | yes      | ID of user account |
+| `title`      | string  | yes      | Title for key |
+| `key`        | string  | yes      | Public key value  |
+| `expires_at` | string  | no       | Expiration date of the key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `usage_type` | string  | no       | Usage scope for the key. Possible values: `auth`, `signing` or `auth_and_signing`. Default value: `auth_and_signing` |
 
 Returns either:
 
@@ -250,13 +246,13 @@ Example response:
 }
 ```
 
-## Delete an SSH key from your account
+## Delete an SSH key
 
-Delete an SSH key from your account.
+Deletes an SSH key from your user account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
+- You must be authenticated.
 
 ```plaintext
 DELETE /user/keys/:key_id
@@ -266,7 +262,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `key_id`  | integer | yes      | SSH key ID  |
+| `key_id`  | integer | yes      | ID of existing key  |
 
 Returns either:
 
@@ -275,11 +271,11 @@ Returns either:
 
 ## Delete an SSH key for a user
 
-Delete an SSH key owned by the specified user.
+Deletes an SSH key from a given user account.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 DELETE /users/:id/keys/:key_id
@@ -289,24 +285,20 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of specified user |
-| `key_id`  | integer | yes      | SSH key ID  |
+| `id`      | integer | yes      | ID of user account |
+| `key_id`  | integer | yes      | ID of existing key  |
 
-## List your GPG keys
+## List all GPG keys
 
-Get a list of your GPG keys.
+Lists all GPG keys for your user account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
+- You must be authenticated.
 
 ```plaintext
 GET /user/gpg_keys
 ```
-
-Supported attributes:
-
-- **none**
 
 Example request:
 
@@ -327,9 +319,9 @@ Example response:
 ]
 ```
 
-## List GPG keys for a user
+## List all GPG keys for a user
 
-Get a list of the specified user's GPG keys. This endpoint can be accessed without authentication.
+Lists all GPG keys for a given user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys
@@ -339,7 +331,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user |
+| `id`      | integer | yes      | ID of user account |
 
 Example request:
 
@@ -360,13 +352,13 @@ Example response:
 ]
 ```
 
-## Get a single GPG key
+## Get a GPG key
 
-Get details of one of your GPG keys.
+Gets a GPG key for your user account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
+- You must be authenticated.
 
 ```plaintext
 GET /user/gpg_keys/:key_id
@@ -376,7 +368,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `key_id`  | integer | yes      | ID of the GPG key |
+| `key_id`  | integer | yes      | ID of existing key |
 
 Example request:
 
@@ -395,9 +387,9 @@ Example response:
 }
 ```
 
-## Get a single GPG key for a user
+## Get a GPG key for a user
 
-Get a specific GPG key for a given user. This endpoint can be accessed without administrator authentication.
+Gets a GPG key for a given user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys/:key_id
@@ -407,8 +399,8 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user |
-| `key_id`  | integer | yes      | ID of the GPG key |
+| `id`      | integer | yes      | ID of user account |
+| `key_id`  | integer | yes      | ID of existing key |
 
 Example request:
 
@@ -427,13 +419,13 @@ Example response:
 }
 ```
 
-## Add a GPG key to your account
+## Add a GPG key
 
-Create a new GPG key for your account.
+Adds a GPG key for your user account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
+- You must be authenticated.
 
 ```plaintext
 POST /user/gpg_keys
@@ -443,7 +435,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key`     | string | yes      | New GPG key |
+| `key`     | string | yes      | Public key value |
 
 Example request:
 
@@ -468,11 +460,11 @@ Example response:
 
 ## Add a GPG key for a user
 
-Create new GPG key owned by the specified user.
+Adds a GPG key for a given user account.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/gpg_keys
@@ -482,8 +474,8 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user |
-| `key_id`  | integer | yes      | ID of the GPG key |
+| `id`      | integer | yes      | ID of user account |
+| `key`     | integer | yes      | Public key value |
 
 Example request:
 
@@ -504,13 +496,13 @@ Example response:
 ]
 ```
 
-## Delete a GPG key from your account
+## Delete a GPG key
 
-Delete a GPG key from your account.
+Deletes a GPG key from your user account.
 
 Prerequisites:
 
-- You must be [authenticated](rest/authentication.md).
+- You must be authenticated.
 
 ```plaintext
 DELETE /user/gpg_keys/:key_id
@@ -520,7 +512,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `key_id`  | integer | yes      | ID of the GPG key |
+| `key_id`  | integer | yes      | ID of existing key |
 
 Returns either:
 
@@ -529,11 +521,11 @@ Returns either:
 
 ## Delete a GPG key for a user
 
-Delete a GPG key owned by a specified user.
+Deletes a GPG key from a given user account.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 DELETE /users/:id/gpg_keys/:key_id
@@ -543,5 +535,5 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user |
-| `key_id`  | integer | yes      | ID of the GPG key |
+| `id`      | integer | yes      | ID of user account |
+| `key_id`  | integer | yes      | ID of existing key |

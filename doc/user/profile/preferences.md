@@ -84,6 +84,20 @@ To change the layout width of your UI:
 1. Under **Layout width**, choose **Fixed** or **Fluid**.
 1. Select **Save changes**.
 
+### Set the default text editor
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
+
+You can set a default editor for editing content in GitLab.
+If you do not choose a default text editor, your last used choice is preserved.
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Scroll to the **Behavior** section.
+1. Under **Default text editor**, select the **Enable default text editor** checkbox.
+1. Choose either **Rich text editor** or **Plain text editor** as your default.
+1. Select **Save changes**.
+
 ### Choose your home organization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.

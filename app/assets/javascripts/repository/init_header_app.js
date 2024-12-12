@@ -77,7 +77,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       gitpodUrl,
       userPreferencesGitpodPath,
       userProfileEnableGitpodPath,
-    } = convertObjectPropsToCamelCase(JSON.parse(webIdeButtonOptions));
+    } = convertObjectPropsToCamelCase(webIdeButtonOptions ? JSON.parse(webIdeButtonOptions) : {});
 
     initClientQueries({ projectPath, projectShortPath, ref, escapedRef });
 

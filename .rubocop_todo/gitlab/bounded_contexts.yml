@@ -2305,6 +2305,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/mutations/iterations/delete.rb'
     - 'ee/app/graphql/mutations/iterations/update.rb'
     - 'ee/app/graphql/mutations/member_roles/base.rb'
+    - 'ee/app/graphql/mutations/member_roles/create_admin.rb'
     - 'ee/app/graphql/mutations/member_roles/create.rb'
     - 'ee/app/graphql/mutations/member_roles/delete.rb'
     - 'ee/app/graphql/mutations/member_roles/update.rb'

@@ -122,7 +122,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mr-3">
+  <div>
     <gl-button-group>
       <lock-file-button
         v-if="glFeatures.fileLocks"

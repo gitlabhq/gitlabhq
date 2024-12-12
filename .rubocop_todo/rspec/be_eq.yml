@@ -513,7 +513,6 @@ RSpec/BeEq:
     - 'ee/spec/services/vulnerabilities/security_finding/create_issue_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/security_finding/create_merge_request_service_spec.rb'
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
-    - 'ee/spec/services/work_items/callbacks/rolledup_dates_spec.rb'
     - 'ee/spec/services/work_items/callbacks/status_spec.rb'
     - 'ee/spec/services/work_items/callbacks/weight_spec.rb'
     - 'ee/spec/services/work_items/update_service_spec.rb'

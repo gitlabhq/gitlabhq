@@ -97,7 +97,7 @@ is not used.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: These keywords can have custom defaults:
+**Supported values**: These keywords can have custom defaults:
 
 - [`after_script`](#after_script)
 - [`artifacts`](#artifacts)
@@ -161,7 +161,7 @@ The time limit to resolve all files is 30 seconds.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: The `include` subkeys:
+**Supported values**: The `include` subkeys:
 
 - [`include:component`](#includecomponent)
 - [`include:local`](#includelocal)
@@ -204,7 +204,7 @@ pipeline configuration.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: The full address of the CI/CD component, formatted as
+**Supported values**: The full address of the CI/CD component, formatted as
 `<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`.
 
 **Example of `include:component`**:
@@ -225,7 +225,7 @@ Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**:
+**Supported values**:
 
 A full path relative to the root directory (`/`):
 
@@ -262,7 +262,7 @@ use `include:project` and `include:file`.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**:
+**Supported values**:
 
 - `include:project`: The full GitLab project path.
 - `include:file` A full file path, or array of file paths, relative to the root directory (`/`).
@@ -324,7 +324,7 @@ Use `include:remote` with a full URL to include a file from a different location
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**:
+**Supported values**:
 
 A public URL accessible by an HTTP/HTTPS `GET` request:
 
@@ -355,7 +355,7 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**:
+**Supported values**:
 
 A [CI/CD template](../examples/index.md#cicd-templates):
 
@@ -395,7 +395,7 @@ uses [`spec:inputs`](#specinputs) and is added to the pipeline.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: A string, numeric value, or boolean.
+**Supported values**: A string, numeric value, or boolean.
 
 **Example of `include:inputs`**:
 
@@ -428,7 +428,7 @@ You can use [`rules`](#rules) with `include` to conditionally include other conf
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: These `rules` subkeys:
+**Supported values**: These `rules` subkeys:
 
 - [`rules:if`](#rulesif).
 - [`rules:exists`](#rulesexists).
@@ -540,7 +540,7 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
 the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines) feature.
 
-**Possible inputs**:
+**Supported values**:
 
 - `conservative`: Cancel the pipeline, but only if no jobs with `interruptible: false` have started yet. Default when not defined.
 - `interruptible`: Cancel only jobs with `interruptible: true`.
@@ -574,7 +574,7 @@ In this example:
 
 Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be canceled as soon as one job fails.
 
-**Possible inputs**:
+**Supported values**:
 
 - `all`: Cancel the pipeline and all running jobs as soon as one job fails.
 - `none`: Do not auto-cancel any jobs.
@@ -620,7 +620,7 @@ You can use `name` in `workflow:` to define a name for pipelines.
 
 All pipelines are assigned the defined name. Any leading or trailing spaces in the name are removed.
 
-**Possible inputs**:
+**Supported values**:
 
 - A string.
 - [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -672,7 +672,7 @@ but controls whether or not a whole pipeline is created.
 
 When no rules evaluate to true, the pipeline does not run.
 
-**Possible inputs**: You can use some of the same keywords as job-level [`rules`](#rules):
+**Supported values**: You can use some of the same keywords as job-level [`rules`](#rules):
 
 - [`rules: if`](#rulesif).
 - [`rules: changes`](#ruleschanges).
@@ -722,7 +722,7 @@ variable takes precedence and overrides the global variable.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: Variable name and value pairs:
+**Supported values**: Variable name and value pairs:
 
 - The name can use only numbers, letters, and underscores (`_`).
 - The value must be a string.
@@ -798,7 +798,7 @@ Use `workflow:rules:auto_cancel` to configure the behavior of
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) or
 the [`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure) features.
 
-**Possible inputs**:
+**Supported values**:
 
 - `on_new_commit`: [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
 - `on_job_failure`: [`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)
@@ -862,7 +862,7 @@ configuration is merged with the contents of the `.gitlab-ci.yml` file.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: A hash of strings representing the expected inputs.
+**Supported values**: A hash of strings representing the expected inputs.
 
 **Example of `spec:inputs`**:
 
@@ -902,7 +902,7 @@ Use `default: ''` to have no default value.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: A string representing the default value, or `''`.
+**Supported values**: A string representing the default value, or `''`.
 
 **Example of `spec:inputs:default`**:
 
@@ -944,7 +944,7 @@ understand the input.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: A string representing the description.
+**Supported values**: A string representing the description.
 
 **Example of `spec:inputs:description`**:
 
@@ -968,7 +968,7 @@ The limit is 50 options per input.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: An array of input options.
+**Supported values**: An array of input options.
 
 **Example of `spec:inputs:options`**:
 
@@ -1006,7 +1006,7 @@ Use `spec:inputs:regex` to specify a regular expression that the input must matc
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: Must be a regular expression.
+**Supported values**: Must be a regular expression.
 
 **Example of `spec:inputs:regex`**:
 
@@ -1039,7 +1039,7 @@ type for inputs.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: Can be one of:
+**Supported values**: Can be one of:
 
 - `array`, to accept an [array](../yaml/inputs.md#array-type) of inputs.
 - `string`, to accept string inputs (default when not defined).
@@ -1082,7 +1082,7 @@ Use `after_script` to define an array of commands to run last, after a job's `be
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: An array including:
+**Supported values**: An array including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
@@ -1159,7 +1159,7 @@ The default value for `allow_failure` is:
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false`.
 
@@ -1205,7 +1205,7 @@ and `allow_failure` false for any other exit code.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A single exit code.
 - An array of exit codes.
@@ -1260,7 +1260,7 @@ link outside it.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of file paths, relative to the project directory.
 - You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
@@ -1300,7 +1300,7 @@ Use `artifacts:exclude` to prevent files from being added to an artifacts archiv
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of file paths, relative to the project directory.
 - You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
@@ -1344,7 +1344,7 @@ accessible anymore.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: The expiry time. If no unit is provided, the time is in seconds.
+**Supported values**: The expiry time. If no unit is provided, the time is in seconds.
 Valid values include:
 
 - `'42'`
@@ -1386,7 +1386,7 @@ Use the `artifacts:expose_as` keyword to
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - The name to display in the merge request UI for the artifacts download link.
   Must be combined with [`artifacts:paths`](#artifactspaths).
@@ -1434,7 +1434,7 @@ If not defined, the default name is `artifacts`, which becomes `artifacts.zip` w
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - The name of the artifacts archive. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
   Must be combined with [`artifacts:paths`](#artifactspaths).
@@ -1476,7 +1476,7 @@ pipelines for anonymous, guest, and reporter users, set `artifacts:public` to `f
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default if not defined) or `false`.
 
@@ -1499,7 +1499,7 @@ You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in 
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous, guest, and reporter users.
@@ -1527,7 +1527,7 @@ included templates in jobs.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - See list of available [artifacts reports types](artifacts_reports.md).
 
@@ -1562,7 +1562,7 @@ in the repository's `.gitignore`, so matching artifacts in `.gitignore` are incl
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false` (default if not defined).
 
@@ -1588,7 +1588,7 @@ failure.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `on_success` (default): Upload artifacts only when the job succeeds.
 - `on_failure`: Upload artifacts only when the job fails.
@@ -1617,7 +1617,7 @@ Use `before_script` to define an array of commands that should run before each j
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: An array including:
+**Supported values**: An array including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
@@ -1680,7 +1680,7 @@ Use the `cache:paths` keyword to choose which files or directories to cache.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of paths relative to the project directory (`$CI_PROJECT_DIR`).
   You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
@@ -1729,7 +1729,7 @@ Must be used with `cache: paths`, or nothing is cached.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A string.
 - A predefined [CI/CD variable](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -1777,7 +1777,7 @@ which speeds up subsequent pipeline runs.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of one or two file paths.
 
@@ -1818,7 +1818,7 @@ Use `cache:key:prefix` to combine a prefix with the SHA computed for [`cache:key
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A string.
 - A predefined [CI/CD variable](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -1864,7 +1864,7 @@ Caching untracked files can create unexpectedly large caches if the job download
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false` (default).
 
@@ -1909,7 +1909,7 @@ cache keys used by protected branches.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false` (default).
 
@@ -1931,7 +1931,7 @@ Must be used with `cache: paths`, or nothing is cached.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `on_success` (default): Save the cache only when the job succeeds.
 - `on_failure`: Save the cache only when the job fails.
@@ -1971,7 +1971,7 @@ Must be used with `cache: paths`, or nothing is cached.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `pull`
 - `push`
@@ -2017,7 +2017,7 @@ in the `fallback_keys` section.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of cache keys
 
@@ -2044,7 +2044,7 @@ line in the job output matches the regular expression.
 To extract the code coverage value from the match, GitLab uses
 this smaller regular expression: `\d+(?:\.\d+)?`.
 
-**Possible inputs**:
+**Supported values**:
 
 - An RE2 regular expression. Must start and end with `/`. Must match the coverage number.
   May match surrounding text as well, so you don't need to use a regular expression character group
@@ -2091,7 +2091,7 @@ be `dast`.
 
 **Keyword type**: Job keyword. You can use only as part of a job.
 
-**Possible inputs**: One each of `site_profile` and `scanner_profile`.
+**Supported values**: One each of `site_profile` and `scanner_profile`.
 
 - Use `site_profile` to specify the site profile to be used in the job.
 - Use `scanner_profile` to specify the scanner profile to be used in the job.
@@ -2135,7 +2135,7 @@ and the job fetches all artifacts from those jobs.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - The names of jobs to fetch artifacts from.
 - An empty array (`[]`), to configure the job to not download any artifacts.
@@ -2196,7 +2196,7 @@ Use `environment` to define the [environment](../environments/index.md) that a j
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: The name of the environment the job deploys to, in one of these
+**Supported values**: The name of the environment the job deploys to, in one of these
 formats:
 
 - Plain text, including letters, digits, spaces, and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
@@ -2225,7 +2225,7 @@ Common environment names are `qa`, `staging`, and `production`, but you can use 
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: The name of the environment the job deploys to, in one of these
+**Supported values**: The name of the environment the job deploys to, in one of these
 formats:
 
 - Plain text, including letters, digits, spaces, and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
@@ -2249,7 +2249,7 @@ Set a URL for an [environment](../environments/index.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: A single URL, in one of these formats:
+**Supported values**: A single URL, in one of these formats:
 
 - Plain text, like `https://prod.example.com`.
 - [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file),
@@ -2290,7 +2290,7 @@ Use the `action` keyword to specify how the job interacts with the environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: One of the following keywords:
+**Supported values**: One of the following keywords:
 
 | **Value** | **Description** |
 |:----------|:----------------|
@@ -2324,7 +2324,7 @@ automatically stops it.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: A period of time written in natural language. For example,
+**Supported values**: A period of time written in natural language. For example,
 these are all equivalent:
 
 - `168 hours`
@@ -2365,7 +2365,7 @@ for an environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md). The format is `path/to/agent/project:agent-name`.
 - `namespace`: A string representing the Kubernetes namespace. It needs to be set together with the `agent` keyword.
@@ -2407,7 +2407,7 @@ Use the `deployment_tier` keyword to specify the tier of the deployment environm
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: One of the following:
+**Supported values**: One of the following:
 
 - `production`
 - `staging`
@@ -2467,7 +2467,7 @@ and is a little more flexible and readable.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - The name of another job in the pipeline.
 - A list (array) of names of other jobs in the pipeline.
@@ -2533,7 +2533,7 @@ at certain stages of job execution, like before retrieving the Git repository.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A hash of hooks and their commands. Available hooks: `pre_get_sources_script`.
 
@@ -2549,7 +2549,7 @@ You can use it for example to:
 - Adjust the [Git configuration](../jobs/index.md#get_sources-job-section-fails-because-of-an-http2-problem).
 - Export [tracing variables](../../topics/git/troubleshooting_git.md#debug-git-with-traces).
 
-**Possible inputs**: An array including:
+**Supported values**: An array including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
@@ -2587,7 +2587,7 @@ Use `identity` to authenticate with third party services using identity federati
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
 
-**Possible inputs**: An identifier. Supported providers:
+**Supported values**: An identifier. Supported providers:
 
 - `google_cloud`: Google Cloud. Must be configured with the [Google Cloud IAM integration](../../integration/google_cloud_iam.md).
 
@@ -2612,7 +2612,7 @@ job_with_workload_identity:
 Use `id_tokens` to create [JSON web tokens (JWT)](https://www.rfc-editor.org/rfc/rfc7519) to authenticate with third party services. All
 JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
 
-**Possible inputs**:
+**Supported values**:
 
 - Token names with their `aud` claims. `aud` supports:
   - A single string.
@@ -2651,7 +2651,7 @@ Use `image` to specify a Docker image that the job runs in.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: The name of the image, including the registry path if needed, in one of these formats:
+**Supported values**: The name of the image, including the registry path if needed, in one of these formats:
 
 - `<image-name>` (Same as using `<image-name>` with the `latest` tag)
 - `<image-name>:<tag>`
@@ -2688,7 +2688,7 @@ The name of the Docker image that the job runs in. Similar to [`image`](#image) 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: The name of the image, including the registry path if needed, in one of these formats:
+**Supported values**: The name of the image, including the registry path if needed, in one of these formats:
 
 - `<image-name>` (Same as using `<image-name>` with the `latest` tag)
 - `<image-name>:<tag>`
@@ -2720,7 +2720,7 @@ where each shell token is a separate string in the array.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A string.
 
@@ -2748,7 +2748,7 @@ Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 A hash of options for the Docker executor, which can include:
 
@@ -2784,7 +2784,7 @@ The pull policy that the runner uses to fetch the Docker image.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A single pull policy, or multiple pull policies in an array.
   Can be `always`, `if-not-present`, or `never`.
@@ -2826,7 +2826,7 @@ Use `inherit:default` to control the inheritance of [default keywords](#default)
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default) or `false` to enable or disable the inheritance of all default keywords.
 - A list of specific default keywords to inherit.
@@ -2862,7 +2862,7 @@ Use `inherit:variables` to control the inheritance of [global variables](#variab
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default) or `false` to enable or disable the inheritance of all global variables.
 - A list of specific variables to inherit.
@@ -2908,7 +2908,7 @@ the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) se
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false` (default).
 
@@ -3013,7 +3013,7 @@ Jobs in multiple stages can run concurrently.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of jobs (maximum of 50 jobs).
 - An empty array (`[]`), to set the job to start as soon as the pipeline is created.
@@ -3091,7 +3091,7 @@ downloaded in jobs that use `needs`.
 
 **Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default) or `false`.
 
@@ -3147,7 +3147,7 @@ from the latest successful run of the specified job.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `needs:project`: A full project path, including namespace and group.
 - `job`: The job to download artifacts from.
@@ -3216,7 +3216,7 @@ its parent pipeline or another child pipeline in the same parent-child pipeline 
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `needs:pipeline`: A pipeline ID. Must be a pipeline present in the same parent-child pipeline hierarchy.
 - `job`: The job to download artifacts from.
@@ -3331,7 +3331,7 @@ replicated to the job.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A full project path, including namespace and group. If the
   project is in the same group or namespace, you can omit them from the `project`
@@ -3362,7 +3362,7 @@ Use `needs:parallel:matrix` to execute jobs out-of-order depending on paralleliz
 
 **Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
 
-**Possible inputs**: An array of hashes of variables:
+**Supported values**: An array of hashes of variables:
 
 - The variables and values must be selected from the variables and values defined in the `parallel:matrix` job.
 
@@ -3463,7 +3463,7 @@ Use `publish` to configure the content directory of a [`pages` job](#pages).
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Possible inputs**: A path to a directory containing the Pages content.
+**Supported values**: A path to a directory containing the Pages content.
 
 **Example of `publish`**:
 
@@ -3504,7 +3504,7 @@ Use `pages.path_prefix` to configure a path prefix for [parallel deployments](..
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Possible inputs**: A string, a [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), or a combination of both. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted.
+**Supported values**: A string, a [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), or a combination of both. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted.
 
 **Example of `pages.path_prefix`**:
 
@@ -3539,7 +3539,7 @@ value to `never`.
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Possible inputs**: The expiry time. If no unit is provided, the time is in seconds.
+**Supported values**: The expiry time. If no unit is provided, the time is in seconds.
 Valid values include:
 
 - `'42'`
@@ -3578,7 +3578,7 @@ Parallel jobs are named sequentially from `job_name 1/N` to `job_name N/N`.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A numeric value from `1` to `200`.
 
@@ -3617,7 +3617,7 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array of hashes of variables:
+**Supported values**: An array of hashes of variables:
 
 - The variable names can use only numbers, letters, and underscores (`_`).
 - The values must be either a string, or an array of strings.
@@ -3706,7 +3706,7 @@ If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.h
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: The `release` subkeys:
+**Supported values**: The `release` subkeys:
 
 - [`tag_name`](#releasetag_name)
 - [`tag_message`](#releasetag_message) (optional)
@@ -3769,7 +3769,7 @@ New tags use the SHA associated with the pipeline.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A tag name.
 
@@ -3814,7 +3814,7 @@ If omitted, a lightweight tag is created.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A text string.
 
@@ -3835,7 +3835,7 @@ The release name. If omitted, it is populated with the value of `release: tag_na
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A text string.
 
@@ -3854,7 +3854,7 @@ The long description of the release.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A string with the long description.
 - The path to a file that contains the description.
@@ -3885,7 +3885,7 @@ The `ref` for the release, if the `release: tag_name` doesn't exist yet.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A commit SHA, another tag name, or a branch name.
 
@@ -3897,7 +3897,7 @@ The title of each milestone the release is associated with.
 
 The date and time when the release is ready.
 
-**Possible inputs**:
+**Supported values**:
 
 - A date enclosed in quotes and expressed in ISO 8601 format.
 
@@ -3948,7 +3948,7 @@ can be deployed to, but only one deployment can occur per device at any given ti
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - Only letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
   It can't start or end with `/`. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -3982,7 +3982,7 @@ to select which failures to retry on.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - `0` (default), `1`, or `2`.
 
@@ -4015,7 +4015,7 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A single failure type, or an array of one or more failure types:
 
@@ -4080,7 +4080,7 @@ Use `retry:exit_codes` with `retry:max` to retry jobs for only specific failure 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A single exit code.
 - An array of exit codes.
@@ -4166,7 +4166,7 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
 to configure the job behavior, or with [`workflow`](#workflow) to configure the pipeline behavior.
 
-**Possible inputs**:
+**Supported values**:
 
 - A [CI/CD variable expression](../jobs/job_rules.md#cicd-variable-expressions).
 
@@ -4223,7 +4223,7 @@ or [merge request pipelines](../pipelines/merge_request_pipelines.md), though
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 An array including any number of:
 
@@ -4295,9 +4295,9 @@ any subkeys. All additional details and related topics are the same.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
-- See the possible inputs for `rules:changes` above.
+- Same as `rules:changes` above.
 
 **Example of `rules:changes:paths`**:
 
@@ -4331,7 +4331,7 @@ listed under [`rules:changes:paths`](#ruleschangespaths).
 
 **Keyword type**: Job keyword. You can use it only as part of a job, and it must be combined with `rules:changes:paths`.
 
-**Possible inputs**:
+**Supported values**:
 
 - A branch name, like `main`, `branch1`, or `refs/heads/branch1`.
 - A tag name, like `tag1` or `refs/tags/tag1`.
@@ -4371,7 +4371,7 @@ Use `exists` to run a job when certain files exist in the repository.
 
 **Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`)
   and can't directly link outside it. File paths can use glob patterns and
@@ -4434,7 +4434,7 @@ any subkeys. All additional details are the same.
 
 **Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of file paths.
 
@@ -4474,7 +4474,7 @@ listed under [`rules:exists:paths`](#rulesexistspaths). Must be used with `rules
 
 **Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include), and it must be combined with `rules:exists:paths`.
 
-**Possible inputs**:
+**Supported values**:
 
 - `exists:project`: A full project path, including namespace and group.
 - `exists:ref`: Optional. The commit ref to use to search for the file. The ref can be a tag, branch name, or SHA. Defaults to the `HEAD` of the project when not specified.
@@ -4506,7 +4506,7 @@ if reached when evaluating a job's rules.
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `on_success` (default): Run the job only when no jobs in earlier stages fail.
 - `on_failure`: Run the job only when at least one job in an earlier stage fails.
@@ -4559,7 +4559,7 @@ job to run before continuing.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false`. Defaults to `false` if not defined.
 
@@ -4590,7 +4590,7 @@ Use `needs` in rules to update a job's [`needs`](#needs) for specific conditions
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of job names as strings.
 - A hash with a job name, optionally with additional attributes.
@@ -4637,7 +4637,7 @@ Use [`variables`](#variables) in `rules` to define variables for specific condit
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A hash of variables in the format `VARIABLE-NAME: value`.
 
@@ -4667,7 +4667,7 @@ Use `interruptible` in rules to update a job's [`interruptible`](#interruptible)
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` or `false`.
 
@@ -4705,7 +4705,7 @@ You can also provide optional environment variables and inputs.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of hashes, where each hash represents a step with the following possible keys:
   - `name`: A string representing the name of the step.
@@ -4750,7 +4750,7 @@ All jobs except [trigger jobs](#trigger) require a `script` keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array including:
+**Supported values**: An array including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
@@ -4802,7 +4802,7 @@ Use `secrets:vault` to specify secrets provided by a [HashiCorp Vault](https://w
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `engine:name`: Name of the secrets engine. Can be one of `kv-v2` (default), `kv-v1`, or `generic`.
 - `engine:path`: Path to the secrets engine.
@@ -4852,7 +4852,7 @@ Use `secrets:gcp_secret_manager` to specify secrets provided by [GCP Secret Mana
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `name`: Name of the secret.
 - `version`: Version of the secret.
@@ -4880,7 +4880,7 @@ Use `secrets:azure_key_vault` to specify secrets provided by a [Azure Key Vault]
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `name`: Name of the secret.
 - `version`: Version of the secret.
@@ -4913,7 +4913,7 @@ the secret value directly in the variable.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default) or `false`.
 
@@ -4941,7 +4941,7 @@ Use `secrets:token` to explicitly select a token to use when authenticating with
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - The name of an ID token
 
@@ -4972,7 +4972,7 @@ to the image specified in the [`image`](#image) keyword.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: The name of the services image, including the registry path if needed, in one of these formats:
+**Supported values**: The name of the services image, including the registry path if needed, in one of these formats:
 
 - `<image-name>` (Same as using `<image-name>` with the `latest` tag)
 - `<image-name>:<tag>`
@@ -5025,7 +5025,7 @@ Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 A hash of options for the Docker executor, which can include:
 
@@ -5062,7 +5062,7 @@ The pull policy that the runner uses to fetch the Docker image.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - A single pull policy, or multiple pull policies in an array.
   Can be `always`, `if-not-present`, or `never`.
@@ -5103,7 +5103,7 @@ If `stage` is not defined, the job uses the `test` stage by default.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: A string, which can be a:
+**Supported values**: A string, which can be a:
 
 - [Default stage](#stages).
 - User-defined stages.
@@ -5231,7 +5231,7 @@ be assigned every tag listed in the job.
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of tag names.
 - CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -5267,7 +5267,7 @@ but can't be longer than the [runner's timeout](../runners/configure_runners.md#
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Possible inputs**: A period of time written in natural language. For example, these are all equivalent:
+**Supported values**: A period of time written in natural language. For example, these are all equivalent:
 
 - `3600 seconds`
 - `60 minutes`
@@ -5312,7 +5312,7 @@ The keywords available for use in trigger jobs are:
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
   in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
@@ -5359,7 +5359,7 @@ Use `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipeline
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - The path to the child pipeline's configuration file.
 
@@ -5385,7 +5385,7 @@ to specify a different branch.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - The path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
   in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
@@ -5460,7 +5460,7 @@ and [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project
 Forwarded variables do not get forwarded again in nested downstream pipelines by default,
 unless the nested downstream trigger job also uses `trigger:forward`.
 
-**Possible inputs**:
+**Supported values**:
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
   in the trigger job are passed to downstream pipelines.
@@ -5517,7 +5517,7 @@ and also at the job level.
 
 You can use variables defined in a job in the job's `script`, `before_script`, or `after_script` sections,
 and also with some [job keywords](#job-keywords), but not [global keywords](#global-keywords).
-Check the **Possible inputs** section of each job keyword to see if it supports variables.
+Check the **Supported values** section of each job keyword to see if it supports variables.
 
 Variables defined in a global (top-level) `variables` section act as default variables
 for all jobs. Each global variable is made available to every job in the pipeline, except when the job already has a variable
@@ -5527,7 +5527,7 @@ so the value of the global variable with the same name cannot be used in the job
 Like job variables, you cannot use global variables as values for other global keywords,
 like [`include`](includes.md#use-variables-with-include).
 
-**Possible inputs**: Variable name and value pairs:
+**Supported values**: Variable name and value pairs:
 
 - The name can use only numbers, letters, and underscores (`_`). In some shells,
   the first character must be a letter.
@@ -5588,7 +5588,7 @@ The description displays with [the prefilled variable name when running a pipeli
 
 **Keyword type**: Global keyword. You cannot use it for job-level variables.
 
-**Possible inputs**:
+**Supported values**:
 
 - A string.
 
@@ -5612,7 +5612,7 @@ Use the `value` keyword to define a pipeline-level (global) variable's value. Wh
 
 **Keyword type**: Global keyword. You cannot use it for job-level variables.
 
-**Possible inputs**:
+**Supported values**:
 
 - A string.
 
@@ -5646,7 +5646,7 @@ this keyword has no effect.
 
 **Keyword type**: Global keyword. You cannot use it for job-level variables.
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of strings.
 
@@ -5674,7 +5674,7 @@ Use the `expand` keyword to configure a variable to be expandable or not.
 
 **Keyword type**: Global and job keyword. You can use it at the global level, and also at the job level.
 
-**Possible inputs**:
+**Supported values**:
 
 - `true` (default): The variable is expandable.
 - `false`: The variable is not expandable.
@@ -5705,7 +5705,7 @@ the default value is `when: on_success`.
 
 **Keyword type**: Job keyword. You can use it as part of a job. `when: always` and `when: never` can also be used in [`workflow:rules`](#workflow).
 
-**Possible inputs**:
+**Supported values**:
 
 - `on_success` (default): Run the job only when no jobs in earlier stages fail.
 - `on_failure`: Run the job only when at least one job in an earlier stage fails.
@@ -5784,7 +5784,7 @@ Use `manual_confirmation` with [`when: manual`](#when) to define a custom confir
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - A string with the confirmation message.
 
@@ -5854,7 +5854,7 @@ pipeline based on branch names or pipeline types.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array including any number of:
+**Supported values**: An array including any number of:
 
 - Branch names, for example `main` or `my-feature-branch`.
 - Regular expressions that match against branch names, for example `/^feature-.*/`.
@@ -5944,7 +5944,7 @@ to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - An array of [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
 
@@ -5980,7 +5980,7 @@ Use `changes` in pipelines with the following refs:
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array including any number of:
+**Supported values**: An array including any number of:
 
 - Paths to files.
 - Wildcard paths for:
@@ -6036,7 +6036,7 @@ when the Kubernetes service is active in the project.
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
-**Possible inputs**:
+**Supported values**:
 
 - The `kubernetes` strategy accepts only the `active` keyword.
 

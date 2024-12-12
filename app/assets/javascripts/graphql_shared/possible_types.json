@@ -177,6 +177,7 @@
     "Note"
   ],
   "RoleInterface": [
+    "AdminMemberRole",
     "MemberRole",
     "StandardRole"
   ],
@@ -271,7 +272,6 @@
     "WorkItemWidgetParticipants",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
-    "WorkItemWidgetRolledupDates",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",

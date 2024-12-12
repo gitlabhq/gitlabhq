@@ -213,10 +213,12 @@ class Admin::UsersController < Admin::ApplicationController
     opts = user_params.merge(reset_password: true, skip_confirmation: true)
     opts[:organization_id] ||= Current.organization&.id
 
-    @user = Users::CreateService.new(current_user, opts).execute
+    response = Users::CreateService.new(current_user, opts).execute
+
+    @user = response.payload[:user]
 
     respond_to do |format|
-      if @user.persisted?
+      if response.success?
         format.html { redirect_to [:admin, @user], notice: _('User was successfully created.') }
         format.json { render json: @user, status: :created, location: @user }
       else

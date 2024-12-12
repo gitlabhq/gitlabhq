@@ -21,9 +21,11 @@ module ResourceAccessTokens
 
       return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
 
-      user = create_user
+      response = create_user
 
-      return error(user.errors.full_messages.to_sentence) unless user.persisted?
+      return error(response.message) if response.error?
+
+      user = response.payload[:user]
 
       user.update!(external: true) if current_user.external?
 

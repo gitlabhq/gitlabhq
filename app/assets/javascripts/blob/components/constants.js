@@ -7,9 +7,11 @@ export const BTN_DOWNLOAD_TITLE = __('Download');
 
 export const SIMPLE_BLOB_VIEWER = 'simple';
 export const SIMPLE_BLOB_VIEWER_TITLE = __('Display source');
+export const SIMPLE_BLOB_VIEWER_LABEL = __('Code');
 
 export const RICH_BLOB_VIEWER = 'rich';
 export const RICH_BLOB_VIEWER_TITLE = __('Display rendered file');
+export const RICH_BLOB_VIEWER_LABEL = __('Preview');
 
 export const BLAME_VIEWER = 'blame';
 export const BLAME_TITLE = __('Display blame info');

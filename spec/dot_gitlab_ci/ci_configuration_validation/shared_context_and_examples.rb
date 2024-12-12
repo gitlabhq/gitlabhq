@@ -43,6 +43,7 @@ RSpec.shared_context 'with simulated pipeline attributes and shared project and 
   end
 
   before do
+    pipeline_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
     # delete once we have a migration to permanently increase limit
     stub_application_setting(max_yaml_size_bytes: 2.megabytes)
   end
