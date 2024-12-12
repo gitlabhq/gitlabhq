@@ -1062,6 +1062,9 @@ msgstr ""
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
+msgid "%{locker} has a lock on \"%{path}\". %{additionalPhrase}"
+msgstr ""
+
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
@@ -32922,6 +32925,12 @@ msgstr ""
 msgid "Locked by %{fileLockUserName}"
 msgstr ""
 
+msgid "Locked by %{locker}"
+msgstr ""
+
+msgid "Locked by %{locker}. You do not have permission to unlock this"
+msgstr ""
+
 msgid "Locked files"
 msgstr ""
 
@@ -51735,6 +51744,12 @@ msgstr ""
 msgid "Self hosted AI Gateway URL is set to %{url}.To change it, in a rails console run: `Ai::Setting.instance.update!(ai_gateway_url: URL)`"
 msgstr ""
 
+msgid "Self-hosted model test request failed: %{error}"
+msgstr ""
+
+msgid "Self-hosted model was not provided"
+msgstr ""
+
 msgid "Send"
 msgstr ""
 
@@ -55373,6 +55388,9 @@ msgid_plural "Test coverage: %d hits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Test request to %{model_name} Self-hosted Model was successful"
+msgstr ""
+
 msgid "Test settings"
 msgstr ""
 
@@ -56760,6 +56778,9 @@ msgid "This diff is collapsed."
 msgstr ""
 
 msgid "This directory"
+msgstr ""
+
+msgid "This directory cannot be locked while %{locker} has a lock on \"%{path}\". %{additionalPhrase}"
 msgstr ""
 
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
@@ -59481,10 +59502,16 @@ msgstr ""
 msgid "Unlock more features with GitLab Ultimate"
 msgstr ""
 
+msgid "Unlock that directory in order to unlock this"
+msgstr ""
+
 msgid "Unlock the discussion"
 msgstr ""
 
 msgid "Unlock this discussion? %{strongStart}Everyone%{strongEnd} will be able to comment."
+msgstr ""
+
+msgid "Unlock this in order to proceed"
 msgstr ""
 
 msgid "Unlocked"
@@ -60380,6 +60407,9 @@ msgid "User map"
 msgstr ""
 
 msgid "User must have developer access to the project."
+msgstr ""
+
+msgid "User not provided"
 msgstr ""
 
 msgid "User restrictions"
@@ -64392,6 +64422,9 @@ msgid "You do not have permission to run the Web Terminal. Please contact a proj
 msgstr ""
 
 msgid "You do not have permission to set a member awaiting"
+msgstr ""
+
+msgid "You do not have permission to unlock it"
 msgstr ""
 
 msgid "You do not have permission to update the environment."

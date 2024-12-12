@@ -83,12 +83,6 @@ module Gitlab
           self.map(&:to_hash_variable)
         end
 
-        def to_hash_legacy
-          self.to_runner_variables
-            .to_h { |env| [env.fetch(:key), env.fetch(:value)] }
-            .with_indifferent_access
-        end
-
         def to_hash
           self.each_with_object(ActiveSupport::HashWithIndifferentAccess.new) do |variable, result|
             result[variable.key] = variable.value

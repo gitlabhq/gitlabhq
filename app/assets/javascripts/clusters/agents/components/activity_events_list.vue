@@ -1,15 +1,9 @@
 <script>
-import {
-  GlLoadingIcon,
-  GlEmptyState,
-  GlLink,
-  GlIcon,
-  GlAlert,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlLink, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { n__, s__, __ } from '~/locale';
 import { getDayDifference, isToday, localeDateFormat } from '~/lib/utils/datetime_utility';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { EVENTS_STORED_DAYS } from '../constants';
 import getAgentActivityEventsQuery from '../graphql/queries/get_agent_activity_events.query.graphql';
 import ActivityHistoryItem from './activity_history_item.vue';
@@ -20,8 +14,8 @@ export default {
     GlEmptyState,
     GlAlert,
     GlLink,
-    GlIcon,
     ActivityHistoryItem,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -165,7 +159,7 @@ export default {
           :href="$options.emptyHelpLink"
           :title="$options.i18n.emptyTooltip"
           :aria-label="$options.i18n.emptyTooltip"
-          ><gl-icon name="question-o" :size="14"
+          ><help-icon
         /></gl-link>
       </template>
     </gl-empty-state>

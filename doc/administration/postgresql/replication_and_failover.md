@@ -585,16 +585,18 @@ This example uses three Consul servers, three PgBouncer servers (with an
 associated internal load balancer), three PostgreSQL servers, and one
 application node.
 
-We start with all servers on the same 10.6.0.0/16 private network range, they
-can connect to each freely other on those addresses.
+In this setup, all servers share the same `10.6.0.0/16` private network range.
+The servers communicate freely over these addresses. 
 
-Here is a list and description of each machine and the assigned IP:
+While you can use a different networking setup, it's recommended to ensure that it allows
+for synchronous replication to occur across the cluster.
+As a general rule, a latency of less than 2 ms ensures replication operations to be performant.
 
-- `10.6.0.11`: Consul 1
-- `10.6.0.12`: Consul 2
-- `10.6.0.13`: Consul 3
-- `10.6.0.20`: Internal Load Balancer
-- `10.6.0.21`: PgBouncer 1
+GitLab [reference architectures](../reference_architectures/index.md) are sized to 
+assume that application database queries are shared by all three nodes. 
+Communication latency higher than 2 ms can lead to database locks and 
+impact the replica's ability to serve read-only queries in a timely fashion.
+
 - `10.6.0.22`: PgBouncer 2
 - `10.6.0.23`: PgBouncer 3
 - `10.6.0.31`: PostgreSQL 1

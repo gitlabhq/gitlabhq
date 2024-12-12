@@ -477,7 +477,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3,
-        'Zoekt::IndexerWorker' => 2,
         'Issuable::RelatedLinksCreateWorker' => 3,
         'BulkImports::RelationBatchExportWorker' => 6,
         'BulkImports::RelationExportWorker' => 6,

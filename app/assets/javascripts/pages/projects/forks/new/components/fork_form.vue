@@ -19,6 +19,7 @@ import csrf from '~/lib/utils/csrf';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   VISIBILITY_LEVEL_INTERNAL_STRING,
@@ -64,6 +65,7 @@ export default {
     GlFormRadio,
     GlFormRadioGroup,
     ProjectNamespace,
+    HelpIcon,
   },
   directives: {
     validation: validation(feedbackMap),
@@ -406,7 +408,7 @@ export default {
       <label>
         {{ s__('ForkProject|Visibility level') }}
         <gl-link :href="visibilityHelpPath" target="_blank">
-          <gl-icon name="question-o" />
+          <help-icon />
         </gl-link>
       </label>
       <gl-form-radio-group

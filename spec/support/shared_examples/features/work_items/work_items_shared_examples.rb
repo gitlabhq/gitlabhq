@@ -547,17 +547,17 @@ RSpec.shared_examples 'work items iteration' do
     within_testid 'work-item-iteration' do
       click_button 'Edit'
       send_keys(iteration.title)
-      select_listbox_item(iteration.period)
+      select_listbox_item(iteration_period(iteration, use_thin_space: false))
 
       expect(page).to have_text(iteration_cadence.title)
-      expect(page).to have_text(iteration_period_display(iteration))
+      expect(page).to have_text(iteration_period(iteration, use_thin_space: false))
 
       click_button 'Edit'
       click_button 'Clear'
 
       expect(page).to have_content('None')
       expect(page).not_to have_text(iteration_cadence.title)
-      expect(page).not_to have_text(iteration_period_display(iteration))
+      expect(page).not_to have_text(iteration_period(iteration, use_thin_space: false))
     end
   end
 end

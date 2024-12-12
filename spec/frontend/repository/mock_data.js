@@ -54,18 +54,26 @@ export const userPermissionsMock = {
   forkProject: true,
   downloadCode: true,
   createMergeRequestIn: true,
+  __typename: 'ProjectPermissions',
 };
 
 export const projectMock = {
   __typename: 'Project',
-  id: '1234',
+  id: 'gid://gitlab/Project/7',
   userPermissions: userPermissionsMock,
   pathLocks: {
+    __typename: 'PathLockConnection',
     nodes: [
       {
-        id: 'test',
+        __typename: 'PathLock',
+        id: 'gid://gitlab/PathLock/2',
         path: 'locked_file.js',
-        user: { id: '123', username: 'root' },
+        user: {
+          id: 'gid://gitlab/User/1',
+          username: 'root',
+          name: 'Administrator',
+          __typename: 'UserCore',
+        },
       },
     ],
   },

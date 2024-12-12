@@ -15,6 +15,7 @@ import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   I18N_ERROR_FOLLOW,
   I18N_ERROR_UNFOLLOW,
@@ -44,6 +45,7 @@ export default {
     GlSprintf,
     GlButton,
     GlAvatarLabeled,
+    HelpIcon,
   },
   directives: {
     SafeHtml,
@@ -296,7 +298,7 @@ export default {
             <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
           <div v-if="user.bot && user.websiteUrl" class="gl-text-blue-500">
-            <gl-icon name="question-o" />
+            <help-icon />
             <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
               <gl-sprintf :message="$options.I18N_USER_LEARN">
                 <template #name>{{ user.name }}</template>

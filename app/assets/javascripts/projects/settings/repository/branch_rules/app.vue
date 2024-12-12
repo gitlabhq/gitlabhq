@@ -180,42 +180,45 @@ export default {
       </gl-button>
     </template>
 
-    <ul class="content-list">
-      <branch-rule
-        v-for="(rule, index) in branchRules"
-        :key="`${rule.name}-${index}`"
-        :name="rule.name"
-        :is-default="rule.isDefault"
-        :branch-protection="rule.branchProtection"
-        :status-checks-total="
-          rule.externalStatusChecks ? rule.externalStatusChecks.nodes.length : 0
-        "
-        :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
-        :matching-branches-count="rule.matchingBranchesCount"
-      />
-      <span v-if="!branchRules.length" class="gl-text-subtle" data-testid="empty">
-        {{ $options.i18n.emptyState }}
-      </span>
-    </ul>
+    <template v-if="!branchRules.length" #empty>
+      {{ $options.i18n.emptyState }}
+    </template>
 
-    <branch-rule-modal
-      v-if="glFeatures.editBranchRules"
-      :id="$options.modalId"
-      :ref="$options.modalId"
-      :title="$options.i18n.createBranchRule"
-      :action-primary-text="$options.i18n.createProtectedBranch"
-      @primary="addBranchRule({ name: $event })"
-    />
-    <gl-modal
-      v-else
-      :ref="$options.modalId"
-      :modal-id="$options.modalId"
-      :title="$options.i18n.addBranchRule"
-      :ok-title="$options.i18n.createProtectedBranch"
-      @ok="showProtectedBranches"
-    >
-      <p>{{ $options.i18n.branchRuleModalDescription }}</p>
-      <p>{{ $options.i18n.branchRuleModalContent }}</p>
-    </gl-modal>
+    <template #default>
+      <ul class="content-list">
+        <branch-rule
+          v-for="(rule, index) in branchRules"
+          :key="`${rule.name}-${index}`"
+          :name="rule.name"
+          :is-default="rule.isDefault"
+          :branch-protection="rule.branchProtection"
+          :status-checks-total="
+            rule.externalStatusChecks ? rule.externalStatusChecks.nodes.length : 0
+          "
+          :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
+          :matching-branches-count="rule.matchingBranchesCount"
+        />
+      </ul>
+
+      <branch-rule-modal
+        v-if="glFeatures.editBranchRules"
+        :id="$options.modalId"
+        :ref="$options.modalId"
+        :title="$options.i18n.createBranchRule"
+        :action-primary-text="$options.i18n.createProtectedBranch"
+        @primary="addBranchRule({ name: $event })"
+      />
+      <gl-modal
+        v-else
+        :ref="$options.modalId"
+        :modal-id="$options.modalId"
+        :title="$options.i18n.addBranchRule"
+        :ok-title="$options.i18n.createProtectedBranch"
+        @ok="showProtectedBranches"
+      >
+        <p>{{ $options.i18n.branchRuleModalDescription }}</p>
+        <p>{{ $options.i18n.branchRuleModalContent }}</p>
+      </gl-modal>
+    </template>
   </crud-component>
 </template>

@@ -92,22 +92,12 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
   };
 
   const projectInfo = {
-    __typename: 'Project',
-    id: projectMock.id,
+    ...projectMock,
     userPermissions: {
       pushCode,
       forkProject,
       downloadCode,
       createMergeRequestIn,
-    },
-    pathLocks: {
-      nodes: [
-        {
-          id: 'test',
-          path: 'locked_file.js',
-          user: { id: '123', username: 'root' },
-        },
-      ],
     },
   };
 
@@ -476,7 +466,7 @@ describe('Blob content viewer component', () => {
       } = projectMock;
 
       it('renders component', async () => {
-        window.gon.current_user_id = 1;
+        window.gon.current_user_id = 'gid://gitlab/User/1';
         window.gon.current_username = 'root';
 
         await createComponent({ pushCode, downloadCode, empty }, mount);

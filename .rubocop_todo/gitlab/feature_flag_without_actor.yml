@@ -118,7 +118,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/views/projects/settings/merge_requests/_merge_trains_settings.html.haml'
     - 'ee/app/workers/search/index_curation_worker.rb'
     - 'ee/app/workers/search/zoekt/scheduling_worker.rb'
-    - 'ee/app/workers/zoekt/indexer_worker.rb'
     - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/api/internal/search/zoekt.rb'
     - 'ee/lib/api/internal/suggested_reviewers.rb'

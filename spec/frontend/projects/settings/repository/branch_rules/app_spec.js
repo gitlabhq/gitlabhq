@@ -80,7 +80,7 @@ describe('Branch rules app', () => {
   };
 
   const findAllBranchRules = () => wrapper.findAllComponents(BranchRule);
-  const findEmptyState = () => wrapper.findByTestId('empty');
+  const findEmptyState = () => wrapper.findByTestId('crud-empty');
   const findAddBranchRuleButton = () => wrapper.findByRole('button', I18N.addBranchRule);
   const findModal = () => wrapper.findComponent(GlModal);
   const findAddBranchRuleDropdown = () => wrapper.findComponent(GlDisclosureDropdown);

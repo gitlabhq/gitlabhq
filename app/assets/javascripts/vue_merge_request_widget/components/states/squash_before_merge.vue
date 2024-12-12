@@ -1,12 +1,13 @@
 <script>
-import { GlIcon, GlTooltipDirective, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { SQUASH_BEFORE_MERGE } from '../../i18n';
 
 export default {
   components: {
-    GlIcon,
     GlFormCheckbox,
     GlLink,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -60,10 +61,7 @@ export default {
       class="gl-leading-1"
       target="_blank"
     >
-      <gl-icon name="question-o" />
-      <span class="sr-only">
-        {{ $options.i18n.helpLabel }}
-      </span>
+      <help-icon :aria-label="$options.i18n.helpLabel" />
     </gl-link>
   </div>
 </template>

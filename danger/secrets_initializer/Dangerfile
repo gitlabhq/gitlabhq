@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+if helper.all_changed_files.detect { |file| file == 'config/initializers/01_secret_token.rb' }
+  markdown <<~MSG
+   ## Application secrets changes
+
+   This merge request makes changes to application secrets.
+   Please review the [required steps to avoid upgrade or deployment problems](https://docs.gitlab.com/ee/development/application_secrets.html#warning-before-you-add-a-new-secret-to-application-secrets).
+  MSG
+end

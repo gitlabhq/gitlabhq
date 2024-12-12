@@ -1668,5 +1668,8 @@ test:
     enabled: true
     server_address: 'localhost:9090'
 
+  registry:
+    enabled: false
+
 staging:
   <<: *base

@@ -201,6 +201,11 @@ class Environment < ApplicationRecord
     other: 4
   }
 
+  enum auto_stop_setting: {
+    always: 0,
+    with_action: 1
+  }, _prefix: true
+
   state_machine :state, initial: :available do
     event :start do
       transition stopped: :available
@@ -372,7 +377,9 @@ class Environment < ApplicationRecord
   def stop_with_actions!
     return unless available?
 
-    stop!
+    if stop_actions.any? || auto_stop_setting_always?
+      stop!
+    end
 
     actions = []
 

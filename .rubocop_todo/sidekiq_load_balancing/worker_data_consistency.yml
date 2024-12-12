@@ -378,4 +378,3 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/vulnerability_exports/export_worker.rb'
     - 'ee/app/workers/work_items/rolledup_dates/update_multiple_rolledup_dates_worker.rb'
     - 'ee/app/workers/work_items/rolledup_dates/update_rolledup_dates_worker.rb'
-    - 'ee/app/workers/zoekt/indexer_worker.rb'

@@ -1,14 +1,12 @@
-import { isString } from 'lodash';
-
 export const docHasSourceMap = (element) => {
   const commentNode = element.ownerDocument.body.lastChild;
-  return Boolean(commentNode?.nodeName === '#comment' && isString(commentNode.textContent));
+  return Boolean(commentNode?.nodeName === '#comment' && commentNode.textContent);
 };
 
 export const getFullSource = (element) => {
   const commentNode = element.ownerDocument.body.lastChild;
 
-  if (commentNode?.nodeName === '#comment' && isString(commentNode.textContent)) {
+  if (commentNode?.nodeName === '#comment' && commentNode.textContent) {
     return commentNode.textContent.split('\n');
   }
 

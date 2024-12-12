@@ -134,14 +134,8 @@ module Ci
         project = options&.dig(:trigger, :project)
         next unless project
 
-        if ci_optimize_memory_for_variables_enabled?
-          scoped_variables.to_hash_variables.then do |all_variables|
-            ::ExpandVariables.expand(project, all_variables)
-          end
-        else
-          scoped_variables.to_runner_variables.then do |all_variables|
-            ::ExpandVariables.expand(project, all_variables)
-          end
+        scoped_variables.to_hash_variables.then do |all_variables|
+          ::ExpandVariables.expand(project, all_variables)
         end
       end
     end
@@ -241,14 +235,8 @@ module Ci
       branch = options&.dig(:trigger, :branch)
       return unless branch
 
-      if ci_optimize_memory_for_variables_enabled?
-        scoped_variables.to_hash_variables.then do |all_variables|
-          ::ExpandVariables.expand(branch, all_variables)
-        end
-      else
-        scoped_variables.to_runner_variables.then do |all_variables|
-          ::ExpandVariables.expand(branch, all_variables)
-        end
+      scoped_variables.to_hash_variables.then do |all_variables|
+        ::ExpandVariables.expand(branch, all_variables)
       end
     end
 
@@ -363,11 +351,6 @@ module Ci
         }
       }
     end
-
-    def ci_optimize_memory_for_variables_enabled?
-      ::Feature.enabled?(:ci_optimize_memory_for_variables, project)
-    end
-    strong_memoize_attr :ci_optimize_memory_for_variables_enabled?
   end
 end
 

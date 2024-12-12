@@ -20,6 +20,7 @@ import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue'
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import mergeRequestEventTypeQuery from '../queries/merge_request_event_type.query.graphql';
 import runPipelineMixin from '../mixins/run_pipeline';
 import {
@@ -60,6 +61,7 @@ export default {
     TimeAgoTooltip,
     TooltipOnTruncate,
     HelpPopover,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -273,10 +275,7 @@ export default {
           :title="__('Get more information about troubleshooting pipelines')"
           class="gl-ml-2 gl-flex gl-items-center"
         >
-          <gl-icon
-            name="question-o"
-            :aria-label="__('Link to go to GitLab pipeline documentation')"
-          />
+          <help-icon :aria-label="__('Link to go to GitLab pipeline documentation')" />
         </gl-link>
       </p>
     </template>
@@ -373,7 +372,7 @@ export default {
               </span>
               {{ pipelineCoverageJobNumberText }}
               <span ref="pipelineCoverageQuestion">
-                <gl-icon name="question-o" :size="12" />
+                <help-icon size="small" />
               </span>
               <gl-tooltip
                 :target="() => $refs.pipelineCoverageQuestion"

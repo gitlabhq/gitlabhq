@@ -1,10 +1,11 @@
 <script>
-import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
   components: {
     GlLink,
-    GlIcon,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,7 +35,7 @@ export default {
       target="_blank"
       class="gl-flex gl-items-center gl-justify-center"
     >
-      <gl-icon name="question-o" class="gl-ml-3" />
+      <help-icon class="gl-ml-3" />
     </gl-link>
   </div>
 </template>

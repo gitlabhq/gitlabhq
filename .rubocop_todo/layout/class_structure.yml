@@ -255,7 +255,6 @@ Layout/ClassStructure:
     - 'ee/app/workers/repository_update_mirror_worker.rb'
     - 'ee/app/workers/search/wiki/elastic_delete_group_wiki_worker.rb'
     - 'ee/app/workers/security/orchestration_policy_rule_schedule_namespace_worker.rb'
-    - 'ee/app/workers/zoekt/indexer_worker.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/stage_events/label_based_stage_event.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/base_time.rb'

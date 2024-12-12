@@ -21,6 +21,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { MAX_LIST_COUNT, AGENT_STATUSES, I18N_AGENT_TABLE, CONNECT_MODAL_ID } from '../constants';
 import { getAgentConfigPath } from '../clusters_util';
 import DeleteAgentButton from './delete_agent_button.vue';
@@ -50,6 +51,7 @@ export default {
     TimeAgoTooltip,
     DeleteAgentButton,
     ConnectToAgentModal,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -392,7 +394,7 @@ export default {
               :title="$options.i18n.defaultConfigTooltip"
               :aria-label="$options.i18n.defaultConfigTooltip"
               class="gl-align-middle"
-              ><gl-icon name="question-o" :size="14" /></gl-link
+              ><help-icon /></gl-link
           ></span>
         </span>
       </template>

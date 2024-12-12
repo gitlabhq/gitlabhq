@@ -2,6 +2,7 @@
 import { GlIcon, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { sprintf, s__ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import StorageTypeIcon from './storage_type_icon.vue';
 
 export default {
@@ -14,6 +15,7 @@ export default {
     StorageTypeIcon,
     GlPopover,
     NumberToHumanSize,
+    HelpIcon,
   },
   props: {
     storageTypes: {
@@ -65,7 +67,7 @@ export default {
               :aria-label="helpLinkAriaLabel(item.name)"
               :data-testid="`${item.id}-help-link`"
             >
-              <gl-icon name="question-o" :size="12" />
+              <help-icon size="small" />
             </gl-link>
           </p>
           <p class="gl-mb-0" :data-testid="`${item.id}-description`">

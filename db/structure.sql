@@ -12131,6 +12131,7 @@ CREATE TABLE environments (
     description text,
     description_html text,
     cached_markdown_version integer,
+    auto_stop_setting smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_23b1eb18a2 CHECK ((char_length(flux_resource_path) <= 255)),
     CONSTRAINT check_ad5e1ed5e1 CHECK ((char_length(description) <= 10000)),
     CONSTRAINT check_b5373a1804 CHECK ((char_length(kubernetes_namespace) <= 63)),
