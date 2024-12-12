@@ -509,12 +509,11 @@ module ProjectsHelper
     return unless current_user
     return if project.empty_repo?
 
-    if current_user.already_forked?(project) && current_user.forkable_namespaces.size < 2
+    if current_user.already_forked?(project) && !current_user.has_forkable_groups?
       user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
 
     {
-      can_create_fork: can?(current_user, :create_fork).to_s,
       can_fork_project: can?(current_user, :fork_project, project).to_s,
       can_read_code: can?(current_user, :read_code, project).to_s,
       forks_count: project.forks_count,

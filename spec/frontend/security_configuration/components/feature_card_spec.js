@@ -344,22 +344,28 @@ describe('FeatureCard component', () => {
     });
   });
 
-  describe('status and badge', () => {
+  describe('SAST IaC status and badge', () => {
     describe.each`
-      context                            | available | configured
-      ${'configured SAST IaC feature'}   | ${true}   | ${true}
-      ${'unavailable SAST IaC feature'}  | ${false}  | ${false}
-      ${'unconfigured SAST IaC feature'} | ${true}   | ${false}
-    `('given $context', ({ available, configured }) => {
+      context                            | available | configured | expectedStatus
+      ${'configured SAST IaC feature'}   | ${true}   | ${true}    | ${'Enabled'}
+      ${'unavailable SAST IaC feature'}  | ${false}  | ${false}   | ${'Available with Ultimate'}
+      ${'unconfigured SAST IaC feature'} | ${true}   | ${false}   | ${'Not enabled'}
+    `('given $context', ({ available, configured, expectedStatus }) => {
       beforeEach(() => {
         const securityFeature = securityFeatures.find(({ type }) => REPORT_TYPE_SAST_IAC === type);
         feature = { ...securityFeature, available, configured };
         createComponent({ feature });
       });
 
-      it(`should not show a status`, () => {
-        expect(findFeatureStatus().exists()).toBe(false);
+      it(`shows the status "${expectedStatus}"`, () => {
+        expect(findFeatureStatus().text()).toBe(expectedStatus);
       });
+
+      if (configured) {
+        it('shows a success icon', () => {
+          expect(wrapper.findComponent(GlIcon).props('name')).toBe('check-circle-filled');
+        });
+      }
     });
   });
 });

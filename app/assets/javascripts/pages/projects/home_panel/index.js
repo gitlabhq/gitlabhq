@@ -39,7 +39,6 @@ const initHomePanel = () => {
     editPath,
 
     // Fork component
-    canCreateFork,
     canForkProject,
     canReadCode,
     forksCount,
@@ -100,7 +99,6 @@ const initHomePanel = () => {
       editPath,
 
       // Fork component
-      canCreateFork: parseBoolean(canCreateFork),
       canForkProject: parseBoolean(canForkProject),
       canReadCode: parseBoolean(canReadCode),
       forksCount: parseInt(forksCount, 10) || 0,

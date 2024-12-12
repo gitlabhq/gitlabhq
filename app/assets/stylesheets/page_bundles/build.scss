@@ -147,7 +147,7 @@
   font-family: $monospace-font;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  font-size: 13px;
+  font-size: $code-font-size-fixed;
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);

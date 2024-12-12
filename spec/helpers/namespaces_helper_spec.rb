@@ -265,4 +265,11 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
       })
     end
   end
+
+  describe '#group_usage_quotas_url', feature_category: :consumables_cost_management do
+    it 'returns the url of the usage quotas page of the root ancestor of the group' do
+      usage_quotas_pipelines_url = Rails.application.routes.url_helpers.group_usage_quotas_url(admin_group)
+      expect(helper.group_usage_quotas_url(subgroup1)).to eql(usage_quotas_pipelines_url)
+    end
+  end
 end

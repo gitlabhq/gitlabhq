@@ -761,6 +761,8 @@
   - 1
 - - search_wiki_elastic_delete_group_wiki
   - 1
+- - search_zoekt_adjust_indices_reserved_storage_bytes_event
+  - 1
 - - search_zoekt_default_branch_changed
   - 1
 - - search_zoekt_delete_project

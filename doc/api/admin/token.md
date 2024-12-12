@@ -12,6 +12,14 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
+Use this API to retrieve details about arbitrary tokens and to revoke them. Unlike other APIs that expose token information, this API allows you to retrieve details or revoke tokens without knowing the specific type of token.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+## Get information on a token
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `admin_agnostic_token_finder`. Disabled by default.
 > - [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
 > - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
@@ -23,14 +31,6 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
-
-Use this API to retrieve details about arbitrary tokens. Unlike other APIs that expose token information, this API allows you to retrieve details without knowing the specific type of token.
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-## Get information on a token
 
 Gets information for a given token. This endpoint supports the following tokens:
 
@@ -96,4 +96,53 @@ Example response:
  "advanced_scopes": null,
  "organization_id": 1
 }
+```
+
+## Revoke token
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Revokes a token.
+
+Supported tokens:
+
+- [Personal access tokens](../../user/profile/personal_access_tokens.md)
+- [Project access tokens](../../security/tokens/index.md#project-access-tokens)
+- [Group access tokens](../../security/tokens/index.md#group-access-tokens)
+- [Deploy tokens](../../user/project/deploy_tokens/index.md)
+- [Feed tokens](../../security/tokens/index.md#feed-token)
+
+```plaintext
+DELETE /api/v4/admin/token
+```
+
+Supported attributes:
+
+| Attribute    | Type    | Required | Description                      |
+|--------------|---------|----------|----------------------------------|
+| `token`      | string  | Yes      | Token that should be revoked. |
+
+If successful, returns [`204`](../rest/troubleshooting.md#status-codes) without content.
+
+Can return the following status codes:
+
+- `204 No content`: Token has been revoked.
+- `401 Unauthorized`: The user is not authorized.
+- `403 Forbidden`: The user is not an administrator.
+- `404 Not Found`: The token was not found.
+- `422 Unprocessable`: The token type is not supported.
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "https://gitlab.example.com/api/v4/admin/token" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header 'Content-Type: application/json' \
+  --data '{"token": "glpat-<example-token>"}'
 ```

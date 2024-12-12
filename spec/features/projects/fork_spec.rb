@@ -57,22 +57,6 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
           expect(fork_button['class']).to include('disabled')
         end
       end
-
-      context 'user has exceeded personal project limit' do
-        before do
-          user.update!(projects_limit: 0)
-        end
-
-        it 'disables fork button on project page' do
-          visit project_path(project)
-
-          path = new_project_fork_path(project)
-
-          fork_button = find_link 'Fork'
-          expect(fork_button['href']).to include(path)
-          expect(fork_button['class']).to include('disabled')
-        end
-      end
     end
 
     context 'when the user has not already forked the project', :js do

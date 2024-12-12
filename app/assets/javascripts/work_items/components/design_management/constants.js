@@ -85,6 +85,10 @@ export const AWARD_EMOJI_TO_NOTE_ERROR = s__(
 export const TYPENAME_DISCUSSION = 'Discussion';
 export const TYPENAME_USER = 'User';
 
+export const MOVE_DESIGN_ERROR = s__(
+  'DesignManagement|Something went wrong when reordering designs. Please try again',
+);
+
 /**
  * Return warning message indicating that some (but not all) uploaded
  * files were skipped.

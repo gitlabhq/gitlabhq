@@ -9,8 +9,6 @@ class GlobalPolicy < BasePolicy
   with_options scope: :user, score: 0
   condition(:access_locked) { @user&.access_locked? }
 
-  condition(:can_create_fork, scope: :user) { @user && @user.forkable_namespaces.any? { |namespace| @user.can?(:create_projects, namespace) } }
-
   condition(:required_terms_not_accepted, scope: :user, score: 0) do
     @user&.required_terms_not_accepted?
   end
@@ -117,10 +115,6 @@ class GlobalPolicy < BasePolicy
 
   rule { can?(:create_group) }.policy do
     enable :create_group_with_default_branch_protection
-  end
-
-  rule { can_create_fork }.policy do
-    enable :create_fork
   end
 
   rule { access_locked }.policy do

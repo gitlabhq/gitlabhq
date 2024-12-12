@@ -1,13 +1,17 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
+import VueDraggable from 'vuedraggable';
+import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
+import moveDesignMutation from '~/work_items/components/design_management/graphql/move_design.mutation.graphql';
 import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import DesignItem from '~/work_items/components/design_management/design_item.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
@@ -16,6 +20,7 @@ import {
   designArchiveError,
   ALERT_VARIANTS,
   VALID_DESIGN_FILE_MIMETYPE,
+  MOVE_DESIGN_ERROR,
 } from '~/work_items/components/design_management/constants';
 
 import {
@@ -23,9 +28,12 @@ import {
   mockDesign,
   mockDesign2,
   mockArchiveDesignMutationResponse,
+  mockMoveDesignMutationResponse,
+  mockMoveDesignMutationErrorResponse,
   allDesignsArchivedResponse,
 } from './mock_data';
 
+jest.mock('~/lib/utils/common_utils');
 jest.mock('~/alert');
 Vue.use(VueApollo);
 
@@ -57,6 +65,10 @@ describe('DesignWidget', () => {
     .mockResolvedValue(mockArchiveDesignMutationResponse);
   const archiveDesignMutationError = jest.fn().mockRejectedValue(new Error('Mutation failed'));
   const allDesignsArchivedQueryHandler = jest.fn().mockResolvedValue(allDesignsArchivedResponse());
+  const moveDesignSuccessMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockMoveDesignMutationResponse);
+  const moveDesignMutationError = jest.fn().mockResolvedValue(mockMoveDesignMutationErrorResponse);
 
   const findWidgetWrapper = () => wrapper.findComponent(CrudComponent);
   const findDesignDropzoneComponent = () => wrapper.findComponent(DesignDropzone);
@@ -64,19 +76,35 @@ describe('DesignWidget', () => {
   const findArchiveButton = () => wrapper.findByTestId('archive-button');
   const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
   const findDesignCheckboxes = () => wrapper.findAllByTestId('design-checkbox');
+  const findVueDraggable = () => wrapper.findComponent(VueDraggable);
   const findAlert = () => wrapper.findComponent(GlAlert);
+
+  async function moveDesigns() {
+    await waitForPromises();
+
+    findVueDraggable().vm.$emit('input', [mockDesign2, mockDesign]);
+    findVueDraggable().vm.$emit('change', {
+      moved: {
+        newIndex: 0,
+        element: mockDesign2,
+      },
+    });
+  }
 
   function createComponent({
     designCollectionQueryHandler = oneDesignQueryHandler,
     archiveDesignMutationHandler = archiveDesignSuccessMutationHandler,
+    moveDesignMutationHandler = moveDesignSuccessMutationHandler,
     routeArg = MOCK_ROUTE,
     uploadError = null,
     uploadErrorVariant = ALERT_VARIANTS.danger,
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
+      isLoggedIn: isLoggedIn(),
       apolloProvider: createMockApollo([
         [getWorkItemDesignListQuery, designCollectionQueryHandler],
         [archiveDesignMutation, archiveDesignMutationHandler],
+        [moveDesignMutation, moveDesignMutationHandler],
       ]),
       propsData: {
         workItemId,
@@ -94,12 +122,14 @@ describe('DesignWidget', () => {
       },
       stubs: {
         RouterView: true,
+        VueDraggable,
       },
     });
   }
 
   describe('when work item has designs', () => {
     beforeEach(() => {
+      isLoggedIn.mockReturnValue(true);
       createComponent();
       return waitForPromises();
     });
@@ -129,6 +159,33 @@ describe('DesignWidget', () => {
 
     it('renders widget wrapper', () => {
       expect(findWidgetWrapper().exists()).toBe(true);
+    });
+
+    it('renders VueDraggable component', () => {
+      expect(findVueDraggable().exists()).toBe(true);
+    });
+
+    it('calls moveDesignMutation with correct parameters and reorders designs', async () => {
+      createComponent({ designCollectionQueryHandler: twoDesignsQueryHandler });
+      await moveDesigns();
+
+      expect(moveDesignSuccessMutationHandler).toHaveBeenCalled();
+
+      await waitForPromises();
+
+      expect(findAllDesignItems().at(0).props('id')).toBe(mockDesign2.id);
+    });
+
+    it('throws error if reordering of designs mutation fails', async () => {
+      createComponent({
+        designCollectionQueryHandler: twoDesignsQueryHandler,
+        moveDesignMutationHandler: moveDesignMutationError,
+      });
+
+      await moveDesigns();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({ message: MOVE_DESIGN_ERROR });
     });
 
     it('renders Select All and Archive Selected buttons', () => {
@@ -164,7 +221,7 @@ describe('DesignWidget', () => {
       expect(archiveDesignSuccessMutationHandler).toHaveBeenCalled();
     });
 
-    it('throws error if archive a design query fails', async () => {
+    it('throws error if archive a design mutation fails', async () => {
       createComponent({ archiveDesignMutationHandler: archiveDesignMutationError });
       await waitForPromises();
 
@@ -227,5 +284,16 @@ describe('DesignWidget', () => {
     findAlert().vm.$emit('dismiss');
 
     expect(wrapper.emitted('dismissError')).toHaveLength(1);
+  });
+
+  describe('when user is not logged in', () => {
+    beforeEach(() => {
+      isLoggedIn.mockReturnValue(false);
+      createComponent();
+    });
+
+    it('does not render VueDraggable component if user is logged out', () => {
+      expect(findVueDraggable().exists()).toBe(false);
+    });
   });
 });

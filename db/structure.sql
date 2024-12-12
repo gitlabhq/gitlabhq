@@ -28791,6 +28791,8 @@ CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON d
 
 CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags USING btree (dast_profile_id);
 
+CREATE INDEX i_gitlab_subscription_histories_on_namespace_change_type_plan ON gitlab_subscription_histories USING btree (namespace_id, change_type, hosted_plan_id);
+
 CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON remote_development_namespace_cluster_agent_mappings USING btree (cluster_agent_id);
 
 CREATE INDEX i_namespace_cluster_agent_mappings_on_creator_id ON remote_development_namespace_cluster_agent_mappings USING btree (creator_id);
@@ -30772,8 +30774,6 @@ CREATE INDEX index_gin_ci_namespace_mirrors_on_traversal_ids ON ci_namespace_mir
 CREATE INDEX index_gin_ci_pending_builds_on_namespace_traversal_ids ON ci_pending_builds USING gin (namespace_traversal_ids);
 
 CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON gitlab_subscription_histories USING btree (gitlab_subscription_id);
-
-CREATE INDEX index_gitlab_subscription_histories_on_namespace_id ON gitlab_subscription_histories USING btree (namespace_id);
 
 CREATE INDEX index_gitlab_subscriptions_on_end_date_and_namespace_id ON gitlab_subscriptions USING btree (end_date, namespace_id);
 
@@ -33460,6 +33460,8 @@ CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports US
 CREATE INDEX index_zentao_tracker_data_on_instance_integration_id ON zentao_tracker_data USING btree (instance_integration_id);
 
 CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
+
+CREATE INDEX index_zoekt_indices_on_id_conditional_watermark_level_state ON zoekt_indices USING btree (id) WHERE (((watermark_level = 10) AND (state = 10)) OR (watermark_level = 60));
 
 CREATE INDEX index_zoekt_indices_on_namespace_id ON zoekt_indices USING btree (namespace_id, zoekt_enabled_namespace_id);
 

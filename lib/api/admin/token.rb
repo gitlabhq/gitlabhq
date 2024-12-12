@@ -27,7 +27,10 @@ module API
         render_api_error!(e.message, :unprocessable_entity)
       end
 
-      namespace 'admin' do
+      params do
+        requires :token, type: String, desc: 'The token that information is requested about.'
+      end
+      namespace 'admin/token' do
         desc 'Get information about a token.' do
           detail 'This feature was introduced in GitLab 17.5.
                   This feature is gated by the :admin_agnostic_token_finder feature flag.'
@@ -40,16 +43,39 @@ module API
           tags %w[admin]
           hidden true
         end
-        params do
-          requires :token, type: String, desc: 'The token that information is requested about.'
-        end
-        post 'token' do
+        post do
           identified_token = identify_token(params[:token])
           render_api_error!({ error: 'Not found' }, :not_found) if identified_token.revocable.nil?
 
           status :ok
 
           present identified_token.revocable, with: identified_token.present_with, current_user: current_user
+        end
+
+        desc 'Revoke a token.' do
+          detail 'This feature was introduced in GitLab 17.7.
+                  This feature is gated by the :admin_agnostic_token_finder and api_admin_token_revoke feature flags.'
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' },
+            { code: 422, message: 'Unprocessable' }
+          ]
+          tags %w[admin]
+          hidden true
+        end
+        delete do
+          if Feature.disabled?(:api_admin_token_revoke, current_user)
+            render_api_error!("'api_admin_token_revoke' feature flag is disabled", :not_found)
+          end
+
+          identified_token = identify_token(params[:token])
+
+          render_api_error!({ error: 'Not found' }, :not_found) if identified_token.revocable.nil?
+
+          response = identified_token.revoke!(current_user)
+
+          response.success? ? no_content! : render_api_error!({ error: response.message }, :bad_request)
         end
       end
     end

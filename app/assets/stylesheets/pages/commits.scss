@@ -136,7 +136,7 @@
 
   &.inline-commit {
     .commit-row-title {
-      font-size: 13px;
+      font-size: $code-font-size-fixed;
     }
   }
 }

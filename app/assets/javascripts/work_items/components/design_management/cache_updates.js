@@ -99,6 +99,21 @@ export const updateStoreAfterUploadDesign = (store, data, query) => {
   }
 };
 
+const moveDesignInStore = (store, designManagementMove, query) => {
+  const sourceData = store.readQuery(query);
+
+  const data = produce(sourceData, (draftData) => {
+    const designWidget = findDesignWidget(draftData.workItem.widgets);
+    designWidget.designCollection.designs.nodes =
+      designManagementMove.designCollection.designs.nodes;
+  });
+
+  store.writeQuery({
+    ...query,
+    data,
+  });
+};
+
 const deleteDesignsFromStore = (store, query, selectedDesigns) => {
   const sourceData = store.readQuery(query);
 
@@ -237,5 +252,13 @@ export const updateStoreAfterRepositionImageDiffNote = (store, data, query, quer
     onError(data, UPDATE_IMAGE_DIFF_NOTE_ERROR);
   } else {
     updateImageDiffNoteInStore(store, data, query, queryVariables);
+  }
+};
+
+export const updateDesignsOnStoreAfterReorder = (store, data, query) => {
+  if (hasErrors(data)) {
+    createAlert({ message: data.errors[0] });
+  } else {
+    moveDesignInStore(store, data, query);
   }
 };

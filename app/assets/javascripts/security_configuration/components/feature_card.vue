@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import { REPORT_TYPE_SAST_IAC } from '~/vue_shared/security_reports/constants';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import FeatureCardBadge from './feature_card_badge.vue';
 
@@ -73,18 +72,9 @@ export default {
     hasSecondary() {
       return Boolean(this.feature.secondary);
     },
-    // This condition is a temporary hack to not display any wrong information
-    // until this BE Bug is fixed: https://gitlab.com/gitlab-org/gitlab/-/issues/350307.
-    // More Information: https://gitlab.com/gitlab-org/gitlab/-/issues/350307#note_825447417
-    isNotSastIACTemporaryHack() {
-      return this.feature.type !== REPORT_TYPE_SAST_IAC;
-    },
     hasBadge() {
       const shouldDisplay = this.available || this.feature.badge?.alwaysDisplay;
       return Boolean(shouldDisplay && this.feature.badge?.text);
-    },
-    hasEnabledStatus() {
-      return this.isNotSastIACTemporaryHack;
     },
     showSecondaryConfigurationHelpPath() {
       return Boolean(this.available && this.feature.secondary?.configurationHelpPath);
@@ -118,7 +108,6 @@ export default {
           {{ feature.name }}
         </h3>
         <div
-          v-if="isNotSastIACTemporaryHack"
           :class="statusClasses"
           data-testid="feature-status"
           :data-qa-feature="`${feature.type}_${enabled}_status`"
@@ -129,25 +118,19 @@ export default {
             :badge-href="feature.badge.badgeHref"
           />
 
-          <template v-if="hasEnabledStatus">
-            <template v-if="enabled">
-              <span>
-                <gl-icon name="check-circle-filled" />
-                <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
-              </span>
-            </template>
-
-            <template v-else-if="available">
-              <span>{{ $options.i18n.notEnabled }}</span>
-            </template>
-
-            <template v-else>
-              {{ $options.i18n.availableWith }}
-            </template>
+          <template v-if="enabled">
+            <span>
+              <gl-icon name="check-circle-filled" />
+              <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
+            </span>
           </template>
 
-          <template v-else-if="!available">
-            <span>{{ $options.i18n.availableWith }}</span>
+          <template v-else-if="available">
+            <span>{{ $options.i18n.notEnabled }}</span>
+          </template>
+
+          <template v-else>
+            {{ $options.i18n.availableWith }}
           </template>
         </div>
       </div>
@@ -158,7 +141,7 @@ export default {
       <gl-link :href="feature.helpPath">{{ $options.i18n.learnMore }}.</gl-link>
     </p>
 
-    <template v-if="available && isNotSastIACTemporaryHack">
+    <template v-if="available">
       <gl-button
         v-if="feature.configurationPath"
         :href="feature.configurationPath"

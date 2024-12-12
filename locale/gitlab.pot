@@ -1077,12 +1077,6 @@ msgstr ""
 msgid "%{mrText}, this issue will be closed automatically."
 msgstr ""
 
-msgid "%{name_with_link} namespace has %{percent} or less Shared Runner compute minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
-msgstr ""
-
-msgid "%{name_with_link} namespace has run out of Shared Runner compute minutes. No new jobs or pipelines in its projects will run."
-msgstr ""
-
 msgid "%{name} (Busy)"
 msgstr ""
 
@@ -1096,12 +1090,6 @@ msgid "%{name} is scheduled for %{action}"
 msgstr ""
 
 msgid "%{name}'s avatar"
-msgstr ""
-
-msgid "%{name}(%{url}) namespace has %{percent} or less Shared Runner compute minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
-msgstr ""
-
-msgid "%{name}(%{url}) namespace has run out of compute minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "%{name}, confirm your email address now!"
@@ -19594,6 +19582,9 @@ msgid "DesignManagement|Some of the designs you tried uploading did not change: 
 msgstr ""
 
 msgid "DesignManagement|Some of the designs you tried uploading did not change: %{skippedFiles}."
+msgstr ""
+
+msgid "DesignManagement|Something went wrong when reordering designs. Please try again"
 msgstr ""
 
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
@@ -41073,6 +41064,18 @@ msgstr ""
 msgid "Pipelines|Take advantage of simple, scalable pipelines and CI/CD-enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!"
 msgstr ""
 
+msgid "Pipelines|The %{namespace_link} namespace has %{current_balance} / %{total} (%{percentage}%%) shared runner compute minutes remaining. For more details, see %{link_start}usage statistics%{link_end}."
+msgstr ""
+
+msgid "Pipelines|The %{namespace_link} namespace has reached its shared runner compute minutes quota. For more details, see %{link_start}usage statistics%{link_end}."
+msgstr ""
+
+msgid "Pipelines|The %{namespace_name} (%{namespace_url}) namespace has %{current_balance} / %{total} (%{percentage}%%) shared runner compute minutes remaining. For more details, see usage statistics: %{usage_statistics_link}"
+msgstr ""
+
+msgid "Pipelines|The %{namespace_name} (%{namespace_url}) namespace has reached its shared runner compute minutes quota. For more details, see usage statistics: %{usage_statistics_url}"
+msgstr ""
+
 msgid "Pipelines|The %{namespace_name} namespace has %{current_balance} / %{total} (%{percentage}%%) shared runner compute minutes remaining. When all compute minutes are used up, no new jobs or pipelines will run in this namespace's projects."
 msgstr ""
 
@@ -41133,6 +41136,12 @@ msgstr ""
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
+msgid "Pipelines|To run new jobs and pipelines in this namespace's projects, %{link_start}buy additional compute minutes%{link_end}."
+msgstr ""
+
+msgid "Pipelines|To run new jobs and pipelines in this namespace's projects, buy additional compute minutes: %{buy_additional_minutes_url}"
+msgstr ""
+
 msgid "Pipelines|Token"
 msgstr ""
 
@@ -41185,6 +41194,12 @@ msgid "Pipelines|Visualize"
 msgstr ""
 
 msgid "Pipelines|We'll continuously validate your pipeline configuration. The validation results will appear here."
+msgstr ""
+
+msgid "Pipelines|When all compute minutes are used up, no new jobs or pipelines will run in this namespace's projects. To avoid any interruption of service you can %{link_start}buy additional compute minutes%{link_end}."
+msgstr ""
+
+msgid "Pipelines|When all compute minutes are used up, no new jobs or pipelines will run in this namespace's projects. To avoid any interruption of service you can buy additional compute minutes: %{buy_link}"
 msgstr ""
 
 msgid "Pipelines|You should review the code thoroughly before running this pipeline with the parent project's CI/CD resources."
@@ -43362,9 +43377,6 @@ msgid "ProjectOverview|Unstar"
 msgstr ""
 
 msgid "ProjectOverview|You don't have permission to fork this project"
-msgstr ""
-
-msgid "ProjectOverview|You have reached your project limit"
 msgstr ""
 
 msgid "ProjectOverview|You must sign in to star a project"
@@ -62104,12 +62116,6 @@ msgid "We invite you to %{featureLinkStart}request a feature%{featureLinkEnd}, %
 msgstr ""
 
 msgid "We recommend a work email address."
-msgstr ""
-
-msgid "We recommend that you buy additional compute minutes to avoid any interruption of service."
-msgstr ""
-
-msgid "We recommend that you buy additional compute minutes to resume normal service."
 msgstr ""
 
 msgid "We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device."

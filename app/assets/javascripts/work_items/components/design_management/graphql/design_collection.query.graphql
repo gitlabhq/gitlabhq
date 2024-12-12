@@ -1,4 +1,5 @@
 #import "./fragments/version.fragment.graphql"
+#import "./fragments/diff_refs.fragment.graphql"
 
 query getWorkItemDesignList($id: WorkItemID!, $atVersion: DesignManagementVersionID) {
   workItem(id: $id) {
@@ -20,10 +21,16 @@ query getWorkItemDesignList($id: WorkItemID!, $atVersion: DesignManagementVersio
               notesCount
               image
               imageV432x230
+              description
+              descriptionHtml
+              fullPath
               currentUserTodos(state: pending) {
                 nodes {
                   id
                 }
+              }
+              diffRefs {
+                ...DesignDiffRefs
               }
             }
           }

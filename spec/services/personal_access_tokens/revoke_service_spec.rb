@@ -5,7 +5,11 @@ require 'spec_helper'
 RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_access do
   shared_examples_for 'a successfully revoked token' do
     it { expect(subject.success?).to be true }
-    it { expect(service.token.revoked?).to be true }
+
+    it 'revokes the token' do
+      subject
+      expect(service.token.revoked?).to be true
+    end
 
     it 'logs the event' do
       expect(Gitlab::AppLogger).to receive(:info).with(
@@ -71,11 +75,18 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
       let_it_be(:current_user) { nil }
 
       context 'when source is valid' do
-        let_it_be(:source) { :secret_detection }
-        let_it_be(:token) { create(:personal_access_token) }
+        where(:source) do
+          [:secret_detection,
+            :group_token_revocation_service,
+            :api_admin_token]
+        end
 
-        it_behaves_like 'a successfully revoked token' do
-          let(:revoked_by) { :secret_detection }
+        with_them do
+          let(:token) { create(:personal_access_token) }
+
+          it_behaves_like 'a successfully revoked token' do
+            let(:revoked_by) { source }
+          end
         end
       end
 

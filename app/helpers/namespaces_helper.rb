@@ -101,6 +101,10 @@ module NamespacesHelper
       default_per_page: page_size
     }
   end
+
+  def group_usage_quotas_url(group, *args)
+    Rails.application.routes.url_helpers.group_usage_quotas_url(group.root_ancestor, *args)
+  end
 end
 
 NamespacesHelper.prepend_mod_with('NamespacesHelper')

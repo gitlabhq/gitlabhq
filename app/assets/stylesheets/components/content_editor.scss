@@ -183,7 +183,7 @@
     white-space: pre-wrap;
 
     > code {
-      font-size: 13px;
+      font-size: $code-font-size-fixed;
       white-space: pre-wrap;
       padding: 0;
       display: flex;

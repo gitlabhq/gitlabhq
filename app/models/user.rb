@@ -1958,6 +1958,10 @@ class User < ApplicationRecord
     enabled_following && user.enabled_following
   end
 
+  def has_forkable_groups?
+    Groups::AcceptingProjectCreationsFinder.new(self).execute.exists?
+  end
+
   def forkable_namespaces
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)

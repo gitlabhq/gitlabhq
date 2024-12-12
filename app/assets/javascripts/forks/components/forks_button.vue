@@ -29,9 +29,6 @@ export default {
     canReadCode: {
       default: false,
     },
-    canCreateFork: {
-      default: false,
-    },
     canForkProject: {
       default: false,
     },
@@ -44,7 +41,7 @@ export default {
       return Boolean(this.userForkUrl) && this.canReadCode;
     },
     userCanFork() {
-      return this.canReadCode && this.canCreateFork && this.canForkProject;
+      return this.canReadCode && this.canForkProject;
     },
     forkButtonEnabled() {
       return this.userHasForkAccess || this.userCanFork;
@@ -52,10 +49,6 @@ export default {
     forkButtonTooltip() {
       if (!this.canForkProject) {
         return s__("ProjectOverview|You don't have permission to fork this project");
-      }
-
-      if (!this.canCreateFork) {
-        return s__('ProjectOverview|You have reached your project limit');
       }
 
       if (this.userHasForkAccess) {

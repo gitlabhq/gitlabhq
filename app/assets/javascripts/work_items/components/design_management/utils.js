@@ -105,3 +105,18 @@ export const repositionImageDiffNoteOptimisticResponse = (note, { position }) =>
     errors: [],
   },
 });
+
+export const moveDesignOptimisticResponse = (designs) => ({
+  __typename: 'Mutation',
+  designManagementMove: {
+    __typename: 'DesignManagementMovePayload',
+    designCollection: {
+      __typename: 'DesignCollection',
+      designs: {
+        __typename: 'DesignConnection',
+        nodes: designs,
+      },
+    },
+    errors: [],
+  },
+});

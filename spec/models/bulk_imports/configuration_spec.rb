@@ -14,4 +14,27 @@ RSpec.describe BulkImports::Configuration, type: :model, feature_category: :impo
     it { is_expected.to validate_presence_of(:url) }
     it { is_expected.to validate_presence_of(:access_token) }
   end
+
+  describe '#safe_url' do
+    subject { configuration.safe_url }
+
+    let(:configuration) { build(:bulk_import_configuration, url: url) }
+    let(:url) { 'http://user:secret@example.com' }
+
+    it 'returns a masked url' do
+      is_expected.to eq 'http://*****:*****@example.com'
+    end
+
+    context 'when url is not set' do
+      let(:url) { nil }
+
+      it { is_expected.to eq '' }
+    end
+
+    context 'when url does not include credentials' do
+      let(:url) { 'http://example.com' }
+
+      it { is_expected.to eq url }
+    end
+  end
 end

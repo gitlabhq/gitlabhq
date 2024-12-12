@@ -1132,7 +1132,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       forks_count: 4,
       project_full_path: project_path,
       project_forks_url: project_forks_path,
-      can_create_fork: "true",
       can_fork_project: "true",
       can_read_code: "true",
       new_fork_url: project_new_fork_path
@@ -1143,14 +1142,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     subject { helper.fork_button_data_attributes(project) }
 
-    # The stubs for the forkable namespaces seem not to make sense (they're just numbers),
-    # but they're set up that way because we don't really care about what the array contains, only about its length
-    where(:has_user, :project_already_forked, :forkable_namespaces, :expected) do
-      false | false | []     | nil
-      true  | false | [0]    | data_attributes_without_user_fork_url
-      true  | false | [0, 1] | data_attributes_without_user_fork_url
-      true  | true  | [0]    | data_attributes_with_user_fork_url
-      true  | true  | [0, 1] | data_attributes_without_user_fork_url
+    where(:has_user, :project_already_forked, :has_forkable_groups, :expected) do
+      false | false | false | nil
+      true  | false | false | data_attributes_without_user_fork_url
+      true  | false | true  | data_attributes_without_user_fork_url
+      true  | true  | false | data_attributes_with_user_fork_url
+      true  | true  | true  | data_attributes_without_user_fork_url
     end
 
     with_them do
@@ -1160,10 +1157,9 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         allow(helper).to receive(:current_user).and_return(current_user)
         allow(user).to receive(:can?).and_call_original
         allow(user).to receive(:can?).with(:fork_project, project).and_return(true)
-        allow(user).to receive(:can?).with(:create_fork).and_return(true)
         allow(user).to receive(:can?).with(:create_projects, anything).and_return(true)
         allow(user).to receive(:already_forked?).with(project).and_return(project_already_forked)
-        allow(user).to receive(:forkable_namespaces).and_return(forkable_namespaces)
+        allow(user).to receive(:has_forkable_groups?).and_return(has_forkable_groups)
 
         allow(project).to receive(:forks_count).and_return(4)
         allow(project).to receive(:full_path).and_return(project_path)

@@ -15,7 +15,7 @@ module Emails
     def bulk_import_complete(user_id, bulk_import_id)
       user = User.find(user_id)
       @bulk_import = BulkImport.find(bulk_import_id)
-      @hostname = @bulk_import.configuration.url
+      @hostname = @bulk_import.configuration.safe_url
       title = safe_format(
         s_('BulkImport|Import from %{hostname} completed'),
         hostname: @hostname

@@ -62,29 +62,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
   end
 
-  describe "create fork" do
-    context "when user has not exceeded project limit" do
-      it { is_expected.to be_allowed(:create_fork) }
-    end
-
-    context "when user has exceeded project limit" do
-      let(:current_user) { create(:user, projects_limit: 0) }
-
-      it { is_expected.not_to be_allowed(:create_fork) }
-    end
-
-    context "when user is a maintainer in a group" do
-      let(:group) { create(:group) }
-      let(:current_user) { create(:user, projects_limit: 0) }
-
-      before do
-        group.add_maintainer(current_user)
-      end
-
-      it { is_expected.to be_allowed(:create_fork) }
-    end
-  end
-
   describe 'create group' do
     context 'when user has the ability to create group' do
       let(:current_user) { create(:user, can_create_group: true) }

@@ -55,6 +55,11 @@ export default {
       required: false,
       default: null,
     },
+    isDragging: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -121,6 +126,11 @@ export default {
       this.wasInView = true;
       this.imageLoading = true;
     },
+    onTileClick(event) {
+      if (this.isDragging) {
+        event.preventDefault();
+      }
+    },
   },
   ROUTES,
 };
@@ -137,6 +147,7 @@ export default {
   >
     <div
       class="card-body gl-relative gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-rounded-t-base gl-p-0"
+      @click="onTileClick"
     >
       <div
         v-if="icon.name"

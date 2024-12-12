@@ -603,7 +603,7 @@ table.code {
 }
 
 .diff-wrap-lines .line_content {
-  font-size: 13px;
+  font-size: $code-font-size-fixed;
   white-space: pre-wrap;
 }
 

@@ -29,7 +29,10 @@ RSpec.describe Emails::Imports, feature_category: :importers do
   end
 
   describe '#bulk_import_complete' do
-    let(:bulk_import) { build_stubbed(:bulk_import, :finished, :with_configuration) }
+    let(:bulk_import) { build_stubbed(:bulk_import, :finished) }
+    let!(:bulk_configuration) { build(:bulk_import_configuration, bulk_import: bulk_import, url: url) }
+    let(:url) { 'http://user:secret@example.com' }
+    let(:masked_url) { 'http://*****:*****@example.com' }
 
     subject { Notify.bulk_import_complete('user_id', 'bulk_import_id') }
 
@@ -39,11 +42,11 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     it 'sends complete email' do
-      is_expected.to have_subject("Import from #{bulk_import.configuration.url} completed")
+      is_expected.to have_subject("Import from #{masked_url} completed")
       is_expected.to have_content('Import completed')
       is_expected.to have_content("The import you started on " \
         "#{I18n.l(bulk_import.created_at.to_date, format: :long)} " \
-        "from #{bulk_import.configuration.url} has completed. You can now review your import results.")
+        "from #{masked_url} has completed. You can now review your import results.")
       is_expected.to have_body_text(history_import_bulk_import_url(bulk_import.id))
     end
   end
