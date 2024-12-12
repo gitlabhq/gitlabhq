@@ -84,6 +84,34 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     end
   end
 
+  describe '.link_from_scoped_user_id' do
+    let(:scoped_user_id) { scoped_user.id }
+
+    subject(:identity) { described_class.link_from_scoped_user_id(primary_user, scoped_user_id) }
+
+    context 'when composite identity is required for the actor' do
+      before do
+        allow(primary_user).to receive(:has_composite_identity?).and_return(true)
+      end
+
+      it 'returns an identity' do
+        expect(identity).to be_composite
+        expect(identity).to be_linked
+        expect(identity).to be_valid
+
+        expect(identity.scoped_user).to eq(scoped_user)
+      end
+    end
+
+    context 'when scoped_user_id is unknown' do
+      let(:scoped_user_id) { 0 }
+
+      it 'returns nil' do
+        expect(identity).to be_nil
+      end
+    end
+  end
+
   describe '.fabricate' do
     subject(:identity) { described_class.fabricate(primary_user) }
 

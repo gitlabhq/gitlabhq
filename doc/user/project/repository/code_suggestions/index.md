@@ -122,7 +122,31 @@ To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
 
-## Open tabs as context
+## Advanced Context
+
+When using Code Suggestions, the Advanced Context feature searches in the background
+to find and include relevant context from across a user's repository.
+
+For more information, see the [Advanced Context Resolver project epic](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/57).
+
+### Advanced Context supported languages
+
+The Advanced Context feature supports these languages:
+
+- Code completion: all configured languages.
+- Code generation:
+  - Go
+  - Java
+  - JavaScript
+  - Kotlin
+  - Python
+  - Ruby
+  - Rust
+  - TypeScript (`.ts` and `.tsx` files)
+  - Vue
+  - YAML
+
+### Open tabs as context
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
@@ -140,7 +164,9 @@ To get more accurate and relevant results from Code Suggestions and code generat
 the contents of the files open in tabs in your IDE. Similar to prompt engineering, these files
 give GitLab Duo more information about the standards and practices in your code project.
 
-### Enable open tabs as context
+Open tabs as context is part of the Advanced Context feature.
+
+#### Enable open tabs as context
 
 By default, Code Suggestions uses the open files in your IDE for context when making suggestions.
 
@@ -177,7 +203,7 @@ To confirm that open tabs are used as context:
 
 ::EndTabs
 
-### Use open tabs as context
+#### Use open tabs as context
 
 Open the files you want to provide for context:
 
@@ -201,17 +227,7 @@ To learn about the code that builds the prompt, see these files:
   [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
   in the `modelops` repository.
 
-Provide feedback about this feature in
-[issue 258](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/258).
-
-## Advanced Context supported languages
-
-The Advanced Context feature supports these languages:
-
-- Code completion: all configured languages.
-- Code generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
-
-## Inference window context
+### Inference window context
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.8.
 > - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/206) open tabs context in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `advanced_context_resolver` and `code_suggestions_context`. Disabled by default.

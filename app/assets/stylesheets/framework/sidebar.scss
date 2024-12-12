@@ -833,15 +833,3 @@
     font-size: 13px;
   }
 }
-
-@include media-breakpoint-down(sm) {
-  // Overriding the following rule with the negative margin
-  // https://gitlab.com/gitlab-org/gitlab/-/blob/146c43c931c3743a140529307aea616e4aa9ff21/app/assets/stylesheets/framework/sidebar.scss#L1-5
-  .container-fluid {
-    .issuable-list,
-    .issues-filters,
-    .epics-filters {
-      margin: 0 (-$gl-padding);
-    }
-  }
-}

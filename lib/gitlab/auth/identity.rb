@@ -33,6 +33,16 @@ module Gitlab
         end
       end
 
+      def self.link_from_scoped_user_id(user, scoped_user_id)
+        scoped_user = ::User.find_by_id(scoped_user_id)
+
+        return unless scoped_user
+
+        ::Gitlab::Auth::Identity.fabricate(user).tap do |identity|
+          identity.link!(scoped_user) if identity&.composite?
+        end
+      end
+
       def self.sidekiq_restore!(job)
         ids = Array(job[COMPOSITE_IDENTITY_SIDEKIQ_ARG])
 

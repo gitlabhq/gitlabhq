@@ -2137,7 +2137,6 @@ Style/InlineDisableAnnotation:
     - 'qa/qa/support/page_error_checker.rb'
     - 'qa/qa/support/run.rb'
     - 'qa/qa/support/wait_for_requests.rb'
-    - 'qa/qa/tools/reliable_report.rb'
     - 'qa/spec/ee/resource/mixins/group_base_spec.rb'
     - 'qa/spec/page/base_spec.rb'
     - 'qa/spec/resource/project_web_hook_spec.rb'

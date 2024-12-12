@@ -99,6 +99,19 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
         end
 
         it { is_expected.to be_truthy }
+
+        it 'logs the pattern comparison limit exceeded' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            class: described_class.name,
+            message: 'rules:exists pattern comparisons limit exceeded',
+            project_id: project.id,
+            paths_size: kind_of(Integer),
+            globs_size: 1,
+            comparisons: kind_of(Integer)
+          )
+
+          satisfied_by?
+        end
       end
 
       context 'when rules:exists:project is provided' do

@@ -39,7 +39,7 @@
   }
 
   .badge.badge-pill {
-    color: var(--ide-text-color, $gray-700);
+    color: var(--ide-text-color, var(--gl-icon-color-subtle));
     background-color: var(--ide-background, $badge-bg);
   }
 

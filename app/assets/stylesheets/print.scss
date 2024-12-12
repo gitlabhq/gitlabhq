@@ -45,7 +45,7 @@
 
       position: relative;
       font-size: inherit;
-      color: $gray-700;
+      @apply gl-text-subtle;
       padding-top: $gl-spacing-scale-3;
       padding-bottom: $gl-spacing-scale-3;
       padding-left: $gl-spacing-scale-6;

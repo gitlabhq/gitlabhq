@@ -17,7 +17,7 @@ You can integrate with external applications to add functionality to GitLab.
 
 You can view and manage integrations for the:
 
-- [Instance](../../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) (self-managed GitLab)
+- [Instance](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration) (self-managed GitLab)
 - [Group](#manage-group-default-settings-for-a-project-integration)
 
 You can use:
@@ -59,7 +59,7 @@ When you make further changes to the group defaults:
 - Subgroups and projects with custom settings selected for the integration are not immediately affected and
   may choose to use the latest defaults at any time.
 
-If [instance settings](../../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration)
+If [instance settings](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration)
 have also been configured for the same integration, projects in the group inherit settings from the group.
 
 Only the entire settings for an integration can be inherited. Per-field inheritance
@@ -113,6 +113,10 @@ To use custom settings for a project or group integration:
 1. Select **Save changes**.
 
 ## Available integrations
+
+The following integrations can be available on a GitLab instance.
+If an instance administrator has configured an [integration allowlist](../../../administration/settings/project_integration_management.md#integration-allowlist),
+only those integrations are available.
 
 | Integration                                                  | Description                                                                              | Integration hooks |
 | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ----------------- |

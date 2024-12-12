@@ -866,3 +866,115 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
     click_button "Create #{type}"
   end
 end
+
+RSpec.shared_examples 'work items linked items' do |is_group = false|
+  it 'are not displayed when issue does not have work item links', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      expect(page).to have_selector('[data-testid="link-item-add-button"]')
+      expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
+      expect(page).not_to have_selector('[data-testid="work-item-linked-items-list"]')
+    end
+  end
+
+  it 'toggles widget body and form', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      expect(page).to have_selector('[data-testid="crud-empty"]')
+
+      click_button 'Collapse'
+
+      expect(page).not_to have_selector('[data-testid="crud-empty"]')
+
+      click_button 'Expand'
+
+      expect(page).to have_selector('[data-testid="crud-empty"]')
+
+      expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
+
+      click_button 'Add'
+
+      expect(page).to have_selector('[data-testid="link-work-item-form"]')
+
+      click_button 'Cancel'
+
+      expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
+    end
+  end
+
+  it 'links a new item with work item text', :aggregate_failures do
+    expect_linked_item_added(linked_item.title)
+  end
+
+  it 'links a new item with work item iid', :aggregate_failures do
+    expect_linked_item_added(linked_item.iid)
+  end
+
+  it 'links a new item with work item wildcard iid', :aggregate_failures do
+    expect_linked_item_added("##{linked_item.iid}")
+  end
+
+  it 'links a new item with work item url', :aggregate_failures do
+    url = if is_group
+            "#{Gitlab.config.gitlab.url}/groups/#{linked_item.namespace.full_path}/-/work_items/#{linked_item.iid}"
+          else
+            "#{Gitlab.config.gitlab.url}/#{linked_item.project.full_path}/-/work_items/#{linked_item.iid}"
+          end
+
+    expect_linked_item_added(url)
+  end
+
+  it 'removes a linked item', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        fill_in 'Search existing items', with: linked_item.title
+        click_button linked_item.title
+        click_button 'Add'
+      end
+
+      expect(page).to have_link linked_item.title
+
+      find_link(linked_item.title).hover
+      click_button 'Remove', match: :first
+
+      expect(page).not_to have_link linked_item.title
+    end
+  end
+
+  it 'passes axe automated accessibility testing for linked items', :aggregate_failures do
+    selector = '[data-testid="work-item-relationships"]'
+
+    within_testid('work-item-relationships') do
+      expect(page).to be_axe_clean.within(selector).skipping :'link-in-text-block'
+
+      click_button 'Add'
+      fill_in 'Search existing items', with: linked_item.title
+
+      expect(page).to be_axe_clean.within(selector).skipping :'aria-input-field-name',
+        :'aria-required-children'
+
+      within_testid('link-work-item-form') do
+        click_button linked_item.title
+        click_button 'Add'
+      end
+
+      expect(page).to be_axe_clean.within(selector)
+    end
+  end
+
+  def expect_linked_item_added(input)
+    within_testid('work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        expect(page).to have_button('Add', disabled: true)
+
+        fill_in 'Search existing items', with: input
+        click_button linked_item.title, match: :first
+        click_button 'Add'
+      end
+
+      expect(page).to have_link linked_item.title
+    end
+  end
+end

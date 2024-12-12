@@ -629,7 +629,7 @@
   padding-bottom: 0;
   padding-left: $gl-spacing-scale-3;
   padding-right: $gl-spacing-scale-3;
-  color: $gray-700;
+  @apply gl-text-subtle;
   line-height: 30px;
   border: 1px solid var(--gl-control-border-color-default);
   border-radius: $gl-border-radius-base;
@@ -641,7 +641,7 @@
 
   &:hover {
     ~ .dropdown-input-clear {
-      color: $gray-700;
+      @apply gl-text-subtle;
     }
   }
 }

@@ -1,9 +1,0 @@
----
-name: group_duo_page_configuration_settings
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493383
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168581
-rollout_issue_url:
-milestone: '17.7'
-group: group::ai framework
-type: wip
-default_enabled: false

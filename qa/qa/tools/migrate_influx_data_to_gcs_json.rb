@@ -135,7 +135,7 @@ module QA
       # @param [String] values record's values to get the data from
       # @return [Hash]
       def tags(values)
-        tags = values.slice('name', 'file_path', 'status', 'smoke', 'blocking',
+        tags = values.slice('name', 'file_path', 'status', 'smoke',
           'quarantined', 'job_name', 'merge_request', 'run_type', 'stage',
           'product_group', 'testcase', 'exception_class')
 

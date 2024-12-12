@@ -19403,6 +19403,7 @@ CREATE TABLE saml_group_links (
     updated_at timestamp with time zone NOT NULL,
     saml_group_name text NOT NULL,
     member_role_id bigint,
+    assign_duo_seats boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1b3fc49d1e CHECK ((char_length(saml_group_name) <= 255))
 );
 

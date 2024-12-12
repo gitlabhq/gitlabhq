@@ -74,7 +74,7 @@
       }
 
       .milestone {
-        color: var(--gray-700, $gray-700);
+        @apply gl-text-subtle;
       }
     }
 

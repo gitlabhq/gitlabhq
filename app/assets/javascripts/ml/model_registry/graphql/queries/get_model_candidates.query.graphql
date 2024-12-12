@@ -11,7 +11,13 @@ query getModelCandidates(
       count
       nodes {
         id
+        eid
+        ciJob {
+          id
+          name
+        }
         name
+        status
         createdAt
         _links {
           showPath

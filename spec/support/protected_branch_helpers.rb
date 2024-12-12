@@ -6,7 +6,7 @@ module ProtectedBranchHelpers
     page.driver.browser.manage.window.maximize
 
     # Make sure dropdown is in view
-    execute_script('window.scrollTo(0,0)')
+    execute_script("document.querySelector('#{form}').scrollIntoView({ block: 'start' })")
 
     within(form) do
       within_select(".js-allowed-to-#{operation}:not([disabled])") do

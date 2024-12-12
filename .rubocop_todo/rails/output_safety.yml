@@ -57,7 +57,6 @@ Rails/OutputSafety:
     - 'ee/app/components/namespaces/free_user_cap/non_owner_enforcement_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_trial_alert_component.rb'
-    - 'ee/app/components/namespaces/storage/limit_alert_component.rb'
     - 'ee/app/components/namespaces/storage/repository_limit_alert_component.rb'
     - 'ee/app/controllers/ee/projects/issues_controller.rb'
     - 'ee/app/controllers/ee/repositories/lfs_api_controller.rb'

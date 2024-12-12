@@ -13,6 +13,10 @@ module Projects
       validate :validate_protected_branch_not_wildcard
       validate :validate_protected_branch_belongs_to_project
 
+      def self.declarative_policy_class
+        'Projects::BranchRulePolicy'
+      end
+
       private
 
       def validate_protected_branch_not_wildcard

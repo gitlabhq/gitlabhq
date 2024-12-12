@@ -4,34 +4,28 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project integration administration
+# Integration administration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 NOTE:
-This page contains administrator documentation for project integrations. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
+This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
 
-Project integrations can be configured and enabled by project administrators. As a GitLab instance
-administrator, you can set default configuration parameters for a given integration that all projects
-can inherit and use, enabling the integration for all projects that are not already using custom
-settings.
+Project and group administrators can configure and enable integrations.
+As an instance administrator, you can:
 
-You can update these default settings at any time, changing the settings used for all projects that
-are set to use instance-level or group-level defaults. Updating the default settings also enables the integration
-for all projects that didn't have it already enabled.
+- Set default configuration parameters for an integration.
+- Configure an allowlist to control which integrations can be enabled on a GitLab instance.
 
-Only the entire settings for an integration can be inherited. Per-field inheritance
-is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
-
-## Manage instance-level default settings for a project integration
+## Configure default settings for an integration
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To manage instance-level default settings for a project integration:
+To configure default settings for an integration:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.
@@ -66,13 +60,13 @@ instead of the instance-level settings.
 Only the entire settings for an integration can be inherited. Per-field inheritance
 is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
-### Remove an instance-level default setting
+### Remove default settings for an integration
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To remove an instance-level default setting:
+To remove default settings for an integration:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.
@@ -93,3 +87,49 @@ To view projects in your instance that [use custom settings](../../user/project/
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.
+
+## Integration allowlist
+
+DETAILS:
+**Tier:** Ultimate
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.7.
+
+By default, project and group administrators can enable integrations.
+However, instance administrators can configure an allowlist to control
+which integrations can be enabled on a GitLab instance.
+
+Enabled integrations that are later blocked by the allowlist settings are disabled.
+If these integrations are allowed again, they are re-enabled with their existing configuration.
+
+If you configure an empty allowlist, no integrations are allowed on the instance.
+After you configure an allowlist, new GitLab integrations are not on the allowlist by default.
+
+### Allow some integrations
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To allow only integrations on the allowlist:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Integration settings** section.
+1. Select **Allow only integrations on this allowlist**.
+1. Select the checkbox for each integration you want to allow on the instance.
+1. Select **Save changes**.
+
+### Allow all integrations
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To allow all integrations on a GitLab instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Integration settings** section.
+1. Select **Allow all integrations**.
+1. Select **Save changes**.

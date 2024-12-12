@@ -91,7 +91,6 @@ Style/HashEachMethods:
     - 'lib/tasks/gitlab/db.rake'
     - 'lib/tasks/gitlab/setup.rake'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/change_vulnerability_status_spec.rb'
-    - 'qa/qa/tools/reliable_report.rb'
     - 'qa/spec/specs/runner_spec.rb'
     - 'scripts/generate_rspec_pipeline.rb'
     - 'spec/config/settings_spec.rb'

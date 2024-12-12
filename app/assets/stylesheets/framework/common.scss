@@ -176,7 +176,7 @@ table {
 .loading {
   margin: 20px auto;
   height: 40px;
-  color: $gray-700;
+  @apply gl-text-subtle;
   font-size: 32px;
   text-align: center;
 }

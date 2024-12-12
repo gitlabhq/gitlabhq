@@ -24,7 +24,7 @@
       max-width: 900px;
       margin: 0 auto 10px;
     }
-    
+
     .div-dropzone {
       textarea.note-textarea {
         resize: none !important;
@@ -39,7 +39,7 @@
 
 .zen-control {
   padding: 0;
-  color: $gray-700;
+  @apply gl-text-subtle;
   background: none;
   border: 0;
 }

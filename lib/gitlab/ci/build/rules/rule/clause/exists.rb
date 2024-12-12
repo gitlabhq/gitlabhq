@@ -8,7 +8,7 @@ module Gitlab
 
         # The maximum number of patterned glob comparisons that will be
         # performed before the rule assumes that it has a match
-        MAX_PATTERN_COMPARISONS = 10_000
+        MAX_PATTERN_COMPARISONS = 50_000
 
         WILDCARD_NESTED_PATTERN = "**/*"
 
@@ -85,7 +85,19 @@ module Gitlab
         end
 
         def pattern_matches?(paths, pattern_globs, context)
-          return true if (paths.size * pattern_globs.size) > MAX_PATTERN_COMPARISONS
+          comparisons = paths.size * pattern_globs.size
+
+          if comparisons > MAX_PATTERN_COMPARISONS
+            Gitlab::AppJsonLogger.info(
+              class: self.class.name,
+              message: 'rules:exists pattern comparisons limit exceeded',
+              project_id: context.project&.id,
+              paths_size: paths.size,
+              globs_size: pattern_globs.size,
+              comparisons: comparisons
+            )
+            return true
+          end
 
           pattern_globs.any? do |glob|
             Gitlab::SafeRequestStore.fetch("ci_rules_exists_pattern_matches_#{context.project&.id}_#{glob}") do

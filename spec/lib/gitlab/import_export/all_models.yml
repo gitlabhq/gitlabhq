@@ -540,6 +540,7 @@ protected_branches:
 - approval_project_rules_with_unique_policies
 - external_status_checks
 - required_code_owners_sections
+- squash_option
 protected_tags:
 - project
 - create_access_levels

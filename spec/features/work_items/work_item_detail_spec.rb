@@ -24,6 +24,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
 
   context 'for signed in user' do
+    let(:linked_item) { task }
+
     before_all do
       group.add_developer(user)
     end
@@ -46,6 +48,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items title'
     it_behaves_like 'work items description'
     it_behaves_like 'work items award emoji'
+    it_behaves_like 'work items linked items'
     it_behaves_like 'work items comments', :issue
     it_behaves_like 'work items toggle status button'
 

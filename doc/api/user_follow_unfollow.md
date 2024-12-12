@@ -14,7 +14,7 @@ Use this API to perform follower actions for user accounts. For more information
 
 ## Follow a user
 
-Follow a user.
+Follow a given user account.
 
 ```plaintext
 POST /users/:id/follow
@@ -24,7 +24,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user to follow |
+| `id`      | integer | yes      | ID of user account |
 
 Example request:
 
@@ -48,7 +48,7 @@ Example response:
 
 ## Unfollow a user
 
-Unfollow a user.
+Unfollow a given user account.
 
 ```plaintext
 POST /users/:id/unfollow
@@ -58,7 +58,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user to unfollow |
+| `id`      | integer | yes      | ID of user account |
 
 Example request:
 
@@ -66,9 +66,9 @@ Example request:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/users/3/unfollow"
 ```
 
-## Get the followers of a user
+## List all accounts that follow a user
 
-Get the followers of a user.
+Lists all users accounts that follow a given user.
 
 ```plaintext
 GET /users/:id/followers
@@ -78,7 +78,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user |
+| `id`      | integer | yes      | ID of user account |
 
 Example request:
 
@@ -111,9 +111,9 @@ Example response:
 ]
 ```
 
-## Get the users that a user is following
+## List all accounts followed by a user
 
-Get the list of users being followed by a user.
+Lists all users accounts being followed by a given user.
 
 ```plaintext
 GET /users/:id/following
@@ -123,7 +123,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user |
+| `id`      | integer | yes      | ID of user account |
 
 Example request:
 

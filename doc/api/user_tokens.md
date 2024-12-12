@@ -12,16 +12,17 @@ DETAILS:
 
 Use this API to interact with personal access tokens and impersonation tokens. For more information, see [personal access tokens](../user/profile/personal_access_tokens.md) and [impersonation tokens](rest/authentication.md#impersonation-tokens).
 
-## Create a personal access token
+## Create a personal access token for a user
 
 > - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
-Create a new personal access token. Token values are returned once so, make sure you save it because you can't access it
-again.
+Creates a personal access token for a given user.
+
+Token values are included with the response, but cannot be retrieved later.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:user_id/personal_access_tokens
@@ -31,11 +32,11 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description |
 |:-------------|:--------|:---------|:------------|
-| `user_id`    | integer | yes      | ID of the user. |
-| `name`       | string  | yes      | Name of the personal access token. |
-| `description`| string  | no       | Description of the personal access token. |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is set to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
-| `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
+| `user_id`    | integer | yes      | ID of user account |
+| `name`       | string  | yes      | Name of personal access token |
+| `description`| string  | no       | Description of personal access token |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes):  |
 
 Example request:
 
@@ -63,23 +64,21 @@ Example response:
 }
 ```
 
-## Create a personal access token with limited scopes for your account
+## Create a personal access token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
 
-Create a new personal access token for your account.
-
-Prerequisites:
-
-- You must be authenticated.
-
-For security purposes, the token:
+Creates a personal access token for your account. For security purposes, the token:
 
 - Is limited to the [`k8s_proxy` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
   This scope grants permission to perform Kubernetes API calls using the agent for Kubernetes.
 - By default, expires at the end of the day it was created on.
 
-Token values are returned once, so make sure you save the token because you cannot access it again.
+Token values are included with the response, but cannot be retrieved later.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 POST /user/personal_access_tokens
@@ -89,10 +88,10 @@ Supported attributes:
 
 | Attribute    | Type   | Required | Description |
 |:-------------|:-------|:---------|:------------|
-| `name`       | string | yes      | Name of the personal access token. |
-| `description`| string | no       | Description of the personal access token. |
-| `scopes`     | array  | yes      | Array of scopes of the personal access token. Possible values are `k8s_proxy`. |
-| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is at the end of the current day. The expiration is subject to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `name`       | string | yes      | Name of personal access token |
+| `description`| string | no       | Description of personal access token |
+| `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy`. |
+| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, token expires at the end of the current day. Subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:
 
@@ -119,14 +118,15 @@ Example response:
 }
 ```
 
-## Get all impersonation tokens of a user
+## List all impersonation tokens for a user
 
-Retrieve every impersonation token of a user. Use the [pagination parameters](rest/index.md#offset-based-pagination)
-`page` and `per_page` to restrict the list of impersonation tokens.
+Lists all impersonation tokens for a given user.
+
+Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 GET /users/:user_id/impersonation_tokens
@@ -136,8 +136,8 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `user_id` | integer | yes      | ID of the user. |
-| `state`   | string  | no       | Filter tokens based on state: `all`, `active`, or `inactive`. |
+| `user_id` | integer | yes      | ID of user account |
+| `state`   | string  | no       | Filter tokens based on state. Possible values: `all`, `active`, or `inactive`. |
 
 Example request:
 
@@ -182,13 +182,13 @@ Example response:
 ]
 ```
 
-## Get an impersonation token of a user
+## Get an impersonation token for a user
 
-Get a user's impersonation token.
+Gets an impersonation token for a given user.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 GET /users/:user_id/impersonation_tokens/:impersonation_token_id
@@ -198,8 +198,8 @@ Supported attributes:
 
 | Attribute                | Type    | Required | Description |
 |:-------------------------|:--------|:---------|:------------|
-| `user_id`                | integer | yes      | ID of the user. |
-| `impersonation_token_id` | integer | yes      | ID of the impersonation token. |
+| `user_id`                | integer | yes      | ID of user account |
+| `impersonation_token_id` | integer | yes      | ID of impersonation token |
 
 Example request:
 
@@ -228,14 +228,13 @@ Example response:
 
 ## Create an impersonation token
 
-Create a new impersonation token. You can only create impersonation tokens to impersonate the user and perform
-both API calls and Git reads and writes. The user can't see these tokens in their profile settings page.
+Creates an impersonation token for a given user. These tokens are used to act on behalf of a user and can perform API calls as well as Git read and write actions. These tokens are not visible to the associated user on their profile settings page.
 
-Token values are returned once. Make sure you save it because you can't access it again.
+Token values are included with the response, but cannot be retrieved later.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:user_id/impersonation_tokens
@@ -245,11 +244,11 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description |
 |:-------------|:--------|:---------|:------------|
-| `user_id`    | integer | yes      | ID of the user. |
-| `name`       | string  | yes      | Name of the impersonation token. |
-| `description`| string  | no       | Description of the personal access token. |
-| `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`). |
-| `scopes`     | array   | yes      | Array of scopes of the impersonation token (`api`, `read_user`). |
+| `user_id`    | integer | yes      | ID of user account |
+| `name`       | string  | yes      | Name of impersonation token |
+| `description`| string  | no       | Description of impersonation token |
+| `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes):  |
 
 Example request:
 
@@ -280,11 +279,11 @@ Example response:
 
 ## Revoke an impersonation token
 
-Revoke an impersonation token.
+Revokes an impersonation token for a given user.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
@@ -294,8 +293,8 @@ Supported attributes:
 
 | Attribute                | Type    | Required | Description |
 |:-------------------------|:--------|:---------|:------------|
-| `user_id`                | integer | yes      | ID of the user. |
-| `impersonation_token_id` | integer | yes      | ID of the impersonation token. |
+| `user_id`                | integer | yes      | ID of user account |
+| `impersonation_token_id` | integer | yes      | ID of impersonation token |
 
 Example request:
 

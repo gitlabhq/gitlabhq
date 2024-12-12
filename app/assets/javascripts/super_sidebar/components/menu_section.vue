@@ -145,8 +145,8 @@ export default {
         {{ item.title }}
       </span>
 
-      <span class="gl-text-right gl-text-gray-400">
-        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" />
+      <span class="gl-text-right">
+        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" variant="subtle" />
       </span>
     </button>
 

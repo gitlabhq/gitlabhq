@@ -25,7 +25,7 @@
 .save-group-loader {
   margin-top: $gl-spacing-scale-9;
   margin-bottom: $gl-spacing-scale-9;
-  color: $gray-700;
+  @apply gl-text-subtle;
 }
 
 .card {

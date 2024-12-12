@@ -29,12 +29,33 @@ NOTE:
 Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
 A new subscription must be purchased and applied as needed.
 
-## Choose a GitLab tier
+## Choose a subscription tier
 
 Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
 the features that fit your budget.
 
 For more details, see [a comparison of features available in each tier](https://about.gitlab.com/pricing/feature-comparison/).
+
+## Choose a subscription add-on
+
+An add-on is an additional paid feature or service that you can purchase on top of an existing
+GitLab subscription. Add-ons provide extra functionality or resources to enhance your GitLab
+experience.
+
+You can purchase the following add-ons:
+
+- [GitLab Duo](subscription-add-ons.md): Get access to AI-powered features like Code Suggestions, GitLab
+Duo Chat, and more.
+- [Enterprise Agile Planning](gitlab_com/index.md#enterprise-agile-planning): Increase collaboration between
+technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
+measure impact with Value Stream Analytics, and gain visibility into software development velocity.
+- [Storage](gitlab_com/index.md#purchase-more-storage): Buy more storage when you exceed your
+free 10 GiB storage quota.
+- [Compute minutes](gitlab_com/compute_minutes.md): Buy additional compute minutes when your
+plan exceeds its allocated amount and you need to continue running automated
+builds, tests, and deployments without interruption.
+
+Some add-ons are only available to specific subscription tiers and offerings.
 
 ## Contact Support
 

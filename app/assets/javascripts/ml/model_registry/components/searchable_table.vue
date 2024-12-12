@@ -7,6 +7,7 @@ import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_ba
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 import ModelsTable from '~/ml/model_registry/components/models_table.vue';
 import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
+import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 
 export default {
   name: 'SearchableTable',
@@ -16,6 +17,7 @@ export default {
     GlKeysetPagination,
     ModelsTable,
     ModelVersionsTable,
+    CandidatesTable,
   },
   directives: {
     GlTooltip,
@@ -27,6 +29,11 @@ export default {
       default: () => [],
     },
     models: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    candidates: {
       type: Array,
       required: false,
       default: () => [],
@@ -77,15 +84,6 @@ export default {
     };
   },
   computed: {
-    isModelVersionsEmpty() {
-      return this.modelVersions.length === 0;
-    },
-    isModelsEmpty() {
-      return this.models.length === 0;
-    },
-    isListEmpty() {
-      return this.isModelVersionsEmpty && this.isModelsEmpty;
-    },
     parsedQuery() {
       const name = this.filters
         .map((f) => f.value.data)
@@ -161,19 +159,20 @@ export default {
       @filter:clear="filters = []"
     />
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-      <slot v-if="isListEmpty" name="empty-state"></slot>
       <model-versions-table
-        v-else-if="!isModelVersionsEmpty"
+        v-if="modelVersions.length"
         :items="modelVersions"
         can-write-model-registry
         @model-versions-update="submitFilters"
       />
       <models-table
-        v-else-if="!isModelsEmpty"
+        v-else-if="models.length"
         :items="models"
         can-write-model-registry
         @models-update="submitFilters"
       />
+      <candidates-table v-else-if="candidates.length" :items="candidates" />
+      <slot v-else name="empty-state"></slot>
       <gl-keyset-pagination
         v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"
         v-bind="pageInfo"

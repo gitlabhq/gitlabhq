@@ -328,8 +328,12 @@ module Gitlab
         'authorization' => "Bearer #{authorization_token(storage)}",
         'client_name' => CLIENT_NAME
       }
-
+      gitaly_context = {}
       relative_path = fetch_relative_path
+
+      ::Gitlab::Auth::Identity.currently_linked do |identity|
+        gitaly_context['scoped-user-id'] = identity.scoped_user.id.to_s
+      end
 
       context_data = Gitlab::ApplicationContext.current
 
@@ -343,6 +347,8 @@ module Gitlab
       metadata['user_id'] = context_data['meta.user_id'].to_s if context_data&.fetch('meta.user_id', nil)
       metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data&.fetch('meta.remote_ip', nil)
       metadata['relative-path-bin'] = relative_path if relative_path
+      metadata['gitaly-client-context-bin'] = gitaly_context.to_json if gitaly_context.present?
+
       metadata.merge!(Feature::Gitaly.server_feature_flags(**feature_flag_actors))
       metadata.merge!(route_to_primary)
 

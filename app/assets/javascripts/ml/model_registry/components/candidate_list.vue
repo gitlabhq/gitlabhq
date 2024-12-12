@@ -3,14 +3,12 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { makeLoadCandidatesErrorMessage, NO_CANDIDATES_LABEL } from '../translations';
 import getModelCandidatesQuery from '../graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '../constants';
-import SearchableList from './searchable_list.vue';
-import CandidateListRow from './candidate_list_row.vue';
+import SearchableTable from './searchable_table.vue';
 
 export default {
   name: 'MlCandidateList',
   components: {
-    CandidateListRow,
-    SearchableList,
+    SearchableTable,
   },
   props: {
     modelId: {
@@ -74,21 +72,16 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <searchable-list
-      :page-info="pageInfo"
-      :items="items"
-      :error-message="errorMessage"
-      :is-loading="isLoading"
-      @fetch-page="fetchPage"
-    >
-      <template #empty-state>
-        {{ $options.i18n.NO_CANDIDATES_LABEL }}
-      </template>
-
-      <template #item="{ item }">
-        <candidate-list-row :candidate="item" />
-      </template>
-    </searchable-list>
-  </div>
+  <searchable-table
+    :candidates="items"
+    :page-info="pageInfo"
+    :error-message="errorMessage"
+    :is-loading="isLoading"
+    :can-write-model-registry="false"
+    @fetch-page="fetchPage"
+  >
+    <template #empty-state>
+      {{ $options.i18n.NO_CANDIDATES_LABEL }}
+    </template>
+  </searchable-table>
 </template>

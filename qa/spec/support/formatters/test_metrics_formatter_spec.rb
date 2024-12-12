@@ -32,7 +32,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:branch) { 'master' }
   let(:run_type) { 'staging-full' }
   let(:smoke) { 'false' }
-  let(:blocking) { 'false' }
   let(:quarantined) { 'false' }
   let(:failure_issue) { '' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
@@ -66,7 +65,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         file_path: file_path.gsub('./qa/specs/features', ''),
         status: status,
         smoke: smoke,
-        blocking: blocking,
         quarantined: quarantined,
         job_name: 'test-job',
         merge_request: 'false',
@@ -195,18 +193,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('QA_INFLUXDB_TIMEOUT', "10")
     end
 
-    context 'with blocking spec' do
-      let(:blocking) { 'true' }
-
-      it 'exports data with correct blocking tag', :aggregate_failures do
-        run_spec do
-          it('spec', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
-        end
-
-        expect(influx_write_api).to have_received(:write).with(data: [data])
-      end
-    end
-
     context 'with product group tag' do
       let(:expected_data) { data.tap { |d| d[:tags][:product_group] = :import } }
 
@@ -222,7 +208,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     context 'with smoke spec' do
       let(:smoke) { 'true' }
 
-      it 'exports data with correct blocking tag', :aggregate_failures do
+      it 'exports data with correct smoke tag', :aggregate_failures do
         run_spec do
           it('spec', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end

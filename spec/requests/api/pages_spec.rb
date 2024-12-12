@@ -82,7 +82,7 @@ RSpec.describe API::Pages, feature_category: :pages do
             "created_at" => created_at.strftime('%Y-%m-%dT%H:%M:%S.%3LZ'),
             "path_prefix" => nil,
             "root_directory" => "public",
-            "url" => "http://unique-domain.example.com/"
+            "url" => "http://unique-domain.example.com"
           }
         ])
       end

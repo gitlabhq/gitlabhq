@@ -353,51 +353,53 @@ export default {
   <div
     class="vue-filtered-search-bar-container gl-flex gl-min-w-0 gl-flex-col sm:gl-flex-row sm:gl-gap-3"
   >
-    <gl-form-checkbox
-      v-if="showCheckbox"
-      class="gl-self-center"
-      :checked="checkboxChecked"
-      @change="$emit('checked-input', $event)"
-    >
-      <span class="gl-sr-only">{{ __('Select all') }}</span>
-    </gl-form-checkbox>
-    <gl-filtered-search
-      ref="filteredSearchInput"
-      v-model="filterValue"
-      :placeholder="searchInputPlaceholder"
-      :available-tokens="tokens"
-      :history-items="filteredRecentSearches"
-      :suggestions-list-class="suggestionsListClass"
-      :search-button-attributes="searchButtonAttributes"
-      :search-input-attributes="searchInputAttributes"
-      :recent-searches-header="__('Recent searches')"
-      :clear-button-title="__('Clear')"
-      :close-button-title="__('Close')"
-      :clear-recent-searches-text="__('Clear recent searches')"
-      :no-recent-searches-text="__(`You don't have any recent searches`)"
-      :search-text-option-label="searchTextOptionLabel"
-      :show-friendly-text="showFriendlyText"
-      :show-search-button="showSearchButton"
-      :terms-as-tokens="termsAsTokens"
-      class="flex-grow-1"
-      @history-item-selected="handleHistoryItemSelected"
-      @clear="onClear"
-      @clear-history="handleClearHistory"
-      @submit="handleFilterSubmit"
-      @input="onInput"
-    >
-      <template #history-item="{ historyItem }">
-        <template v-for="(token, index) in historyItem">
-          <span v-if="typeof token === 'string'" :key="index" class="gl-px-1">"{{ token }}"</span>
-          <span v-else :key="`${index}-${token.type}-${token.value.data}`" class="gl-px-1">
-            <span v-if="tokenTitles[token.type]"
-              >{{ tokenTitles[token.type] }} :{{ token.value.operator }}</span
-            >
-            <strong>{{ tokenSymbols[token.type] }}{{ historyTokenOptionTitle(token) }}</strong>
-          </span>
+    <div class="flex-grow-1 gl-flex gl-gap-3">
+      <gl-form-checkbox
+        v-if="showCheckbox"
+        class="gl-min-h-0 gl-self-center"
+        :checked="checkboxChecked"
+        @change="$emit('checked-input', $event)"
+      >
+        <span class="gl-sr-only">{{ __('Select all') }}</span>
+      </gl-form-checkbox>
+      <gl-filtered-search
+        ref="filteredSearchInput"
+        v-model="filterValue"
+        :placeholder="searchInputPlaceholder"
+        :available-tokens="tokens"
+        :history-items="filteredRecentSearches"
+        :suggestions-list-class="suggestionsListClass"
+        :search-button-attributes="searchButtonAttributes"
+        :search-input-attributes="searchInputAttributes"
+        :recent-searches-header="__('Recent searches')"
+        :clear-button-title="__('Clear')"
+        :close-button-title="__('Close')"
+        :clear-recent-searches-text="__('Clear recent searches')"
+        :no-recent-searches-text="__(`You don't have any recent searches`)"
+        :search-text-option-label="searchTextOptionLabel"
+        :show-friendly-text="showFriendlyText"
+        :show-search-button="showSearchButton"
+        :terms-as-tokens="termsAsTokens"
+        class="flex-grow-1"
+        @history-item-selected="handleHistoryItemSelected"
+        @clear="onClear"
+        @clear-history="handleClearHistory"
+        @submit="handleFilterSubmit"
+        @input="onInput"
+      >
+        <template #history-item="{ historyItem }">
+          <template v-for="(token, index) in historyItem">
+            <span v-if="typeof token === 'string'" :key="index" class="gl-px-1">"{{ token }}"</span>
+            <span v-else :key="`${index}-${token.type}-${token.value.data}`" class="gl-px-1">
+              <span v-if="tokenTitles[token.type]"
+                >{{ tokenTitles[token.type] }} :{{ token.value.operator }}</span
+              >
+              <strong>{{ tokenSymbols[token.type] }}{{ historyTokenOptionTitle(token) }}</strong>
+            </span>
+          </template>
         </template>
-      </template>
-    </gl-filtered-search>
+      </gl-filtered-search>
+    </div>
     <gl-sorting
       v-if="selectedSortOption"
       :sort-options="transformedSortOptions"

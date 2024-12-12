@@ -51,7 +51,8 @@ $crud-header-min-height: px-to-rem(49px);
   }
 
   table.b-table-stacked-sm,
-  table.b-table-stacked-md {
+  table.b-table-stacked-md,
+  table.b-table-stacked-lg {
     margin-bottom: 0;
 
     tr:first-of-type th {
@@ -75,6 +76,12 @@ $crud-header-min-height: px-to-rem(49px);
 
   table.gl-table.b-table.b-table-stacked-md {
     @include gl-media-breakpoint-down(md) {
+      @include new-card-table-adjustments;
+    }
+  }
+
+  table.gl-table.b-table.b-table-stacked-lg {
+    @include gl-media-breakpoint-down(lg) {
       @include new-card-table-adjustments;
     }
   }

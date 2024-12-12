@@ -312,4 +312,19 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
       it { is_expected.to eq('example.com') }
     end
   end
+
+  describe "is_namespace_homepage?" do
+    subject { described_class.new(project).is_namespace_homepage? }
+
+    where(:full_path, :result) do
+      'group/foo'               | false
+      'group/group.example.com' | true
+      'grOUP/group.example.com' | true
+      'group/Group.example.com' | true
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
 end

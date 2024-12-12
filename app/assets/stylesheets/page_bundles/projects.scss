@@ -57,7 +57,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: var(--gray-700, $gray-700);
+  @apply gl-text-subtle;
 }
 
 .deploy-key {

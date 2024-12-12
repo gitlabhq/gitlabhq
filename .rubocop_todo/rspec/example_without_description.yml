@@ -229,7 +229,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/workers/security/scan_execution_policies/rule_schedule_worker_spec.rb'
     - 'qa/qa/specs/features/browser_ui/9_data_stores/project/dashboard_images_spec.rb'
     - 'qa/spec/specs/helpers/feature_flag_spec.rb'
-    - 'qa/spec/tools/reliable_report_spec.rb'
     - 'spec/bin/audit_event_type_spec.rb'
     - 'spec/bin/feature_flag_spec.rb'
     - 'spec/bin/saas_feature_spec.rb'

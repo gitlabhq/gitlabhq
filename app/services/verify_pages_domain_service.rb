@@ -2,7 +2,7 @@
 
 require 'resolv'
 
-class VerifyPagesDomainService < BaseService
+class VerifyPagesDomainService
   # The maximum number of seconds to be spent on each DNS lookup
   RESOLVER_TIMEOUT_SECONDS = 15
 
@@ -17,7 +17,9 @@ class VerifyPagesDomainService < BaseService
   end
 
   def execute
-    return error("No verification code set for #{domain.domain}") unless domain.verification_code.present?
+    unless domain.verification_code.present?
+      return ServiceResponse.error(message: "No verification code set for #{domain.domain}")
+    end
 
     if !verification_enabled? || dns_record_present?
       verify_domain!
@@ -48,7 +50,7 @@ class VerifyPagesDomainService < BaseService
 
     after_successful_verification
 
-    success
+    ServiceResponse.success
   end
 
   def after_successful_verification
@@ -64,7 +66,7 @@ class VerifyPagesDomainService < BaseService
 
     notify(:verification_failed) if was_verified
 
-    error("Couldn't verify #{domain.domain}")
+    ServiceResponse.error(message: "Couldn't verify #{domain.domain}")
   end
 
   def disable_domain!
@@ -74,7 +76,7 @@ class VerifyPagesDomainService < BaseService
 
     notify(:disabled)
 
-    error("Couldn't verify #{domain.domain}. It is now disabled.")
+    ServiceResponse.error(message: "Couldn't verify #{domain.domain}. It is now disabled.")
   end
 
   # A domain is only expired until `disable!` has been called
@@ -118,7 +120,7 @@ class VerifyPagesDomainService < BaseService
     return unless verification_enabled?
 
     Gitlab::AppLogger.info("Pages domain '#{domain.domain}' changed state to '#{type}'")
-    notification_service.public_send("pages_domain_#{type}", domain) # rubocop:disable GitlabSecurity/PublicSend
+    NotificationService.new.public_send("pages_domain_#{type}", domain) # rubocop:disable GitlabSecurity/PublicSend -- Technical debt
   end
 end
 
