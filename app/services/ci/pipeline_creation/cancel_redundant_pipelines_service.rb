@@ -56,33 +56,39 @@ module Ci
       def cancelable_pipelines
         cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE).with_object([]) do |pks_batch, cancelables|
           Ci::Pipeline.primary_key_in(pks_batch).order_id_asc.each do |cancelable|
-            case cancelable.source.to_sym
-            when *Enums::Ci::Pipeline.ci_sources.keys
-              # Newer pipelines are not cancelable. This doesn't normally occur
-              # but needs to be handled in asynchronous execution.
-              next if cancelable.created_at >= pipeline.created_at
-            when :parent_pipeline
-              # Child pipelines are cancelable based on the root parent age
-              next if cancelable.root_ancestor.created_at >= pipeline.created_at
-            else
-              # Skip other pipeline sources
-              next
-            end
-
-            next if cancelable.sha == pipeline.sha
-            next if cancelable.sha == ref_head_sha
-
-            if cancelable.created_at < pipelines_created_after
-              @skipped_for_old_age += 1
-
-              next
-            end
+            next if should_skip?(cancelable)
 
             # Keep the actual Pipeline instantiated
             # so we can cancel it directly.
             cancelables << cancelable
           end
         end
+      end
+
+      def should_skip?(cancelable)
+        case cancelable.source.to_sym
+        when *Enums::Ci::Pipeline.ci_sources.keys
+          # Newer pipelines are not cancelable. This doesn't normally occur
+          # but needs to be handled in asynchronous execution.
+          return true if cancelable.created_at >= pipeline.created_at
+        when :parent_pipeline
+          # Child pipelines are cancelable based on the root parent age
+          return true if cancelable.root_ancestor.created_at >= pipeline.created_at
+        else
+          # Skip other pipeline sources
+          return true
+        end
+
+        return true if cancelable.sha == pipeline.sha
+        return true if cancelable.sha == ref_head_sha
+
+        if cancelable.created_at < pipelines_created_after
+          @skipped_for_old_age += 1
+
+          return true
+        end
+
+        false
       end
 
       def configured_cancellation_for(cancelable)

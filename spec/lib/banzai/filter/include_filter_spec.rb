@@ -10,6 +10,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   let_it_be(:ref) { project.repository.root_ref }
   let_it_be(:text_include) { '::include{file=file.md}' }
   let_it_be(:file_data) { 'included text' }
+  let_it_be(:wiki_data) { "---\ntitle: Foo\n---\nincluded text" }
   let_it_be(:max_includes) { 10 }
 
   let_it_be(:filter_context) do
@@ -22,6 +23,17 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     }
   end
 
+  let_it_be(:filter_wiki_context) do
+    {
+      project: project,
+      max_includes: max_includes,
+      ref: ref,
+      requested_path: './',
+      text_source: :blob,
+      wiki: project.wiki
+    }
+  end
+
   let(:file_blob) { instance_double(::Blob, readable_text?: true, data: file_data) }
 
   before do
@@ -31,7 +43,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   end
 
   it 'works for wikis' do
-    expect(filter(text_include, wiki: project.wiki, requested_path: './')).to eq file_data
+    expect(filter(text_include, filter_wiki_context)).to eq file_data
   end
 
   it 'works for blobs' do
@@ -109,6 +121,19 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
 
       expect(result).to start_with("#{file_data}\n" * max_includes)
       expect(result.chomp).to end_with(text_include)
+    end
+
+    context 'when reading a wiki blob' do
+      let(:wiki_blob) { instance_double(::Blob, readable_text?: true, data: wiki_data) }
+
+      before do
+        allow(project.repository).to receive(:blob_at).with(ref, 'wiki.md').and_return(wiki_blob)
+        allow(Gitlab::Git::Blob).to receive(:find).with(project.repository, ref, 'wiki.md').and_return(wiki_blob)
+      end
+
+      it 'strips any frontmatter' do
+        expect(filter('::include{file=wiki.md}', filter_wiki_context)).to eq file_data
+      end
     end
   end
 

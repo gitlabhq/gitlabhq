@@ -1,0 +1,4 @@
+---
+# Cop supports --autocorrect.
+Lint/RedundantCopDisableDirective:
+  Details: grace period

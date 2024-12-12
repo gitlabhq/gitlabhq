@@ -88,7 +88,11 @@ module Banzai
         return error_message(filename, 'not found') unless blob
         return error_message(filename, 'not readable') unless blob.readable_text?
 
-        blob.data
+        if wiki?
+          Gitlab::WikiPages::FrontMatterParser.new(blob.data).parse.content
+        else
+          blob.data
+        end
       end
 
       def read_uri(uri)

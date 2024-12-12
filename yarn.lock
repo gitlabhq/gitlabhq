@@ -1355,10 +1355,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-3.0.0.tgz#923ef334f88a473b32a4fce267060f23a00de9ed"
-  integrity sha512-e+BjHZsefmvYRj5+uFcxZs1/FhwCVa1KvRxqKntFS9nARgwpYr+HzDfDb+30SG+CvJNsdWIebkOnuLEKfKvH1w==
+"@gitlab/duo-ui@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-5.0.0.tgz#f803a8c10400b7eccaa08451ca8c5149b556b5b5"
+  integrity sha512-ojeNHENJrx6MZeUskm6DisGAT2BXKRn8UjRx3zldsxZJBpwU55mVsTrzQa1iR1ilvy9RrPbGeWRT4jbAH7n3kg==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -1369,6 +1369,7 @@
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
+    vue-resizable "1.3.4"
     vue-runtime-helpers "^1.1.2"
 
 "@gitlab/eslint-plugin@20.6.0":
@@ -1397,7 +1398,8 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.0":
+"@gitlab/noop@^1.0.0", jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
+  name jackspeak
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
   integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
@@ -1421,17 +1423,15 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.121.0.tgz#57cacc895929aef4320632396373797a64b230ff"
   integrity sha512-ZekVjdMZrjrNEjdrOHsJYCu7A+ea3AkuNUxWIZ3FaNgJj4Oh21RlTP7bQKnRSXVhBbV1jg1PgzQ1ANEoCW8t4g==
 
-"@gitlab/ui@104.2.0":
-  version "104.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-104.2.0.tgz#074db0e83ee8a05afa69b0099c750c4df48d55e4"
-  integrity sha512-CUTHvQRYFpCAyCLpY/D/eKiOMMaOzuCmjqDLNLieU6Uh6AkS49orSBNNNs3bUSS163r+LNx/NsTrHDLA5NxAcA==
+"@gitlab/ui@105.1.1":
+  version "105.1.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-105.1.1.tgz#deb27dbe0a00bbdf88300848d01e39b7814524e0"
+  integrity sha512-5AOVdqy3NL/LIUCEnsgkpbDjYcZJbYWUOnu9qi19wSFzwuvZN+Pb94firIkB/8dwmxTwPM7RDg3HU0msUTBt7Q==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
-    marked "^12.0.0"
-    marked-bidi "^1.0.8"
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
@@ -9261,11 +9261,6 @@ iterall@^1.2.1:
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
 
-jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
-  integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
-
 jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
@@ -14928,6 +14923,11 @@ vue-observe-visibility@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-1.0.0.tgz#17cf1b2caf74022f0f3c95371468ddf2b9573152"
   integrity sha512-s5TFh3s3h3Mhd3jaz3zGzkVHKHnc/0C/gNr30olO99+yw2hl3WBhK3ng3/f9OF+qkW4+l7GkmwfAzDAcY3lCFg==
+
+vue-resizable@1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/vue-resizable/-/vue-resizable-1.3.4.tgz#04cbaeb7f90ebb92970b774f81f590832c640e5e"
+  integrity sha512-Ub28/auJPaXObqpakCZABxoiZnJlSyJx65SJ7EwCu54rOJda2fgWj5ZiqvHa+xOuBGH6yemYPKwuO761Cey0Bg==
 
 vue-resize@^1.0.1:
   version "1.0.1"

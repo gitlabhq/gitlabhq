@@ -33,7 +33,7 @@ gem 'fog-core', '2.1.0', require: false # fog-google generates a ton of warnings
 gem "warning", "~> 1.4"
 
 # dependencies for jenkins client
-gem 'nokogiri', '~> 1.16', '>= 1.16.7'
+gem 'nokogiri', '~> 1.17', '>= 1.17.1'
 
 gem 'deprecation_toolkit', '~> 2.2.1', require: false
 
