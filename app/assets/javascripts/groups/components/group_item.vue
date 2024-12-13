@@ -78,7 +78,7 @@ export default {
       };
     },
     hasChildren() {
-      return this.group.childrenCount > 0;
+      return this.group.hasChildren;
     },
     hasAvatar() {
       return this.group.avatarUrl !== null;

@@ -362,6 +362,7 @@ class User < ApplicationRecord
   validates :hide_no_password, allow_nil: false, inclusion: { in: [true, false] }
   validates :notified_of_own_activity, allow_nil: false, inclusion: { in: [true, false] }
   validates :project_view, presence: true
+  validates :composite_identity_enforced, inclusion: { in: [false] }, unless: -> { service_account? }
 
   after_initialize :set_projects_limit
   # Ensures we get a user_detail on all new user records.
@@ -2555,14 +2556,6 @@ class User < ApplicationRecord
     return false unless has_attribute?(:composite_identity_enforced)
 
     composite_identity_enforced
-  end
-
-  def composite_identity_enforced
-    false
-  end
-
-  def composite_identity_enforced=(value)
-    # no-op
   end
 
   def uploads_sharding_key

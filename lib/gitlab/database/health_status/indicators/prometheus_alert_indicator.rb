@@ -98,19 +98,29 @@ module Gitlab
           end
 
           def sli_query
+            # TODO: temporary until CRs can be rolled out with https://gitlab.com/gitlab-org/gitlab/-/issues/501105
+            gitlab_sec_query = prometheus_alert_db_indicators_settings[sli_query_key][:sec] ||
+              prometheus_alert_db_indicators_settings[sli_query_key][:main]
+
             {
               gitlab_main: prometheus_alert_db_indicators_settings[sli_query_key][:main],
               gitlab_main_cell: prometheus_alert_db_indicators_settings[sli_query_key][:main_cell],
-              gitlab_ci: prometheus_alert_db_indicators_settings[sli_query_key][:ci]
+              gitlab_ci: prometheus_alert_db_indicators_settings[sli_query_key][:ci],
+              gitlab_sec: gitlab_sec_query
             }.fetch(gitlab_schema)
           end
           strong_memoize_attr :sli_query
 
           def slo
+            # TODO: temporary until CRs can be rolled out with https://gitlab.com/gitlab-org/gitlab/-/issues/501105
+            gitlab_sec_query = prometheus_alert_db_indicators_settings[slo_key][:sec] ||
+              prometheus_alert_db_indicators_settings[slo_key][:main]
+
             {
               gitlab_main: prometheus_alert_db_indicators_settings[slo_key][:main],
               gitlab_main_cell: prometheus_alert_db_indicators_settings[slo_key][:main_cell],
-              gitlab_ci: prometheus_alert_db_indicators_settings[slo_key][:ci]
+              gitlab_ci: prometheus_alert_db_indicators_settings[slo_key][:ci],
+              gitlab_sec: gitlab_sec_query
             }.fetch(gitlab_schema)
           end
           strong_memoize_attr :slo

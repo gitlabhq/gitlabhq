@@ -42,8 +42,8 @@ module QA
       # Sign in page url
       #
       # @return [String]
-      def url
-        @url ||= "#{Support::GitlabAddress.address_with_port(with_default_port: false)}/users/sign_in"
+      def sign_in_url
+        @sign_in_url ||= "#{Support::GitlabAddress.address_with_port(with_default_port: false)}/users/sign_in"
       end
 
       # Error message base
@@ -64,20 +64,53 @@ module QA
       #
       # @return [void]
       def wait_for_login_page_to_load
-        # Do not perform headless request on .com or release environment due to cloudfare
-        # TODO: add additional check to detect when environment doesn't allow to check sign in page via headless request
-        if Runtime::Env.running_on_live_env?
-          debug("Checking for required elements via web browser")
-          return Capybara.current_session.using_wait_time(wait) { Runtime::Browser.visit(:gitlab, Page::Main::Login) }
-        end
+        return validate_readiness_via_ui! if Runtime::Env.running_on_live_env?
 
+        response = fetch_sign_in_page
+        return validate_readiness_via_ui! if cloudflare_response?(response)
+
+        debug("Checking for required elements via api")
         Support::Retrier.retry_on_exception(max_attempts: wait, sleep_interval: 1, log: false) do
-          response = get(url)
-
-          raise "Got unsucessfull response code from #{url}: #{response.code}" unless ok_response?(response)
-          raise "Sign in page missing required elements: '#{elements_css}'" unless required_elements_present?(response)
+          # re-use initial response from cloudflare check
+          response ||= fetch_sign_in_page
+          validate_readiness_via_api!(response)
+        ensure
+          response = nil
         end
         debug("Required elements are present!")
+      end
+
+      # Check if headless request got blocked by cloudflare
+      #
+      # @param response [RestClient::Response]
+      # @return [Boolean]
+      def cloudflare_response?(response)
+        response.headers[:server] == "cloudflare" || response.code == 403
+      end
+
+      # Check presence of required elements on sign_in page via UI
+      #
+      # @return [void]
+      def validate_readiness_via_ui!
+        debug("Checking for required elements via web browser")
+        Capybara.current_session.using_wait_time(wait) { Runtime::Browser.visit(:gitlab, Page::Main::Login) }
+        debug("Required elements are present!")
+      end
+
+      # Check presence of required elements from headless sign in page request response
+      #
+      # @param response [RestClient::Response]
+      # @return [void]
+      def validate_readiness_via_api!(response)
+        raise "Got unsucessfull response code from #{sign_in_url}: #{response.code}" unless ok_response?(response)
+        raise "Sign in page missing required elements: '#{elements_css}'" unless required_elements_present?(response)
+      end
+
+      # Response from sign-in page
+      #
+      # @return [RestClient::Response]
+      def fetch_sign_in_page
+        get(sign_in_url)
       end
 
       # Validate response code is 200

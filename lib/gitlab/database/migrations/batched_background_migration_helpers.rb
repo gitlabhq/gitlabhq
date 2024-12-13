@@ -88,7 +88,7 @@ module Gitlab
 
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
 
-          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments).exists?
+          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments, include_compatible: true).exists?
             Gitlab::AppLogger.warn "Batched background migration not enqueued because it already exists: " \
               "job_class_name: #{job_class_name}, table_name: #{batch_table_name}, column_name: #{batch_column_name}, " \
               "job_arguments: #{job_arguments.inspect}"
@@ -149,7 +149,9 @@ module Gitlab
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
 
           migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
-            gitlab_schema_from_context, job_class_name, table_name, column_name, job_arguments)
+            gitlab_schema_from_context, job_class_name, table_name, column_name, job_arguments,
+            include_compatible: true
+          )
 
           raise 'Could not find batched background migration' if migration.nil?
 
@@ -184,7 +186,8 @@ module Gitlab
 
           Gitlab::Database::BackgroundMigration::BatchedMigration
             .for_configuration(
-              gitlab_schema_from_context, job_class_name, table_name, column_name, job_arguments
+              gitlab_schema_from_context, job_class_name, table_name, column_name, job_arguments,
+              include_compatible: true
             ).delete_all
         end
 
@@ -215,7 +218,8 @@ module Gitlab
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
           migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
             gitlab_schema_from_context,
-            job_class_name, table_name, column_name, job_arguments
+            job_class_name, table_name, column_name, job_arguments,
+            include_compatible: true
           )
 
           configuration = {

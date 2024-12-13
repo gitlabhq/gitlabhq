@@ -27,7 +27,7 @@ const TEXT_STYLES = {
 
 const getStartTag = (tag) => TEXT_STYLES[tag].start;
 const textStyleTags = {
-  [getStartTag('success')]: '<span class="gl-font-bold gl-text-green-500">',
+  [getStartTag('success')]: '<span class="gl-font-bold gl-text-success">',
   [getStartTag('danger')]: '<span class="gl-font-bold gl-text-red-500">',
   [getStartTag('critical')]: '<span class="gl-font-bold gl-text-red-800">',
   [getStartTag('same')]: '<span class="gl-font-bold gl-text-gray-700">',

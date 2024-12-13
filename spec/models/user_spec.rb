@@ -1192,6 +1192,23 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
     end
+
+    describe 'composite_identity_enforced' do
+      let(:user) { build(:user) }
+
+      it 'is valid when composite_identity_enforced is false' do
+        user.composite_identity_enforced = false
+
+        expect(user).to be_valid
+      end
+
+      it 'is invalid when composite_identity_enforced is true' do
+        user.composite_identity_enforced = true
+
+        expect(user).to be_invalid
+        expect(user.errors[:composite_identity_enforced]).to include('is not included in the list')
+      end
+    end
   end
 
   describe 'scopes' do
@@ -8880,18 +8897,6 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#has_composite_identity?' do
     it 'is false' do
       expect(build(:user).has_composite_identity?).to be false
-    end
-  end
-
-  describe '#composite_identity_enforced' do
-    it 'is false' do
-      expect(build(:user).composite_identity_enforced).to be false
-    end
-  end
-
-  describe '#composite_identity_enforced=' do
-    it 'is no-op' do
-      expect(build(:user).composite_identity_enforced).to be false
     end
   end
 

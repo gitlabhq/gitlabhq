@@ -7,6 +7,7 @@ module QA
     let(:default_admin_token) { "ypCa3Dzb23o5nvsixwPA" }
 
     before do
+      allow(Runtime::Env).to receive(:personal_access_tokens_disabled?).and_return(false)
       allow(Runtime::Scenario).to receive(:send).with("gitlab_address").and_return("https://example.com")
       allow(Runtime::Logger).to receive_messages({
         debug: nil,
@@ -63,6 +64,16 @@ module QA
         end
       end
 
+      context "with personal access tokens disabled" do
+        before do
+          allow(Runtime::Env).to receive(:personal_access_tokens_disabled?).and_return(true)
+        end
+
+        it "sets admin api client to nil" do
+          expect(described_class.admin_api_client).to be_nil
+        end
+      end
+
       context "when admin token variable is set" do
         let(:admin_token) { "admin-token" }
 
@@ -113,6 +124,36 @@ module QA
         end
       end
 
+      context "with invalid default admin user credentials" do
+        before do
+          allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_raise(
+            Runtime::User::InvalidCredentialsError
+          )
+        end
+
+        it "returns nil" do
+          expect(described_class.admin_api_client).to be_nil
+        end
+      end
+
+      context "with invalid explicitly configured admin user credentials" do
+        let(:admin_token) { nil }
+
+        before do
+          stub_env("GITLAB_ADMIN_USERNAME", "test")
+          stub_env("GITLAB_ADMIN_PASSWORD", "test")
+
+          mock_user_get(token: Runtime::User::Data::DEFAULT_ADMIN_API_TOKEN, code: 401, body: "401 Unauthorized")
+          allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_raise(
+            Runtime::User::InvalidCredentialsError
+          )
+        end
+
+        it "raises InvalidCredentialsError" do
+          expect { described_class.admin_api_client }.to raise_error(Runtime::User::InvalidCredentialsError)
+        end
+      end
+
       context "with token creation via UI" do
         let(:token) { "token" }
 
@@ -127,7 +168,6 @@ module QA
         end
 
         before do
-          allow(Flow::Login).to receive(:while_signed_in).with(as: admin_user).and_yield
           allow(Resource::User).to receive(:init).and_yield(admin_user).and_return(admin_user)
           allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_yield(pat).and_return(pat)
           allow(admin_user).to receive(:reload!)
@@ -257,12 +297,22 @@ module QA
           allow(Runtime::Env).to receive(:running_on_live_env?).and_return(true)
         end
 
+        context "with personal access tokens disabled" do
+          before do
+            allow(Runtime::Env).to receive(:personal_access_tokens_disabled?).and_return(true)
+          end
+
+          it "sets api client to nil" do
+            expect(described_class.user_api_client).to be_nil
+          end
+        end
+
         context "when api token variable is set" do
           before do
             mock_user_get(token: api_token)
           end
 
-          it "creates admin api client with configured token" do
+          it "creates api client with configured token" do
             expect(user_api_client.personal_access_token).to eq(api_token)
           end
         end
@@ -453,15 +503,83 @@ module QA
 
         before do
           allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
-          allow(Resource::User).to receive(:fabricate_via_api!).and_yield(user).and_return(user)
+          allow(Resource::User).to receive(:fabricate!).and_yield(user).and_return(user)
 
           described_class.instance_variable_set(:@admin_api_client, admin_api_client)
         end
 
-        it "returns new user" do
+        it "creates new user" do
           expect(test_user).to eq(user)
           # check admin api client was explicitly used for user creation
           expect(test_user.api_client).to eq(admin_api_client)
+        end
+      end
+    end
+
+    describe "#additional_test_user" do
+      subject(:test_user) { described_class.additional_test_user }
+
+      let(:username) { "username" }
+      let(:password) { "password" }
+
+      before do
+        stub_env("GITLAB_QA_USERNAME_1", username)
+        stub_env("GITLAB_QA_PASSWORD_1", password)
+
+        allow(Runtime::Env).to receive(:personal_access_tokens_disabled?).and_return(false)
+      end
+
+      context "with admin api client" do
+        let(:user_spy) { Resource::User.new }
+        let(:api_client) { Runtime::API::Client.new(personal_access_token: "token") }
+
+        before do
+          allow(Resource::User).to receive(:fabricate!).and_yield(user_spy).and_return(user_spy)
+          described_class.instance_variable_set(:@admin_api_client, api_client)
+        end
+
+        it "creates new user" do
+          expect(test_user).to eq(user_spy)
+        end
+      end
+
+      context "without admin api client" do
+        let(:user_spy) { Resource::User.new }
+
+        before do
+          allow(Resource::User).to receive(:init).and_yield(user_spy).and_return(user_spy)
+          allow(user_spy).to receive(:reload!).and_return(user_spy)
+
+          described_class.instance_variable_set(:@admin_api_client, nil)
+        end
+
+        context "with credentials" do
+          it "returns user with predefined credentials" do
+            expect(test_user.username).to eq(username)
+            expect(test_user.password).to eq(password)
+          end
+        end
+
+        context "with missing username credential" do
+          let(:username) { nil }
+
+          it "raises MissingUserCredentialError" do
+            expect { test_user }.to raise_error(
+              Runtime::User::MissingUserCredentialError,
+              "Missing 'GITLAB_QA_USERNAME_1' environment variable"
+            )
+          end
+        end
+
+        context "with missing password credential" do
+          let(:password) { nil }
+
+          it "raises MissingUserCredentialError" do
+            expect { test_user }.to raise_error(
+              Runtime::User::MissingUserCredentialError,
+              "Missing 'GITLAB_QA_PASSWORD_1' environment variable"
+            )
+          end
         end
       end
     end

@@ -3,9 +3,7 @@
 module QA
   RSpec.describe 'Plan', :transient, product_group: :project_management do
     describe 'Discussion comments transient bugs' do
-      let(:user1) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:user1) { Runtime::User::Store.additional_test_user }
 
       let(:my_first_reply) { 'This is my first reply' }
       let(:my_second_reply) { "@#{Runtime::Env.gitlab_qa_username_1}" }

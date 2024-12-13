@@ -73,6 +73,7 @@ functionality is extended with additional features, without affecting the standa
 The following features are not found in standard Markdown:
 
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
+- [Description lists](#description-lists)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
 - [Emoji](#emoji)
 - [Footnotes](#footnotes)
@@ -699,6 +700,37 @@ For example:
 ```
 
 CommonMark ignores the blank line and renders this as one list with paragraph spacing.
+
+### Description lists
+
+> - Description lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26314) in GitLab 17.7.
+
+A description list is a list of terms with corresponding descriptions.
+Each term can have multiple descriptions.
+In HTML this is represented with `<dl>`, `<dt>`, and `<dd>` tags.
+
+To create a description list, place the term on one line, with the description on the next line beginning with a colon.
+
+```markdown
+Fruits
+: apple
+: orange
+
+Vegetables
+: broccoli
+: kale
+: spinach
+```
+
+You can also have a blank line between the term and description.
+
+```markdown
+Fruits
+
+: apple
+
+: orange
+```
 
 ### Task lists
 

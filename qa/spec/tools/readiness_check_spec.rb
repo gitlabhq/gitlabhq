@@ -6,17 +6,16 @@ RSpec.describe QA::Tools::ReadinessCheck do
   let(:url) { "example.com" }
   let(:wait) { 1 }
   let(:msg_base) { "Gitlab readiness check failed, valid sign_in page did not appear within #{wait} seconds! Reason:" }
-  let(:dot_com) { false }
-  let(:release) { false }
+  let(:live_env) { false }
 
-  let(:response) { instance_double(RestClient::Response, code: code, body: body) }
+  let(:response) { instance_double(RestClient::Response, code: code, body: body, headers: headers) }
   let(:code) { 200 }
   let(:body) { "" }
+  let(:headers) { {} }
 
   before do
     allow(Capybara).to receive_message_chain("current_session.using_wait_time").and_yield
-    allow(QA::Runtime::Env).to receive(:running_on_dot_com?).and_return(dot_com)
-    allow(QA::Runtime::Env).to receive(:running_on_release?).and_return(release)
+    allow(QA::Runtime::Env).to receive(:running_on_live_env?).and_return(live_env)
     allow(QA::Support::GitlabAddress).to receive(:address_with_port).with(with_default_port: false).and_return(url)
     allow(readiness_check).to receive(:get).with("#{url}/users/sign_in").and_return(response)
   end
@@ -69,7 +68,7 @@ RSpec.describe QA::Tools::ReadinessCheck do
     end
   end
 
-  context "with live environment" do
+  context "with UI check" do
     shared_examples "successful ui check" do
       before do
         allow(QA::Runtime::Browser).to receive(:visit).with(:gitlab, QA::Page::Main::Login)
@@ -90,18 +89,27 @@ RSpec.describe QA::Tools::ReadinessCheck do
       end
     end
 
-    context "when running on .com" do
-      let(:dot_com) { true }
+    context "when running on live env" do
+      let(:live_env) { true }
 
       it_behaves_like "successful ui check"
       it_behaves_like "unsuccessful ui check"
     end
 
-    context "when running on release" do
-      let(:release) { true }
+    context "when running against cloudflare" do
+      context "with server header" do
+        let(:headers) { { server: "cloudflare" } }
 
-      it_behaves_like "successful ui check"
-      it_behaves_like "unsuccessful ui check"
+        it_behaves_like "successful ui check"
+        it_behaves_like "unsuccessful ui check"
+      end
+
+      context "with forbidden response code" do
+        let(:code) { 403 }
+
+        it_behaves_like "successful ui check"
+        it_behaves_like "unsuccessful ui check"
+      end
     end
   end
 end

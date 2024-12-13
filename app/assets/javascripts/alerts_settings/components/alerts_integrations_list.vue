@@ -162,8 +162,9 @@ export default {
             v-gl-tooltip
             name="check"
             :size="16"
-            class="gl-mr-3 gl-text-green-500 hover:gl-cursor-pointer"
+            class="gl-mr-3 hover:gl-cursor-pointer"
             :title="$options.i18n.status.enabled.tooltip"
+            variant="success"
           />
           {{ $options.i18n.status.enabled.name }}
         </span>

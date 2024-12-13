@@ -118,6 +118,8 @@ RSpec.shared_examples 'Prometheus Alert based health indicator' do
 
     Gitlab::Database.database_base_models_with_gitlab_shared.each do |database_base_model, connection|
       next unless connection.present?
+      # TODO: temporary until CRs can be rolled out with https://gitlab.com/gitlab-org/gitlab/-/issues/501105
+      next if database_base_model == 'sec' && ::Gitlab::Database.has_database?(database_base_model)
 
       context 'when using prometheus client' do
         let(:uses_mimir_client) { false }

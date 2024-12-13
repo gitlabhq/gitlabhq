@@ -28,8 +28,8 @@
   .info-well
     .well-segment
       - if Gitlab.com? && !@pre_auth.client.application.owner
-        %p.gl-text-green-500
-          = sprite_icon('tanuki-verified')
+        %p.gl-text-success
+          = sprite_icon('tanuki-verified', css_class: 'gl-fill-icon-success')
           = _('This application is provided by GitLab.')
       - else
         %p.gl-text-orange-500

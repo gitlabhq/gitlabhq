@@ -23,23 +23,6 @@ module QA
         :email,
         :commit_email
 
-      class << self
-        # TODO: remove as these methods can end up using same user which isn't fully compatible with parallel execution
-        def fabricate_or_use(username = nil, password = nil)
-          if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
-            fabricate_via_api! do |user|
-              user.username = username
-              user.password = password
-            end
-          else
-            fabricate! do |user|
-              user.username = username if username
-              user.password = password if password
-            end
-          end
-        end
-      end
-
       def initialize
         @admin = false
         @hard_delete_on_api_removal = false

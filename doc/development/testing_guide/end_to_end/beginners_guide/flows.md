@@ -48,8 +48,8 @@ end
 # When used in a test
 
 it 'performs a test as one user and verifies as another' do
-  user1 = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-  user2 = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2)
+  user1 = create(:user)
+  user2 = create(:user)
 
   Flow::Login.while_signed_in(as: user1) do
     # Perform some setup as user1

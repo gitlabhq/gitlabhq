@@ -67,12 +67,14 @@ describe('GroupItemComponent', () => {
         const group = { ...mockParentGroupItem };
 
         group.childrenCount = 5;
+        group.hasChildren = true;
         wrapper = createComponent({ group });
 
         expect(wrapper.vm.hasChildren).toBe(true);
         wrapper.destroy();
 
         group.childrenCount = 0;
+        group.hasChildren = false;
         wrapper = createComponent({ group });
 
         expect(wrapper.vm.hasChildren).toBe(false);
@@ -186,6 +188,7 @@ describe('GroupItemComponent', () => {
         jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
         const group = { ...mockParentGroupItem };
         group.childrenCount = 0;
+        group.hasChildren = false;
         wrapper = createComponent({ group });
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 

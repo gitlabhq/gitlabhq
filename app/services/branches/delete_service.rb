@@ -4,7 +4,6 @@ module Branches
   class DeleteService < BaseService
     def execute(branch_name)
       repository = project.repository
-      branch = repository.find_branch(branch_name)
 
       unless current_user.can?(:push_code, project)
         return ServiceResponse.error(
@@ -12,11 +11,11 @@ module Branches
           http_status: 405)
       end
 
-      unless branch
-        return ServiceResponse.error(
-          message: 'No such branch',
-          http_status: 404)
-      end
+      return missing_branch_error if branch_name.blank?
+
+      branch = repository.find_branch(branch_name)
+
+      return missing_branch_error unless branch
 
       target_sha = branch.dereferenced_target.id
 
@@ -33,6 +32,10 @@ module Branches
     end
 
     private
+
+    def missing_branch_error
+      ServiceResponse.error(message: 'No such branch', http_status: 404)
+    end
 
     def unlock_artifacts(branch_name)
       Ci::RefDeleteUnlockArtifactsWorker.perform_async(project.id, current_user.id, "#{::Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}")

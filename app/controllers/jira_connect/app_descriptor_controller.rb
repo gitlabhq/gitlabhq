@@ -76,8 +76,8 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
       jiraDevelopmentTool: {
         actions: actions,
         key: 'gitlab-development-tool',
-        application: { value: 'GitLab' },
-        name: { value: 'GitLab' },
+        application: { value: Atlassian::JiraConnect.display_name },
+        name: { value: Atlassian::JiraConnect.display_name },
         url: HOME_URL,
         logoUrl: logo_url,
         capabilities: %w[branch commit pull_request]

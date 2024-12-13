@@ -11,7 +11,7 @@ export const i18n = {
 };
 
 const variantCssColorMap = {
-  success: 'gl-text-green-500',
+  success: 'gl-text-success',
   danger: 'gl-text-red-500',
 };
 

@@ -1,18 +1,14 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :runner, :requires_admin, product_group: :pipeline_execution do
     describe 'Pipeline configuration access keyword' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'project-with-artifacts', initialize_with_readme: true) }
-      let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
-      let!(:developer_user) do
-        create(:user, username: Runtime::Env.gitlab_qa_username_1, password: Runtime::Env.gitlab_qa_password_1)
-      end
 
-      let!(:non_member_user) do
-        create(:user, username: Runtime::Env.gitlab_qa_username_2, password: Runtime::Env.gitlab_qa_password_2)
-      end
+      let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
+      let!(:developer_user) { create(:user) }
+      let!(:non_member_user) { create(:user) }
 
       let(:merge_request) do
         create(:merge_request,

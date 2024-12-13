@@ -28,6 +28,13 @@ It is advised to not run all tests using single user but certain environments im
 
 Certain environments might not have administrator user and have no ability to create one. For tests to work when running against such environment, test user must be configured via environment variables mentioned in [Using single user](#using-single-user) section. Additionally, to prevent test framework from trying to initialize administrator user, environment variable `QA_NO_ADMIN_ENV` must be set to `true`.
 
+#### Additional test user
+
+In case the test is running on an environment with no admin environment or an environment that doesn't allow user creation, it is possible to use a second pre-configured user in the test.
+Credentials for this user must be configured using `GITLAB_QA_USERNAME_1` and `GITLAB_QA_PASSWORD_1` environment variables.
+The instance of the user can be accessed using the method `QA::Runtime::User::Store.additional_test_user`.
+This method also ensures that on environments that allow for user fabrication, the test will create a new unique user rather than relying on a pre-configured one.
+
 ## Disable email verification
 
 If [email verification](../../../../security/email_verification.md) is enabled on the test environment (via the `require_email_verification` feature flag), a user cannot log in under certain conditions (e.g., logging in the first time from a new location) unless they enter a verification code that is sent to their email address.

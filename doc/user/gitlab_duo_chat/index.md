@@ -132,8 +132,10 @@ To open GitLab Duo Chat in the editor window, use any of these methods:
 - From a keyboard shortcut, by pressing:
   - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
   - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
-- In the currently open file in your IDE, by selecting some code.
-- Right-clicking, then selecting **GitLab Duo Chat > Open Quick Chat**.
+- Right-clicking in the currently open file in your IDE, then selecting **GitLab Duo Chat > Open Quick Chat**.
+  Optionally, select some code to provide additional context.
+- Opening the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette),
+  then selecting **GitLab Duo Chat: Open Quick Chat**.
 
 After Quick Chat opens:
 

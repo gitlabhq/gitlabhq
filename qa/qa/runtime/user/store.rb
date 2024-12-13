@@ -3,8 +3,10 @@
 module QA
   module Runtime
     module User
+      MissingUserCredentialError = Class.new(StandardError)
       MissingLdapCredentialsError = Class.new(StandardError)
       InvalidTokenError = Class.new(StandardError)
+      InvalidCredentialsError = Class.new(StandardError)
       ExpiredPasswordError = Class.new(StandardError)
 
       # User store class responsible for creating and storing test users
@@ -25,7 +27,7 @@ module QA
           # @return [QA::Runtime::API::Client]
           def admin_api_client
             return @admin_api_client if defined?(@admin_api_client)
-            return @admin_api_client = nil if Env.no_admin_environment?
+            return @admin_api_client = nil if Env.no_admin_environment? || Env.personal_access_tokens_disabled?
 
             info("Creating admin api client for api fabrications")
             @admin_api_client = create_api_client(
@@ -36,6 +38,17 @@ module QA
 
             info("Global admin api client set up successfully")
             @admin_api_client
+          rescue InvalidCredentialsError => e
+            unless admin_username == Data::DEFAULT_ADMIN_USERNAME && admin_password == Data::DEFAULT_ADMIN_PASSWORD
+              # Only raise error when explicitly configured credentials are invalid
+              raise e
+            end
+
+            # Because default credentials for admin api token fabrications will be always used,
+            # allow for test process to continue without admin client when default credentials are invalid
+            warn("Valid administrator user credentials missing!")
+            warn("All actions that require administrator api client will be skipped or fail!")
+            @admin_api_client = nil
           end
           alias_method :initialize_admin_api_client, :admin_api_client
 
@@ -45,6 +58,7 @@ module QA
           # @return [QA::Runtime::API::Client]
           def user_api_client
             return @user_api_client if defined?(@user_api_client)
+            return @user_api_client = nil if Env.personal_access_tokens_disabled?
 
             @user_api_client = if create_unique_test_user?
                                  test_user.api_client
@@ -83,7 +97,7 @@ module QA
             if test_user_username.blank? || test_user_password.blank?
               raise <<~ERR
                 Missing global test user credentials,
-                please set '#{Data::TEST_USER_USERNAME_VARIABLE}' and '#{Data::TEST_USER_PASSWORD_VARIABLE}' environment variables
+                please set '#{Data::TEST_USER_USERNAME_VARIABLE_NAME}' and '#{Data::TEST_USER_PASSWORD_VARIABLE_NAME}' environment variables
               ERR
             end
 
@@ -107,6 +121,18 @@ module QA
               user.password = ldap_password
               user.ldap_user = true
             end
+          end
+
+          # Additional test user
+          #
+          # @return [QA::Resource::User]
+          def additional_test_user
+            return create_new_user if admin_api_client
+
+            init_user(
+              username: extra_test_user_credential(Data::ADDITIONAL_TEST_USERNAME_VARIABLE_NAME),
+              password: extra_test_user_credential(Data::ADDITIONAL_TEST_PASSWORD_VARIABLE_NAME)
+            ).reload!
           end
 
           # Reset stored test user
@@ -186,7 +212,7 @@ module QA
           # @return [QA::Resource::User]
           def create_new_user
             info("Creating test user")
-            Resource::User.fabricate_via_api! do |user|
+            Resource::User.fabricate! do |user|
               user.with_personal_access_token = true
               user.api_client = admin_api_client
             end
@@ -284,6 +310,14 @@ module QA
           # @return [Boolean]
           def ldap_user_configured?
             ldap_username.present? && ldap_password.present?
+          end
+
+          # Additional test user credential
+          #
+          # @param var_name [String]
+          # @return [String]
+          def extra_test_user_credential(var_name)
+            ENV[var_name].presence || raise(MissingUserCredentialError, "Missing '#{var_name}' environment variable")
           end
         end
       end

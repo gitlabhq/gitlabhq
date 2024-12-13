@@ -30,9 +30,7 @@ module QA
         end
       end
 
-      let(:user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:user) { Runtime::User::Store.additional_test_user }
 
       before do
         Flow::Login.sign_in

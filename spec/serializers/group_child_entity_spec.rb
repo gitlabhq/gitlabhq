@@ -90,6 +90,22 @@ RSpec.describe GroupChildEntity do
       expect(json[:children_count]).to eq(2)
     end
 
+    context 'when group has subgroups' do
+      before do
+        create(:group, parent: object)
+      end
+
+      it 'returns has_subgroups as true' do
+        expect(json[:has_subgroups]).to be(true)
+      end
+    end
+
+    context 'when group does not have subgroups' do
+      it 'returns has_subgroups as true' do
+        expect(json[:has_subgroups]).to be(false)
+      end
+    end
+
     %w[children_count leave_path parent_id number_users_with_delimiter project_count subgroup_count].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute.to_sym]).to be_present

@@ -52,6 +52,15 @@ RSpec.describe Branches::DeleteService, feature_category: :source_code_managemen
           expect(result.message).to eq('Could not update patch')
         end
       end
+
+      context 'when branch name is empty' do
+        it 'handles and returns error' do
+          result = service.execute('')
+
+          expect(result.status).to eq(:error)
+          expect(result.message).to eq('No such branch')
+        end
+      end
     end
 
     context 'when user does not have access to push to repository' do

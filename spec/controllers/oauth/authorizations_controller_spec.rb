@@ -151,7 +151,7 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
 
             it 'displays the provided application message' do
               subject
-              expect(response.body).to have_css('p.gl-text-green-500', text: 'This application is provided by GitLab.')
+              expect(response.body).to have_css('p.gl-text-success', text: 'This application is provided by GitLab.')
               expect(response.body).to have_css('[data-testid="tanuki-verified-icon"]')
             end
 

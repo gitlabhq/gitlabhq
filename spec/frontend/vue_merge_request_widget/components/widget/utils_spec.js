@@ -4,7 +4,7 @@ describe('generateText', () => {
   it.each`
     text                                                                       | expectedText
     ${'%{strong_start}Hello world%{strong_end}'}                               | ${'<span class="gl-font-bold">Hello world</span>'}
-    ${'%{success_start}Hello world%{success_end}'}                             | ${'<span class="gl-font-bold gl-text-green-500">Hello world</span>'}
+    ${'%{success_start}Hello world%{success_end}'}                             | ${'<span class="gl-font-bold gl-text-success">Hello world</span>'}
     ${'%{danger_start}Hello world%{danger_end}'}                               | ${'<span class="gl-font-bold gl-text-red-500">Hello world</span>'}
     ${'%{critical_start}Hello world%{critical_end}'}                           | ${'<span class="gl-font-bold gl-text-red-800">Hello world</span>'}
     ${'%{same_start}Hello world%{same_end}'}                                   | ${'<span class="gl-font-bold gl-text-gray-700">Hello world</span>'}

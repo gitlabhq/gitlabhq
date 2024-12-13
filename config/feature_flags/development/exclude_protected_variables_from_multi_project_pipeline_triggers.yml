@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135899
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431266
 milestone: '16.6'
 type: development
-group: group::pipeline security
+group: group::pipeline authoring
 default_enabled: false

@@ -162,7 +162,7 @@ export const AGENT_STATUSES = {
   active: {
     name: s__('ClusterAgents|Connected'),
     icon: 'status-success',
-    class: 'gl-text-green-500',
+    class: 'gl-text-success',
     tooltip: {
       title: sprintf(s__('ClusterAgents|Last connected %{timeAgo}.')),
     },

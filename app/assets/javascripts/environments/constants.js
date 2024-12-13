@@ -206,7 +206,7 @@ export const TREE_ITEM_KIND_ICONS = {
 };
 
 const RUNNING_STATUS_ICON = { icon: 'status-running', class: 'gl-text-blue-500' };
-const SUCCESS_STATUS_ICON = { icon: 'status-success', class: 'gl-text-green-500' };
+const SUCCESS_STATUS_ICON = { icon: 'status-success', class: 'gl-text-success' };
 const WAITING_STATUS_ICON = { icon: 'status-waiting', class: 'gl-text-subtle' };
 const FAILED_STATUS_ICON = { icon: 'status-failed', class: 'gl-text-red-500' };
 const PAUSED_STATUS_ICON = { icon: 'status-paused', class: 'gl-text-orange-500' };
