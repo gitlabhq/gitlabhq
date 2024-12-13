@@ -251,7 +251,7 @@ RSpec.describe Git::WikiPushService, :services, feature_category: :wiki do
       message = 'something went very very wrong'
       allow_next_instance_of(WikiPages::EventCreateService, current_user) do |service|
         allow(service).to receive(:execute)
-          .with(String, WikiPage, Symbol, String)
+          .with(WikiPage::Meta, Symbol, String)
           .and_return(ServiceResponse.error(message: message))
       end
 

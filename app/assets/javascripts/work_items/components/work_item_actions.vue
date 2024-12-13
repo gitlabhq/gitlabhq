@@ -27,6 +27,7 @@ import {
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
+  TEST_ID_CHANGE_TYPE_ACTION,
   TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   TEST_ID_COPY_REFERENCE_ACTION,
   TEST_ID_TOGGLE_ACTION,
@@ -47,6 +48,7 @@ import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
+import WorkItemChangeTypeModal from './work_item_change_type_modal.vue';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
 
@@ -67,6 +69,7 @@ export default {
     emailAddressCopied: __('Email address copied'),
     moreActions: __('More actions'),
     reportAbuse: __('Report abuse'),
+    changeWorkItemType: s__('WorkItem|Change type'),
   },
   WORK_ITEM_TYPE_ENUM_EPIC,
   components: {
@@ -78,6 +81,7 @@ export default {
     GlToggle,
     WorkItemStateToggle,
     CreateWorkItemModal,
+    WorkItemChangeTypeModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -91,6 +95,7 @@ export default {
   copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
+  changeTypeTestId: TEST_ID_CHANGE_TYPE_ACTION,
   lockDiscussionTestId: TEST_ID_LOCK_ACTION,
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
   reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
@@ -170,12 +175,22 @@ export default {
       required: false,
       default: false,
     },
+    isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     hideSubscribe: {
       type: Boolean,
       required: false,
       default: false,
     },
     hasChildren: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasParent: {
       type: Boolean,
       required: false,
       default: false,
@@ -193,6 +208,16 @@ export default {
     isGroup: {
       type: Boolean,
       required: true,
+    },
+    widgets: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    allowedChildTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -286,6 +311,9 @@ export default {
       return this.isConfidential
         ? this.$options.i18n.confidentialityDisabled
         : this.$options.i18n.confidentialityEnabled;
+    },
+    showChangeType() {
+      return !(this.isEpic || this.isDrawer) && this.glFeatures.workItemsBeta;
     },
   },
   methods: {
@@ -420,6 +448,9 @@ export default {
       this.$emit('toggleReportAbuseModal', true);
       this.closeDropdown();
     },
+    showChangeTypeModal() {
+      this.$refs.workItemsChangeTypeModal.show();
+    },
   },
 };
 </script>
@@ -485,6 +516,14 @@ export default {
         @action="promoteToObjective"
       >
         <template #list-item>{{ __('Promote to objective') }}</template>
+      </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
+        v-if="showChangeType"
+        :data-testid="$options.changeTypeTestId"
+        @action="showChangeTypeModal"
+      >
+        <template #list-item>{{ $options.i18n.changeWorkItemType }}</template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -567,6 +606,18 @@ export default {
       hide-button
       @workItemCreated="$emit('workItemCreated')"
       @hideModal="isCreateWorkItemModalVisible = false"
+    />
+    <work-item-change-type-modal
+      v-if="showChangeType"
+      ref="workItemsChangeTypeModal"
+      :work-item-id="workItemId"
+      :work-item-type="workItemType"
+      :full-path="fullPath"
+      :has-children="hasChildren"
+      :has-parent="hasParent"
+      :widgets="widgets"
+      :allowed-child-types="allowedChildTypes"
+      @workItemTypeChanged="$emit('workItemTypeChanged')"
     />
   </div>
 </template>

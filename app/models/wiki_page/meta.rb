@@ -170,22 +170,22 @@ class WikiPage
     end
 
     def insert_slugs(strings, is_new, canonical_slug)
-      creation = Time.current.utc
+      created_at = Time.current.utc
 
       slug_attrs = strings.map do |slug|
-        slug_attributes(slug, canonical_slug, is_new, creation)
+        slug_attributes(slug, canonical_slug, is_new, created_at)
       end
       slugs.insert_all(slug_attrs) unless !is_new && slug_attrs.size == 1
 
       @canonical_slug = canonical_slug if is_new || strings.size == 1
     end
 
-    def slug_attributes(slug, canonical_slug, is_new, creation)
+    def slug_attributes(slug, canonical_slug, is_new, created_at)
       {
         slug: slug,
         canonical: is_new && slug == canonical_slug,
-        created_at: creation,
-        updated_at: creation
+        created_at: created_at,
+        updated_at: created_at
       }.merge(slug_meta_attributes)
     end
 

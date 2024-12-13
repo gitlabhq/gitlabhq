@@ -81,6 +81,7 @@ describe('Work items router', () => {
         WorkItemAncestors: true,
         WorkItemCreateBranchMergeRequestModal: true,
         WorkItemDevelopment: true,
+        WorkItemChangeTypeModal: true,
       },
     });
   };

@@ -12,12 +12,7 @@ module Packages
       private
 
       def packages
-        if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
-          base.with_name(@params[:package_name])
-        else
-          base.npm
-              .with_name(@params[:package_name])
-        end
+        base.with_name(@params[:package_name])
       end
 
       override :group_packages
@@ -27,11 +22,7 @@ module Packages
 
       override :packages_class
       def packages_class
-        if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
-          ::Packages::Npm::Package
-        else
-          super
-        end
+        ::Packages::Npm::Package
       end
     end
   end

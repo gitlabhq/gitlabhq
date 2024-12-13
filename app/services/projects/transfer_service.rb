@@ -333,14 +333,10 @@ module Projects
     end
 
     def project_has_namespaced_npm_packages?
-      if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
-        ::Packages::Npm::Package.for_projects(project)
-                                .with_npm_scope(project.root_namespace.path)
-                                .not_pending_destruction
-                                .exists?
-      else
-        project.has_namespaced_npm_packages?
-      end
+      ::Packages::Npm::Package.for_projects(project)
+                              .with_npm_scope(project.root_namespace.path)
+                              .not_pending_destruction
+                              .exists?
     end
   end
 end

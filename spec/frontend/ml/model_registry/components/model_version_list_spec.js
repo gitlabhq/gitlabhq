@@ -79,7 +79,19 @@ describeSkipVue3(skipReason, () => {
     });
 
     it('search is hidden', () => {
-      expect(findSearchableTable().props('showSearch')).toBe(false);
+      expect(findSearchableTable().props()).toMatchObject({
+        showSearch: false,
+        sortableFields: [
+          {
+            label: 'Version',
+            orderBy: 'version',
+          },
+          {
+            label: 'Created',
+            orderBy: 'created_at',
+          },
+        ],
+      });
     });
   });
 

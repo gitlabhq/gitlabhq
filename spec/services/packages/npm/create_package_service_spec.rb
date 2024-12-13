@@ -213,16 +213,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         it { is_expected.to have_attributes reason: :package_already_exists }
       end
 
-      context 'when npm_extract_npm_package_model is disabled' do
-        before do
-          stub_feature_flags(npm_extract_npm_package_model: false)
-        end
-
-        it_behaves_like 'returning an error service response', message: 'Package already exists.' do
-          it { is_expected.to have_attributes reason: :package_already_exists }
-        end
-      end
-
       context 'when marked as pending_destruction' do
         before do
           existing_package.pending_destruction!

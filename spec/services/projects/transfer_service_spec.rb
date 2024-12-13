@@ -37,16 +37,6 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       it_behaves_like 'allow the transfer' do
         let(:namespace) { group }
       end
-
-      context 'when npm_extract_npm_package_model is disabled' do
-        before do
-          stub_feature_flags(npm_extract_npm_package_model: false)
-        end
-
-        it_behaves_like 'allow the transfer' do
-          let(:namespace) { group }
-        end
-      end
     end
 
     context 'with pending destruction package' do
@@ -57,16 +47,6 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       it_behaves_like 'allow the transfer' do
         let(:namespace) { group }
       end
-
-      context 'when npm_extract_npm_package_model is disabled' do
-        before do
-          stub_feature_flags(npm_extract_npm_package_model: false)
-        end
-
-        it_behaves_like 'allow the transfer' do
-          let(:namespace) { group }
-        end
-      end
     end
 
     context 'with namespaced packages present' do
@@ -75,17 +55,6 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       it 'does not allow the transfer' do
         expect(transfer_service.execute(group)).to be false
         expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
-      end
-
-      context 'when npm_extract_npm_package_model is disabled' do
-        before do
-          stub_feature_flags(npm_extract_npm_package_model: false)
-        end
-
-        it 'does not allow the transfer' do
-          expect(transfer_service.execute(group)).to be false
-          expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
-        end
       end
     end
 
@@ -101,16 +70,6 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
       it_behaves_like 'allow the transfer' do
         let(:namespace) { other_group }
-      end
-
-      context 'when npm_extract_npm_package_model is disabled' do
-        before do
-          stub_feature_flags(npm_extract_npm_package_model: false)
-        end
-
-        it_behaves_like 'allow the transfer' do
-          let(:namespace) { other_group }
-        end
       end
     end
   end

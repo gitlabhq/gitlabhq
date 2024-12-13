@@ -64,14 +64,9 @@ module API
       get '*package_name/-/*file_name', format: false do
         authorize_read_package!(project)
 
-        package = if Feature.enabled?(:npm_extract_npm_package_model, Feature.current_request)
-                    ::Packages::Npm::Package
-                      .for_projects(project)
-                      .by_name_and_file_name(params[:package_name], params[:file_name])
-                  else
-                    project.packages.npm
-                      .by_name_and_file_name(params[:package_name], params[:file_name])
-                  end
+        package = ::Packages::Npm::Package
+                    .for_projects(project)
+                    .by_name_and_file_name(params[:package_name], params[:file_name])
 
         not_found!('Package') unless package
 

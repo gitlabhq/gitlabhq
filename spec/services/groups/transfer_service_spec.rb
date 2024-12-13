@@ -95,29 +95,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
             it_behaves_like 'transfer allowed'
           end
-
-          context 'when npm_extract_npm_package_model is disabled' do
-            before do
-              stub_feature_flags(npm_extract_npm_package_model: false)
-            end
-
-            it 'does not allow transfer' do
-              transfer_service.execute(new_group)
-
-              expect(transfer_service.error).to eq('Transfer failed: Group contains projects with NPM packages scoped to the current root level group.')
-              expect(group.parent).not_to eq(new_group)
-            end
-
-            context 'namespaced package is pending destruction' do
-              let!(:group) { create(:group) }
-
-              before do
-                package.pending_destruction!
-              end
-
-              it_behaves_like 'transfer allowed'
-            end
-          end
         end
 
         context 'when transferring a group into a root group' do

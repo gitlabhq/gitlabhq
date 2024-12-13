@@ -117,43 +117,6 @@ RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_regist
         it_behaves_like 'avoids N+1 database queries in the package registry'
       end
     end
-
-    context 'when npm_extract_npm_package_model is disabled' do
-      let_it_be_with_refind(:package) do
-        create(:npm_package_legacy, project: project, name: "#{FFaker::Lorem.word}-#{SecureRandom.hex(4)}")
-      end
-
-      before do
-        stub_feature_flags(npm_extract_npm_package_model: false)
-      end
-
-      context 'with a project' do
-        let(:finder) { described_class.new(project: project, params: params) }
-
-        it_behaves_like 'finding packages by name'
-        it_behaves_like 'avoids N+1 database queries in the package registry', :npm_package_legacy
-
-        context 'set to nil' do
-          let(:project) { nil }
-
-          it { is_expected.to be_empty }
-        end
-      end
-
-      context 'with a namespace' do
-        let(:finder) { described_class.new(namespace: namespace, params: params) }
-
-        it_behaves_like 'accepting a namespace for', 'finding packages by name', :npm_package_legacy
-
-        context 'set to nil' do
-          let_it_be(:namespace) { nil }
-
-          it { is_expected.to be_empty }
-
-          it_behaves_like 'avoids N+1 database queries in the package registry', :npm_package_legacy
-        end
-      end
-    end
   end
 
   describe '#last' do
@@ -189,43 +152,6 @@ RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_regist
 
         # the most recent one is returned
         it { is_expected.to eq(package2) }
-      end
-    end
-
-    context 'when npm_extract_npm_package_model is disabled' do
-      let_it_be_with_refind(:package) do
-        create(:npm_package_legacy, project: project, name: "#{FFaker::Lorem.word}-#{SecureRandom.hex(4)}")
-      end
-
-      before do
-        stub_feature_flags(npm_extract_npm_package_model: false)
-      end
-
-      context 'with a project' do
-        let(:finder) { described_class.new(project: project, params: params) }
-
-        it_behaves_like 'finding package by last'
-      end
-
-      context 'with a namespace' do
-        let(:finder) { described_class.new(namespace: namespace, params: params) }
-
-        it_behaves_like 'accepting a namespace for', 'finding package by last', :npm_package_legacy
-
-        context 'with duplicate packages' do
-          let_it_be(:namespace) { create(:group) }
-          let_it_be(:subgroup1) { create(:group, parent: namespace) }
-          let_it_be(:subgroup2) { create(:group, parent: namespace) }
-          let_it_be(:project2) { create(:project, namespace: subgroup2) }
-          let_it_be(:package2) { create(:npm_package_legacy, name: package.name, project: project2) }
-
-          before do
-            project.update!(namespace: subgroup1)
-          end
-
-          # the most recent one is returned
-          it { is_expected.to eq(package2) }
-        end
       end
     end
   end

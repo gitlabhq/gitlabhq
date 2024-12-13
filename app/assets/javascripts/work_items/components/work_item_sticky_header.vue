@@ -75,6 +75,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    allowedChildTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     canUpdate() {
@@ -100,6 +105,9 @@ export default {
     },
     newTodoAndNotificationsEnabled() {
       return this.glFeatures.notificationsTodosButtons;
+    },
+    widgets() {
+      return this.workItem.widgets;
     },
   },
   WORKSPACE_PROJECT,
@@ -180,12 +188,15 @@ export default {
             :is-modal="isModal"
             :work-item-author-id="workItemAuthorId"
             :is-group="isGroup"
+            :widgets="widgets"
+            :allowed-child-types="allowedChildTypes"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)
             "
             @error="$emit('error')"
             @promotedToObjective="$emit('promotedToObjective')"
+            @workItemTypeChanged="$emit('workItemTypeChanged')"
             @workItemStateUpdated="$emit('workItemStateUpdated')"
             @toggleReportAbuseModal="$emit('toggleReportAbuseModal', true)"
           />

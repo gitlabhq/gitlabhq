@@ -311,7 +311,7 @@ export default {
       const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
       if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
-        return hasSubepicsFeature && parentWorkItem;
+        return Boolean(hasSubepicsFeature && parentWorkItem);
       }
 
       return Boolean(parentWorkItem);
@@ -332,6 +332,9 @@ export default {
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
+    },
+    parentWorkItemType() {
+      return this.parentWorkItem?.workItemType?.name;
     },
     workItemIconName() {
       return this.workItem.workItemType?.iconName;
@@ -433,6 +436,9 @@ export default {
     iid() {
       return this.workItemIid || this.workItem.iid;
     },
+    widgets() {
+      return this.workItem.widgets;
+    },
     isItemSelected() {
       return !isEmpty(this.activeChildItem);
     },
@@ -448,7 +454,7 @@ export default {
       this.editMode = true;
     },
     isWidgetPresent(type) {
-      return this.workItem.widgets?.find((widget) => widget.type === type);
+      return this.widgets?.find((widget) => widget.type === type);
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
@@ -652,6 +658,9 @@ export default {
       });
       cache.gc();
     },
+    workItemTypeChanged() {
+      this.$apollo.queries.workItem.refetch();
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -674,12 +683,14 @@ export default {
       :work-item-notifications-subscribed="workItemNotificationsSubscribed"
       :work-item-author-id="workItemAuthorId"
       :is-group="isGroupWorkItem"
+      :allowed-child-types="allowedChildTypes"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
       @toggleWorkItemConfidentiality="toggleConfidentiality"
       @error="updateError = $event"
       @promotedToObjective="$emit('promotedToObjective', iid)"
+      @workItemTypeChanged="workItemTypeChanged"
       @toggleEditMode="enableEditMode"
       @workItemStateUpdated="$emit('workItemStateUpdated')"
       @toggleReportAbuseModal="toggleReportAbuseModal"
@@ -767,16 +778,21 @@ export default {
                 :work-item-reference="workItem.reference"
                 :work-item-create-note-email="workItem.createNoteEmail"
                 :is-modal="isModal"
+                :is-drawer="isDrawer"
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
+                :has-parent="shouldShowAncestors"
                 :work-item-author-id="workItemAuthorId"
                 :can-create-related-item="workItemLinkedItems !== undefined"
                 :is-group="isGroupWorkItem"
+                :widgets="widgets"
+                :allowed-child-types="allowedChildTypes"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', iid)"
                 @workItemStateUpdated="$emit('workItemStateUpdated')"
+                @workItemTypeChanged="workItemTypeChanged"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
                 @workItemCreated="handleWorkItemCreated"
               />

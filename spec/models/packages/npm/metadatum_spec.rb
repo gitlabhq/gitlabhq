@@ -5,31 +5,11 @@ require 'spec_helper'
 RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package).class_name('Packages::Npm::Package').inverse_of(:npm_metadatum) }
-
-    # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
-    it 'belongs to `legacy_package`' do
-      is_expected.to belong_to(:legacy_package).conditions(package_type: :npm).class_name('Packages::Package')
-        .inverse_of(:npm_metadatum).with_foreign_key(:package_id)
-    end
   end
 
   describe 'validations' do
     describe 'package', :aggregate_failures do
       it { is_expected.to validate_presence_of(:package) }
-
-      # TODO: Remove with the rollout of the FF npm_extract_npm_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/501469
-      it { is_expected.not_to validate_presence_of(:legacy_package) }
-
-      context 'when npm_extract_npm_package_model is disabled' do
-        before do
-          stub_feature_flags(npm_extract_npm_package_model: false)
-        end
-
-        it { is_expected.to validate_presence_of(:legacy_package) }
-        it { is_expected.not_to validate_presence_of(:package) }
-      end
 
       describe '#ensure_npm_package_type', :aggregate_failures do
         subject(:npm_metadatum) { build(:npm_metadatum) }
@@ -44,19 +24,6 @@ RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :packag
 
           it 'raises the error' do
             expect { build(:npm_metadatum, package: package) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
-          end
-
-          context 'when npm_extract_npm_package_model is disabled' do
-            before do
-              stub_feature_flags(npm_extract_npm_package_model: false)
-            end
-
-            it 'adds the validation error' do
-              npm_metadatum = build(:npm_metadatum, legacy_package: package, package: nil)
-
-              expect(npm_metadatum).not_to be_valid
-              expect(npm_metadatum.errors.to_a).to include('Package type must be NPM')
-            end
           end
         end
       end

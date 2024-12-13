@@ -51,16 +51,16 @@ module LooseForeignKeys
           handle_over_limit
           break
         end
-
-        break if modification_tracker.over_limit?
-
-        # At this point, all associations are cleaned up, we can update the status of the parent records
-        update_count = Gitlab::Database::SharedModel.using_connection(connection) do
-          LooseForeignKeys::DeletedRecord.mark_records_processed(deleted_parent_records)
-        end
-
-        deleted_records_counter.increment({ table: parent_table, db_config_name: db_config_name }, update_count)
       end
+
+      return if modification_tracker.over_limit?
+
+      # At this point, all associations are cleaned up, we can update the status of the parent records
+      update_count = Gitlab::Database::SharedModel.using_connection(connection) do
+        LooseForeignKeys::DeletedRecord.mark_records_processed(deleted_parent_records)
+      end
+
+      deleted_records_counter.increment({ table: parent_table, db_config_name: db_config_name }, update_count)
     end
 
     private

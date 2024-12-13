@@ -11,10 +11,10 @@ RSpec.describe WikiPages::EventCreateService, feature_category: :wiki do
   describe '#execute' do
     let_it_be(:page) { create(:wiki_page, project: project) }
 
-    let(:slug) { generate(:sluggified_title) }
     let(:action) { :created }
     let(:fingerprint) { page.sha }
-    let(:response) { subject.execute(slug, page, action, fingerprint) }
+    let(:wiki_page_meta) { create(:wiki_page_meta) }
+    let(:response) { subject.execute(wiki_page_meta, action, fingerprint) }
 
     context 'the user is nil' do
       subject { described_class.new(nil) }
@@ -40,31 +40,12 @@ RSpec.describe WikiPages::EventCreateService, feature_category: :wiki do
       expect(response).to be_success
     end
 
-    context 'the action is a deletion' do
-      let(:action) { :destroyed }
-
-      it 'does not synchronize the wiki metadata timestamps with the git commit' do
-        expect_next_instance_of(WikiPage::Meta) do |instance|
-          expect(instance).not_to receive(:synch_times_with_page)
-        end
-
-        response
-      end
-    end
-
     it 'creates a wiki page event' do
       expect { response }.to change(Event, :count).by(1)
     end
 
     it 'returns an event in the payload' do
       expect(response.payload).to include(event: have_attributes(author: user, wiki_page?: true, action: 'created'))
-    end
-
-    it 'records the slug for the page' do
-      response
-      meta = WikiPage::Meta.find_or_create(page.slug, page)
-
-      expect(meta.slugs.pluck(:slug)).to include(slug)
     end
   end
 end

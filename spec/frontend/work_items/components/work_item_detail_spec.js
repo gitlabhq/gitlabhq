@@ -796,6 +796,20 @@ describe('WorkItemDetail component', () => {
     });
   });
 
+  describe('work item change type', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('should call work item query on type change', async () => {
+      findWorkItemActions().vm.$emit('workItemTypeChanged');
+      await nextTick();
+
+      expect(successHandler).toHaveBeenCalled();
+    });
+  });
+
   describe('todos widget', () => {
     beforeEach(async () => {
       isLoggedIn.mockReturnValue(false);

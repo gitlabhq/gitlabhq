@@ -1836,6 +1836,72 @@ export const workItemObjectiveMetadataWidgets = {
   },
 };
 
+export const workItemChangeTypeWidgets = {
+  MILESTONE: {
+    type: 'MILESTONE',
+    __typename: 'WorkItemWidgetMilestone',
+    milestone: mockMilestone,
+  },
+  ITERATION: {
+    type: 'ITERATION',
+    iteration: {
+      id: 'gid://gitlab/Iteration/86312',
+      __typename: 'Iteration',
+    },
+    __typename: 'WorkItemWidgetIteration',
+  },
+  DEVELOPMENT: {
+    type: 'DEVELOPMENT',
+    relatedBranches: {
+      nodes: [
+        {
+          id: '1',
+        },
+      ],
+      __typename: 'WorkItemRelatedBranchConnection',
+    },
+  },
+  WEIGHT: {
+    type: 'WEIGHT',
+    weight: 1,
+    __typename: 'WorkItemWidgetWeight',
+  },
+  CRM_CONTACTS: {
+    type: 'CRM_CONTACTS',
+    contacts: {
+      nodes: [
+        {
+          id: 'gid://gitlab/CustomerRelations::Contact/50',
+          __typename: 'CustomerRelationsContact',
+        },
+      ],
+      __typename: 'CustomerRelationsContactConnection',
+    },
+    __typename: 'WorkItemWidgetCrmContacts',
+  },
+  TIME_TRACKING: {
+    type: 'TIME_TRACKING',
+    timeEstimate: 10,
+    timelogs: {
+      nodes: [
+        {
+          __typename: 'WorkItemTimelog',
+          id: 'gid://gitlab/Timelog/2',
+        },
+      ],
+      __typename: 'WorkItemTimelogConnection',
+    },
+    totalTimeSpent: 10800,
+    __typename: 'WorkItemWidgetTimeTracking',
+  },
+  PROGRESS: {
+    type: 'PROGRESS',
+    progress: 33,
+    updatedAt: '2024-12-05T16:24:56Z',
+    __typename: 'WorkItemWidgetProgress',
+  },
+};
+
 export const confidentialWorkItemTask = {
   id: 'gid://gitlab/WorkItem/2',
   iid: '2',

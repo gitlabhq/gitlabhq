@@ -334,15 +334,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'not allowing a path update'
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_extract_npm_package_model is disabled' do
-          before do
-            stub_feature_flags(npm_extract_npm_package_model: false)
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
 
       context 'updating the subgroup' do
@@ -361,15 +352,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_extract_npm_package_model is disabled' do
-          before do
-            stub_feature_flags(npm_extract_npm_package_model: false)
-          end
-
-          it_behaves_like 'allowing an update', on: :path
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
 
       context 'updating the subgroup' do
@@ -388,15 +370,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_extract_npm_package_model is disabled' do
-          before do
-            stub_feature_flags(npm_extract_npm_package_model: false)
-          end
-
-          it_behaves_like 'allowing an update', on: :path
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
 
       context 'updating the subgroup' do
