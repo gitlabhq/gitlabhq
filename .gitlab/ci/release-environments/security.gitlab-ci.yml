@@ -95,7 +95,7 @@ release-environments-qa:
     QA_SCENARIO: "Test::Instance::Smoke"
     RELEASE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
     GITLAB_QA_OPTS: --address "https://gitlab.${ENVIRONMENT}.release.gke.gitlab.net"
-    GITLAB_INITIAL_ROOT_PASSWORD: "${RELEASE_ENVIRONMENTS_ROOT_PASSWORD}"
+    GITLAB_ADMIN_PASSWORD: "${RELEASE_ENVIRONMENTS_ROOT_PASSWORD}"
     QA_PRAEFECT_REPOSITORY_STORAGE: "default"
     SIGNUP_DISABLED: "true"
   before_script:
