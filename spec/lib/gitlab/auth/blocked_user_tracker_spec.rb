@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Auth::BlockedUserTracker do
       it 'does not log blocked user activity' do
         expect_any_instance_of(SystemHooksService)
           .not_to receive(:execute_hooks_for)
-        expect(Gitlab::AppLogger).not_to receive(:info)
+        expect(Gitlab::AppLogger).not_to receive(:info).with(/Failed login for blocked user/)
 
         user = create(:user)
 
@@ -18,6 +18,8 @@ RSpec.describe Gitlab::Auth::BlockedUserTracker do
 
     context 'when user is not blocked' do
       it 'logs blocked user activity' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         user = create(:user, :blocked)
 
         expect_any_instance_of(SystemHooksService)

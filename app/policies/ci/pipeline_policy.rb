@@ -47,10 +47,6 @@ module Ci
       enable :cancel_pipeline
     end
 
-    rule { can?(:owner_access) }.policy do
-      enable :destroy_pipeline
-    end
-
     rule { can?(:admin_pipeline) }.policy do
       enable :read_pipeline_variable
     end

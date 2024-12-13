@@ -25,6 +25,8 @@ class AuditEventService
     @ip_address = resolve_ip_address(@author)
     @save_type = save_type
     @created_at = created_at
+
+    Gitlab::AppLogger.info(message: "AuditEventService initialized", scope_class: @entity.class.name)
   end
 
   # Builds the @details attribute for authentication

@@ -76,6 +76,10 @@ class ProjectSetting < ApplicationRecord
   end
   strong_memoize_attr :emails_enabled?
 
+  def pages_default_domain_redirect=(value)
+    super(value.presence) # Call the default setter to set the value
+  end
+
   private
 
   def validates_mr_default_target_self

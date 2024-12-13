@@ -16,6 +16,8 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     end
 
     it 'logs the event' do
+      allow(Gitlab::AppLogger).to receive(:info)
+
       expect(Gitlab::AppLogger).to receive(:info).with(/PAT CREATION: created_by: '#{current_user.username}', created_for: '#{user.username}', token_id: '\d+'/)
 
       subject

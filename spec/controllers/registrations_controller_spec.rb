@@ -495,6 +495,8 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
     end
 
     it "logs a 'User Created' message" do
+      allow(Gitlab::AppLogger).to receive(:info)
+
       expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
 
       subject

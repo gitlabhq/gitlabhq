@@ -131,9 +131,15 @@ module Projects
           :build_timeout_human_readable, :public_builds, :ci_separated_caches,
           :auto_cancel_pending_pipelines, :ci_config_path, :auto_rollback_enabled,
           { auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy],
-            ci_cd_settings_attributes: [:default_git_depth, :forward_deployment_enabled, :forward_deployment_rollback_allowed, :delete_pipelines_in_human_readable] }
+            ci_cd_settings_attributes: permitted_project_ci_cd_settings_params }
         ].tap do |list|
           list << :max_artifacts_size if can?(current_user, :update_max_artifacts_size, project)
+        end
+      end
+
+      def permitted_project_ci_cd_settings_params
+        [:default_git_depth, :forward_deployment_enabled, :forward_deployment_rollback_allowed].tap do |list|
+          list << :delete_pipelines_in_human_readable if can?(current_user, :destroy_pipeline, project)
         end
       end
 

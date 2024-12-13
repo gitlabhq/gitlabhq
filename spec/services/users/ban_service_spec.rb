@@ -34,6 +34,8 @@ RSpec.describe Users::BanService, feature_category: :user_management do
       end
 
       it 'logs ban in application logs' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         expect(Gitlab::AppLogger).to receive(:info).with(
           message: "User ban",
           username: user.username.to_s,

@@ -42,6 +42,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |
 | [Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'](https://gitlab.com/gitlab-org/gitlab/-/issues/462504) | Low | Application_security_testing | Project |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |
+| [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |
 
 ## Window 2
 

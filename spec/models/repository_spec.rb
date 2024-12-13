@@ -4023,7 +4023,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:project) { create(:project, :repository) }
 
     it 'returns patch_id of given revisions' do
-      expect(repository.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+      expect(repository.get_patch_id('HEAD~', 'HEAD')).to eq('67cc1b19744f71ee68e5aa6aa0dbadf03a6ba912')
     end
 
     context 'when one of the param is invalid' do

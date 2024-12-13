@@ -86,7 +86,7 @@
               = _("The maximum file size in megabytes for individual job artifacts.")
               = link_to sprite_icon('question-o'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
 
-        - if Feature.enabled?(:ci_delete_old_pipelines, :instance, type: :beta) && can?(current_user, :owner_access, @project)
+        - if Feature.enabled?(:ci_delete_old_pipelines, :instance, type: :beta) && can?(current_user, :destroy_pipeline, @project)
           .form-group
             = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
               = form.label :delete_pipelines_in_human_readable, s_('CICD|Automatic pipeline cleanup'), class: 'label-bold'

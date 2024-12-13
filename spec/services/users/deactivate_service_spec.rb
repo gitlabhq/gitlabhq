@@ -23,6 +23,8 @@ RSpec.describe Users::DeactivateService, feature_category: :user_management do
       end
 
       it 'creates a log entry' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         expect(Gitlab::AppLogger).to receive(:info).with(
           message: "User deactivated",
           username: user.username,

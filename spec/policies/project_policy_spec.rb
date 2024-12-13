@@ -281,62 +281,47 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'pipeline feature' do
     let(:project)      { private_project }
     let(:current_user) { developer }
-    let(:pipeline)     { create(:ci_pipeline, project: project) }
 
     describe 'for confirmed user' do
-      it 'allows modify pipelines' do
-        expect_allowed(:create_pipeline)
-        expect_allowed(:update_pipeline)
-        expect_allowed(:cancel_pipeline)
-        expect_allowed(:create_pipeline_schedule)
-        expect_allowed(:read_ci_pipeline_schedules_plan_limit)
-      end
+      it { is_expected.to be_allowed(:create_pipeline) }
+      it { is_expected.to be_allowed(:update_pipeline) }
+      it { is_expected.to be_allowed(:cancel_pipeline) }
+      it { is_expected.to be_allowed(:create_pipeline_schedule) }
+      it { is_expected.to be_allowed(:read_ci_pipeline_schedules_plan_limit) }
     end
 
     describe 'for unconfirmed user' do
       let(:current_user) { project.first_owner.tap { |u| u.update!(confirmed_at: nil) } }
 
-      it 'disallows to modify pipelines' do
-        expect_disallowed(:create_pipeline)
-        expect_disallowed(:update_pipeline)
-        expect_disallowed(:cancel_pipeline)
-        expect_disallowed(:destroy_pipeline)
-        expect_disallowed(:create_pipeline_schedule)
-        expect_disallowed(:read_ci_pipeline_schedules_plan_limit)
-      end
+      it { is_expected.not_to be_allowed(:create_pipeline) }
+      it { is_expected.not_to be_allowed(:update_pipeline) }
+      it { is_expected.not_to be_allowed(:cancel_pipeline) }
+      it { is_expected.not_to be_allowed(:create_pipeline_schedule) }
+      it { is_expected.not_to be_allowed(:read_ci_pipeline_schedules_plan_limit) }
     end
 
     describe 'destroy permission' do
       describe 'for developers' do
-        it 'prevents :destroy_pipeline' do
-          expect(current_user.can?(:destroy_pipeline, pipeline)).to be_falsey
-        end
+        it { is_expected.not_to be_allowed(:destroy_pipeline) }
       end
 
       describe 'for maintainers' do
         let(:current_user) { maintainer }
 
-        it 'prevents :destroy_pipeline' do
-          project.add_maintainer(maintainer)
-          expect(current_user.can?(:destroy_pipeline, pipeline)).to be_falsey
-        end
+        it { is_expected.not_to be_allowed(:destroy_pipeline) }
       end
 
       describe 'for project owner' do
         let(:current_user) { project.first_owner }
 
-        it 'allows :destroy_pipeline' do
-          expect(current_user.can?(:destroy_pipeline, pipeline)).to be_truthy
-        end
+        it { is_expected.to be_allowed(:destroy_pipeline) }
 
         context 'on archived projects' do
           before do
             project.update!(archived: true)
           end
 
-          it 'prevents :destroy_pipeline' do
-            expect(current_user.can?(:destroy_pipeline, pipeline)).to be_falsey
-          end
+          it { is_expected.not_to be_allowed(:destroy_pipeline) }
         end
 
         context 'on archived pending_delete projects' do
@@ -344,9 +329,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
             project.update!(archived: true, pending_delete: true)
           end
 
-          it 'allows :destroy_pipeline' do
-            expect(current_user.can?(:destroy_pipeline, pipeline)).to be_truthy
-          end
+          it { is_expected.to be_allowed(:destroy_pipeline) }
         end
       end
     end

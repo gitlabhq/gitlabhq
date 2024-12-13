@@ -14,6 +14,10 @@ RSpec.describe ConfirmationsController, type: :request, feature_category: :syste
       get user_confirmation_path, params: { confirmation_token: user.confirmation_token }
     end
 
+    before do
+      allow(Gitlab::AppLogger).to receive(:info)
+    end
+
     include_examples 'set_current_context'
   end
 end

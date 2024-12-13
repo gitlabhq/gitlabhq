@@ -1219,7 +1219,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
   describe '#get_patch_id' do
     it 'returns patch_id of given revisions' do
-      expect(client.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+      expect(client.get_patch_id('HEAD~', 'HEAD')).to eq('67cc1b19744f71ee68e5aa6aa0dbadf03a6ba912')
     end
 
     context 'when one of the param is invalid' do

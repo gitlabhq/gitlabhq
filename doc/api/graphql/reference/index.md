@@ -1843,6 +1843,35 @@ Input type: `AiFeatureSettingUpdateInput`
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaifeaturesettingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.aiSelfHostedModelConnectionCheck`
+
+Checks if the AI Gateway can establish a connection with the given model configuration.
+
+DETAILS:
+**Introduced** in GitLab 17.7.
+**Status**: Experiment.
+
+Input type: `AiSelfHostedModelConnectionCheckInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiselfhostedmodelconnectioncheckapitoken"></a>`apiToken` | [`String`](#string) | API token to access the self-hosted model, if any. |
+| <a id="mutationaiselfhostedmodelconnectioncheckclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiselfhostedmodelconnectioncheckendpoint"></a>`endpoint` | [`String!`](#string) | Endpoint of the self-hosted model. |
+| <a id="mutationaiselfhostedmodelconnectioncheckidentifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
+| <a id="mutationaiselfhostedmodelconnectioncheckmodel"></a>`model` | [`AiAcceptedSelfHostedModels!`](#aiacceptedselfhostedmodels) | AI model deployed. |
+| <a id="mutationaiselfhostedmodelconnectioncheckname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiselfhostedmodelconnectioncheckclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiselfhostedmodelconnectioncheckerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationaiselfhostedmodelconnectioncheckresult"></a>`result` | [`CloudConnectorProbeResult`](#cloudconnectorproberesult) | Self-hosted hosted connection check result. |
+
 ### `Mutation.aiSelfHostedModelCreate`
 
 DETAILS:
@@ -1893,7 +1922,6 @@ Input type: `AiSelfHostedModelDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaiselfhostedmodeldeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiselfhostedmodeldeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationaiselfhostedmodeldeleteselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Self-hosted model after mutation. |
 
 ### `Mutation.aiSelfHostedModelUpdate`
 

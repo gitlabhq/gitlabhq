@@ -59740,6 +59740,9 @@ msgstr ""
 msgid "UpdateProject|Pruning unreachable objects can lead to repository corruption."
 msgstr ""
 
+msgid "UpdateProject|The `pages_default_domain_redirect` attribute is missing from the domain list in the Pages project configuration. Assign `pages_default_domain_redirect` to the Pages project or reset it."
+msgstr ""
+
 msgid "UpdateProject|Updating default branch is blocked by security policy"
 msgstr ""
 

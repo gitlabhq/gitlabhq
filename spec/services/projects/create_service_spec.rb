@@ -203,6 +203,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     it 'logs creation' do
+      allow(Gitlab::AppLogger).to receive(:info)
+
       expect(Gitlab::AppLogger).to receive(:info).with(/#{user.name} created a new project/)
 
       create_project(user, opts)

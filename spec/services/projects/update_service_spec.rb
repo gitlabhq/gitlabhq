@@ -971,6 +971,49 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
+    describe 'when updating pages default domain redirect', feature_category: :pages do
+      let(:domain_present) { true }
+
+      before do
+        stub_pages_setting(enabled: true)
+        allow(project).to receive(:pages_domain_present?).and_return(domain_present)
+      end
+
+      context 'when selecting an existing domain' do
+        it 'updates the pages default domain redirect setting' do
+          expect { update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "http://example.com" }) }
+            .to change { project.project_setting.pages_default_domain_redirect }
+                  .from(nil).to("http://example.com")
+        end
+      end
+
+      context 'when clearing the default domain redirect' do
+        let(:project_settings) { create(:project_setting, pages_default_domain_redirect: "http://example.com") }
+        let(:project) { build(:project, project_setting: project_settings) }
+
+        it 'removes the pages default domain redirect setting' do
+          expect(project.project_setting.pages_default_domain_redirect).to eq("http://example.com")
+
+          expect { update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "" }) }
+            .to change { project.project_setting.pages_default_domain_redirect }
+                  .from("http://example.com").to(nil)
+        end
+      end
+
+      context 'when selecting a non-existing domain' do
+        let(:domain_present) { false }
+
+        it 'returns an error to the user' do
+          result = update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "http://example.com" })
+
+          expect(result).to include(status: :error)
+          expect(result[:message]).to include(_("The `pages_default_domain_redirect` attribute is missing from the domain list in the Pages project configuration. Assign `pages_default_domain_redirect` to the Pages project or reset it."))
+
+          expect(project.project_setting.pages_default_domain_redirect).to be_nil
+        end
+      end
+    end
+
     describe 'when project has missing CI/CD settings record' do
       before do
         project.ci_cd_settings.destroy!

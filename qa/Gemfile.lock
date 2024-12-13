@@ -218,7 +218,7 @@ GEM
     net-http (0.4.1)
       uri
     netrc (0.11.0)
-    nokogiri (1.17.1)
+    nokogiri (1.17.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     octokit (9.2.0)
@@ -373,7 +373,7 @@ DEPENDENCIES
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
-  nokogiri (~> 1.17, >= 1.17.1)
+  nokogiri (~> 1.17, >= 1.17.2)
   octokit (~> 9.2.0)
   parallel (~> 1.26, >= 1.26.3)
   parallel_tests (~> 4.7, >= 4.7.2)

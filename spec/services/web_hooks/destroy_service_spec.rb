@@ -38,6 +38,8 @@ RSpec.describe WebHooks::DestroyService, feature_category: :webhooks do
       end
 
       it 'schedules the destruction of logs' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         expect(WebHooks::LogDestroyWorker).to receive(:perform_async).with({ 'hook_id' => hook.id })
         expect(Gitlab::AppLogger).to receive(:info).with(match(/scheduled a deletion of logs/))
 

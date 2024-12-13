@@ -364,6 +364,8 @@ class ProjectPolicy < BasePolicy
     enable :manage_owners
 
     enable :add_catalog_resource
+
+    enable :destroy_pipeline
   end
 
   rule { can?(:guest_access) }.policy do

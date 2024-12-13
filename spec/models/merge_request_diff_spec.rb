@@ -55,7 +55,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
-    it { expect(subject.patch_id_sha).to eq('1e05e04d4c2a6414d9d4ab38208511a3bbe715f2') }
+    it { expect(subject.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
 
     it 'calls GraphqlTriggers.merge_request_diff_generated' do
       merge_request = create(:merge_request, :skip_diff_creation)

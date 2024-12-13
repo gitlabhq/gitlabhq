@@ -4735,6 +4735,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
+
+      it 'updates ci_delete_pipelines_in_seconds' do
+        project_param = { ci_delete_pipelines_in_seconds: 1.week.to_i }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['ci_delete_pipelines_in_seconds']).to eq(1.week.to_i)
+      end
+
+      it 'clears ci_delete_pipelines_in_seconds' do
+        project3.update!(ci_delete_pipelines_in_seconds: 1.week.to_i)
+
+        project_param = { ci_delete_pipelines_in_seconds: nil }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to match(a_hash_including('ci_delete_pipelines_in_seconds' => nil))
+      end
     end
 
     context 'when authenticated as project maintainer' do
@@ -4840,6 +4860,25 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('container_expiration_policy_attributes[keep_n] is invalid')
+      end
+
+      it "doesn't update ci_delete_pipelines_in_seconds" do
+        project_param = { ci_delete_pipelines_in_seconds: 1.week.to_i }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project3.reload.ci_delete_pipelines_in_seconds).to be_nil
+      end
+
+      it "doesn't remove ci_delete_pipelines_in_seconds" do
+        project3.update!(ci_delete_pipelines_in_seconds: 1.week.to_i)
+        project_param = { ci_delete_pipelines_in_seconds: nil }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project3.reload.ci_delete_pipelines_in_seconds).to eq(1.week)
       end
     end
 
