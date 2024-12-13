@@ -34,6 +34,8 @@ module Gitlab
       def group_data
         parent = group.parent
 
+        return super unless parent
+
         super.merge(
           parent_group_id: parent.id,
           parent_name: parent.name,

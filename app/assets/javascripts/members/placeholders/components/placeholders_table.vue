@@ -231,7 +231,7 @@ export default {
         </div>
         <div class="gl-mt-2">{{ item.sourceName }}</div>
         <div class="gl-mt-2 gl-flex gl-gap-1">
-          <span v-if="item.sourceUsername && item.sourceName">@{{ item.sourceUsername }}</span>
+          <span v-if="item.sourceUsername">@{{ item.sourceUsername }}</span>
           <template v-else>
             <help-popover
               :aria-label="s__('UserMapping|Full user details missing')"

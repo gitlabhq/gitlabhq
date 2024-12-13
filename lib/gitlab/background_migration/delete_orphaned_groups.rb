@@ -14,7 +14,7 @@ module Gitlab
           .joins("LEFT JOIN namespaces AS parent ON namespaces.parent_id = parent.id")
           .where(parent: { id: nil })
           .pluck(:id).each do |orphaned_group_id|
-            ::GroupDestroyWorker.perform(orphaned_group_id, admin_bot.id)
+            ::GroupDestroyWorker.perform_async(orphaned_group_id, admin_bot.id)
           end
         end
       end

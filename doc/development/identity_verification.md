@@ -29,7 +29,7 @@ To view logs associated to the [email stage](../security/identity_verification.m
 - Query the GitLab production logs with the following KQL:
 
   ```plaintext
-  KQL: json.controller:"RegistrationsIdentityVerificationController" AND json.username:replace_username_here
+  json.controller:"RegistrationsIdentityVerificationController" AND json.username:replace_username_here
   ```
 
 Valuable debugging information can be found in the `json.action` and `json.location` columns.
@@ -41,7 +41,7 @@ To view logs associated to the [phone stage](../security/identity_verification.m
 - Query the GitLab production logs with the following KQL:
 
   ```plaintext
-  KQL: json.message: "IdentityVerification::Phone" AND json.username:replace_username_here
+  json.message: "IdentityVerification::Phone" AND json.username:replace_username_here
   ```
 
 On rows where `json.event` is `Failed Attempt`, you can find valuable debugging information in the `json.reason` column such as:
@@ -76,7 +76,7 @@ To view logs associated to the [credit card stage](../security/identity_verifica
 - Query the GitLab production logs with the following KQL:
 
   ```plaintext
-  KQL: json.message: "IdentityVerification::CreditCard" AND json.username:replace_username_here
+  json.message: "IdentityVerification::CreditCard" AND json.username:replace_username_here
   ```
 
 On rows where `json.event` is `Failed Attempt`, you can find valuable debugging information in the `json.reason` column such as:

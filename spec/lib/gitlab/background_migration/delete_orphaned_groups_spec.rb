@@ -3,10 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_category: :groups_and_projects do
-  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
   let(:namespaces) { table(:namespaces) }
-  let!(:parent) { namespaces.create!(name: 'Group', type: 'Group', path: 'space1', organization_id: organization.id) }
-  let!(:group) { namespaces.create!(name: 'GitLab', type: 'Group', path: 'group1', organization_id: organization.id) }
+  let!(:parent) { namespaces.create!(name: 'Group', type: 'Group', path: 'space1') }
+  let!(:group) { namespaces.create!(name: 'GitLab', type: 'Group', path: 'group1') }
+  let!(:admin_bot) { ::Users::Internal.admin_bot }
+  let!(:orphaned_groups) do
+    (1..4).map do |i|
+      namespaces.create!(name: "Group #{i}", path: "orphaned_group_#{i}", type: 'Group', parent_id: parent.id)
+    end
+  end
 
   subject(:background_migration) do
     described_class.new(
@@ -24,6 +29,7 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_catego
     before do
       # Remove constraint so we can create invalid records
       ApplicationRecord.connection.execute("ALTER TABLE namespaces DROP CONSTRAINT fk_7f813d8c90;")
+      (1..4).map { |i| namespaces.create!(name: "Group #{i}", path: "group_#{i}", type: 'Group', parent_id: group.id) }
     end
 
     after do
@@ -34,26 +40,11 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_catego
       SQL
     end
 
-    it 'enqueues ::GroupDestroyWorker for each group whose parent\'s do not exist' do
-      orphaned_groups = (1..4).map do |i|
-        namespaces.create!(name: "Group #{i}", path: "orphaned_group_#{i}", type: 'Group', parent_id: parent.id,
-          organization_id: organization.id)
-      end
-      groups = (1..4).map do |i|
-        namespaces.create!(name: "Group #{i}", path: "group_#{i}", type: 'Group', parent_id: group.id,
-          organization_id: organization.id)
-      end
+    it 'enqueues ::GroupDestroyWorker for each group whose parent\'s do not exist and destroys them', :sidekiq_inline do
       parent.destroy!
 
-      orphaned_groups.each do |group|
-        expect(::GroupDestroyWorker).to receive(:perform).with(group.id, ::Users::Internal.admin_bot.id)
-      end
-
-      groups.each do |group|
-        expect(::GroupDestroyWorker).not_to receive(:perform).with(group.id, ::Users::Internal.admin_bot.id)
-      end
-
-      background_migration
+      expect { background_migration }.to change { namespaces.count }.from(10).to(6)
+        .and change { namespaces.where(id: orphaned_groups.pluck(:id)).count }.from(4).to(0)
     end
   end
 end

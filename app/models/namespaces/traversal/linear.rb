@@ -233,7 +233,8 @@ module Namespaces
         return if is_a?(Namespaces::ProjectNamespace)
 
         self.transient_traversal_ids = if parent_id
-                                         parent.traversal_ids + [id]
+                                         # remove safe navigation and `.to_a` with https://gitlab.com/gitlab-org/gitlab/-/issues/508611
+                                         parent&.traversal_ids.to_a + [id]
                                        else
                                          [id]
                                        end
