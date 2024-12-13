@@ -162,4 +162,50 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
         .to eq([primary_user.id, scoped_user.id])
     end
   end
+
+  describe '#link!' do
+    subject(:identity) { described_class.new(primary_user) }
+
+    context 'when user has not been linked already' do
+      it 'links primary identity to scoped identity' do
+        expect(identity).not_to be_linked
+
+        identity.link!(scoped_user)
+
+        expect(identity).to be_linked
+        expect(identity.scoped_user).to eq(scoped_user)
+      end
+    end
+
+    context 'when primary user has already been linked' do
+      let(:another_user) { create(:user) }
+
+      before do
+        identity.link!(scoped_user)
+      end
+
+      context 'when linking with another user' do
+        it 'raises an exception' do
+          expect { identity.link!(another_user) }
+            .to raise_error(described_class::IdentityLinkMismatchError)
+            .and not_change { identity.scoped_user }
+        end
+      end
+
+      context 'when linking with the same user' do
+        it 'is idempotent' do
+          expect { identity.link!(scoped_user) }.not_to raise_error
+        end
+      end
+    end
+
+    it 'appends scoped user details to application structured log' do
+      identity.link!(scoped_user)
+
+      expect(Gitlab::ApplicationContext.current).to include({
+        'meta.scoped_user' => scoped_user.username,
+        'meta.scoped_user_id' => scoped_user.id
+      })
+    end
+  end
 end

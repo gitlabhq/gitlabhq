@@ -10,9 +10,8 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       :project,
       :with_import_url,
       :import_user_mapping_enabled,
-      import_type: ::Import::SOURCE_GITEA,
-      namespace: create(:namespace, path: 'octocat')
-    )
+      :in_group,
+      import_type: ::Import::SOURCE_GITEA)
   end
 
   let_it_be(:source_user_mapper) do
@@ -258,10 +257,9 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       create(
         :project,
         :with_import_url,
+        :in_group,
         :import_user_mapping_enabled,
-        import_type: ::Import::SOURCE_GITHUB,
-        namespace: create(:namespace, path: 'octocat-github')
-      )
+        import_type: ::Import::SOURCE_GITHUB)
     end
 
     let_it_be(:source_user_mapper) do

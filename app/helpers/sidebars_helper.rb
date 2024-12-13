@@ -400,7 +400,7 @@ module SidebarsHelper
       ({ title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' } if current_user)
     ]
 
-    if current_user&.can_admin_all_resources?
+    if display_admin_area_link?
       links.append(
         { title: s_('Navigation|Admin area'), link: admin_root_path, icon: 'admin' }
       )
@@ -488,6 +488,10 @@ module SidebarsHelper
 
   def terms_link
     Gitlab::CurrentSettings.terms ? '/-/users/terms' : nil
+  end
+
+  def display_admin_area_link?
+    current_user&.can_admin_all_resources?
   end
 end
 

@@ -107,7 +107,7 @@ module Gitlab
       end
 
       def create_placeholder_user(import_source_user)
-        return namespace_import_user if placeholder_user_limit_exceeded?
+        return namespace_import_user if placeholder_user_limit_exceeded? || namespace.user_namespace?
 
         Gitlab::Import::PlaceholderUserCreator.new(import_source_user).execute
       end

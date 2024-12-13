@@ -18,6 +18,8 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
         workItemType: 'issue',
         workItemId: '1',
         workItemIid: '100',
+        projectId: 'gid://gitlab/Project/7',
+        isConfidentialWorkItem: false,
         ...props,
       },
     });
@@ -49,6 +51,13 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
 
       expect(findMainButton().text()).toBe('Create merge request');
       expect(findMainButton().attributes('icon')).toBe('merge-request');
+    });
+
+    it('renders the main buttion with correct text when a confidential work item', async () => {
+      wrapper = createComponent({ isConfidentialWorkItem: true });
+      await findCreateModal().vm.$emit('fetchedPermissions', true);
+
+      expect(findMainButton().text()).toBe('Create confidential merge request');
     });
 
     it('hides the button when the user does not have permission to create merge requests', async () => {

@@ -36,10 +36,19 @@ export default {
       type: String,
       required: true,
     },
+    projectId: {
+      type: String,
+      required: true,
+    },
     workItemIid: {
       type: String,
       required: false,
       default: null,
+    },
+    isConfidentialWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -81,6 +90,11 @@ export default {
     buttonText() {
       return this.checkingBranchAvailibility
         ? __('Checking branch availability...')
+        : this.createMergeRequestButtonText;
+    },
+    createMergeRequestButtonText() {
+      return this.isConfidentialWorkItem
+        ? __('Create confidential merge request')
         : this.$options.i18n.createMergeRequest;
     },
   },
@@ -128,6 +142,8 @@ export default {
       :work-item-id="workItemId"
       :work-item-type="workItemType"
       :work-item-full-path="workItemFullPath"
+      :is-confidential-work-item="isConfidentialWorkItem"
+      :project-id="projectId"
       @hideModal="toggleCreateModal(false)"
       @fetchedPermissions="updatePermissions"
     />

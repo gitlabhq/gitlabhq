@@ -491,6 +491,11 @@ class MergeRequest < ApplicationRecord
     .merge(ResourceStateEvent.merged_with_no_event_source)
   }
 
+  scope :by_blob_path, ->(path) do
+    joins(latest_merge_request_diff: :merge_request_diff_files)
+      .where(merge_request_diff_files: { old_path: path })
+  end
+
   def self.total_time_to_merge
     join_metrics
       .where(

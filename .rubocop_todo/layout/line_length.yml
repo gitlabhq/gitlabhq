@@ -1959,7 +1959,6 @@ Layout/LineLength:
     - 'lib/api/commit_statuses.rb'
     - 'lib/api/commits.rb'
     - 'lib/api/composer_packages.rb'
-    - 'lib/api/concerns/packages/conan_endpoints.rb'
     - 'lib/api/concerns/packages/debian_distribution_endpoints.rb'
     - 'lib/api/concerns/packages/debian_package_endpoints.rb'
     - 'lib/api/debian_group_packages.rb'

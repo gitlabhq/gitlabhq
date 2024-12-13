@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :importers do
   include Import::GiteaHelper
 
-  let_it_be(:project) { create(:project, :import_user_mapping_enabled, import_type: 'gitea') }
+  let_it_be(:project) { create(:project, :import_user_mapping_enabled, :in_group, import_type: 'gitea') }
 
   let_it_be(:source_user_mapper) do
     Gitlab::Import::SourceUserMapper.new(

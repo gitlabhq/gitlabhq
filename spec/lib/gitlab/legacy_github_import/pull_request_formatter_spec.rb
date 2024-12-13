@@ -10,6 +10,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       :project,
       :repository,
       :with_import_url,
+      :in_group,
       :import_user_mapping_enabled,
       import_type: ::Import::SOURCE_GITEA
     )
@@ -351,6 +352,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         :project,
         :repository,
         :with_import_url,
+        :in_group,
         :import_user_mapping_enabled,
         import_type: ::Import::SOURCE_GITHUB
       )

@@ -103,6 +103,7 @@ export default {
           </gl-link>
         </template>
         <template #actions>
+          <slot name="actions"></slot>
           <new-resource-dropdown
             v-if="showNewIssueDropdown"
             class="gl-mx-2 gl-mb-3 gl-self-center"
@@ -111,16 +112,18 @@ export default {
             :extract-projects="extractProjects"
             :group-id="groupId"
           />
-          <gl-button
-            v-if="showNewIssueLink"
-            :href="newIssuePath"
-            variant="confirm"
-            class="gl-mx-2 gl-mb-3"
-            data-track-action="click_new_issue_project_issues_empty_list_page"
-            data-track-label="new_issue_project_issues_empty_list"
-          >
-            {{ __('New issue') }}
-          </gl-button>
+          <slot name="new-issue-button">
+            <gl-button
+              v-if="showNewIssueLink"
+              :href="newIssuePath"
+              variant="confirm"
+              class="gl-mx-2 gl-mb-3"
+              data-track-action="click_new_issue_project_issues_empty_list_page"
+              data-track-label="new_issue_project_issues_empty_list"
+            >
+              {{ __('New issue') }}
+            </gl-button>
+          </slot>
           <gl-button
             v-if="canCreateProjects"
             :href="newProjectPath"

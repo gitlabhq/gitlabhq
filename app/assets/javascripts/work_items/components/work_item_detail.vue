@@ -265,6 +265,9 @@ export default {
     workItemFullPath() {
       return this.modalWorkItemFullPath || this.fullPath;
     },
+    workItemProjectId() {
+      return this.workItem?.project?.id;
+    },
     workItemLoading() {
       return isEmpty(this.workItem) && this.$apollo.queries.workItem.loading;
     },
@@ -864,6 +867,8 @@ export default {
                     :work-item-iid="iid"
                     :work-item-full-path="workItemFullPath"
                     :work-item-type="workItem.workItemType.name"
+                    :is-confidential-work-item="workItem.confidential"
+                    :project-id="workItemProjectId"
                   />
                 </div>
               </div>

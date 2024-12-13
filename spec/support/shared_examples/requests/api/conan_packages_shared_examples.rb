@@ -229,6 +229,21 @@ RSpec.shared_examples 'handling validation error for package' do
       expect(json_response['message']).to include('Validation failed')
     end
   end
+
+  context 'with ActiveRecord::RecordInvalid error' do
+    before do
+      allow_next_instance_of(::Packages::Conan::CreatePackageFileService) do |service|
+        allow(service).to receive(:execute).and_raise(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    it 'returns 400' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to include('Record invalid')
+    end
+  end
 end
 
 RSpec.shared_examples 'handling empty values for username and channel' do

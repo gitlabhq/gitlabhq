@@ -31,10 +31,9 @@ Install one of the following GitLab-approved LLM models:
 | Mistral      | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Mistral      | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1)       |  **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| GPT  | [GPT-3.5-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-35)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 
 The following models are under evaluation, and support is limited:
 

@@ -11,11 +11,18 @@ import WorkItemCreateBranchMergeRequestModal from '~/work_items/components/work_
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
+import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
+}));
+
+jest.mock('~/confidential_merge_request/state', () => ({
+  selectedProject: {
+    pathWithNamespace: 'fullPath-fork-new',
+  },
 }));
 
 describe('CreateBranchMergeRequestModal', () => {
@@ -48,6 +55,9 @@ describe('CreateBranchMergeRequestModal', () => {
     showModal = true,
     workItemType = 'Issue',
     workItemFullPath = 'fullPath',
+    groupPath = 'groupPath',
+    projectId = 'gid://gitlab/Project/2',
+    isConfidentialWorkItem = false,
   } = {}) => {
     mockApollo = createMockApollo([[getProjectRootRef, projectRefHandler]]);
 
@@ -61,6 +71,11 @@ describe('CreateBranchMergeRequestModal', () => {
         showMergeRequestFlow,
         showModal,
         workItemFullPath,
+        projectId,
+        isConfidentialWorkItem,
+      },
+      provide: {
+        groupPath,
       },
       mocks: {
         $toast: {
@@ -73,6 +88,8 @@ describe('CreateBranchMergeRequestModal', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findGlModal = () => wrapper.findComponent(GlModal);
   const firePrimaryEvent = () => findGlModal().vm.$emit('primary', { preventDefault: jest.fn() });
+  const findPrimaryButton = () => findGlModal().props('actionPrimary');
+  const findPrivateForksSelector = () => wrapper.findComponent(ProjectFormGroup);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -185,6 +202,61 @@ describe('CreateBranchMergeRequestModal', () => {
       expect(visitUrl).toHaveBeenCalledWith(
         '/fullPath/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=suggested_branch_name&merge_request%5Btarget_branch%5D=master',
       );
+    });
+
+    describe('confidential merge request', () => {
+      beforeEach(() => {
+        createWrapper({
+          showBranchFlow: false,
+          showMergeRequestFlow: true,
+          isConfidentialWorkItem: true,
+        });
+        return waitForPromises();
+      });
+
+      it('shows the private forks selector', () => {
+        expect(findPrivateForksSelector().exists()).toBe(true);
+      });
+
+      it('passes the required props to the private forks selector', () => {
+        expect(findPrivateForksSelector().props()).toMatchObject({
+          namespacePath: 'groupPath',
+          projectPath: 'fullPath',
+          helpPagePath: '/help/user/project/merge_requests/index.md',
+          newForkPath: '/fullPath/-/forks/new',
+        });
+      });
+
+      it('create merge request button should be enabled when there is a private fork selected', () => {
+        expect(findPrimaryButton().attributes.disabled).toEqual(false);
+      });
+
+      it('replaces the create branch and create merge request paths with forkPath with passing of work item project id', async () => {
+        jest.spyOn(axios, 'post');
+        mock
+          .onPost(
+            '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master',
+          )
+          .reply(200, { data: { url: 'http://test.com/branch' } });
+
+        firePrimaryEvent();
+        await waitForPromises();
+
+        expect(axios.post).toHaveBeenCalledWith(
+          `/fullPath-fork-new/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master`,
+          {
+            confidential_issue_project_id: 'gid://gitlab/Project/2',
+          },
+        );
+
+        await waitForPromises();
+
+        await nextTick();
+
+        expect(visitUrl).toHaveBeenCalledWith(
+          '/fullPath-fork-new/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=suggested_branch_name&merge_request%5Btarget_branch%5D=master',
+        );
+      });
     });
   });
 });

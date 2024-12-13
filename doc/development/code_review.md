@@ -506,6 +506,29 @@ Here is a summary, which is also reflected in other sections.
   mentioning them; this ensures they see it if their notification level is
   set to "mentioned" and other people understand they don't have to respond.
 
+### Recommendations for MR authors to get their changes merged faster
+
+1. Make sure to follow best practices.
+   - Write efficient instructions, add screenshots, steps to validate, etc.
+   - Read and address any comments added by `dangerbot`.
+   - Follow the [acceptance checklist](#acceptance-checklist).
+1. Follow GitLab patterns, even if you think there's a better way.
+   - Discussions often delay merging code. If a discussion is getting too long, consider following the documented approach or the maintainer's suggestion, then open a separate MR to implement your approach as part of our best practices and have the discussions there.
+1. Consider splitting big MRs into smaller ones. Around `200` lines is a good goal.
+   - Smaller MRs reduce cognitive load for authors and reviewers.
+   - Reviewers tend to pick up smaller MRs to review first (a large number of files can be scary).
+   - Discussions on one particular part of the code will not block other parts of the code from being merged.
+   - Smaller MRs are often simpler, and you can consider skipping the first review and [sending directly to the maintainer](#getting-your-merge-request-reviewed-approved-and-merged), or skipping one of the suggested competency areas (frontend or backend, for example).
+   - Mocks can be a good approach, even though they add another MR later; replacing a mock with a server request is usually a quick MR to review.
+     - Be sure that any UI with mocked data is behind a [feature flag](../development/feature_flags/index.md).
+   - Pull common dependencies into the first MRs to avoid excessive rebases.
+     - For sequential MRs use [stacked diffs](../user/project/merge_requests/stacked_diffs.md).
+     - For dependent MRs (for example, `A` -> `B` -> `C`), have their branches target each other instead of `master`. For example, have `C` target `B`, `B` target `A`, and `A` target `master`. This way each MR will have only their corresponding `diff`.
+   - ⚠️ Split MRs with caution: MRs that are **too** small increase the number of total reviews, which can cause the opposite effect.
+1. Minimize the number of reviewers in a single MR.
+   - Example: A DB reviewer can also review backend and or tests. A FullStack engineer can do both frontend and backend reviews.
+   - Using mocks can make the first MRs be `frontend` only, and later we can request `backend` review for the server request (see "splitting MRs" above).
+
 ### Having your merge request reviewed
 
 Keep in mind that code review is a process that can take multiple

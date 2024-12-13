@@ -49,6 +49,7 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`duo_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145509) | GitLab Duo Features enabled setting on group or project changed | **{check-circle}** Yes | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/442485) | Group, Project |
+| [`q_onbarding_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175501) | Amazon Q instance settings changed | **{check-circle}** Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/508250) | Instance |
 
 ### Audit events
 

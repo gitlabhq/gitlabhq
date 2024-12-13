@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:project) { create(:project, :with_import_url, :import_user_mapping_enabled) }
+  let_it_be(:project) { create(:project, :with_import_url, :import_user_mapping_enabled, :in_group) }
   let_it_be(:reviewer) { create(:user, username: 'alice') }
   let_it_be(:source_user) do
     create(

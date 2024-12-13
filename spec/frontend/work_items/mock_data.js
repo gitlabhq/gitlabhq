@@ -188,6 +188,10 @@ export const workItemQueryResponse = {
         webPath: '/root',
         __typename: 'UserCore',
       },
+      project: {
+        id: 'gid://gitlab/Project/7',
+        __typename: 'Project',
+      },
       namespace: {
         __typename: 'Project',
         id: '1',
@@ -304,6 +308,10 @@ export const updateWorkItemMutationResponse = {
         closedAt: null,
         author: {
           ...mockAssignees[0],
+        },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
         },
         namespace: {
           __typename: 'Project',
@@ -435,6 +443,10 @@ export const convertWorkItemMutationResponse = {
         closedAt: null,
         author: {
           ...mockAssignees[0],
+        },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
         },
         namespace: {
           __typename: 'Project',
@@ -1271,6 +1283,10 @@ export const workItemResponseFactory = ({
       updatedAt,
       closedAt: null,
       author,
+      project: {
+        id: 'gid://gitlab/Project/7',
+        __typename: 'Project',
+      },
       namespace: {
         __typename: 'Project',
         id: '1',
@@ -1634,6 +1650,10 @@ export const createWorkItemMutationResponse = {
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         author: {
           ...mockAssignees[0],
+        },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
         },
         namespace: {
           __typename: 'Project',
@@ -2910,6 +2930,10 @@ export const changeWorkItemParentMutationResponse = {
         closedAt: null,
         author: {
           ...mockAssignees[0],
+        },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
         },
         namespace: {
           __typename: 'Project',
@@ -5327,6 +5351,7 @@ export const createWorkItemQueryResponse = {
         webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/new',
         reference: 'gitlab-org#56',
         createNoteEmail: null,
+        project: null,
         namespace: {
           id: 'full-path-epic-id',
           fullPath: 'full-path',

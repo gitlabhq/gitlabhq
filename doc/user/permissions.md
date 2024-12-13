@@ -193,10 +193,9 @@ Project permissions for [model registry](project/ml/model_registry/index.md) and
 | View [models and versions](project/ml/model_registry/index.md)    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Non-members can only view models and versions in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
 | View [model experiments](project/ml/experiment_tracking/index.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Non-members can only view model experiments in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
 | Create models, versions, and artifacts                            |       |         |          |     ✓     |     ✓      |   ✓   | You can also upload and download artifacts with the package registry API, which uses it's own set of permissions. |
-| Edit models, versions, and artifacts                              |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Edit & delete models, versions, and artifacts                     |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Create experiments and candidates                                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Edit experiments and candidates                                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Delete experiments and candidates                                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Edit & delete experiments and candidates                          |       |         |          |     ✓     |     ✓      |   ✓   |       |
 
 ### Monitoring
 

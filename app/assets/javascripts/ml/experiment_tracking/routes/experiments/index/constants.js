@@ -2,9 +2,9 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const CREATE_EXPERIMENT_HELP_PATH = helpPagePath(
-  'user/project/ml/experiment_tracking/index',
+  'user/project/ml/experiment_tracking/mlflow_client',
   {
-    anchor: 'track-new-experiments-and-candidates',
+    anchor: 'model-experiments',
   },
 );
 
@@ -15,3 +15,5 @@ export const EXPERIMENTS_TABLE_FIELDS = Object.freeze([
     label: s__('MlExperimentTracking|Logged candidates for experiment'),
   },
 ]);
+
+export const MLFLOW_USAGE_MODAL_ID = 'experiment-tracking-mlflow-experiment-usage-model';

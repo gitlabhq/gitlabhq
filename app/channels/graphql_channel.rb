@@ -31,6 +31,8 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
   end
 
   def unsubscribed
+    return if @subscription_ids.blank?
+
     @subscription_ids.each do |sid|
       GitlabSchema.subscriptions.delete_subscription(sid)
     end

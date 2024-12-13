@@ -41,7 +41,6 @@ module Ci
     end
 
     def link_composite_identity!(jwt)
-      return unless Feature.enabled?(:composite_identity_in_ci, jwt.job&.user)
       return unless jwt.scoped_user
 
       # We prefer not to use `link_from_job` when we have the JWT because

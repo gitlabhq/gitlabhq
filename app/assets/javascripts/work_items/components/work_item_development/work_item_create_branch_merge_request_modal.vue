@@ -10,12 +10,15 @@ import {
 } from '~/work_items/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   findInvalidBranchNameCharacters,
   humanizeBranchValidationErrors,
 } from '~/lib/utils/text_utility';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { s__, __ } from '~/locale';
+import confidentialMergeRequestState from '~/confidential_merge_request/state';
+import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 
 export default {
   components: {
@@ -23,6 +26,7 @@ export default {
     GlFormInput,
     GlFormGroup,
     GlModal,
+    ProjectFormGroup,
   },
   i18n: {
     sourceLabel: __('Source (branch or tag)'),
@@ -40,6 +44,8 @@ export default {
     checkingBranchValidity: __('Checking branch validity'),
   },
   createMRModalId: 'create-merge-request-modal',
+  mergeRequestHelpPagePath: helpPagePath('user/project/merge_requests/index.md'),
+  inject: ['groupPath'],
   props: {
     showModal: {
       type: Boolean,
@@ -71,6 +77,15 @@ export default {
     workItemFullPath: {
       type: String,
       required: true,
+    },
+    projectId: {
+      type: String,
+      required: true,
+    },
+    isConfidentialWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -132,25 +147,37 @@ export default {
       return this.$options.i18n.branchNameExists;
     },
     modalTitle() {
-      return this.showBranchFlow
-        ? this.$options.i18n.createBranch
-        : this.$options.i18n.createMergeRequest;
+      return this.createButtonText;
+    },
+    isSaveButtonDisabled() {
+      return (
+        this.invalidForm || (this.isConfidentialWorkItem && !this.canCreateConfidentialMergeRequest)
+      );
     },
     saveButtonAction() {
       return {
         text: this.createButtonText,
         attributes: {
           variant: 'confirm',
-          disabled: this.invalidForm,
+          disabled: this.isSaveButtonDisabled,
           loading:
             this.checkingSourceValidity || this.checkingBranchValidity || this.creatingBranch,
         },
       };
     },
+    canCreateConfidentialMergeRequest() {
+      return (
+        this.isConfidentialWorkItem &&
+        Object.keys(confidentialMergeRequestState?.selectedProject).length > 0
+      );
+    },
     cancelButtonAction() {
       return {
         text: this.$options.i18n.cancelLabel,
       };
+    },
+    newForkPath() {
+      return `/${this.workItemFullPath}/-/forks/new`;
     },
   },
   watch: {
@@ -190,7 +217,9 @@ export default {
     async createBranch() {
       try {
         const endpoint = createBranchMRApiPathHelper.createBranch({
-          fullPath: this.workItemFullPath,
+          fullPath: this.isConfidentialWorkItem
+            ? confidentialMergeRequestState.selectedProject.pathWithNamespace
+            : this.workItemFullPath,
           workItemIid: this.workItemIid,
           sourceBranch: this.defaultBranch,
           targetBranch: this.branchName,
@@ -198,7 +227,9 @@ export default {
 
         this.creatingBranch = true;
         const { data } = await axios.post(endpoint, {
-          confidential_issue_project_id: null,
+          confidential_issue_project_id: this.canCreateConfidentialMergeRequest
+            ? this.projectId
+            : null,
         });
 
         this.$toast.show(__('Branch created.'), {
@@ -224,7 +255,9 @@ export default {
     async createMergeRequest() {
       await this.createBranch();
       const path = createBranchMRApiPathHelper.createMR({
-        fullPath: this.workItemFullPath,
+        fullPath: this.isConfidentialWorkItem
+          ? confidentialMergeRequestState.selectedProject.pathWithNamespace
+          : this.workItemFullPath,
         workItemIid: this.workItemIid,
         sourceBranch: this.branchName,
         targetBranch: this.defaultBranch,
@@ -258,7 +291,11 @@ export default {
 
       this.refCancelToken = axios.CancelToken.source();
 
-      const refsPath = createBranchMRApiPathHelper.getRefs({ fullPath: this.workItemFullPath });
+      const refsPath = createBranchMRApiPathHelper.getRefs({
+        fullPath: this.isConfidentialWorkItem
+          ? confidentialMergeRequestState.selectedProject.pathWithNamespace
+          : this.workItemFullPath,
+      });
 
       axios
         .get(`${refsPath}${encodeURIComponent(refValue)}`, {
@@ -325,6 +362,13 @@ export default {
       @hide="hideModal"
     >
       <gl-form class="gl-text-left">
+        <project-form-group
+          v-if="isConfidentialWorkItem"
+          :namespace-path="groupPath"
+          :project-path="workItemFullPath"
+          :help-page-path="$options.mergeRequestHelpPagePath"
+          :new-fork-path="newForkPath"
+        />
         <gl-form-group
           required
           label-for="source-name-id"

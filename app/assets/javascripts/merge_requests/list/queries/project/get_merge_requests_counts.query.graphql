@@ -21,7 +21,7 @@ query getMergeRequestsCount(
   $environmentName: String
   $not: MergeRequestsResolverNegatedParams
 ) {
-  project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     openedMergeRequests: mergeRequests(
       state: opened

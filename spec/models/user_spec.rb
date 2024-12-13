@@ -2082,6 +2082,33 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#add_admin_note' do
+    let_it_be(:user) { create(:user) }
+    let(:note) { "Some note" }
+
+    subject(:add_admin_note) { user.add_admin_note(note) }
+
+    it 'adds the new note' do
+      add_admin_note
+
+      expect(user.note).to eq("#{note}\n")
+    end
+
+    context "when notes already exist" do
+      let(:existing_note) { "Existing note" }
+
+      before do
+        user.update!(note: existing_note)
+      end
+
+      it 'adds the new note' do
+        add_admin_note
+
+        expect(user.note).to eq("#{note}\n#{existing_note}")
+      end
+    end
+  end
+
   describe '#confirm' do
     let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
     let(:extant_confirmation_sent_at) { Date.today }

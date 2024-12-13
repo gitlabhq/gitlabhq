@@ -1,18 +1,19 @@
 <script>
-import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
+import { GlEmptyState, GlLink, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog_resource_components.query.graphql';
 
 export default {
   components: {
     GlEmptyState,
-    GlIcon,
     GlLink,
     GlLoadingIcon,
     GlTableLite,
     GlTruncate,
+    HelpIcon,
   },
   inputHelpLink: helpPagePath('ci/yaml/inputs', {
     anchor: 'define-input-parameters-with-specinputs',
@@ -127,7 +128,7 @@ export default {
               :href="$options.inputHelpLink"
               target="_blank"
             >
-              <gl-icon name="question-o" :size="14" />
+              <help-icon />
             </gl-link>
           </div>
           <gl-table-lite :items="component.inputs" :fields="$options.fields">

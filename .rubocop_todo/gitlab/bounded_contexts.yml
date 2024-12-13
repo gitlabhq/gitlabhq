@@ -3603,6 +3603,7 @@ Gitlab/BoundedContexts:
     - 'ee/lib/ee/event_filter.rb'
     - 'ee/lib/ee/feature.rb'
     - 'ee/lib/ee/feature/definition.rb'
+    - 'ee/lib/ee/sidebars/admin/menus/admin_overview_menu.rb'
     - 'ee/lib/ee/sidebars/admin/menus/admin_settings_menu.rb'
     - 'ee/lib/ee/sidebars/admin/menus/monitoring_menu.rb'
     - 'ee/lib/ee/sidebars/admin/panel.rb'

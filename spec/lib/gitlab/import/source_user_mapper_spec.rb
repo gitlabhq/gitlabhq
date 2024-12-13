@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_category: :importers do
-  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:namespace) { create(:group) }
   let_it_be(:import_type) { 'github' }
   let_it_be(:source_hostname) { 'https://github.com' }
 
@@ -193,6 +193,20 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         expect { find_or_create_source_user }
           .to change { Import::SourceUser.count }.by(1)
           .and not_change { User.count }
+
+        new_import_source_user = Import::SourceUser.last
+
+        expect(new_import_source_user.placeholder_user).to eq(import_user)
+      end
+    end
+
+    context 'when namespace is a personal namespace' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:import_user) { create(:namespace_import_user, namespace: namespace).import_user }
+
+      it 'does not create any placeholder users and assigns the import user' do
+        expect { find_or_create_source_user }
+          .to change { Import::SourceUser.count }.by(1)
 
         new_import_source_user = Import::SourceUser.last
 

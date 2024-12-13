@@ -2562,6 +2562,10 @@ class User < ApplicationRecord
     {}
   end
 
+  def add_admin_note(new_note)
+    self.note = "#{new_note}\n#{self.note}"
+  end
+
   protected
 
   # override, from Devise::Validatable

@@ -263,6 +263,34 @@ RSpec.describe GroupDescendantsFinder, feature_category: :groups_and_projects do
             expect(finder.execute).not_to include(group)
           end
         end
+
+        context 'when items more than Kaminari.config.default_per_page' do
+          let_it_be(:filter) { 'filtered-group' }
+          let_it_be(:per_page) { 2 }
+          let_it_be(:params) { { filter: filter } }
+          let_it_be(:subgroups) { Array.new(per_page) { create(:group, parent: group) } }
+          let_it_be(:sub_subgroups) { subgroups.map { |subgroup| create(:group, parent: subgroup) } }
+          let_it_be(:matching_descendants) do
+            sub_subgroups.map.with_index do |sub_subgroup, index|
+              Array.new(per_page) do |descendant_index|
+                formatted_index = "#{index}#{descendant_index}"
+                create(:group, :public, parent: sub_subgroup, name: "#{filter}-#{formatted_index}")
+              end
+            end.flatten
+          end
+
+          before do
+            allow(Kaminari.config).to receive(:default_per_page).and_return(per_page)
+          end
+
+          it 'returns the correct descendants with their ancestors' do
+            expect(finder.execute).to contain_exactly(
+              subgroups.first,
+              sub_subgroups.first,
+              *matching_descendants.first(2)
+            )
+          end
+        end
       end
     end
   end

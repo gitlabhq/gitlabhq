@@ -1,18 +1,19 @@
 <script>
-import { GlButton, GlFormCheckbox, GlIcon, GlLink, GlAlert } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlLink, GlAlert } from '@gitlab/ui';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
 import lintCiMutation from '~/ci/pipeline_editor/graphql/mutations/client/lint_ci.mutation.graphql';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
   components: {
     GlButton,
     GlFormCheckbox,
-    GlIcon,
     GlLink,
     GlAlert,
     CiLintResults,
     SourceEditor,
+    HelpIcon,
   },
   props: {
     endpoint: {
@@ -110,8 +111,7 @@ export default {
         >
         <gl-form-checkbox v-model="dryRun" data-testid="ci-lint-dryrun"
           >{{ __('Simulate a pipeline created for the default branch') }}
-          <gl-link :href="pipelineSimulationHelpPagePath" target="_blank"
-            ><gl-icon name="question-o" variant="info" /></gl-link
+          <gl-link :href="pipelineSimulationHelpPagePath" target="_blank"><help-icon /></gl-link
         ></gl-form-checkbox>
       </div>
       <gl-button data-testid="ci-lint-clear" @click="clear">{{ __('Clear') }}</gl-button>

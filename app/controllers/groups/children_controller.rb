@@ -47,7 +47,7 @@ module Groups
         current_user: current_user,
         parent_group: parent,
         params: safe_params
-      ).execute.page(params[:page])
+      ).execute
     end
 
     private

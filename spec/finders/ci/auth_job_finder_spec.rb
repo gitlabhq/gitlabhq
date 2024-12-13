@@ -39,20 +39,6 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
           expect(::Gitlab::Auth::Identity.new(job.user)).not_to be_linked
         end
       end
-
-      context 'when job user supports composite identity' do
-        before do
-          allow(job.user).to receive(:has_composite_identity?).and_return(true)
-        end
-
-        it 'links the scoped user as composite identity' do
-          expect(job.scoped_user).to eq(scoped_user)
-
-          execute
-
-          expect(::Gitlab::Auth::Identity.new(job.user)).to be_linked
-        end
-      end
     end
 
     it 'raises error if the job is not running' do

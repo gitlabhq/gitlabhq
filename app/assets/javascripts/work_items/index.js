@@ -30,6 +30,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     canAdminLabel,
     fullPath,
     groupPath,
+    groupId,
     hasIssueWeightsFeature,
     iid,
     issuesListPath,
@@ -57,6 +58,8 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     groupIssuesPath,
     labelsFetchPath,
     hasLinkedItemsEpicsFeature,
+    canCreateProjects,
+    newProjectPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -102,6 +105,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       canAdminLabel,
       fullPath,
       isGroup,
+      isProject: !isGroup,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       hasSubepicsFeature: parseBoolean(hasSubepicsFeature),
@@ -115,6 +119,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
       reportAbusePath,
       groupPath,
+      groupId,
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
       workItemType: listWorkItemType,
@@ -127,6 +132,9 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       groupIssuesPath,
       labelsFetchPath,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
+      canCreateProjects: parseBoolean(canCreateProjects),
+      newIssuePath: '',
+      newProjectPath,
     },
     mounted() {
       performanceMarkAndMeasure({

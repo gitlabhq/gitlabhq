@@ -15,6 +15,7 @@ DETAILS:
 > - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
 > - Paginated merge request discussions [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
 > - Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
+> - Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
 
 GitLab encourages communication through comments, threads, and
 [suggesting changes for code](../project/merge_requests/reviews/suggestions.md).
@@ -32,15 +33,16 @@ which the user can accept through the user interface.
 
 You can create comments in places like:
 
-- Commit diffs
-- Commits
-- Designs
-- Epics
-- Issues
-- Merge requests
-- Snippets
-- Tasks
-- OKRs
+- Commit diffs.
+- Commits.
+- Designs.
+- Epics.
+- Issues.
+- Merge requests.
+- Snippets.
+- Tasks.
+- OKRs.
+- Wiki pages. The `wiki_comments` feature flag must be enabled. For more information, see the history.
 
 Each object can have as many as 5,000 comments.
 

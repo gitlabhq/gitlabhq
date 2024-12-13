@@ -211,6 +211,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.by_blob_path' do
+      let(:path) { 'bar/branch-test.txt' }
+
+      it 'returns MRs that modified blob by provided path' do
+        expect(described_class.by_blob_path(path))
+          .to match_array([merge_request4])
+      end
+    end
+
     describe '.no_review_requested_to' do
       it 'returns MRs that the user has not been requested to review' do
         expect(described_class.no_review_requested_to(user1))

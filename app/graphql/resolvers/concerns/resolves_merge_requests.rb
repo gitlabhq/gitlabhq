@@ -22,6 +22,10 @@ module ResolvesMergeRequests
       args[:include_subgroups] = true
     end
 
+    args.delete(:blob_path) if Feature.disabled?(:filter_blob_path, current_user)
+
+    validate_blob_path!(args)
+
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
     rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
 
@@ -61,6 +65,29 @@ module ResolvesMergeRequests
 
   def rewrite_param_name(params, old_name, new_name)
     params[new_name] = params.delete(old_name) if params && params[old_name].present?
+  end
+
+  def validate_blob_path!(args)
+    return if args[:blob_path].blank?
+
+    required_fields = {
+      target_branch: 'targetBranches',
+      state: 'state',
+      created_after: 'createdAfter'
+    }
+
+    required_fields.each do |key, field_name|
+      if args[key].blank?
+        raise Gitlab::Graphql::Errors::ArgumentError, "#{field_name} field must be specified to filter by blobPath"
+      end
+    end
+
+    # It's limited for performance reasons
+    created_after = args[:created_after].to_datetime
+    return if created_after.after?(30.days.ago)
+
+    raise Gitlab::Graphql::Errors::ArgumentError,
+      'createdAfter must be within the last 30 days to filter by blobPath'
   end
 
   def non_stable_cursor_sort?(sort)

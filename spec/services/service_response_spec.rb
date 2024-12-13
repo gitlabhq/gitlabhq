@@ -75,6 +75,36 @@ RSpec.describe ServiceResponse, feature_category: :shared do
     end
   end
 
+  describe '.from_legacy_hash' do
+    it 'with a ServiceResponse, returns the argument' do
+      response = described_class.success
+
+      expect(described_class.from_legacy_hash(response)).to be(response)
+    end
+
+    it 'with a Hash, builds a new ServiceResponse' do
+      hash = {
+        status: :error,
+        message: 'lorem ipsum',
+        payload: { foo: 123 }
+      }
+
+      result = described_class.from_legacy_hash(hash)
+
+      expect(result.class).to be(described_class)
+      expect(result.success?).to be(false)
+      expect(result.payload).to match(a_hash_including({ foo: 123 }))
+      expect(result.status).to be(:error)
+      expect(result.message).to be('lorem ipsum')
+      expect(result.http_status).to be_nil
+      expect(result.reason).to be_nil
+    end
+
+    it 'throws if argument not expected type' do
+      expect { described_class.from_legacy_hash(123) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '#success?' do
     it 'returns true for a successful response' do
       expect(described_class.success.success?).to eq(true)

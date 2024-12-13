@@ -5920,6 +5920,9 @@ msgstr ""
 msgid "AmazonQ|Amazon Q Configuration"
 msgstr ""
 
+msgid "AmazonQ|Amazon Q Settings have been saved."
+msgstr ""
+
 msgid "AmazonQ|Amazon Q will be turned off by default, but still be available to any groups or projects that have previously enabled it."
 msgstr ""
 
@@ -6002,6 +6005,9 @@ msgid "AmazonQ|Setup"
 msgstr ""
 
 msgid "AmazonQ|Something went wrong retrieving the identity provider payload."
+msgstr ""
+
+msgid "AmazonQ|Something went wrong saving Amazon Q settings."
 msgstr ""
 
 msgid "AmazonQ|Status"
@@ -30575,6 +30581,9 @@ msgstr ""
 msgid "Items are already linked"
 msgstr ""
 
+msgid "Items below are excluded from the active count"
+msgstr ""
+
 msgid "Iteration"
 msgstr ""
 
@@ -35084,6 +35093,9 @@ msgstr ""
 msgid "MlExperimentTracking|Create a new experiment"
 msgstr ""
 
+msgid "MlExperimentTracking|Create an experiment using MLflow"
+msgstr ""
+
 msgid "MlExperimentTracking|Create new candidates"
 msgstr ""
 
@@ -35091,6 +35103,12 @@ msgid "MlExperimentTracking|Created"
 msgstr ""
 
 msgid "MlExperimentTracking|Created at"
+msgstr ""
+
+msgid "MlExperimentTracking|Creating an experiment"
+msgstr ""
+
+msgid "MlExperimentTracking|Creating experiments using the MLflow client:"
 msgstr ""
 
 msgid "MlExperimentTracking|Delete candidate"
@@ -35126,7 +35144,7 @@ msgstr ""
 msgid "MlExperimentTracking|Experiment removed"
 msgstr ""
 
-msgid "MlExperimentTracking|Experiments keep track of comparable model candidates, and determine which parameters provides the best performance. Create experiments using the MLflow client"
+msgid "MlExperimentTracking|Experiments keep track of comparable model candidates, and determine which parameters provides the best performance."
 msgstr ""
 
 msgid "MlExperimentTracking|Filter candidates"
@@ -35166,6 +35184,12 @@ msgid "MlExperimentTracking|No logged experiment metadata"
 msgstr ""
 
 msgid "MlExperimentTracking|No name"
+msgstr ""
+
+msgid "MlExperimentTracking|To learn more about MLflow client compatibility, see %{linkStart}the documentation%{linkEnd}."
+msgstr ""
+
+msgid "MlExperimentTracking|Using the MLflow client"
 msgstr ""
 
 msgid "MlExperimentTracking|Version"
@@ -47085,6 +47109,9 @@ msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review changes"
+msgstr ""
+
+msgid "Review requested"
 msgstr ""
 
 msgid "Review requested from %{reviewerName}"
@@ -62143,10 +62170,16 @@ msgstr ""
 msgid "Waiting for approvals"
 msgstr ""
 
+msgid "Waiting for author"
+msgstr ""
+
 msgid "Waiting for merge (open and assigned)"
 msgstr ""
 
 msgid "Waiting for others"
+msgstr ""
+
+msgid "Waiting for reviewer"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."

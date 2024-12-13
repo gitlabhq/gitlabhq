@@ -60,6 +60,8 @@ module Gitlab
     ADMIN_MODE_SCOPE = :admin_mode
     ADMIN_SCOPES = [SUDO_SCOPE, ADMIN_MODE_SCOPE, READ_SERVICE_PING_SCOPE].freeze
 
+    Q_SCOPES = [API_SCOPE, REPOSITORY_SCOPES].flatten.freeze
+
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [API_SCOPE].freeze
 

@@ -13,6 +13,8 @@ module Gitlab
       :organization_id,
       :user,
       :user_id,
+      :scoped_user,
+      :scoped_user_id,
       :project,
       :root_namespace,
       :client_id,
@@ -52,6 +54,7 @@ module Gitlab
       Attribute.new(:project, Project),
       Attribute.new(:namespace, Namespace),
       Attribute.new(:user, User),
+      Attribute.new(:scoped_user, User),
       Attribute.new(:runner, ::Ci::Runner),
       Attribute.new(:caller_id, String),
       Attribute.new(:remote_ip, String),
@@ -128,6 +131,7 @@ module Gitlab
     # rubocop: disable Metrics/CyclomaticComplexity -- inherently leads to higher cyclomatic due to
     #   all the conditional assignments, the added complexity from adding more abstractions like
     #   `assign_hash_if_value` is not worth the tradeoff.
+    # rubocop: disable Metrics/PerceivedComplexity -- same as above
     def to_lazy_hash
       {}.tap do |hash|
         assign_hash_if_value(hash, :caller_id)
@@ -150,6 +154,8 @@ module Gitlab
 
         hash[:user] = -> { username } if include_user?
         hash[:user_id] = -> { user_id } if include_user?
+        hash[:scoped_user] = -> { scoped_user&.username } if include_scoped_user?
+        hash[:scoped_user_id] = -> { scoped_user&.id } if include_scoped_user?
         hash[:project] = -> { project_path } if include_project?
         hash[:organization_id] = -> { organization&.id } if set_values.include?(:organization)
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
@@ -161,6 +167,7 @@ module Gitlab
     end
     # rubocop: enable Metrics/CyclomaticComplexity
     # rubocop: enable Metrics/AbcSize
+    # rubocop: enable Metrics/PerceivedComplexity
 
     def use
       Labkit::Context.with_context(to_lazy_hash) { yield }
@@ -226,6 +233,10 @@ module Gitlab
 
     def include_user?
       set_values.include?(:user) || set_values.include?(:job)
+    end
+
+    def include_scoped_user?
+      set_values.include?(:scoped_user)
     end
 
     def include_project?

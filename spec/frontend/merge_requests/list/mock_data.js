@@ -1,6 +1,6 @@
 export const getQueryResponse = {
   data: {
-    project: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       mergeRequests: {
@@ -100,7 +100,7 @@ export const getQueryResponse = {
 
 export const getCountsQueryResponse = {
   data: {
-    project: {
+    namespace: {
       id: 1,
       openedMergeRequests: { count: 1 },
       mergedMergeRequests: { count: 1 },

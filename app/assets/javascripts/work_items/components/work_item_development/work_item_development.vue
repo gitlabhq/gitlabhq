@@ -149,6 +149,12 @@ export default {
     showAddButton() {
       return this.workItemsAlphaEnabled && this.canUpdate && this.showCreateOptions;
     },
+    isConfidentialWorkItem() {
+      return this.workItem?.confidential;
+    },
+    projectId() {
+      return this.workItem?.project?.id;
+    },
     addItemsActions() {
       return [
         {
@@ -275,6 +281,8 @@ export default {
       :work-item-id="workItemId"
       :work-item-type="workItemTypeName"
       :work-item-full-path="workItemFullPath"
+      :is-confidential-work-item="isConfidentialWorkItem"
+      :project-id="projectId"
       @hideModal="toggleCreateModal(false)"
       @fetchedPermissions="updatePermissions"
     />

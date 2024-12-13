@@ -1,12 +1,5 @@
 import Vue from 'vue';
-import {
-  GlAlert,
-  GlDisclosureDropdown,
-  GlEmptyState,
-  GlIcon,
-  GlLoadingIcon,
-  GlPopover,
-} from '@gitlab/ui';
+import { GlAlert, GlDisclosureDropdown, GlEmptyState, GlLoadingIcon, GlPopover } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 
@@ -18,6 +11,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
 import CiValidate, { i18n } from '~/ci/pipeline_editor/components/validate/ci_validate.vue';
 import ValidatePipelinePopover from '~/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue';
@@ -77,7 +71,7 @@ describe('Pipeline Editor Validate Tab', () => {
   const findCta = () => wrapper.findByTestId('simulate-pipeline-button');
   const findLintButton = () => wrapper.findByTestId('lint-button');
   const findDisabledCtaTooltip = () => wrapper.findByTestId('cta-tooltip');
-  const findHelpIcon = () => wrapper.findComponent(GlIcon);
+  const findHelpIcon = () => wrapper.findComponent(HelpIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineSource = () => wrapper.findComponent(GlDisclosureDropdown);
