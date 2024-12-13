@@ -2019,4 +2019,28 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#delete_immediately_message' do
+    subject { helper.delete_immediately_message(project) }
+
+    it 'returns correct message' do
+      expect(subject).to eq "This action deletes <code>#{project.path_with_namespace}</code> and everything this project contains. <strong>There is no going back.</strong>"
+    end
+  end
+
+  describe '#project_delete_immediately_button_data' do
+    subject { helper.project_delete_immediately_button_data(project) }
+
+    it 'returns expected hash' do
+      expect(subject).to match({
+        form_path: project_path(project, permanently_delete: true),
+        confirm_phrase: project.path_with_namespace,
+        is_fork: 'false',
+        issues_count: '0',
+        merge_requests_count: '0',
+        forks_count: '0',
+        stars_count: '0'
+      })
+    end
+  end
 end

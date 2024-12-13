@@ -728,7 +728,46 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.present?
   end
 
+  def delete_immediately_message(project)
+    message = _('This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this ' \
+      'project contains. %{strongOpen}There is no going back.%{strongClose}')
+
+    ERB::Util.html_escape(message) % delete_message_data(project)
+  end
+
+  def project_delete_immediately_button_data(project)
+    project_delete_button_shared_data(project).merge({
+      form_path: project_path(project, permanently_delete: true)
+    })
+  end
+
   private
+
+  def delete_message_data(project)
+    {
+      project_path_with_namespace: project.path_with_namespace,
+      project: project.path,
+      strongOpen: '<strong>'.html_safe,
+      strongClose: '</strong>'.html_safe,
+      codeOpen: '<code>'.html_safe,
+      codeClose: '</code>'.html_safe
+    }
+  end
+
+  def project_delete_button_shared_data(project)
+    merge_requests_count = Projects::AllMergeRequestsCountService.new(project).count
+    issues_count = Projects::AllIssuesCountService.new(project).count
+    forks_count = Projects::ForksCountService.new(project).count
+
+    {
+      confirm_phrase: delete_confirm_phrase(project),
+      is_fork: project.forked? ? 'true' : 'false',
+      issues_count: number_with_delimiter(issues_count),
+      merge_requests_count: number_with_delimiter(merge_requests_count),
+      forks_count: number_with_delimiter(forks_count),
+      stars_count: number_with_delimiter(project.star_count)
+    }
+  end
 
   def visibility_level_name(project)
     if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)

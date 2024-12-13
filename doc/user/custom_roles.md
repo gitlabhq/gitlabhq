@@ -320,6 +320,18 @@ You can sync users to custom roles with following authentication providers:
 - See [Configure SAML Group Links](group/saml_sso/group_sync.md#configure-saml-group-links).
 - See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
+## Custom admin roles
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../administration/feature_flags.md) named `custom_ability_read_admin_dashboard`.
+
+Prerequisites:
+
+- You must be an administrator for the self-managed instance.
+
+You can use the API to [create](../api/graphql/reference/index.md#mutationmemberroleadmincreate) and [assign](../api/graphql/reference/index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
+
+For information on available permissions, see [custom permissions](custom_roles/abilities.md#admin).
+
 ## Known issues
 
 - If a user with a custom role is shared with a group or project, their custom

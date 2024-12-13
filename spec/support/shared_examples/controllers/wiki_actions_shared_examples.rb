@@ -382,7 +382,8 @@ RSpec.shared_examples 'wiki controller actions' do
             wiki: wiki,
             page_slug: wiki_page.slug,
             repository: wiki.repository,
-            requested_path: wiki_page.path
+            requested_path: wiki_page.path,
+            issuable_reference_expansion_enabled: true
           ),
           postprocess_context: anything)
         .and_call_original

@@ -549,7 +549,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       end
 
       it 'shows parsing status' do
-        expect(page).to have_content('Test summary results are loading')
+        expect(page).to have_content('Test summary results are being parsed')
       end
     end
 

@@ -40,6 +40,16 @@ module PreviewMarkdown
     }
   end
 
+  def wikis_filter_params
+    {
+      pipeline: :wiki,
+      wiki: wiki,
+      page_slug: params[:id],
+      repository: wiki.repository,
+      issuable_reference_expansion_enabled: true
+    }
+  end
+
   def markdown_service_params
     params
   end
@@ -49,7 +59,7 @@ module PreviewMarkdown
     when 'wikis'
       wiki_page = wiki.find_page(params[:id])
 
-      { pipeline: :wiki, wiki: wiki, page_slug: params[:id], repository: wiki.repository }
+      wikis_filter_params
     when 'snippets'        then { skip_project_check: true }
     when 'groups'          then { group: group, issuable_reference_expansion_enabled: true }
     when 'projects'        then projects_filter_params

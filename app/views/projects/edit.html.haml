@@ -104,12 +104,12 @@
         = render 'remove_fork', project: @project
 
         = render_if_exists 'shared/groups_projects/settings/restore', context: @project
-        = render 'remove', project: @project
+        = render 'delete'
 - else
   - if can?(current_user, :archive_project, @project)
     = render_if_exists 'projects/settings/archive'
   - if can?(current_user, :remove_project, @project)
-    = render 'remove', project: @project
+    = render 'delete'
 
 .save-project-loader.hide
   .center

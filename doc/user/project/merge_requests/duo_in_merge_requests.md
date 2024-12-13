@@ -28,9 +28,9 @@ to create a merge request description.
 
 1. [Create a new merge request](creating_merge_requests.md).
 1. In the **Description** field, put your cursor where you want to insert the description.
-1. Select **Summarize code changes**.
+1. On the toolbar above the text area, select **Summarize code changes** (**{tanuki-ai}**).
 
-   ![merge_request_ai_summary_v17_6](img/merge_request_ai_summary_v17_6.png)
+   ![Above the text area, a toolbar displays a "Summarize code changes" button.](img/merge_request_ai_summary_v17_6.png)
 
 The description is inserted where your cursor was.
 

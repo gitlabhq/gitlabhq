@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import VueApollo from 'vue-apollo';
-import { map, pick, isEqual } from 'lodash';
+import { map, isEqual } from 'lodash';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -516,13 +516,14 @@ export const setNewWorkItemCache = async (
   const draftData = JSON.parse(getDraft(autosaveKey));
 
   // get the widgets stored in draft data
-  const draftDataWidgets = map(draftData?.workspace?.workItem?.widgets, pick('type')) || [];
+  const draftDataWidgetTypes = map(draftData?.workspace?.workItem?.widgets, 'type') || [];
+  const freshWidgetTypes = map(widgets, 'type') || [];
 
   // this is to fix errors when we are introducing a new widget and the cache always updates from the old widgets
   // Like if we we introduce a new widget , the user might always see the cached data until hits cancel
   const draftWidgetsAreSameAsCacheDigits = isEqual(
-    draftDataWidgets.sort(),
-    availableWidgets.sort(),
+    draftDataWidgetTypes.sort(),
+    freshWidgetTypes.sort(),
   );
 
   const isValidDraftData =

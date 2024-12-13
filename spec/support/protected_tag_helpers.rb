@@ -15,4 +15,8 @@ module ProtectedTagHelpers
     click_on("Create wildcard #{tag_name}")
     find('.protected-tags-dropdown .dropdown-menu', visible: false)
   end
+
+  def click_on_protect(form: '.new-protected-tag')
+    super
+  end
 end

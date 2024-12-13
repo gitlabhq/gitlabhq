@@ -11,13 +11,12 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
-> - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
+> - Creating, editing, and deleting tasks [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7169) in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flags](../administration/feature_flags.md) named `work_items`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
 A task in GitLab is a planning item that can be created in an issue.
 Use tasks to break down user stories captured in [issues](project/issues/index.md) into
@@ -49,7 +48,7 @@ the task opens in a full-page view.
 
 ## Create a task
 
-> - Ability to select which project to create the task in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+> - Option to select the project where tasks are created [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
@@ -124,13 +123,8 @@ To edit a task:
 
 > - Rich text editing in the dialog view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363007) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
 > - Rich text editing in the full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104533) in GitLab 15.7.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10378) in GitLab 16.2. Feature flag `work_items_mvc` removed.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
-
-FLAG:
-On self-managed GitLab, by default the rich text feature is not available. To make it available per group, ask an
-administrator
-to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`. On GitLab.com, this feature
-is not available. This feature is not ready for production use.
 
 Use a rich text editor to edit a task's description.
 
@@ -237,7 +231,7 @@ To remove a task from an issue:
 
 ## Delete a task
 
-> - [Allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) Planner role to delete a task in GitLab 17.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Owner to Planner in GitLab 17.7.
 
 Prerequisites:
 
