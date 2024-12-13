@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_category: :pages do
+RSpec.describe Pages::Domains::ObtainLetsEncryptCertificateService, feature_category: :pages do
   include LetsEncryptHelpers
 
   let(:pages_domain) { create(:pages_domain, :without_certificate, :without_key) }
@@ -21,7 +21,7 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
   end
 
   def expect_to_create_acme_challenge
-    expect(::PagesDomains::CreateAcmeOrderService).to receive(:new).with(pages_domain).and_wrap_original do |m, *args|
+    expect(::Pages::Domains::CreateAcmeOrderService).to receive(:new).with(pages_domain).and_wrap_original do |m, *args|
       create_service = m.call(*args)
 
       expect(create_service).to receive(:execute)

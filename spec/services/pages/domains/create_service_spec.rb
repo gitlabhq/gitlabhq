@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
+RSpec.describe ::Pages::Domains::CreateService, feature_category: :pages do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :in_subgroup) }
 
@@ -16,7 +16,7 @@ RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
       expect(service.execute).to be_nil
 
       expect { service.execute }
-        .to not_publish_event(PagesDomains::PagesDomainCreatedEvent)
+        .to not_publish_event(::Pages::Domains::PagesDomainCreatedEvent)
         .and not_change(project.pages_domains, :count)
     end
   end
@@ -31,8 +31,8 @@ RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
         pages_domain = nil
 
         expect { pages_domain = service.execute }
-          .to change(project.pages_domains, :count)
-          .and publish_event(PagesDomains::PagesDomainCreatedEvent)
+          .to change { project.pages_domains.count }
+          .and publish_event(::Pages::Domains::PagesDomainCreatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -52,7 +52,7 @@ RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
         pages_domain = nil
 
         expect { pages_domain = service.execute }
-          .to not_publish_event(PagesDomains::PagesDomainCreatedEvent)
+          .to not_publish_event(::Pages::Domains::PagesDomainCreatedEvent)
           .and not_change(project.pages_domains, :count)
 
         expect(pages_domain).not_to be_persisted

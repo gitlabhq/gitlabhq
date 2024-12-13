@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomains::UpdateService, feature_category: :pages do
+RSpec.describe ::Pages::Domains::UpdateService, feature_category: :pages do
   let_it_be(:user) { create(:user) }
   let_it_be(:pages_domain) { create(:pages_domain) }
 
@@ -19,7 +19,7 @@ RSpec.describe PagesDomains::UpdateService, feature_category: :pages do
     it 'does not update the pages domain and does not publish a PagesDomainUpdatedEvent' do
       expect do
         expect(service.execute(pages_domain)).to be_nil
-      end.to not_publish_event(PagesDomains::PagesDomainUpdatedEvent)
+      end.to not_publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
     end
   end
 
@@ -35,7 +35,7 @@ RSpec.describe PagesDomains::UpdateService, feature_category: :pages do
 
       it 'publishes a PagesDomainUpdatedEvent' do
         expect { service.execute(pages_domain) }
-          .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
           .with(
             project_id: pages_domain.project.id,
             namespace_id: pages_domain.project.namespace.id,
@@ -55,7 +55,7 @@ RSpec.describe PagesDomains::UpdateService, feature_category: :pages do
 
       it 'does not publish a PagesDomainUpdatedEvent' do
         expect { service.execute(pages_domain) }
-          .not_to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .not_to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
       end
     end
   end

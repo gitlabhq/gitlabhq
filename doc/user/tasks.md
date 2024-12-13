@@ -177,6 +177,45 @@ To promote a task to an issue:
 The task is converted to an issue and gets a new URL with `/issues/`.
 The previous URL with `/work_items/` still works.
 
+## Convert a task into another item type
+
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385131) in GitLab 17.8 [with a flag](../administration/feature_flags.md) named `work_items_beta`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Convert a task into another item type, such as:
+
+- Issue
+- Objective
+- Key result
+
+WARNING:
+Changing the type might result in data loss if the target type does not support all fields from the original type.
+
+Prerequisites:
+
+- The task you want to convert must not have a parent item assigned.
+
+To convert a task into another item type:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. In the issue list, find your task and select it.
+1. Optional. If the task has a parent issue assigned, remove it.
+   Add a comment to the task with the `/remove_parent` quick action.
+1. In the upper-right corner, select **More actions** (**{ellipsis_v}**), then select **Change type**.
+1. Select the desired item type.
+1. If all conditions are met, select **Change type**.
+
+Alternatively, you can use the `/type` [quick action](project/quick_actions.md#work-items), followed
+by `issue`, `objective` or `key result` in a comment.
+
 ## Remove a task from an issue
 
 > - Minimum required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/404799) from Reporter to Guest in GitLab 17.0.

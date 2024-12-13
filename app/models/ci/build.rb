@@ -537,9 +537,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ServiceClass
     def play(current_user, job_variables_attributes = nil)
-      Ci::PlayBuildService
-        .new(project, current_user)
-        .execute(self, job_variables_attributes)
+      Ci::PlayBuildService.new(current_user: current_user, build: self, variables: job_variables_attributes).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
 

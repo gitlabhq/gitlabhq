@@ -264,7 +264,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
     shared_examples_for 'post pages domains' do
       it 'creates a new pages domain', :aggregate_failures do
         expect { post api(route, user), params: params }
-          .to publish_event(PagesDomains::PagesDomainCreatedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainCreatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -393,7 +393,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
 
       it 'publishes PagesDomainUpdatedEvent event' do
         expect { put api(route_secure_domain, user), params: { certificate: nil, key: nil } }
-          .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -480,7 +480,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
 
         it 'does not publish PagesDomainUpdatedEvent event' do
           expect { put api(route_domain, user), params: params_secure_nokey }
-            .not_to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+            .not_to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
         end
 
         it 'fails to update pages domain adding certificate with missing chain' do
@@ -557,7 +557,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       it 'deletes a pages domain' do
         expect { delete api(route_domain, user) }
           .to change(PagesDomain, :count).by(-1)
-          .and publish_event(PagesDomains::PagesDomainDeletedEvent)
+          .and publish_event(::Pages::Domains::PagesDomainDeletedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,

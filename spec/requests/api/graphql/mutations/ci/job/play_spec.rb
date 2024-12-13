@@ -71,7 +71,7 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
 
       it 'provides those variables to the job', :aggregate_failures do
         expect_next_instance_of(Ci::PlayBuildService) do |instance|
-          expect(instance).to receive(:execute).with(an_instance_of(Ci::Build), variables[:variables]).and_call_original
+          expect(instance).to receive(:execute).and_call_original
         end
 
         post_graphql_mutation(mutation, current_user: user)

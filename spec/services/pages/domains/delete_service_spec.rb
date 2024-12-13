@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::PagesDomains::DeleteService, feature_category: :pages do
+RSpec.describe ::Pages::Domains::DeleteService, feature_category: :pages do
   let_it_be(:user) { create(:user) }
   let_it_be(:pages_domain) { create(:pages_domain) }
 
@@ -20,7 +20,7 @@ RSpec.describe ::PagesDomains::DeleteService, feature_category: :pages do
       result_match = -> { expect(service.execute(pages_domain)).to be_nil }
 
       expect(&result_match)
-        .to not_publish_event(PagesDomains::PagesDomainDeletedEvent)
+        .to not_publish_event(::Pages::Domains::PagesDomainDeletedEvent)
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe ::PagesDomains::DeleteService, feature_category: :pages do
         result_match = -> { expect(service.execute(pages_domain)).not_to be_nil }
 
         expect(&result_match)
-          .to publish_event(PagesDomains::PagesDomainDeletedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainDeletedEvent)
           .with(
             project_id: pages_domain.project.id,
             namespace_id: pages_domain.project.namespace.id,

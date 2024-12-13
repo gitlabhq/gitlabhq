@@ -248,15 +248,16 @@ Project permissions for [issues](project/issues/index.md):
 
 Project permissions for [tasks](tasks.md):
 
-| Action            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ----------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View tasks        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create tasks      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. Authors and assignees can modify the title and description even if they don't have the Reporter role. |
-| Add a linked item |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Remove from issue |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Edit tasks        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Add internal note |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Delete tasks      |       |    ✓    |          |           |            |   ✓   | Authors of tasks can delete them even if they don't have the Owner role. |
+| Action                       | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ---------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View tasks                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Create tasks                 |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. Authors and assignees can modify the title and description even if they don't have the Reporter role. |
+| Add a linked item            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Convert to another item type |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Remove from issue            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Edit tasks                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Add internal note            |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Delete tasks                 |       |    ✓    |          |           |            |   ✓   | Authors of tasks can delete them even if they don't have the Owner role. |
 
 Project permissions for [OKRs](okrs.md):
 
@@ -266,6 +267,7 @@ Project permissions for [OKRs](okrs.md):
 | Create OKRs                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Add a child OKR               |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Add a linked item             |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Convert to another item type  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Edit OKRs                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Change confidentiality in OKR |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Add internal note             |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |

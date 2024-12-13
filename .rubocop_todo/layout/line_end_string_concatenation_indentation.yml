@@ -4,7 +4,6 @@ Layout/LineEndStringConcatenationIndentation:
   Exclude:
     - 'app/helpers/tree_helper.rb'
     - 'app/helpers/visibility_level_helper.rb'
-    - 'app/mailers/emails/projects.rb'
     - 'app/models/abuse_report.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/clusters/agent.rb'
@@ -57,7 +56,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/components/namespaces/free_user_cap/enforcement_at_limit_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_trial_alert_component.rb'
-    - 'ee/app/components/namespaces/storage/repository_limit_alert_component.rb'
     - 'ee/app/controllers/concerns/insights_actions.rb'
     - 'ee/app/controllers/ee/ldap/omniauth_callbacks_controller.rb'
     - 'ee/app/finders/geo/framework_registry_finder.rb'

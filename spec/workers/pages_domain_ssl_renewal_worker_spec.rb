@@ -17,7 +17,7 @@ RSpec.describe PagesDomainSslRenewalWorker, feature_category: :pages do
   describe '#perform' do
     it 'delegates to ObtainLetsEncryptCertificateService' do
       service = double(:service)
-      expect(::PagesDomains::ObtainLetsEncryptCertificateService).to receive(:new).with(domain).and_return(service)
+      expect(::Pages::Domains::ObtainLetsEncryptCertificateService).to receive(:new).with(domain).and_return(service)
       expect(service).to receive(:execute)
 
       worker.perform(domain.id)
@@ -25,7 +25,7 @@ RSpec.describe PagesDomainSslRenewalWorker, feature_category: :pages do
 
     shared_examples 'does nothing' do
       it 'does nothing' do
-        expect(::PagesDomains::ObtainLetsEncryptCertificateService).not_to receive(:new)
+        expect(::Pages::Domains::ObtainLetsEncryptCertificateService).not_to receive(:new)
 
         worker.perform(domain.id)
       end

@@ -13,7 +13,7 @@ RSpec.describe Pages::ResetPagesDefaultDomainRedirectWorker, feature_category: :
   end
 
   let(:event) do
-    ::PagesDomains::PagesDomainDeletedEvent.new(data: {
+    ::Pages::Domains::PagesDomainDeletedEvent.new(data: {
       project_id: project.id,
       namespace_id: project.namespace_id,
       root_namespace_id: project.root_namespace.id,
@@ -39,7 +39,7 @@ RSpec.describe Pages::ResetPagesDefaultDomainRedirectWorker, feature_category: :
 
   context 'when the removed domain is not the default domain' do
     let(:event) do
-      ::PagesDomains::PagesDomainDeletedEvent.new(data: {
+      ::Pages::Domains::PagesDomainDeletedEvent.new(data: {
         project_id: project.id,
         namespace_id: project.namespace_id,
         root_namespace_id: project.root_namespace.id,

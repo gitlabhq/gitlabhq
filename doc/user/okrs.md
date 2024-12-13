@@ -12,9 +12,6 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103355) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `okrs_mvc`. Disabled by default.
 
-OKRs are an [experiment](../policy/development_stages_support.md#experiment).
-For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
-
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
@@ -249,6 +246,45 @@ To promote a key result:
 1. Select **Promote to objective**.
 
 Alternatively, use the `/promote_to objective` [quick action](../user/project/quick_actions.md).
+
+## Convert an OKR to another item type
+
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385131) in GitLab 17.8 [with a flag](../administration/feature_flags.md) named `work_items_beta`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Convert an objective or key result into another item type, such as:
+
+- Issue
+- Task
+- Objective
+- Key result
+
+WARNING:
+Changing the type might result in data loss if the target type does not support all fields from the original type.
+
+Prerequisites:
+
+- The OKR you want to convert must not have a parent item assigned.
+- The OKR you want to convert must not have any child items.
+
+To convert an OKR into another item type:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**, then select your issue to view it.
+1. In the issue list, find your objective or key result and select it.
+1. In the upper-right corner, select **More actions** (**{ellipsis_v}**), then select **Change type**.
+1. Select the desired item type.
+1. If all conditions are met, select **Change type**.
+
+Alternatively, you can use the `/type` [quick action](project/quick_actions.md#work-items), followed
+by `issue`, `task`, `objective` or `key result` in a comment.
 
 ## Copy objective or key result reference
 

@@ -325,3 +325,93 @@ To resolve the SSL certificate error:
 - Set the appropriate certificate bundle path in the Docker container using the following environment variables:
   - `SSL_CERT_FILE=/path/to/ca-bundle.pem`
   - `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
+
+## Troubleshooting common Duo Chat errors
+
+### Error A1000
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1000`.
+
+This error occurs when there is a timeout during processing. Try your request again.
+
+### Error A1001
+
+You might get an error that states
+`I'm sorry, I can't generate a response. Please try again. Error code: A1001`.
+
+This error means there was a problem connecting to the AI gateway. You might need to check the network settings and ensure that the AI gateway is accessible from the GitLab instance.
+
+Use the [self-hosted debugging script](#use-debugging-scripts) to verify if the AI gateway is accessible from the GitLab instance and is working as expected.
+
+If problem persists, report the issue to the GitLab support team.
+
+### Error A1002
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
+
+This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Check the [AI Gateway logs](logging.md) for any errors.
+
+### Error A1003
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
+
+This error typically occurs due to issues with streaming from the model to the AI gateway. To resolve this issue:
+
+1. In the AI gateway container, run the following command:
+
+   ```shell
+   curl --request 'POST' \
+   'http://localhost:5052/v2/chat/agent' \
+   --header 'accept: application/json' \
+   --header 'Content-Type: application/json' \
+   --header 'x-gitlab-enabled-feature-flags: expanded_ai_logging' \
+   --data '{
+     "messages": [
+       {
+         "role": "user",
+         "content": "Hello",
+         "context": null,
+         "current_file": null,
+         "additional_context": []
+       }
+     ],
+     "model_metadata": {
+       "provider": "custom_openai",
+       "name": "mistral",
+       "endpoint": "<change here>",
+       "api_key": "<change here>",
+       "identifier": "<change here>"
+     },
+     "unavailable_resources": [],
+     "options": {
+       "agent_scratchpad": {
+         "agent_type": "react",
+         "steps": []
+       }
+     }
+   }'
+   ```
+
+   If streaming is working, chunked responses should be displayed. If it is not, it will likely show an empty response.
+
+1. Check the [AI gateway logs](logging.md) for specific error messages, because this is usually a model deployment issue.
+
+1. To validate the connection, disable the streaming by setting the `AIGW_CUSTOM_MODELS__DISABLE_STREAMING` environment variable in your AI gateway container:
+
+   ```shell
+   docker run .... -e AIGW_CUSTOM_MODELS__DISABLE_STREAMING=true ...
+   ```
+
+### Error A9999
+
+You might get an error that states
+`I'm sorry, I can't generate a response. Please try again. Error code: A9999`.
+
+This error occurs when an unknown error occurs in ReAct agent. Try your request again. If the problem persists, report the issue to the GitLab support team.
+
+## Related topics
+
+- [GitLab Duo troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md)

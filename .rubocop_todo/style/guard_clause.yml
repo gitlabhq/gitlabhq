@@ -119,7 +119,6 @@ Style/GuardClause:
     - 'app/services/ci/job_artifacts/destroy_batch_service.rb'
     - 'app/services/ci/parse_dotenv_artifact_service.rb'
     - 'app/services/ci/pipelines/add_job_service.rb'
-    - 'app/services/ci/play_build_service.rb'
     - 'app/services/ci/retry_job_service.rb'
     - 'app/services/ci/runners/reconcile_existing_runner_versions_service.rb'
     - 'app/services/ci/runners/register_runner_service.rb'

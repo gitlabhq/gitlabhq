@@ -159,7 +159,7 @@
 .generic-commit-status,
 .branch-commit {
   .commit-sha {
-    color: $blue-600;
+    @apply gl-text-link;
   }
 }
 

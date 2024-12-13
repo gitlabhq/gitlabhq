@@ -3515,6 +3515,9 @@ msgstr ""
 msgid "Added %{target} as a linked item blocking this %{work_item_type}."
 msgstr ""
 
+msgid "Added %{target} as a linked item related to this %{work_item_type}."
+msgstr ""
+
 msgid "Added %{timeAgo} by"
 msgstr ""
 
@@ -32761,6 +32764,9 @@ msgstr ""
 msgid "Link items blocking this item"
 msgstr ""
 
+msgid "Link items related to this item"
+msgstr ""
+
 msgid "Link text"
 msgstr ""
 
@@ -33232,9 +33238,6 @@ msgstr ""
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
-msgid "Mark this issue as related to another issue"
-msgstr ""
-
 msgid "Mark to-do item as done"
 msgstr ""
 
@@ -33313,9 +33316,6 @@ msgstr ""
 msgid "Marked this %{noun} as ready."
 msgstr ""
 
-msgid "Marked this issue as related to %{issue_ref}."
-msgstr ""
-
 msgid "Marked to-do item as done."
 msgstr ""
 
@@ -33323,9 +33323,6 @@ msgid "Marks"
 msgstr ""
 
 msgid "Marks this %{noun} as ready."
-msgstr ""
-
-msgid "Marks this issue as related to %{issue_ref}."
 msgstr ""
 
 msgid "Marks to-do item as done."
@@ -66900,7 +66897,7 @@ msgstr ""
 msgid "mrWidget|Merging immediately is not recommended because your changes won't be validated by the merge train, and any running merge train pipelines will be restarted. %{docsLinkStart}What are the risks?%{docsLinkEnd}"
 msgstr ""
 
-msgid "mrWidget|Merging immediately is not recommended because your changes won't be validated by the merge train, and any running merge train pipelines will be restarted. %{docsLinkStart}What are the risks?%{docsLinkEnd}."
+msgid "mrWidget|Merging immediately is not recommended because your changes won't be validated by the merge train, and any running merge train pipelines will be restarted. %{linkStart}What are the risks?%{linkEnd}"
 msgstr ""
 
 msgid "mrWidget|Merging immediately is not recommended. The merged changes could cause pipeline failures on the target branch, and the changes will not be validated against the commits being added by the merge requests currently in the merge train. Read the %{linkStart}documentation%{linkEnd} for more information."

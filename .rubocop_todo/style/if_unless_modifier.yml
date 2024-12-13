@@ -91,7 +91,6 @@ Style/IfUnlessModifier:
     - 'app/services/ci/parse_dotenv_artifact_service.rb'
     - 'app/services/ci/register_job_service.rb'
     - 'app/services/ci/retry_job_service.rb'
-    - 'app/services/ci/run_scheduled_build_service.rb'
     - 'app/services/ci/runners/reconcile_existing_runner_versions_service.rb'
     - 'app/services/ci/update_build_state_service.rb'
     - 'app/services/cloud_seed/google_cloud/generate_pipeline_service.rb'

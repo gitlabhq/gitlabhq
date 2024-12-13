@@ -103,7 +103,7 @@ module Emails
       @user = user
       @deletion_date = deletion_date
       subject_text = "Action required: Project #{project.name} is scheduled to be deleted on " \
-      "#{deletion_date} due to inactivity"
+        "#{deletion_date} due to inactivity"
 
       email_with_layout(
         to: user.notification_email_for(project.group),

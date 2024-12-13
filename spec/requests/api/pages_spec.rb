@@ -18,7 +18,7 @@ RSpec.describe API::Pages, feature_category: :pages do
       pages_unique_domain: 'unique-domain')
   end
 
-  context "when get pages setting endpoint" do
+  describe "GET /projects/:id/pages" do
     let(:user) { create(:user) }
 
     it "returns the :ok for project maintainers (and above)" do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
+RSpec.describe ::Pages::Domains::RetryAcmeOrderService, feature_category: :pages do
   let_it_be(:project) { create(:project) }
 
   let(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: true, auto_ssl_failed: true) }
@@ -13,7 +13,7 @@ RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
     expect { service.execute }
       .to change { domain.auto_ssl_failed }
       .from(true).to(false)
-      .and publish_event(PagesDomains::PagesDomainUpdatedEvent)
+      .and publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
       .with(
         project_id: project.id,
         namespace_id: project.namespace.id,
@@ -27,7 +27,7 @@ RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
     expect(PagesDomainSslRenewalWorker).to receive(:perform_async).with(domain.id).and_return(nil).once
 
     expect { service.execute }
-      .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+      .to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
       .with(
         project_id: project.id,
         namespace_id: project.namespace.id,
@@ -43,7 +43,7 @@ RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
     expect(PagesDomainSslRenewalWorker).not_to receive(:new)
 
     expect { service.execute }
-      .to not_publish_event(PagesDomains::PagesDomainUpdatedEvent)
+      .to not_publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
   end
 
   it "doesn't schedule renewal worker if auto ssl has not failed yet" do
@@ -52,6 +52,6 @@ RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
     expect(PagesDomainSslRenewalWorker).not_to receive(:new)
 
     expect { service.execute }
-      .to not_publish_event(PagesDomains::PagesDomainUpdatedEvent)
+      .to not_publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
   end
 end

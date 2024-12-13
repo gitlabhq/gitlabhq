@@ -3698,8 +3698,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       context 'when user has permissions' do
         it '/relate command is available' do
           _, explanations = service.explain(relate_content, issue)
-          translated_string = _("Marks this issue as related to %{issue}.")
-          formatted_message = format(translated_string, issue: other_issue.to_s)
+          translated_string = _("Added %{target} as a linked item related to this %{work_item_type}.")
+          formatted_message = format(
+            translated_string,
+            target: other_issue,
+            work_item_type: "issue"
+          )
 
           expect(explanations).to eq([formatted_message])
         end
