@@ -20,13 +20,15 @@ module QA
     } do
     describe 'Project import', product_group: :import_and_integrate do
       let!(:api_client) { Runtime::API::Client.as_admin }
-      let!(:user) { create(:user, api_client: api_client) }
+      let!(:user) { create(:user) }
       let!(:user_api_client) do
         Runtime::API::Client.new(
-          user: user,
           # importing very large project can take multiple days
           # token must not expire while we still poll for import result
-          personal_access_token: create(:personal_access_token, user_id: user.id, expires_at: (Time.now.to_date + 6)
+          personal_access_token: create(
+            :personal_access_token,
+            user_id: user.id,
+            expires_at: (Time.now.to_date + 6)
           ).token
         )
       end
@@ -202,7 +204,7 @@ module QA
           project.github_personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = github_repo
           project.personal_namespace = user.username
-          project.api_client = Runtime::API::Client.new(user: user)
+          project.api_client = user_api_client
           project.full_notes_import = true
         end
       end

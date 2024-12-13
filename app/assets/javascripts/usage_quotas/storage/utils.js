@@ -54,7 +54,7 @@ export const parseNamespaceProvideData = (el) => {
   const { namespaceId, namespacePath, userNamespace, defaultPerPage } = el.dataset;
 
   return {
-    namespaceId,
+    namespaceId: parseInt(namespaceId, 10),
     namespacePath,
     userNamespace: parseBoolean(userNamespace),
     defaultPerPage: Number(defaultPerPage),

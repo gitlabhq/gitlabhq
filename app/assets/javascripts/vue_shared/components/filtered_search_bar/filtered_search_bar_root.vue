@@ -22,7 +22,7 @@ export default {
   },
   props: {
     namespace: {
-      type: String,
+      type: [Number, String],
       required: true,
     },
     recentSearchesStorageKey: {

@@ -1,9 +1,10 @@
 <script>
 import { GlModal, GlLink, GlSprintf, GlButton, GlAlert } from '@gitlab/ui';
+import { createAlert } from '~/alert';
+import axios from '~/lib/utils/axios_utils';
 import { validateFileFromAllowList } from '~/lib/utils/file_upload';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
-import csrf from '~/lib/utils/csrf';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 export default {
@@ -28,8 +29,8 @@ export default {
   },
   data() {
     return {
+      file: null,
       fileName: null,
-      fileContents: null,
       uploadError: false,
     };
   },
@@ -40,7 +41,19 @@ export default {
   },
   methods: {
     reassignContributions() {
-      this.$refs.form.submit();
+      const formData = new FormData();
+      formData.append('file', this.file);
+
+      axios
+        .post(this.reassignmentCsvPath, formData)
+        .then(() => {
+          // nothing to do here, modal already closes itself
+        })
+        .catch(() => {
+          createAlert({
+            message: s__('UserMapping|Something went wrong while uploading the CSV file.'),
+          });
+        });
     },
     isValidFileType(file) {
       return validateFileFromAllowList(file.name, this.$options.dropzoneAllowList);
@@ -51,17 +64,10 @@ export default {
     onChange(file) {
       this.clearError();
       this.fileName = file?.name;
-      this.readFile(file);
+      this.file = file;
     },
     onError() {
       this.uploadError = this.$options.i18n.errorMessage;
-    },
-    readFile(file) {
-      const reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = (evt) => {
-        this.fileContents = evt.target.result;
-      };
     },
     close() {
       this.clearError();
@@ -89,7 +95,6 @@ export default {
   cancelAction: {
     text: __('Cancel'),
   },
-  csrf,
 };
 </script>
 <template>
@@ -158,9 +163,5 @@ export default {
         )
       }}
     </gl-alert>
-    <form ref="form" :action="reassignmentCsvPath" enctype="multipart/form-data" method="post">
-      <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-      <input :value="fileContents || false" type="hidden" name="file" />
-    </form>
   </gl-modal>
 </template>

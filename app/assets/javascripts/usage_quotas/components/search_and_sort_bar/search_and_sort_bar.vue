@@ -10,7 +10,7 @@ export default {
   props: {
     // Search
     namespace: {
-      type: String,
+      type: [Number, String],
       required: true,
     },
     searchInputPlaceholder: {

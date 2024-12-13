@@ -3477,7 +3477,8 @@ CREATE TABLE p_ci_build_trace_metadata (
     archived_at timestamp with time zone,
     archival_attempts smallint DEFAULT 0 NOT NULL,
     checksum bytea,
-    remote_checksum bytea
+    remote_checksum bytea,
+    project_id bigint
 )
 PARTITION BY LIST (partition_id);
 
@@ -31838,6 +31839,8 @@ CREATE INDEX index_p_ci_build_tags_on_build_id_and_partition_id ON ONLY p_ci_bui
 CREATE INDEX index_p_ci_build_tags_on_project_id ON ONLY p_ci_build_tags USING btree (project_id);
 
 CREATE UNIQUE INDEX index_p_ci_build_tags_on_tag_id_and_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (tag_id, build_id, partition_id);
+
+CREATE INDEX index_p_ci_build_trace_metadata_on_project_id ON ONLY p_ci_build_trace_metadata USING btree (project_id);
 
 CREATE INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ON ONLY p_ci_build_trace_metadata USING btree (trace_artifact_id);
 

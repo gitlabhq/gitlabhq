@@ -100,24 +100,6 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         expect(merge_request.reload).to be_merged
       end
 
-      context 'when mr_merge_skips_close_issue_authorization feature flag is disabled' do
-        before do
-          stub_feature_flags(mr_merge_skips_close_issue_authorization: false)
-        end
-
-        it 'does not use the last optional argument of the worker' do
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
-
-          expect(MergeRequests::CloseIssueWorker)
-            .to receive(:perform_async)
-            .with(project.id, user.id, issue.id, merge_request.id)
-
-          subject
-
-          expect(merge_request.reload).to be_merged
-        end
-      end
-
       context 'when issue is an external issue' do
         let_it_be(:issue) { ExternalIssue.new('JIRA-123', project) }
 

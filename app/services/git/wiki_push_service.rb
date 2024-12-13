@@ -29,8 +29,7 @@ module Git
       push_changes.take(MAX_CHANGES).each do |change| # rubocop:disable CodeReuse/ActiveRecord
         next unless change.page.present?
 
-        wiki_page_meta = WikiPage::Meta.find_or_create(change.last_known_slug, change.page)
-        response = create_event_for(change, wiki_page_meta)
+        response = create_event_for(change)
         log_error(response.message) if response.error?
       end
     end
@@ -51,9 +50,10 @@ module Git
       wiki.repository.raw.raw_changes_between(change[:oldrev], change[:newrev])
     end
 
-    def create_event_for(change, wiki_page_meta)
+    def create_event_for(change)
       event_service.execute(
-        wiki_page_meta,
+        change.last_known_slug,
+        change.page,
         change.event_action,
         change.sha
       )

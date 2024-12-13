@@ -176,4 +176,23 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
       expect(metadata.partition_id).to eq(ci_testing_partition_id)
     end
   end
+
+  describe '#set_project_id' do
+    context 'when project_id is not set' do
+      let(:metadata) { create(:ci_build_trace_metadata) }
+
+      it 'sets the project_id from the build' do
+        expect(metadata.project_id).to eq(metadata.build.project_id)
+      end
+    end
+
+    context 'when project_id is set' do
+      let(:existing_project) { build_stubbed(:project) }
+      let(:metadata) { create(:ci_build_trace_metadata, project_id: existing_project.id) }
+
+      it 'does not override the project_id' do
+        expect(metadata.project_id).to eq(existing_project.id)
+      end
+    end
+  end
 end

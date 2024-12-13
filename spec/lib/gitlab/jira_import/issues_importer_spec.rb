@@ -10,7 +10,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_st
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_import) { create(:jira_import_state, project: project, user: current_user) }
   let_it_be(:jira_integration) { create(:jira_integration, project: project) }
-  let_it_be(:default_issue_type_id) { WorkItems::Type.default_issue_type.id }
+  let_it_be(:default_issue_type) { WorkItems::Type.default_issue_type }
 
   subject { described_class.new(project) }
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_st
               project,
               jira_issues[i],
               current_user.id,
-              default_issue_type_id,
+              default_issue_type,
               { iid: 'issue_iid' }
             ).and_raise('Some error')
           else
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_st
               project,
               jira_issues[i],
               current_user.id,
-              default_issue_type_id,
+              default_issue_type,
               { iid: 'issue_iid' }
             ).and_return(serializer)
           end

@@ -60785,6 +60785,9 @@ msgstr ""
 msgid "UserMapping|Select user"
 msgstr ""
 
+msgid "UserMapping|Something went wrong while uploading the CSV file."
+msgstr ""
+
 msgid "UserMapping|Source name"
 msgstr ""
 

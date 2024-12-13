@@ -14,8 +14,7 @@ module WikiPages
       container.execute_hooks(page_data, :wiki_page_hooks)
       container.execute_integrations(page_data, :wiki_page_hooks)
       increment_usage(page)
-      wiki_page_meta = wiki_page_meta_for(page)
-      create_wiki_event(wiki_page_meta, page)
+      create_wiki_event(page)
     end
 
     # Passed to web-hooks, and send to external consumers.
@@ -58,14 +57,10 @@ module WikiPages
       )
     end
 
-    def wiki_page_meta_for(page)
-      WikiPage::Meta.find_or_create(slug_for_page(page), page)
-    end
-
-    def create_wiki_event(wiki_page_meta, page)
+    def create_wiki_event(page)
       response = WikiPages::EventCreateService
         .new(current_user)
-        .execute(wiki_page_meta, event_action, fingerprint(page))
+        .execute(slug_for_page(page), page, event_action, fingerprint(page))
 
       log_error(response.message) if response.error?
     end

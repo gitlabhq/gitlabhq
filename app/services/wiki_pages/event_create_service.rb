@@ -9,7 +9,9 @@ module WikiPages
       @author = author
     end
 
-    def execute(wiki_page_meta, action, event_fingerprint)
+    def execute(slug, page, action, event_fingerprint)
+      wiki_page_meta = WikiPage::Meta.find_or_create(slug, page)
+
       event = ::EventCreateService.new.wiki_event(wiki_page_meta, author, action, event_fingerprint)
 
       ServiceResponse.success(payload: { event: event })
