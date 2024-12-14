@@ -10785,6 +10785,12 @@ msgstr ""
 msgid "CICD|Allow Git push requests to the repository"
 msgstr ""
 
+msgid "CICD|Are you sure you want to remove %{namespace} from the job token allowlist?"
+msgstr ""
+
+msgid "CICD|Are you sure you want to remove %{namespace} from the job token allowlist? This action cannot be undone."
+msgstr ""
+
 msgid "CICD|Authentication events from the last 30 days. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -10876,6 +10882,9 @@ msgid "CICD|Pipelines older than the configured time are deleted. Leave empty to
 msgstr ""
 
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "CICD|Remove group or project"
 msgstr ""
 
 msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
@@ -46040,6 +46049,9 @@ msgid "Remove %{child_ref} as a child item."
 msgstr ""
 
 msgid "Remove %{displayReference}"
+msgstr ""
+
+msgid "Remove %{namespace}"
 msgstr ""
 
 msgid "Remove %{parent_ref} as this item's parent."

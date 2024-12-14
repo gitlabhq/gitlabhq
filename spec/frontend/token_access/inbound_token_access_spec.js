@@ -13,6 +13,7 @@ import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutatio
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import {
   inboundJobTokenScopeEnabledResponse,
   inboundJobTokenScopeDisabledResponse,
@@ -64,6 +65,7 @@ describe('TokenAccess component', () => {
   const findCountLoadingIcon = () => wrapper.findByTestId('count-loading-icon');
   const findGroupCount = () => wrapper.findByTestId('group-count');
   const findProjectCount = () => wrapper.findByTestId('project-count');
+  const findConfirmActionModal = () => wrapper.findComponent(ConfirmActionModal);
 
   const createComponent = (requestHandlers, mountFn = shallowMountExtended, provide = {}) => {
     wrapper = mountFn(InboundTokenAccess, {
@@ -344,42 +346,66 @@ describe('TokenAccess component', () => {
     ${'group'}   | ${0}  | ${inboundRemoveGroupCIJobTokenScopeMutation}   | ${inboundRemoveGroupSuccessHandler}
     ${'project'} | ${1}  | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler}
   `('remove $type', ({ type, index, mutation, handler }) => {
-    it(`calls remove ${type} mutation`, async () => {
-      await createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
+    describe('when remove button is clicked', () => {
+      beforeEach(async () => {
+        await createComponent(
           [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
+            [
+              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+              inboundGroupsAndProjectsWithScopeResponseHandler,
+            ],
+            [mutation, handler],
           ],
-          [mutation, handler],
-        ],
-        mountExtended,
-      );
+          mountExtended,
+        );
 
-      findRemoveProjectBtnAt(index).trigger('click');
+        return findRemoveProjectBtnAt(index).trigger('click');
+      });
 
-      expect(handler).toHaveBeenCalledWith({ projectPath, targetPath: expect.any(String) });
+      it('shows remove confirmation modal', () => {
+        expect(findConfirmActionModal().props()).toMatchObject({
+          title: `Remove root/ci-${type}`,
+          actionFn: wrapper.vm.removeItem,
+          actionText: 'Remove group or project',
+        });
+      });
+
+      describe('when confirmation modal calls the action', () => {
+        beforeEach(() => findConfirmActionModal().vm.performAction());
+
+        it(`calls remove ${type} mutation`, () => {
+          expect(handler).toHaveBeenCalledWith({ projectPath, targetPath: expect.any(String) });
+        });
+      });
+
+      describe('after confirmation modal closes', () => {
+        beforeEach(() => findConfirmActionModal().vm.$emit('close'));
+
+        it('hides remove confirmation modal', () => {
+          expect(findConfirmActionModal().exists()).toBe(false);
+        });
+      });
     });
 
-    it(`remove ${type} handles error correctly`, async () => {
-      await createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
+    describe('when there is a mutation error', () => {
+      beforeEach(async () => {
+        await createComponent(
           [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
+            [
+              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+              inboundGroupsAndProjectsWithScopeResponseHandler,
+            ],
+            [mutation, failureHandler],
           ],
-          [mutation, failureHandler],
-        ],
-        mountExtended,
-      );
+          mountExtended,
+        );
 
-      findRemoveProjectBtnAt(index).trigger('click');
+        return findRemoveProjectBtnAt(index).trigger('click');
+      });
 
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalledWith({ message });
+      it('returns an error', async () => {
+        await expect(wrapper.vm.removeItem()).rejects.toThrow(error);
+      });
     });
   });
 
