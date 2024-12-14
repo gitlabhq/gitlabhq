@@ -71,6 +71,10 @@ class WikiPage
     set_attributes if persisted?
   end
 
+  def meta
+    WikiPage::Meta.find_by_canonical_slug(slug, container)
+  end
+
   # The escaped URL path of this page.
   def slug
     attributes[:slug].presence || ::Wiki.preview_slug(title, format)

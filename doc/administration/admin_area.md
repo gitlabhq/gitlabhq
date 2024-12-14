@@ -141,13 +141,11 @@ You can impersonate a user in the following ways:
   1. On the left sidebar, at the bottom, select **Admin**.
   1. On the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
-  1. Select **Impersonate**.
+  1. On the top right, select **Impersonate**.
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](audit_event_reports.md#user-impersonation).
 By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../api/rest/authentication.md#disable-impersonation).
-
-![The user impersonation button.](img/impersonate_user_button_v13_8.png)
 
 ### User identities
 
@@ -163,7 +161,7 @@ When using authentication providers, administrators can see the identities for a
 This list shows the user's identities, including SCIM identities. Administrators can use this information to troubleshoot SCIM-related issues and confirm
 the identities being used for an account.
 
-### User Permission Export
+### User permission export
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -172,7 +170,7 @@ DETAILS:
 An administrator can export user permissions for all users in the GitLab instance from the **Admin** area's Users page.
 The export lists direct membership the users have in groups and projects.
 
-The following data is included in the export:
+The export process exports the first 100,000 users, and includes this data:
 
 - Username
 - Email
@@ -181,9 +179,11 @@ The following data is included in the export:
 - Access level ([Project](../user/permissions.md#project-members-permissions) and [Group](../user/permissions.md#group-members-permissions))
 - Date of last activity. For a list of activities that populate this column, see the [Users API documentation](../api/users.md#list-a-users-activity).
 
-Only the first 100,000 user accounts are exported.
+To do this:
 
-![The user permission export button.](img/export_permissions_v13_11.png)
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview > Users**.
+1. On the top right, select **Export permissions as CSV** (**{export}**).
 
 ### Users statistics
 

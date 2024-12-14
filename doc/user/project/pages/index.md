@@ -187,7 +187,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162826) in GitLab 17.4.
 
 You can configure your Pages deployments to be automatically deleted after
-a period of time has passed by specifying a duration at `pages.expire_in`:
+a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/index.md#pagespagesexpire_in):
 
 ```yaml
 deploy-pages:
@@ -202,15 +202,16 @@ deploy-pages:
 ```
 
 By default, [parallel deployments](#parallel-deployments) expire
-automatically after 24 hours. To disable this behavior, set `pages.expire_in` to `never`.
+automatically after 24 hours.
+To disable this behavior, set `pages.expire_in` to `never`.
 
 Expired deployments are stopped by a cron job that runs every 10 minutes.
 Stopped deployments are subsequently deleted by another cron job that also
 runs every 10 minutes. To recover it, follow the steps described in
 [Recover a stopped deployment](#recover-a-stopped-deployment).
 
-A stopped or deleted deployment is no longer available on the web. Users will
-see a 404 Not found error page at its URL, until another deployment is created
+A stopped or deleted deployment is no longer available on the web.
+Users see a `404 Not found` error page at its URL, until another deployment is created
 with the same URL configuration.
 
 The previous YAML example uses [user-defined job names](#user-defined-job-names).

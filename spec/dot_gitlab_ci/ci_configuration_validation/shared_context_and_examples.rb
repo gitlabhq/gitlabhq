@@ -105,6 +105,7 @@ end
 RSpec.shared_examples 'default branch pipeline' do
   it 'is valid' do
     expect(pipeline.yaml_errors).to be nil
+    expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
     expect(jobs).to include(expected_job_name)
   end
@@ -113,6 +114,7 @@ end
 RSpec.shared_examples 'merge request pipeline' do
   it "succeeds with expected job" do
     expect(pipeline.yaml_errors).to be nil
+    expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
     expect(jobs).to include(expected_job_name)
   end
@@ -123,6 +125,7 @@ RSpec.shared_examples 'merge train pipeline' do
 
   it "succeeds with expected job" do
     expect(pipeline.yaml_errors).to be nil
+    expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
     expect(jobs).to include('pre-merge-checks')
     expect(jobs).not_to include('upload-frontend-fixtures')

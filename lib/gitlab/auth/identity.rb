@@ -17,6 +17,7 @@ module Gitlab
       UnexpectedIdentityError = Class.new(IdentityError)
       TooManyIdentitiesLinkedError = Class.new(IdentityError)
       MissingCompositeIdentityError = Class.new(::Gitlab::Access::AccessDeniedError)
+      MissingServiceAccountError = Class.new(::Gitlab::Access::AccessDeniedError)
 
       # TODO: why is this called 3 times in doorkeeper_access_spec.rb specs?
       def self.link_from_oauth_token(oauth_token)
@@ -37,6 +38,14 @@ module Gitlab
         return unless scoped_user
 
         ::Gitlab::Auth::Identity.fabricate(user).tap do |identity|
+          identity.link!(scoped_user) if identity&.composite?
+        end
+      end
+
+      def self.link_from_web_request(service_account:, scoped_user:)
+        raise MissingServiceAccountError, 'service account is required' unless service_account
+
+        fabricate(service_account).tap do |identity|
           identity.link!(scoped_user) if identity&.composite?
         end
       end

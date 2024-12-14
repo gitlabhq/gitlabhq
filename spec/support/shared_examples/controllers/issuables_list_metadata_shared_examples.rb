@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
+RSpec.shared_examples 'issuables list meta-data' do |issuable_type, action = nil, format: :html|
   include ProjectForksHelper
 
   def get_action(action, project, extra_params = {})
     if action
-      get action, params: { author_id: project.creator.id }.merge(extra_params)
+      get action, params: { author_id: project.creator.id }.merge(extra_params), format: format
     else
-      get :index, params: { namespace_id: project.namespace, project_id: project }.merge(extra_params)
+      get :index, params: { namespace_id: project.namespace, project_id: project }.merge(extra_params), format: format
     end
   end
 
@@ -18,6 +18,8 @@ RSpec.shared_examples 'issuables list meta-data' do |issuable_type, action = nil
       create(issuable_type, source_project: project, source_branch: source_branch, author: project.creator)
     end
   end
+
+  let(:format) { format }
 
   let!(:issuables) do
     %w[fix improve/awesome].map do |source_branch|

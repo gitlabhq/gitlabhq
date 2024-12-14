@@ -79,6 +79,10 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_content('My awesome wiki!')
     end
 
+    it 'does not show comments when editing' do
+      expect(page).not_to have_content('Activity')
+    end
+
     it 'updates entry in redirects.yml file on changing page path' do
       wiki.repository.update_file(
         user, '.gitlab/redirects.yml',

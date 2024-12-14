@@ -2,7 +2,7 @@ import { GlDrawer, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RoleDetailsDrawer from '~/members/components/table/drawer/role_details_drawer.vue';
-import MembersTableCell from '~/members/components/table/members_table_cell.vue';
+import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import RoleSelector from '~/members/components/role_selector.vue';
 import { roleDropdownItems } from '~/members/utils';

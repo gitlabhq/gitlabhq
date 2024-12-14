@@ -123,6 +123,80 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     end
   end
 
+  describe '.link_from_web_request' do
+    context 'when composite identity feature flag is enabled' do
+      context 'when service_account has composite identity enforced' do
+        before do
+          allow(primary_user).to receive(:has_composite_identity?).and_return(true)
+        end
+
+        it 'creates and links identity with scope user' do
+          identity = described_class.link_from_web_request(
+            service_account: primary_user,
+            scoped_user: scoped_user
+          )
+
+          expect(identity.primary_user).to eq(primary_user)
+          expect(identity.scoped_user).to eq(scoped_user)
+          expect(identity).to be_linked
+        end
+
+        context 'when trying to link different scoped users' do
+          let(:another_scope_user) { create(:user) }
+
+          it 'raises IdentityLinkMismatchError when trying to link different scoped users' do
+            identity = described_class.link_from_web_request(
+              service_account: primary_user,
+              scoped_user: scoped_user
+            )
+
+            expect do
+              identity.link!(another_scope_user)
+            end.to raise_error(described_class::IdentityLinkMismatchError)
+          end
+        end
+      end
+
+      context 'when service_account does not have composite identity enforced' do
+        it 'creates identity without linking' do
+          identity = described_class.link_from_web_request(
+            service_account: primary_user,
+            scoped_user: scoped_user
+          )
+
+          expect(identity).not_to be_linked
+        end
+      end
+
+      context 'when composite identity feature flag is disabled' do
+        before do
+          stub_feature_flags(composite_identity: false)
+        end
+
+        it 'creates identity without linking' do
+          identity = described_class.link_from_web_request(
+            service_account: primary_user,
+            scoped_user: scoped_user
+          )
+
+          expect(identity.primary_user).to eq(primary_user)
+          expect(identity).not_to be_linked
+        end
+      end
+
+      context 'when service_account is not present' do
+        it 'raises an error' do
+          expect do
+            described_class.link_from_web_request(
+              service_account: nil,
+              scoped_user: scoped_user
+            )
+          end.to raise_error(described_class::MissingServiceAccountError)
+        end
+      end
+    end
+  end
+
   describe '.sidekiq_restore!' do
     context 'when job has primary and scoped identity stored' do
       let(:job) { { 'jid' => 123, 'sqci' => [primary_user.id, scoped_user.id] } }

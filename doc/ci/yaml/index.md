@@ -1377,6 +1377,7 @@ job:
   them fail with a [`could not retrieve the needed artifacts` error](../jobs/job_artifacts_troubleshooting.md#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts).
   Set the expiry time to be longer, or use [`dependencies`](#dependencies) in later jobs
   to ensure they don't try to fetch expired artifacts.
+- `artifacts:expire_in` doesn't affect GitLab Pages deployments. To configure Pages deployments' expiry, use [`pages:pages.expire_in`](#pagespagesexpire_in).
 
 #### `artifacts:expose_as`
 
@@ -3534,8 +3535,9 @@ Use `expire_in` to specify how long a deployment should be available before
 it expires. After the deployment is expired, it's deactivated by a cron
 job running every 10 minutes.
 
-Extra deployments expire by default. To prevent them from expiring, set the
-value to `never`.
+By default, [parallel deployments](../../user/project/pages/index.md#parallel-deployments) expire
+automatically after 24 hours.
+To disable this behavior, set the value to `never`.
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 

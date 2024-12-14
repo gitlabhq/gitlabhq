@@ -7,6 +7,11 @@ import PlaceholderNote from '~/pages/shared/wikis/wiki_notes/components/placehol
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
 import WikiDiscussion from '~/pages/shared/wikis/wiki_notes/components/wiki_discussion.vue';
 import WikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
+import WikiNotesActivityHeader from '~/pages/shared/wikis/wiki_notes/components/wiki_notes_activity_header.vue';
+import eventHub, {
+  EVENT_EDIT_WIKI_DONE,
+  EVENT_EDIT_WIKI_START,
+} from '~/pages/shared/wikis/event_hub';
 import { note, noteableId } from '../mock_data';
 
 describe('WikiNotesApp', () => {
@@ -38,6 +43,26 @@ describe('WikiNotesApp', () => {
 
   beforeEach(() => {
     wrapper = createWrapper();
+  });
+
+  describe('when editing a wiki page', () => {
+    beforeEach(async () => {
+      eventHub.$emit(EVENT_EDIT_WIKI_START);
+
+      await nextTick();
+    });
+
+    it('should hide notes when editing a wiki page', () => {
+      expect(wrapper.findComponent(WikiNotesActivityHeader).exists()).toBe(false);
+    });
+
+    it('should show notes when editing a wiki page is done', async () => {
+      eventHub.$emit(EVENT_EDIT_WIKI_DONE);
+
+      await nextTick();
+
+      expect(wrapper.findComponent(WikiNotesActivityHeader).exists()).toBe(true);
+    });
   });
 
   it('should render skeleton notes before content loads', () => {

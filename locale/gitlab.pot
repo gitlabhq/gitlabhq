@@ -50166,6 +50166,15 @@ msgstr ""
 msgid "SecurityOrchestration|All types"
 msgstr ""
 
+msgid "SecurityOrchestration|Allow except on these packages"
+msgstr ""
+
+msgid "SecurityOrchestration|Allowed licenses"
+msgstr ""
+
+msgid "SecurityOrchestration|Allowlist details"
+msgstr ""
+
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
@@ -50278,6 +50287,15 @@ msgid "SecurityOrchestration|Delete policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Delete policy: %{policy}"
+msgstr ""
+
+msgid "SecurityOrchestration|Denied licenses"
+msgstr ""
+
+msgid "SecurityOrchestration|Deny except on these packages"
+msgstr ""
+
+msgid "SecurityOrchestration|Denylist details"
 msgstr ""
 
 msgid "SecurityOrchestration|Description"

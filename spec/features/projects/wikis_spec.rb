@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe 'Project wikis', :js, feature_category: :wiki, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508966' do
+RSpec.describe 'Project wikis', :js, feature_category: :wiki do
   let_it_be(:user) { create(:user) }
 
   let(:wiki) { create(:project_wiki, user: user, project: project) }

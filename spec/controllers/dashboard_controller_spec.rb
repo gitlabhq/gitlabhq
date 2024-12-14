@@ -15,14 +15,14 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
       sign_in(user)
     end
 
-    describe 'GET issues' do
-      it_behaves_like 'issuables list meta-data', :issue, :issues
-      it_behaves_like 'issuables requiring filter', :issues
+    describe 'GET issues.atom' do
+      it_behaves_like 'issuables list meta-data', :issue, :issues, format: :atom
+      it_behaves_like 'issuables requiring filter', :issues, format: :atom
 
       it 'includes tasks in issue list' do
         task = create(:work_item, :task, project: project, author: user)
 
-        get :issues, params: { author_id: user.id }
+        get :issues, params: { author_id: user.id }, format: :atom
 
         expect(assigns[:issues].map(&:id)).to include(task.id)
       end

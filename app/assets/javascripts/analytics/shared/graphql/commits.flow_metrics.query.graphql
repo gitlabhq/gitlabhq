@@ -5,8 +5,12 @@ query flowMetricsCommitsQuery(
   $endDate: Time!
   $labelNames: [String!]
 ) {
-  flowMetricsCommits(fullPath: $fullPath, from: $startDate, to: $endDate, labelNames: $labelNames)
-    @client {
+  flowMetricsCommits(
+    fullPath: $fullPath
+    startDate: $startDate
+    endDate: $endDate
+    labelNames: $labelNames
+  ) @client {
     value
     identifier
     links

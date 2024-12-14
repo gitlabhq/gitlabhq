@@ -9,8 +9,8 @@ type FlowMetricsCommits {
 extend type Query {
   flowMetricsCommits(
     fullPath: ID!
-    from: Time!
-    to: Time!
+    startDate: Time!
+    endDate: Time!
     labelNames: [String!]
   ): FlowMetricsCommits
 }

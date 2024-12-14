@@ -59,7 +59,7 @@ Amazon Q can analyze Java 8 or 11 code and determine the necessary Java changes 
 
 Prerequisites:
 
-- You must [have a runner configured for your project](https://docs.gitlab.com/runner/register/).
+- You must [have a runner and a CI/CD pipeline configured for your project](../../ci/index.md).
 
 To upgrade Java:
 
@@ -69,7 +69,10 @@ To upgrade Java:
 1. Save the issue. Then, in a comment, type `/q transform`.
 1. Select **Comment**.
 
-A merge request with the code changes needed for the upgrade is created.
+A CI/CD job starts. A comment is displayed with the details and a link to the job.
+
+- If the job is successful, a merge request with the code changes needed for the upgrade is created.
+- If the job fails, a comment provides details about potential fixes.
 
 ## Use GitLab Duo with Amazon Q in a merge request
 

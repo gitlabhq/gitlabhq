@@ -213,7 +213,6 @@ spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/members/components/app_spec.js
 spec/frontend/members/components/modals/leave_modal_spec.js
-spec/frontend/members/components/table/drawer/role_details_drawer_spec.js
 spec/frontend/members/components/table/max_role_spec.js
 spec/frontend/members/components/table/members_pagination_spec.js
 spec/frontend/members/components/table/members_table_spec.js
@@ -288,7 +287,6 @@ spec/frontend/sidebar/components/assignees/sidebar_assignees_widget_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
 spec/frontend/sidebar/components/incidents/escalation_status_spec.js
-spec/frontend/sidebar/components/incidents/sidebar_escalation_status_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/labels_select_root_spec.js
 spec/frontend/sidebar/components/labels/labels_select_widget/dropdown_contents_spec.js

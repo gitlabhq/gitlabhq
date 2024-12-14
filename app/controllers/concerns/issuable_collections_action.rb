@@ -13,15 +13,17 @@ module IssuableCollectionsAction
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues
-    @issues = issuables_collection
-              .non_archived
-              .page(params[:page])
-
-    @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
-
     respond_to do |format|
       format.html
-      format.atom { render layout: 'xml' }
+      format.atom do
+        @issues = issuables_collection
+                  .non_archived
+                  .page(params[:page])
+
+        @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
+
+        render layout: 'xml'
+      end
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

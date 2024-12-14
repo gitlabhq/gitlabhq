@@ -17,7 +17,7 @@ describe('~/analytics/shared/graphql/resolvers', () => {
 
   describe('flowMetricsCommits', () => {
     const mockFullPath = 'fake/namespace/path';
-    const mockParams = { startDate: '2024-12-11', endDate: '2024-12-11' };
+    const mockParams = { startDate: '2024-11-11', endDate: '2024-12-11' };
     const requestParams = {
       fullPath: mockFullPath,
       ...mockParams,
@@ -39,7 +39,10 @@ describe('~/analytics/shared/graphql/resolvers', () => {
       it('will set the request parameters', async () => {
         await mockResolvers.Query.flowMetricsCommits(null, requestParams);
 
-        expect(api.getValueStreamSummaryMetrics).toHaveBeenCalledWith(mockFullPath, mockParams);
+        expect(api.getValueStreamSummaryMetrics).toHaveBeenCalledWith(mockFullPath, {
+          created_after: '2024-11-11',
+          created_before: '2024-12-11',
+        });
       });
 
       it('will only return the commit data', async () => {

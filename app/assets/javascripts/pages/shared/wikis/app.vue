@@ -5,6 +5,7 @@ import WikiHeader from './components/wiki_header.vue';
 import WikiContent from './components/wiki_content.vue';
 import WikiEditForm from './components/wiki_form.vue';
 import WikiAlert from './components/wiki_alert.vue';
+import eventHub, { EVENT_EDIT_WIKI_DONE, EVENT_EDIT_WIKI_START } from './event_hub';
 
 export default {
   components: {
@@ -37,8 +38,10 @@ export default {
 
       if (this.isEditing) {
         url.searchParams.set('edit', 'true');
+        eventHub.$emit(EVENT_EDIT_WIKI_START);
       } else {
         url.searchParams.delete('edit');
+        eventHub.$emit(EVENT_EDIT_WIKI_DONE);
       }
 
       window.history.pushState({}, '', url);

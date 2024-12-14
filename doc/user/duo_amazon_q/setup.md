@@ -33,11 +33,13 @@ To set up GitLab Duo with Amazon Q, you must:
 - [Create an identity provider](#create-an-iam-identity-provider)
 - [Create an IAM role](#create-an-iam-role)
 - [Enter the ARN in GitLab and enable Amazon Q](#enter-the-arn-in-gitlab-and-enable-amazon-q)
+- [Add the Amazon Q user to your project](#add-the-amazon-q-user-to-your-project)
 
 ### Prerequisites
 
 - You must have a self-managed GitLab instance:
-  - With an HTTPS URL that can be accessed by Amazon Q.
+  - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
+    For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
   - With the `amazon_q_integration` [feature flag enabled](../../administration/feature_flags.md).
 - GitLab Duo features [must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
@@ -69,6 +71,9 @@ Now, create an AWS identity provider:
 
 Next, you must create an IAM role that trusts the IAM identity provider and can
 access Amazon Q.
+
+NOTE:
+After you set up the IAM role, you cannot change the AWS account that's associated with the role.
 
 1. In the AWS IAM console, select **Access Management > Roles > Create role**.
 1. Select **Web identity**.
@@ -165,7 +170,24 @@ Prerequisites:
 1. Select **Save changes**.
 
 When you save, an API should contact the AI Gateway to create an OAuth application on Amazon Q.
-To confirm that it was successful, check the logs for a `204`.
+
+To confirm that it was successful:
+
+- In the Amazon CloudWatch console log, check for a `204` status code. For more information, see
+  [What is Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)?
+- In GitLab, a notification that says `Amazon Q settings have been saved` is displayed.
+- In GitLab, on the left sidebar, select **Applications**. The Amazon Q OAuth application is displayed.
+
+## Add the Amazon Q user to your project
+
+Now add the Amazon Q service account user as a member of your project.
+
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. In the upper-right corner, select **Invite members**.
+1. For **Username, name, or email address**, select **Amazon Q Service**.
+1. For **Select a role**, select **Developer**.
+1. Select **Invite**.
 
 ### Configure the AI gateway
 

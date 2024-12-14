@@ -30,6 +30,8 @@ class WikiPage
       joins(:slugs).where(slug_table_name => { canonical: true, slug: slug })
     end
 
+    delegate :wiki, to: :container
+
     class << self
       # Return the (updated) WikiPage::Meta record for a given wiki page
       #
@@ -98,6 +100,10 @@ class WikiPage
 
         { namespace_id: container.id } if container.is_a?(Namespace)
       end
+    end
+
+    def wiki_page
+      wiki.find_page(canonical_slug, load_content: true)
     end
 
     def container
