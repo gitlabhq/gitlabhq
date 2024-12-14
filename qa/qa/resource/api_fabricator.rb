@@ -131,7 +131,7 @@ module QA
         else
           response = post(Runtime::API::Request.new(api_client, post_path).url, post_body, args)
 
-          unless response.code == HTTP_STATUS_CREATED
+          unless response.code == post_success_response_code
             raise(ResourceFabricationFailedError, <<~MSG.strip)
               Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`.
               #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
@@ -166,7 +166,7 @@ module QA
           api_post_to(api_delete_path, api_delete_body)
         else
           request = Runtime::API::Request.new(api_client, api_delete_path)
-          response = delete(request.url)
+          response = delete(request.url, payload: api_delete_body)
 
           unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
             raise(ResourceNotDeletedError, <<~MSG.strip)
@@ -251,6 +251,12 @@ module QA
         resource = response[key.to_sym]
         resource[:id] = extract_graphql_id(resource) if resource.key?(:id)
         resource
+      end
+
+      protected
+
+      def post_success_response_code
+        HTTP_STATUS_CREATED
       end
     end
   end

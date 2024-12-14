@@ -334,6 +334,8 @@ module QA
           <#{self.class}> Attribute #{name.inspect} has both API response `#{api_value}` and a block. API response will be picked. Block will be ignored.
         MSG
       end
+
+      def api_delete_body; end
     end
   end
 end

@@ -5,12 +5,14 @@ module QA
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let!(:runner) { create(:project_runner, name: executor, tags: ['e2e-test']) }
+      let!(:runner_managers) { create_list(:runner_manager, 2, runner: runner) }
 
       after do
         runner.remove_via_api!
       end
 
-      it 'user registers a new project runner', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348025' do
+      it 'user registers a new project runner', :blocking,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348025' do
         Flow::Login.sign_in
 
         runner.project.visit!
