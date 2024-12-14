@@ -11,21 +11,12 @@ class QueueBackfillFreeSharedRunnersMinutesLimit < Gitlab::Database::Migration[2
   SUB_BATCH_SIZE = 100
 
   def up
-    return unless Gitlab.dev_or_test_env? || Gitlab.com_except_jh?
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :namespaces,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175354
   end
 
   def down
-    return unless Gitlab.dev_or_test_env? || Gitlab.com_except_jh?
-
-    delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175354
   end
 end
