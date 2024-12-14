@@ -89,7 +89,6 @@ ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/components/expandable_section_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
-ee/spec/frontend/security_dashboard/components/shared/empty_states/dashboard_has_no_vulnerabilities_spec.js
 ee/spec/frontend/security_dashboard/components/shared/filters/querystring_sync_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_graphql/details_section_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/container_scanning_for_registry_tab_spec.js

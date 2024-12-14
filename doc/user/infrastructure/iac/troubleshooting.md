@@ -160,3 +160,9 @@ If your `TF_HTTP_ADDRESS`, `TF_HTTP_LOCK_ADDRESS` and `TF_HTTP_UNLOCK_ADDRESS` a
 to update the state names there.
 
 Alternatively, you can [migrate your OpenTofu state](terraform_state.md#migrate-to-a-gitlab-managed-opentofu-state).
+
+### Error saving state: HTTP error: 404
+
+This error might happen if the state name includes a forward slash (`/`) character.
+To resolve this, ensure that state name does not contain any forward slash (`/`)
+characters.
