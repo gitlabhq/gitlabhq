@@ -6,8 +6,10 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import {
+  CONTAINER_CLEANUP_POLICY_TITLE,
   CONTAINER_CLEANUP_POLICY_EDIT_RULES,
   CONTAINER_CLEANUP_POLICY_SET_RULES,
+  CONTAINER_CLEANUP_POLICY_DESCRIPTION,
   CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_INTRO_TEXT,
@@ -26,15 +28,20 @@ describe('Container expiration policy project settings', () => {
   let wrapper;
   let fakeApollo;
 
-  const defaultProvidedValues = {
+  let defaultProvidedValues = {
     projectPath: 'path',
     isAdmin: false,
     adminSettingsPath: 'settingsPath',
     cleanupSettingsPath: 'cleanupSettingsPath',
     enableHistoricEntries: false,
     helpPagePath: 'helpPagePath',
+    glFeatures: {
+      reorganizeProjectLevelRegistrySettings: false,
+    },
   };
 
+  const findCard = () => wrapper.findComponent(GlCard);
+  const findHeader = () => findCard().find('h2');
   const findFormComponent = () => wrapper.findComponent(GlCard);
   const findDescription = () => wrapper.findByTestId('description');
   const findButton = () => wrapper.findByTestId('rules-button');
@@ -161,6 +168,129 @@ describe('Container expiration policy project settings', () => {
         expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_SET_RULES);
         expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
       }
+    });
+  });
+
+  describe('when "reorganizeProjectLevelRegistrySettings" feature flag is enabled', () => {
+    beforeEach(() => {
+      defaultProvidedValues = {
+        ...defaultProvidedValues,
+        glFeatures: {
+          reorganizeProjectLevelRegistrySettings: true,
+        },
+      };
+    });
+
+    it('renders the setting form', async () => {
+      mountComponentWithApollo({
+        resolver: jest.fn().mockResolvedValue(expirationPolicyPayload()),
+      });
+      await waitForPromises();
+
+      expect(findHeader().text()).toBe(CONTAINER_CLEANUP_POLICY_TITLE);
+      expect(findDescription().text()).toMatchInterpolatedText(
+        CONTAINER_CLEANUP_POLICY_DESCRIPTION,
+      );
+      expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_EDIT_RULES);
+      expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
+    });
+
+    it('when loading does not render alert components', () => {
+      mountComponentWithApollo({
+        resolver: jest.fn().mockResolvedValue(),
+      });
+
+      expect(findCard().exists()).toBe(true);
+      expect(findAlert().exists()).toBe(false);
+      expect(findButton().exists()).toBe(false);
+    });
+
+    describe('when API returns `null`', () => {
+      it('the button is hidden', async () => {
+        mountComponentWithApollo({
+          resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+        });
+        await waitForPromises();
+
+        expect(findButton().exists()).toBe(false);
+      });
+
+      it('shows an alert', async () => {
+        mountComponentWithApollo({
+          resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+        });
+        await waitForPromises();
+
+        const text = findAlert().text();
+        expect(text).toContain(UNAVAILABLE_FEATURE_INTRO_TEXT);
+        expect(text).toContain(UNAVAILABLE_USER_FEATURE_TEXT);
+      });
+
+      describe('an admin is visiting the page', () => {
+        it('shows the admin part of the alert', async () => {
+          mountComponentWithApollo({
+            provide: { ...defaultProvidedValues, isAdmin: true },
+            resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+          });
+          await waitForPromises();
+
+          const sprintf = findAlert().findComponent(GlSprintf);
+          expect(sprintf.text()).toBe('administration settings');
+          expect(sprintf.findComponent(GlLink).attributes('href')).toBe(
+            defaultProvidedValues.adminSettingsPath,
+          );
+        });
+      });
+    });
+
+    describe('fetchSettingsError', () => {
+      beforeEach(async () => {
+        mountComponentWithApollo({
+          resolver: jest.fn().mockRejectedValue(new Error('GraphQL error')),
+        });
+        await waitForPromises();
+      });
+
+      it('show the card', () => {
+        expect(findCard().exists()).toBe(true);
+      });
+
+      it('the button is hidden', () => {
+        expect(findButton().exists()).toBe(false);
+      });
+
+      it('shows an alert', () => {
+        expect(findAlert().html()).toContain(FETCH_SETTINGS_ERROR_MESSAGE);
+      });
+    });
+
+    describe('empty API response', () => {
+      it.each`
+        enableHistoricEntries | isShown
+        ${true}               | ${true}
+        ${false}              | ${false}
+      `('is $isShown that the policy is shown', async ({ enableHistoricEntries, isShown }) => {
+        mountComponentWithApollo({
+          provide: {
+            ...defaultProvidedValues,
+            enableHistoricEntries,
+          },
+          resolver: jest.fn().mockResolvedValue(emptyExpirationPolicyPayload()),
+        });
+        await waitForPromises();
+
+        expect(findCard().exists()).toBe(true);
+        if (isShown) {
+          expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_SET_RULES);
+          expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
+          expect(wrapper.findByTestId('empty-cleanup-policy').text()).toBe(
+            'Registry cleanup disabled. Either no cleanup policies enabled, or this project has no container images.',
+          );
+        } else {
+          expect(findButton().exists()).toBe(false);
+          expect(findAlert().html()).toContain(FETCH_SETTINGS_ERROR_MESSAGE);
+        }
+      });
     });
   });
 });

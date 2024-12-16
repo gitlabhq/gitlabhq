@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
 import { SNIPPET_LEVELS_RESTRICTED, SNIPPET_LEVELS_DISABLED } from '~/snippets/constants';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { defaultSnippetVisibilityLevels } from '../utils/blob';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     GlFormRadio,
     GlFormRadioGroup,
     GlLink,
+    HelpIcon,
   },
   inject: ['visibilityLevels', 'multipleLevelsRestricted'],
   props: {
@@ -41,9 +43,7 @@ export default {
   <div class="form-group">
     <label>
       {{ __('Visibility level') }}
-      <gl-link v-if="helpLink" :href="helpLink" target="_blank"
-        ><gl-icon :size="12" name="question-o"
-      /></gl-link>
+      <gl-link v-if="helpLink" :href="helpLink" target="_blank"><help-icon size="small" /></gl-link>
     </label>
     <gl-form-group id="visibility-level-setting" class="gl-mb-0">
       <gl-form-radio-group :checked="value" stacked v-bind="$attrs" v-on="$listeners">

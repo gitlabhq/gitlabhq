@@ -43,8 +43,10 @@ export default {
       </gl-sprintf>
     </template>
     <template #default>
-      <container-protection-rules v-if="showProtectedContainersSettings" />
-      <container-expiration-policy />
+      <div class="gl-flex gl-flex-col gl-gap-5">
+        <container-protection-rules v-if="showProtectedContainersSettings" />
+        <container-expiration-policy />
+      </div>
     </template>
   </settings-block>
 </template>

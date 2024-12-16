@@ -15319,6 +15319,9 @@ msgstr ""
 msgid "ContainerRegistry|Next cleanup scheduled to run on:"
 msgstr ""
 
+msgid "ContainerRegistry|No container repositories are protected yet."
+msgstr ""
+
 msgid "ContainerRegistry|Not yet scheduled"
 msgstr ""
 
@@ -15344,6 +15347,9 @@ msgid "ContainerRegistry|Published to the %{repositoryPath} image repository on 
 msgstr ""
 
 msgid "ContainerRegistry|Push an image"
+msgstr ""
+
+msgid "ContainerRegistry|Registry cleanup disabled. Either no cleanup policies enabled, or this project has no container images."
 msgstr ""
 
 msgid "ContainerRegistry|Regular expression without the \\A and \\z anchors."
@@ -45331,6 +45337,9 @@ msgid "Publishes this issue to the associated status page."
 msgstr ""
 
 msgid "Pull"
+msgstr ""
+
+msgid "Pull mirroring is disabled because the repository is set to read-only."
 msgstr ""
 
 msgid "Pull mirroring updated %{time}."

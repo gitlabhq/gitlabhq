@@ -255,19 +255,19 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
 
     it 'does not validate labels if external authorization gets disabled' do
-      expect_any_instance_of(described_class).not_to receive(:validate_classification_label)
+      expect_any_instance_of(described_class).not_to receive(:validate_classification_label_param!)
 
       described_class.new(application_settings, admin, { external_authorization_service_enabled: false }).execute
     end
 
     it 'does validate labels if external authorization gets enabled' do
-      expect_any_instance_of(described_class).to receive(:validate_classification_label)
+      expect_any_instance_of(described_class).to receive(:validate_classification_label_param!)
 
       described_class.new(application_settings, admin, { external_authorization_service_enabled: true }).execute
     end
 
     it 'does validate labels if external authorization is left unchanged' do
-      expect_any_instance_of(described_class).to receive(:validate_classification_label)
+      expect_any_instance_of(described_class).to receive(:validate_classification_label_param!)
 
       described_class.new(application_settings, admin, { external_authorization_service_default_label: 'new-label' }).execute
     end

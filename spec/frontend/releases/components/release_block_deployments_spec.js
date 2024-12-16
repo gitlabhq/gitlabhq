@@ -4,6 +4,12 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentTriggerer from '~/environments/environment_details/components/deployment_triggerer.vue';
 import Commit from '~/vue_shared/components/commit.vue';
+import {
+  CLICK_EXPAND_DEPLOYMENTS_ON_RELEASE_PAGE,
+  CLICK_ENVIRONMENT_LINK_ON_RELEASE_PAGE,
+  CLICK_DEPLOYMENT_LINK_ON_RELEASE_PAGE,
+} from '~/releases/constants';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { mockDeployment } from '../mock_data';
 
 const expectedTableHeaders = [
@@ -19,11 +25,11 @@ const expectedTableHeaders = [
 describe('Release block deployments', () => {
   let wrapper;
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = mountExtended(ReleaseBlockDeployments, {
       propsData: {
         deployments: [mockDeployment],
-        ...propsData,
+        ...props,
       },
     });
   };
@@ -165,6 +171,51 @@ describe('Release block deployments', () => {
 
         expect(findFinishedAt().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('sends tracking event data', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('on expand', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const button = findAccordionButton();
+      await button.trigger('click');
+      await button.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        CLICK_EXPAND_DEPLOYMENTS_ON_RELEASE_PAGE,
+        {},
+        undefined,
+      );
+    });
+
+    it('on environment link click', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findEnvironmentName().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        CLICK_ENVIRONMENT_LINK_ON_RELEASE_PAGE,
+        {},
+        undefined,
+      );
+    });
+
+    it('on deployment link click', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findDeploymentUrl().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        CLICK_DEPLOYMENT_LINK_ON_RELEASE_PAGE,
+        {},
+        undefined,
+      );
     });
   });
 });

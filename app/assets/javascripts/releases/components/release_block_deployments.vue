@@ -5,6 +5,12 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentTriggerer from '~/environments/environment_details/components/deployment_triggerer.vue';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import {
+  CLICK_EXPAND_DEPLOYMENTS_ON_RELEASE_PAGE,
+  CLICK_ENVIRONMENT_LINK_ON_RELEASE_PAGE,
+  CLICK_DEPLOYMENT_LINK_ON_RELEASE_PAGE,
+} from '../constants';
 
 export default {
   name: 'ReleaseBlockDeployments',
@@ -20,6 +26,7 @@ export default {
     DeploymentStatusLink,
     DeploymentTriggerer,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     deployments: {
       type: Array,
@@ -34,6 +41,16 @@ export default {
   methods: {
     toggleDeploymentsExpansion() {
       this.isDeploymentsExpanded = !this.isDeploymentsExpanded;
+
+      if (this.isDeploymentsExpanded) {
+        this.trackEvent(CLICK_EXPAND_DEPLOYMENTS_ON_RELEASE_PAGE);
+      }
+    },
+    trackEnvironmentLinkClick() {
+      this.trackEvent(CLICK_ENVIRONMENT_LINK_ON_RELEASE_PAGE);
+    },
+    trackDeploymentLinkClick() {
+      this.trackEvent(CLICK_DEPLOYMENT_LINK_ON_RELEASE_PAGE);
     },
   },
   tableFields: [
@@ -98,16 +115,24 @@ export default {
       <div class="gl-pl-6 gl-pt-3">
         <gl-table-lite :items="deployments" :fields="$options.tableFields" stacked="lg">
           <template #cell(environment)="{ item }">
-            <gl-link :href="item.environment.url" data-testid="environment-name"
-              >{{ item.environment.name }}
+            <gl-link
+              :href="item.environment.url"
+              data-testid="environment-name"
+              @click="trackEnvironmentLinkClick"
+            >
+              {{ item.environment.name }}
             </gl-link>
           </template>
           <template #cell(status)="{ item }">
             <deployment-status-link :deployment="item" :status="item.status" />
           </template>
           <template #cell(deploymentId)="{ item }">
-            <gl-link :href="item.deployment.url" data-testid="deployment-url"
-              >{{ item.deployment.id }}
+            <gl-link
+              :href="item.deployment.url"
+              data-testid="deployment-url"
+              @click="trackDeploymentLinkClick"
+            >
+              {{ item.deployment.id }}
             </gl-link>
           </template>
           <template #cell(triggerer)="{ item }">

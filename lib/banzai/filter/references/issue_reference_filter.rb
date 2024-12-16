@@ -22,6 +22,10 @@ module Banzai
         end
 
         def parent_records(parent, ids)
+          # we are treating all group level issues as work items so those would be handled
+          # by the WorkItemReferenceFilter
+          return Issue.none if parent.is_a?(Group)
+
           parent.issues.where(iid: ids.to_a)
                 .includes(:project, :namespace, ::Gitlab::Issues::TypeAssociationGetter.call)
         end

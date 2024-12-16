@@ -6,8 +6,6 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
   shared_examples 'shared examples for database controller endpoints' do
     include_examples 'requires `admin_project_google_cloud` role'
 
-    include_examples 'requires feature flag `incubation_5mp_google_cloud` enabled'
-
     include_examples 'requires valid Google OAuth2 configuration'
 
     include_examples 'requires valid Google Oauth2 token' do

@@ -127,7 +127,6 @@ spec/frontend/boards/components/board_content_spec.js
 spec/frontend/boards/components/board_form_spec.js
 spec/frontend/boards/components/board_options_spec.js
 spec/frontend/boards/components/board_settings_sidebar_spec.js
-spec/frontend/boards/components/board_top_bar_spec.js
 spec/frontend/boards/components/toggle_focus_spec.js
 spec/frontend/boards/project_select_spec.js
 spec/frontend/branches/components/delete_branch_modal_spec.js

@@ -53,7 +53,7 @@ const i18n = {
 
 export default {
   i18n,
-  formElementClasses: 'gl-mr-3 gl-mb-3 gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
+  formElementClasses: 'gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
   // this height value is used inline on the textarea to match the input field height
   // it's used to prevent the overwrite if 'gl-h-7' or '!gl-h-7' were used
   textAreaStyle: { height: '32px' },
@@ -462,16 +462,16 @@ export default {
       />
     </gl-form-group>
 
-    <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />
+    <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
 
-    <gl-form-group v-else class="gl-mb-3" :label="s__('Pipeline|Variables')">
+    <gl-form-group v-else :label="s__('Pipeline|Variables')">
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"
-        class="gl-mb-3 gl-pb-2"
+        class="gl-mb-4"
         data-testid="ci-variable-row-container"
       >
-        <div class="gl-flex gl-flex-col gl-items-stretch md:gl-flex-row">
+        <div class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 md:gl-flex-row">
           <gl-collapsible-listbox
             :items="variableTypeListboxItems"
             :selected="variable.variable_type"
@@ -501,7 +501,6 @@ export default {
             v-else
             v-model="variable.value"
             :placeholder="s__('CiVariables|Input variable value')"
-            class="gl-mb-3"
             :style="$options.textAreaStyle"
             :no-resize="false"
             data-testid="pipeline-form-ci-variable-value-field"
@@ -510,24 +509,25 @@ export default {
           <template v-if="variables.length > 1">
             <gl-button
               v-if="canRemove(index)"
-              class="gl-mb-3 md:gl-ml-3"
+              size="small"
+              class="gl-shrink-0"
               data-testid="remove-ci-variable-row"
               :category="removeButtonCategory"
               :aria-label="$options.i18n.removeVariableLabel"
               @click="removeVariable(index)"
             >
               <gl-icon class="!gl-mr-0" name="remove" />
-              <span class="gl-ml-2 md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
+              <span class="md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
             </gl-button>
             <gl-button
               v-else
-              class="gl-invisible gl-mb-3 gl-hidden md:gl-ml-3 md:gl-block"
+              class="gl-invisible gl-hidden gl-shrink-0 md:gl-block"
               icon="remove"
               :aria-label="$options.i18n.removeVariableLabel"
             />
           </template>
         </div>
-        <div v-if="descriptions[variable.key]" class="gl-mb-3 gl-text-subtle">
+        <div v-if="descriptions[variable.key]" class="gl-text-subtle">
           {{ descriptions[variable.key] }}
         </div>
       </div>

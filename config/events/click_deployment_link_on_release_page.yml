@@ -1,0 +1,18 @@
+---
+description: User clicks on the deployment link on the release page.
+internal_events: true
+action: click_deployment_link_on_release_page
+identifiers:
+  - project
+  - namespace
+  - user
+product_group: environments
+product_categories:
+  - deployment_management
+  - environment_management
+milestone: '17.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175594
+tiers:
+  - free
+  - premium
+  - ultimate

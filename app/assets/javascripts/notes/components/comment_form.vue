@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlIcon, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -16,6 +16,7 @@ import { InternalEvents } from '~/tracking';
 import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
@@ -40,7 +41,7 @@ export default {
     GlAlert,
     GlButton,
     TimelineEntryItem,
-    GlIcon,
+    HelpIcon,
     CommentFieldLayout,
     CommentTypeDropdown,
     GlFormCheckbox,
@@ -398,12 +399,9 @@ export default {
                 data-testid="internal-note-checkbox"
               >
                 {{ $options.i18n.internal }}
-                <gl-icon
+                <help-icon
                   v-gl-tooltip:tooltipcontainer.bottom
-                  name="question-o"
-                  :size="16"
                   :title="$options.i18n.internalVisibility"
-                  class="gl-text-blue-500"
                 />
               </gl-form-checkbox>
               <template v-if="hasDrafts">

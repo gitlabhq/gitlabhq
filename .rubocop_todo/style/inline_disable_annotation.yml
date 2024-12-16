@@ -1705,7 +1705,6 @@ Style/InlineDisableAnnotation:
     - 'lib/api/entities/project_details.rb'
     - 'lib/api/entities/project_integration.rb'
     - 'lib/api/entities/project_with_access.rb'
-    - 'lib/api/features.rb'
     - 'lib/api/group_boards.rb'
     - 'lib/api/groups.rb'
     - 'lib/api/helm_packages.rb'

@@ -3,6 +3,7 @@
 import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
 import { isNumber } from 'lodash';
 import { s__, __ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   EMPTY_PARAMETERS,
   STRATEGY_SELECTIONS,
@@ -23,6 +24,7 @@ export default {
     GlToken,
     NewEnvironmentsDropdown,
     StrategyParameters,
+    HelpIcon,
   },
   inject: {
     strategyTypeDocsPagePath: {
@@ -139,7 +141,7 @@ export default {
             <template #description>
               {{ $options.i18n.strategyTypeDescription }}
               <gl-link :href="strategyTypeDocsPagePath" target="_blank">
-                <gl-icon name="question-o" />
+                <help-icon />
               </gl-link>
             </template>
             <gl-form-select

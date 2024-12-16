@@ -14,6 +14,7 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -24,6 +25,7 @@ export default {
     GlCard,
     GlButton,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: [
     'projectPath',
     'isAdmin',
@@ -66,11 +68,17 @@ export default {
     };
   },
   computed: {
+    featureFlagEnabled() {
+      return this.glFeatures.reorganizeProjectLevelRegistrySettings;
+    },
     isCleanupEnabled() {
       return this.containerTagsExpirationPolicy?.enabled ?? false;
     },
     isEnabled() {
       return this.containerTagsExpirationPolicy || this.enableHistoricEntries;
+    },
+    isLoading() {
+      return this.$apollo.queries.containerTagsExpirationPolicy.loading;
     },
     showDisabledFormMessage() {
       return !this.isEnabled && !this.fetchSettingsError;
@@ -88,7 +96,65 @@ export default {
 </script>
 
 <template>
+  <gl-card v-if="featureFlagEnabled" data-testid="container-expiration-policy-project-settings">
+    <template #header>
+      <header class="gl-flex gl-flex-wrap gl-justify-between">
+        <h2
+          class="gl-m-0 gl-inline-flex gl-items-center gl-text-base gl-font-bold gl-leading-normal"
+        >
+          {{ $options.i18n.CONTAINER_CLEANUP_POLICY_TITLE }}
+        </h2>
+        <gl-button
+          v-if="isEnabled"
+          data-testid="rules-button"
+          :href="cleanupSettingsPath"
+          :loading="isLoading"
+          category="secondary"
+          size="small"
+          variant="confirm"
+        >
+          {{ cleanupRulesButtonText }}
+        </gl-button>
+      </header>
+    </template>
+    <template v-if="isEnabled" #default>
+      <p class="gl-text-subtle" data-testid="description">
+        <gl-sprintf :message="$options.i18n.CONTAINER_CLEANUP_POLICY_DESCRIPTION">
+          <template #link="{ content }">
+            <gl-link :href="helpPagePath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
+      <p v-if="!isCleanupEnabled" data-testid="empty-cleanup-policy" class="gl-mb-0 gl-text-subtle">
+        {{
+          s__(
+            'ContainerRegistry|Registry cleanup disabled. Either no cleanup policies enabled, or this project has no container images.',
+          )
+        }}
+      </p>
+    </template>
+    <template v-else-if="!isLoading" #default>
+      <gl-alert
+        v-if="showDisabledFormMessage"
+        :dismissible="false"
+        :title="$options.i18n.UNAVAILABLE_FEATURE_TITLE"
+        variant="tip"
+      >
+        {{ $options.i18n.UNAVAILABLE_FEATURE_INTRO_TEXT }}
+
+        <gl-sprintf :message="unavailableFeatureMessage">
+          <template #link="{ content }">
+            <gl-link :href="adminSettingsPath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </gl-alert>
+      <gl-alert v-else-if="fetchSettingsError" variant="warning" :dismissible="false">
+        <gl-sprintf :message="$options.i18n.FETCH_SETTINGS_ERROR_MESSAGE" />
+      </gl-alert>
+    </template>
+  </gl-card>
   <settings-section
+    v-else
     :heading="$options.i18n.CONTAINER_CLEANUP_POLICY_TITLE"
     data-testid="container-expiration-policy-project-settings"
   >

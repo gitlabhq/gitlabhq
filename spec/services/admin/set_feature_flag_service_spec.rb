@@ -276,6 +276,17 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         end
       end
 
+      context 'when enabling for a project namespace' do
+        let(:project_namespace) { create(:project_namespace) }
+        let(:params) { { value: 'true', namespace: project_namespace.full_path } }
+
+        it 'returns an error' do
+          expect(Feature).not_to receive(:disable)
+          expect(subject).to be_error
+          expect(subject.reason).to eq(:actor_not_found)
+        end
+      end
+
       context 'when enabling for a user namespace' do
         let(:namespace) { user.namespace }
         let(:params) { { value: 'true', namespace: namespace.full_path } }
@@ -322,6 +333,41 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
           expect(Feature).to receive(:enable).with(feature_name, user)
           expect(Feature).to receive(:enable).with(feature_name, feature_group)
           expect(subject).to be_success
+        end
+      end
+
+      context 'when enabling for multiple actors' do
+        let_it_be(:actor1) { group }
+        let_it_be(:actor2) { create(:group) }
+
+        context 'when passed as comma separated string' do
+          let(:params) { { value: 'true', group: "#{actor1.full_path},#{actor2.full_path}" } }
+
+          it 'enables the feature flag for all actors' do
+            expect(Feature).to receive(:enable).with(feature_name, actor1)
+            expect(Feature).to receive(:enable).with(feature_name, actor2)
+            expect(subject).to be_success
+          end
+        end
+
+        context 'when empty value exists between comma' do
+          let(:params) { { value: 'true', group: "#{actor1.full_path},#{actor2.full_path},,," } }
+
+          it 'enables the feature flag for all actors' do
+            expect(Feature).to receive(:enable).with(feature_name, actor1)
+            expect(Feature).to receive(:enable).with(feature_name, actor2)
+            expect(subject).to be_success
+          end
+        end
+
+        context 'when one of the actors does not exist' do
+          let(:params) { { value: 'true', group: "#{actor1.full_path},nonexistent-actor" } }
+
+          it 'does not enable the feature flags' do
+            expect(Feature).not_to receive(:enable)
+            expect(subject).to be_error
+            expect(subject.message).to eq('nonexistent-actor is not found!')
+          end
         end
       end
 
@@ -438,6 +484,16 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         it 'disables the feature flag' do
           expect(Feature).to receive(:disable).with(feature_name, project)
           expect(subject).to be_success
+        end
+
+        context 'when project does not exist' do
+          let(:params) { { value: 'false', project: 'unknown-project' } }
+
+          it 'returns an error' do
+            expect(Feature).not_to receive(:disable)
+            expect(subject).to be_error
+            expect(subject.reason).to eq(:actor_not_found)
+          end
         end
       end
 

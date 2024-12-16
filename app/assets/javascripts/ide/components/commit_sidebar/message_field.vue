@@ -1,12 +1,13 @@
 <script>
-import { GlIcon, GlPopover } from '@gitlab/ui';
+import { GlPopover } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { MAX_TITLE_LENGTH, MAX_BODY_LENGTH } from '../../constants';
 
 export default {
   components: {
-    GlIcon,
     GlPopover,
+    HelpIcon,
   },
   props: {
     text: {
@@ -81,8 +82,8 @@ export default {
           <li>
             {{ __('Commit Message') }}
             <div id="ide-commit-message-popover-container">
-              <span id="ide-commit-message-question" class="form-text gl-ml-3 gl-text-subtle">
-                <gl-icon name="question-o" />
+              <span id="ide-commit-message-question" class="form-text gl-ml-3">
+                <help-icon />
               </span>
               <gl-popover
                 target="ide-commit-message-question"

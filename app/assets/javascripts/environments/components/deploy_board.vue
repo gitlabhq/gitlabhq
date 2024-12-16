@@ -8,18 +8,12 @@
  * - Button Actions.
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-foss/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
  */
-import {
-  GlIcon,
-  GlLoadingIcon,
-  GlLink,
-  GlTooltip,
-  GlTooltipDirective,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlLink, GlTooltip, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import InstanceComponent from '~/vue_shared/components/deployment_instance.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { STATUS_MAP, CANARY_STATUS } from '../constants';
 import CanaryIngress from './canary_ingress.vue';
 
@@ -27,11 +21,11 @@ export default {
   components: {
     InstanceComponent,
     CanaryIngress,
-    GlIcon,
     GlLoadingIcon,
     GlLink,
     GlSprintf,
     GlTooltip,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -154,7 +148,7 @@ export default {
                 >{{ instanceTitle }} ({{ instanceCount }})</span
               >
               <span ref="legend-icon" data-testid="legend-tooltip-target">
-                <gl-icon class="gl-ml-2" name="question-o" variant="info" />
+                <help-icon class="gl-ml-2" />
               </span>
               <gl-tooltip :target="() => $refs['legend-icon']" boundary="#content-body">
                 <div class="deploy-board-legend gl-flex gl-flex-col">

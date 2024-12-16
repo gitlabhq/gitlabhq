@@ -29,7 +29,7 @@ module Projects
 
       yield if block_given?
 
-      validate_classification_label(project, :external_authorization_classification_label)
+      validate_classification_label_param!(project, :external_authorization_classification_label)
 
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?

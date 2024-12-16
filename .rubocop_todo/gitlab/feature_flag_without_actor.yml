@@ -143,7 +143,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/lib/search/zoekt/circuit_breaker.rb'
     - 'ee/spec/lib/gitlab/product_analytics/developments/setup_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
-    - 'lib/api/features.rb'
     - 'lib/api/helpers/packages/dependency_proxy_helpers.rb'
     - 'lib/api/integrations.rb'
     - 'lib/api/internal/base.rb'

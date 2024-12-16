@@ -788,6 +788,8 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           .to receive(:access_allowed?).with(user, 'default_label') { true }
 
         update_project(project, user, { external_authorization_classification_label: '' })
+
+        expect(project.reload.external_authorization_classification_label).to eq('default_label')
       end
 
       it 'does not check the label when it does not change' do

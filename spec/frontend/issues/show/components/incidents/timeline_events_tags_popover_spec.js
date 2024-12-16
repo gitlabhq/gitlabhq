@@ -1,7 +1,8 @@
 import { nextTick } from 'vue';
-import { GlIcon, GlPopover, GlLink } from '@gitlab/ui';
+import { GlPopover, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import TimelineEventsTagsPopover from '~/issues/show/components/incidents/timeline_events_tags_popover.vue';
 
 describe('TimelineEventsTagsPopover component', () => {
@@ -19,7 +20,7 @@ describe('TimelineEventsTagsPopover component', () => {
     mountComponent();
   });
 
-  const findQuestionIcon = () => wrapper.findComponent(GlIcon);
+  const findQuestionIcon = () => wrapper.findComponent(HelpIcon);
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findDocumentationLink = () => findPopover().findComponent(GlLink);
 

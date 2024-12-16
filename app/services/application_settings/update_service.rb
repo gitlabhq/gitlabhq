@@ -19,7 +19,7 @@ module ApplicationSettings
     private
 
     def update_settings
-      validate_classification_label(application_setting, :external_authorization_service_default_label) unless bypass_external_auth?
+      validate_classification_label_param!(application_setting, :external_authorization_service_default_label) unless bypass_external_auth?
 
       if application_setting.errors.any?
         return false

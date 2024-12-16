@@ -10,10 +10,8 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
       href="/foo/bar"
       target="_blank"
     >
-      <gl-icon-stub
-        name="question-o"
-        size="12"
-        variant="current"
+      <help-icon-stub
+        size="small"
       />
     </gl-link-stub>
   </label>

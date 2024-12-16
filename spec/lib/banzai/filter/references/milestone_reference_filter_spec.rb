@@ -33,8 +33,13 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       doc = reference_filter("Milestone #{reference}")
       link = doc.css('a').first
 
-      expect(link).to have_attribute('data-project')
-      expect(link.attr('data-project')).to eq project.id.to_s
+      if milestone.project.present?
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      elsif milestone.group.present?
+        expect(link).to have_attribute('data-group')
+        expect(link.attr('data-group')).to eq milestone.group.id.to_s
+      end
     end
 
     it 'includes a data-milestone attribute' do
@@ -153,8 +158,13 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       doc = reference_filter("Milestone #{link_reference}")
       link = doc.css('a').first
 
-      expect(link).to have_attribute('data-project')
-      expect(link.attr('data-project')).to eq project.id.to_s
+      if milestone.project.present?
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      elsif milestone.group.present?
+        expect(link).to have_attribute('data-group')
+        expect(link.attr('data-group')).to eq milestone.group.id.to_s
+      end
     end
 
     it 'includes a data-milestone attribute' do

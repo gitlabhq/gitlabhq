@@ -35,19 +35,6 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController, feature_category: :d
     end
   end
 
-  RSpec.shared_examples "should track feature_flag_disabled event" do |user|
-    it "tracks event" do
-      is_expected.to be(404)
-      expect_snowplow_event(
-        category: 'Projects::GoogleCloud::GcpRegionsController',
-        action: 'error_feature_flag_not_enabled',
-        label: nil,
-        project: project,
-        user: user_maintainer
-      )
-    end
-  end
-
   RSpec.shared_examples "should track gcp_error event" do |config|
     it "tracks event" do
       is_expected.to be(403)
@@ -115,15 +102,6 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController, feature_category: :d
 
         it_behaves_like "should be forbidden"
         it_behaves_like "should track gcp_error event", unconfigured_google_oauth2
-      end
-
-      context 'but feature flag is disabled' do
-        before do
-          stub_feature_flags(incubation_5mp_google_cloud: false)
-        end
-
-        it_behaves_like "should be not found"
-        it_behaves_like "should track feature_flag_disabled event"
       end
     end
   end

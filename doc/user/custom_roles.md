@@ -273,6 +273,7 @@ and do not use a seat.
 ## Assign a custom role to an invited group
 
 > - Support for custom roles for invited groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) in GitLab 17.4 behind a feature flag named `assign_custom_roles_to_group_links_sm`. Disabled by default.
+> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/471999) in GitLab 17.4.
 
 FLAG:
 The availability of this feature is controlled by a feature flag. For more information, see the history.

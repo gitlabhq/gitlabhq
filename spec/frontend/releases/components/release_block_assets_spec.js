@@ -4,7 +4,8 @@ import { assets } from 'test_fixtures/api/releases/release.json';
 import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockAssets from '~/releases/components/release_block_assets.vue';
-import { ASSET_LINK_TYPE } from '~/releases/constants';
+import { ASSET_LINK_TYPE, CLICK_EXPAND_ASSETS_ON_RELEASE_PAGE } from '~/releases/constants';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 describe('Release block assets', () => {
   let wrapper;
@@ -26,6 +27,7 @@ describe('Release block assets', () => {
 
   const findSectionHeading = (type) =>
     wrapper.findAll('h5').filter((h5) => h5.text() === sections[type]);
+  const findAccordionButton = () => wrapper.find('[data-testid="accordion-button"]');
 
   beforeEach(() => {
     defaultProps = { assets: convertObjectPropsToCamelCase(assets, { deep: true }) };
@@ -33,8 +35,6 @@ describe('Release block assets', () => {
 
   describe('with default props', () => {
     beforeEach(() => createComponent());
-
-    const findAccordionButton = () => wrapper.find('[data-testid="accordion-button"]');
 
     it('renders an "Assets" accordion with the asset count', () => {
       const accordionButton = findAccordionButton();
@@ -141,6 +141,25 @@ describe('Release block assets', () => {
 
     it('renders with an external source indicator', () => {
       expect(findAllExternalIcons()).toHaveLength(defaultProps.assets.count);
+    });
+  });
+
+  describe('sends tracking event data', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(() => createComponent({ ...defaultProps, expanded: false }));
+
+    it('on expand', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findAccordionButton().trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        CLICK_EXPAND_ASSETS_ON_RELEASE_PAGE,
+        {},
+        undefined,
+      );
     });
   });
 });

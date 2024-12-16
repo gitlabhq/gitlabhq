@@ -350,10 +350,8 @@ export default {
 </script>
 
 <template>
-  <div
-    class="vue-filtered-search-bar-container gl-flex gl-min-w-0 gl-flex-col sm:gl-flex-row sm:gl-gap-3"
-  >
-    <div class="flex-grow-1 gl-flex gl-gap-3">
+  <div class="vue-filtered-search-bar-container gl-flex gl-flex-col sm:gl-flex-row sm:gl-gap-3">
+    <div class="flex-grow-1 gl-flex gl-min-w-0 gl-gap-3">
       <gl-form-checkbox
         v-if="showCheckbox"
         class="gl-min-h-0 gl-self-center"

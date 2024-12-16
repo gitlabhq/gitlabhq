@@ -149,6 +149,12 @@ Combine entries if they happened in the same release:
   > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://issue-link) in GitLab 14.3.
   ```
 
+If the feature flag is introduced and enabled in the same release, combine the entries:
+
+```markdown
+> - [Introduced](https://issue-link) in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Enabled by default.
+```
+
 Delete `Enabled on GitLab.com` entries only when the feature is enabled by default for all offerings and the flag is removed:
 
 - Before:
