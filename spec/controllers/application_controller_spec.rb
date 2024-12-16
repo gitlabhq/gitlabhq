@@ -1139,19 +1139,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
           .to raise_error(ActionController::InvalidAuthenticityToken)
       end
     end
-
-    controller(described_class) do
-      self.allow_forgery_protection = true
-      skip_before_action :authenticate_user!
-
-      def create; end
-    end
-
-    it 'returns a 403' do
-      post :create
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-    end
   end
 
   describe '#after_sign_in_path_for' do

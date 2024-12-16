@@ -242,7 +242,7 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
         post_graphql(query, headers: { 'X-CSRF-Token' => 'invalid' })
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
 
       it 'authenticates a user with a valid session token' do
@@ -313,6 +313,30 @@ RSpec.describe 'GraphQL', feature_category: :shared do
         post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
         expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+      end
+
+      context 'when two-factor authentication is required' do
+        before do
+          stub_application_setting(require_two_factor_authentication: true)
+        end
+
+        it 'does not enforce 2FA' do
+          post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+          expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+        end
+
+        context 'when fix_graphql_csrf is disabled' do
+          before do
+            stub_feature_flags(fix_graphql_csrf: false)
+          end
+
+          it 'does not enforce 2FA' do
+            post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+            expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+          end
+        end
       end
 
       context 'when user also has a valid session' do

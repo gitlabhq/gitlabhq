@@ -13,6 +13,9 @@ class GraphqlController < ApplicationController
   skip_before_action :verify_authenticity_token, if: -> {
     Feature.enabled?(:fix_graphql_csrf, Feature.current_request) && (current_user.nil? || sessionless_user?)
   }
+  skip_before_action :check_two_factor_requirement, if: -> {
+    Feature.enabled?(:fix_graphql_csrf, Feature.current_request) && sessionless_user?
+  }
 
   # Header can be passed by tests to disable SQL query limits.
   DISABLE_SQL_QUERY_LIMIT_HEADER = 'HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'
@@ -106,7 +109,7 @@ class GraphqlController < ApplicationController
   # `rescue_from StandardError` above would prevent these from bubbling up to ApplicationController.
   # These also return errors in a JSON format similar to GraphQL errors.
   rescue_from ActionController::InvalidAuthenticityToken do |exception|
-    render_error(exception.message, status: :forbidden)
+    render_error(exception.message, status: :unprocessable_entity)
   end
 
   rescue_from Gitlab::Auth::TooManyIps do |exception|

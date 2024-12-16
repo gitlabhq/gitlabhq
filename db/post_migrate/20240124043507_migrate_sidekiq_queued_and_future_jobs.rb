@@ -4,6 +4,8 @@ class MigrateSidekiqQueuedAndFutureJobs < Gitlab::Database::Migration[2.2]
   milestone '16.10'
   disable_ddl_transaction!
 
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   class SidekiqMigrateJobs
     LOG_FREQUENCY_QUEUES = 10
     LOG_FREQUENCY = 1000

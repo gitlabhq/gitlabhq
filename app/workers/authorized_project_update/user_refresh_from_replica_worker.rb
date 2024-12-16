@@ -7,7 +7,7 @@ module AuthorizedProjectUpdate
     sidekiq_options retry: 3
     feature_category :permissions
     urgency :low
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- will change to sticky with feature-flag
+    data_consistency :delayed, feature_flag: :change_data_consistency_for_permissions_workers
     queue_namespace :authorized_project_update
 
     idempotent!
@@ -25,10 +25,6 @@ module AuthorizedProjectUpdate
 
     private
 
-    # We use this approach instead of specifying `data_consistency :delayed` because these jobs
-    # are enqueued in large numbers, and using `data_consistency :delayed`
-    # does not allow us to deduplicate these jobs.
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/325291
     def use_replica_if_available(&block)
       ::Gitlab::Database::LoadBalancing::SessionMap
         .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord])
