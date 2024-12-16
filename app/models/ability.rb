@@ -92,6 +92,8 @@ class Ability
       identity = ::Gitlab::Auth::Identity.fabricate(user)
 
       if identity.present? && identity.composite?
+        return false unless identity.valid?
+
         result && allowed?(identity.scoped_user, ability, subject, **opts)
       else
         result

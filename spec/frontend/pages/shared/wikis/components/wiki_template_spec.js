@@ -24,10 +24,16 @@ describe('WikiTemplate', () => {
   const createComponent = (props = {}, mountFn = shallowMount) => {
     wrapper = mountFn(WikiTemplate, {
       propsData: { ...defaultProps, ...props },
+      provide: {
+        templatesUrl: 'https://example.com',
+      },
     });
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+
+  const findManageTemplatesButton = () =>
+    wrapper.findComponent('[data-testid="manage-templates-link"]');
 
   it('renders a GlCollapsibleListbox with templates as items', () => {
     createComponent();
@@ -49,6 +55,13 @@ describe('WikiTemplate', () => {
         .props('items')
         .map((item) => item.text),
     ).toEqual(expectedItems);
+  });
+
+  it('shows a link to the templates page in the dropdown footer', () => {
+    createComponent();
+
+    expect(findManageTemplatesButton().exists()).toBe(true);
+    expect(findManageTemplatesButton().attributes('href')).toBe('https://example.com');
   });
 
   it('prevents xss by escaping template names before inserting in DOM', () => {

@@ -983,8 +983,35 @@ The `ai-model-validation` team created the following library to evaluate the per
 
 For evaluation in merge request pipelines, we use:
 
-- One click [Duo Chat evaluation](https://gitlab.com/gitlab-org/gitlab/-/issues/497305)
+- One click [Duo Chat evaluation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner)
 - Automated evaluation in [merge request pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/495410)
+
+#### Seed project and group resources for testing and evaluation
+
+To seed project and group resources for testing and evaluation, run the following command:
+
+```shell
+FILTER=gitlab_duo bundle exec rake db:seed_fu
+```
+
+This command executes the [development seed file](../development_seed_files.md) for GitLab Duo, which creates `gitlab-duo` group in your GDK.
+
+This command is responsible for seeding group and project resources for testing GitLab Duo features.
+It's mainly used by the following scenarios:
+
+- Developers or UX designers have a local GDK but don't know how to set up the group and project resources to test a feature in UI.
+- Evaluators (e.g. CEF) have input dataset that refers to a group or project resource e.g. (`Summarize issue #123` requires a corresponding issue record in PosstgreSQL)
+
+Currently, the input dataset of evaluators and this development seed file are managed seaprately.
+To ensure that the integration keeps working, this seeder has to create the **same** group/project resources every time.
+For example, ID and IID of the inserted PostgreSQL records must be the same every time we run this seeding process.
+
+These fixtures are depended by the following projects:
+
+- [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+- [Evaluation Runner](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner)
+
+See [this architecture doc](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner/-/blob/main/docs/architecture.md) for more information.
 
 #### Local Development
 

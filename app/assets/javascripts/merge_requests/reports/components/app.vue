@@ -1,17 +1,18 @@
 <script>
-import { GlIcon, GlBadge } from '@gitlab/ui';
 import {
   BLOCKERS_ROUTE,
   CODE_QUALITY_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   SECURITY_ROUTE,
 } from '../constants';
+import ReportListItem from './report_list_item.vue';
 
 export default {
   name: 'MergeRequestReportsApp',
   components: {
-    GlIcon,
-    GlBadge,
+    ReportListItem,
+    BlockersListItem: () =>
+      import('ee_component/merge_requests/reports/components/blockers_list_item.vue'),
   },
   routeNames: {
     BLOCKERS_ROUTE,
@@ -19,6 +20,7 @@ export default {
     SECURITY_ROUTE,
     LICENSE_COMPLIANCE_ROUTE,
   },
+  inject: ['hasPolicies'],
   data() {
     return {
       blockersCounter: 2,
@@ -34,76 +36,17 @@ export default {
       class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 md:gl-border-r md:gl-border-0 md:gl-pr-5"
     >
       <nav>
-        <router-link
-          :to="{ name: $options.routeNames.BLOCKERS_ROUTE }"
-          active-class="gl-font-bold gl-bg-gray-50"
-          exact
-          class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-gray-50 hover:gl-text-default hover:gl-no-underline"
-        >
-          <span class="gl-mr-3 gl-flex gl-rounded-full gl-bg-red-100 gl-p-2">
-            <gl-icon class="gl-rounded-full gl-bg-white gl-text-red-500" name="status-failed" />
-          </span>
-          {{ s__('MrReports|Blockers') }}
-          <gl-badge class="gl-ml-auto gl-mr-2" variant="neutral"
-            ><span data-testid="blockers-counter" class="gl-font-bold">{{
-              blockersCounter
-            }}</span></gl-badge
-          >
-        </router-link>
-        <div class="gl-border-t gl-mt-2 gl-border-default gl-pt-1">
-          <h3
-            class="gl-heading-6 gl-mb-0 gl-py-3 gl-pl-3 gl-text-sm gl-font-[700] gl-leading-normal"
-          >
-            {{ s__('MrReports|All reports') }}
-          </h3>
-          <ul class="gl-m-0 gl-list-none gl-p-0">
-            <li class="gl-my-1">
-              <router-link
-                :to="{ name: $options.routeNames.CODE_QUALITY_ROUTE }"
-                active-class="gl-font-bold gl-bg-gray-50"
-                class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-gray-50 hover:gl-text-default hover:gl-no-underline"
-              >
-                <span class="gl-mr-3 gl-flex gl-p-2">
-                  <gl-icon
-                    class="gl-rounded-full gl-bg-white gl-text-orange-500"
-                    name="status-alert"
-                  />
-                </span>
-                {{ s__('MrReports|Code quality') }}
-              </router-link>
-            </li>
-            <li class="gl-my-1">
-              <router-link
-                :to="{ name: $options.routeNames.SECURITY_ROUTE }"
-                active-class="gl-font-bold gl-bg-gray-50"
-                class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-gray-50 hover:gl-text-default hover:gl-no-underline"
-              >
-                <span class="gl-mr-3 gl-flex gl-p-2">
-                  <gl-icon
-                    class="gl-rounded-full gl-bg-white gl-text-red-500"
-                    name="status-failed"
-                  />
-                </span>
-                {{ s__('MrReports|Security') }}
-              </router-link>
-            </li>
-            <li class="gl-my-1">
-              <router-link
-                :to="{ name: $options.routeNames.LICENSE_COMPLIANCE_ROUTE }"
-                active-class="gl-font-bold gl-bg-gray-50"
-                class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-gray-50 hover:gl-text-default hover:gl-no-underline"
-              >
-                <span class="gl-mr-3 gl-flex gl-p-2">
-                  <gl-icon
-                    class="gl-rounded-full gl-bg-white gl-text-red-500"
-                    name="status-failed"
-                  />
-                </span>
-                {{ s__('MrReports|License Compliance') }}
-              </router-link>
-            </li>
-          </ul>
-        </div>
+        <blockers-list-item v-if="hasPolicies" />
+        <h3 class="gl-heading-6 gl-mb-0 gl-py-3 gl-pl-3 gl-text-sm gl-font-[700] gl-leading-normal">
+          {{ s__('MrReports|All reports') }}
+        </h3>
+        <ul class="gl-m-0 gl-list-none gl-p-0">
+          <li class="gl-my-1">
+            <report-list-item :to="$options.routeNames.CODE_QUALITY_ROUTE" status-icon="warning">
+              {{ s__('MrReports|Code quality') }}
+            </report-list-item>
+          </li>
+        </ul>
       </nav>
     </aside>
     <section class="md:gl-pt-5">

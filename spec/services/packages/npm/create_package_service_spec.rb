@@ -379,9 +379,14 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let_it_be(:project_developer) { create(:user, developer_of: project) }
       let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
       let_it_be(:project_owner) { project.owner }
-      let_it_be(:project_admin) { create(:admin) }
+      let_it_be(:instance_admin) { create(:admin) }
 
       let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
+
+      before do
+        package_protection_rule.update!(package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push)
+      end
 
       shared_examples 'protected package' do
         it_behaves_like 'returning an error service response', message: 'Package protected.' do
@@ -400,23 +405,18 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       where(:package_name_pattern, :minimum_access_level_for_push, :user, :shared_examples_name) do
         ref(:package_name)                  | :maintainer | ref(:project_developer)  | 'protected package'
         ref(:package_name)                  | :maintainer | ref(:project_owner)      | 'valid package'
-        ref(:package_name)                  | :maintainer | ref(:project_admin)      | 'valid package'
+        ref(:package_name)                  | :maintainer | ref(:instance_admin)     | 'valid package'
         ref(:package_name)                  | :owner      | ref(:project_maintainer) | 'protected package'
         ref(:package_name)                  | :owner      | ref(:project_owner)      | 'valid package'
-        ref(:package_name)                  | :owner      | ref(:project_admin)      | 'valid package'
+        ref(:package_name)                  | :owner      | ref(:instance_admin)     | 'valid package'
         ref(:package_name)                  | :admin      | ref(:project_owner)      | 'protected package'
-        ref(:package_name)                  | :admin      | ref(:project_admin)      | 'valid package'
+        ref(:package_name)                  | :admin      | ref(:instance_admin)     | 'valid package'
 
         ref(:package_name_pattern_no_match) | :owner      | ref(:project_owner)      | 'valid package'
         ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)      | 'valid package'
       end
 
       with_them do
-        before do
-          package_protection_rule.update!(package_name_pattern: package_name_pattern,
-            minimum_access_level_for_push: minimum_access_level_for_push)
-        end
-
         it_behaves_like params[:shared_examples_name]
       end
 
@@ -435,11 +435,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         end
 
         with_them do
-          before do
-            package_protection_rule.update!(package_name_pattern: package_name_pattern,
-              minimum_access_level_for_push: minimum_access_level_for_push)
-          end
-
           it_behaves_like params[:shared_examples_name]
         end
       end

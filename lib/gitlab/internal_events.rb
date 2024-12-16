@@ -27,6 +27,20 @@ module Gitlab
         event_definition.extra_tracking_classes.each do |tracking_class|
           tracking_class.track_event(event_name, **kwargs)
         end
+
+      rescue StandardError => e
+        extra = {}
+        kwargs.each_key do |k|
+          extra[k] = kwargs[k].is_a?(::ApplicationRecord) ? kwargs[k].try(:id) : kwargs[k]
+        end
+
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          e,
+          event_name: event_name,
+          additional_properties: additional_properties,
+          kwargs: extra
+        )
+        nil
       end
 
       private
@@ -42,21 +56,9 @@ module Gitlab
         trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs) if send_snowplow_event
         send_application_instrumentation_event(event_name, base_additional_properties, kwargs) if send_snowplow_event
 
-        if Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
-          create_early_access_program_event(event_name, category, additional_properties[:label], kwargs)
-        end
-      rescue StandardError => e
-        extra = {}
-        kwargs.each_key do |k|
-          extra[k] = kwargs[k].is_a?(::ApplicationRecord) ? kwargs[k].try(:id) : kwargs[k]
-        end
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
-          e,
-          event_name: event_name,
-          additional_properties: additional_properties,
-          kwargs: extra
-        )
-        nil
+        return unless Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
+
+        create_early_access_program_event(event_name, category, additional_properties[:label], kwargs)
       end
 
       def update_redis_values(event_name, additional_properties, kwargs)

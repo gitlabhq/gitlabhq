@@ -353,7 +353,10 @@ and [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427251).
 
 The current QA evaluation test consists of the following components.
 
-#### Epic and issue fixtures
+#### (Deprecated) Epic and issue fixtures
+
+NOTE:
+This section is deprecated in favor of the [development seed file](index.md#seed-project-and-group-resources-for-testing-and-evaluation).
 
 The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
 The internal notes were excluded when they were sampled. The fixtures have been committed into the canonical `gitlab` repository.
@@ -588,7 +591,10 @@ the single source of truth and should be the most up-to-date.
 
 Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
 
-### Issue and epic experiments
+### (Deprecated) Issue and epic experiments
+
+NOTE:
+This section is deprecated in favor of the [development seed file](index.md#seed-project-and-group-resources-for-testing-and-evaluation).
 
 If you would like to use the evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
 you can import the required groups and projects using this Rake task:

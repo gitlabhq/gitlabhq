@@ -475,7 +475,7 @@ export default {
           </gl-form-select>
         </gl-form-group>
       </div>
-      <div v-if="!isTemplate && templates.length" class="col-sm-6">
+      <div v-if="!isTemplate" class="col-sm-6">
         <gl-form-group :label="$options.i18n.template.label" label-for="wiki_template">
           <wiki-template :format="format" :templates="templates" @input="setTemplate" />
         </gl-form-group>

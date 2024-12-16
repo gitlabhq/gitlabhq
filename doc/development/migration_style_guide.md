@@ -466,6 +466,22 @@ To update a migration timestamp:
 1. Delete the migration file.
 1. Recreate the migration following the [migration style guide](#choose-an-appropriate-migration-type).
 
+Alternatively, you can use this script to refresh all migration timestamps:
+
+```shell
+scripts/refresh-migrations-timestamps
+```
+
+This script:
+
+1. Updates all migration timestamps to be current
+1. Maintains the relative order of the migrations
+1. Updates both the filename and the timestamp within the migration class
+1. Handles both regular and post-deployment migrations
+
+NOTE:
+Run this script before merging if your migrations have been in review for a long time (_> 3 weeks_) or when rebasing old migration branches.
+
 ## Migration helpers and versioning
 
 Various helper methods are available for many common patterns in database migrations. Those

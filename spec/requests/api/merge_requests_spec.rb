@@ -2703,18 +2703,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
             expect(response).to have_gitlab_http_status(:created)
           end
-
-          context 'when composite identity has not been passed to Sidekiq' do
-            before do
-              allow(::Gitlab::Auth::Identity).to receive(:sidekiq_restore!)
-            end
-
-            it 'raises an error' do
-              post api("/projects/#{project.id}/merge_requests", user), params: params
-
-              expect(response).to have_gitlab_http_status(:forbidden)
-            end
-          end
         end
 
         context 'when scoped user can not create a merge request' do

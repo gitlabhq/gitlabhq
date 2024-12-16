@@ -16,6 +16,13 @@ RSpec.shared_examples 'user applies wiki templates' do
     expect(page).to have_css("li", text: "Template title 2")
   end
 
+  it 'shows a link to the templates page' do
+    click_on "Choose a template"
+
+    expect(find_by_testid('manage-templates-link')).to be_present
+    expect(find_by_testid('manage-templates-link')[:href]).to end_with(wiki_page_path(wiki, Wiki::TEMPLATES_DIR))
+  end
+
   it 'applies the template on select' do
     click_on "Choose a template"
     page.find("li", text: "Template title 1").click

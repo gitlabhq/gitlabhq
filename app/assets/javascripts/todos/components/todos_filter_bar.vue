@@ -480,6 +480,7 @@ export default {
         @clear="onFiltersCleared"
       />
       <gl-sorting
+        data-testid="todos-sorting"
         class="gl-flex"
         dropdown-class="gl-w-full"
         block

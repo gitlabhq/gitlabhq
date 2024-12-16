@@ -128,6 +128,12 @@ workflow:
     - download-knapsack-report
   parallel: 10
 
+.cng-test-no-parallel:
+  extends: .cng-test
+  needs:
+    - build-cng
+    - download-knapsack-report
+
 # ==========================================
 # Pre stage
 # ==========================================
@@ -169,6 +175,13 @@ cng-instance:
     - if: $QA_SUITES !~ /Test::Instance::All/
       when: never
     - !reference [.rules:full, rules]
+
+cng-registry:
+  extends: .cng-test-no-parallel
+  variables:
+    DEPLOYMENT_TYPE: kind
+    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
+    QA_SCENARIO: Test::Integration::Registry
 
 cng-instance-selective-parallel:
   extends: .cng-test-parallel

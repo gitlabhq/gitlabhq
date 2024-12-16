@@ -46,8 +46,8 @@ RSpec.describe Gitlab::Cng::Deployment::ResourcePresets do
       },
       registry: {
         resources: {
-          requests: { cpu: "40m", memory: "20Mi" },
-          limits: { cpu: "40m", memory: "20Mi" }
+          requests: { cpu: "50m", memory: "100Mi" },
+          limits: { cpu: "50m", memory: "100Mi" }
         },
         hpa: {
           minReplicas: 1,
@@ -132,8 +132,8 @@ RSpec.describe Gitlab::Cng::Deployment::ResourcePresets do
       },
       registry: {
         resources: {
-          requests: { cpu: "50m", memory: "32Mi" },
-          limits: { cpu: "50m", memory: "32Mi" }
+          requests: { cpu: "100m", memory: "200Mi" },
+          limits: { cpu: "100m", memory: "200Mi" }
         },
         hpa: {
           minReplicas: 1,

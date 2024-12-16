@@ -377,10 +377,6 @@ namespace_details:
   - table: users
     column: creator_id
     on_delete: async_nullify
-namespaces:
-  - table: organizations
-    column: organization_id
-    on_delete: async_delete
 notes:
   - table: vulnerabilities
     column: noteable_id

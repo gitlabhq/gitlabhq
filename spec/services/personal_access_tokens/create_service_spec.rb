@@ -76,7 +76,17 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid] } }
       let(:service) { described_class.new(current_user: user, organization_id: organization.id, target_user: user, params: params) }
 
-      it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
+      context 'when buffered token length flag is disabled' do
+        before do
+          stub_feature_flags(buffered_token_expiration_limit: false)
+        end
+
+        it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
+      end
+
+      context 'when buffered token length flag is enabled' do
+        it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED.days.from_now.to_date }
+      end
 
       context 'when require_personal_access_token_expiry is set to false' do
         before do

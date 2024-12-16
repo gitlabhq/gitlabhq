@@ -11,8 +11,11 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillGroupWikiActivityEvents, fea
 
   let(:organization) { organizations.create!(name: 'Foobar', path: 'path1') }
   let(:user) { table(:users).create!(email: 'user1@example.com', projects_limit: 10) }
-  let(:group) { namespaces.create!(type: 'Group', name: 'group1', path: 'path1') }
-  let(:other_group) { namespaces.create!(type: 'Group', name: 'group2', path: 'path2') }
+  let(:group) { namespaces.create!(type: 'Group', name: 'group1', path: 'path1', organization_id: organization.id) }
+  let(:other_group) do
+    namespaces.create!(type: 'Group', name: 'group2', path: 'path2', organization_id: organization.id)
+  end
+
   let(:project) do
     projects.create!(namespace_id: group.id, project_namespace_id: group.id, organization_id: organization.id)
   end

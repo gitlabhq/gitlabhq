@@ -3,15 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnerMachinesPartitionedTable,
-  feature_category: :fleet_visibility,
-  schema: 20241107064635,
-  migration: :gitlab_ci do
+  feature_category: :fleet_visibility, migration: :gitlab_ci do
   let(:connection) { Ci::ApplicationRecord.connection }
 
   describe '#perform' do
-    let(:runners) { table(:ci_runners) }
-    let(:runner_managers) { table(:ci_runner_machines) }
-    let(:partitioned_runner_managers) { table(:ci_runner_machines_687967fa8a) }
+    let(:runners) { table(:ci_runners, database: :ci) }
+    let(:runner_managers) { table(:ci_runner_machines, database: :ci) }
+    let(:partitioned_runner_managers) { table(:ci_runner_machines_687967fa8a, database: :ci) }
     let(:args) do
       min, max = runner_managers.pick('MIN(id)', 'MAX(id)')
 
@@ -28,36 +26,33 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnerMachinesPartitionedT
     end
 
     before do
-      # Don't sync records to partitioned table
-      connection.execute <<~SQL
-        DROP TRIGGER table_sync_trigger_61879721b5 ON ci_runners;
-        DROP TRIGGER table_sync_trigger_bc3e7b56bd ON ci_runner_machines;
-      SQL
-
       create_runner_and_runner_manager(runner_type: 1, system_xid: 'system1')
       create_runner_and_runner_manager(runner_type: 2, sharding_key_id: 89, system_xid: 'system2')
-      create_runner_and_runner_manager(runner_type: 2, sharding_key_id: nil, system_xid: 'system3')
       create_runner_and_runner_manager(runner_type: 3, sharding_key_id: 10, system_xid: 'system2')
-      create_runner_and_runner_manager(runner_type: 3, sharding_key_id: nil, system_xid: 'system1')
       create_runner_and_runner_manager(runner_type: 3, sharding_key_id: 100, system_xid: 'system3')
 
-    ensure
-      connection.execute <<~SQL
-        CREATE TRIGGER table_sync_trigger_bc3e7b56bd
-        AFTER INSERT OR DELETE OR UPDATE ON ci_runner_machines
-        FOR EACH ROW
-        EXECUTE FUNCTION table_sync_function_686d6c7993 ();
+      # Don't sync records to partitioned table
+      connection.transaction do
+        connection.execute(<<~SQL)
+          ALTER TABLE ci_runners DISABLE TRIGGER ALL;
+          ALTER TABLE ci_runner_machines DISABLE TRIGGER ALL;
+        SQL
 
-        CREATE TRIGGER table_sync_trigger_61879721b5
-        AFTER INSERT OR DELETE OR UPDATE ON ci_runners
-        FOR EACH ROW
-        EXECUTE FUNCTION table_sync_function_686d6c7993 ();
-      SQL
+        create_runner_and_runner_manager(runner_type: 3, sharding_key_id: nil, system_xid: 'system1')
+        create_runner_and_runner_manager(runner_type: 2, sharding_key_id: nil, system_xid: 'system3')
+
+        connection.execute(<<~SQL)
+          ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+          ALTER TABLE ci_runner_machines ENABLE TRIGGER ALL;
+        SQL
+      end
     end
 
     subject(:perform_migration) { described_class.new(**args).perform }
 
     it 'backfills with valid runner managers', :aggregate_failures do
+      expect(runner_managers.where(sharding_key_id: nil).count).to eq 3
+
       expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BulkCopy) do |bulk_copy|
         expect(bulk_copy).to receive(:copy_relation).and_wrap_original do |original, relation|
           expect(relation).to be_a(ActiveRecord::Relation)

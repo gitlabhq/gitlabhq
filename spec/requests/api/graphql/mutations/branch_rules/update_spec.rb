@@ -87,7 +87,7 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
       end
     end
 
-    context 'when branch rule cannot be found' do
+    context 'when an invalid global id is given' do
       let(:global_id) { project.to_gid.to_s }
       let(:error_message) { %("#{global_id}" does not represent an instance of Projects::BranchRule) }
       let(:global_id_error) { a_hash_including('message' => a_string_including(error_message)) }
@@ -97,6 +97,13 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
 
         expect(graphql_errors).to include(global_id_error)
       end
+    end
+
+    context 'when a branch rule is missing' do
+      let(:protected_branch) { build(:protected_branch, id: non_existing_record_id) }
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
     end
   end
 end

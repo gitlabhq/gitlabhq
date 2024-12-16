@@ -22,7 +22,8 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
         ci: ci,
         docker_hostname: docker_hostname,
         host_http_port: 80,
-        host_ssh_port: 22
+        host_ssh_port: 22,
+        host_registry_port: 5000
       )
     end
 
@@ -34,6 +35,7 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     let(:helm) { instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: nil, upgrade: nil) }
     let(:http_container_port) { 30080 }
     let(:ssh_container_port) { 31022 }
+    let(:registry_container_port) { 32495 }
 
     before do
       allow(Gitlab::Cng::Helpers::Spinner).to receive(:spin).and_yield
@@ -84,6 +86,9 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
                   listenAddress: "0.0.0.0"
                 - containerPort: #{ssh_container_port}
                   hostPort: 22
+                  listenAddress: "0.0.0.0"
+                - containerPort: #{registry_container_port}
+                  hostPort: 5000
                   listenAddress: "0.0.0.0"
         YML
       end
@@ -138,6 +143,9 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
                 listenAddress: "0.0.0.0"
               - containerPort: #{ssh_container_port}
                 hostPort: 22
+                listenAddress: "0.0.0.0"
+              - containerPort: #{registry_container_port}
+                hostPort: 5000
                 listenAddress: "0.0.0.0"
         YML
       end
@@ -204,6 +212,7 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
   describe "#host_port_mapping" do
     let(:http_container_port) { 32080 }
     let(:ssh_container_port) { 32022 }
+    let(:registry_container_port) { 32495 }
 
     let(:kind_config_content) do
       <<~YML
@@ -231,12 +240,16 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
               - containerPort: #{ssh_container_port}
                 hostPort: 22
                 listenAddress: "0.0.0.0"
+              - containerPort: #{registry_container_port}
+                hostPort: 5000
+                listenAddress: "0.0.0.0"
       YML
     end
 
     it "return correct port mappings" do
       expect(described_class.host_port_mapping(80)).to eq(http_container_port)
       expect(described_class.host_port_mapping(22)).to eq(ssh_container_port)
+      expect(described_class.host_port_mapping(5000)).to eq(registry_container_port)
     end
   end
 end

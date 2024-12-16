@@ -9,22 +9,24 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
       admin_password: "password",
       admin_token: "token",
       host_http_port: 80,
-      host_ssh_port: 22
+      host_ssh_port: 22,
+      host_registry_port: 5000
     )
   end
 
-  let(:kubeclient) { instance_double(Gitlab::Cng::Kubectl::Client, create_resource: "", execute: "") }
+  let(:kubeclient) { instance_double(Gitlab::Cng::Kubectl::Client, create_resource: "", execute: "", patch: "") }
   let(:port_mappings) do
     {
       80 => 32080,
-      22 => 32222
+      22 => 32222,
+      5000 => 32495
     }
   end
 
   before do
     allow(Gitlab::Cng::Kind::Cluster).to receive(:host_port_mapping).and_return(port_mappings[22])
     allow(Gitlab::Cng::Kind::Cluster).to receive(:host_port_mapping).with(80).and_return(port_mappings[80])
-
+    allow(Gitlab::Cng::Kind::Cluster).to receive(:host_port_mapping).with(5000).and_return(port_mappings[5000])
     allow(Gitlab::Cng::Kubectl::Client).to receive(:new).and_return(kubeclient)
   end
 
@@ -50,7 +52,32 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
   end
 
   it "runs post-deployment setup", :aggregate_failures do
-    expect { configuration.run_post_deployment_setup }.to output(/Creating admin user personal access token/).to_stdout
+    allow(kubeclient).to receive_messages(
+      patch: "",
+      execute: ""
+    )
+    expect(kubeclient).to receive(:patch).with(
+      'svc',
+      'gitlab-registry',
+      {
+        spec: {
+          type: 'NodePort',
+          ports: [
+            {
+              name: 'registry',
+              port: 5000,
+              targetPort: 5000,
+              protocol: 'TCP',
+              nodePort: 32495
+            }
+          ]
+        }
+      }.to_json
+    ).ordered
+
+    expect do
+      configuration.run_post_deployment_setup
+    end.to output(/Creating admin user personal access token/).to_stdout
 
     expect(kubeclient).to have_received(:execute).with(
       "toolbox",
@@ -88,6 +115,9 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
         pages: {
           port: 80
         },
+        registry: {
+          port: 5000
+        },
         initialRootPassword: {
           secret: "gitlab-initial-root-password"
         },
@@ -107,7 +137,8 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
             type: "NodePort",
             nodePorts: {
               "gitlab-shell": port_mappings[22],
-              http: port_mappings[80]
+              http: port_mappings[80],
+              registry: port_mappings[5000]
             }
           }
         }
@@ -120,6 +151,7 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
   end
 
   it "handles already existing admin PAT" do
+    allow(kubeclient).to receive(:patch)
     allow(kubeclient).to receive(:execute)
       .with("toolbox", kind_of(Array), container: "toolbox")
       .and_raise(Gitlab::Cng::Kubectl::Client::Error, <<~MSG)

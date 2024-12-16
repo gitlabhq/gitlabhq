@@ -8651,8 +8651,7 @@ CREATE TABLE bulk_import_configurations (
     encrypted_access_token text,
     encrypted_access_token_iv text,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    migrate_memberships boolean DEFAULT true NOT NULL
+    updated_at timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE bulk_import_configurations_id_seq
@@ -20877,11 +20876,14 @@ CREATE TABLE topics (
     title text,
     slug text,
     organization_id bigint DEFAULT 1 NOT NULL,
+    cached_markdown_version integer DEFAULT 0 NOT NULL,
+    description_html text,
     CONSTRAINT check_0eda72aeb0 CHECK ((char_length(slug) <= 255)),
     CONSTRAINT check_223b50f9be CHECK ((char_length(title) <= 255)),
     CONSTRAINT check_26753fb43a CHECK ((char_length(avatar) <= 255)),
     CONSTRAINT check_5d1a07c8c8 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_7a90d4c757 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_7a90d4c757 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_7c7a7b2c84 CHECK ((char_length(description_html) <= 50000))
 );
 
 CREATE SEQUENCE topics_id_seq
@@ -36400,6 +36402,9 @@ ALTER TABLE ONLY namespaces
 ALTER TABLE ONLY project_topics
     ADD CONSTRAINT fk_34af9ab07a FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY namespaces
+    ADD CONSTRAINT fk_34fceca87c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
@@ -38274,6 +38279,15 @@ ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY instance_type_ci_runner_machines_687967fa8a
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY group_type_ci_runner_machines_687967fa8a
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY project_type_ci_runner_machines_687967fa8a
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY description_versions
     ADD CONSTRAINT fk_rails_3ff658220b FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

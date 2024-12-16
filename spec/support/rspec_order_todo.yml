@@ -2070,7 +2070,6 @@
 - './ee/spec/services/epics/close_service_spec.rb'
 - './ee/spec/services/epics/create_service_spec.rb'
 - './ee/spec/services/epics/descendant_count_service_spec.rb'
-- './ee/spec/services/epics/epic_links/create_service_spec.rb'
 - './ee/spec/services/epics/epic_links/destroy_service_spec.rb'
 - './ee/spec/services/epics/epic_links/list_service_spec.rb'
 - './ee/spec/services/epics/epic_links/update_service_spec.rb'

@@ -150,7 +150,7 @@ module Projects
     end
 
     def has_importer?
-      Gitlab::ImportSources.importer_names.include?(project.import_type)
+      Gitlab::ImportSources.has_importer?(project.import_type)
     end
 
     def importer

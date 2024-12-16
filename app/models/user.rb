@@ -369,7 +369,7 @@ class User < ApplicationRecord
   # We are not able to fully guard against all possible places where User.new
   # is created, so we rely on the callback here at the model layer for our best
   # chance at ensuring the user_detail is created.
-  # However, we need to skip all non- new records as after_initialize is called on basic finders as well.
+  # However, we need to skip all non-new records as after_initialize is called on basic finders as well.
   after_initialize :build_default_user_detail, if: :new_record?
   before_validation :sanitize_attrs
   before_validation :ensure_namespace_correct
@@ -1110,10 +1110,8 @@ class User < ApplicationRecord
     # We can see one case of that in the Users::BuildService where it assigns user attributes that can
     # have delegated user_detail attributes added by classes that inherit this class and add
     # to the user attributes hash.
-    # Therefore we need to check for presence of an existing built user_detail here.
-    # TODO: Add lazy loading explicitly here when we remove the user_detail
-    # override in https://gitlab.com/gitlab-org/gitlab/-/issues/462919
-    user_detail
+    # Therefore, we need to check for presence of an existing built user_detail here.
+    user_detail || build_user_detail
   end
 
   def to_reference(_from = nil, target_container: nil, full: nil)
@@ -2382,11 +2380,6 @@ class User < ApplicationRecord
   # Avoid migrations only building user preference object when needed.
   def user_preference
     super.presence || build_user_preference
-  end
-
-  def user_detail
-    # TODO: remove override in https://gitlab.com/gitlab-org/gitlab/-/issues/462919
-    super.presence || build_user_detail
   end
 
   def pending_todo_for(target)

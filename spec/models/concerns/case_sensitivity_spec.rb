@@ -13,8 +13,16 @@ RSpec.describe CaseSensitivity do
       end
     end
 
-    let_it_be(:model_1) { model.create!(path: 'mOdEl-1', name: 'mOdEl 1', type: Namespaces::UserNamespace.sti_name) }
-    let_it_be(:model_2) { model.create!(path: 'mOdEl-2', name: 'mOdEl 2', type: Group.sti_name) }
+    let_it_be(:organization) { Organizations::Organization.create!(name: 'organization', path: 'organization') }
+    let_it_be(:model_1) do
+      model.create!(
+        path: 'mOdEl-1', name: 'mOdEl 1', type: Namespaces::UserNamespace.sti_name, organization_id: organization.id
+      )
+    end
+
+    let_it_be(:model_2) do
+      model.create!(path: 'mOdEl-2', name: 'mOdEl 2', type: Group.sti_name, organization_id: organization.id)
+    end
 
     it 'finds a single instance by a single attribute regardless of case' do
       expect(model.iwhere(path: 'MODEL-1')).to contain_exactly(model_1)

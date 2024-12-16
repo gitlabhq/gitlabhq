@@ -115,9 +115,9 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           allow(user).to receive(:has_composite_identity?).and_return(true)
         end
 
-        it 'raises an exception' do
-          expect { execute_service }
-            .to raise_error(::Gitlab::Auth::Identity::MissingCompositeIdentityError)
+        it 'returns unauthorized error' do
+          expect(execute_service[:status]).to eq(:error)
+          expect(execute_service[:http_status]).to eq(:unauthorized)
         end
       end
     end

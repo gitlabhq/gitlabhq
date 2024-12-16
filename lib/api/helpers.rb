@@ -263,6 +263,11 @@ module API
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if INTEGER_ID_REGEX.match?(id.to_s)
+        # We need to stick to an up-to-date replica or primary db here in order to properly observe the namespace
+        # recently created by GitlabSubscriptions::Trials::CreateService#create_group_flow.
+        # See https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/9808
+        ::Namespace.sticking.find_caught_up_replica(:namespace, id)
+
         Namespace.without_project_namespaces.find_by(id: id)
       else
         find_namespace_by_path(id)

@@ -28,6 +28,15 @@ module QA
       end
 
       let(:personal_access_token) { Runtime::User::Store.default_api_client.personal_access_token }
+      let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
+      let(:omnibus_registry_port) { 5050 }
+      let(:cng_registry_port) { 5000 }
+      let(:registry_port) do
+        is_nip_io = gitlab_host_without_port.match?(/gitlab\.\d+\.\d+\.\d+\.\d+\.nip\.io/)
+        is_nip_io ? cng_registry_port : omnibus_registry_port
+      end
+
+      let(:repository_path) { "#{gitlab_host_without_port}:#{registry_port}/#{project.full_path}" }
 
       before do
         Flow::Login.sign_in
@@ -89,13 +98,20 @@ module QA
                     stage: build
                     services:
                     - name: "docker:24.0.1-dind"
-                      command: ["--insecure-registry=gitlab.test:5050"]
+                      command: ["--insecure-registry=#{gitlab_host_without_port}:#{registry_port}"]
                     variables:
-                      IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+                      DOCKER_TLS_CERTDIR: ""
+                    before_script:
+                      - |
+                        echo "Waiting for docker to start..."
+                        for i in $(seq 1 30); do
+                          docker info && break
+                          sleep 1s
+                        done
                     script:
-                      - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
-                      - docker build -t $IMAGE_TAG .
-                      - docker push $IMAGE_TAG
+                      - docker login -u #{auth_user} -p #{auth_token} #{gitlab_host_without_port}:#{registry_port}
+                      - docker build -t #{repository_path} .
+                      - docker push #{repository_path}
                     tags:
                       - "runner-for-#{project.name}"
                 YAML
@@ -113,7 +129,7 @@ module QA
               expect(registry).to have_registry_repository(project.name)
 
               registry.click_on_image(project.name)
-              expect(registry).to have_tag('master')
+              expect(registry).to have_tag('latest')
             end
           end
         end

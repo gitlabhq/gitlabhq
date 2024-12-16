@@ -33187,6 +33187,9 @@ msgstr ""
 msgid "Manage secret detection behavior for all projects in your GitLab instance"
 msgstr ""
 
+msgid "Manage templates..."
+msgstr ""
+
 msgid "Manage two-factor authentication"
 msgstr ""
 
@@ -35771,13 +35774,7 @@ msgstr ""
 msgid "MrReports|Code quality"
 msgstr ""
 
-msgid "MrReports|License Compliance"
-msgstr ""
-
 msgid "MrReports|Reports"
-msgstr ""
-
-msgid "MrReports|Security"
 msgstr ""
 
 msgid "MrSurvey|By continuing, you acknowledge that responses will be used to improve GitLab and in accordance with the %{linkStart}GitLab Privacy Policy%{linkEnd}."
@@ -39158,7 +39155,10 @@ msgstr ""
 msgid "PIPL|Important Change to Your GitLab.com Account"
 msgstr ""
 
-msgid "PIPL|Please be advised that GitLab can no longer service GitLab.com accounts for individuals and organizations located in Mainland China, Macao, and Hong Kong. Our system indicates that you are visiting GitLab from one of these locations. We advise you to sign up with JiHu %{jihu_link}. JiHu is an independent company with a localized GitLab offering that has an exclusive right to provide GitLab to individuals and organizations located in this region. You must complete the transition by %{deadline}, after which GitLab will delete your account from our systems. If you believe you are receiving this notification in error, please log in to GitLab.com from a supported service location. For further information or support, please feel free to contact saasmigration@gitlab.cn."
+msgid "PIPL|Please be advised that GitLab can no longer service GitLab.com accounts for individuals and organizations located in Mainland China, Macao, and Hong Kong. Our system indicates that you are visiting GitLab from one of these locations. We advise you to sign up with JiHu %{jihu_link}. JiHu is an independent company with a localized GitLab offering that has an exclusive right to provide GitLab to individuals and organizations located in this region. You must complete the transition by %{deadline}, after which GitLab will delete your account from our systems. If you believe you are receiving this notification in error, please log in to GitLab.com from a supported service location. For further information or support, please feel free to contact ${email}."
+msgstr ""
+
+msgid "PIPL|Please be advised that GitLab can no longer service GitLab.com accounts for individuals and organizations located in Mainland China, Macao, and Hong Kong. Our system indicates that you are visiting GitLab from one of these locations. We advise you to transition your GitLab.com account from GitLab to %{jihu_link}. JiHu is an independent company with a localized GitLab offering that has exclusive rights to provide GitLab to individuals and organizations located in this region. You have %{deadline} days to complete the transition, after which GitLab will delete your account from our systems. If you believe you are receiving this notification in error, please log in to GitLab.com from a supported service location. For further information or support, please feel free to contact %{email}."
 msgstr ""
 
 msgid "PQL|An error occurred while sending hand raise lead."
@@ -56925,9 +56925,6 @@ msgstr ""
 msgid "This epic cannot be added. One or more epics would exceed the maximum depth (%{max_depth}) from its most distant ancestor."
 msgstr ""
 
-msgid "This epic cannot be added. You don't have access to perform this action."
-msgstr ""
-
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
@@ -60857,7 +60854,7 @@ msgstr ""
 msgid "UserMapping|User ID"
 msgstr ""
 
-msgid "UserMapping|You can assign only active users with regular or auditor access. To assign users with administrator access, ask your GitLab administrator to enable the \"Allow contribution mapping to admins\" setting."
+msgid "UserMapping|You can assign only active users with regular or auditor access. To assign users with administrator access, ask your GitLab administrator to enable the \"Allow contribution mapping to administrators\" setting."
 msgstr ""
 
 msgid "UserMapping|You can assign users with regular, auditor, or administrator access only."
@@ -62791,7 +62788,7 @@ msgstr ""
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
 msgstr ""
 
-msgid "When left blank, default value of {max_personal_access_token_lifetime_in_days} is applied. When set, value must be {max_personal_access_token_lifetime_in_days} or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked."
+msgid "When left blank, default value of %{max_lifetime_in_days} is applied. When set, value must be %{max_lifetime_in_days} or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked."
 msgstr ""
 
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."

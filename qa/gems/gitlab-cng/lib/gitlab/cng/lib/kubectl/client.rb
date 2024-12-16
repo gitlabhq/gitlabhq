@@ -99,6 +99,20 @@ module Gitlab
           run_in_namespace("get", "events", args: args)
         end
 
+        # Patch kubernetes resource
+        #
+        # @param [String] resource_type
+        # @param [String] resource_name
+        # @param [String] patch_data
+        # @param [String] patch_type default: 'merge'
+        # @return [String] command output
+        def patch(resource_type, resource_name, patch_data, patch_type: 'merge')
+          run_in_namespace("patch", resource_type, resource_name, args: [
+            "--type=#{patch_type}",
+            "-p", patch_data
+          ])
+        end
+
         private
 
         attr_reader :namespace

@@ -3235,7 +3235,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/epics/close_service.rb'
     - 'ee/app/services/epics/create_service.rb'
     - 'ee/app/services/epics/descendant_count_service.rb'
-    - 'ee/app/services/epics/epic_links/create_service.rb'
     - 'ee/app/services/epics/epic_links/destroy_service.rb'
     - 'ee/app/services/epics/epic_links/list_service.rb'
     - 'ee/app/services/epics/epic_links/update_service.rb'

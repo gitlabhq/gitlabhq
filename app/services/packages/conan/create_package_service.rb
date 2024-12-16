@@ -7,7 +7,7 @@ module Packages
         ServiceResponse.error(message: 'Package protected.', reason: :package_protected)
 
       def execute
-        return ERROR_RESPONSE_PACKAGE_PROTECTED if current_package_protected?
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?
 
         created_package = create_package!(:conan,
           name: params[:package_name],
@@ -27,19 +27,10 @@ module Packages
 
       private
 
-      def current_package_protected?
+      def package_protected?
         return false if Feature.disabled?(:packages_protected_packages_conan, project)
 
-        service_response =
-          Packages::Protection::CheckRuleExistenceService.new(
-            project: project,
-            current_user: current_user,
-            params: { package_name: params[:package_name], package_type: :conan }
-          ).execute
-
-        raise ArgumentError, service_response.message if service_response.error?
-
-        service_response[:protection_rule_exists?]
+        super(package_name: params[:package_name], package_type: :conan)
       end
     end
   end

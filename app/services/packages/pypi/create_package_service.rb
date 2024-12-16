@@ -12,7 +12,7 @@ module Packages
 
       def execute
         return ERROR_RESPONSE_UNAUTHORIZED unless can_create_package?
-        return ERROR_RESPONSE_PACKAGE_PROTECTED if current_package_protected?
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?
 
         ::Packages::Package.transaction do
           meta = Packages::Pypi::Metadatum.new(
@@ -44,19 +44,10 @@ module Packages
 
       private
 
-      def current_package_protected?
+      def package_protected?
         return false if Feature.disabled?(:packages_protected_packages_pypi, project)
 
-        service_response =
-          Packages::Protection::CheckRuleExistenceService.new(
-            project: project,
-            current_user: current_user,
-            params: { package_name: params[:name], package_type: :pypi }
-          ).execute
-
-        raise ArgumentError, service_response.message if service_response.error?
-
-        service_response[:protection_rule_exists?]
+        super(package_name: params[:name], package_type: :pypi)
       end
 
       def created_package

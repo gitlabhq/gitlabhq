@@ -5,11 +5,15 @@ require 'carrierwave/orm/activerecord'
 module Projects
   class Topic < ApplicationRecord
     include Avatarable
+    include CacheMarkdownField
     include Gitlab::SQL::Pattern
 
     SLUG_ALLOWED_REGEX = %r{\A[a-zA-Z0-9_\-.]+\z}
 
+    cache_markdown_field :description
+
     validates :name, presence: true, length: { maximum: 255 }
+    validates :description, length: { maximum: 1024 }
     validates :name, uniqueness: { scope: :organization_id, case_sensitive: false }, if: :name_changed?
     validate :validate_name_format, if: :name_changed?
 

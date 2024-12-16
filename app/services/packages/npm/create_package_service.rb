@@ -21,7 +21,7 @@ module Packages
         return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
         return error('Attachment data is empty.', ERROR_REASON_INVALID_PARAMETER) if attachment['data'].blank?
         return error('Package already exists.', ERROR_REASON_PACKAGE_EXISTS) if current_package_exists?
-        return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if current_package_protected?
+        return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if package_protected?
         return error('File is too large.', ERROR_REASON_INVALID_PARAMETER) if file_size_exceeded?
 
         package, package_file = try_obtain_lease do
@@ -74,19 +74,8 @@ module Packages
                                 .exists?
       end
 
-      def current_package_protected?
-        unless current_user.is_a?(User)
-          return project.package_protection_rules.for_package_type(:npm).for_package_name(name).exists?
-        end
-
-        return false if current_user.can_admin_all_resources?
-
-        user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
-
-        project.package_protection_rules.for_push_exists?(
-          access_level: user_project_authorization_access_level,
-          package_name: name, package_type: :npm
-        )
+      def package_protected?
+        super(package_name: name, package_type: :npm)
       end
 
       def name

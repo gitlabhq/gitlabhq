@@ -151,6 +151,47 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(runner_manager.runner).to eq runner
               expect(runner_manager.contacted_at).to eq Time.current
             end
+
+            # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+            context 'when runner is not yet synced to partitioned table', :aggregate_failures do
+              let(:connection) { Ci::ApplicationRecord.connection }
+              let(:non_partitioned_runner) { runner }
+
+              before do
+                # Allow creating legacy runners that are not present in the partitioned table (created when FK was not
+                # present)
+                connection.transaction do
+                  connection.execute(<<~SQL)
+                    ALTER TABLE ci_runners DISABLE TRIGGER ALL;
+                  SQL
+
+                  non_partitioned_runner
+
+                  connection.execute(<<~SQL)
+                    ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+                  SQL
+                end
+              end
+
+              it 'creates respective ci_runner_machines record and syncs runner to partitioned table' do
+                expect { request }
+                  .to change { runner.runner_managers.reload.count }.from(0).to(1)
+                  .and change { partitioned_runner_exists?(non_partitioned_runner) }.from(false).to(true)
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(non_partitioned_runner.contacted_at).to be_nil
+              end
+
+              private
+
+              def partitioned_runner_exists?(runner)
+                result = connection.execute(<<~SQL)
+                  SELECT COUNT(*) FROM ci_runners_e59bb2812d WHERE id = #{runner.id};
+                SQL
+
+                result.first['count'].positive?
+              end
+            end
           end
 
           context 'when ci_runner_machines with same system_xid already exists', :freeze_time do

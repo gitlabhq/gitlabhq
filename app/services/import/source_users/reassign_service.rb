@@ -59,7 +59,7 @@ module Import
         else
           s_('UserMapping|You can assign only active users with regular or auditor access. ' \
             'To assign users with administrator access, ask your GitLab administrator to ' \
-            'enable the "Allow contribution mapping to admins" setting.')
+            'enable the "Allow contribution mapping to administrators" setting.')
         end
       end
 

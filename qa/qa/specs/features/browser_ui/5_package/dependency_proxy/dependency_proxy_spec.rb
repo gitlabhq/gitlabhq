@@ -100,11 +100,19 @@ module QA
                   dependency-proxy-pull-test:
                     image: "#{docker_client_version}"
                     services:
-                    - name: "#{docker_client_version}-dind"
-                      command: ["--insecure-registry=gitlab.test:80"]
+                      - name: "#{docker_client_version}-dind"
+                        command: ["--insecure-registry=#{gitlab_host_with_port}"]
+                    variables:
+                      DOCKER_TLS_CERTDIR: ""
                     before_script:
+                      - |
+                        echo "Waiting for docker to start..."
+                        for i in $(seq 1 30); do
+                          docker info && break
+                          sleep 1s
+                        done
                       - apk add curl jq grep
-                      - docker login -u #{auth_user} -p #{auth_token} gitlab.test:80
+                      - docker login -u #{auth_user} -p #{auth_token} #{gitlab_host_with_port}
                     script:
                       - docker pull #{dependency_proxy_url}/#{image_sha}
                       - TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token)
@@ -112,7 +120,7 @@ module QA
                       - docker pull #{dependency_proxy_url}/#{image_sha}
                       - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
                     tags:
-                    - "runner-for-#{project.name}"
+                      - "runner-for-#{project.name}"
               YAML
             }
           ])

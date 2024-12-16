@@ -409,19 +409,30 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     expect_snowplow_tracking
   end
 
-  it 'rescues error', :aggregate_failures do
-    params = { user: user, project: project }
-    error = StandardError.new("something went wrong")
-    allow(fake_snowplow).to receive(:event).and_raise(error)
+  describe 'errors handling' do
+    let(:params) { { user: user, project: project } }
+    let(:error) { StandardError.new("something went wrong") }
 
-    expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-      .with(
-        error,
-        snowplow_category: 'InternalEventTracking',
-        snowplow_action: event_name
-      )
+    it 'rescues error from tracking', :aggregate_failures do
+      allow(fake_snowplow).to receive(:event).and_raise(error)
 
-    expect { described_class.track_event(event_name, **params) }.not_to raise_error
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        .with(
+          error,
+          snowplow_category: 'InternalEventTracking',
+          snowplow_action: event_name
+        )
+
+      expect { described_class.track_event(event_name, **params) }.not_to raise_error
+    end
+
+    it 'rescues error from validator' do
+      allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
+        allow(instance).to receive(:validate!).and_raise(error)
+      end
+
+      expect { described_class.track_event(event_name, **params) }.not_to raise_error
+    end
   end
 
   it 'logs warning on missing property', :aggregate_failures do

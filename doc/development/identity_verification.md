@@ -8,16 +8,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 For information on this feature that are not development-specific, see the [feature documentation](../security/identity_verification.md).
 
-## Feature flags
-
-Because of the many registration paths and multiple verification stages, identity verification has several feature flags.
-
-Before you enable these features, ensure [hard email confirmation](../security/user_email_confirmation.md) is enabled and [Arkose](../integration/arkose.md#configuration) is configured properly.
-
-| Feature flag name | Description |
-|---------|-------------|
-| `identity_verification_credit_card` | Turns on credit card verification for high risk users for all flows. |
-
 ## Logging
 
 You can triage and debug issues raised by identity verification with the [GitLab production logs](https://log.gprd.gitlab.net).

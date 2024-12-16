@@ -52,7 +52,7 @@ module PersonalAccessTokens
     end
 
     def max_expiry_date
-      PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      ::PersonalAccessToken.max_expiration_lifetime_in_days.days.from_now
     end
 
     def creation_permitted?

@@ -439,7 +439,6 @@ RSpec/BeEq:
     - 'ee/spec/services/elastic/data_migration_service_spec.rb'
     - 'ee/spec/services/epic_issues/destroy_service_spec.rb'
     - 'ee/spec/services/epics/create_service_spec.rb'
-    - 'ee/spec/services/epics/epic_links/create_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/epics/update_dates_service_spec.rb'
     - 'ee/spec/services/epics/update_service_spec.rb'

@@ -29,7 +29,10 @@ module Gitlab
                   }
                 },
                 appConfig: {
-                  applicationSettingsCacheSeconds: 0
+                  applicationSettingsCacheSeconds: 0,
+                  dependencyProxy: {
+                    enabled: true
+                  }
                 }
               },
               gitlab: { "gitlab-exporter": { enabled: false } },

@@ -96,7 +96,9 @@ module Users
       openssl_callout: 94,
       # 95 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170868
       new_mr_dashboard_banner: 96,
-      planner_role_callout: 97
+      planner_role_callout: 97,
+      # EE-only
+      pipl_compliance_alert: 98
     }
 
     validates :feature_name,

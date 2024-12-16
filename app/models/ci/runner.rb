@@ -570,6 +570,10 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
+        # Avoid inserting partitioned runner managers that refer to a missing ci_runners partitioned record, since
+        # the backfill is not yet finalized.
+        ensure_partitioned_runner_record_exists
+
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
       end

@@ -868,6 +868,13 @@ RSpec.describe API::Helpers, feature_category: :shared do
       let(:non_existing_id) { non_existing_record_id }
 
       it_behaves_like 'namespace finder'
+
+      it 'find the namespace from up-to-date replica or primary DB' do
+        allow(Namespace.sticking).to receive(:find_caught_up_replica).and_call_original
+
+        expect(Namespace.sticking).to receive(:find_caught_up_replica).with(:namespace, existing_id)
+        expect(helper.find_namespace(existing_id)).to eq(namespace)
+      end
     end
 
     context 'when PATH is used as an argument' do

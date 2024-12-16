@@ -33,7 +33,7 @@ Add this plugin to your [lazy.nvim](https://github.com/folke/lazy.nvim) configur
 
 ```lua
 {
-  'git@gitlab.com:gitlab-org/editor-extensions/gitlab.vim.git',
+  'https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim.git',
   -- Activate when a file is created/opened
   event = { 'BufReadPre', 'BufNewFile' },
   -- Activate when a supported filetype is open

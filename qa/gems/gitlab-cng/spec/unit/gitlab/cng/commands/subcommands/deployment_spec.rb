@@ -56,7 +56,8 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
         admin_password: "5iveL!fe",
         admin_token: "ypCa3Dzb23o5nvsixwPA",
         host_http_port: 80,
-        host_ssh_port: 22
+        host_ssh_port: 22,
+        host_registry_port: 5000
       )
       expect(installation_instance).to have_received(:create)
     end
@@ -67,7 +68,8 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
         ci: true
       })
 
-      expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with(ci: true, host_http_port: 80, host_ssh_port: 22)
+      expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with(ci: true, host_http_port: 80, host_ssh_port: 22,
+        host_registry_port: 5000)
       expect(cluster_instance).to have_received(:create)
     end
 

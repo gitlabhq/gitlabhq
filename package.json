@@ -178,7 +178,7 @@
     "leaflet": "^1.9.4",
     "lodash": "^4.17.20",
     "lowlight": "^2.9.0",
-    "marked": "^4.0.18",
+    "marked": "^12.0.0",
     "marked-bidi": "^1.0.3",
     "mathjax": "3",
     "mdurl": "^1.0.1",

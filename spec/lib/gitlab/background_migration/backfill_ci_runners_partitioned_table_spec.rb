@@ -7,8 +7,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnersPartitionedTable,
   let(:connection) { Ci::ApplicationRecord.connection }
 
   describe '#perform' do
-    let(:runners) { table(:ci_runners) }
-    let(:partitioned_runners) { table(:ci_runners_e59bb2812d) }
+    let(:runners) { table(:ci_runners, database: :ci) }
+    let(:partitioned_runners) { table(:ci_runners_e59bb2812d, database: :ci) }
     let(:args) do
       min, max = runners.pick('MIN(id)', 'MAX(id)')
 
@@ -25,20 +25,20 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnersPartitionedTable,
     end
 
     before do
-      connection.execute <<~SQL
-        BEGIN;
-        ALTER TABLE ci_runners DISABLE TRIGGER ALL; -- Don't sync records to partitioned table
+      connection.transaction do
+        connection.execute <<~SQL
+          ALTER TABLE ci_runners DISABLE TRIGGER ALL; -- Don't sync records to partitioned table
 
-        INSERT INTO ci_runners(runner_type) VALUES (1);
-        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (2, 89);
-        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (2, NULL);
-        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, 10);
-        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, NULL);
-        INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, 100);
+          INSERT INTO ci_runners(runner_type) VALUES (1);
+          INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (2, 89);
+          INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (2, NULL);
+          INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, 10);
+          INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, NULL);
+          INSERT INTO ci_runners(runner_type, sharding_key_id) VALUES (3, 100);
 
-        ALTER TABLE ci_runners ENABLE TRIGGER ALL;
-        COMMIT;
-      SQL
+          ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+        SQL
+      end
     end
 
     subject(:perform_migration) { described_class.new(**args).perform }

@@ -315,9 +315,11 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'source_branches[]',
+        [ALTERNATIVE_FILTER]: 'source_branch',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[source_branches][]',
+        [ALTERNATIVE_FILTER]: 'not[source_branch]',
       },
     },
   },
@@ -328,9 +330,11 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'target_branches[]',
+        [ALTERNATIVE_FILTER]: 'target_branch',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[target_branches][]',
+        [ALTERNATIVE_FILTER]: 'not[target_branch]',
       },
     },
   },

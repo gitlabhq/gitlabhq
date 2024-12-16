@@ -506,8 +506,8 @@ RSpec.describe Ability, feature_category: :system_access do
             ::Gitlab::SafeRequestStore.delete(request_store_key)
           end
 
-          it 'raises an exception' do
-            expect { subject }.to raise_exception(::Gitlab::Auth::Identity::MissingCompositeIdentityError)
+          it 'returns false' do
+            expect(subject).to be_falsey
           end
         end
       end

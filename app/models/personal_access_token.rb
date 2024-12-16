@@ -129,6 +129,14 @@ class PersonalAccessToken < ApplicationRecord
     where(sql_string, min_expiry_date, max_expiry_date).without_impersonation
   end
 
+  def self.max_expiration_lifetime_in_days
+    if ::Feature.enabled?(:buffered_token_expiration_limit) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Group setting but checked at user
+      MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED
+    else
+      MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS
+    end
+  end
+
   def hook_attrs
     Gitlab::HookData::ResourceAccessTokenBuilder.new(self).build
   end
@@ -162,11 +170,7 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def max_expiration_lifetime_in_days
-    if ::Feature.enabled?(:buffered_token_expiration_limit) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Group setting but checked at user
-      MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED
-    else
-      MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS
-    end
+    self.class.max_expiration_lifetime_in_days
   end
 
   def expires_at_before_instance_max_expiry_date

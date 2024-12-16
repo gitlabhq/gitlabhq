@@ -492,6 +492,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`group_secret_push_protection_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174412) | Secret push protection is enabled or disabled for a group and its child groups and projects, except those projects specified as excluded | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/502829) | Group |
 | [`project_security_exclusion_applied`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is applied in one of the security scanners | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/492465) | Project |
 | [`project_security_exclusion_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is created | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
 | [`project_security_exclusion_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is deleted | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
