@@ -56,14 +56,14 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         end
       end
 
-      context 'when clicking issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332317' do
+      context 'when clicking issues' do
         let!(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
         it 'shows assigned issues' do
           find(search_modal_results).click_link('Issues assigned to me')
 
           expect(page).to have_selector('.issues-list .issue')
-          expect_tokens([assignee_token(user.name)])
+          expect_assignee_token(user.name)
           expect_filtered_search_input_empty
         end
 
@@ -71,7 +71,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
           find(search_modal_results).click_link("Issues I've created")
 
           expect(page).to have_selector('.issues-list .issue')
-          expect_tokens([author_token(user.name)])
+          expect_author_token(user.name)
           expect_filtered_search_input_empty
         end
       end

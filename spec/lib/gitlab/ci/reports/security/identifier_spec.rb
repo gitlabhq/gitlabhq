@@ -122,4 +122,25 @@ RSpec.describe Gitlab::Ci::Reports::Security::Identifier do
       end
     end
   end
+
+  describe '#vendor' do
+    where(:external_type, :expected) do
+      'cve'       | 'NVD'
+      'elsa'      | 'Oracle'
+      'ghsa'      | 'GitHub'
+      'hackerone' | 'HackerOne'
+      'osvdb'     | 'OSVDB'
+      'rhsa'      | 'RedHat'
+      'usn'       | 'Ubuntu'
+      '???'       | 'Unknown'
+    end
+
+    let(:identifier) { create(:ci_reports_security_identifier, external_type: external_type) }
+
+    subject { identifier.vendor }
+
+    with_them do
+      it { is_expected.to eq(expected) }
+    end
+  end
 end

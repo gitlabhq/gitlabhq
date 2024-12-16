@@ -552,6 +552,78 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
     end
   end
 
+  describe 'PUT /projects/:project_id/pages/domains/:domain/verify' do
+    let(:verify_domain_path) { "/projects/#{project.id}/pages/domains/#{pages_domain.domain}/verify" }
+
+    context 'when user is not authorized' do
+      it 'returns 401' do
+        put api(verify_domain_path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when user is authorized' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'when user does not have sufficient permissions' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns 403' do
+          put api(verify_domain_path, user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when domain does not exist' do
+        it 'returns 404' do
+          put api("/projects/#{project.id}/pages/domains/non-existent-domain.com/verify", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when verification succeeds' do
+        before do
+          allow_next_instance_of(VerifyPagesDomainService) do |service|
+            allow(service).to receive(:execute).and_return({ status: :success })
+          end
+        end
+
+        it 'returns the verified domain' do
+          put api(verify_domain_path, user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['domain']).to eq(pages_domain.domain)
+        end
+      end
+
+      context 'when verification fails' do
+        before do
+          allow_next_instance_of(VerifyPagesDomainService) do |service|
+            allow(service).to receive(:execute).and_return({
+              status: :error,
+              message: 'Verification failed',
+              http_status: :unprocessable_entity
+            })
+          end
+        end
+
+        it 'returns error message' do
+          put api(verify_domain_path, user)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Verification failed')
+        end
+      end
+    end
+  end
+
   describe 'DELETE /projects/:project_id/pages/domains/:domain' do
     shared_examples_for 'delete pages domain' do
       it 'deletes a pages domain' do

@@ -19,7 +19,8 @@ jest.mock('@sentry/browser', () => {
     ...jest.createMockFromModule('@sentry/browser'),
 
     // unmock actual configuration options
-    browserTracingIntegration: jest.requireActual('@sentry/browser').browserTracingIntegration,
+    browserSessionIntegration: jest.fn().mockReturnValue('mockBrowserSessionIntegration'),
+    browserTracingIntegration: jest.fn().mockReturnValue('mockBrowserTracingIntegration'),
   };
 });
 
@@ -66,15 +67,19 @@ describe('SentryConfig', () => {
             release: mockRevision,
             allowUrls: [mockGitlabUrl, 'webpack-internal://'],
             environment: mockEnvironment,
-            autoSessionTracking: true,
             ignoreErrors: [/Network Error/i, /NetworkError/i],
             enableTracing: true,
             tracePropagationTargets: [/^\//],
             tracesSampleRate: mockSentryClientsideTracesSampleRate,
-            integrations: [{ afterAllSetup: expect.any(Function), name: 'BrowserTracing' }],
+            integrations: ['mockBrowserSessionIntegration', 'mockBrowserTracingIntegration'],
             initialScope: expect.any(Function),
           }),
         );
+      });
+
+      it('sets up integrations', () => {
+        expect(Sentry.browserSessionIntegration).toHaveBeenCalled();
+        expect(Sentry.browserTracingIntegration).toHaveBeenCalled();
       });
 
       it('Uses data-page to set browserTracingIntegration transaction name', () => {

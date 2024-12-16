@@ -1727,6 +1727,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutationaiactiongeneratecubequery"></a>`generateCubeQuery` | [`AiGenerateCubeQueryInput`](#aigeneratecubequeryinput) | Input for generate_cube_query AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
+| <a id="mutationaiactionmeasurecommenttemperature"></a>`measureCommentTemperature` | [`AiMeasureCommentTemperatureInput`](#aimeasurecommenttemperatureinput) | Input for measure_comment_temperature AI action. |
 | <a id="mutationaiactionplatformorigin"></a>`platformOrigin` | [`String`](#string) | Specifies the origin platform of the request. |
 | <a id="mutationaiactionprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
@@ -43973,6 +43974,15 @@ see the associated mutation type above.
 | <a id="aigeneratedescriptioninputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="aigeneratedescriptioninputdescriptiontemplatename"></a>`descriptionTemplateName` | [`String`](#string) | Name of the description template to use to generate message off of. |
 | <a id="aigeneratedescriptioninputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiMeasureCommentTemperatureInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimeasurecommenttemperatureinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="aimeasurecommenttemperatureinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiResolveVulnerabilityInput`
 

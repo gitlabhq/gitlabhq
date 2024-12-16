@@ -32,7 +32,7 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-Gets information for a given token. This endpoint supports the following tokens:
+Gets information for a given token. This endpoint supports the following token types:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Impersonation tokens](../../api/rest/authentication.md#impersonation-tokens)
@@ -49,9 +49,9 @@ POST /api/v4/admin/token
 
 Supported attributes:
 
-| Attribute    | Type    | Required | Description                 |
-|--------------|---------|----------|-----------------------------|
-| `token`      | string  | Yes      | Existing token to identify. |
+| Attribute    | Type    | Required | Description                |
+|--------------|---------|----------|----------------------------|
+| `token`      | string  | Yes      | Existing token to identify |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the token.
 
@@ -98,7 +98,7 @@ Example response:
 }
 ```
 
-## Revoke token
+## Revoke a token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
 
@@ -107,9 +107,7 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-Revokes a token.
-
-Supported tokens:
+Revokes a given token. This endpoint supports the following token types:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Project access tokens](../../security/tokens/index.md#project-access-tokens)
@@ -123,9 +121,9 @@ DELETE /api/v4/admin/token
 
 Supported attributes:
 
-| Attribute    | Type    | Required | Description                      |
-|--------------|---------|----------|----------------------------------|
-| `token`      | string  | Yes      | Token that should be revoked. |
+| Attribute    | Type    | Required | Description              |
+|--------------|---------|----------|--------------------------|
+| `token`      | string  | Yes      | Existing token to revoke |
 
 If successful, returns [`204`](../rest/troubleshooting.md#status-codes) without content.
 

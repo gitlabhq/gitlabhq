@@ -147,6 +147,25 @@ module API
         end
       end
 
+      desc 'Verify a pages domain' do
+        success Entities::PagesDomain
+      end
+      params do
+        requires :domain, type: String, desc: 'The domain to verify'
+      end
+      put ":id/pages/domains/:domain/verify", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
+        authorize! :update_pages, user_project
+
+        pages_domain = find_pages_domain!
+        result = ::VerifyPagesDomainService.new(pages_domain).execute
+
+        if result[:status] == :success
+          present pages_domain, with: Entities::PagesDomain
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
+      end
+
       desc 'Delete a pages domain'
       params do
         requires :domain, type: String, desc: 'The domain'

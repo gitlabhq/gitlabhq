@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-imports */
 import {
   init,
+  browserSessionIntegration,
   browserTracingIntegration,
 
   // exports
@@ -24,7 +25,6 @@ const initSentry = () => {
         ? [gon.gitlab_url]
         : [gon.gitlab_url, 'webpack-internal://'],
     environment: gon.sentry_environment,
-    autoSessionTracking: true,
 
     ignoreErrors: [
       // Network errors create noise in Sentry and can't be fixed, ignore them.
@@ -37,6 +37,7 @@ const initSentry = () => {
     tracePropagationTargets: [/^\//], // only trace internal requests
     tracesSampleRate: gon.sentry_clientside_traces_sample_rate || 0,
     integrations: [
+      browserSessionIntegration(),
       browserTracingIntegration({
         beforeStartSpan(context) {
           return {
