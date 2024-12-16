@@ -365,6 +365,7 @@ compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 18.0.
 Customers should migrate from compliance pipelines to the new
 [pipeline execution policy type](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html)
 as soon as possible.
+For details, see the [migration guide](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/2024/10/01/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
 
 </div>
 

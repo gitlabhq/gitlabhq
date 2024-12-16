@@ -105,11 +105,12 @@ module API
           end
         end
 
+        set_current_organization
         response = ::BulkImports::CreateService.new(
           current_user,
           params[:entities],
-          url: params[:configuration][:url],
-          access_token: params[:configuration][:access_token]
+          params[:configuration].slice(:url, :access_token),
+          fallback_organization: Current.organization
         ).execute
 
         if response.success?

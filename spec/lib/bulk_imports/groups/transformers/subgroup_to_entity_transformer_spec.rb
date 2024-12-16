@@ -19,6 +19,7 @@ RSpec.describe BulkImports::Groups::Transformers::SubgroupToEntityTransformer do
         source_full_path: "parent/sub-group",
         destination_name: "sub-group",
         destination_namespace: parent.full_path,
+        organization_id: parent.organization_id,
         parent_id: 1,
         migrate_projects: false,
         migrate_memberships: false

@@ -64,7 +64,7 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
             .and_return(service_double)
 
           expect(service_double).to receive(:execute).and_return(service_response)
-          expect(entity).to receive(:update!).with(group: group_double)
+          expect(entity).to receive(:update!).with(group: group_double, organization: nil)
 
           subject.load(context, data)
         end

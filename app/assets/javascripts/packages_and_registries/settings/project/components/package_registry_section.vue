@@ -38,9 +38,11 @@ export default {
       </gl-sprintf>
     </template>
     <template #default>
-      <packages-protection-rules />
-      <dependency-proxy-packages-settings v-if="showDependencyProxySettings" />
-      <packages-cleanup-policy />
+      <div class="gl-flex gl-flex-col gl-gap-5">
+        <packages-protection-rules />
+        <dependency-proxy-packages-settings v-if="showDependencyProxySettings" />
+        <packages-cleanup-policy />
+      </div>
     </template>
   </settings-block>
 </template>

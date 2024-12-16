@@ -10456,6 +10456,9 @@ msgstr ""
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
 msgstr ""
 
+msgid "BulkImport|Import failed: Must have exactly one of organization, group or project."
+msgstr ""
+
 msgid "BulkImport|Import from %{hostname} completed"
 msgstr ""
 
@@ -39549,6 +39552,9 @@ msgid "PackageRegistry|MlModel"
 msgstr ""
 
 msgid "PackageRegistry|Name pattern"
+msgstr ""
+
+msgid "PackageRegistry|No packages are protected yet."
 msgstr ""
 
 msgid "PackageRegistry|Npm"

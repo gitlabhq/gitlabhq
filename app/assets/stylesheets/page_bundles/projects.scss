@@ -95,11 +95,11 @@
 }
 
 .vs-private {
-  color: var(--green-500, $green-500);
+  @apply gl-text-success;
 }
 
 .lfs-enabled {
-  color: var(--green-500, $green-500);
+  @apply gl-text-success;
 }
 
 .lfs-disabled {

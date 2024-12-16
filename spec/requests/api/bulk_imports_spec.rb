@@ -174,7 +174,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
     shared_examples 'starting a new migration' do
       it 'starts a new migration' do
-        request
+        expect { request }.to change { BulkImports::Entity.count }
 
         expect(response).to have_gitlab_http_status(:created)
 
@@ -238,6 +238,34 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
             expect(user.bulk_imports.last.entities.pluck(:migrate_memberships)).to contain_exactly(true)
           end
+        end
+      end
+
+      context 'when entities do not specify a namespace', :with_current_organization do
+        let(:params) do
+          {
+            configuration: {
+              url: 'http://gitlab.example',
+              access_token: 'access_token'
+            },
+            entities: [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full_path',
+                destination_namespace: ''
+              }.merge(destination_param)
+            ]
+          }
+        end
+
+        it 'uses the current organization' do
+          expect { request }.to change { BulkImports::Entity.count }
+
+          expect(BulkImports::Entity.last.organization).to eq(current_organization)
+
+          expect(response).to have_gitlab_http_status(:created)
+
+          expect(json_response['status']).to eq('created')
         end
       end
     end

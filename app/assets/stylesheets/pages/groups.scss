@@ -30,7 +30,7 @@
 
 .card {
   .shared_runners_limit_under_quota {
-    color: $green-500;
+    @apply gl-text-success;
   }
 
   .shared_runners_limit_over_quota {

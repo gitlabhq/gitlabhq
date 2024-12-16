@@ -49,6 +49,7 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
       expect(project_entity.destination_slug).to eq('my-project')
       expect(project_entity.destination_name).to eq('my-project')
       expect(project_entity.destination_namespace).to eq(destination_group.full_path)
+      expect(project_entity.organization).to eq(destination_group.organization)
       expect(project_entity.source_xid).to eq(1234567)
     end
 

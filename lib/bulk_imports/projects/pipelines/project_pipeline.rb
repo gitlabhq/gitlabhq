@@ -17,7 +17,7 @@ module BulkImports
           project = ::Projects::CreateService.new(context.current_user, data).execute
 
           if project.persisted?
-            context.entity.update!(project: project)
+            context.entity.update!(project: project, organization: nil)
 
             project
           else

@@ -66,7 +66,9 @@ class Import::BulkImportsController < ApplicationController
         entry.delete(:destination_name)
       end
 
-      ::BulkImports::CreateService.new(current_user, entry, credentials).execute
+      ::BulkImports::CreateService.new(
+        current_user, entry, credentials, fallback_organization: Current.organization
+      ).execute
     end
 
     render json: responses.map { |response|

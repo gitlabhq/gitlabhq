@@ -53,6 +53,85 @@ RSpec.describe 'Project > Settings > Packages and registries',
     end
   end
 
+  shared_examples 'package registry settings' do
+    describe 'package protection rules' do
+      let(:settings_block_id) { 'project-packages-protection-rules-settings' }
+      let(:access_level_dropdown) { 'Minimum access level for push' }
+
+      it 'shows available section' do
+        visit_method
+
+        settings_block = find_by_testid(settings_block_id)
+        expect(settings_block).to have_text 'Protected packages'
+      end
+
+      describe 'rule management' do
+        context 'when creating a new rule' do
+          it 'successfully creates a protection rule' do
+            visit_method
+
+            within_testid settings_block_id do
+              click_button 'Add protection rule'
+
+              fill_in 'Name pattern', with: '*test*'
+              select 'Npm', from: 'Type'
+              select 'Owner', from: access_level_dropdown
+
+              click_button 'Add rule'
+            end
+
+            within_testid settings_block_id do
+              expect(page).not_to have_button 'Add rule'
+              expect(page).to have_content('*test*')
+              expect(page).to have_content('npm')
+              expect(page).to have_select(access_level_dropdown, selected: 'Owner')
+            end
+          end
+        end
+
+        context 'with existing protection rule' do
+          let_it_be(:package_protection_rule) do
+            create(:package_protection_rule, project: project)
+          end
+
+          before do
+            visit_method
+          end
+
+          it 'displays the existing rule correctly' do
+            within_testid settings_block_id do
+              expect(page).to have_content(package_protection_rule.package_name_pattern)
+              expect(page).to have_content(package_protection_rule.package_type)
+              expect(page).to have_select(access_level_dropdown, selected: 'Maintainer')
+            end
+          end
+
+          it 'allows editing the rule' do
+            within_testid settings_block_id do
+              select 'Admin', from: access_level_dropdown
+            end
+
+            expect(page).to have_content('Package protection rule updated.')
+          end
+
+          it 'allows deleting the rule' do
+            within_testid settings_block_id do
+              click_button 'Delete'
+            end
+
+            click_button 'Delete package protection rule'
+
+            expect(page).to have_content('Package protection rule deleted.')
+
+            within_testid settings_block_id do
+              expect(page).not_to have_content(package_protection_rule.package_name_pattern)
+            end
+          end
+        end
+      end
+    end
+  end
+
   shared_examples 'container registry settings' do
     describe 'Container repository protection rules' do
       let(:settings_block_id) { 'project-container-repository-protection-rules-settings' }
@@ -181,9 +260,15 @@ RSpec.describe 'Project > Settings > Packages and registries',
     end
   end
 
+  describe 'Package registry section', :js do
+    it_behaves_like 'package registry settings' do
+      let(:visit_method) { visit_and_expand_package_registry_section }
+    end
+  end
+
   describe 'Container registry section', :js do
     it_behaves_like 'container registry settings' do
-      let(:visit_method) { visit_and_expand_section }
+      let(:visit_method) { visit_and_expand_container_registry_section }
     end
   end
 
@@ -201,8 +286,16 @@ RSpec.describe 'Project > Settings > Packages and registries',
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
     end
 
-    it_behaves_like 'container registry settings' do
-      let(:visit_method) { visit_page }
+    describe 'Package registry section' do
+      it_behaves_like 'package registry settings' do
+        let(:visit_method) { visit_page }
+      end
+    end
+
+    describe 'Container registry section' do
+      it_behaves_like 'container registry settings' do
+        let(:visit_method) { visit_page }
+      end
     end
   end
 
@@ -232,9 +325,15 @@ RSpec.describe 'Project > Settings > Packages and registries',
     visit project_settings_packages_and_registries_path(project)
   end
 
-  def visit_and_expand_section
+  def visit_and_expand_container_registry_section
     visit_page
 
     click_button 'Expand Container registry'
+  end
+
+  def visit_and_expand_package_registry_section
+    visit_page
+
+    click_button 'Expand Package registry'
   end
 end

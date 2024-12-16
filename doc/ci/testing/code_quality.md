@@ -80,16 +80,18 @@ The CodeClimate engine uses a customizable set of [analysis plugins](code_qualit
 Some are on by default; others must be explicitly enabled.
 The following integrations are available to replace the built-in plugins:
 
-| Plugin      | On by default          | Replacement                                                                                                                                                                          |
-|-------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Duplication | **{check-circle}** Yes | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector).                                                                                                                        |
-| ESLint      | **{check-circle}** Yes | [Integrate ESLint](#eslint).                                                                                                                                                         |
-| gofmt       | **{dotted-circle}** No | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt).                                                              |
-| golint      | **{dotted-circle}** No | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
-| govet       | **{dotted-circle}** No | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
-| pep8        | **{dotted-circle}** No | Integrate an alternative Python linter like [Flake8](#flake8) or [Pylint](#pylint).                                                                                                  |
-| SonarPython | **{dotted-circle}** No | Integrate an alternative Python linter like [Flake8](#flake8) or [Pylint](#pylint).                                                                                                  |
-| SwiftLint   | **{dotted-circle}** No | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
+| Plugin       | On by default                                | Replacement                                                                                                                                                                          |
+|--------------|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Duplication  | **{check-circle}** Yes                       | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector).                                                                                                                        |
+| ESLint       | **{check-circle}** Yes                       | [Integrate ESLint](#eslint).                                                                                                                                                         |
+| gofmt        | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt).                                                              |
+| golint       | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
+| govet        | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
+| markdownlint | **{dotted-circle}** No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2).                                                                                                                                   |
+| pep8         | **{dotted-circle}** No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
+| SonarPython  | **{dotted-circle}** No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
+| Stylelint    | **{dotted-circle}** No (community-supported) | [Integrate Stylelint](#stylelint).                                                                                                                                                   |
+| SwiftLint    | **{dotted-circle}** No                       | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
 
 ## View Code Quality results
 

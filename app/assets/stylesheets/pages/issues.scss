@@ -69,7 +69,7 @@ ul.related-merge-requests > li gl-emoji {
   }
 
   &.open {
-    color: $green-500;
+    @apply gl-text-success;
   }
 }
 
