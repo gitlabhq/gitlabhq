@@ -6,6 +6,9 @@ class AuditEventService
 
   # Instantiates a new service
   #
+  # @deprecated This service is deprecated. Use Gitlab::Audit::Auditor instead.
+  # More information: https://docs.gitlab.com/ee/development/audit_event_guide/#how-to-instrument-new-audit-events
+  #
   # @param [User, token String] author the entity who authors the change
   # @param [User, Project, Group] entity the scope which audit event belongs to
   #   This param is also used to determine the visibility of the audit event.

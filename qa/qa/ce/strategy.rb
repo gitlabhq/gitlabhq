@@ -51,7 +51,13 @@ module QA
           )
 
           Runtime::Browser.visit(:gitlab, Page::Main::Login)
-          Page::Main::Login.perform(&:sign_in_using_admin_credentials)
+          Page::Main::Login.perform do |login|
+            admin_user = Runtime::User::Store.admin_user
+            login.sign_in_using_credentials(user: admin_user)
+          rescue Runtime::User::ExpiredPasswordError
+            login.set_up_new_password(user: admin_user)
+          end
+
           Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
           Runtime::User::Store.initialize_admin_api_client # re-initialize admin client after password reset

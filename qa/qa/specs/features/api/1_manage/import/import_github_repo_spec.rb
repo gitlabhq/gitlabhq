@@ -10,12 +10,7 @@ module QA
       end
 
       context 'when imported via api' do
-        it 'imports project', :blocking,
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/503715',
-            type: :stale
-          },
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do
+        it 'imports project', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do
           expect_project_import_finished_successfully
 
           aggregate_failures do
@@ -162,8 +157,8 @@ module QA
               "*Created by: gitlab-qa-github*\n\n```suggestion:-0+0\nProject for GitHub import test to GitLab\r\n```",
               "*Created by: gitlab-qa-github*\n\nSome test PR comment",
               "*Created by: gitlab-qa*\n\n**Review:** Approved",
-              "assigned to @#{user.username}",
-              "requested review from @#{user.username}"
+              "assigned to `@gitlab-qa-github`",
+              "requested review from `@gitlab-qa`"
             ]
           )
           expect(events).to match_array(
