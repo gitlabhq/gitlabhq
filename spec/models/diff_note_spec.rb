@@ -633,4 +633,30 @@ RSpec.describe DiffNote do
       end
     end
   end
+
+  describe '#latest_diff_file_path' do
+    let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+
+    it 'returns the file_path of latest_diff_file' do
+      expect(diff_note.latest_diff_file_path).to eq(diff_note.latest_diff_file.file_path)
+    end
+  end
+
+  describe '#raw_truncated_diff_lines' do
+    let(:diff_note) { build_stubbed(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+
+    before do
+      allow(diff_note)
+        .to receive_message_chain(:discussion, :truncated_diff_lines)
+        .and_return([
+          instance_double(Gitlab::Diff::Line, text: "+line 1"),
+          instance_double(Gitlab::Diff::Line, text: "+line 2"),
+          instance_double(Gitlab::Diff::Line, text: "-line 3")
+        ])
+    end
+
+    it 'returns raw truncated diff lines' do
+      expect(diff_note.raw_truncated_diff_lines).to eq("+line 1\n+line 2\n-line 3")
+    end
+  end
 end

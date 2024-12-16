@@ -540,7 +540,7 @@ module QA
         return if mirror_succeeded
 
         mirror_error = api_resource[:import_error] || 'Did not complete within 360 seconds'
-        raise "Mirroring was not successful: #{mirror_error}}"
+        raise "Mirroring was not successful: #{mirror_error}"
       end
 
       def remove_via_api!

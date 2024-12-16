@@ -50,6 +50,7 @@ RSpec.describe Branches::DeleteService, feature_category: :source_code_managemen
 
           expect(result.status).to eq(:error)
           expect(result.message).to eq('Could not update patch')
+          expect(result.payload[:branch]).to be_kind_of(Gitlab::Git::Branch)
         end
       end
 
@@ -59,6 +60,21 @@ RSpec.describe Branches::DeleteService, feature_category: :source_code_managemen
 
           expect(result.status).to eq(:error)
           expect(result.message).to eq('No such branch')
+          expect(result.payload[:branch]).to be_nil
+        end
+      end
+
+      context 'when Gitaly fails to remove branch' do
+        before do
+          allow(repository).to receive(:rm_branch).and_return(false)
+        end
+
+        it 'handles and returns error' do
+          result = service.execute('feature')
+
+          expect(result.status).to eq(:error)
+          expect(result.message).to eq('Failed to remove branch')
+          expect(result.payload[:branch]).to be_kind_of(Gitlab::Git::Branch)
         end
       end
     end
@@ -71,6 +87,7 @@ RSpec.describe Branches::DeleteService, feature_category: :source_code_managemen
 
         expect(result.status).to eq :error
         expect(result.message).to eq 'You dont have push access to repo'
+        expect(result.payload[:branch]).to be_nil
         expect(branch_exists?('feature')).to be true
       end
     end

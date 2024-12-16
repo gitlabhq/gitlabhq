@@ -131,6 +131,17 @@ class DiffNote < Note
     end
   end
 
+  def latest_diff_file_path
+    latest_diff_file.file_path
+  end
+
+  def raw_truncated_diff_lines
+    discussion
+      .truncated_diff_lines(highlight: false)
+      .map(&:text)
+      .join("\n")
+  end
+
   private
 
   def enqueue_diff_file_creation_job

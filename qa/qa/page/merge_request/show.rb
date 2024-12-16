@@ -347,7 +347,9 @@ module QA
           end
 
           match_when_negated do |page|
-            page.has_no_element?('merge-button', disabled: false)
+            has_css?('.mr-widget-section', text: 'Merge blocked') || # Merge widget indicates merge is blocked
+              page.has_no_element?('merge-button') ||                # No merge button
+              page.find_element('merge-button').disabled? == true    # There is a merge button, but it is disabled
           end
         end
 

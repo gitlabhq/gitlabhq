@@ -24,11 +24,12 @@ module Branches
         ServiceResponse.success(message: 'Branch was deleted')
       else
         ServiceResponse.error(
+          payload: { branch: branch },
           message: 'Failed to remove branch',
           http_status: 400)
       end
     rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => ex
-      ServiceResponse.error(message: ex.message, http_status: 400)
+      ServiceResponse.error(payload: { branch: branch }, message: ex.message, http_status: 400)
     end
 
     private
